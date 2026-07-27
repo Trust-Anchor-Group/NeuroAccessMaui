@@ -75,31 +75,24 @@
 														<!-- "ID request sent" (only visible if identity not retrieved) -->
 														<Grid ColumnDefinitions="auto"
 																IsVisible="{Binding HasSentPetition}">
-															<Border Padding="{DynamicResource SmallLeftRightMargins}"
-																	  Style="{DynamicResource RoundedBorder}"
-																	  Stroke="Transparent"
-																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20}">
-																<Label Style="{DynamicResource RoleDescriptionLabel}"
-																		 Text="{l:Localize IDRequestSent}"
-																		 TextColor="{DynamicResource BrandColorsNeuroOrange}"
-																		 VerticalOptions="Center" />
-															</Border>
+															<controls:StatusPill
+																Text="{l:Localize IDRequestSent}"
+																Tone="Warning" />
 														</Grid>
 
 														<!-- Pending signature (if not signed) -->
 														<Grid ColumnDefinitions="auto"
 																IsVisible="{Binding HasSigned, Converter={StaticResource InvertedBoolConverter}}">
-															<Border Padding="{DynamicResource SmallLeftRightMargins}"
-																	Style="{DynamicResource RoundedBorder}"
-																	Stroke="Transparent"
-																	BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20}">
-																<Label Style="{DynamicResource RoleDescriptionLabel}"
-																		Text="{l:Localize PendingSignature}"
-																		TextColor="{DynamicResource BrandColorsNeuroOrange}"
-																		HorizontalOptions="End"
-																		VerticalOptions="Center"
-																		HorizontalTextAlignment="End" />
-															</Border>
+															<controls:StatusPill
+																Text="{l:Localize PendingSignature}"
+																Tone="Warning" />
+														</Grid>
+
+														<Grid ColumnDefinitions="auto"
+																IsVisible="{Binding HasSigned}">
+															<controls:StatusPill
+																Text="{l:Localize Signed}"
+																Tone="Success" />
 														</Grid>
 													</VerticalStackLayout>
 
@@ -123,7 +116,7 @@
 
 													<controls:TemplatedButton Command="{Binding OpenSignatureCommand}"
 																						  VerticalOptions="End"
-																						  IsVisible="true"
+																						  IsVisible="{Binding HasSigned}"
 																						  HorizontalOptions="End">
 														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 																  Margin="0">

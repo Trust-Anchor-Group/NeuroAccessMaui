@@ -3357,12 +3357,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Variables actuelles</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>Événements de jeton</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>Vous trouverez ci-dessous les événements publics enregistrés pour le jeton. Vos événements privés sont également inclus.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Note de texte</value>
   </data>

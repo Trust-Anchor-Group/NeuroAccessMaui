@@ -1,5 +1,5 @@
-﻿using NeuroAccessMaui.Services.UI;
-using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
+using NeuroAccessMaui.Services.UI;
+using NeuroFeatures;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 {
@@ -13,21 +13,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 		/// </summary>
 		public EmbeddedLayoutNavigationArgs()
 		{
-
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="EmbeddedLayoutNavigationArgs"/> class.
+		/// Initializes a new instance that renders an authoritative token directly.
 		/// </summary>
-		/// <param name="TokenItem">Token item containing the embedded layout to render.</param>
-		public EmbeddedLayoutNavigationArgs(TokenItem TokenItem)
+		/// <param name="Token">Token containing the embedded layout definition.</param>
+		public EmbeddedLayoutNavigationArgs(Token Token)
 		{
-			this.TokenItem = TokenItem;
+			this.Token = Token;
 		}
 
 		/// <summary>
-		/// Gets the token item containing the embedded layout to render.
+		/// Gets the authoritative token containing the embedded layout definition.
 		/// </summary>
-		public TokenItem? TokenItem { get; }
+		public Token? Token { get; }
 	}
 }

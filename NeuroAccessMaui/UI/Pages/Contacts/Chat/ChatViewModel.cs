@@ -11,14 +11,11 @@ using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat.Controls;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
-using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
-using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroFeatures;
 using SkiaSharp;
@@ -1248,7 +1245,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
 
-			TokenItem? Selected = await Args.TokenItemProvider.Task;
+			Token? Selected = await Args.TokenProvider.Task;
 
 			if (Selected is null)
 				return;
@@ -1257,7 +1254,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			Markdown.AppendLine("```nfeat");
 
-			Selected.Token.Serialize(Markdown);
+			Selected.Serialize(Markdown);
 
 			Markdown.AppendLine();
 			Markdown.AppendLine("```");
@@ -1408,9 +1405,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 							case UriScheme.IotSc:
 								ParsedContract ParsedContract = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient, true);
-								ViewContractNavigationArgs ViewContractArgs = new(ParsedContract.Contract, false);
-
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), ViewContractArgs, BackMethod.Pop);
+								await ServiceRef.ContractOrchestratorService.OpenContract(
+									ParsedContract.Contract,
+									ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)],
+									null);
 								break;
 
 							case UriScheme.NeuroFeature:
@@ -1418,12 +1416,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 								if (ParsedToken is null)
 									throw new Exception(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
 
-								if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, ParsedToken.TokenId, out NotificationEvent[]? Events))
-									Events = [];
-
-								TokenDetailsNavigationArgs Args = new(new TokenItem(ParsedToken, Events));
-
-								await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+								await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(
+									ParsedToken.TokenId,
+									ParsedToken);
 								break;
 
 							default:

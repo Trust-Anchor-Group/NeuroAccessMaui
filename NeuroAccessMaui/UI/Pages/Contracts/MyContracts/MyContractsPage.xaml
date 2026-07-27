@@ -1,148 +1,371 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
-					 x:Class="NeuroAccessMaui.UI.Pages.Contracts.MyContracts.MyContractsPage"
-					 x:DataType="viewmodel:MyContractsViewModel"
-					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts"
-					 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels">
-	
-	<VisualElement.Resources>
-		<DataTemplate x:Key="ContractModelTemplate" x:DataType="objectmodel:ContractModel">
-			<Border Style="{DynamicResource BorderSet}">
-				<controls:TemplatedButton Padding="0"
-								 Command="{Binding ContractSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-								 CommandParameter="{Binding .}">
-					<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto">
-						<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,0,5,0"
-								Text="{Binding Path=Timestamp, Converter={converters:DateToString}}"
-								HorizontalOptions="Center" VerticalOptions="Center"/>
-						<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,0"
-								Text="{Binding Path=Timestamp, Converter={converters:TimeToString}}"
-								HorizontalOptions="Center" VerticalOptions="Center"/>
-						<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
-								HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,0,5,0" Margin="0"
-								Text="{Binding Path=NameOrCategory}" Style="{DynamicResource ClickableValueLabel}" VerticalOptions="Center"/>
-						<Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeShape="RoundRectangle 12" Margin="0" Padding="8,3,8,3"
-								IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
-								Style="{DynamicResource RedButtonActiveBorder}">
-							<Label FontSize="Caption" TextColor="{DynamicResource ContentWhitefixed}"
-									Text="{Binding NrEvents}" Padding="1"/>
-						</Border>
-						<!-- Share Template QR button -->
-						<controls:SvgButton Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-											SvgSource="share.svg"
-											Style="{DynamicResource IconButtonOnBackground}"
-											HorizontalOptions="End"
-											VerticalOptions="Center"
-											Command="{Binding ShareTemplateQRCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-											CommandParameter="{Binding .}"
-											IsVisible="{Binding CanShareTemplate, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}" />
-					</Grid>
-				</controls:TemplatedButton>
-			</Border>
-		</DataTemplate>
-	</VisualElement.Resources>
-	
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, auto, *">
+<base:BaseContentPage
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.MyContracts.MyContractsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts"
+	x:DataType="viewmodel:MyContractsViewModel"
+	x:Name="ThisPage">
 
-		<controls:Background Grid.RowSpan="3"/>
+	<Grid
+		BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		RowDefinitions="Auto,Auto,*">
 
-		<Grid ColumnDefinitions="auto, *, auto" Margin="16,0,16,0">
+		<controls:Background Grid.RowSpan="3" />
+
+		<Grid
+			Grid.Row="0"
+			ColumnDefinitions="Auto,*"
+			Margin="{DynamicResource MediumMargins}">
 			<controls:SvgButton
 				Command="{Binding GoBackCommand}"
-				SvgSource="close.svg"
+				HorizontalOptions="Start"
+				SemanticProperties.Description="{l:Localize Close}"
 				Style="{DynamicResource IconButton}"
-				HorizontalOptions="Start"/>
-
-			<Label Text="{Binding Path=Title}"
-				   Style="{DynamicResource PageTitleLabel}"
-				   Margin="{DynamicResource SmallLeftMargins}"
-				   Grid.Column="2" HorizontalOptions="End"/>
+				SvgSource="close.svg" />
+			<VerticalStackLayout
+				Grid.Column="1"
+				Margin="{DynamicResource SmallLeftMargins}"
+				Spacing="2"
+				VerticalOptions="Center">
+				<Label
+					LineBreakMode="TailTruncation"
+					Style="{DynamicResource PageTitleLabel}"
+					Text="{Binding Title}" />
+				<Label
+					MaxLines="2"
+					Style="{DynamicResource ItemDescriptionLabel}"
+					Text="{Binding Description}"
+					TextColor="{DynamicResource ContentSecondaryWL}" />
+			</VerticalStackLayout>
 		</Grid>
 
-		<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Padding="16,16,16,0" Margin="16,16,16,0">
-			<VerticalStackLayout>
-				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-					   VerticalOptions="Center" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" Margin="0,40,0,0"/>
+		<VerticalStackLayout
+			Grid.Row="1"
+			Margin="{DynamicResource MediumLeftRightMargins}"
+			Spacing="{DynamicResource SmallSpacing}">
+			<Grid
+				ColumnDefinitions="*,Auto"
+				ColumnSpacing="{DynamicResource SmallSpacing}">
+				<controls:CompositeEntry
+					EntryData="{Binding SearchText, Mode=TwoWay}"
+					Placeholder="{l:Localize Search}"
+					Style="{DynamicResource RegularCompositeEntry}" />
+				<controls:SvgButton
+					Grid.Column="1"
+					BorderStyle="{DynamicResource IconButtonBorderStroke}"
+					Command="{Binding OpenFilterPopupCommand}"
+					HeightRequest="46"
+					HorizontalOptions="End"
+					SemanticProperties.Description="{l:Localize SelectFilter}"
+					Style="{DynamicResource IconButton}"
+					SvgSource="filter.svg"
+					VerticalOptions="Center"
+					WidthRequest="46" />
+			</Grid>
 
-				<Grid ColumnDefinitions="*, auto"
-					  Margin="0,0,0,16"
-					  IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}"
-					  ColumnSpacing="8">
-					<controls:CompositeEntry
-						Style="{DynamicResource RegularCompositeEntry}"
-						Placeholder="{l:Localize Search}"
-						TextChanged="ContractsSearchChanged">
-					</controls:CompositeEntry>
+			<ScrollView
+				x:Name="FilterTagsScroll"
+				HorizontalScrollBarVisibility="Never"
+				Orientation="Horizontal">
+				<HorizontalStackLayout
+					x:Name="FilterTagsLayout"
+					BindableLayout.ItemsSource="{Binding FilterTags}"
+					Spacing="{DynamicResource SmallSpacing}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
+							<controls:TemplatedButton
+								Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+								CommandParameter="{Binding .}"
+								Padding="0">
+								<Border
+									BackgroundColor="{DynamicResource TnPNeutralv300bgWL}"
+									Padding="12,7"
+									Stroke="{DynamicResource SurfaceStrokeWL}"
+									StrokeShape="RoundRectangle 20">
+									<Label
+										FontSize="14"
+										Text="{Binding Category}"
+										TextColor="{DynamicResource TnPNeutralv300ContentWL}" />
+									<Border.Triggers>
+										<DataTrigger
+											Binding="{Binding IsSelected}"
+											TargetType="Border"
+											Value="True">
+											<Setter
+												Property="BackgroundColor"
+												Value="{DynamicResource TnPInfobgWL}" />
+											<Setter
+												Property="Stroke"
+												Value="{DynamicResource TnPInfoContentWL}" />
+										</DataTrigger>
+									</Border.Triggers>
+								</Border>
+							</controls:TemplatedButton>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</HorizontalStackLayout>
+			</ScrollView>
+		</VerticalStackLayout>
 
-					<controls:SvgButton
-						Command="{Binding OpenFilterPopupCommand}"
-						Style="{DynamicResource IconButton}"
-						BorderStyle="{DynamicResource IconButtonBorderStroke}"
-						SvgSource="filter.svg"
-						HorizontalOptions="End"
-						VerticalOptions="Center"
-						HeightRequest="46"
-						WidthRequest="46"
-						Grid.Column="1">
-					</controls:SvgButton>
-				</Grid>
-
-				<ScrollView x:Name="FilterTagsScroll" Orientation="Horizontal" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
-					<HorizontalStackLayout x:Name="FilterTagsLayout" BindableLayout.ItemsSource="{Binding FilterTags}" IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
-						<BindableLayout.ItemTemplate>
-							<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
-								<controls:TemplatedButton Padding="4,0,4,16"
-													  Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-													  CommandParameter="{Binding .}">
-									<Border StrokeShape="RoundRectangle 24" Padding="8"
-												Background="{DynamicResource TnPSuccessbgWL}">
-										<Label Text="{Binding Category}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
-
-										<Border.Triggers>
-											<DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-												<Setter Property="Stroke" Value="{DynamicResource TnPSuccessContentWL}"/>
-											</DataTrigger>
-											<DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
-												<Setter Property="Stroke" Value="Transparent"/>
-											</DataTrigger>
-										</Border.Triggers>
-									</Border>
-								</controls:TemplatedButton>
-							</DataTemplate>
-						</BindableLayout.ItemTemplate>
-					</HorizontalStackLayout>
-				</ScrollView>
+		<Grid Grid.Row="2">
+			<VerticalStackLayout
+				HorizontalOptions="Center"
+				IsVisible="{Binding IsInitialLoading}"
+				Spacing="{DynamicResource SmallSpacing}"
+				VerticalOptions="Center">
+				<ActivityIndicator
+					Color="{DynamicResource TnPInfoContentWL}"
+					IsRunning="{Binding IsInitialLoading}" />
+				<Label
+					Style="{DynamicResource ItemDescriptionLabel}"
+					Text="{l:Localize LoadingContracts}" />
 			</VerticalStackLayout>
-		</Border>
 
-		<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
-						   Color="{DynamicResource TnPInfoContentWL}"
-						   HorizontalOptions="Center"
-						   VerticalOptions="Center"
-						   Margin="0,32,0,32"
-						   Grid.Row="2"/>
+			<Border
+				IsVisible="{Binding HasLoadError}"
+				Margin="{DynamicResource MediumMargins}"
+				Padding="{DynamicResource MediumMargins}"
+				Style="{DynamicResource BorderSet}"
+				VerticalOptions="Center">
+				<VerticalStackLayout
+					Spacing="{DynamicResource SmallSpacing}">
+					<controls:StatusPill
+						Text="{l:Localize Unavailable}"
+						Tone="Danger" />
+					<Label
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding LoadErrorMessage}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+					<Button
+						Command="{Binding RetryCommand}"
+						HorizontalOptions="Start"
+						Style="{DynamicResource SecondaryButton}"
+						Text="{l:Localize Retry}" />
+				</VerticalStackLayout>
+			</Border>
 
-		<CollectionView x:Name="Contracts" VerticalOptions="Start"
-						Grid.Row="2" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}"
-						Margin="8"
-						SelectionMode="None"
-						ItemSizingStrategy="MeasureFirstItem"
-						ItemsSource="{Binding Path=Contracts}"
-						ItemTemplate="{StaticResource ContractModelTemplate}"
-						RemainingItemsThreshold="{Binding HasMore}"
-						RemainingItemsThresholdReachedCommand="{Binding LoadMoreContractsCommand}">
-			<CollectionView.ItemsLayout>
-				<GridItemsLayout Orientation="Vertical"/>
-			</CollectionView.ItemsLayout>
-		</CollectionView>
+			<Border
+				IsVisible="{Binding ShowEmptyState}"
+				Margin="{DynamicResource MediumMargins}"
+				Padding="{DynamicResource MediumMargins}"
+				Style="{DynamicResource BorderSet}"
+				VerticalOptions="Center">
+				<VerticalStackLayout
+					HorizontalOptions="Center"
+					Spacing="{DynamicResource SmallSpacing}">
+					<Label
+						HorizontalTextAlignment="Center"
+						Style="{DynamicResource SectionTitleLabel}"
+						Text="{l:Localize NoMatchingContractsTitle}" />
+					<Label
+						HorizontalTextAlignment="Center"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{l:Localize NoMatchingContractsDescription}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+				</VerticalStackLayout>
+			</Border>
 
+			<CollectionView
+				x:Name="Contracts"
+				IsVisible="{Binding HasContracts}"
+				ItemSizingStrategy="MeasureAllItems"
+				ItemsSource="{Binding Contracts}"
+				Margin="8,8,8,0"
+				RemainingItemsThreshold="{Binding HasMore}"
+				RemainingItemsThresholdReachedCommand="{Binding LoadMoreContractsCommand}"
+				SelectionMode="None">
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout
+						ItemSpacing="4"
+						Orientation="Vertical" />
+				</CollectionView.ItemsLayout>
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="objectmodel:ContractModel">
+						<Border
+							Margin="4,2"
+							Padding="0"
+							Style="{DynamicResource BorderSet}">
+							<Border.Triggers>
+								<DataTrigger
+									Binding="{Binding IsNeedsAttention}"
+									TargetType="Border"
+									Value="True">
+									<Setter
+										Property="Stroke"
+										Value="{DynamicResource TnPWarningContentWL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<controls:TemplatedButton
+								Command="{Binding ContractSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+								CommandParameter="{Binding .}"
+								IsEnabled="{Binding CanOpen}"
+								Padding="0">
+								<Grid
+									ColumnDefinitions="*,Auto"
+									Padding="{DynamicResource MediumMargins}"
+									RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+									RowSpacing="{DynamicResource SmallSpacing}">
+									<VerticalStackLayout
+										Spacing="2">
+										<Label
+											FontAttributes="Bold"
+											FontSize="18"
+											LineBreakMode="TailTruncation"
+											Text="{Binding Title}"
+											TextColor="{DynamicResource ContentPrimaryWL}" />
+										<Label
+											IsVisible="{Binding HasCategory}"
+											LineBreakMode="TailTruncation"
+											Style="{DynamicResource ItemDescriptionLabel}"
+											Text="{Binding Category}"
+											TextColor="{DynamicResource ContentSecondaryWL}" />
+									</VerticalStackLayout>
+
+									<controls:SvgButton
+										Grid.Column="1"
+										Command="{Binding ShareTemplateQRCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+										CommandParameter="{Binding .}"
+										HorizontalOptions="End"
+										IsVisible="{Binding CanShareTemplate, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+										SemanticProperties.Description="{l:Localize Share}"
+										Style="{DynamicResource IconButtonOnBackground}"
+										SvgSource="share.svg"
+										VerticalOptions="Start" />
+
+									<FlexLayout
+										Grid.Row="1"
+										Grid.ColumnSpan="2"
+										AlignItems="Center"
+										Direction="Row"
+										Wrap="Wrap">
+										<controls:StatusPill
+											IsVisible="{Binding IsNeedsAttention}"
+											Margin="0,0,8,4"
+											Text="{l:Localize ContractNeedsAttention}"
+											Tone="Warning" />
+										<controls:StatusPill
+											Margin="0,0,8,4"
+											Text="{Binding StateText}"
+											Tone="{Binding StateTone}" />
+										<controls:StatusPill
+											IsVisible="{Binding HasTemplateKind}"
+											Margin="0,0,8,4"
+											Text="{Binding TemplateKindText}"
+											Tone="Neutral" />
+										<controls:StatusPill
+											IsVisible="{Binding HasEvents}"
+											Margin="0,0,8,4"
+											Text="{Binding NrEvents}"
+											Tone="Information" />
+									</FlexLayout>
+
+									<FlexLayout
+										Grid.Row="2"
+										Grid.ColumnSpan="2"
+										AlignItems="Center"
+										Direction="Row"
+										Wrap="Wrap">
+										<Label
+											IsVisible="{Binding HasRole}"
+											Margin="0,0,16,4"
+											Style="{DynamicResource ItemDescriptionLabel}"
+											Text="{Binding RoleText}"
+											TextColor="{DynamicResource ContentPrimaryWL}" />
+										<Label
+											IsVisible="{Binding HasParties}"
+											Margin="0,0,16,4"
+											Style="{DynamicResource ItemDescriptionLabel}"
+											Text="{Binding PartiesText}"
+											TextColor="{DynamicResource ContentSecondaryWL}" />
+										<Label
+											IsVisible="{Binding HasSignatureProgress}"
+											Margin="0,0,16,4"
+											Style="{DynamicResource ItemDescriptionLabel}"
+											Text="{Binding SignatureProgressText}"
+											TextColor="{DynamicResource ContentSecondaryWL}" />
+									</FlexLayout>
+
+									<Border
+										Grid.Row="3"
+										Grid.ColumnSpan="2"
+										BackgroundColor="{DynamicResource TnPWarningbgWL}"
+										IsVisible="{Binding HasRecoveryText}"
+										Padding="10,8"
+										Stroke="{DynamicResource TnPWarningContentWL}"
+										StrokeShape="RoundRectangle 8">
+										<Label
+											Style="{DynamicResource ItemDescriptionLabel}"
+											Text="{Binding RecoveryText}"
+											TextColor="{DynamicResource TnPWarningContentWL}" />
+									</Border>
+
+									<Grid
+										Grid.Row="4"
+										Grid.ColumnSpan="2"
+										ColumnDefinitions="*,Auto"
+										ColumnSpacing="{DynamicResource SmallSpacing}">
+										<Label
+											IsVisible="{Binding HasTimeContext}"
+											LineBreakMode="TailTruncation"
+											Style="{DynamicResource ItemDescriptionLabel}"
+											Text="{Binding TimeContextText}"
+											TextColor="{DynamicResource ContentSecondaryWL}"
+											VerticalTextAlignment="Center" />
+										<Label
+											Grid.Column="1"
+											FontAttributes="Bold"
+											IsVisible="{Binding HasNextAction}"
+											LineBreakMode="TailTruncation"
+											Text="{Binding NextActionText}"
+											TextColor="{DynamicResource ContentPrimaryWL}"
+											VerticalTextAlignment="Center" />
+									</Grid>
+								</Grid>
+							</controls:TemplatedButton>
+						</Border>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+				<CollectionView.Header>
+					<Border
+						BackgroundColor="{DynamicResource TnPWarningbgWL}"
+						IsVisible="{Binding HasAttentionContracts}"
+						Margin="4,2,4,8"
+						Padding="12,10"
+						Stroke="{DynamicResource TnPWarningContentWL}"
+						StrokeShape="RoundRectangle 10">
+						<Grid ColumnDefinitions="*,Auto">
+							<Label
+								FontAttributes="Bold"
+								Text="{l:Localize ContractNeedsAttention}"
+								TextColor="{DynamicResource TnPWarningContentWL}"
+								VerticalTextAlignment="Center" />
+							<controls:StatusPill
+								Grid.Column="1"
+								Text="{Binding AttentionContractsCount}"
+								Tone="Warning" />
+						</Grid>
+					</Border>
+				</CollectionView.Header>
+				<CollectionView.Footer>
+					<HorizontalStackLayout
+						HorizontalOptions="Center"
+						IsVisible="{Binding IsLoadingMore}"
+						Padding="8,16"
+						Spacing="{DynamicResource SmallSpacing}">
+						<ActivityIndicator IsRunning="{Binding IsLoadingMore}" />
+						<Label
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize LoadingMoreContracts}"
+							VerticalTextAlignment="Center" />
+					</HorizontalStackLayout>
+				</CollectionView.Footer>
+			</CollectionView>
+		</Grid>
 	</Grid>
 </base:BaseContentPage>

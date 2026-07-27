@@ -19,6 +19,7 @@ using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.Services.Wallet;
 using Waher.Runtime.Inventory;
 using SkiaSharp.Views.Maui.Handlers;
 
@@ -132,6 +133,7 @@ namespace NeuroAccessMaui
 #endif
 
 			Builder.RegisterTypes();
+			Builder.Services.AddSingleton<ITokenNoteCommandService, TokenNoteCommandService>();
 			Builder.RegisterOcrServices();
 			Builder.RegisterPages();
 

@@ -1,32 +1,39 @@
-﻿using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.Services.UI;
+using NeuroFeatures;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 {
 	/// <summary>
-	/// Holds navigation parameters specific to a token.
+	/// Holds navigation parameters for the canonical token workspace.
 	/// </summary>
 	public class TokenDetailsNavigationArgs : NavigationArgs
 	{
 		/// <summary>
-		/// Creates a new instance of the <see cref="TokenDetailsNavigationArgs"/> class.
+		/// Creates empty token navigation arguments for framework compatibility.
 		/// </summary>
 		public TokenDetailsNavigationArgs()
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="TokenDetailsNavigationArgs"/> class.
+		/// Creates navigation arguments from a durable token identifier and optional immediate data.
 		/// </summary>
-		/// <param name="Token">Information about a token.</param>
-		public TokenDetailsNavigationArgs(TokenItem Token)
+		/// <param name="TokenId">The durable identifier of the token to display.</param>
+		/// <param name="InitialToken">Optional already-loaded token data for immediate presentation.</param>
+		public TokenDetailsNavigationArgs(string TokenId, Token? InitialToken = null)
 		{
-			this.Token = Token;
+			this.TokenId = TokenId;
+			this.InitialToken = InitialToken;
 		}
 
 		/// <summary>
-		/// Token
+		/// Gets the durable identifier of the token to display.
 		/// </summary>
-		public TokenItem? Token { get; }
+		public string? TokenId { get; }
+
+		/// <summary>
+		/// Gets optional already-loaded token data for immediate presentation.
+		/// </summary>
+		public Token? InitialToken { get; }
 	}
 }

@@ -47,6 +47,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public ContractReference? ContractRef { get; } = ContractRef;
 
 		/// <summary>
+		/// Gets the durable identifier represented by either the contract or its saved reference.
+		/// </summary>
+		public string? ContractId =>
+			this.Contract?.ContractId ??
+			Convert.ToString(this.ContractRef?.ContractId);
+
+		/// <summary>
 		/// The contract to display.
 		/// </summary>
 		public Contract? Contract { get; } = Contract;

@@ -25,6 +25,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
@@ -135,11 +136,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			await base.OnInitializeAsync();
 
-			// Uncomment if event handlers are needed
 			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
-			// ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
-			// ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
-			// ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
 		}
 
 		/// <inheritdoc/>
@@ -153,12 +150,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
-			// Uncomment if event handlers are subscribed in OnInitialize.
-			// ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
-			// ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
-			// ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
-			// ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
-
 			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
 
 			await base.OnDisposeAsync();
@@ -254,8 +245,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 						if (Amount.HasValue && Amount.Value > 0)
 						{
-						ServiceRef.TagProfile.HasWallet = true;
-				}
+							ServiceRef.TagProfile.HasWallet = true;
+						}
 					}
 				}
 				// 7. Contract-based buy flow.
@@ -374,6 +365,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		[RelayCommand]
+		private Task ViewTokens()
+		{
+			return ServiceRef.NavigationService.GoToAsync(
+				nameof(MyTokensPage),
+				BackMethod.Pop);
 		}
 
 		/// <summary>

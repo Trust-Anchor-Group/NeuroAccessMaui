@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.Services.Cache.AttachmentCache
 {
 
 	/// <summary>
-	/// Defines operations for caching attachment content (e.g., images) by URL.
+	/// Defines operations for caching attachment content by URL.
 	/// </summary>
 	[DefaultImplementation(typeof(AttachmentCacheService))]
 	public interface IAttachmentCacheService : ILoadableService
@@ -18,7 +18,7 @@ namespace NeuroAccessMaui.Services.Cache.AttachmentCache
 		Task<(byte[]? Data, string ContentType)> TryGet(string Url);
 
 		/// <summary>
-		/// Adds or updates an attachment in the cache.
+		/// Adds or updates image or non-image attachment content in the cache.
 		/// </summary>
 		/// <param name="Url">The URL key of the attachment.</param>
 		/// <param name="ParentId">Associated parent ID for grouping entries.</param>

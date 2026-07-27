@@ -1,82 +1,146 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ViewContractPage"
-							 x:DataType="viewmodel:ViewContractViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-names1pace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-							 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel">
+<base:BaseContentPage
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ViewContractPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+	x:DataType="viewmodel:ViewContractViewModel"
+	x:Name="ThisPage">
 
-	<Grid x:Name="TheMainGrid"
-			RowDefinitions="auto, *"
-			ColumnDefinitions="*"
-			BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid
+		x:Name="TheMainGrid"
+		BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		RowDefinitions="Auto,Auto,*">
+		<controls:Background Grid.RowSpan="3" />
 
-		<controls:Background Grid.Row="1" />
-
-		<!-- Top Bar -->
-		<Grid Grid.Row="0"
-				RowDefinitions="*"
-				ColumnDefinitions="auto,*,auto" ColumnSpacing="8"
-				Margin="16,0,16,16">
-
-
-			<controls:SvgButton Grid.Row="0"
-								Grid.Column="0"
-								Command="{Binding BackCommand}"
-								Style="{DynamicResource IconButton}"
-								SvgSource="close.svg" />
-
-			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
-			<Label Grid.Row="0"
-					 Grid.Column="1"
-					 Style="{DynamicResource PageTitleLabel}"
-					 Text="{l:Localize ViewContract}"
-					 HorizontalTextAlignment="Center" />
-			<controls:SvgButton Grid.Row="0"
-								Grid.Column="2"
-								Command="{Binding ShareCommand}"
-								Style="{DynamicResource IconButton}"
-								SvgSource="share.svg" />
+		<Grid
+			Grid.Row="0"
+			Margin="16,0,16,12"
+			ColumnDefinitions="Auto,*,Auto"
+			ColumnSpacing="8">
+			<controls:SvgButton
+				Grid.Column="0"
+				Command="{Binding BackCommand}"
+				SemanticProperties.Description="{l:Localize Close}"
+				Style="{DynamicResource IconButton}"
+				SvgSource="close.svg" />
+			<Label
+				Grid.Column="1"
+				HorizontalTextAlignment="Center"
+				Style="{DynamicResource PageTitleLabel}"
+				Text="{l:Localize Agreement}" />
+			<controls:SvgButton
+				Grid.Column="2"
+				Command="{Binding ShareCommand}"
+				SemanticProperties.Description="{l:Localize Share}"
+				Style="{DynamicResource IconButton}"
+				SvgSource="share.svg" />
 		</Grid>
-		<!-- Main Content -->
-		<Grid x:Name="StateGrid"
-				Grid.Row="1"
-				mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}"
-				mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}">
 
+		<Border
+			Grid.Row="1"
+			IsVisible="{Binding HasContract}"
+			Margin="16,0,16,12"
+			Padding="16"
+			Style="{DynamicResource BorderSet}">
+			<VerticalStackLayout Spacing="8">
+				<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+					<VerticalStackLayout Spacing="2">
+						<Label
+							FontAttributes="Bold"
+							FontSize="20"
+							LineBreakMode="TailTruncation"
+							MaxLines="2"
+							SemanticProperties.HeadingLevel="Level1"
+							Text="{Binding SummaryTitle}"
+							TextColor="{DynamicResource ContentPrimaryWL}" />
+						<Label
+							IsVisible="{Binding HasSummaryCategory}"
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{Binding SummaryCategory}"
+							TextColor="{DynamicResource ContentSecondaryWL}" />
+					</VerticalStackLayout>
+					<controls:StatusPill
+						Grid.Column="1"
+						Text="{Binding SummaryStateText}"
+						Tone="{Binding SummaryStateTone}" />
+				</Grid>
+
+				<FlexLayout
+					AlignItems="Center"
+					Direction="Row"
+					JustifyContent="Start"
+					Wrap="Wrap">
+					<Label
+						IsVisible="{Binding HasSummaryRole}"
+						Margin="0,0,16,4"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding SummaryRoleText}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+					<Label
+						IsVisible="{Binding HasSignatureProgress}"
+						Margin="0,0,16,4"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding SignatureProgressText}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+					<Label
+						IsVisible="{Binding HasImportantDate}"
+						Margin="0,0,16,4"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding ImportantDateText}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+				</FlexLayout>
+
+				<Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+					<Label
+						FontAttributes="Bold"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{l:Localize NextStep}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+					<Label
+						Grid.Column="1"
+						Text="{Binding NextActionText}"
+						TextColor="{DynamicResource ContentPrimaryWL}" />
+				</Grid>
+
+				<HorizontalStackLayout Spacing="8">
+					<controls:StatusPill
+						Text="{Binding FreshnessText}"
+						Tone="{Binding FreshnessTone}" />
+				</HorizontalStackLayout>
+				<Label
+					IsVisible="{Binding HasFreshnessWarning}"
+					Style="{DynamicResource ItemDescriptionLabel}"
+					Text="{Binding FreshnessWarningText}"
+					TextColor="{DynamicResource TnPWarningContentWL}" />
+			</VerticalStackLayout>
+		</Border>
+
+		<Grid
+			x:Name="StateGrid"
+			Grid.Row="2"
+			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}"
+			mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}">
 			<mct:StateContainer.StateViews>
-				<views:OverviewView x:Name="OverviewView"
-										  mct:StateView.StateKey="Overview" />
-				<views:LoadingView x:Name="LoadingView"
-										 mct:StateView.StateKey="Loading" />
-				<views:ParametersView x:Name="ParametersView"
-											 mct:StateView.StateKey="Parameters" />
-				<views:RolesView x:Name="RolesView"
-									  mct:StateView.StateKey="Roles" />
-				<views:PreviewView x:Name="PreviewView"
-										 mct:StateView.StateKey="Review" />
-				<views:SignView x:Name="SignView"
-									 mct:StateView.StateKey="Sign" />
+				<views:OverviewView mct:StateView.StateKey="Overview" />
+				<views:LoadingView mct:StateView.StateKey="Loading" />
+				<views:ParametersView mct:StateView.StateKey="Parameters" />
+				<views:RolesView mct:StateView.StateKey="Roles" />
+				<views:PreviewView mct:StateView.StateKey="Review" />
+				<views:SignView mct:StateView.StateKey="Sign" />
 			</mct:StateContainer.StateViews>
 
-			<!-- default state, should not occur -->
 			<VerticalStackLayout>
-				<Label VerticalTextAlignment="Center"
-						 HorizontalTextAlignment="Center"
-						 Text="{l:Localize SomethingWentWrong}" />
+				<Label
+					HorizontalTextAlignment="Center"
+					Text="{l:Localize SomethingWentWrong}"
+					VerticalTextAlignment="Center" />
 			</VerticalStackLayout>
 		</Grid>
-
-
-
 	</Grid>
-
 </base:BaseContentPage>

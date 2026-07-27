@@ -1,10 +1,7 @@
-﻿using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
-using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
-using NeuroFeatures;
+﻿using NeuroFeatures;
 using System.Text;
 using System.Xml;
 using Waher.Persistence.Attributes;
-using NeuroAccessMaui.Services.UI;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.UI;
 using NeuroFeatures.EventArguments;
@@ -168,22 +165,23 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 			if (string.IsNullOrEmpty(this.TokenId))
 				return;
 
-			Token? Token = await this.GetTokenAsync();
-			if (Token is null)
+			Token? Token = null;
+			try
 			{
-				Token = await ServiceRef.XmppService.GetNeuroFeature(this.TokenId);
-				this.token = Token;
+				Token = await this.GetTokenAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogWarning(
+					"Cached token notification data could not be parsed.",
+					new KeyValuePair<string, object?>(
+						"FailureType",
+						Ex.GetType().Name));
 			}
 
-			if (Token is null)
-				return;
-
-			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, this.TokenId, out NotificationEvent[]? Events))
-				Events = [];
-
-			TokenDetailsNavigationArgs Args = new(new TokenItem(Token, Events));
-
-			await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+			await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(
+				this.TokenId,
+				Token);
 		}
 	}
 }

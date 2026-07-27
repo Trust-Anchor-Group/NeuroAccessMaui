@@ -3357,12 +3357,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Текущие переменные</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>События токенов</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>Ниже приведены публичные события, записанные для токена. Ваши частные мероприятия также включены в стоимость.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Текстовая заметка</value>
   </data>

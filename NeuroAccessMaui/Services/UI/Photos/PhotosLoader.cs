@@ -21,6 +21,9 @@ namespace NeuroAccessMaui.Services.UI.Photos
 	/// </summary>
 	public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 	{
+		// Explicit contract attachment opens materialize bytes for cache/preview.
+		// Keep that path bounded so remote metadata cannot exhaust mobile memory.
+		private const long maximumInMemoryAttachmentBytes = 25L * 1024L * 1024L;
 		private readonly ObservableCollection<Photo> photos = Photos;
 		private readonly List<string> attachmentIds = [];
 		private DateTime loadPhotosTimestamp;
@@ -83,6 +86,37 @@ namespace NeuroAccessMaui.Services.UI.Photos
 			return (null, string.Empty, 0);
 		}
 
+		/// <summary>
+		/// Downloads one image or non-image attachment through the authenticated attachment service.
+		/// </summary>
+		/// <param name="Attachment">Attachment metadata containing the authenticated content URL.</param>
+		/// <param name="SignWith">Identity material used to authorize the request.</param>
+		/// <returns>Downloaded bytes and their verified content type, or an empty result when unavailable.</returns>
+		public async Task<(byte[]? Data, string ContentType)> LoadOneAttachment(
+			Attachment Attachment,
+			SignWith SignWith)
+		{
+			try
+			{
+				return await this.GetAttachment(
+					Attachment,
+					SignWith,
+					DateTime.UtcNow,
+					maximumInMemoryAttachmentBytes);
+			}
+			catch (Exception Ex)
+			{
+				// Attachment URLs and filenames may be sensitive. Record only the
+				// failure category and let the caller present a generic retry state.
+				ServiceRef.LogService.LogWarning(
+					"Attachment content could not be loaded.",
+					new KeyValuePair<string, object?>(
+						"FailureType",
+						Ex.GetType().Name));
+				return (null, string.Empty);
+			}
+		}
+
 		private async Task<Photo?> LoadPhotos(Attachment[] Attachments, SignWith SignWith, DateTime Now, Action? WhenDoneAction)
 		{
 			if (Attachments is null || Attachments.Length <= 0)
@@ -111,7 +145,7 @@ namespace NeuroAccessMaui.Services.UI.Photos
 
 			foreach (Attachment Attachment in AttachmentsList)
 			{
-				if (Array.IndexOf(ImageCodec.ImageContentTypes, Attachment.ContentType) < 0)
+				if (!IsSupportedImageContentType(Attachment.ContentType))
 					continue;
 
 				if (this.loadPhotosTimestamp > Now)
@@ -160,40 +194,172 @@ namespace NeuroAccessMaui.Services.UI.Photos
 
 		private async Task<(byte[]?, string, int)> GetPhoto(Attachment Attachment, SignWith SignWith, DateTime Now)
 		{
-			if (Attachment is null)
-				return (null, string.Empty, 0);
+			(byte[]? Bin, string ContentType) = await this.GetAttachment(
+				Attachment,
+				SignWith,
+				Now,
+				int.MaxValue);
+			return Bin is null
+				? (null, string.Empty, 0)
+				: (Bin, ContentType, GetImageRotation(Bin));
+		}
 
-			(byte[]? Bin, string ContentType) = await ServiceRef.AttachmentCacheService.TryGet(Attachment.Url);
+		private async Task<(byte[]? Data, string ContentType)> GetAttachment(
+			Attachment Attachment,
+			SignWith SignWith,
+			DateTime Now,
+			long MaximumBytes)
+		{
+			if (Attachment is null || string.IsNullOrWhiteSpace(Attachment.Url))
+				return (null, string.Empty);
+
+			byte[]? Bin = null;
+			string ContentType = string.Empty;
+			try
+			{
+				(Bin, ContentType) =
+					await ServiceRef.AttachmentCacheService.TryGet(Attachment.Url);
+			}
+			catch (Exception Ex)
+			{
+				LogAttachmentCacheFailure("Read", Ex);
+			}
 
 			if (Bin is not null)
-				return (Bin, ContentType, GetImageRotation(Bin));
+			{
+				return Bin.LongLength > 0 &&
+					Bin.LongLength <= MaximumBytes
+					? (Bin, NormalizeContentType(ContentType, Attachment.ContentType))
+					: (null, string.Empty);
+			}
 
-			if (!ServiceRef.NetworkService.IsOnline || !ServiceRef.XmppService.IsOnline)
-				return (null, string.Empty, 0);
+			if (!ServiceRef.NetworkService.IsOnline ||
+				!ServiceRef.XmppService.IsOnline)
+			{
+				return (null, string.Empty);
+			}
 
-			KeyValuePair<string, TemporaryFile> pair = await ServiceRef.XmppService.GetAttachment(Attachment.Url, SignWith, Constants.Timeouts.DownloadFile);
+			KeyValuePair<string, TemporaryFile> Download =
+				await ServiceRef.XmppService.GetAttachment(
+					Attachment.Url,
+					SignWith,
+					Constants.Timeouts.DownloadFile);
+			using TemporaryFile File = Download.Value;
 
-			using TemporaryFile file = pair.Value;
+			if (this.loadPhotosTimestamp > Now ||
+				File.Length <= 0 ||
+				File.Length > MaximumBytes)
+			{
+				return (null, string.Empty);
+			}
 
-			if (this.loadPhotosTimestamp > Now)     // If download has been cancelled any time _during_ download, stop here.
-				return (null, string.Empty, 0);
+			File.Reset();
+			Bin = new byte[File.Length];
+			int Offset = 0;
 
-			if (pair.Value.Length > int.MaxValue)   // Too large
-				return (null, string.Empty, 0);
+			// Stream reads are not guaranteed to fill the requested buffer. Read
+			// until complete so a truncated attachment is never cached or opened.
+			while (Offset < Bin.Length)
+			{
+				int Read = File.Read(Bin, Offset, Bin.Length - Offset);
+				if (Read <= 0)
+					return (null, string.Empty);
 
-			file.Reset();
+				Offset += Read;
+			}
 
-			ContentType = pair.Key;
-			Bin = new byte[file.Length];
+			ContentType = NormalizeContentType(
+				Download.Key,
+				Attachment.ContentType);
+			string ParentId = FirstNonEmpty(
+				Attachment.LegalId,
+				Attachment.Id,
+				Attachment.Url);
+			bool Permanent = false;
+			if (!string.IsNullOrWhiteSpace(Attachment.LegalId))
+			{
+				try
+				{
+					Permanent =
+						await ServiceRef.XmppService.IsContact(Attachment.LegalId);
+				}
+				catch (Exception)
+				{
+					// Contact status only controls cache lifetime and must not make
+					// successfully retrieved attachment content unavailable.
+				}
+			}
 
-			if (file.Length != file.Read(Bin, 0, (int)file.Length))
-				return (null, string.Empty, 0);
+			try
+			{
+				await ServiceRef.AttachmentCacheService.Add(
+					Attachment.Url,
+					ParentId,
+					Permanent,
+					Bin,
+					ContentType);
+			}
+			catch (Exception Ex)
+			{
+				// A cache write is an optimization. The downloaded bytes remain
+				// usable for the explicit action that requested them.
+				LogAttachmentCacheFailure("Write", Ex);
+			}
 
-			bool IsContact = await ServiceRef.XmppService.IsContact(Attachment.LegalId);
+			return (Bin, ContentType);
+		}
 
-			await ServiceRef.AttachmentCacheService.Add(Attachment.Url, Attachment.LegalId, IsContact, Bin, ContentType);
+		private static void LogAttachmentCacheFailure(
+			string Operation,
+			Exception Ex)
+		{
+			ServiceRef.LogService.LogWarning(
+				"Attachment cache operation failed.",
+				new KeyValuePair<string, object?>("Operation", Operation),
+				new KeyValuePair<string, object?>(
+					"FailureType",
+					Ex.GetType().Name));
+		}
 
-			return (Bin, ContentType, GetImageRotation(Bin));
+		private static string NormalizeContentType(
+			string? DownloadedContentType,
+			string? DeclaredContentType)
+		{
+			string ContentType = FirstNonEmpty(
+				DownloadedContentType,
+				DeclaredContentType);
+			return string.IsNullOrWhiteSpace(ContentType)
+				? "application/octet-stream"
+				: ContentType;
+		}
+
+		private static string FirstNonEmpty(params string?[] Values)
+		{
+			foreach (string? Value in Values)
+			{
+				if (!string.IsNullOrWhiteSpace(Value))
+					return Value.Trim();
+			}
+
+			return string.Empty;
+		}
+
+		/// <summary>
+		/// Determines whether a content type is supported by the current image preview pipeline.
+		/// </summary>
+		/// <param name="ContentType">MIME content type to inspect.</param>
+		/// <returns><c>true</c> when the image codecs can preview the content type.</returns>
+		public static bool IsSupportedImageContentType(string? ContentType)
+		{
+			if (string.IsNullOrWhiteSpace(ContentType))
+				return false;
+
+			string MediaType = ContentType.Split(';', 2)[0].Trim();
+			return ImageCodec.ImageContentTypes.Any(
+				Supported => string.Equals(
+					Supported,
+					MediaType,
+					StringComparison.OrdinalIgnoreCase));
 		}
 
 		/// <summary>

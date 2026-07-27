@@ -4,12 +4,11 @@ using EDaler.Uris;
 using EDaler.Uris.Incomplete;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
-using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.Payment;
 using NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
@@ -210,27 +209,87 @@ namespace NeuroAccessMaui.Services.Wallet
 		/// <param name="Uri">Neuro-Feature URI.</param>
 		public async Task OpenNeuroFeatureUri(string Uri)
 		{
-			int i = Uri.IndexOf(':');
-			if (i < 0)
+			if (string.IsNullOrWhiteSpace(Uri))
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
 				return;
+			}
 
-			string TokenId = Uri[(i + 1)..];
+			int i = Uri.IndexOf(':');
+			if (i < 0 || i == Uri.Length - 1)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
+				return;
+			}
+
+			string TokenId = Uri[(i + 1)..].Trim();
+			await this.OpenTokenAsync(TokenId);
+		}
+
+		/// <summary>
+		/// Opens a token through the canonical token-detail navigation path.
+		/// </summary>
+		/// <param name="TokenId">Identifier of the token to open.</param>
+		/// <param name="InitialToken">Optional token data that has already been loaded.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public async Task OpenTokenAsync(string TokenId, Token? InitialToken = null)
+		{
+			string NormalizedTokenId = TokenId?.Trim() ?? string.Empty;
+			TokenDetailsNavigationArgs Args;
 
 			try
 			{
-				Token Token = await ServiceRef.XmppService.GetNeuroFeature(TokenId);
+				if (string.IsNullOrEmpty(NormalizedTokenId))
+					throw new ArgumentException(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)], nameof(TokenId));
 
-				if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, TokenId, out NotificationEvent[]? Events))
-					Events = [];
+				// Already-loaded data is only reusable when it represents the exact durable ID requested.
+				Token? ResolvedToken = InitialToken;
+				if (ResolvedToken is null ||
+					!string.Equals(ResolvedToken.TokenId, NormalizedTokenId, StringComparison.Ordinal))
+				{
+					ResolvedToken = await ServiceRef.XmppService.GetNeuroFeature(NormalizedTokenId);
+				}
 
-				TokenDetailsNavigationArgs Args = new(new TokenItem(Token, Events));
+				if (ResolvedToken is null ||
+					string.IsNullOrWhiteSpace(ResolvedToken.TokenId) ||
+					!string.Equals(ResolvedToken.TokenId, NormalizedTokenId, StringComparison.Ordinal))
+				{
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
+				}
 
+				Args = new(NormalizedTokenId, ResolvedToken);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogWarning(
+					"Token could not be opened through the canonical route.",
+					new KeyValuePair<string, object?>("FailureType", ex.GetType().Name));
+
+				MyTokensNavigationArgs FallbackArgs = new(
+					NormalizedTokenId,
+					ServiceRef.Localizer[nameof(AppResources.TokensUnavailableDescription)]);
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), FallbackArgs, BackMethod.Pop);
+				return;
+			}
+
+			try
+			{
 				await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogWarning(
+					"Token detail navigation failed.",
+					new KeyValuePair<string, object?>("FailureType", ex.GetType().Name));
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.TokensUnavailableDescription)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 		}
 

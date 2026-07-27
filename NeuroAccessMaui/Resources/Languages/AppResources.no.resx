@@ -3357,12 +3357,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Gjeldende variabler</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>Token-hendelser</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>Følgende er offentlige arrangementer registrert for tokenet. Dine private arrangementer er også inkludert.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Tekst notat</value>
   </data>

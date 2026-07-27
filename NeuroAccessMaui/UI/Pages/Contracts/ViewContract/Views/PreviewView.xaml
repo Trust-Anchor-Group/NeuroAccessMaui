@@ -1,21 +1,69 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:BaseViewContractView x:Name="ThisPage"
-                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.PreviewView"
-                           x:DataType="base:ViewContractViewModel"
-                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
-	<Grid RowDefinitions="*" ColumnDefinitions="*">
-		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
-			<ScrollView >
-				<ContentView Content="{Binding HumanReadableText}" />
-			</ScrollView>
+<views:BaseViewContractView
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.PreviewView"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+	x:DataType="base:ViewContractViewModel"
+	x:Name="ThisPage">
+
+	<Grid RowDefinitions="*,Auto">
+		<ScrollView Grid.Row="0">
+			<VerticalStackLayout
+				Padding="{DynamicResource MediumLeftRightBottomMargins}"
+				Spacing="12">
+				<VerticalStackLayout Spacing="4">
+					<Label
+						FontAttributes="Bold"
+						FontSize="20"
+						SemanticProperties.HeadingLevel="Level2"
+						Text="{l:Localize ReviewContractTitle}"
+						TextColor="{DynamicResource ContentPrimaryWL}" />
+					<Label
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{l:Localize ReviewContractDescription2}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+				</VerticalStackLayout>
+
+				<Border
+					IsVisible="{Binding HasHumanReadableText}"
+					Padding="16"
+					Style="{DynamicResource BorderSet}">
+					<ContentView Content="{Binding HumanReadableText}" />
+				</Border>
+				<Border
+					IsVisible="{Binding HasHumanReadableText, Converter={StaticResource InvertedBoolConverter}}"
+					Padding="16"
+					Style="{DynamicResource BorderSet}">
+					<Label
+						HorizontalTextAlignment="Center"
+						Text="{l:Localize SomethingWentWrong}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+				</Border>
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder}">
+			<Grid
+				Padding="{DynamicResource SmallMargins}"
+				ColumnDefinitions="*,*"
+				ColumnSpacing="{DynamicResource SmallSpacing}">
+				<controls:TextButton
+					Grid.Column="0"
+					Command="{Binding BackCommand}"
+					LabelData="{l:Localize Back}"
+					Style="{DynamicResource TransparentTextButton}" />
+				<controls:TextButton
+					Grid.Column="1"
+					Command="{Binding ContinueToSignCommand}"
+					IsEnabled="{Binding CanContinueToSigning}"
+					IsVisible="{Binding CanShowSignBar}"
+					LabelData="{l:Localize Continue}"
+					Style="{DynamicResource FilledTextButton}" />
+			</Grid>
 		</Border>
 	</Grid>
 </views:BaseViewContractView>

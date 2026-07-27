@@ -31,7 +31,46 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="ContractId">The id of the contract to show.</param>
 		/// <param name="Purpose">The purpose to state if the contract can't be downloaded and needs to be petitioned instead.</param>
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
-		Task OpenContract(string ContractId, string Purpose, Dictionary<CaseInsensitiveString, object>? ParameterValues);
+		Task OpenContract(
+			string ContractId,
+			string Purpose,
+			Dictionary<CaseInsensitiveString, object>? ParameterValues);
+
+		/// <summary>
+		/// Downloads and opens a contract while preserving proposal context.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to show.</param>
+		/// <param name="Purpose">The purpose to state if the contract can't be downloaded and needs to be petitioned instead.</param>
+		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
+		/// <param name="Role">The proposed role when opening a contract proposal.</param>
+		/// <param name="Proposal">The proposal message, if any.</param>
+		/// <param name="FromJid">The sender of the proposal, if any.</param>
+		Task OpenContract(
+			string ContractId,
+			string Purpose,
+			Dictionary<CaseInsensitiveString, object>? ParameterValues,
+			string? Role,
+			string? Proposal,
+			string? FromJid);
+
+		/// <summary>
+		/// Opens an already-loaded contract through the canonical contract navigation path.
+		/// </summary>
+		/// <param name="Contract">The contract to open.</param>
+		/// <param name="Purpose">The purpose to state if access must be petitioned.</param>
+		/// <param name="ParameterValues">Parameter values to set when the contract is a template.</param>
+		/// <param name="SourceReference">The existing persisted reference that supplied the contract, if any.</param>
+		/// <param name="Role">The proposed role when opening a contract proposal.</param>
+		/// <param name="Proposal">The proposal message, if any.</param>
+		/// <param name="FromJid">The sender of the proposal, if any.</param>
+		Task OpenContract(
+			Contract Contract,
+			string Purpose,
+			Dictionary<CaseInsensitiveString, object>? ParameterValues,
+			ContractReference? SourceReference = null,
+			string? Role = null,
+			string? Proposal = null,
+			string? FromJid = null);
 
 		/// <summary>
 		/// TAG Signature request scanned.

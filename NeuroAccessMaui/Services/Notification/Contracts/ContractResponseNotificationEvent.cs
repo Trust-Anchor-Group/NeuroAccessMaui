@@ -1,7 +1,5 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using System.Text;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
@@ -41,19 +39,13 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// </summary>
 		public override async Task Open()
 		{
-			Contract? Contract = await this.GetContract();
-
-			if (!this.Response || Contract is null)
+			if (!this.Response)
 			{
 				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Message)],
 					ServiceRef.Localizer[nameof(AppResources.PetitionToViewContractWasDenied)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			else
-			{
-				ViewContractNavigationArgs Args = new(Contract, false);
-
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
-			}
+				await this.OpenContractAsync();
 		}
 
 		/// <summary>

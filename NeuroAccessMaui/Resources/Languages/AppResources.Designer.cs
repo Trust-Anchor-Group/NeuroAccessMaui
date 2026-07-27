@@ -10501,24 +10501,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Token Events.
-        /// </summary>
-        public static string TokenEvents {
-            get {
-                return ResourceManager.GetString("TokenEvents", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Following are public events recorded for the token. Your private events are also included..
-        /// </summary>
-        public static string TokenEventsDescription {
-            get {
-                return ResourceManager.GetString("TokenEventsDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Token ID.
         /// </summary>
         public static string TokenId {
@@ -11651,5 +11633,336 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("ZipCode", resourceCulture);
             }
         }
+
+        /// <summary>Gets the localized overview label.</summary>
+        public static string Overview => ResourceManager.GetString("Overview", resourceCulture);
+        /// <summary>Gets the localized activity label.</summary>
+        public static string Activity => ResourceManager.GetString("Activity", resourceCulture);
+        /// <summary>Gets the localized advanced-content label.</summary>
+        public static string Advanced => ResourceManager.GetString("Advanced", resourceCulture);
+        /// <summary>Gets the localized agreement label.</summary>
+        public static string Agreement => ResourceManager.GetString("Agreement", resourceCulture);
+        /// <summary>Gets the localized people-and-signatures label.</summary>
+        public static string PeopleAndSignatures => ResourceManager.GetString("PeopleAndSignatures", resourceCulture);
+        /// <summary>Gets the localized key-terms label.</summary>
+        public static string KeyTerms => ResourceManager.GetString("KeyTerms", resourceCulture);
+        /// <summary>Gets the localized important-dates label.</summary>
+        public static string ImportantDates => ResourceManager.GetString("ImportantDates", resourceCulture);
+        /// <summary>Gets the localized attachments label.</summary>
+        public static string Attachments => ResourceManager.GetString("Attachments", resourceCulture);
+        /// <summary>Gets the localized next-step label.</summary>
+        public static string NextStep => ResourceManager.GetString("NextStep", resourceCulture);
+        /// <summary>Gets the localized active status.</summary>
+        public static string Active => ResourceManager.GetString("Active", resourceCulture);
+        /// <summary>Gets the localized expired status.</summary>
+        public static string Expired => ResourceManager.GetString("Expired", resourceCulture);
+        /// <summary>Gets the localized completed status.</summary>
+        public static string Completed => ResourceManager.GetString("Completed", resourceCulture);
+        /// <summary>Gets the localized needs-attention status.</summary>
+        public static string NeedsAttention => ResourceManager.GetString("NeedsAttention", resourceCulture);
+        /// <summary>Gets the localized unavailable status.</summary>
+        public static string Unavailable => ResourceManager.GetString("Unavailable", resourceCulture);
+        /// <summary>Gets the localized unknown status.</summary>
+        public static string Unknown => ResourceManager.GetString("Unknown", resourceCulture);
+        /// <summary>Gets the localized retry action.</summary>
+        public static string Retry => ResourceManager.GetString("Retry", resourceCulture);
+        /// <summary>Gets the localized refresh action.</summary>
+        public static string Refresh => ResourceManager.GetString("Refresh", resourceCulture);
+        /// <summary>Gets the localized refreshing status.</summary>
+        public static string Refreshing => ResourceManager.GetString("Refreshing", resourceCulture);
+        /// <summary>Gets the localized clear-filters action.</summary>
+        public static string ClearFilters => ResourceManager.GetString("ClearFilters", resourceCulture);
+        /// <summary>Gets the localized recently-updated label.</summary>
+        public static string RecentlyUpdated => ResourceManager.GetString("RecentlyUpdated", resourceCulture);
+        /// <summary>Gets the localized sort label.</summary>
+        public static string SortBy => ResourceManager.GetString("SortBy", resourceCulture);
+        /// <summary>Gets the localized ownership relationship.</summary>
+        public static string OwnedByYou => ResourceManager.GetString("OwnedByYou", resourceCulture);
+        /// <summary>Gets the localized related-contract label.</summary>
+        public static string RelatedContract => ResourceManager.GetString("RelatedContract", resourceCulture);
+        /// <summary>Gets the localized technical-details label.</summary>
+        public static string TechnicalDetails => ResourceManager.GetString("TechnicalDetails", resourceCulture);
+        /// <summary>Gets the localized raw-details label.</summary>
+        public static string RawDetails => ResourceManager.GetString("RawDetails", resourceCulture);
+        /// <summary>Gets the localized state-and-variables label.</summary>
+        public static string StateAndVariables => ResourceManager.GetString("StateAndVariables", resourceCulture);
+        /// <summary>Gets the localized marketplace-actions label.</summary>
+        public static string MarketplaceActions => ResourceManager.GetString("MarketplaceActions", resourceCulture);
+        /// <summary>Gets the localized tags label.</summary>
+        public static string Tags => ResourceManager.GetString("Tags", resourceCulture);
+        /// <summary>Gets the localized token rules-and-permissions label.</summary>
+        public static string TokenRulesAndPermissions => ResourceManager.GetString("TokenRulesAndPermissions", resourceCulture);
+        /// <summary>Gets the localized token rules-and-permissions explanation.</summary>
+        public static string TokenRulesAndPermissionsDescription => ResourceManager.GetString("TokenRulesAndPermissionsDescription", resourceCulture);
+        /// <summary>Gets the localized required archive-period label.</summary>
+        public static string ArchiveRequired => ResourceManager.GetString("ArchiveRequired", resourceCulture);
+        /// <summary>Gets the localized optional archive-period label.</summary>
+        public static string ArchiveOptional => ResourceManager.GetString("ArchiveOptional", resourceCulture);
+        /// <summary>Gets the localized state-machine identifier label.</summary>
+        public static string MachineId => ResourceManager.GetString("MachineId", resourceCulture);
+        /// <summary>Gets the localized creation-contract-template label.</summary>
+        public static string CreationContractTemplate => ResourceManager.GetString("CreationContractTemplate", resourceCulture);
+        /// <summary>Gets the localized token QR-share explanation.</summary>
+        public static string TokenShareActionDescription => ResourceManager.GetString("TokenShareActionDescription", resourceCulture);
+        /// <summary>Gets the localized send-token explanation.</summary>
+        public static string TokenSendActionDescription => ResourceManager.GetString("TokenSendActionDescription", resourceCulture);
+        /// <summary>Gets the localized unavailable share-payload explanation.</summary>
+        public static string TokenSharePayloadUnavailable => ResourceManager.GetString("TokenSharePayloadUnavailable", resourceCulture);
+        /// <summary>Gets the localized token-send preview title.</summary>
+        public static string TokenSendPreviewTitle => ResourceManager.GetString("TokenSendPreviewTitle", resourceCulture);
+        /// <summary>Gets the localized token-send preview format.</summary>
+        public static string TokenSendPreviewFormat => ResourceManager.GetString("TokenSendPreviewFormat", resourceCulture);
+        /// <summary>Gets the localized marketplace identity requirement.</summary>
+        public static string MarketplaceIdentityRequired => ResourceManager.GetString("MarketplaceIdentityRequired", resourceCulture);
+        /// <summary>Gets the localized marketplace publication explanation.</summary>
+        public static string PublishMarketplaceDescription => ResourceManager.GetString("PublishMarketplaceDescription", resourceCulture);
+        /// <summary>Gets the localized sell-offer explanation.</summary>
+        public static string OfferToSellDescription => ResourceManager.GetString("OfferToSellDescription", resourceCulture);
+        /// <summary>Gets the localized buy-offer explanation.</summary>
+        public static string OfferToBuyDescription => ResourceManager.GetString("OfferToBuyDescription", resourceCulture);
+        /// <summary>Gets the localized state-and-variables explanation.</summary>
+        public static string StateAndVariablesDescription => ResourceManager.GetString("StateAndVariablesDescription", resourceCulture);
+        /// <summary>Gets the localized missing-state-machine explanation.</summary>
+        public static string StateMachineUnavailableDescription => ResourceManager.GetString("StateMachineUnavailableDescription", resourceCulture);
+        /// <summary>Gets the localized reports-and-presentation label.</summary>
+        public static string ReportsAndPresentation => ResourceManager.GetString("ReportsAndPresentation", resourceCulture);
+        /// <summary>Gets the localized reports-and-presentation explanation.</summary>
+        public static string ReportsAndPresentationDescription => ResourceManager.GetString("ReportsAndPresentationDescription", resourceCulture);
+        /// <summary>Gets the localized unavailable reports-and-presentation explanation.</summary>
+        public static string ReportsAndPresentationUnavailable => ResourceManager.GetString("ReportsAndPresentationUnavailable", resourceCulture);
+        /// <summary>Gets the localized marketplace-actions explanation.</summary>
+        public static string MarketplaceActionsDescription => ResourceManager.GetString("MarketplaceActionsDescription", resourceCulture);
+        /// <summary>Gets the localized raw-details explanation.</summary>
+        public static string RawDetailsDescription => ResourceManager.GetString("RawDetailsDescription", resourceCulture);
+        /// <summary>Gets the localized unavailable raw-details explanation.</summary>
+        public static string RawDetailsUnavailable => ResourceManager.GetString("RawDetailsUnavailable", resourceCulture);
+        /// <summary>Gets the localized embedded-layout unavailable explanation.</summary>
+        public static string EmbeddedLayoutUnavailable => ResourceManager.GetString("EmbeddedLayoutUnavailable", resourceCulture);
+        /// <summary>Gets the localized machine-variables unavailable explanation.</summary>
+        public static string MachineVariablesUnavailable => ResourceManager.GetString("MachineVariablesUnavailable", resourceCulture);
+        /// <summary>Gets the localized no-current-variables explanation.</summary>
+        public static string NoCurrentVariables => ResourceManager.GetString("NoCurrentVariables", resourceCulture);
+        /// <summary>Gets the localized machine-report unavailable explanation.</summary>
+        public static string MachineReportUnavailable => ResourceManager.GetString("MachineReportUnavailable", resourceCulture);
+        /// <summary>Gets the localized machine-report refresh failure explanation.</summary>
+        public static string MachineReportRefreshFailed => ResourceManager.GetString("MachineReportRefreshFailed", resourceCulture);
+        /// <summary>Gets the localized Tokens page subtitle.</summary>
+        public static string TokensSubtitle => ResourceManager.GetString("TokensSubtitle", resourceCulture);
+        /// <summary>Gets the localized token-search placeholder.</summary>
+        public static string TokenSearchPlaceholder => ResourceManager.GetString("TokenSearchPlaceholder", resourceCulture);
+        /// <summary>Gets the localized token-loading status.</summary>
+        public static string LoadingTokens => ResourceManager.GetString("LoadingTokens", resourceCulture);
+        /// <summary>Gets the localized token-page loading status.</summary>
+        public static string LoadingMoreTokens => ResourceManager.GetString("LoadingMoreTokens", resourceCulture);
+        /// <summary>Gets the localized empty-token title.</summary>
+        public static string NoTokensFoundTitle => ResourceManager.GetString("NoTokensFoundTitle", resourceCulture);
+        /// <summary>Gets the localized empty-token explanation.</summary>
+        public static string NoTokensFoundDescription => ResourceManager.GetString("NoTokensFoundDescription", resourceCulture);
+        /// <summary>Gets the localized no-token-results title.</summary>
+        public static string NoMatchingTokensTitle => ResourceManager.GetString("NoMatchingTokensTitle", resourceCulture);
+        /// <summary>Gets the localized no-token-results explanation.</summary>
+        public static string NoMatchingTokensDescription => ResourceManager.GetString("NoMatchingTokensDescription", resourceCulture);
+        /// <summary>Gets the localized token-unavailable explanation.</summary>
+        public static string TokensUnavailableDescription => ResourceManager.GetString("TokensUnavailableDescription", resourceCulture);
+        /// <summary>Gets the localized partial-token-results explanation.</summary>
+        public static string PartialTokenResults => ResourceManager.GetString("PartialTokenResults", resourceCulture);
+        /// <summary>Gets the localized token-filter title.</summary>
+        public static string FilterTokens => ResourceManager.GetString("FilterTokens", resourceCulture);
+        /// <summary>Gets the localized attention filter.</summary>
+        public static string FilterNeedsAttention => ResourceManager.GetString("FilterNeedsAttention", resourceCulture);
+        /// <summary>Gets the localized active filter.</summary>
+        public static string FilterActive => ResourceManager.GetString("FilterActive", resourceCulture);
+        /// <summary>Gets the localized expired filter.</summary>
+        public static string FilterExpired => ResourceManager.GetString("FilterExpired", resourceCulture);
+        /// <summary>Gets the localized category filter.</summary>
+        public static string FilterCategory => ResourceManager.GetString("FilterCategory", resourceCulture);
+        /// <summary>Gets the localized ownership filter.</summary>
+        public static string FilterOwnership => ResourceManager.GetString("FilterOwnership", resourceCulture);
+        /// <summary>Gets the localized expiry sort option.</summary>
+        public static string SortByExpiry => ResourceManager.GetString("SortByExpiry", resourceCulture);
+        /// <summary>Gets the localized value sort option.</summary>
+        public static string SortByValue => ResourceManager.GetString("SortByValue", resourceCulture);
+        /// <summary>Gets the localized empty-activity title.</summary>
+        public static string TokenActivityEmptyTitle => ResourceManager.GetString("TokenActivityEmptyTitle", resourceCulture);
+        /// <summary>Gets the localized empty-activity explanation.</summary>
+        public static string TokenActivityEmptyDescription => ResourceManager.GetString("TokenActivityEmptyDescription", resourceCulture);
+        /// <summary>Gets the localized token-created activity title.</summary>
+        public static string TokenActivityCreated => ResourceManager.GetString("TokenActivityCreated", resourceCulture);
+        /// <summary>Gets the localized owner-changed activity title.</summary>
+        public static string TokenActivityOwnerChanged => ResourceManager.GetString("TokenActivityOwnerChanged", resourceCulture);
+        /// <summary>Gets the localized token-transferred activity title.</summary>
+        public static string TokenActivityTransferred => ResourceManager.GetString("TokenActivityTransferred", resourceCulture);
+        /// <summary>Gets the localized token-donated activity title.</summary>
+        public static string TokenActivityDonated => ResourceManager.GetString("TokenActivityDonated", resourceCulture);
+        /// <summary>Gets the localized token-destroyed activity title.</summary>
+        public static string TokenActivityDestroyed => ResourceManager.GetString("TokenActivityDestroyed", resourceCulture);
+        /// <summary>Gets the localized token-disabled activity title.</summary>
+        public static string TokenActivityKilled => ResourceManager.GetString("TokenActivityKilled", resourceCulture);
+        /// <summary>Gets the localized value-changed activity title.</summary>
+        public static string TokenActivityValueChanged => ResourceManager.GetString("TokenActivityValueChanged", resourceCulture);
+        /// <summary>Gets the localized external-update activity title.</summary>
+        public static string TokenActivityExternalUpdate => ResourceManager.GetString("TokenActivityExternalUpdate", resourceCulture);
+        /// <summary>Gets the localized private-update activity title.</summary>
+        public static string TokenActivityPersonalUpdate => ResourceManager.GetString("TokenActivityPersonalUpdate", resourceCulture);
+        /// <summary>Gets the localized unsupported-activity title.</summary>
+        public static string TokenActivityUnsupportedEvent => ResourceManager.GetString("TokenActivityUnsupportedEvent", resourceCulture);
+        /// <summary>Gets the localized unknown-participant label.</summary>
+        public static string TokenActivityUnknownActor => ResourceManager.GetString("TokenActivityUnknownActor", resourceCulture);
+        /// <summary>Gets the localized related-contract activity action.</summary>
+        public static string TokenActivityViewRelatedContract => ResourceManager.GetString("TokenActivityViewRelatedContract", resourceCulture);
+        /// <summary>Gets the localized add-token-update action.</summary>
+        public static string AddTokenUpdate => ResourceManager.GetString("AddTokenUpdate", resourceCulture);
+        /// <summary>Gets the localized token-update composer title.</summary>
+        public static string TokenUpdateComposerTitle => ResourceManager.GetString("TokenUpdateComposerTitle", resourceCulture);
+        /// <summary>Gets the localized text-update label.</summary>
+        public static string TextUpdate => ResourceManager.GetString("TextUpdate", resourceCulture);
+        /// <summary>Gets the localized XML-update label.</summary>
+        public static string XmlUpdate => ResourceManager.GetString("XmlUpdate", resourceCulture);
+        /// <summary>Gets the localized text-update placeholder.</summary>
+        public static string TextUpdatePlaceholder => ResourceManager.GetString("TextUpdatePlaceholder", resourceCulture);
+        /// <summary>Gets the localized XML-update placeholder.</summary>
+        public static string XmlUpdatePlaceholder => ResourceManager.GetString("XmlUpdatePlaceholder", resourceCulture);
+        /// <summary>Gets the localized private-update label.</summary>
+        public static string PersonalUpdate => ResourceManager.GetString("PersonalUpdate", resourceCulture);
+        /// <summary>Gets the localized private-update explanation.</summary>
+        public static string PersonalUpdateDescription => ResourceManager.GetString("PersonalUpdateDescription", resourceCulture);
+        /// <summary>Gets the localized XML-update explanation.</summary>
+        public static string XmlUpdateDescription => ResourceManager.GetString("XmlUpdateDescription", resourceCulture);
+        /// <summary>Gets the localized invalid-XML message.</summary>
+        public static string InvalidXmlUpdate => ResourceManager.GetString("InvalidXmlUpdate", resourceCulture);
+        /// <summary>Gets the localized send-update action.</summary>
+        public static string SendUpdate => ResourceManager.GetString("SendUpdate", resourceCulture);
+        /// <summary>Gets the localized update-sent confirmation.</summary>
+        public static string UpdateSent => ResourceManager.GetString("UpdateSent", resourceCulture);
+        /// <summary>Gets the localized update-refresh failure message.</summary>
+        public static string UpdateSentRefreshFailed => ResourceManager.GetString("UpdateSentRefreshFailed", resourceCulture);
+        /// <summary>Gets the localized uncertain-update message.</summary>
+        public static string UpdateOutcomeUncertain => ResourceManager.GetString("UpdateOutcomeUncertain", resourceCulture);
+        /// <summary>Gets the localized unsafe-token-action message.</summary>
+        public static string UnsafeTokenAction => ResourceManager.GetString("UnsafeTokenAction", resourceCulture);
+        /// <summary>Gets the localized unavailable-token-action message.</summary>
+        public static string TokenActionUnavailable => ResourceManager.GetString("TokenActionUnavailable", resourceCulture);
+        /// <summary>Gets the localized token-action confirmation title.</summary>
+        public static string ConfirmTokenAction => ResourceManager.GetString("ConfirmTokenAction", resourceCulture);
+        /// <summary>Gets the localized irreversible-action warning.</summary>
+        public static string IrreversibleActionWarning => ResourceManager.GetString("IrreversibleActionWarning", resourceCulture);
+        /// <summary>Gets the localized fallback title for a token-defined action.</summary>
+        public static string TokenDefinedActionFallback => ResourceManager.GetString("TokenDefinedActionFallback", resourceCulture);
+        /// <summary>Gets the localized token-defined actions title.</summary>
+        public static string TokenDefinedActions => ResourceManager.GetString("TokenDefinedActions", resourceCulture);
+        /// <summary>Gets the localized token-defined actions explanation.</summary>
+        public static string TokenDefinedActionsDescription => ResourceManager.GetString("TokenDefinedActionsDescription", resourceCulture);
+        /// <summary>Gets the localized token-defined action loading status.</summary>
+        public static string LoadingTokenDefinedActions => ResourceManager.GetString("LoadingTokenDefinedActions", resourceCulture);
+        /// <summary>Gets the localized token-defined action loading error.</summary>
+        public static string TokenDefinedActionsUnavailable => ResourceManager.GetString("TokenDefinedActionsUnavailable", resourceCulture);
+        /// <summary>Gets the localized invalid token-command parameter format.</summary>
+        public static string TokenCommandParameterInvalidFormat => ResourceManager.GetString("TokenCommandParameterInvalidFormat", resourceCulture);
+        /// <summary>Gets the localized default token-command confirmation format.</summary>
+        public static string TokenCommandDefaultConfirmationFormat => ResourceManager.GetString("TokenCommandDefaultConfirmationFormat", resourceCulture);
+        /// <summary>Gets the localized invalid token-command parameter message.</summary>
+        public static string TokenCommandInvalidParameters => ResourceManager.GetString("TokenCommandInvalidParameters", resourceCulture);
+        /// <summary>Gets the localized unsupported token-command result message.</summary>
+        public static string TokenCommandUnsupportedResult => ResourceManager.GetString("TokenCommandUnsupportedResult", resourceCulture);
+        /// <summary>Gets the localized token-command owner context.</summary>
+        public static string TokenCommandOwnerContext => ResourceManager.GetString("TokenCommandOwnerContext", resourceCulture);
+        /// <summary>Gets the localized token-command external context.</summary>
+        public static string TokenCommandExternalContext => ResourceManager.GetString("TokenCommandExternalContext", resourceCulture);
+        /// <summary>Gets the localized public token-command update explanation.</summary>
+        public static string TokenCommandPublicUpdateDescription => ResourceManager.GetString("TokenCommandPublicUpdateDescription", resourceCulture);
+        /// <summary>Gets the localized untitled-contract fallback.</summary>
+        public static string UntitledContract => ResourceManager.GetString("UntitledContract", resourceCulture);
+        /// <summary>Gets the localized one-party contract summary.</summary>
+        public static string ContractPartiesSingular => ResourceManager.GetString("ContractPartiesSingular", resourceCulture);
+        /// <summary>Gets the localized multiple-party contract summary format.</summary>
+        public static string ContractPartiesPluralFormat => ResourceManager.GetString("ContractPartiesPluralFormat", resourceCulture);
+        /// <summary>Gets the localized signing-deadline format.</summary>
+        public static string ContractSignByFormat => ResourceManager.GetString("ContractSignByFormat", resourceCulture);
+        /// <summary>Gets the localized unavailable saved-details explanation.</summary>
+        public static string ContractSavedDetailsUnavailable => ResourceManager.GetString("ContractSavedDetailsUnavailable", resourceCulture);
+        /// <summary>Gets the localized unusable contract-reference explanation.</summary>
+        public static string ContractReferenceUnavailable => ResourceManager.GetString("ContractReferenceUnavailable", resourceCulture);
+        /// <summary>Gets the localized Contracts page subtitle.</summary>
+        public static string ContractsSubtitle => ResourceManager.GetString("ContractsSubtitle", resourceCulture);
+        /// <summary>Gets the localized contract-loading status.</summary>
+        public static string LoadingContracts => ResourceManager.GetString("LoadingContracts", resourceCulture);
+        /// <summary>Gets the localized contract-page loading status.</summary>
+        public static string LoadingMoreContracts => ResourceManager.GetString("LoadingMoreContracts", resourceCulture);
+        /// <summary>Gets the localized no-contract-results title.</summary>
+        public static string NoMatchingContractsTitle => ResourceManager.GetString("NoMatchingContractsTitle", resourceCulture);
+        /// <summary>Gets the localized no-contract-results explanation.</summary>
+        public static string NoMatchingContractsDescription => ResourceManager.GetString("NoMatchingContractsDescription", resourceCulture);
+        /// <summary>Gets the localized contracts-unavailable explanation.</summary>
+        public static string ContractsUnavailableDescription => ResourceManager.GetString("ContractsUnavailableDescription", resourceCulture);
+        /// <summary>Gets the localized contract-needs-action status.</summary>
+        public static string ContractNeedsAttention => ResourceManager.GetString("ContractNeedsAttention", resourceCulture);
+        /// <summary>Gets the localized other-contracts label.</summary>
+        public static string ContractOther => ResourceManager.GetString("ContractOther", resourceCulture);
+        /// <summary>Gets the localized contract-role format.</summary>
+        public static string ContractYourRoleFormat => ResourceManager.GetString("ContractYourRoleFormat", resourceCulture);
+        /// <summary>Gets the localized signature-progress format.</summary>
+        public static string SignatureProgressFormat => ResourceManager.GetString("SignatureProgressFormat", resourceCulture);
+        /// <summary>Gets the localized review-and-sign action.</summary>
+        public static string ReviewAndSign => ResourceManager.GetString("ReviewAndSign", resourceCulture);
+        /// <summary>Gets the localized proposal-response action.</summary>
+        public static string RespondToProposal => ResourceManager.GetString("RespondToProposal", resourceCulture);
+        /// <summary>Gets the localized saved-contract status.</summary>
+        public static string UsingSavedContract => ResourceManager.GetString("UsingSavedContract", resourceCulture);
+        /// <summary>Gets the localized stale-contract warning.</summary>
+        public static string SavedContractMayBeOutOfDate => ResourceManager.GetString("SavedContractMayBeOutOfDate", resourceCulture);
+        /// <summary>Gets the localized saved-contract fallback message.</summary>
+        public static string ContractRefreshFailedUsingSaved => ResourceManager.GetString("ContractRefreshFailedUsingSaved", resourceCulture);
+        /// <summary>Gets the localized unavailable-attachment message.</summary>
+        public static string ContractAttachmentUnavailable => ResourceManager.GetString("ContractAttachmentUnavailable", resourceCulture);
+        /// <summary>Gets the localized open-attachment action.</summary>
+        public static string OpenAttachment => ResourceManager.GetString("OpenAttachment", resourceCulture);
+        /// <summary>Gets the localized contract-attachments safety explanation.</summary>
+        public static string ContractAttachmentsDescription => ResourceManager.GetString("ContractAttachmentsDescription", resourceCulture);
+        /// <summary>Gets the localized generic contract-attachment label format.</summary>
+        public static string ContractAttachmentLabelFormat => ResourceManager.GetString("ContractAttachmentLabelFormat", resourceCulture);
+        /// <summary>Gets the localized contract image-attachment type.</summary>
+        public static string ContractAttachmentImage => ResourceManager.GetString("ContractAttachmentImage", resourceCulture);
+        /// <summary>Gets the localized contract file-attachment type.</summary>
+        public static string ContractAttachmentFile => ResourceManager.GetString("ContractAttachmentFile", resourceCulture);
+        /// <summary>Gets the localized remove-local-reference action.</summary>
+        public static string RemoveLocalReference => ResourceManager.GetString("RemoveLocalReference", resourceCulture);
+        /// <summary>Gets the localized remove-local-reference explanation.</summary>
+        public static string RemoveLocalReferenceDescription => ResourceManager.GetString("RemoveLocalReferenceDescription", resourceCulture);
+        /// <summary>Gets the localized current-contract freshness status.</summary>
+        public static string ContractCurrentDetails => ResourceManager.GetString("ContractCurrentDetails", resourceCulture);
+        /// <summary>Gets the localized contract activity limitation.</summary>
+        public static string ContractActivityDescription => ResourceManager.GetString("ContractActivityDescription", resourceCulture);
+        /// <summary>Gets the localized advanced contract details explanation.</summary>
+        public static string ContractAdvancedDescription => ResourceManager.GetString("ContractAdvancedDescription", resourceCulture);
+        /// <summary>Gets the localized remote contract deletion explanation.</summary>
+        public static string DeleteRemoteContractDescription => ResourceManager.GetString("DeleteRemoteContractDescription", resourceCulture);
+        /// <summary>Gets the localized remote contract obsoletion explanation.</summary>
+        public static string ObsoleteRemoteContractDescription => ResourceManager.GetString("ObsoleteRemoteContractDescription", resourceCulture);
+        /// <summary>Gets the localized contract details-and-parties step label.</summary>
+        public static string ContractCreationDetailsAndParties => ResourceManager.GetString("ContractCreationDetailsAndParties", resourceCulture);
+        /// <summary>Gets the localized contract-review guidance.</summary>
+        public static string ContractCreationReviewDescription => ResourceManager.GetString("ContractCreationReviewDescription", resourceCulture);
+        /// <summary>Gets the localized contract-created guidance.</summary>
+        public static string ContractCreationSuccessDescription => ResourceManager.GetString("ContractCreationSuccessDescription", resourceCulture);
+        /// <summary>Gets the localized contract-field validation message.</summary>
+        public static string ContractFieldNeedsAttention => ResourceManager.GetString("ContractFieldNeedsAttention", resourceCulture);
+        /// <summary>Gets the localized approved-identity requirement for contract creation.</summary>
+        public static string ContractCreationApprovedIdentityRequired => ResourceManager.GetString("ContractCreationApprovedIdentityRequired", resourceCulture);
+        /// <summary>Gets the localized subtitle for tokens created by an agreement.</summary>
+        public static string TokensCreatedByAgreementDescription => ResourceManager.GetString("TokensCreatedByAgreementDescription", resourceCulture);
+        /// <summary>Gets the localized related-tokens title.</summary>
+        public static string RelatedTokens => ResourceManager.GetString("RelatedTokens", resourceCulture);
+        /// <summary>Gets the localized related-tokens description.</summary>
+        public static string RelatedTokensDescription => ResourceManager.GetString("RelatedTokensDescription", resourceCulture);
+        /// <summary>Gets the localized related-token loading failure.</summary>
+        public static string RelatedTokensUnavailable => ResourceManager.GetString("RelatedTokensUnavailable", resourceCulture);
+        /// <summary>Gets the localized created-token relationship.</summary>
+        public static string TokenCreatedByAgreement => ResourceManager.GetString("TokenCreatedByAgreement", resourceCulture);
+        /// <summary>Gets the localized affected-token relationship.</summary>
+        public static string TokenAffectedByAgreement => ResourceManager.GetString("TokenAffectedByAgreement", resourceCulture);
+        /// <summary>Gets the localized browse-created-tokens action.</summary>
+        public static string BrowseCreatedTokens => ResourceManager.GetString("BrowseCreatedTokens", resourceCulture);
+        /// <summary>Gets the localized unavailable-petition message.</summary>
+        public static string PetitionUnavailable => ResourceManager.GetString("PetitionUnavailable", resourceCulture);
     }
 }

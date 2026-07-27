@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+	x:Class="NeuroAccessMaui.UI.Controls.StatusPill"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:helpers="clr-namespace:NeuroAccessMaui.Helpers"
+	x:Name="This"
+	helpers:VisualStateProperties.State="{Binding Tone, Source={x:Reference This}}"
+	HorizontalOptions="Start"
+	SemanticProperties.Description="{Binding Text, Source={x:Reference This}}">
+
+	<VisualStateManager.VisualStateGroups>
+		<VisualStateGroupList>
+			<VisualStateGroup x:Name="ToneStates">
+				<VisualState x:Name="Neutral">
+					<VisualState.Setters>
+						<Setter TargetName="PillBorder"
+								Property="BackgroundColor"
+								Value="{DynamicResource TnPNeutralv300bgWL}" />
+						<Setter TargetName="PillLabel"
+								Property="TextColor"
+								Value="{DynamicResource TnPNeutralv300ContentWL}" />
+						<Setter TargetName="PillIcon"
+								Property="TintColor"
+								Value="{DynamicResource TnPNeutralv300ContentWL}" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="Information">
+					<VisualState.Setters>
+						<Setter TargetName="PillBorder"
+								Property="BackgroundColor"
+								Value="{DynamicResource TnPInfobgWL}" />
+						<Setter TargetName="PillLabel"
+								Property="TextColor"
+								Value="{DynamicResource TnPInfoContentWL}" />
+						<Setter TargetName="PillIcon"
+								Property="TintColor"
+								Value="{DynamicResource TnPInfoFigureWL}" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="Success">
+					<VisualState.Setters>
+						<Setter TargetName="PillBorder"
+								Property="BackgroundColor"
+								Value="{DynamicResource TnPSuccessbgWL}" />
+						<Setter TargetName="PillLabel"
+								Property="TextColor"
+								Value="{DynamicResource TnPSuccessContentWL}" />
+						<Setter TargetName="PillIcon"
+								Property="TintColor"
+								Value="{DynamicResource TnPSuccessFigureWL}" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="Warning">
+					<VisualState.Setters>
+						<Setter TargetName="PillBorder"
+								Property="BackgroundColor"
+								Value="{DynamicResource TnPWarningbgWL}" />
+						<Setter TargetName="PillLabel"
+								Property="TextColor"
+								Value="{DynamicResource TnPWarningContentWL}" />
+						<Setter TargetName="PillIcon"
+								Property="TintColor"
+								Value="{DynamicResource TnPWarningFigureWL}" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="Danger">
+					<VisualState.Setters>
+						<Setter TargetName="PillBorder"
+								Property="BackgroundColor"
+								Value="{DynamicResource TnPDangerbgWL}" />
+						<Setter TargetName="PillLabel"
+								Property="TextColor"
+								Value="{DynamicResource TnPDangerContentWL}" />
+						<Setter TargetName="PillIcon"
+								Property="TintColor"
+								Value="{DynamicResource TnPDangerFigureWL}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateGroupList>
+	</VisualStateManager.VisualStateGroups>
+
+	<Border
+		x:Name="PillBorder"
+		Style="{DynamicResource StatusPillControlBorder}">
+		<HorizontalStackLayout
+			Spacing="{DynamicResource SmallSpacing}"
+			VerticalOptions="Center">
+			<controls:SvgView
+				x:Name="PillIcon"
+				HeightRequest="14"
+				InputTransparent="True"
+				IsVisible="True"
+				Source="{Binding IconSource, Source={x:Reference This}}"
+				VerticalOptions="Center"
+				WidthRequest="14">
+				<controls:SvgView.Triggers>
+					<DataTrigger
+						Binding="{Binding IconSource, Source={x:Reference This}}"
+						TargetType="controls:SvgView"
+						Value="{x:Null}">
+						<Setter Property="IsVisible" Value="False" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding IconSource, Source={x:Reference This}}"
+						TargetType="controls:SvgView"
+						Value="">
+						<Setter Property="IsVisible" Value="False" />
+					</DataTrigger>
+				</controls:SvgView.Triggers>
+			</controls:SvgView>
+			<Label
+				x:Name="PillLabel"
+				Style="{DynamicResource StatusPillControlLabel}"
+				Text="{Binding Text, Source={x:Reference This}}"
+				VerticalOptions="Center" />
+		</HorizontalStackLayout>
+	</Border>
+</ContentView>

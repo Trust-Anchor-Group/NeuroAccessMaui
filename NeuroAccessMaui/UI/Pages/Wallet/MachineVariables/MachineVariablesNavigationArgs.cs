@@ -23,12 +23,36 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		/// <param name="CurrentState">The Current State of the state-machine.</param>
 		/// <param name="Variables">Current variables</param>
 		public MachineVariablesNavigationArgs(bool Running, bool Ended, string CurrentState, Variables Variables)
+			: this(string.Empty, Running, Ended, CurrentState, Variables)
 		{
+		}
+
+		/// <summary>
+		/// Creates a new instance associated with a specific token.
+		/// </summary>
+		/// <param name="TokenId">Token whose state and variables are displayed.</param>
+		/// <param name="Running">If the state-machine is running.</param>
+		/// <param name="Ended">If the state-machine has ended.</param>
+		/// <param name="CurrentState">The current state of the state-machine.</param>
+		/// <param name="Variables">Current variables.</param>
+		public MachineVariablesNavigationArgs(
+			string TokenId,
+			bool Running,
+			bool Ended,
+			string CurrentState,
+			Variables Variables)
+		{
+			this.TokenId = TokenId?.Trim() ?? string.Empty;
 			this.Running = Running;
 			this.Ended = Ended;
 			this.CurrentState = CurrentState;
 			this.Variables = Variables;
 		}
+
+		/// <summary>
+		/// Gets the token whose live state and variables are displayed.
+		/// </summary>
+		public string TokenId { get; } = string.Empty;
 
 		/// <summary>
 		/// If the State-machine is running

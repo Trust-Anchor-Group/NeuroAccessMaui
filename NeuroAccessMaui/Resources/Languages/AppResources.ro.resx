@@ -3357,12 +3357,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Variabile curente</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>Evenimente Token</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>Următoarele sunt evenimentele publice înregistrate pentru token. Evenimentele dumneavoastră private sunt, de asemenea, incluse.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Notă text</value>
   </data>

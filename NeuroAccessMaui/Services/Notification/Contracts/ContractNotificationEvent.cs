@@ -134,6 +134,72 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		}
 
 		/// <summary>
+		/// Opens the notification contract through the canonical contract orchestrator.
+		/// </summary>
+		/// <param name="Role">The proposed role, if this is a proposal.</param>
+		/// <param name="Proposal">The proposal message, if any.</param>
+		/// <param name="FromJid">The proposal sender, if any.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		protected async Task OpenContractAsync(
+			string? Role = null,
+			string? Proposal = null,
+			string? FromJid = null)
+		{
+			Contract? Contract = null;
+			try
+			{
+				Contract = await this.GetContract();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogWarning(
+					"Cached contract notification data could not be parsed.",
+					new KeyValuePair<string, object?>(
+						"FailureType",
+						Ex.GetType().Name));
+			}
+
+			string ExpectedContractId = this.ContractId?.Trim() ?? string.Empty;
+			if (Contract is not null &&
+				!string.IsNullOrEmpty(ExpectedContractId) &&
+				!string.Equals(
+					Contract.ContractId,
+					ExpectedContractId,
+					StringComparison.OrdinalIgnoreCase))
+			{
+				Contract = null;
+			}
+
+			string ContractId = !string.IsNullOrEmpty(ExpectedContractId)
+				? ExpectedContractId
+				: Contract?.ContractId ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(ContractId))
+				return;
+
+			if (Contract is null)
+			{
+				await ServiceRef.ContractOrchestratorService.OpenContract(
+					ContractId,
+					ServiceRef.Localizer[nameof(NeuroAccessMaui.Resources.Languages.AppResources.RequestToAccessContract)],
+					null,
+					Role,
+					Proposal,
+					FromJid);
+			}
+			else
+			{
+				await ServiceRef.ContractOrchestratorService.OpenContract(
+					Contract,
+					ServiceRef.Localizer[nameof(NeuroAccessMaui.Resources.Languages.AppResources.RequestToAccessContract)],
+					null,
+					null,
+					Role,
+					Proposal,
+					FromJid);
+			}
+		}
+
+		/// <summary>
 		/// Gets an icon for the category of event.
 		/// </summary>
 		/// <returns>Icon</returns>

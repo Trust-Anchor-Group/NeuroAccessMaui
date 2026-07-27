@@ -8,10 +8,7 @@ using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
-using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
-using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
@@ -61,7 +58,7 @@ namespace NeuroAccessMaui.Services.Notification
 					case NotificationAction.OpenContract:
 						return this.RouteContractAsync(Intent, CancellationToken);
 					case NotificationAction.OpenToken:
-						return this.RouteTokenAsync(CancellationToken);
+						return this.RouteTokenAsync(Intent, CancellationToken);
 					case NotificationAction.OpenBalance:
 						return this.RouteBalanceAsync(CancellationToken);
 					case NotificationAction.OpenPetition:
@@ -151,30 +148,42 @@ namespace NeuroAccessMaui.Services.Notification
 
 		private async Task<NotificationRouteResult> RouteContractAsync(NotificationIntent Intent, CancellationToken CancellationToken)
 		{
+			CancellationToken.ThrowIfCancellationRequested();
+
 			if (string.IsNullOrEmpty(Intent.EntityId))
 			{
 				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage));
 				return NotificationRouteResult.Success;
 			}
 
-			try
-			{
-				Contract contract = await ServiceRef.XmppService.GetContract(Intent.EntityId);
-				ViewContractNavigationArgs args = new(contract, false);
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), args);
-				return NotificationRouteResult.Success;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage));
-				return NotificationRouteResult.Success;
-			}
+			string? Role = Intent.Extras.TryGetValue("role", out string? RoleValue)
+				? RoleValue
+				: null;
+			string? FromJid = Intent.Extras.TryGetValue("fromJid", out string? FromJidValue)
+				? FromJidValue
+				: null;
+
+			await ServiceRef.ContractOrchestratorService.OpenContract(
+				Intent.EntityId,
+				ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)],
+				null,
+				Role,
+				null,
+				FromJid);
+			return NotificationRouteResult.Success;
 		}
 
-		private async Task<NotificationRouteResult> RouteTokenAsync(CancellationToken CancellationToken)
+		private async Task<NotificationRouteResult> RouteTokenAsync(
+			NotificationIntent Intent,
+			CancellationToken CancellationToken)
 		{
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage));
+			CancellationToken.ThrowIfCancellationRequested();
+
+			if (string.IsNullOrWhiteSpace(Intent.EntityId))
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage));
+			else
+				await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(Intent.EntityId);
+
 			return NotificationRouteResult.Success;
 		}
 
@@ -206,7 +215,7 @@ namespace NeuroAccessMaui.Services.Notification
 					if (!Succeeded || RequestedIdentity is null)
 					{
 						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
-						string Message = "Petition has expired or is no longer available.";
+						string Message = ServiceRef.Localizer[nameof(AppResources.PetitionUnavailable)];
 						await ServiceRef.UiService.DisplayAlert(Title, Message);
 						return NotificationRouteResult.Failed;
 					}
@@ -245,7 +254,7 @@ namespace NeuroAccessMaui.Services.Notification
 					if (RequestorIdentity is null || string.IsNullOrEmpty(RequestorFullJid))
 					{
 						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
-						string Message = "Petition has expired or is no longer available.";
+						string Message = ServiceRef.Localizer[nameof(AppResources.PetitionUnavailable)];
 						await ServiceRef.UiService.DisplayAlert(Title, Message);
 						return NotificationRouteResult.Failed;
 					}
@@ -259,7 +268,7 @@ namespace NeuroAccessMaui.Services.Notification
 					{
 						ServiceRef.LogService.LogException(ex);
 						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
-						string Message = "Petition has expired or is no longer available.";
+						string Message = ServiceRef.Localizer[nameof(AppResources.PetitionUnavailable)];
 						await ServiceRef.UiService.DisplayAlert(Title, Message);
 						return NotificationRouteResult.Failed;
 					}

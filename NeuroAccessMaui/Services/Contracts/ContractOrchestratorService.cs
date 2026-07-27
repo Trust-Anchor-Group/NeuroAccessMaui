@@ -450,8 +450,14 @@ namespace NeuroAccessMaui.Services.Contracts
 				}
 				await Task.Delay(500);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
-							Contract, false, e.Role, e.MessageText, e.FromBareJID));
+				await this.OpenContract(
+					Contract,
+					ServiceRef.Localizer[nameof(AppResources.ContractProposal)],
+					null,
+					null,
+					e.Role,
+					e.MessageText,
+					e.FromBareJID);
 			}
 			catch (Exception ex)
 			{
@@ -705,18 +711,142 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="ContractId">The id of the contract to show.</param>
 		/// <param name="Purpose">The purpose to state if the contract can't be downloaded and needs to be petitioned instead.</param>
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
-		public async Task OpenContract(string ContractId, string Purpose, Dictionary<CaseInsensitiveString, object>? ParameterValues)
+		public Task OpenContract(
+			string ContractId,
+			string Purpose,
+			Dictionary<CaseInsensitiveString, object>? ParameterValues)
 		{
+			return this.OpenContract(
+				ContractId,
+				Purpose,
+				ParameterValues,
+				null,
+				null,
+				null);
+		}
+
+		/// <summary>
+		/// Downloads and opens a contract while preserving proposal context.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to show.</param>
+		/// <param name="Purpose">The purpose to state if the contract can't be downloaded and needs to be petitioned instead.</param>
+		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
+		/// <param name="Role">The proposed role when opening a contract proposal.</param>
+		/// <param name="Proposal">The proposal message, if any.</param>
+		/// <param name="FromJid">The sender of the proposal, if any.</param>
+		public Task OpenContract(
+			string ContractId,
+			string Purpose,
+			Dictionary<CaseInsensitiveString, object>? ParameterValues,
+			string? Role,
+			string? Proposal,
+			string? FromJid)
+		{
+			return this.OpenContractAsync(
+				ContractId,
+				Purpose,
+				ParameterValues,
+				null,
+				null,
+				Role,
+				Proposal,
+				FromJid);
+		}
+
+		/// <summary>
+		/// Opens an already-loaded contract through the canonical contract navigation path.
+		/// </summary>
+		/// <param name="Contract">The contract to open.</param>
+		/// <param name="Purpose">The purpose to state if access must be petitioned.</param>
+		/// <param name="ParameterValues">Parameter values to set when the contract is a template.</param>
+		/// <param name="SourceReference">The existing persisted reference that supplied the contract, if any.</param>
+		/// <param name="Role">The proposed role when opening a contract proposal.</param>
+		/// <param name="Proposal">The proposal message, if any.</param>
+		/// <param name="FromJid">The sender of the proposal, if any.</param>
+		public Task OpenContract(
+			Contract Contract,
+			string Purpose,
+			Dictionary<CaseInsensitiveString, object>? ParameterValues,
+			ContractReference? SourceReference = null,
+			string? Role = null,
+			string? Proposal = null,
+			string? FromJid = null)
+		{
+			ArgumentNullException.ThrowIfNull(Contract);
+
+			return this.OpenContractAsync(
+				Contract.ContractId,
+				Purpose,
+				ParameterValues,
+				Contract,
+				SourceReference,
+				Role,
+				Proposal,
+				FromJid);
+		}
+
+		private async Task OpenContractAsync(
+			string ContractId,
+			string Purpose,
+			Dictionary<CaseInsensitiveString, object>? ParameterValues,
+			Contract? InitialContract,
+			ContractReference? SourceReference,
+			string? Role,
+			string? Proposal,
+			string? FromJid)
+		{
+			string NormalizedContractId = ContractId?.Trim() ?? string.Empty;
+			string PetitionPurpose = string.IsNullOrWhiteSpace(Purpose)
+				? ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)]
+				: Purpose;
+
 			try
 			{
-				Contract Contract = await ServiceRef.XmppService.GetContract(ContractId);
+				if (string.IsNullOrEmpty(NormalizedContractId))
+					throw new ArgumentException("A contract identifier is required.", nameof(ContractId));
 
-				ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
-					new FilterFieldEqualTo("ContractId", Contract.ContractId));
+				Contract Contract = InitialContract is not null &&
+					string.Equals(
+						InitialContract.ContractId,
+						NormalizedContractId,
+						StringComparison.OrdinalIgnoreCase)
+						? InitialContract
+						: await ServiceRef.XmppService.GetContract(NormalizedContractId);
+
+				if (string.IsNullOrWhiteSpace(Contract.ContractId) ||
+					!string.Equals(
+						Contract.ContractId,
+						NormalizedContractId,
+						StringComparison.OrdinalIgnoreCase))
+				{
+					throw new InvalidOperationException("The resolved contract did not match the requested identifier.");
+				}
+
+				// Embedded/chat contracts are useful for immediate presentation but are not
+				// allowed to overwrite a trusted saved reference unless that reference supplied them.
+				bool CanPersistResolvedContract =
+					InitialContract is null ||
+					SourceReference is not null;
+				ContractReference? Ref = SourceReference;
+				if (Ref is not null &&
+					!string.Equals(
+						Convert.ToString(Ref.ContractId),
+						Contract.ContractId,
+						StringComparison.OrdinalIgnoreCase))
+				{
+					Ref = null;
+				}
+
+				if (Ref is null && InitialContract is null)
+				{
+					Ref = await Database.FindFirstIgnoreRest<ContractReference>(
+						new FilterFieldEqualTo("ContractId", Contract.ContractId));
+				}
 
 				if (Ref is not null)
 				{
-					if (Ref.Updated != Contract.Updated || !Ref.ContractLoaded)
+					if (CanPersistResolvedContract &&
+						(Ref.Updated != Contract.Updated || !Ref.ContractLoaded))
 					{
 						await Ref.SetContract(Contract);
 						await Database.Update(Ref);
@@ -725,44 +855,64 @@ namespace NeuroAccessMaui.Services.Contracts
 					ServiceRef.TagProfile.CheckContractReference(Ref);
 				}
 
-				MainThread.BeginInvokeOnMainThread(async () =>
+				if (Contract.PartsMode == ContractParts.TemplateOnly &&
+					Contract.State == ContractState.Approved)
 				{
-					if (Contract.PartsMode == ContractParts.TemplateOnly && Contract.State == ContractState.Approved)
+					if (Ref is null && CanPersistResolvedContract)
 					{
-						if (Ref is null)
+						Ref = new()
 						{
-							Ref = new()
-							{
-								ContractId = Contract.ContractId
-							};
+							ContractId = Contract.ContractId
+						};
 
-							await Ref.SetContract(Contract);
-							await Database.Insert(Ref);
+						await Ref.SetContract(Contract);
+						await Database.Insert(Ref);
 
-							ServiceRef.TagProfile.CheckContractReference(Ref);
-						}
-						if (Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures
-						|| Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
-						{
-							CreationAttributesEventArgs CreationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-							ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
-							ParameterValues ??= [];
-							ParameterValues.TryAdd(new CaseInsensitiveString("TrustProvider"), CreationAttr.TrustProviderId);
-							ParameterValues.TryAdd(new CaseInsensitiveString("Currency"), CreationAttr.Currency);
-							ParameterValues.TryAdd(new CaseInsensitiveString("CommissionPercent"), CreationAttr.Commission);
-						}
-
-						NewContractNavigationArgs e = new(Contract, ParameterValues);
-
-						await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
+						ServiceRef.TagProfile.CheckContractReference(Ref);
 					}
-					else
+
+					if (Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures ||
+						Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
 					{
-						ViewContractNavigationArgs e = new(Contract, false);
-
-						await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), e, BackMethod.Pop);
+						CreationAttributesEventArgs CreationAttr =
+							await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+						ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
+						ParameterValues ??= [];
+						ParameterValues.TryAdd(
+							new CaseInsensitiveString("TrustProvider"),
+							CreationAttr.TrustProviderId);
+						ParameterValues.TryAdd(
+							new CaseInsensitiveString("Currency"),
+							CreationAttr.Currency);
+						ParameterValues.TryAdd(
+							new CaseInsensitiveString("CommissionPercent"),
+							CreationAttr.Commission);
 					}
-				});
+
+					NewContractNavigationArgs Args = new(Contract, ParameterValues);
+					await MainThread.InvokeOnMainThreadAsync(
+						() => ServiceRef.NavigationService.GoToAsync(
+							nameof(NewContractPage),
+							Args,
+							BackMethod.CurrentPage));
+				}
+				else
+				{
+					ViewContractNavigationArgs Args = new(
+						Contract,
+						false,
+						Role,
+						Proposal,
+						FromJid,
+						null,
+						Ref);
+
+					await MainThread.InvokeOnMainThreadAsync(
+						() => ServiceRef.NavigationService.GoToAsync(
+							nameof(ViewContractPage),
+							Args,
+							BackMethod.Pop));
+				}
 			}
 			catch (ForbiddenException)
 			{
@@ -770,22 +920,28 @@ namespace NeuroAccessMaui.Services.Contracts
 				// When this happens, try to send a petition to view it instead.
 				// Normal operation. Should not be logged.
 
-				MainThread.BeginInvokeOnMainThread(async () =>
-				{
-					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
-						ServiceRef.XmppService.PetitionContract(ContractId, Guid.NewGuid().ToString(), Purpose));
+				bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+					ServiceRef.XmppService.PetitionContract(
+						NormalizedContractId,
+						Guid.NewGuid().ToString(),
+						PetitionPurpose));
 
-					if (Succeeded)
-					{
-						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
-							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
-					}
-				});
+				if (Succeeded)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+						ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
+				}
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogWarning(
+					"Contract could not be opened through the canonical route.",
+					new KeyValuePair<string, object?>("FailureType", ex.GetType().Name));
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ContractsUnavailableDescription)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 		}
 

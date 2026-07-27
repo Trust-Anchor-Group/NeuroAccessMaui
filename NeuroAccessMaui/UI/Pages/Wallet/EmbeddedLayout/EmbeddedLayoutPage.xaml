@@ -5,36 +5,60 @@
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout">
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
 		<controls:Background Grid.RowSpan="2"/>
 
 		<Grid ColumnDefinitions="auto, *"  Margin="16,8,16,8" ColumnSpacing="16">
 			<controls:SvgButton HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
+								SemanticProperties.Description="{l:Localize Close}"
 								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
+			<Label
+				Grid.Column="1"
+				Style="{DynamicResource PageTitleLabel}"
+				Text="{l:Localize EmbeddedLayout}"
+				VerticalTextAlignment="Center" />
 		</Grid>
 
-		<controls:ConditionView Grid.Row="1" Condition="{Binding Loaded}">
-			<controls:ConditionView.False>
-				<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center" VerticalOptions="Center"/>
-			</controls:ConditionView.False>
-			<controls:ConditionView.True>
-				<ScrollView>
-					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-								<Image Grid.Row="1" Source="{Binding RenderedLayout}" />
-							</VerticalStackLayout>
-						</Border>
+		<ActivityIndicator
+			Grid.Row="1"
+			Color="{DynamicResource ContentPrimaryWL}"
+			HorizontalOptions="Center"
+			IsRunning="{Binding IsLoading}"
+			IsVisible="{Binding IsLoading}"
+			VerticalOptions="Center" />
+
+		<Border
+			Grid.Row="1"
+			IsVisible="{Binding HasError}"
+			Margin="{DynamicResource MediumMargins}"
+			Padding="{DynamicResource MediumMargins}"
+			Style="{DynamicResource BorderSet}"
+			VerticalOptions="Center">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<Label
+					HorizontalTextAlignment="Center"
+					Style="{DynamicResource SectionTitleLabel}"
+					Text="{l:Localize Unavailable}" />
+				<Label
+					HorizontalTextAlignment="Center"
+					Style="{DynamicResource ItemDescriptionLabel}"
+					Text="{Binding ErrorMessage}"
+					TextColor="{DynamicResource ContentSecondaryWL}" />
+			</VerticalStackLayout>
+		</Border>
+
+		<ScrollView Grid.Row="1" IsVisible="{Binding Loaded}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+						<Image Source="{Binding RenderedLayout}" />
 					</VerticalStackLayout>
-				</ScrollView>
-			</controls:ConditionView.True>
-		</controls:ConditionView>
+				</Border>
+			</VerticalStackLayout>
+		</ScrollView>
 	</Grid>
 
 </base:BaseContentPage>

@@ -146,6 +146,30 @@
 		<Setter Property="FontFamily" Value="HaasGroteskRegular"/>
 	</Style>
 
+	<Style x:Key="StatusPillControlLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="LineBreakMode" Value="NoWrap" />
+		<Setter Property="TextColor" Value="{DynamicResource TnPNeutralv300ContentWL}" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+	</Style>
+
+	<Style x:Key="DisclosureSectionTitleLabel"
+		   ApplyToDerivedTypes="False"
+		   BaseResourceKey="SectionTitleLabel"
+		   TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
+	</Style>
+
+	<Style x:Key="DisclosureSectionSummaryLabel"
+		   ApplyToDerivedTypes="False"
+		   BaseResourceKey="ItemDescriptionLabel"
+		   TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
+	</Style>
+
 	<Style x:Key="FormattedValueLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />

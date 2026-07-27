@@ -28,9 +28,18 @@
 	</ContentView.Resources>
 
 
-	<!-- Parameters -->
-	<Grid RowDefinitions="*">
-		<CollectionView HorizontalOptions="Center"
+	<Grid RowDefinitions="Auto,*"
+		  Padding="{DynamicResource MediumLeftRightBottomMargins}">
+		<Label
+			Grid.Row="0"
+			Margin="0,0,0,12"
+			FontAttributes="Bold"
+			FontSize="20"
+			SemanticProperties.HeadingLevel="Level2"
+			Text="{l:Localize KeyTerms}"
+			TextColor="{DynamicResource ContentPrimaryWL}" />
+		<CollectionView Grid.Row="1"
+								 HorizontalOptions="Fill"
 								 ItemsSource="{Binding DisplayableParameters}"
 								 ItemTemplate="{StaticResource ParameterTemplateSelector}"
 								 SelectionMode="None"
@@ -40,11 +49,11 @@
 											 ItemSpacing="16" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.EmptyView>
-				<Label Text="{l:Localize SomethingWentWrong}" />
+				<Label
+					HorizontalTextAlignment="Center"
+					Text="{l:Localize None}"
+					TextColor="{DynamicResource ContentSecondaryWL}" />
 			</CollectionView.EmptyView>
 		</CollectionView>
 	</Grid>
-
-
-
 </views:BaseViewContractView>

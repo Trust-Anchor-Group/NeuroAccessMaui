@@ -3357,12 +3357,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Trenutne varijable</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>Token događaji</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>Slede javni događaji snimljeni za token. Vaši privatni događaji su takođe uključeni.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Tekstualna napomena</value>
   </data>

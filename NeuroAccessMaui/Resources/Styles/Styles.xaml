@@ -277,6 +277,36 @@
 		<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
 	</Style>
 
+	<Style x:Key="StatusPillControlBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{DynamicResource TnPNeutralv300bgWL}" />
+		<Setter Property="Padding" Value="8,4" />
+		<Setter Property="StrokeThickness" Value="0" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="{DynamicResource LargeCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="DisclosureSectionBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation1WL}" />
+		<Setter Property="Stroke" Value="{DynamicResource SurfaceStrokeWL}" />
+		<Setter Property="StrokeThickness" Value="{DynamicResource ThinStrokeThickness}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="{DynamicResource MediumCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="DisclosureSectionHeaderBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation1WL}" />
+		<Setter Property="Padding" Value="{DynamicResource MediumMargins}" />
+		<Setter Property="StrokeThickness" Value="0" />
+	</Style>
+
 	<ControlTemplate x:Key="RadioButtonTemplate">
 		<Image>
 			<VisualStateManager.VisualStateGroups>

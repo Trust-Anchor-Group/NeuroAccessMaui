@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup
+	x:Class="NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.TokenUpdateComposerPopup"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails"
+	x:DataType="viewmodel:TokenUpdateComposerViewModel"
+	CardMaxHeightFraction="0.9">
+
+	<ScrollView VerticalOptions="Center">
+		<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+			<Label
+				HorizontalTextAlignment="Center"
+				SemanticProperties.HeadingLevel="Level1"
+				Style="{DynamicResource PageTitleLabel}"
+				Text="{l:Localize TokenUpdateComposerTitle}" />
+
+			<VerticalStackLayout
+				IsVisible="{Binding IsTextMode}"
+				Spacing="{DynamicResource SmallSpacing}">
+				<Label
+					FontAttributes="Bold"
+					SemanticProperties.HeadingLevel="Level2"
+					Style="{DynamicResource SectionTitleLabel}"
+					Text="{l:Localize TextUpdate}" />
+				<Border
+					Padding="10"
+					Stroke="{DynamicResource InputFieldsContentSecondary}"
+					StrokeShape="RoundRectangle 8">
+					<Editor
+						x:Name="TextEditor"
+						AutoSize="TextChanges"
+						BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+						IsEnabled="{Binding IsSubmitting, Converter={StaticResource InvertedBoolConverter}}"
+						MaximumHeightRequest="260"
+						MinimumHeightRequest="120"
+						Placeholder="{l:Localize TextUpdatePlaceholder}"
+						PlaceholderColor="{DynamicResource InputFieldsContentSecondary}"
+						Text="{Binding TextNote, Mode=TwoWay}"
+						TextColor="{DynamicResource InputFieldsContentPrimary}" />
+				</Border>
+			</VerticalStackLayout>
+
+			<VerticalStackLayout
+				IsVisible="{Binding IsXmlMode}"
+				Spacing="{DynamicResource SmallSpacing}">
+				<Label
+					FontAttributes="Bold"
+					SemanticProperties.HeadingLevel="Level2"
+					Style="{DynamicResource SectionTitleLabel}"
+					Text="{l:Localize XmlUpdate}" />
+				<Label
+					Style="{DynamicResource ItemDescriptionLabel}"
+					Text="{l:Localize XmlUpdateDescription}"
+					TextColor="{DynamicResource ContentSecondaryWL}" />
+				<Border
+					Padding="10"
+					Stroke="{DynamicResource InputFieldsContentSecondary}"
+					StrokeShape="RoundRectangle 8">
+					<Editor
+						x:Name="XmlEditor"
+						AutoSize="TextChanges"
+						BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+						IsEnabled="{Binding IsSubmitting, Converter={StaticResource InvertedBoolConverter}}"
+						IsSpellCheckEnabled="False"
+						IsTextPredictionEnabled="False"
+						MaximumHeightRequest="260"
+						MinimumHeightRequest="140"
+						Placeholder="{l:Localize XmlUpdatePlaceholder}"
+						PlaceholderColor="{DynamicResource InputFieldsContentSecondary}"
+						Text="{Binding XmlNote, Mode=TwoWay}"
+						TextColor="{DynamicResource InputFieldsContentPrimary}" />
+				</Border>
+			</VerticalStackLayout>
+
+			<Border
+				Padding="12"
+				Style="{DynamicResource BorderSubSet}">
+				<Grid
+					ColumnDefinitions="Auto,*"
+					ColumnSpacing="8"
+					RowDefinitions="Auto,Auto">
+					<CheckBox
+						IsChecked="{Binding Personal}"
+						IsEnabled="{Binding IsSubmitting, Converter={StaticResource InvertedBoolConverter}}"
+						VerticalOptions="Start" />
+					<Label
+						Grid.Column="1"
+						FontAttributes="Bold"
+						Text="{l:Localize PersonalUpdate}"
+						TextColor="{DynamicResource ContentPrimaryWL}" />
+					<Label
+						Grid.Row="1"
+						Grid.Column="1"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{l:Localize PersonalUpdateDescription}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+				</Grid>
+			</Border>
+
+			<controls:DisclosureSection
+				Summary="{l:Localize XmlUpdateDescription}"
+				Title="{l:Localize Advanced}">
+				<VerticalStackLayout Spacing="8">
+					<controls:TextButton
+						Command="{Binding ShowXmlModeCommand}"
+						IsVisible="{Binding IsTextMode}"
+						LabelData="{l:Localize XmlUpdate}"
+						Style="{DynamicResource OutlinedTextButton}" />
+					<controls:TextButton
+						Command="{Binding ShowTextModeCommand}"
+						IsVisible="{Binding IsXmlMode}"
+						LabelData="{l:Localize TextUpdate}"
+						Style="{DynamicResource OutlinedTextButton}" />
+				</VerticalStackLayout>
+			</controls:DisclosureSection>
+
+			<Border
+				IsVisible="{Binding HasValidationError}"
+				Padding="12"
+				BackgroundColor="{DynamicResource TnPWarningbgWL}"
+				StrokeShape="RoundRectangle 8"
+				StrokeThickness="0">
+				<Label
+					Text="{Binding FeedbackMessage}"
+					TextColor="{DynamicResource TnPWarningContentWL}" />
+			</Border>
+
+			<Border
+				IsVisible="{Binding HasSubmissionFeedback}"
+				Padding="12"
+				BackgroundColor="{DynamicResource TnPWarningbgWL}"
+				StrokeShape="RoundRectangle 8"
+				StrokeThickness="0">
+				<Label
+					Text="{Binding FeedbackMessage}"
+					TextColor="{DynamicResource TnPWarningContentWL}" />
+			</Border>
+
+			<ActivityIndicator
+				Color="{DynamicResource ContentPrimaryWL}"
+				HorizontalOptions="Center"
+				IsRunning="{Binding IsSubmitting}"
+				IsVisible="{Binding IsSubmitting}" />
+
+			<controls:TextButton
+				Command="{Binding SendUpdateCommand}"
+				IsEnabled="{Binding CanSendUpdate}"
+				LabelData="{l:Localize SendUpdate}"
+				Style="{DynamicResource FilledTextButton}" />
+			<controls:TextButton
+				Command="{Binding CancelCommand}"
+				IsEnabled="{Binding CanCancel}"
+				LabelData="{l:Localize Cancel}"
+				Style="{DynamicResource OutlinedTextButton}" />
+		</VerticalStackLayout>
+	</ScrollView>
+</base:BasePopup>

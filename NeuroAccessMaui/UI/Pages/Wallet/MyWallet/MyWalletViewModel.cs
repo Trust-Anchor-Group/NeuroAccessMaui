@@ -3,19 +3,14 @@ using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Events;
 using EDaler.Uris;
-using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts;
-using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
-using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
@@ -23,9 +18,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
-using NeuroFeatures;
 using NeuroFeatures.EventArguments;
-using System.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 
@@ -39,10 +32,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 	{
 		private readonly WalletNavigationArgs? navigationArguments = Args;
 		private DateTime lastEDalerEvent;
-		private DateTime lastTokenEvent;
-		private bool hasMoreTokens;
-		private bool hasTotals;
-		private bool hasTokens;
 
 		/// <inheritdoc/>
 		public override async Task OnInitializeAsync()
@@ -50,7 +39,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			await base.OnInitializeAsync();
 
 			this.EDalerFrontGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerFront200.png";
-			this.EDalerBackGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerBack200.png";
 
 			if (this.navigationArguments is not null)
 			{
@@ -62,8 +50,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			}
 
 			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
-			ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
-			ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
 		}
 
@@ -80,18 +66,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			{
 				await this.ReloadEDalerWallet(ServiceRef.XmppService.LastEDalerBalance ?? this.Balance);
 			}
-
-
-			if (this.hasTokens && this.lastTokenEvent != ServiceRef.XmppService.LastNeuroFeatureEvent)
-				await this.LoadTokens(true);
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
-			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
-			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 
 			await base.OnDisposeAsync();
@@ -101,7 +81,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			SortedDictionary<CaseInsensitiveString, NotificationEvent[]> Result = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Wallet);
 			int NrBalance = 0;
-			int NrToken = 0;
 
 			foreach (NotificationEvent[] Events in Result.Values)
 			{
@@ -109,13 +88,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				{
 					if (Event is BalanceNotificationEvent)
 						NrBalance++;
-					else if (Event is TokenNotificationEvent)
-						NrToken++;
 				}
 			}
 
 			this.NrBalanceNotifications = NrBalance;
-			this.NrTokenNotifications = NrToken;
 
 			return Result;
 		}
@@ -284,12 +260,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		private bool hasPending;
 
 		/// <summary>
-		/// IsFrontViewShowing of eDaler to process
-		/// </summary>
-		[ObservableProperty]
-		private bool isFrontViewShowing;
-
-		/// <summary>
 		/// PendingAmount of eDaler to process
 		/// </summary>
 		[ObservableProperty]
@@ -320,12 +290,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		private string? eDalerFrontGlyph;
 
 		/// <summary>
-		/// eDaler glyph URL
-		/// </summary>
-		[ObservableProperty]
-		private string? eDalerBackGlyph;
-
-		/// <summary>
 		/// HasEvents of eDaler to process
 		/// </summary>
 		[ObservableProperty]
@@ -344,25 +308,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		private int nrBalanceNotifications;
 
 		/// <summary>
-		/// When last eDaler event was received.
-		/// </summary>
-		[ObservableProperty]
-		private int nrTokenNotifications;
-
-		/// <summary>
 		/// Holds pending payments and account events. Both are also observable collections.
 		/// </summary>
 		public ObservableItemGroup<IUniqueItem> PaymentItems { get; } = new(nameof(PaymentItems), []);
-
-		/// <summary>
-		/// Holds a list of tokens
-		/// </summary>
-		public ObservableItemGroup<IUniqueItem> Tokens { get; } = new(nameof(Tokens), []);
-
-		/// <summary>
-		/// Holds a list of token totals
-		/// </summary>
-		public ObservableItemGroup<IUniqueItem> Totals { get; } = new(nameof(Totals), []);
 
 		#endregion
 
@@ -671,326 +619,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			}
 		}
 
-		/// <summary>
-		/// Binds token information to the view.
-		/// </summary>
-		public async void BindTokens()
-		{
-			try
-			{
-				await this.LoadTokens(false);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		private async Task LoadTokens(bool Reload)
-		{
-			this.lastTokenEvent = ServiceRef.XmppService.LastNeuroFeatureEvent;
-
-			if (!this.hasTotals || Reload)
-			{
-				this.hasTotals = true; // prevent fast reentering
-
-				try
-				{
-					TokenTotalsEventArgs tteArgs = await ServiceRef.XmppService.GetNeuroFeatureTotals();
-
-					if (tteArgs.Ok)
-					{
-						ObservableItemGroup<IUniqueItem> NewTotals = new(nameof(this.Totals), []);
-
-						if (tteArgs.Totals is not null)
-						{
-							foreach (TokenTotal Total in tteArgs.Totals)
-							{
-								NewTotals.Add(new TokenTotalItem(Total));
-							}
-						}
-
-						MainThread.BeginInvokeOnMainThread(() => ObservableItemGroup<IUniqueItem>.UpdateGroupsItems(this.Totals, NewTotals));
-					}
-
-					this.hasTotals = tteArgs.Ok;
-				}
-				catch (Exception ex)
-				{
-					this.hasTotals = false;
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
-
-			if (!this.hasTokens || Reload)
-			{
-				this.hasTokens = true; // prevent fast reentering
-
-				try
-				{
-					SortedDictionary<CaseInsensitiveString, TokenNotificationEvent[]> NotificationEvents =
-						ServiceRef.NotificationService.GetEventsByCategory<TokenNotificationEvent>(NotificationEventType.Wallet);
-
-					TokensEventArgs teArgs = await ServiceRef.XmppService.GetNeuroFeatures(0, Constants.BatchSizes.TokenBatchSize);
-					SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCateogy = this.GetNotificationEvents();
-
-					ObservableItemGroup<IUniqueItem> NewTokens = new(nameof(this.Tokens), []);
-					List<TokenNotificationEvent> ToDelete = [];
-
-					foreach (KeyValuePair<CaseInsensitiveString, TokenNotificationEvent[]> P in NotificationEvents)
-					{
-						Token? Token = null;
-
-						foreach (TokenNotificationEvent TokenEvent in P.Value)
-						{
-							Token = await TokenEvent.GetTokenAsync();
-							if (Token is not null)
-								break;
-						}
-
-						if (Token is not null)
-						{
-							NewTokens.Add(new TokenItem(Token, P.Value));
-						}
-						else
-						{
-							foreach (TokenNotificationEvent TokenEvent in P.Value)
-							{
-								if (TokenEvent is TokenRemovedNotificationEvent)
-								{
-									Geometry Icon = await TokenEvent.GetCategoryIcon();
-									string Description = await TokenEvent.GetDescription();
-
-									NewTokens.Add(new EventModel(TokenEvent.Received, Icon, Description, TokenEvent));
-								}
-								else
-								{
-									ToDelete.Add(TokenEvent);
-								}
-							}
-						}
-					}
-
-					if (ToDelete.Count > 0)
-						await ServiceRef.NotificationService.DeleteEvents([.. ToDelete]);
-
-					if (teArgs.Ok)
-					{
-						if (teArgs.Tokens is not null)
-						{
-							foreach (Token Token in teArgs.Tokens)
-							{
-								if (NotificationEvents.ContainsKey(Token.TokenId))
-									continue;
-
-								if (!EventsByCateogy.TryGetValue(Token.TokenId, out NotificationEvent[]? Events))
-									Events = [];
-
-								NewTokens.Add(new TokenItem(Token, Events));
-							}
-						}
-
-						this.hasMoreTokens = teArgs?.Tokens is not null && teArgs.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
-
-						MainThread.BeginInvokeOnMainThread(() => ObservableItemGroup<IUniqueItem>.UpdateGroupsItems(this.Tokens, NewTokens));
-					}
-
-					this.hasTokens = teArgs?.Ok ?? false;
-				}
-				catch (Exception ex)
-				{
-					this.hasTokens = false;
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
-		}
-
-		internal void ViewsFlipped(bool IsFrontViewShowing)
-		{
-			this.IsFrontViewShowing = IsFrontViewShowing;
-		}
-
-		/// <summary>
-		/// The command to bind to for creating tokens
-		/// </summary>
-		[RelayCommand]
-		private async Task CreateToken()
-		{
-			try
-			{
-				TaskCompletionSource<Contract?> TemplateSelection = new();
-				MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates, TemplateSelection);
-
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
-
-				Contract? Template = await TemplateSelection.Task;
-				if (Template is null)
-					return;
-
-				Dictionary<CaseInsensitiveString, object> Parameters = [];
-				Template.Visibility = ContractVisibility.Public;
-
-				if (Template.ForMachinesLocalName == "Create" && Template.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures)
-				{
-					CreationAttributesEventArgs e2 = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-					XmlDocument Doc = new()
-					{
-						PreserveWhitespace = true
-					};
-					Doc.LoadXml(Template.ForMachines.OuterXml);
-
-					XmlNamespaceManager NamespaceManager = new(Doc.NameTable);
-					NamespaceManager.AddNamespace("nft", NeuroFeaturesClient.NamespaceNeuroFeatures);
-
-					string? CreatorRole = Doc.SelectSingleNode("/nft:Create/nft:Creator/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? OwnerRole = Doc.SelectSingleNode("/nft:Create/nft:Owner/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? TrustProviderRole = Doc.SelectSingleNode("/nft:Create/nft:TrustProvider/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? CurrencyParameter = Doc.SelectSingleNode("/nft:Create/nft:Currency/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-					string? CommissionParameter = Doc.SelectSingleNode("/nft:Create/nft:CommissionPercent/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-
-					if (Template.Parts is null)
-					{
-						List<Part> Parts = [];
-
-						if (!string.IsNullOrEmpty(CreatorRole))
-						{
-							Parts.Add(new Part()
-							{
-								LegalId = ServiceRef.TagProfile.LegalIdentity?.Id,
-								Role = CreatorRole
-							});
-						}
-
-						if (!string.IsNullOrEmpty(TrustProviderRole))
-						{
-							Parts.Add(new Part()
-							{
-								LegalId = e2.TrustProviderId,
-								Role = TrustProviderRole
-							});
-						}
-
-						Template.Parts = [.. Parts];
-						Template.PartsMode = ContractParts.ExplicitlyDefined;
-					}
-					else
-					{
-						foreach (Part Part in Template.Parts)
-						{
-							if (Part.Role == CreatorRole || Part.Role == OwnerRole)
-								Part.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
-							else if (Part.Role == TrustProviderRole)
-								Part.LegalId = e2.TrustProviderId;
-						}
-					}
-
-					if (!string.IsNullOrEmpty(CurrencyParameter))
-						Parameters[CurrencyParameter] = e2.Currency;
-
-					if (!string.IsNullOrEmpty(CommissionParameter))
-						Parameters[CommissionParameter] = e2.Commission;
-				}
-
-				NewContractNavigationArgs NewContractArgs = new(Template, true, Parameters);
-
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
-			}
-			catch (Exception ex)
-			{
-				await ServiceRef.UiService.DisplayException(ex);
-			}
-		}
-
-		/// <summary>
-		/// Command executed when more tokens need to be loaded.
-		/// </summary>
-		[RelayCommand]
-		private async Task LoadMoreTokens()
-		{
-			if (this.hasMoreTokens)
-			{
-				this.hasMoreTokens = false; // So multiple requests are not made while scrolling.
-
-				try
-				{
-					TokensEventArgs e = await ServiceRef.XmppService.GetNeuroFeatures(this.Tokens.Count, Constants.BatchSizes.TokenBatchSize);
-					SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCateogy = this.GetNotificationEvents();
-
-					MainThread.BeginInvokeOnMainThread(() =>
-					{
-						if (e.Ok)
-						{
-							if (e.Tokens is not null)
-							{
-								foreach (Token Token in e.Tokens)
-								{
-									if (!EventsByCateogy.TryGetValue(Token.TokenId, out NotificationEvent[]? Events))
-										Events = [];
-
-									this.Tokens.Add(new TokenItem(Token, Events));
-								}
-
-								this.hasMoreTokens = e.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
-							}
-						}
-					});
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
-		}
-
-		private Task Wallet_TokenAdded(object _, TokenEventArgs e)
-		{
-			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, e.Token.TokenId, out NotificationEvent[]? Events))
-				Events = [];
-
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				TokenItem Item = new(e.Token, Events);
-
-				if (this.Tokens.Count == 0)
-					this.Tokens.Add(Item);
-				else
-					this.Tokens.Insert(0, Item);
-			});
-
-			return Task.CompletedTask;
-		}
-
-		private Task Wallet_TokenRemoved(object _, TokenEventArgs e)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				int i, c = this.Tokens.Count;
-
-				for (i = 0; i < c; i++)
-				{
-					if (this.Tokens[i] is TokenItem Item && Item.TokenId == e.Token.TokenId)
-					{
-						this.Tokens.RemoveAt(i);
-						break;
-					}
-				}
-			});
-
-			return Task.CompletedTask;
-		}
-
 		private Task NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
-			if (e.Event.Type == NotificationEventType.Wallet)
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					if (e.Event is BalanceNotificationEvent)
-						this.NrBalanceNotifications++;
-					else if (e.Event is TokenNotificationEvent)
-						this.NrTokenNotifications++;
-				});
-			}
+			if (e.Event is BalanceNotificationEvent)
+				MainThread.BeginInvokeOnMainThread(() => this.NrBalanceNotifications++);
 
 			return Task.CompletedTask;
 		}

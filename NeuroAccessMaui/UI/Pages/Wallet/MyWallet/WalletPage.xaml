@@ -151,12 +151,6 @@
 			  Margin="16,8,16,8"
 			  ColumnDefinitions="auto,*,auto">
 
-			<!--
-			<controls:SvgButton Command="{Binding GoBackCommand}"
-								SvgSource="close.svg"
-								Style="{DynamicResource IconButton}"/>
-			-->
-				
 			<Label Grid.Row="0"
 				   Grid.Column="0"
 				   Style="{DynamicResource PageTitleLabel}"
@@ -254,8 +248,23 @@
 			</Grid>
 		</Border>
 
-		<Grid VerticalOptions="End" Grid.Row="2" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="16" RowDefinitions="auto">
+		<Grid VerticalOptions="End"
+			  Grid.Row="2"
+			  ColumnDefinitions="*,*"
+			  RowDefinitions="auto,auto"
+			  Margin="16"
+			  ColumnSpacing="16"
+			  RowSpacing="16">
+			<controls:SvgButton Grid.ColumnSpan="2"
+								Style="{DynamicResource IconButtonSecondary}"
+								LabelText="{l:Localize MyTokens}"
+								LabelPosition="Right"
+								HeightRequest="48"
+								SvgSource="token.svg"
+								Command="{Binding ViewTokensCommand}"/>
+
 			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+								Grid.Row="1"
 								LabelText="{l:Localize RequestCredits}"
 								LabelPosition="Right"
 								HeightRequest="48"
@@ -263,6 +272,7 @@
 								Command="{Binding ViewRequestPaymentCommand}"/>
 
 			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+								Grid.Row="1"
 								LabelText="{l:Localize SendCredits}"
 								LabelPosition="Right"
 								HeightRequest="48"

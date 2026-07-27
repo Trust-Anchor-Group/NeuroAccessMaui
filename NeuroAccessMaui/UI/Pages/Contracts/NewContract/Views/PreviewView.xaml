@@ -1,24 +1,66 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:BaseNewContractView x:Name="ThisPage"
-						   x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.PreviewView"
-						   x:DataType="base:NewContractViewModel"
-						   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-						   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-						   xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-						   xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-						   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
-						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
-	<Border Style="{DynamicResource BorderSet}"
-			Margin="16,0,16,16"
-			Padding="16">
-		<ScrollView>
-			<VerticalStackLayout >
-				<ContentView Content="{Binding HumanReadableText}" />
-			</VerticalStackLayout>
-		</ScrollView>
-	</Border>
+<views:BaseNewContractView
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.PreviewView"
+	x:DataType="base:NewContractViewModel"
+	x:Name="ThisPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views">
+	<ScrollView>
+		<VerticalStackLayout
+			Padding="{DynamicResource MediumLeftRightBottomMargins}"
+			Spacing="{DynamicResource MediumSpacing}">
+			<Border Margin="0" Style="{DynamicResource BorderSet}">
+				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label
+							SemanticProperties.HeadingLevel="Level1"
+							Style="{DynamicResource SectionTitleLabel}"
+							Text="{l:Localize Summary}" />
+						<Label
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize ContractCreationReviewDescription}" />
+					</VerticalStackLayout>
 
+					<Grid
+						ColumnDefinitions="Auto,*"
+						ColumnSpacing="{DynamicResource MediumSpacing}"
+						RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+						RowSpacing="{DynamicResource SmallSpacing}">
+						<Label Grid.Row="0" Style="{DynamicResource KeyLabel}" Text="{l:Localize ContractWizardContractLabel}" />
+						<Label Grid.Row="0" Grid.Column="1" HorizontalTextAlignment="End" Style="{DynamicResource ValueLabel}" Text="{Binding Contract.Category}" />
+						<Label Grid.Row="1" Style="{DynamicResource KeyLabel}" Text="{l:Localize Visibility}" />
+						<Label Grid.Row="1" Grid.Column="1" HorizontalTextAlignment="End" Style="{DynamicResource ValueLabel}" Text="{Binding SelectedVisibilityName}" />
+						<Label Grid.Row="2" Style="{DynamicResource KeyLabel}" Text="{l:Localize YourLegalIdentity}" />
+						<VerticalStackLayout Grid.Row="2" Grid.Column="1" HorizontalOptions="End" Spacing="4">
+							<Label HorizontalTextAlignment="End" Style="{DynamicResource ValueLabel}" Text="{Binding SelectedIdentityName}" />
+							<controls:StatusPill HorizontalOptions="End" Text="{Binding SelectedIdentityStatus}" Tone="{Binding SelectedIdentityTone}" />
+						</VerticalStackLayout>
+						<Label Grid.Row="3" Style="{DynamicResource KeyLabel}" Text="{l:Localize Role}" />
+						<Label Grid.Row="3" Grid.Column="1" HorizontalTextAlignment="End" Style="{DynamicResource ValueLabel}" Text="{Binding SelectedRolesSummary}" />
+						<Label Grid.Row="4" Style="{DynamicResource KeyLabel}" Text="{l:Localize PeopleAndSignatures}" />
+						<Label Grid.Row="4" Grid.Column="1" HorizontalTextAlignment="End" Style="{DynamicResource ValueLabel}" Text="{Binding ParticipantCountText}" />
+					</Grid>
+				</VerticalStackLayout>
+			</Border>
+
+			<Border Margin="0" Style="{DynamicResource BorderSet}">
+				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label
+							SemanticProperties.HeadingLevel="Level2"
+							Style="{DynamicResource SectionTitleLabel}"
+							Text="{l:Localize Agreement}" />
+						<Label
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize ReviewContractDescription}" />
+					</VerticalStackLayout>
+					<ContentView Content="{Binding HumanReadableText}" />
+				</VerticalStackLayout>
+			</Border>
+		</VerticalStackLayout>
+	</ScrollView>
 </views:BaseNewContractView>

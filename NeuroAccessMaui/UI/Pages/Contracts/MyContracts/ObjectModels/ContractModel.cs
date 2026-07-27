@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Text;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.UI.Controls;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
@@ -14,97 +15,199 @@ using Waher.Networking.XMPP.Contracts.HumanReadable.InlineElements;
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 {
 	/// <summary>
-	/// The data model for a contract.
+	/// Defines the display priority of a contract summary in the local collection.
+	/// </summary>
+	internal enum ContractSummaryGroup
+	{
+		/// <summary>
+		/// The current person has a locally derivable action to perform.
+		/// </summary>
+		NeedsAttention = 0,
+
+		/// <summary>
+		/// The agreement is progressing without a locally derivable user action.
+		/// </summary>
+		InProgress = 1,
+
+		/// <summary>
+		/// The agreement has completed successfully.
+		/// </summary>
+		Completed = 2,
+
+		/// <summary>
+		/// The agreement is a template, unavailable, or in another terminal state.
+		/// </summary>
+		Other = 3
+	}
+
+	/// <summary>
+	/// Presents a locally derived, failure-tolerant summary of a saved contract reference.
 	/// </summary>
 	public class ContractModel : IUniqueItem, INotifyPropertyChanged
 	{
-		private readonly string contractId;
-		private readonly string? category;
-		private readonly string? name;
-		private readonly DateTime timestamp;
 		private readonly ContractReference contractRef;
+		private readonly int additionalNotificationCount;
 		private NotificationEvent[] events;
 
+		/// <summary>
+		/// Initializes a compatibility summary from persisted reference metadata.
+		/// </summary>
+		/// <param name="ContractRef">Persisted contract reference.</param>
+		/// <param name="Events">Related notification events.</param>
 		public ContractModel(ContractReference ContractRef, NotificationEvent[] Events)
+			: this(
+				ContractRef,
+				Events,
+				0,
+				ContractSummaryGroup.Other,
+				ContractRef.Name ?? string.Empty,
+				ContractRef.Category ?? string.Empty,
+				ContractRef.State.ToString(),
+				StatusPillTone.Neutral,
+				string.Empty,
+				string.Empty,
+				string.Empty,
+				string.Empty,
+				string.Empty,
+				string.Empty,
+				string.Empty,
+				false,
+				!string.IsNullOrWhiteSpace(ContractRef.ContractId),
+				null,
+				null,
+				null,
+				null)
+		{
+		}
+
+		internal ContractModel(
+			ContractReference ContractRef,
+			NotificationEvent[] Events,
+			int AdditionalNotificationCount,
+			ContractSummaryGroup SummaryGroup,
+			string Title,
+			string Category,
+			string StateText,
+			StatusPillTone StateTone,
+			string TemplateKindText,
+			string RoleText,
+			string PartiesText,
+			string SignatureProgressText,
+			string TimeContextText,
+			string NextActionText,
+			string RecoveryText,
+			bool HasLocalContract,
+			bool CanOpen,
+			string? ProposalRole,
+			string? ProposalMessage,
+			string? ProposalFromJid,
+			Contract? LocalContract)
 		{
 			this.contractRef = ContractRef;
-			this.contractId = ContractRef.ContractId;
-			this.timestamp = ContractRef.Created;
-			this.category = ContractRef.Category;
-			this.name = ContractRef.Name;
 			this.events = Events;
+			this.additionalNotificationCount = AdditionalNotificationCount;
+			this.SummaryGroup = SummaryGroup;
+			this.Title = Title;
+			this.Category = Category;
+			this.StateText = StateText;
+			this.StateTone = StateTone;
+			this.TemplateKindText = TemplateKindText;
+			this.RoleText = RoleText;
+			this.PartiesText = PartiesText;
+			this.SignatureProgressText = SignatureProgressText;
+			this.TimeContextText = TimeContextText;
+			this.NextActionText = NextActionText;
+			this.RecoveryText = RecoveryText;
+			this.HasLocalContract = HasLocalContract;
+			this.CanOpen = CanOpen;
+			this.ProposalRole = ProposalRole;
+			this.ProposalMessage = ProposalMessage;
+			this.ProposalFromJid = ProposalFromJid;
+			this.LocalContract = LocalContract;
 		}
 
 		/// <summary>
-		/// Gets a displayable name for a contract.
+		/// Derives the legacy persisted display name when a contract reference is first stored.
 		/// </summary>
-		/// <param name="Contract">Contract</param>
-		/// <returns>Displayable Name</returns>
+		/// <param name="Contract">Contract being persisted.</param>
+		/// <returns>A friendly name based on the other locally known parties.</returns>
 		public static async Task<string> GetName(Contract? Contract)
 		{
 			if (Contract?.Parts is null)
 				return string.Empty;
 
 			Dictionary<string, ClientSignature> Signatures = [];
-			StringBuilder? StringBuilder = null;
+			StringBuilder? Builder = null;
 
-			if (Contract.ClientSignatures is not null)
-			{
-				foreach (ClientSignature Signature in Contract.ClientSignatures)
-					Signatures[Signature.LegalId] = Signature;
-			}
+			foreach (ClientSignature Signature in Contract.ClientSignatures ?? [])
+				Signatures[Signature.LegalId] = Signature;
 
 			foreach (Part Part in Contract.Parts)
 			{
-				if (Part.LegalId == ServiceRef.TagProfile.LegalJid ||
-					 (Signatures.TryGetValue(Part.LegalId, out ClientSignature? PartSignature) &&
-					 string.Equals(PartSignature.BareJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase)))
-				{
-					continue;   // Self
-				}
+				bool IsCurrentUser =
+					Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id ||
+					(Signatures.TryGetValue(Part.LegalId, out ClientSignature? Signature) &&
+					 string.Equals(
+						 Signature.BareJid,
+						 ServiceRef.XmppService.BareJid,
+						 StringComparison.OrdinalIgnoreCase));
+
+				if (IsCurrentUser)
+					continue;
 
 				string FriendlyName = await ContactInfo.GetFriendlyName(Part.LegalId);
-
-				if (StringBuilder is null)
-					StringBuilder = new StringBuilder(FriendlyName);
+				if (Builder is null)
+					Builder = new StringBuilder(FriendlyName);
 				else
 				{
-					StringBuilder.Append(", ");
-					StringBuilder.Append(FriendlyName);
+					Builder.Append(", ");
+					Builder.Append(FriendlyName);
 				}
 			}
 
-			return StringBuilder?.ToString() ?? string.Empty;
+			return Builder?.ToString() ?? string.Empty;
 		}
 
 		/// <summary>
-		/// Gets the category of a contract
+		/// Derives the legacy persisted category from the localized contract heading.
 		/// </summary>
-		/// <param name="Contract">Contract</param>
-		/// <returns>Contract Category</returns>
+		/// <param name="Contract">Contract being persisted.</param>
+		/// <returns>The localized category, or <see langword="null"/> when no heading exists.</returns>
 		public static async Task<string?> GetCategory(Contract Contract)
 		{
 			HumanReadableText[] Localizations = Contract.ForHumans;
 			string Language = Contract.DeviceLanguage();
 
-			foreach (HumanReadableText Localization in Localizations)
+			foreach (HumanReadableText Localization in Localizations ?? [])
 			{
-				if (!string.Equals(Localization.Language, Language, StringComparison.OrdinalIgnoreCase))
+				if (!string.Equals(
+					Localization.Language,
+					Language,
+					StringComparison.OrdinalIgnoreCase))
+				{
 					continue;
+				}
 
 				foreach (BlockElement Block in Localization.Body)
 				{
-					if (Block is Section Section)
+					if (Block is not Section Section)
+						continue;
+
+					MarkdownOutput Markdown = new();
+					foreach (InlineElement Item in Section.Header)
 					{
-						MarkdownOutput Markdown = new();
-
-						foreach (InlineElement Item in Section.Header)
-							await Item.GenerateMarkdown(Markdown, 1, 0, new Waher.Networking.XMPP.Contracts.HumanReadable.MarkdownSettings(Contract, MarkdownType.ForRendering));
-
-						MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown.ToString());
-
-						return (await Doc.GeneratePlainText()).Trim();
+						await Item.GenerateMarkdown(
+							Markdown,
+							1,
+							0,
+							new Waher.Networking.XMPP.Contracts.HumanReadable.MarkdownSettings(
+								Contract,
+								MarkdownType.ForRendering));
 					}
+
+					MarkdownDocument Document =
+						await MarkdownDocument.CreateAsync(Markdown.ToString());
+					return (await Document.GeneratePlainText()).Trim();
 				}
 			}
 
@@ -112,62 +215,207 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		}
 
 		/// <summary>
-		/// The contract id.
+		/// Gets the persisted contract identifier, or an empty string when the legacy reference has none.
 		/// </summary>
-		public string ContractId => this.contractId;
+		public string ContractId => Convert.ToString(this.contractRef.ContractId) ?? string.Empty;
 
 		/// <inheritdoc/>
-		public string UniqueName => this.ContractId;
+		public string UniqueName => !string.IsNullOrEmpty(this.ContractId)
+			? this.ContractId
+			: this.contractRef.ObjectId ?? string.Empty;
 
 		/// <summary>
-		/// URI string for the contract ID, used for sharing and QR codes.
+		/// Gets the contract identifier URI used for sharing.
 		/// </summary>
-		public string ContractIdUriString => Constants.UriSchemes.IotSc + ":" + this.contractId;
+		public string ContractIdUriString => string.IsNullOrEmpty(this.ContractId)
+			? string.Empty
+			: Constants.UriSchemes.IotSc + ":" + this.ContractId;
 
 		/// <summary>
-		/// The created timestamp of the contract.
+		/// Gets the best locally known contract timestamp.
 		/// </summary>
-		public DateTime Timestamp => this.timestamp;
+		public DateTime Timestamp => this.contractRef.Updated != DateTime.MinValue
+			? this.contractRef.Updated
+			: this.contractRef.Created;
 
 		/// <summary>
-		/// A reference to the contract.
+		/// Gets the persisted contract reference.
 		/// </summary>
 		public ContractReference ContractRef => this.contractRef;
 
 		/// <summary>
-		/// Displayable name for the contract.
+		/// Gets the recognizable title derived from local contract data.
 		/// </summary>
-		public string Name => this.name;
+		public string Title { get; }
 
 		/// <summary>
-		/// Name, or category if no name.
+		/// Gets the legacy display name.
 		/// </summary>
-		public string NameOrCategory => string.IsNullOrEmpty(this.name) ? this.category : this.name;
+		public string Name => this.contractRef.Name ?? string.Empty;
 
 		/// <summary>
-		/// Displayable category for the contract.
+		/// Gets the title used by existing callers.
 		/// </summary>
-		public string Category => this.category;
+		public string NameOrCategory => this.Title;
 
 		/// <summary>
-		/// If the contract has associated notification events.
+		/// Gets the locally stored contract category.
+		/// </summary>
+		public string Category { get; }
+
+		/// <summary>
+		/// Gets whether a category is available.
+		/// </summary>
+		public bool HasCategory => !string.IsNullOrWhiteSpace(this.Category);
+
+		/// <summary>
+		/// Gets the localized contract state.
+		/// </summary>
+		public string StateText { get; }
+
+		/// <summary>
+		/// Gets the semantic tone for the contract state.
+		/// </summary>
+		public StatusPillTone StateTone { get; }
+
+		/// <summary>
+		/// Gets the localized template-kind label.
+		/// </summary>
+		public string TemplateKindText { get; }
+
+		/// <summary>
+		/// Gets whether the template-kind label is available.
+		/// </summary>
+		public bool HasTemplateKind => !string.IsNullOrWhiteSpace(this.TemplateKindText);
+
+		/// <summary>
+		/// Gets the current person's locally derivable role summary.
+		/// </summary>
+		public string RoleText { get; }
+
+		/// <summary>
+		/// Gets whether a role summary is available.
+		/// </summary>
+		public bool HasRole => !string.IsNullOrWhiteSpace(this.RoleText);
+
+		/// <summary>
+		/// Gets the locally derivable party summary.
+		/// </summary>
+		public string PartiesText { get; }
+
+		/// <summary>
+		/// Gets whether a party summary is available.
+		/// </summary>
+		public bool HasParties => !string.IsNullOrWhiteSpace(this.PartiesText);
+
+		/// <summary>
+		/// Gets the locally derivable signature progress.
+		/// </summary>
+		public string SignatureProgressText { get; }
+
+		/// <summary>
+		/// Gets whether signature progress is available.
+		/// </summary>
+		public bool HasSignatureProgress => !string.IsNullOrWhiteSpace(this.SignatureProgressText);
+
+		/// <summary>
+		/// Gets the most relevant locally known updated or signing-deadline context.
+		/// </summary>
+		public string TimeContextText { get; }
+
+		/// <summary>
+		/// Gets whether time context is available.
+		/// </summary>
+		public bool HasTimeContext => !string.IsNullOrWhiteSpace(this.TimeContextText);
+
+		/// <summary>
+		/// Gets the next action that can be inferred without contacting the server.
+		/// </summary>
+		public string NextActionText { get; }
+
+		/// <summary>
+		/// Gets whether a next-action label is available.
+		/// </summary>
+		public bool HasNextAction => !string.IsNullOrWhiteSpace(this.NextActionText);
+
+		/// <summary>
+		/// Gets a safe recovery or freshness explanation for incomplete local data.
+		/// </summary>
+		public string RecoveryText { get; }
+
+		/// <summary>
+		/// Gets whether a recovery or freshness explanation is available.
+		/// </summary>
+		public bool HasRecoveryText => !string.IsNullOrWhiteSpace(this.RecoveryText);
+
+		/// <summary>
+		/// Gets whether the saved XML was parsed into a local contract summary.
+		/// </summary>
+		public bool HasLocalContract { get; }
+
+		/// <summary>
+		/// Gets whether the reference has enough identity information to be opened or refreshed.
+		/// </summary>
+		public bool CanOpen { get; }
+
+		/// <summary>
+		/// Gets whether the contract has a locally derivable action for the current person.
+		/// </summary>
+		public bool IsNeedsAttention => this.SummaryGroup == ContractSummaryGroup.NeedsAttention;
+
+		/// <summary>
+		/// Gets the collection priority used to keep actionable agreements before passive states.
+		/// </summary>
+		internal ContractSummaryGroup SummaryGroup { get; }
+
+		/// <summary>
+		/// Gets the proposal role needed to preserve proposal-response navigation.
+		/// </summary>
+		internal string? ProposalRole { get; }
+
+		/// <summary>
+		/// Gets the proposal message needed to preserve proposal-response navigation.
+		/// </summary>
+		internal string? ProposalMessage { get; }
+
+		/// <summary>
+		/// Gets the proposal sender needed to preserve proposal-response navigation.
+		/// </summary>
+		internal string? ProposalFromJid { get; }
+
+		/// <summary>
+		/// Gets the parsed saved contract used to derive the summary.
+		/// </summary>
+		internal Contract? LocalContract { get; }
+
+		/// <summary>
+		/// Gets whether the contract has associated notification events.
 		/// </summary>
 		public bool HasEvents => this.NrEvents > 0;
 
 		/// <summary>
-		/// Number of notification events associated with the contract.
+		/// Gets the number of associated notification events.
 		/// </summary>
-		public int NrEvents => this.events?.Length ?? 0;
+		public int NrEvents
+		{
+			get
+			{
+				int LegacyCount = this.events?.Length ?? 0;
+				return this.additionalNotificationCount > int.MaxValue - LegacyCount
+					? int.MaxValue
+					: LegacyCount + this.additionalNotificationCount;
+			}
+		}
 
 		/// <summary>
-		/// Notification events.
+		/// Gets the associated notification events.
 		/// </summary>
 		public NotificationEvent[] Events => this.events;
 
 		/// <summary>
-		/// Called when a property has changed.
+		/// Raises a property-change notification.
 		/// </summary>
-		/// <param name="PropertyName">Name of property</param>
+		/// <param name="PropertyName">Changed property name.</param>
 		public void OnPropertyChanged(string PropertyName)
 		{
 			try
@@ -180,82 +428,68 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			}
 		}
 
-		/// <summary>
-		/// Occurs when a property value changes.
-		/// </summary>
+		/// <inheritdoc/>
 		public event PropertyChangedEventHandler? PropertyChanged;
 
 		/// <summary>
-		/// Method called when notifications for the item have been updated.
+		/// Replaces the notification events associated with the summary.
 		/// </summary>
-		/// <param name="Events">Updated set of events.</param>
+		/// <param name="Events">Updated notification events.</param>
 		public void NotificationsUpdated(NotificationEvent[] Events)
 		{
 			this.events = Events;
-
 			this.OnPropertyChanged(nameof(this.Events));
 			this.OnPropertyChanged(nameof(this.HasEvents));
 			this.OnPropertyChanged(nameof(this.NrEvents));
 		}
 
 		/// <summary>
-		/// Adds a notification event.
+		/// Adds a notification event if it is not already represented.
 		/// </summary>
-		/// <param name="Event">Notification event.</param>
-		/// <returns>If event was added (true), or if it was ignored because the event was already in the list of events (false).</returns>
+		/// <param name="Event">Notification event to add.</param>
+		/// <returns><see langword="true"/> if the event was added.</returns>
 		public bool AddEvent(NotificationEvent Event)
 		{
 			if (this.events is null)
-				this.NotificationsUpdated([ Event ]);
+				this.NotificationsUpdated([Event]);
 			else
 			{
-				foreach (NotificationEvent Event2 in this.events)
+				foreach (NotificationEvent ExistingEvent in this.events)
 				{
-					if (Event2.ObjectId == Event.ObjectId)
+					if (ExistingEvent.ObjectId == Event.ObjectId)
 						return false;
 				}
 
-				int c = this.events.Length;
-				NotificationEvent[] NewArray = new NotificationEvent[c + 1];
-				Array.Copy(this.events, 0, NewArray, 0, c);
-				NewArray[c] = Event;
-
-				this.NotificationsUpdated(NewArray);
+				NotificationEvent[] NewEvents = new NotificationEvent[this.events.Length + 1];
+				Array.Copy(this.events, NewEvents, this.events.Length);
+				NewEvents[^1] = Event;
+				this.NotificationsUpdated(NewEvents);
 			}
 
 			return true;
 		}
 
 		/// <summary>
-		/// Removes a notification event.
+		/// Removes a represented notification event.
 		/// </summary>
-		/// <param name="Event">Notification event.</param>
-		/// <returns>If the event was found and removed.</returns>
+		/// <param name="Event">Notification event to remove.</param>
+		/// <returns><see langword="true"/> if the event was found and removed.</returns>
 		public bool RemoveEvent(NotificationEvent Event)
 		{
-			if (this.events is not null)
+			for (int i = 0; i < this.events.Length; i++)
 			{
-				int i, c = this.events.Length;
+				if (this.events[i].ObjectId != Event.ObjectId)
+					continue;
 
-				for (i = 0; i < c; i++)
-				{
-					NotificationEvent Event2 = this.events[i];
+				NotificationEvent[] NewEvents = new NotificationEvent[this.events.Length - 1];
+				if (i > 0)
+					Array.Copy(this.events, 0, NewEvents, 0, i);
 
-					if (Event2.ObjectId == Event.ObjectId)
-					{
-						NotificationEvent[] NewArray = new NotificationEvent[c - 1];
+				if (i < this.events.Length - 1)
+					Array.Copy(this.events, i + 1, NewEvents, i, this.events.Length - i - 1);
 
-						if (i > 0)
-							Array.Copy(this.events, 0, NewArray, 0, i);
-
-						if (i < c - 1)
-							Array.Copy(this.events, i + 1, NewArray, i, c - i - 1);
-
-						this.NotificationsUpdated(NewArray);
-
-						return true;
-					}
-				}
+				this.NotificationsUpdated(NewEvents);
+				return true;
 			}
 
 			return false;

@@ -1,25 +1,32 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Text;
+using System.Globalization;
+using System.Xml;
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.ApplicationModel; // For MainThread marshaling
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Storage;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
+using NeuroAccessMaui.UI.Popups.Image;
+using NeuroFeatures;
+using Waher.Content;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
-using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
@@ -35,17 +42,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		#region Fields
 
 		private readonly ViewContractNavigationArgs? args;
+		private readonly PhotosLoader attachmentLoader = new();
 
 		// Refresh coalescing state
 		private readonly object refreshLock = new();
 		private bool refreshInProgress;
 		private bool refreshQueued;
 		private Contract? pendingContractForRefresh;
+		private ContractReference? sourceContractReference;
+		private bool isUsingSavedContract;
+		private bool refreshFailedUsingSaved;
 		private bool initialized;
+		private long relatedTokenLoadGeneration;
 
 		// Awaiting post-create completion flag (bindable)
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanShowSignBar))]
+		[NotifyPropertyChangedFor(nameof(CanContinueToSigning))]
 		private bool isAwaitingPostCreateCompletion;
 
 		// Suppress RefreshView.Command when setting IsRefreshing programmatically
@@ -91,6 +104,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				// Ensure args.Contract is loaded and displayed first
 				await this.LoadContractAsync();
+				if (this.Contract is null)
+					return;
+
 				await this.InitializeUIAsync();
 				await this.GoToStateAsync(ViewContractStep.Overview);
 				// If navigation provided a post-create completion, await it before enabling signing UI
@@ -131,7 +147,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		public override async Task OnDisposeAsync()
 		{
+			Interlocked.Increment(ref this.relatedTokenLoadGeneration);
 			this.UnsubscribeFromEvents();
+			this.attachmentLoader.CancelLoadPhotos();
 			await base.OnDisposeAsync();
 		}
 
@@ -143,16 +161,270 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			base.OnPropertyChanged(e);
 			if (e.PropertyName == nameof(this.IsBusy))
+			{
 				this.OnPropertyChanged(nameof(this.CanSign));
+				this.OnPropertyChanged(nameof(this.CanShowSignBar));
+				this.OnPropertyChanged(nameof(this.CanContinueToSigning));
+				this.OnPropertyChanged(nameof(this.HasPrimaryAction));
+			}
 		}
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanSign))]
 		[NotifyPropertyChangedFor(nameof(CanShowSignBar))]
+		[NotifyPropertyChangedFor(nameof(CanContinueToSigning))]
+		[NotifyPropertyChangedFor(nameof(HasContract))]
+		[NotifyPropertyChangedFor(nameof(HasServerSignature))]
+		[NotifyPropertyChangedFor(nameof(HasMachineReadableContent))]
+		[NotifyPropertyChangedFor(nameof(MachineReadableContent))]
+		[NotifyPropertyChangedFor(nameof(HasTemplateId))]
+		[NotifyPropertyChangedFor(nameof(HasProvider))]
+		[NotifyPropertyChangedFor(nameof(HasSignAfter))]
+		[NotifyPropertyChangedFor(nameof(HasSignBefore))]
 		private ObservableContract? contract;
 
 		[ObservableProperty]
 		private bool isRefreshing = false;
+
+		partial void OnIsRefreshingChanged(bool Value)
+		{
+			this.UpdateFreshnessPresentation();
+		}
+
+		/// <summary>
+		/// Gets whether an agreement has been loaded for presentation.
+		/// </summary>
+		public bool HasContract => this.Contract is not null;
+
+		/// <summary>
+		/// Gets the key parameters promoted into the agreement overview.
+		/// </summary>
+		public ObservableCollection<ObservableParameter> KeyParameters { get; } = [];
+
+		/// <summary>
+		/// Gets the reliable activity available from the contract and local notifications.
+		/// </summary>
+		public ObservableCollection<ContractActivityItem> ActivityItems { get; } = [];
+
+		/// <summary>
+		/// Gets privacy-conscious summaries of the agreement's existing attachments.
+		/// </summary>
+		public ObservableCollection<ContractAttachmentItem> AttachmentItems { get; } = [];
+
+		/// <summary>
+		/// Gets tokens created or affected by the agreement.
+		/// </summary>
+		public ObservableCollection<ContractRelatedTokenItem> RelatedTokens { get; } = [];
+
+		/// <summary>
+		/// Gets whether at least one promoted key parameter is available.
+		/// </summary>
+		public bool HasKeyParameters => this.KeyParameters.Count > 0;
+
+		/// <summary>
+		/// Gets whether reliable agreement history is available.
+		/// </summary>
+		public bool HasActivity => this.ActivityItems.Count > 0;
+
+		/// <summary>
+		/// Gets whether the agreement contains existing attachments.
+		/// </summary>
+		public bool HasAttachments => this.AttachmentItems.Count > 0;
+
+		/// <summary>
+		/// Gets whether at least one related token identifier is available.
+		/// </summary>
+		public bool HasRelatedTokens => this.RelatedTokens.Count > 0;
+
+		/// <summary>
+		/// Gets whether the related-token section has useful state to present.
+		/// </summary>
+		public bool HasRelatedTokensSection =>
+			this.HasRelatedTokens ||
+			this.IsRelatedTokensLoading ||
+			this.RelatedTokensUnavailable;
+
+		/// <summary>
+		/// Gets or sets whether related token references are loading.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasRelatedTokensSection))]
+		private bool isRelatedTokensLoading;
+
+		/// <summary>
+		/// Gets or sets whether related token references could not be refreshed.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasRelatedTokensSection))]
+		private bool relatedTokensUnavailable;
+
+		/// <summary>
+		/// Gets or sets whether all tokens created by this agreement can be browsed.
+		/// </summary>
+		[ObservableProperty]
+		private bool canBrowseCreatedTokens;
+
+		/// <summary>
+		/// Gets whether the contract has a server signature that can be inspected.
+		/// </summary>
+		public bool HasServerSignature => this.Contract?.Contract.ServerSignature is not null;
+
+		/// <summary>
+		/// Gets whether machine-readable agreement content is available.
+		/// </summary>
+		public bool HasMachineReadableContent => !string.IsNullOrWhiteSpace(this.MachineReadableContent);
+
+		/// <summary>
+		/// Gets whether the contract includes a template identifier.
+		/// </summary>
+		public bool HasTemplateId => !string.IsNullOrWhiteSpace(this.Contract?.TemplateId);
+
+		/// <summary>
+		/// Gets whether the contract identifies its provider.
+		/// </summary>
+		public bool HasProvider => !string.IsNullOrWhiteSpace(this.Contract?.Contract.Provider);
+
+		/// <summary>
+		/// Gets whether the contract defines the earliest signing time.
+		/// </summary>
+		public bool HasSignAfter => this.Contract?.Contract.SignAfter.HasValue == true;
+
+		/// <summary>
+		/// Gets whether the contract defines a signing deadline.
+		/// </summary>
+		public bool HasSignBefore => this.Contract?.Contract.SignBefore.HasValue == true;
+
+		/// <summary>
+		/// Gets the complete machine-readable contract content for advanced inspection.
+		/// </summary>
+		public string MachineReadableContent =>
+			this.Contract?.Contract.ForMachines?.OuterXml ?? string.Empty;
+
+		/// <summary>
+		/// Gets whether the loaded agreement has a primary review or response action.
+		/// </summary>
+		public bool HasPrimaryAction => this.CanSign || this.IsProposal;
+
+		/// <summary>
+		/// Gets whether the complete agreement is available and signing can continue.
+		/// </summary>
+		public bool CanContinueToSigning =>
+			this.CanShowSignBar &&
+			this.HasHumanReadableText;
+
+		/// <summary>
+		/// Gets whether a local saved reference can be removed independently of the remote contract.
+		/// </summary>
+		public bool CanRemoveLocalReference => this.sourceContractReference is not null;
+
+		/// <summary>
+		/// Gets the localized title used by the persistent agreement summary.
+		/// </summary>
+		[ObservableProperty]
+		private string summaryTitle = string.Empty;
+
+		/// <summary>
+		/// Gets the optional category shown beneath the agreement title.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasSummaryCategory))]
+		private string summaryCategory = string.Empty;
+
+		/// <summary>
+		/// Gets whether an agreement category is available.
+		/// </summary>
+		public bool HasSummaryCategory => !string.IsNullOrWhiteSpace(this.SummaryCategory);
+
+		/// <summary>
+		/// Gets the localized agreement state.
+		/// </summary>
+		[ObservableProperty]
+		private string summaryStateText = string.Empty;
+
+		/// <summary>
+		/// Gets the semantic tone for the agreement state.
+		/// </summary>
+		[ObservableProperty]
+		private StatusPillTone summaryStateTone = StatusPillTone.Neutral;
+
+		/// <summary>
+		/// Gets the current person's role summary.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasSummaryRole))]
+		private string summaryRoleText = string.Empty;
+
+		/// <summary>
+		/// Gets whether the current person's role can be derived.
+		/// </summary>
+		public bool HasSummaryRole => !string.IsNullOrWhiteSpace(this.SummaryRoleText);
+
+		/// <summary>
+		/// Gets the agreement signature-progress summary.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasSignatureProgress))]
+		private string signatureProgressText = string.Empty;
+
+		/// <summary>
+		/// Gets whether signature progress is available.
+		/// </summary>
+		public bool HasSignatureProgress => !string.IsNullOrWhiteSpace(this.SignatureProgressText);
+
+		/// <summary>
+		/// Gets the most important agreement date or deadline.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasImportantDate))]
+		private string importantDateText = string.Empty;
+
+		/// <summary>
+		/// Gets whether an important date is available.
+		/// </summary>
+		public bool HasImportantDate => !string.IsNullOrWhiteSpace(this.ImportantDateText);
+
+		/// <summary>
+		/// Gets the next locally valid agreement action.
+		/// </summary>
+		[ObservableProperty]
+		private string nextActionText = string.Empty;
+
+		/// <summary>
+		/// Gets the localized primary-action label.
+		/// </summary>
+		[ObservableProperty]
+		private string primaryActionText = string.Empty;
+
+		/// <summary>
+		/// Gets the concise freshness state for the loaded agreement.
+		/// </summary>
+		[ObservableProperty]
+		private string freshnessText = string.Empty;
+
+		/// <summary>
+		/// Gets the semantic tone for the agreement freshness state.
+		/// </summary>
+		[ObservableProperty]
+		private StatusPillTone freshnessTone = StatusPillTone.Neutral;
+
+		/// <summary>
+		/// Gets the optional warning shown when a refresh cannot replace the saved agreement.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasFreshnessWarning))]
+		private string freshnessWarningText = string.Empty;
+
+		/// <summary>
+		/// Gets whether a freshness warning should be displayed.
+		/// </summary>
+		public bool HasFreshnessWarning => !string.IsNullOrWhiteSpace(this.FreshnessWarningText);
+
+		/// <summary>
+		/// Gets or sets whether the current contract version was fully reviewed before signing.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ReadyToSign))]
+		private bool hasReviewedForSigning;
 
 		public BindableObject? StateObject { get; set; }
 
@@ -162,10 +434,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool canStateChange;
 
 		[ObservableProperty]
-		private string currentState = nameof(NewContractStep.Loading);
+		private string currentState = nameof(ViewContractStep.Loading);
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasHumanReadableText))]
+		[NotifyPropertyChangedFor(nameof(CanContinueToSigning))]
 		private VerticalStackLayout? humanReadableText;
 
 		public bool HasHumanReadableText => this.HumanReadableText is not null;
@@ -225,33 +498,40 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool IsInSigningState => this.Contract?.ContractState is ContractState.Approved or ContractState.BeingSigned;
 		private bool AlreadySigned => this.Contract?.Roles.Any(r => r.Parts.Any(p => p.IsMe && p.HasSigned)) == true;
 
-		public bool CanSign => this.HasSignableRoles && this.IsInSigningState && !this.AlreadySigned;
+		public bool CanSign =>
+			!this.IsBusy &&
+			this.HasSignableRoles &&
+			this.IsInSigningState &&
+			!this.AlreadySigned;
 
 		// Public flag for bottom bar visibility; sign bar only when not awaiting post-create
 		public bool CanShowSignBar => !this.IsAwaitingPostCreateCompletion && this.CanSign;
 
-		public bool ReadyToSign => this.SelectedRole is not null && this.IsContractOk;
+		public bool ReadyToSign =>
+			this.HasReviewedForSigning &&
+			this.SelectedRole is not null &&
+			this.IsContractOk;
 
 		[ObservableProperty]
 		private ObservableRole? selectedRole;
 
 		partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)
 		{
-			var MyLegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
+			string? MyLegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 			if (string.IsNullOrEmpty(MyLegalId))
 				return;
 
 			oldValue?.RemovePart(MyLegalId);
 			_ = newValue?.AddPart(MyLegalId);
 
-			OnPropertyChanged(nameof(ReadyToSign));
-			SignCommand.NotifyCanExecuteChanged();
+			this.OnPropertyChanged(nameof(this.ReadyToSign));
+			this.SignCommand.NotifyCanExecuteChanged();
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(ReadyToSign))]
 		public async Task SignAsync()
 		{
-			if (this.Contract is null || this.SelectedRole is null)
+			if (!this.ReadyToSign || this.Contract is null || this.SelectedRole is null)
 				return;
 
 			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
@@ -302,6 +582,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private async Task GoToSignAsync()
 		{
+			if (!this.HasReviewedForSigning)
+			{
+				await this.GoToReviewAsync();
+				return;
+			}
+
 			await this.GoToStepAsync(ViewContractStep.Sign);
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
@@ -318,13 +604,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
+			this.HasReviewedForSigning = false;
+			this.IsContractOk = false;
 			await this.GoToStepAsync(ViewContractStep.Review, Prepare: async () =>
 			{
-
 				await this.ValidateParametersAsync();
 				VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
 				this.HumanReadableText = HumanReadableText;
 			});
+		}
+
+		/// <summary>
+		/// Continues from the complete agreement review to role selection and signing.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ContinueToSignAsync()
+		{
+			if (!this.CanContinueToSigning)
+				return;
+
+			this.HasReviewedForSigning = true;
+			await this.GoToSignAsync();
+		}
+
+		partial void OnHasReviewedForSigningChanged(bool Value)
+		{
+			this.SignCommand.NotifyCanExecuteChanged();
 		}
 
 		[RelayCommand]
@@ -332,6 +637,71 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			if (this.Contract?.Contract is { } ContractObj)
 				await ServiceRef.NavigationService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(ContractObj), Services.UI.BackMethod.Pop);
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task OpenAttachmentAsync(ContractAttachmentItem? Item)
+		{
+			if (Item is null || !Item.CanOpen || Item.IsLoading)
+				return;
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				Item.IsLoading = true;
+				Item.ErrorText = string.Empty;
+			});
+
+			try
+			{
+				(byte[]? Data, string ContentType) =
+					await this.attachmentLoader.LoadOneAttachment(
+						Item.Attachment,
+						SignWith.LatestApprovedIdOrCurrentKeys);
+				if (Data is null)
+				{
+					await this.SetAttachmentUnavailableAsync(Item);
+					return;
+				}
+
+				if (Item.IsImage &&
+					PhotosLoader.IsSupportedImageContentType(ContentType))
+				{
+					await MainThread.InvokeOnMainThreadAsync(async () =>
+					{
+						ImagesPopup Popup = new()
+						{
+							BindingContext = new ImagesViewModel([Item.Attachment])
+						};
+						await ServiceRef.PopupService.PushAsync(Popup);
+					});
+					return;
+				}
+
+				string Extension = GetSafeAttachmentExtension(ContentType);
+				string TemporaryPath = await PhotosLoader.GetTemporaryFile(
+					Data,
+					Extension);
+				OpenFileRequest Request = new(
+					ServiceRef.Localizer[nameof(AppResources.OpenAttachment)],
+					new ReadOnlyFile(TemporaryPath, ContentType));
+				bool Opened = await Launcher.Default.OpenAsync(Request);
+				if (!Opened)
+					await this.SetAttachmentUnavailableAsync(Item);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogWarning(
+					"Contract attachment could not be opened.",
+					new KeyValuePair<string, object?>(
+						"FailureType",
+						Ex.GetType().Name));
+				await this.SetAttachmentUnavailableAsync(Item);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(
+					() => Item.IsLoading = false);
+			}
 		}
 
 		#endregion
@@ -409,6 +779,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				return;
 
 			await ServiceRef.XmppService.ObsoleteContract(this.Contract.ContractId);
+			await this.RefreshContractAsync(null);
 			await ServiceRef.UiService.DisplayAlert(
 				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 				ServiceRef.Localizer[nameof(AppResources.ContractHasBeenObsoleted)]);
@@ -433,25 +804,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		[RelayCommand]
-		private async Task ShowDetailsAsync()
+		private async Task RemoveLocalReferenceAsync()
 		{
-			if (this.Contract is null)
+			if (this.sourceContractReference is null)
 				return;
 
-			byte[] Xml = Encoding.UTF8.GetBytes(this.Contract.Contract.ForMachines.OuterXml);
-			HttpFileUploadEventArgs Slot = await ServiceRef.XmppService.RequestUploadSlotAsync(
-				this.Contract.ContractId + ".xml", "text/xml; charset=utf-8", Xml.Length);
+			bool Confirmed = await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.RemoveLocalReference)],
+				ServiceRef.Localizer[nameof(AppResources.RemoveLocalReferenceDescription)],
+				ServiceRef.Localizer[nameof(AppResources.Yes)],
+				ServiceRef.Localizer[nameof(AppResources.No)]);
+			if (!Confirmed)
+				return;
 
-			if (Slot.Ok)
-			{
-				await Slot.PUT(Xml, "text/xml", (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
-				if (!await App.OpenUrlAsync(Slot.GetUrl, false))
-					await this.CopyAsync(Slot.GetUrl);
-			}
-			else
-			{
-				await ServiceRef.UiService.DisplayException(Slot.StanzaError ?? new Exception(Slot.ErrorText));
-			}
+			await Database.Delete(this.sourceContractReference);
+			this.sourceContractReference = null;
+			this.OnPropertyChanged(nameof(this.CanRemoveLocalReference));
+			await this.GoBack();
 		}
 
 		#endregion
@@ -585,6 +954,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				this.OnPropertyChanged(nameof(this.CanSign));
 				this.OnPropertyChanged(nameof(this.CanShowSignBar));
+				this.OnPropertyChanged(nameof(this.CanContinueToSigning));
+				this.OnPropertyChanged(nameof(this.HasPrimaryAction));
 			});
 
 		private async Task OnContractSignedAsync(object? sender, ContractSignedEventArgs e)
@@ -709,48 +1080,57 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		private async Task LoadContractAsync()
 		{
-			if (this.args!.ContractRef is null)
+			this.sourceContractReference = this.args!.ContractRef;
+			this.OnPropertyChanged(nameof(this.CanRemoveLocalReference));
+
+			Contract? LoadedContract = this.args.Contract;
+			if (LoadedContract is not null)
 			{
-				this.Contract = await ObservableContract.CreateAsync(this.args!.Contract!);
+				this.isUsingSavedContract =
+					this.sourceContractReference?.ContractLoaded == true &&
+					!string.IsNullOrWhiteSpace(this.sourceContractReference.ContractXml);
 			}
-			else
+			else if (this.sourceContractReference is not null)
 			{
-				Contract? Contract = await this.args!.ContractRef!.GetContract();
-
-				if (this.args.ContractRef.ContractId is null)
-				{
-					await this.GoBack();
-				}
-
 				try
 				{
-					Contract ??= await ServiceRef.XmppService.GetContract(this.args!.ContractRef!.ContractId!);
-				}
-				catch (ItemNotFoundException)
-				{
-					if (await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
-						ServiceRef.Localizer[nameof(AppResources.Yes)],
-						ServiceRef.Localizer[nameof(AppResources.No)]))
-					{
-						await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", this.args.ContractRef.ContractId));
-						await this.GoBack();
-					}
-
-					return;
+					LoadedContract = await this.sourceContractReference.GetContract();
+					this.isUsingSavedContract = LoadedContract is not null;
 				}
 				catch (Exception Ex)
 				{
-					ServiceRef.LogService.LogException(Ex);
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message,
-						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-
-					await this.GoBack();
+					// A malformed legacy cache must not remove the reference. A remote
+					// recovery remains possible when the reference still has an ID.
+					LogRedactedFailure("Saved contract content could not be read.", Ex);
 				}
 
-				this.Contract = await ObservableContract.CreateAsync(Contract!);
+				string ContractId = Convert.ToString(this.sourceContractReference.ContractId) ?? string.Empty;
+				if (LoadedContract is null && !string.IsNullOrWhiteSpace(ContractId))
+				{
+					try
+					{
+						LoadedContract = await ServiceRef.XmppService.GetContract(ContractId);
+						await this.PersistContractAsync(LoadedContract);
+						this.isUsingSavedContract = false;
+					}
+					catch (Exception Ex)
+					{
+						LogRedactedFailure("Contract recovery refresh failed.", Ex);
+					}
+				}
 			}
+
+			if (LoadedContract is null)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoBack();
+				return;
+			}
+
+			this.Contract = await ObservableContract.CreateAsync(LoadedContract);
 		}
 
 		private async Task InitializeUIAsync()
@@ -765,6 +1145,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			await MainThread.InvokeOnMainThreadAsync(this.PrepareDisplayableParameters);
 			await MainThread.InvokeOnMainThreadAsync(this.PrepareSignableRoles);
 			await MainThread.InvokeOnMainThreadAsync(this.PreparePropertiesAsync);
+			await this.PrepareWorkspaceAsync();
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -825,13 +1206,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					this.DisplayableParameters.Add(Parameter);
 				}
 			}
-/*
-			foreach (ObservableParameter P in this.DisplayableParameters)
-			{
-				P.Parameter.IsParameterValid(Vars, ServiceRef.XmppService.ContractsClient);
-				ServiceRef.LogService.LogDebug($"Parameter '{P.Parameter.Name}' validation result: {P.IsValid}, Error: {P.Parameter.ErrorReason} - {P.ValidationText}");
-			}
-*/
 		}
 
 		private void PrepareSignableRoles()
@@ -865,6 +1239,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
+			this.CanDeleteContract = false;
+			this.CanObsoleteContract = false;
+
 			foreach (ObservableRole? Role in this.Contract.Roles.Where(R => R.Parts.Any(P => P.IsMe)))
 			{
 				if (Role.Role.CanRevoke)
@@ -878,7 +1255,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					bool Binding = await this.Contract.Contract.IsLegallyBinding(true, ServiceRef.XmppService.ContractsClient);
 					MainThread.BeginInvokeOnMainThread(() =>
 					{
-						this.CanDeleteContract = !this.args.IsReadOnly && !Binding;
+						this.CanDeleteContract =
+							!this.args.IsReadOnly &&
+							!Binding &&
+							this.Contract.ContractState is not
+								(ContractState.Deleted or ContractState.Obsoleted);
 					});
 				}
 				catch (Exception Ex)
@@ -887,6 +1268,561 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					ServiceRef.LogService.LogException(Ex);
 				}
 			}
+		}
+
+		private async Task PrepareWorkspaceAsync()
+		{
+			if (this.Contract is null)
+				return;
+
+			Contract Agreement = this.Contract.Contract;
+			string FriendlyName = await ContractModel.GetName(Agreement);
+			string ContractId = Agreement.ContractId ?? string.Empty;
+			string ShortId = ContractId.Length > 16
+				? ContractId[..8] + "…" + ContractId[^6..]
+				: ContractId;
+
+			this.SummaryCategory = this.Contract.Category ?? string.Empty;
+			this.SummaryTitle = FirstNonEmpty(
+				FriendlyName,
+				this.sourceContractReference?.Name,
+				this.SummaryCategory,
+				ShortId,
+				ServiceRef.Localizer[nameof(AppResources.UntitledContract)]);
+			this.SummaryStateText = GetContractStateText(Agreement.State);
+			this.SummaryStateTone = GetContractStateTone(Agreement.State);
+
+			string RoleName = string.Join(
+				", ",
+				this.Contract.Roles
+					.Where(Role => Role.Parts.Any(Part => Part.IsMe))
+					.Select(Role => Role.Name)
+					.Distinct(StringComparer.CurrentCultureIgnoreCase));
+			if (string.IsNullOrWhiteSpace(RoleName))
+				RoleName = this.ProposalRole ?? string.Empty;
+
+			this.SummaryRoleText = string.IsNullOrWhiteSpace(RoleName)
+				? string.Empty
+				: string.Format(
+					CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.ContractYourRoleFormat)],
+					RoleName);
+
+			int RequiredSignatures = (Agreement.Roles ?? [])
+				.Sum(Role => Math.Max(0, Role.MinCount));
+			int SignedCount = Math.Min(
+				Agreement.ClientSignatures?.Length ?? 0,
+				RequiredSignatures);
+			this.SignatureProgressText = RequiredSignatures == 0
+				? string.Empty
+				: string.Format(
+					CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.SignatureProgressFormat)],
+					SignedCount,
+					RequiredSignatures);
+
+			this.ImportantDateText = GetImportantDateText(Agreement);
+			this.NextActionText = this.IsProposal
+				? ServiceRef.Localizer[nameof(AppResources.RespondToProposal)]
+				: this.CanSign
+					? ServiceRef.Localizer[nameof(AppResources.ReviewAndSign)]
+					: ServiceRef.Localizer[nameof(AppResources.ViewContract)];
+			this.PrimaryActionText = this.NextActionText;
+
+			this.KeyParameters.Clear();
+			foreach (ObservableParameter Parameter in this.DisplayableParameters.Take(3))
+				this.KeyParameters.Add(Parameter);
+
+			this.OnPropertyChanged(nameof(this.HasKeyParameters));
+			await Task.WhenAll(
+				this.PrepareAttachmentsAsync(),
+				this.PrepareActivityAsync(),
+				this.PrepareRelatedTokensAsync());
+			this.UpdateFreshnessPresentation();
+			this.NotifyContractPresentationChanged();
+		}
+
+		private async Task PrepareActivityAsync()
+		{
+			if (this.Contract is null)
+				return;
+
+			Contract Agreement = this.Contract.Contract;
+			List<ContractActivityItem> Items = [];
+			if (Agreement.Created != DateTime.MinValue)
+			{
+				Items.Add(new ContractActivityItem(
+					ServiceRef.Localizer[nameof(AppResources.Created)],
+					string.Empty,
+					Agreement.Created));
+			}
+
+			if (Agreement.Updated != DateTime.MinValue &&
+				Agreement.Updated != Agreement.Created)
+			{
+				Items.Add(new ContractActivityItem(
+					ServiceRef.Localizer[nameof(AppResources.Updated)],
+					string.Empty,
+					Agreement.Updated));
+			}
+
+			foreach (ClientSignature Signature in Agreement.ClientSignatures ?? [])
+			{
+				Items.Add(new ContractActivityItem(
+					ServiceRef.Localizer[nameof(AppResources.ContractSigned)],
+					Signature.Role ?? string.Empty,
+					Signature.Timestamp));
+			}
+
+			if (Agreement.ServerSignature is not null)
+			{
+				Items.Add(new ContractActivityItem(
+					ServiceRef.Localizer[nameof(AppResources.ServerSignatures)],
+					string.Empty,
+					Agreement.ServerSignature.Timestamp));
+			}
+
+			try
+			{
+				INotificationServiceV2 NotificationService =
+					ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				IReadOnlyList<NotificationRecord> Records = await NotificationService.GetAsync(
+					new NotificationQuery
+					{
+						Channels = [Constants.PushChannels.Contracts],
+						Limit = 100
+					},
+					CancellationToken.None);
+
+				foreach (NotificationRecord Record in Records.Where(
+					Record => string.Equals(
+						Record.EntityId,
+						Agreement.ContractId,
+						StringComparison.OrdinalIgnoreCase)))
+				{
+					Items.Add(new ContractActivityItem(
+						Record.Title,
+						Record.Body ?? string.Empty,
+						Record.TimestampCreated));
+				}
+			}
+			catch (Exception Ex)
+			{
+				// Contract timestamps remain useful when notification history is unavailable.
+				LogRedactedFailure("Contract activity history could not be loaded.", Ex);
+			}
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.ActivityItems.Clear();
+				foreach (ContractActivityItem Item in Items
+					.OrderByDescending(Item => Item.Timestamp)
+					.GroupBy(Item => new { Item.Title, Item.Timestamp })
+					.Select(Group => Group.First()))
+				{
+					this.ActivityItems.Add(Item);
+				}
+
+				this.OnPropertyChanged(nameof(this.HasActivity));
+			});
+		}
+
+		private async Task PrepareRelatedTokensAsync()
+		{
+			Contract? Agreement = this.Contract?.Contract;
+			if (Agreement is null)
+				return;
+
+			long Generation = Interlocked.Increment(
+				ref this.relatedTokenLoadGeneration);
+			string ContractId = Agreement.ContractId ?? string.Empty;
+			bool IsTokenContract = string.Equals(
+				Agreement.ForMachinesNamespace,
+				NeuroFeaturesClient.NamespaceNeuroFeatures,
+				StringComparison.Ordinal);
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.RelatedTokens.Clear();
+				this.CanBrowseCreatedTokens = false;
+				this.RelatedTokensUnavailable = false;
+				this.IsRelatedTokensLoading = IsTokenContract;
+				this.OnPropertyChanged(nameof(this.HasRelatedTokens));
+				this.OnPropertyChanged(nameof(this.HasRelatedTokensSection));
+			});
+
+			Dictionary<string, bool> RelatedIds =
+				new(StringComparer.OrdinalIgnoreCase);
+			bool ReferencesUnavailable = false;
+			bool CanBrowseCreatedTokens = false;
+
+			if (IsTokenContract &&
+				Agreement.PartsMode != ContractParts.TemplateOnly &&
+				!string.IsNullOrWhiteSpace(ContractId))
+			{
+				try
+				{
+					string[] CreatedTokenIds =
+						await ServiceRef.XmppService.GetNeuroFeatureReferencesForContract(
+							ContractId,
+							0,
+							5);
+
+					foreach (string TokenId in CreatedTokenIds ?? [])
+					{
+						string NormalizedTokenId = TokenId?.Trim() ?? string.Empty;
+						if (!string.IsNullOrEmpty(NormalizedTokenId))
+							RelatedIds[NormalizedTokenId] = true;
+					}
+
+					CanBrowseCreatedTokens = RelatedIds.Count > 0;
+				}
+				catch (Exception Ex)
+				{
+					ReferencesUnavailable = true;
+					ServiceRef.LogService.LogWarning(
+						"Related token references could not be loaded.",
+						new KeyValuePair<string, object?>(
+							"FailureType",
+							Ex.GetType().Name));
+				}
+			}
+
+			bool ExplicitIdsAreCreated = string.Equals(
+				Agreement.ForMachinesLocalName,
+				"Create",
+				StringComparison.OrdinalIgnoreCase);
+			foreach (string TokenId in ExtractExplicitTokenIds(Agreement))
+			{
+				if (!RelatedIds.ContainsKey(TokenId))
+					RelatedIds[TokenId] = ExplicitIdsAreCreated;
+			}
+
+			List<ContractRelatedTokenItem> Items = RelatedIds
+				.Select(Pair => new ContractRelatedTokenItem(
+					Pair.Key,
+					Pair.Value
+						? ServiceRef.Localizer[nameof(AppResources.TokenCreatedByAgreement)]
+						: ServiceRef.Localizer[nameof(AppResources.TokenAffectedByAgreement)]))
+				.ToList();
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				if (Generation != Volatile.Read(ref this.relatedTokenLoadGeneration) ||
+					!string.Equals(
+						this.Contract?.ContractId,
+						ContractId,
+						StringComparison.OrdinalIgnoreCase))
+				{
+					return;
+				}
+
+				this.RelatedTokens.Clear();
+				foreach (ContractRelatedTokenItem Item in Items)
+					this.RelatedTokens.Add(Item);
+
+				this.CanBrowseCreatedTokens = CanBrowseCreatedTokens;
+				this.RelatedTokensUnavailable = ReferencesUnavailable;
+				this.IsRelatedTokensLoading = false;
+				this.OnPropertyChanged(nameof(this.HasRelatedTokens));
+				this.OnPropertyChanged(nameof(this.HasRelatedTokensSection));
+			});
+		}
+
+		private static IEnumerable<string> ExtractExplicitTokenIds(
+			Contract Agreement)
+		{
+			XmlElement? MachineReadable = Agreement.ForMachines;
+			if (MachineReadable is null)
+				yield break;
+
+			XmlNodeList? Nodes = MachineReadable.SelectNodes(".//*");
+			if (Nodes is null)
+				yield break;
+
+			HashSet<string> TokenIds = new(StringComparer.OrdinalIgnoreCase);
+			foreach (XmlNode Node in Nodes)
+			{
+				if (Node is not XmlElement Element)
+					continue;
+
+				bool IsTokenElement =
+					string.Equals(
+						Element.LocalName,
+						"TokenID",
+						StringComparison.OrdinalIgnoreCase) ||
+					(string.Equals(
+						Element.LocalName,
+						"Tag",
+						StringComparison.OrdinalIgnoreCase) &&
+					string.Equals(
+						Element.GetAttribute("name"),
+						"TokenID",
+						StringComparison.OrdinalIgnoreCase));
+				if (!IsTokenElement)
+					continue;
+
+				XmlNodeList? ParameterReferences =
+					Element.SelectNodes(".//*[local-name()='ParameterReference']");
+				if (ParameterReferences is not null)
+				{
+					foreach (XmlNode ParameterNode in ParameterReferences)
+					{
+						if (ParameterNode is not XmlElement ParameterElement)
+							continue;
+
+						string ParameterName =
+							ParameterElement.GetAttribute("parameter");
+						Parameter? Parameter = (Agreement.Parameters ?? [])
+							.FirstOrDefault(Item => string.Equals(
+								Item.Name,
+								ParameterName,
+								StringComparison.OrdinalIgnoreCase));
+						string Value = Convert.ToString(
+							Parameter?.ObjectValue,
+							CultureInfo.InvariantCulture) ?? string.Empty;
+						if (IsLikelyTokenId(Value))
+							TokenIds.Add(Value.Trim());
+					}
+				}
+
+				XmlNode? StringValue =
+					Element.SelectSingleNode(".//*[local-name()='String']");
+				if (StringValue is not null && IsLikelyTokenId(StringValue.InnerText))
+					TokenIds.Add(StringValue.InnerText.Trim());
+			}
+
+			foreach (string TokenId in TokenIds)
+				yield return TokenId;
+		}
+
+		private static bool IsLikelyTokenId(string? Value)
+		{
+			if (string.IsNullOrWhiteSpace(Value) ||
+				Value.Length > 1024 ||
+				Value.Any(char.IsWhiteSpace))
+			{
+				return false;
+			}
+
+			int SeparatorIndex = Value.IndexOf('@');
+			return SeparatorIndex > 0 && SeparatorIndex < Value.Length - 1;
+		}
+
+		private async Task PrepareAttachmentsAsync()
+		{
+			Attachment[] Attachments =
+				this.Contract?.Contract.Attachments ?? [];
+			List<ContractAttachmentItem> Items = [];
+			for (int Index = 0; Index < Attachments.Length; Index++)
+			{
+				Attachment? Attachment = Attachments[Index];
+				if (Attachment is null)
+					continue;
+
+				try
+				{
+					Items.Add(new ContractAttachmentItem(
+						Attachment,
+						Index + 1));
+				}
+				catch (Exception Ex)
+				{
+					// A malformed attachment must not prevent the agreement itself
+					// from loading. Do not include attachment metadata in diagnostics.
+					ServiceRef.LogService.LogWarning(
+						"Contract attachment metadata could not be presented.",
+						new KeyValuePair<string, object?>(
+							"FailureType",
+							Ex.GetType().Name));
+				}
+			}
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.AttachmentItems.Clear();
+				foreach (ContractAttachmentItem Item in Items)
+					this.AttachmentItems.Add(Item);
+
+				this.OnPropertyChanged(nameof(this.HasAttachments));
+			});
+		}
+
+		private Task SetAttachmentUnavailableAsync(ContractAttachmentItem Item)
+		{
+			return MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				Item.ErrorText =
+					ServiceRef.Localizer[nameof(AppResources.ContractAttachmentUnavailable)];
+			});
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task OpenRelatedTokenAsync(ContractRelatedTokenItem? Item)
+		{
+			if (Item is null || string.IsNullOrWhiteSpace(Item.TokenId))
+				return;
+
+			await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(Item.TokenId);
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task BrowseCreatedTokensAsync()
+		{
+			string ContractId = this.Contract?.ContractId ?? string.Empty;
+			if (!this.CanBrowseCreatedTokens || string.IsNullOrWhiteSpace(ContractId))
+				return;
+
+			MyTokensNavigationArgs Args = new(ContractId);
+			await ServiceRef.NavigationService.GoToAsync(
+				nameof(MyTokensPage),
+				Args,
+				Services.UI.BackMethod.Pop);
+		}
+
+		private static string GetSafeAttachmentExtension(string ContentType)
+		{
+			string MediaType = ContentType.Split(';', 2)[0].Trim();
+			string Extension = InternetContent.GetFileExtension(MediaType);
+			if (string.IsNullOrWhiteSpace(Extension) ||
+				Extension.Length > 10 ||
+				Extension.Any(Character =>
+					!char.IsLetterOrDigit(Character)))
+			{
+				return "bin";
+			}
+
+			return Extension.ToLowerInvariant();
+		}
+
+		private void UpdateFreshnessPresentation()
+		{
+			if (this.IsRefreshing)
+			{
+				this.FreshnessText = ServiceRef.Localizer[nameof(AppResources.Refreshing)];
+				this.FreshnessTone = StatusPillTone.Information;
+				this.FreshnessWarningText = string.Empty;
+			}
+			else if (this.refreshFailedUsingSaved)
+			{
+				this.FreshnessText = ServiceRef.Localizer[nameof(AppResources.UsingSavedContract)];
+				this.FreshnessTone = StatusPillTone.Warning;
+				this.FreshnessWarningText =
+					ServiceRef.Localizer[nameof(AppResources.ContractRefreshFailedUsingSaved)];
+			}
+			else if (this.isUsingSavedContract)
+			{
+				this.FreshnessText = ServiceRef.Localizer[nameof(AppResources.UsingSavedContract)];
+				this.FreshnessTone = StatusPillTone.Warning;
+				this.FreshnessWarningText =
+					ServiceRef.Localizer[nameof(AppResources.SavedContractMayBeOutOfDate)];
+			}
+			else
+			{
+				this.FreshnessText =
+					ServiceRef.Localizer[nameof(AppResources.ContractCurrentDetails)];
+				this.FreshnessTone = StatusPillTone.Success;
+				this.FreshnessWarningText = string.Empty;
+			}
+		}
+
+		private void NotifyContractPresentationChanged()
+		{
+			this.OnPropertyChanged(nameof(this.Visibility));
+			this.OnPropertyChanged(nameof(this.CanSign));
+			this.OnPropertyChanged(nameof(this.CanShowSignBar));
+			this.OnPropertyChanged(nameof(this.CanContinueToSigning));
+			this.OnPropertyChanged(nameof(this.HasPrimaryAction));
+			this.OnPropertyChanged(nameof(this.HasServerSignature));
+			this.OnPropertyChanged(nameof(this.HasMachineReadableContent));
+			this.OnPropertyChanged(nameof(this.MachineReadableContent));
+			this.OnPropertyChanged(nameof(this.HasTemplateId));
+			this.OnPropertyChanged(nameof(this.HasProvider));
+			this.OnPropertyChanged(nameof(this.HasSignAfter));
+			this.OnPropertyChanged(nameof(this.HasSignBefore));
+		}
+
+		private async Task PersistContractAsync(Contract Contract)
+		{
+			ContractReference? Reference = this.sourceContractReference;
+			if (Reference is null)
+			{
+				Reference = await Database.FindFirstIgnoreRest<ContractReference>(
+					new FilterFieldEqualTo("ContractId", Contract.ContractId));
+			}
+
+			if (Reference is null)
+				return;
+
+			await Reference.SetContract(Contract);
+			await Database.Update(Reference);
+			this.sourceContractReference = Reference;
+			this.OnPropertyChanged(nameof(this.CanRemoveLocalReference));
+		}
+
+		private static string FirstNonEmpty(params string?[] Values)
+		{
+			foreach (string? Value in Values)
+			{
+				if (!string.IsNullOrWhiteSpace(Value))
+					return Value.Trim();
+			}
+
+			return string.Empty;
+		}
+
+		private static string GetImportantDateText(Contract Contract)
+		{
+			if (Contract.SignBefore is DateTime SignBefore &&
+				Contract.State is ContractState.Approved or ContractState.BeingSigned)
+			{
+				return string.Format(
+					CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.ContractSignByFormat)],
+					SignBefore.ToLocalTime().ToString("g", CultureInfo.CurrentCulture));
+			}
+
+			DateTime Timestamp = Contract.Updated != DateTime.MinValue
+				? Contract.Updated
+				: Contract.Created;
+			return Timestamp == DateTime.MinValue
+				? string.Empty
+				: string.Format(
+					CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.LastUpdatedFormat)],
+					Timestamp.ToLocalTime().ToString("g", CultureInfo.CurrentCulture));
+		}
+
+		private static string GetContractStateText(ContractState State)
+		{
+			return State switch
+			{
+				ContractState.Proposed => ServiceRef.Localizer[nameof(AppResources.Proposed)],
+				ContractState.Rejected => ServiceRef.Localizer[nameof(AppResources.Rejected)],
+				ContractState.Approved => ServiceRef.Localizer[nameof(AppResources.Approved)],
+				ContractState.BeingSigned => ServiceRef.Localizer[nameof(AppResources.BeingSigned)],
+				ContractState.Signed => ServiceRef.Localizer[nameof(AppResources.Signed)],
+				ContractState.Failed => ServiceRef.Localizer[nameof(AppResources.Failed)],
+				ContractState.Obsoleted => ServiceRef.Localizer[nameof(AppResources.Obsoleted)],
+				ContractState.Deleted => ServiceRef.Localizer[nameof(AppResources.Deleted)],
+				_ => State.ToString()
+			};
+		}
+
+		private static StatusPillTone GetContractStateTone(ContractState State)
+		{
+			return State switch
+			{
+				ContractState.Signed => StatusPillTone.Success,
+				ContractState.Rejected or
+				ContractState.Failed or
+				ContractState.Obsoleted or
+				ContractState.Deleted => StatusPillTone.Danger,
+				ContractState.Proposed or
+				ContractState.Approved or
+				ContractState.BeingSigned => StatusPillTone.Information,
+				_ => StatusPillTone.Neutral
+			};
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
@@ -966,9 +1902,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
-			ServiceRef.LogService.LogDebug($"RefreshContractAsync start for {this.Contract.ContractId}");
-			bool previousStateChange = this.CanStateChange;
-			await this.SetCanStateChangeOnMainThreadAsync(false); // Gate state transitions during refresh
+			ServiceRef.LogService.LogDebug("Contract refresh started.");
+			bool PreviousStateChange = this.CanStateChange;
+			await this.SetCanStateChangeOnMainThreadAsync(false);
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
@@ -981,97 +1917,142 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
-				newContract ??= await ServiceRef.XmppService.GetContract(this.Contract.ContractId);
-			}
-			catch (ForbiddenException)
-			{
-				if (await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.RefreshContract_Forbidden_Title)],
-					ServiceRef.Localizer[nameof(AppResources.RefreshContract_Forbidden_Description)],
-					ServiceRef.Localizer[nameof(AppResources.Yes)],
-					ServiceRef.Localizer[nameof(AppResources.No)]))
+				try
 				{
-					if (!await ServiceRef.NetworkService.TryRequest(
-						() => ServiceRef.XmppService.PetitionContract(
-							this.Contract.ContractId,
-							Guid.NewGuid().ToString(),
-							ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)])))
+					newContract ??=
+						await ServiceRef.XmppService.GetContract(this.Contract.ContractId);
+				}
+				catch (ForbiddenException)
+				{
+					bool Petition = await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.RefreshContract_Forbidden_Title)],
+						ServiceRef.Localizer[nameof(AppResources.RefreshContract_Forbidden_Description)],
+						ServiceRef.Localizer[nameof(AppResources.Yes)],
+						ServiceRef.Localizer[nameof(AppResources.No)]);
+					if (Petition)
 					{
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							this.IsRefreshing = false;
-						});
-						return;
+						await ServiceRef.NetworkService.TryRequest(
+							() => ServiceRef.XmppService.PetitionContract(
+								this.Contract.ContractId,
+								Guid.NewGuid().ToString(),
+								ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)]));
 					}
+
+					this.MarkRefreshFailureUsingSavedContract();
+					return;
 				}
-				;
-			}
-			catch (ItemNotFoundException)
-			{
-				if (await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
-					ServiceRef.Localizer[nameof(AppResources.Yes)],
-					ServiceRef.Localizer[nameof(AppResources.No)]))
+				catch (ItemNotFoundException Ex)
 				{
-					await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", this.Contract.ContractId));
+					LogRedactedFailure("Contract refresh could not find the requested agreement.", Ex);
+					this.MarkRefreshFailureUsingSavedContract();
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
 				}
-			}
-			catch
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
+				catch (Exception Ex)
 				{
-					this.IsRefreshing = false;
-				});
-				return; // Ignore other exceptions
-			}
+					LogRedactedFailure("Contract refresh failed.", Ex);
+					this.MarkRefreshFailureUsingSavedContract();
+					return;
+				}
 
-			if (newContract is null || newContract.ServerSignature.Timestamp == this.Contract.Contract.ServerSignature.Timestamp)
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
+				if (newContract is null)
 				{
-					this.IsRefreshing = false;
+					this.MarkRefreshFailureUsingSavedContract();
+					return;
+				}
+
+				await this.PersistContractAsync(newContract);
+				this.isUsingSavedContract = false;
+				this.refreshFailedUsingSaved = false;
+
+				if (ContractsRepresentSameVersion(
+					newContract,
+					this.Contract.Contract))
+				{
+					await MainThread.InvokeOnMainThreadAsync(async () =>
+					{
+						this.PrepareDisplayableParameters();
+						this.PrepareSignableRoles();
+						await this.PreparePropertiesAsync();
+					});
+					await this.PrepareWorkspaceAsync();
+					this.UpdateFreshnessPresentation();
+					ServiceRef.LogService.LogDebug(
+						"RefreshContractAsync completed (already current)");
+					return;
+				}
+
+				ObservableContract Wrapper = await ObservableContract.CreateAsync(newContract);
+				ViewContractStep CurrentStep =
+					Enum.TryParse(this.CurrentState, out ViewContractStep ParsedStep)
+						? ParsedStep
+						: ViewContractStep.Overview;
+				if (CurrentStep is ViewContractStep.Review or ViewContractStep.Sign)
+					CurrentStep = ViewContractStep.Overview;
+
+				await MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+					this.SelectedRole = null;
+					this.HasReviewedForSigning = false;
+					this.IsContractOk = false;
+					this.HumanReadableText = null;
+					this.Contract = Wrapper;
+					this.PrepareDisplayableParameters();
+					this.PrepareSignableRoles();
+					await this.PreparePropertiesAsync();
 				});
-				await this.SetCanStateChangeOnMainThreadAsync(previousStateChange);
-				ServiceRef.LogService.LogDebug("RefreshContractAsync skipped (no changes)");
-				return;
+
+				await this.PrepareWorkspaceAsync();
+				await this.SetCanStateChangeOnMainThreadAsync(true);
+				await this.GoToStateAsync(CurrentStep);
+				ServiceRef.LogService.LogDebug("Contract refresh completed.");
+			}
+			finally
+			{
+				await this.SetCanStateChangeOnMainThreadAsync(PreviousStateChange);
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsRefreshing = false);
+			}
+		}
+
+		private void MarkRefreshFailureUsingSavedContract()
+		{
+			this.isUsingSavedContract = true;
+			this.refreshFailedUsingSaved = true;
+			this.UpdateFreshnessPresentation();
+		}
+
+		private static void LogRedactedFailure(string Message, Exception Exception)
+		{
+			// Contract IDs, XML, identities, signatures, and parameter values are deliberately omitted.
+			ServiceRef.LogService.LogWarning(
+				Message,
+				new KeyValuePair<string, object?>(
+					"FailureType",
+					Exception.GetType().Name));
+		}
+
+		private static bool ContractsRepresentSameVersion(
+			Contract First,
+			Contract Second)
+		{
+			DateTime? FirstSignature = First.ServerSignature?.Timestamp;
+			DateTime? SecondSignature = Second.ServerSignature?.Timestamp;
+			if (FirstSignature.HasValue || SecondSignature.HasValue)
+			{
+				return FirstSignature == SecondSignature &&
+					First.Updated == Second.Updated &&
+					First.State == Second.State &&
+					(First.ClientSignatures?.Length ?? 0) ==
+					(Second.ClientSignatures?.Length ?? 0);
 			}
 
-			ObservableContract Wrapper = new ObservableContract(newContract);
-			ViewContractStep CurrentStep = Enum.Parse<ViewContractStep>(this.CurrentState);
-
-			await MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				this.SelectedRole = null;
-				this.Contract = Wrapper;
-				await this.Contract.InitializeAsync();
-			});
-
-			await MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				this.PrepareDisplayableParameters();
-				this.PrepareSignableRoles();
-				await this.PreparePropertiesAsync();
-				this.OnPropertyChanged(nameof(this.CanSign));
-				this.OnPropertyChanged(nameof(this.CanShowSignBar));
-			});
-
-			ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
-				new FilterFieldEqualTo("ContractId", this.Contract.ContractId));
-
-			if (Ref is not null)
-			{
-				await Ref.SetContract(newContract);
-				await Database.Update(Ref);
-			}
-
-			await this.SetCanStateChangeOnMainThreadAsync(previousStateChange);
-			await this.GoToStateAsync(CurrentStep);
-			ServiceRef.LogService.LogDebug($"RefreshContractAsync completed for {this.Contract.ContractId}");
-
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.IsRefreshing = false;
-			});
+			return First.Updated == Second.Updated &&
+				First.State == Second.State &&
+				(First.ClientSignatures?.Length ?? 0) ==
+				(Second.ClientSignatures?.Length ?? 0);
 		}
 
 		private async Task<bool> ConfirmAsync(string resourceKey, AuthenticationPurpose purpose)

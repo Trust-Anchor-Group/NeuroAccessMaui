@@ -6,7 +6,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 	public partial class WalletPage
 	{
 		/// <summary>
-		/// Creates a new instance of the <see cref="MyEDalerWalletPage"/> class.
+		/// Creates a new instance of the <see cref="WalletPage"/> class.
 		/// </summary>
 		public WalletPage(WalletViewModel ViewModel)
 		{

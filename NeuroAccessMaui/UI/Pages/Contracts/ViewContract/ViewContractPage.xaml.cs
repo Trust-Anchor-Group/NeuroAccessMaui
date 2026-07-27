@@ -1,8 +1,4 @@
 ﻿using CommunityToolkit.Maui.Layouts;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
-using NeuroAccessMaui.UI.Popups.Image;
-using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
@@ -24,25 +20,5 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.BindingContext = ViewModel;
 		}
 
-		/// <inheritdoc/>
-		public override Task OnDisappearingAsync()
-		{
-			return base.OnDisappearingAsync();
-		}
-
-		private void Image_Tapped(object? Sender, EventArgs e)
-		{
-			ViewContractViewModel ViewModel = this.ViewModel<ViewContractViewModel>();
-
-			Attachment[]? Attachments = ViewModel.Contract?.Contract.Attachments;
-			if (Attachments is null)
-				return;
-
-			ImagesPopup ImagesPopup = new();
-			ImagesViewModel ImagesViewModel = new(Attachments);
-			ImagesPopup.BindingContext = ImagesViewModel;
-			ServiceRef.PopupService.PushAsync(ImagesPopup);
-			//imagesViewModel.LoadPhotos(Attachments);
-		}
 	}
 }

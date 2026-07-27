@@ -3357,12 +3357,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Nykyiset muuttujat</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>Token-tapahtumat</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>Seuraavassa on kirjattu tokenille tallennetut julkiset tapahtumat. Myös yksityistilaisuutesi sisältyvät hintaan.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Teksti huomautus</value>
   </data>

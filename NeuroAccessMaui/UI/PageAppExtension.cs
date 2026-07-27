@@ -82,11 +82,9 @@ using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
-using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
 using NeuroAccessMaui.UI.Popups.Settings;
-using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
@@ -287,7 +285,6 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<MachineVariablesPage, MachineVariablesViewModel>();
 			Builder.Services.AddTransient<MyTokensPage, MyTokensViewModel>();
 			Builder.Services.AddTransient<MyEDalerWalletPage, MyWalletViewModel>();
-			Builder.Services.AddTransient<MyTokenWalletPage, MyWalletViewModel>();
 			Builder.Services.AddTransient<PaymentPage, EDalerUriViewModel>();
 			Builder.Services.AddTransient<PaymentAcceptancePage, EDalerUriViewModel>();
 			Builder.Services.AddTransient<PendingPaymentPage, EDalerUriViewModel>();
@@ -296,7 +293,6 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<SendPaymentPage, EDalerUriViewModel>();
 			Builder.Services.AddTransient<ServiceProvidersPage, ServiceProvidersViewModel>();
 			Builder.Services.AddTransient<TokenDetailsPage, TokenDetailsViewModel>();
-			Builder.Services.AddTransient<TokenEventsPage, TokenEventsViewModel>();
 			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
 			Builder.Services.AddTransient<TransactionHistoryPage, TransactionHistoryViewModel>();
 			Builder.Services.AddTransient<EmbeddedLayoutPage, EmbeddedLayoutViewModel>();
@@ -304,8 +300,6 @@ namespace NeuroAccessMaui.UI
 			// Popups
 			Builder.Services.AddTransient<ImageView>();
 			Builder.Services.AddTransient<ImageViewModel>();
-			Builder.Services.AddTransient<AddTextNotePopup>();
-			Builder.Services.AddTransient<AddTextNoteViewModel>();
 			Builder.Services.AddTransient<CheckPasswordPopup>();
 			Builder.Services.AddTransient<CheckPasswordViewModel>();
 			Builder.Services.AddTransient<OnboardingHelpPopup>();

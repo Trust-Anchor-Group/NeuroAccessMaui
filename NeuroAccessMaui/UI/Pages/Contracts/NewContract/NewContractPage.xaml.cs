@@ -30,9 +30,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <param name="Options">Available options, as dictionaries with contract parameters.</param>
 		public Task ShowContractOptions(IDictionary<CaseInsensitiveString, object>[] Options)
 		{
-			//if (this.ContentPageModel is NewContractViewModel ViewModel)
-			//await ViewModel.ShowContractOptions(Options);
-
 			return Task.CompletedTask;
 		}
 

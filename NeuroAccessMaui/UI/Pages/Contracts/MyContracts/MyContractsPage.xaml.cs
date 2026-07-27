@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 
@@ -51,22 +50,5 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
-		private void ContractsSearchChanged(object? Sender, TextChangedEventArgs e)
-		{
-			try
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
-					{
-						MyContractsViewModel.UpdateSearch(e.NewTextValue);
-					}
-				});
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
 	}
 }

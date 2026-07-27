@@ -1,43 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<views:BaseNewContractView x:Name="ThisPage"
-                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.ParametersView"
-                           x:DataType="base:NewContractViewModel"
-                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
-                           xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls" 
-									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI" >
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseNewContractView
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.ParametersView"
+	x:DataType="base:NewContractViewModel"
+	x:Name="ThisPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views">
 	<ContentView.Resources>
-		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
+		<objectModel:ParameterTemplateSelector
+			x:Key="ParameterTemplateSelector"
 			BooleanTemplate="{StaticResource BooleanParameterTemplate}"
+			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 			DateTemplate="{StaticResource DateParameterTemplate}"
 			DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
+			DefaultTemplate="{StaticResource DefaultParameterTemplate}"
+			DurationTemplate="{StaticResource DurationParameterTemplate}"
+			GeoTemplate="{StaticResource GeoParameterTemplate}"
 			NumericalTemplate="{StaticResource NumericalParameterTemplate}"
 			StringTemplate="{StaticResource StringParameterTemplate}"
-			TimeTemplate="{StaticResource TimeParameterTemplate}"
-			DurationTemplate="{StaticResource DurationParameterTemplate}"
-			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
-			GeoTemplate="{StaticResource GeoParameterTemplate}"
-			DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+			TimeTemplate="{StaticResource TimeParameterTemplate}" />
 	</ContentView.Resources>
 
-	<!-- Parameters -->
-	<Grid>
-		<CollectionView HorizontalOptions="Center"
-						ItemsSource="{Binding EditableParameters}"
-						ItemTemplate="{StaticResource ParameterTemplateSelector}"
-						SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
-			<CollectionView.ItemsLayout>
-				<LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
-			</CollectionView.ItemsLayout>
-			<CollectionView.EmptyView>
-				<Label Text="{l:Localize SomethingWentWrong}" />
-			</CollectionView.EmptyView>
-		</CollectionView>
-	</Grid>
-	
+	<CollectionView
+		x:Name="ParameterCollection"
+		HorizontalOptions="Fill"
+		ItemSizingStrategy="MeasureAllItems"
+		ItemsSource="{Binding EditableParameters}"
+		SelectionMode="None">
+		<CollectionView.Header>
+			<VerticalStackLayout
+				Padding="{DynamicResource MediumLeftRightBottomMargins}"
+				Spacing="{DynamicResource MediumSpacing}">
+				<Border Margin="0" Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label
+							SemanticProperties.HeadingLevel="Level1"
+							Style="{DynamicResource SectionTitleLabel}"
+							Text="{l:Localize Parameters}" />
+						<Label
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize SetParametersDescription}" />
+					</VerticalStackLayout>
+				</Border>
+
+				<Border
+					BackgroundColor="{DynamicResource TnPWarningbgWL}"
+					IsVisible="{Binding FirstInvalidParameter, Converter={StaticResource NullToBooleanConverter}}"
+					Margin="0"
+					Padding="{DynamicResource SmallMargins}"
+					Stroke="{DynamicResource TnPWarningFigureWL}"
+					Style="{DynamicResource RoundedBorder}">
+					<VerticalStackLayout Spacing="2">
+						<Label
+							Style="{DynamicResource KeyLabel}"
+							Text="{Binding FirstInvalidParameter.Label}"
+							TextColor="{DynamicResource TnPWarningContentWL}" />
+						<Label
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize ContractFieldNeedsAttention}"
+							TextColor="{DynamicResource TnPWarningContentWL}" />
+					</VerticalStackLayout>
+				</Border>
+			</VerticalStackLayout>
+		</CollectionView.Header>
+		<CollectionView.ItemsLayout>
+			<LinearItemsLayout ItemSpacing="16" Orientation="Vertical" />
+		</CollectionView.ItemsLayout>
+		<CollectionView.EmptyView>
+			<Label
+				Margin="{DynamicResource MediumMargins}"
+				Style="{DynamicResource ItemDescriptionLabel}"
+				Text="{l:Localize None}" />
+		</CollectionView.EmptyView>
+	</CollectionView>
 </views:BaseNewContractView>

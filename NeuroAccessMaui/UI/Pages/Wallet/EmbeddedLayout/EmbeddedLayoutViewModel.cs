@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
-using Waher.Script.Functions.ComplexNumbers;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using NeuroFeatures;
+using SkiaSharp;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 {
@@ -15,11 +13,35 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 	{
 		private readonly EmbeddedLayoutNavigationArgs? navigationArguments;
 
+		/// <summary>
+		/// Gets or sets the rendered embedded layout image.
+		/// </summary>
 		[ObservableProperty]
 		private ImageSource? renderedLayout;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the embedded layout is available.
+		/// </summary>
 		[ObservableProperty]
-		private bool loaded = false;
+		private bool loaded;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the embedded layout is rendering.
+		/// </summary>
+		[ObservableProperty]
+		private bool isLoading;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the embedded layout is unavailable.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasError;
+
+		/// <summary>
+		/// Gets or sets the localized embedded-layout failure explanation.
+		/// </summary>
+		[ObservableProperty]
+		private string errorMessage = string.Empty;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EmbeddedLayoutViewModel"/> class.
@@ -38,17 +60,55 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 		{
 			await base.OnInitializeAsync();
 
-			await MainThread.InvokeOnMainThreadAsync(async () =>
+			Token? Token = this.navigationArguments?.Token;
+			if (Token is null || !Token.HasEmbeddedLayout)
 			{
-				if (this.navigationArguments is null)
-					return;
+				await MainThread.InvokeOnMainThreadAsync(this.ShowUnavailable);
+				return;
+			}
 
-				if (this.navigationArguments.TokenItem is null)
-					return;
-
-				this.RenderedLayout = await this.navigationArguments.TokenItem.RenderEmbeddedLayout();
-				this.Loaded = true;
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.IsLoading = true;
+				this.HasError = false;
+				this.ErrorMessage = string.Empty;
 			});
+
+			try
+			{
+				using SKImage Image = await Token.RenderEmbeddedLayout();
+				using SKData Data = Image.Encode(SKEncodedImageFormat.Png, 100);
+				byte[] Buffer = Data.ToArray();
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.RenderedLayout = ImageSource.FromStream(
+						() => new MemoryStream(Buffer, false));
+					this.Loaded = true;
+				});
+			}
+			catch (Exception Ex)
+			{
+				// Embedded definitions are remotely supplied and may contain sensitive token data.
+				ServiceRef.LogService.LogWarning(
+					"Embedded token layout rendering failed.",
+					new KeyValuePair<string, object?>(
+						"FailureType",
+						Ex.GetType().Name));
+				await MainThread.InvokeOnMainThreadAsync(this.ShowUnavailable);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsLoading = false);
+			}
+		}
+
+		private void ShowUnavailable()
+		{
+			this.Loaded = false;
+			this.HasError = true;
+			this.ErrorMessage =
+				ServiceRef.Localizer[nameof(AppResources.EmbeddedLayoutUnavailable)];
 		}
 	}
 }

@@ -3357,12 +3357,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Aktuelle Variablen</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>Token-Ereignisse</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>Im Folgenden finden Sie öffentliche Ereignisse, die für das Token aufgezeichnet wurden. Auch Ihre privaten Veranstaltungen sind inklusive.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Texthinweis</value>
   </data>

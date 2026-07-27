@@ -1,184 +1,195 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.NewContractPage"
-							 x:DataType="viewmodel:NewContractViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
-							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
-							 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel">
+<base:BaseContentPage
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.NewContractPage"
+	x:DataType="viewmodel:NewContractViewModel"
+	x:Name="ThisPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views">
 
 	<base:BaseContentPage.Resources>
-		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
-		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
-		                                 DateTemplate="{StaticResource DateParameterTemplate}"
-		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
-		                                 StringTemplate="{StaticResource StringParameterTemplate}"
-		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
-		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
-										 ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
-										 GeoTemplate="{StaticResource GeoParameterTemplate}"
-		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 		<converters:StringNotEqualsConverter x:Key="StringNotEqualsConverter" />
+		<mct:IsStringNotNullOrEmptyConverter x:Key="IsNotEmptyString" />
 	</base:BaseContentPage.Resources>
 
-	<Grid x:Name="TheMainGrid"
-	  RowDefinitions="auto,*,auto"
-	  ColumnDefinitions="*"
-	  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid
+		BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		RowDefinitions="Auto,Auto,*,Auto">
+		<controls:Background Grid.Row="0" Grid.RowSpan="4" />
 
-		<controls:Background Grid.Row ="1"/>
-
-		<!-- Top Bar -->
-		<Grid Grid.Row="0"
-			  RowDefinitions="*"
-			  ColumnDefinitions="auto,*"
-			  ColumnSpacing="8"
-			  Margin="16,0,16,16">
-
-			<controls:SvgButton Grid.Row="0"
-								Grid.Column="0"
-								Command="{Binding BackCommand}"
-								Style="{DynamicResource IconButton}"
-								SvgSource="close.svg" />
-
-			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
-			<Label Grid.Row="0"
-				   Grid.Column="1"
-				   Style="{DynamicResource PageTitleLabel}"
-				   Text="{l:Localize NewContract}"
-				   HorizontalTextAlignment="End" />
+		<Grid
+			Grid.Row="0"
+			ColumnDefinitions="Auto,*"
+			ColumnSpacing="{DynamicResource SmallSpacing}"
+			Margin="{DynamicResource MediumLeftRightBottomMargins}">
+			<controls:SvgButton
+				Command="{Binding BackCommand}"
+				SemanticProperties.Description="{l:Localize Close}"
+				Style="{DynamicResource IconButton}"
+				SvgSource="close.svg" />
+			<Label
+				Grid.Column="1"
+				HorizontalTextAlignment="End"
+				Style="{DynamicResource PageTitleLabel}"
+				Text="{l:Localize NewContract}" />
 		</Grid>
-		<!-- Main Content -->
-		<Grid x:Name="StateGrid"
-			Grid.Row="1"
-			mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}" 
-			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" >
 
+		<VerticalStackLayout
+			Grid.Row="1"
+			IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}"
+			Margin="{DynamicResource MediumLeftRightBottomMargins}"
+			Spacing="{DynamicResource SmallSpacing}">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+				<Label
+					Style="{DynamicResource SectionTitleLabel}"
+					Text="{Binding CurrentStepTitle}" />
+				<Label
+					Grid.Column="1"
+					Style="{DynamicResource InfoLabel}"
+					Text="{Binding ProgressText}"
+					VerticalOptions="Center" />
+			</Grid>
+
+			<CollectionView
+				HeightRequest="48"
+				HorizontalScrollBarVisibility="Never"
+				ItemsSource="{Binding Steps}"
+				SelectionMode="None">
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout ItemSpacing="8" Orientation="Horizontal" />
+				</CollectionView.ItemsLayout>
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="viewmodel:StepDescriptor">
+						<controls:TemplatedButton
+							Command="{Binding GoToStepDescriptorCommand, Source={RelativeSource AncestorType={x:Type viewmodel:NewContractViewModel}}, x:DataType=viewmodel:NewContractViewModel}"
+							CommandParameter="{Binding .}"
+							SemanticProperties.Description="{Binding Title}">
+							<Border
+								BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+								InputTransparent="True"
+								Padding="12,8"
+								Stroke="{DynamicResource SurfaceStrokeWL}"
+								Style="{DynamicResource RoundedBorder}">
+								<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
+									<Label
+										Style="{DynamicResource KeyLabel}"
+										Text="{Binding DisplayNumber}" />
+									<Label
+										LineBreakMode="TailTruncation"
+										MaxLines="1"
+										Style="{DynamicResource ValueLabel}"
+										Text="{Binding Title}" />
+								</HorizontalStackLayout>
+								<Border.Triggers>
+									<DataTrigger
+										Binding="{Binding IsCurrent}"
+										TargetType="Border"
+										Value="True">
+										<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation2WL}" />
+										<Setter Property="Stroke" Value="{DynamicResource ContentPrimaryWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+							</Border>
+						</controls:TemplatedButton>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+
+		<Grid
+			x:Name="StateGrid"
+			Grid.Row="2"
+			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}"
+			mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}">
 			<mct:StateContainer.StateViews>
-				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
-				<views:IntroView x:Name="IntroView" mct:StateView.StateKey="Intro" />
-				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
-				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
-				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
+				<views:LoadingView mct:StateView.StateKey="Loading" />
+				<views:IntroView mct:StateView.StateKey="Intro" />
+				<views:ParametersView mct:StateView.StateKey="Parameters" />
+				<views:RolesView mct:StateView.StateKey="Roles" />
+				<views:PreviewView mct:StateView.StateKey="Preview" />
 			</mct:StateContainer.StateViews>
 
-			<!-- default state, should not occur -->
-			<VerticalStackLayout>
-				<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="{l:Localize SomethingWentWrong}" />
-
-			</VerticalStackLayout>
+			<Label
+				HorizontalTextAlignment="Center"
+				Text="{l:Localize SomethingWentWrong}"
+				VerticalTextAlignment="Center" />
 		</Grid>
 
-		<!-- Unified Wizard Bottom Bar in own row -->
-		<Border Grid.Row="2" Style="{DynamicResource BottomBarBorder2}" Margin="0" Padding="0" IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}">
-			<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" Padding="16,8,16,8" ColumnSpacing="{DynamicResource MediumSpacing}" RowSpacing="8">
-
-				<!-- Row 1: Preview Acknowledgment (only visible on preview step) -->
-				<Grid Grid.Row="0"
-					  Grid.ColumnSpan="3"
-					  ColumnDefinitions="Auto,*"
-					  IsVisible="{Binding IsOnPreviewStep}"
-					  ColumnSpacing="{DynamicResource SmallSpacing}"
-					  Padding="{DynamicResource SmallTopMargins}">
-					<CheckBox Grid.Column="0"
-							  IsChecked="{Binding IsContractOk}"
-							  Color="{DynamicResource ContentPrimaryWL}" />
-					<Label Grid.Column="1"
-						   Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
-						   Style="{DynamicResource BottomBarLabel}" />
+		<Border
+			Grid.Row="3"
+			IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}"
+			Margin="0"
+			Padding="0"
+			Style="{DynamicResource BottomBarBorder2}">
+			<Grid
+				ColumnDefinitions="Auto,*,Auto"
+				ColumnSpacing="{DynamicResource MediumSpacing}"
+				Padding="16,8"
+				RowDefinitions="Auto,Auto,Auto"
+				RowSpacing="{DynamicResource SmallSpacing}">
+				<Grid
+					Grid.ColumnSpan="3"
+					ColumnDefinitions="Auto,*"
+					ColumnSpacing="{DynamicResource SmallSpacing}"
+					IsVisible="{Binding IsOnPreviewStep}"
+					Padding="{DynamicResource SmallTopMargins}">
+					<CheckBox
+						Color="{DynamicResource ContentPrimaryWL}"
+						IsChecked="{Binding IsContractOk}" />
+					<Label
+						Grid.Column="1"
+						Style="{DynamicResource BottomBarLabel}"
+						Text="{l:Localize IHaveReadAndUnderstoodTheContract}" />
 				</Grid>
-				<!-- Row 1.5: Roles warning when no roles selected -->
-				<Border Grid.Row="1" Grid.ColumnSpan="3"
-						BackgroundColor="{DynamicResource TnPWarningbgWL}"
-						Style="{DynamicResource RoundedBorder}"
-						Padding="8" Stroke="Transparent"
-						IsVisible="{Binding ShowNoRolesWarning}">
-					<Label Text="{l:Localize NoRolesSelectedWarning}"
-						   Style="{DynamicResource BottomBarLabel}"
-						   TextColor="{DynamicResource TnPWarningContentWL}"/>
+
+				<Border
+					Grid.Row="1"
+					Grid.ColumnSpan="3"
+					BackgroundColor="{DynamicResource TnPWarningbgWL}"
+					IsVisible="{Binding ShowNoRolesWarning}"
+					Padding="{DynamicResource SmallMargins}"
+					Stroke="{DynamicResource TnPWarningFigureWL}"
+					Style="{DynamicResource RoundedBorder}">
+					<VerticalStackLayout Spacing="2">
+						<Label
+							Style="{DynamicResource BottomBarLabel}"
+							Text="{Binding RolesValidationMessage}"
+							TextColor="{DynamicResource TnPWarningContentWL}" />
+						<Label
+							IsVisible="{Binding RolesValidationContext, Converter={StaticResource IsNotEmptyString}}"
+							Style="{DynamicResource InfoLabel}"
+							Text="{Binding RolesValidationContext}"
+							TextColor="{DynamicResource TnPWarningContentWL}" />
+					</VerticalStackLayout>
 				</Border>
 
-				<!-- Row 2: Navigation + Progress + Action -->
-				<controls:TextButton Grid.Row="2"
-									 Grid.Column="0"
-									 Command="{Binding GoPreviousStepCommand}"
-									 IsEnabled="{Binding CanGoBack}"
-									 LabelData="{l:Localize Back}"
-									 Style="{DynamicResource SecondaryButton}"/>
-				<HorizontalStackLayout Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
-					<Label Text="{Binding ProgressText}" Style="{DynamicResource BottomBarLabel}" />
-					<ActivityIndicator IsVisible="{Binding IsValidatingParameters}" IsRunning="{Binding IsValidatingParameters}" Color="{DynamicResource ContentPrimaryWL}" />
-				</HorizontalStackLayout>
-				<controls:TextButton Grid.Row="2"
-									 Grid.Column="2"
-									 Command="{Binding GoNextStepCommand}"
-									 IsEnabled="{Binding IsCurrentStepValid}"
-									 Style="{DynamicResource PrimaryButton}"
-									 LabelData="{Binding PrimaryActionText}"/>
+				<controls:TextButton
+					Grid.Row="2"
+					Command="{Binding GoPreviousStepCommand}"
+					IsEnabled="{Binding CanGoBack}"
+					LabelData="{l:Localize Back}"
+					Style="{DynamicResource SecondaryButton}" />
+				<ActivityIndicator
+					Grid.Row="2"
+					Grid.Column="1"
+					Color="{DynamicResource ContentPrimaryWL}"
+					HorizontalOptions="Center"
+					IsRunning="{Binding IsValidatingParameters}"
+					IsVisible="{Binding IsValidatingParameters}" />
+				<controls:TextButton
+					Grid.Row="2"
+					Grid.Column="2"
+					Command="{Binding GoNextStepCommand}"
+					IsEnabled="{Binding CanAdvanceCurrentStep}"
+					LabelData="{Binding PrimaryActionText}"
+					Style="{DynamicResource PrimaryButton}" />
 			</Grid>
 		</Border>
-
-
-
-
-
-		<!-- 
-		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder}">
-			<Grid HorizontalOptions="Fill" VerticalOptions="Center">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-
-				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding BackCommand}">
-					<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							  Data="{x:Static ui:Geometries.ScanQrIconPath}"
-							  Style="{DynamicResource TransparentTemplateButtonPath}"
-							  />
-							<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-
-				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding TestCommand}">
-					<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							  Data="{x:Static ui:Geometries.ShowIdIconPath}"
-							  Style="{DynamicResource FilledTemplateButtonPath}"
-						/>
-							<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-			</Grid>
-		</Border>
-
-	
-<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
-    <controls:Background/>
-
-    <ScrollView>
-        <VerticalStackLayout>
-            <CollectionView ItemsSource="{Binding Parameters}"
-                            ItemTemplate="{StaticResource ParameterTemplateSelector}"
-                            VerticalOptions="Fill"
-                            HorizontalOptions="Fill" />
-            <ContentView Content="{Binding Path=HumanReadableText}" Margin="{DynamicResource SmallTopMargins}" />
-        </VerticalStackLayout>
-    </ScrollView>
-</Grid>
--->
 	</Grid>
-
 </base:BaseContentPage>

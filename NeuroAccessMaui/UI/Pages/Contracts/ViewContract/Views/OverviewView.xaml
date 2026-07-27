@@ -1,380 +1,534 @@
-<?xml version="1.0" encoding="utf-8"?>
-<views:BaseViewContractView x:Name="ThisPage"
-									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.OverviewView"
-									 x:DataType="base:ViewContractViewModel"
-									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-									 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-									 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-									 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-									 xmlns:contract="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts">
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseViewContractView
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.OverviewView"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+	x:DataType="base:ViewContractViewModel"
+	x:Name="ThisPage">
 
 	<ContentView.Resources>
-		<ResourceDictionary>
-			<converters:ContractStateToString x:Key="ContractStateToStringConverter" />
-			<Style x:Key="ItemTitleLabel"
-					 TargetType="Label"
-					 BaseResourceKey="BoldItemTitleLabel">
-				<Setter Property="TextColor"
-						  Value="{DynamicResource ContentPrimaryWL}" />
-				<Setter Property="FontSize"
-						  Value="15" />
-				<Setter Property="FontFamily"
-						  Value="SpaceGroteskSemiBold" />
-				<Setter Property="LineBreakMode"
-						  Value="WordWrap" />
-				<Setter Property="VerticalTextAlignment"
-						  Value="Center" />
-				<Setter Property="VerticalOptions"
-						  Value="Start" />
-				<Setter Property="HorizontalTextAlignment"
-						  Value="Start" />
-			</Style>
+		<objectModel:ParameterTemplateSelector
+			x:Key="ParameterTemplateSelector"
+			BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
+			CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
+			ContractReferenceTemplate="{StaticResource ContractReferenceParameterReadOnlyTemplate}"
+			DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
+			DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
+			DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+			DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
+			GeoTemplate="{StaticResource GeoParameterReadOnlyTemplate}"
+			NumericalTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+			ProtectedTemplate="{StaticResource ProtectedParameterTemplate}"
+			StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+			TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}" />
 
-			<Style x:Key="ItemValueLabel"
-					 TargetType="Label">
-				<Setter Property="TextColor"
-						  Value="{DynamicResource ContentPrimaryWL}" />
-				<Setter Property="FontSize"
-						  Value="15" />
-				<Setter Property="FontFamily"
-						  Value="HaasGroteskRegular" />
-				<Setter Property="LineBreakMode"
-						  Value="WordWrap" />
-				<Setter Property="VerticalTextAlignment"
-						  Value="Center" />
-				<Setter Property="HorizontalTextAlignment"
-						  Value="End" />
-				<Setter Property="HorizontalOptions"
-						  Value="End" />
-			</Style>
-
-			<!-- Proposed -->
-			<DataTemplate x:Key="ProposedTemplate" x:DataType="base:ViewContractViewModel">
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}"
-							Stroke="Transparent"
-							Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPInfobgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPInfoContentWL}" />
-					</Border>
+		<DataTemplate
+			x:Key="ActivityItemTemplate"
+			x:DataType="viewmodel:ContractActivityItem">
+			<Border
+				Margin="0,4"
+				Padding="12"
+				Style="{DynamicResource BorderSubSet}">
+				<Grid
+					ColumnDefinitions="*,Auto"
+					ColumnSpacing="12"
+					RowDefinitions="Auto,Auto">
+					<Label
+						FontAttributes="Bold"
+						Text="{Binding Title}"
+						TextColor="{DynamicResource ContentPrimaryWL}" />
+					<Label
+						Grid.Column="1"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding TimestampText}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+					<Label
+						Grid.Row="1"
+						Grid.ColumnSpan="2"
+						IsVisible="{Binding HasDescription}"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding Description}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
 				</Grid>
-			</DataTemplate>
+			</Border>
+		</DataTemplate>
 
-			<!-- Rejected -->
-			<DataTemplate x:Key="RejectedTemplate"
-						  x:DataType="base:ViewContractViewModel">
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}"
-							Stroke="Transparent"
-							Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPDangerContentWL}" />
-					</Border>
+		<DataTemplate
+			x:Key="AttachmentItemTemplate"
+			x:DataType="viewmodel:ContractAttachmentItem">
+			<Border
+				Margin="0,4"
+				Padding="12"
+				Style="{DynamicResource BorderSubSet}">
+				<VerticalStackLayout Spacing="8">
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+						<VerticalStackLayout Spacing="2">
+							<Label
+								FontAttributes="Bold"
+								Text="{Binding Label}"
+								TextColor="{DynamicResource ContentPrimaryWL}" />
+						</VerticalStackLayout>
+						<controls:StatusPill
+							Grid.Column="1"
+							Text="{Binding TypeText}"
+							Tone="Neutral" />
+					</Grid>
+
+					<Label
+						IsVisible="{Binding HasError}"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding ErrorText}"
+						TextColor="{DynamicResource TnPWarningContentWL}" />
+
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+						<controls:TextButton
+							Command="{Binding OpenAttachmentCommand, Source={RelativeSource AncestorType={x:Type base:ViewContractViewModel}}, x:DataType=base:ViewContractViewModel}"
+							CommandParameter="{Binding .}"
+							IsEnabled="{Binding CanRequestOpen}"
+							LabelData="{l:Localize OpenAttachment}"
+							Style="{DynamicResource OutlinedTextButton}" />
+						<ActivityIndicator
+							Grid.Column="1"
+							IsRunning="{Binding IsLoading}"
+							IsVisible="{Binding IsLoading}"
+							VerticalOptions="Center" />
+					</Grid>
+				</VerticalStackLayout>
+			</Border>
+		</DataTemplate>
+
+		<DataTemplate
+			x:Key="RelatedTokenItemTemplate"
+			x:DataType="viewmodel:ContractRelatedTokenItem">
+			<Border
+				Margin="0,4"
+				Padding="12"
+				Style="{DynamicResource BorderSubSet}">
+				<Grid
+					ColumnDefinitions="*,Auto"
+					ColumnSpacing="12"
+					RowDefinitions="Auto,Auto">
+					<Label
+						FontAttributes="Bold"
+						Text="{Binding RelationshipText}"
+						TextColor="{DynamicResource ContentPrimaryWL}" />
+					<controls:TextButton
+						Grid.RowSpan="2"
+						Grid.Column="1"
+						Command="{Binding OpenRelatedTokenCommand, Source={RelativeSource AncestorType={x:Type base:ViewContractViewModel}}, x:DataType=base:ViewContractViewModel}"
+						CommandParameter="{Binding .}"
+						LabelData="{l:Localize Open}"
+						Style="{DynamicResource TransparentTextButton}"
+						VerticalOptions="Center" />
+					<Label
+						Grid.Row="1"
+						LineBreakMode="MiddleTruncation"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{Binding DisplayTokenId}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
 				</Grid>
-			</DataTemplate>
-
-			<!-- Approved -->
-			<DataTemplate x:Key="ApprovedTemplate"
-						  x:DataType="base:ViewContractViewModel">
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}"
-							Stroke="Transparent"
-							Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPInfobgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPInfoContentWL}" />
-					</Border>
-				</Grid>
-			</DataTemplate>
-
-			<!-- BeingSigned -->
-			<DataTemplate x:Key="BeingSignedTemplate"
-						  x:DataType="base:ViewContractViewModel">
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}"
-							Stroke="Transparent"
-							Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPInfobgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPInfoContentWL}" />
-					</Border>
-				</Grid>
-			</DataTemplate>
-
-			<!-- Signed -->
-			<DataTemplate x:Key="SignedTemplate"
-						  x:DataType="base:ViewContractViewModel">
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}" Stroke="Transparent"
-							  Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPSuccessbgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPSuccessContentWL}" />
-					</Border>
-				</Grid>
-			</DataTemplate>
-
-			<!-- Failed -->
-			<DataTemplate x:Key="FailedTemplate"
-						  x:DataType="base:ViewContractViewModel">
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}"
-							Stroke="Transparent"
-							Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPDangerContentWL}" />
-					</Border>
-				</Grid>
-			</DataTemplate>
-
-			<!-- Obsoleted -->
-			<DataTemplate x:Key="ObsoletedTemplate"
-						  x:DataType="base:ViewContractViewModel"> 
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}"
-							Stroke="Transparent"
-							Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPDangerContentWL}" />
-					</Border>
-				</Grid>
-			</DataTemplate>
-
-			<!-- Deleted -->
-			<DataTemplate x:Key="DeletedTemplate"
-						  x:DataType="base:ViewContractViewModel">
-				<Grid ColumnDefinitions="auto"
-						HorizontalOptions="End">
-					<Border Style="{DynamicResource RoundedBorder}"
-							Stroke="Transparent"
-							Padding="8,4,8,4"
-							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{DynamicResource TnPDangerContentWL}" />
-					</Border>
-				</Grid>
-			</DataTemplate>
-
-
-			<contract:ContractStateTemplateSelector x:Key="ContractStateSelector"
-																 ProposedTemplate="{StaticResource ProposedTemplate}"
-																 RejectedTemplate="{StaticResource RejectedTemplate}"
-																 ApprovedTemplate="{StaticResource ApprovedTemplate}"
-																 BeingSignedTemplate="{StaticResource BeingSignedTemplate}"
-																 SignedTemplate="{StaticResource SignedTemplate}"
-																 FailedTemplate="{StaticResource FailedTemplate}"
-																 ObsoletedTemplate="{StaticResource ObsoletedTemplate}"
-																 DeletedTemplate="{StaticResource DeletedTemplate}" />
-
-		</ResourceDictionary>
+			</Border>
+		</DataTemplate>
 	</ContentView.Resources>
 
-	<Grid RowDefinitions="*, auto"
-			ColumnDefinitions="*">
-		<RefreshView IsRefreshing="{Binding IsRefreshing}"
-					 Command="{Binding RefreshContractCommand}">
-			<ScrollView Grid.Row="0"
-						Padding="{DynamicResource MediumBottomMargins}">
-				<VerticalStackLayout Padding="{DynamicResource MediumLeftRightMargins}"
-									 Spacing="{DynamicResource MediumSpacing}">
-					<!-- TOP Set, name of contract etc -->
-					<Border Style="{DynamicResource BorderSet}"
-							Margin="0">
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Border Style="{DynamicResource AccentInfoBorder}"
-									Padding="{DynamicResource SmallMargins}"
-									IsVisible="{Binding IsProposal}">
-								<Grid ColumnDefinitions="auto, *">
-									<Path Grid.Column="0"
-										  HorizontalOptions="Center"
-										  VerticalOptions="Center"
-										  Data="{x:Static ui:Geometries.InfoCirclePath}"
-										  HeightRequest="16"
-										  WidthRequest="16"
-										  Aspect="Uniform"
-										  Fill="{DynamicResource TnPInfoContentWL}" />
+	<RefreshView
+		Command="{Binding RefreshContractCommand}"
+		IsRefreshing="{Binding IsRefreshing}">
+		<ScrollView Padding="{DynamicResource MediumBottomMargins}">
+			<VerticalStackLayout
+				Padding="{DynamicResource MediumLeftRightMargins}"
+				Spacing="12">
 
-									<controls:ConditionView Condition="{Binding ProposalRole, Converter={mct:IsStringNullOrEmptyConverter}}" Grid.Column="1">
-										<controls:ConditionView.True>
-											<Label 
-												   Style="{DynamicResource AccentInfoLabel}"
-												   VerticalOptions="Start"
-												   VerticalTextAlignment="Start"
-												   Margin="{DynamicResource SmallLeftMargins}"
-												   Text="{l:Localize InvitationToSign}" />
-										</controls:ConditionView.True>
-										<controls:ConditionView.False>
-											<Label 
-												   Style="{DynamicResource AccentInfoLabel}"
-												   VerticalOptions="Start"
-												   VerticalTextAlignment="Start"
-												   Margin="{DynamicResource SmallLeftMargins}"
-												   Text="{l:Localize InvitationToSignFormat, Arg={Binding ProposalRole}}"/>
-										</controls:ConditionView.False>
-									</controls:ConditionView>
+				<Border
+					IsVisible="{Binding IsProposal}"
+					Padding="16"
+					Style="{DynamicResource AccentInfoBorder}">
+					<VerticalStackLayout Spacing="6">
+						<Label
+							FontAttributes="Bold"
+							Text="{l:Localize InvitationToSign}"
+							TextColor="{DynamicResource TnPInfoContentWL}" />
+						<Label
+							IsVisible="{Binding HasProposalFriendlyName}"
+							Text="{Binding ProposalFriendlyName, StringFormat='{0}'}"
+							TextColor="{DynamicResource TnPInfoContentWL}" />
+						<Label
+							IsVisible="{Binding HasProposalRole}"
+							Text="{Binding ProposalRole}"
+							TextColor="{DynamicResource TnPInfoContentWL}" />
+						<Label
+							IsVisible="{Binding HasProposalMessage}"
+							Text="{Binding ProposalMessage}"
+							TextColor="{DynamicResource TnPInfoContentWL}" />
+					</VerticalStackLayout>
+				</Border>
+
+				<Border
+					IsVisible="{Binding HasPrimaryAction}"
+					Padding="16"
+					Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="10">
+						<Label
+							FontAttributes="Bold"
+							SemanticProperties.HeadingLevel="Level2"
+							Text="{l:Localize NextStep}"
+							TextColor="{DynamicResource ContentPrimaryWL}" />
+						<Label
+							Text="{Binding NextActionText}"
+							TextColor="{DynamicResource ContentSecondaryWL}" />
+						<controls:TextButton
+							Command="{Binding GoToReviewCommand}"
+							LabelData="{Binding PrimaryActionText}"
+							Style="{DynamicResource FilledTextButton}" />
+					</VerticalStackLayout>
+				</Border>
+
+				<controls:DisclosureSection
+					IsExpanded="True"
+					Summary="{Binding SignatureProgressText}"
+					Title="{l:Localize KeyTerms}">
+					<VerticalStackLayout Spacing="8">
+						<VerticalStackLayout
+							BindableLayout.ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+							BindableLayout.ItemsSource="{Binding KeyParameters}"
+							IsVisible="{Binding HasKeyParameters}" />
+						<Label
+							IsVisible="{Binding HasKeyParameters, Converter={StaticResource InvertedBoolConverter}}"
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize None}"
+							TextColor="{DynamicResource ContentSecondaryWL}" />
+						<controls:TextButton
+							Command="{Binding GoToParametersCommand}"
+							LabelData="{l:Localize ViewParametersTitle}"
+							Style="{DynamicResource OutlinedTextButton}" />
+					</VerticalStackLayout>
+				</controls:DisclosureSection>
+
+				<controls:DisclosureSection
+					IsExpanded="True"
+					Summary="{l:Localize ReviewContractDescription2}"
+					Title="{l:Localize Agreement}">
+					<controls:TextButton
+						Command="{Binding GoToReviewCommand}"
+						LabelData="{l:Localize ReviewContractTitle}"
+						Style="{DynamicResource OutlinedTextButton}" />
+				</controls:DisclosureSection>
+
+				<controls:DisclosureSection
+					IsVisible="{Binding HasRelatedTokensSection}"
+					Summary="{l:Localize RelatedTokensDescription}"
+					Title="{l:Localize RelatedTokens}">
+					<VerticalStackLayout Spacing="8">
+						<ActivityIndicator
+							IsRunning="{Binding IsRelatedTokensLoading}"
+							IsVisible="{Binding IsRelatedTokensLoading}"
+							HorizontalOptions="Start" />
+						<Label
+							IsVisible="{Binding RelatedTokensUnavailable}"
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize RelatedTokensUnavailable}"
+							TextColor="{DynamicResource TnPWarningContentWL}" />
+						<VerticalStackLayout
+							BindableLayout.ItemTemplate="{StaticResource RelatedTokenItemTemplate}"
+							BindableLayout.ItemsSource="{Binding RelatedTokens}"
+							IsVisible="{Binding HasRelatedTokens}" />
+						<controls:TextButton
+							Command="{Binding BrowseCreatedTokensCommand}"
+							IsVisible="{Binding CanBrowseCreatedTokens}"
+							LabelData="{l:Localize BrowseCreatedTokens}"
+							Style="{DynamicResource OutlinedTextButton}" />
+					</VerticalStackLayout>
+				</controls:DisclosureSection>
+
+				<controls:DisclosureSection
+					IsVisible="{Binding HasAttachments}"
+					Summary="{l:Localize ContractAttachmentsDescription}"
+					Title="{l:Localize Attachments}">
+					<VerticalStackLayout
+						BindableLayout.ItemTemplate="{StaticResource AttachmentItemTemplate}"
+						BindableLayout.ItemsSource="{Binding AttachmentItems}" />
+				</controls:DisclosureSection>
+
+				<controls:DisclosureSection
+					Summary="{Binding SignatureProgressText}"
+					Title="{l:Localize PeopleAndSignatures}">
+					<VerticalStackLayout Spacing="8">
+						<Label
+							IsVisible="{Binding HasSummaryRole}"
+							Text="{Binding SummaryRoleText}"
+							TextColor="{DynamicResource ContentPrimaryWL}" />
+						<Label
+							IsVisible="{Binding HasSignatureProgress}"
+							Text="{Binding SignatureProgressText}"
+							TextColor="{DynamicResource ContentSecondaryWL}" />
+						<controls:TextButton
+							Command="{Binding GoToRolesCommand}"
+							LabelData="{l:Localize ViewRolesTitle}"
+							Style="{DynamicResource OutlinedTextButton}" />
+					</VerticalStackLayout>
+				</controls:DisclosureSection>
+
+				<controls:DisclosureSection
+					Summary="{l:Localize ContractActivityDescription}"
+					Title="{l:Localize Activity}">
+					<VerticalStackLayout Spacing="6">
+						<Label
+							IsVisible="{Binding HasActivity, Converter={StaticResource InvertedBoolConverter}}"
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{l:Localize None}"
+							TextColor="{DynamicResource ContentSecondaryWL}" />
+						<VerticalStackLayout
+							BindableLayout.ItemTemplate="{StaticResource ActivityItemTemplate}"
+							BindableLayout.ItemsSource="{Binding ActivityItems}"
+							IsVisible="{Binding HasActivity}" />
+					</VerticalStackLayout>
+				</controls:DisclosureSection>
+
+				<controls:DisclosureSection
+					Summary="{l:Localize ContractAdvancedDescription}"
+					Title="{l:Localize Advanced}">
+					<VerticalStackLayout Spacing="12">
+						<Border Padding="12" Style="{DynamicResource BorderSubSet}">
+							<VerticalStackLayout Spacing="8">
+								<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize ContractId}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										LineBreakMode="MiddleTruncation"
+										Text="{Binding Contract.ContractId}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
 								</Grid>
-							</Border>
-							<Border Style="{DynamicResource BorderSubSet}"
-									IsVisible="{Binding IsProposal}"
-									Margin="0">
-								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-									<Grid ColumnDefinitions="auto, *"
-										  ColumnSpacing="{DynamicResource MediumSpacing}">
-										<Label Grid.Column="0"
-											   Text="{l:Localize From}"
-											   Style="{DynamicResource ItemTitleLabel}" />
-										<Label Grid.Column="1"
-											   Text="{Binding Path=ProposalFriendlyName,Converter={converters:HyphenIfEmpty}}"
-											   Style="{DynamicResource ItemValueLabel}" />
-									</Grid>
+								<Grid
+									IsVisible="{Binding HasTemplateId}"
+									ColumnDefinitions="Auto,*"
+									ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize TemplateId}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										LineBreakMode="MiddleTruncation"
+										Text="{Binding Contract.TemplateId}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid
+									IsVisible="{Binding HasProvider}"
+									ColumnDefinitions="Auto,*"
+									ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize Provider}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										LineBreakMode="MiddleTruncation"
+										Text="{Binding Contract.Contract.Provider}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize Visibility}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Visibility}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize Created}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Contract.Contract.Created}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize Updated}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Contract.Contract.Updated}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize Duration}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Contract.Contract.Duration}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid
+									IsVisible="{Binding HasSignAfter}"
+									ColumnDefinitions="Auto,*"
+									ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize SignAfter}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Contract.Contract.SignAfter}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid
+									IsVisible="{Binding HasSignBefore}"
+									ColumnDefinitions="Auto,*"
+									ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize SignBefore}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Contract.Contract.SignBefore}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize ArchiveRequired}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Contract.Contract.ArchiveRequired}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize ArchiveOptional}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Contract.Contract.ArchiveOptional}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+								<HorizontalStackLayout Spacing="8">
+									<controls:TextButton
+										Command="{Binding CopyCommand}"
+										CommandParameter="{Binding Contract.ContractId}"
+										LabelData="{l:Localize CopyToClipboard}"
+										Style="{DynamicResource TransparentTextButton}" />
+									<controls:TextButton
+										Command="{Binding OpenContractCommand}"
+										CommandParameter="{Binding Contract.ContractId}"
+										LabelData="{l:Localize Open}"
+										Style="{DynamicResource TransparentTextButton}" />
+								</HorizontalStackLayout>
+							</VerticalStackLayout>
+						</Border>
 
-									<Grid ColumnDefinitions="auto, *">
-										<Label Grid.Column="0"
-											   Text="{l:Localize Message}"
-											   Style="{DynamicResource ItemTitleLabel}" />
-										<Label Grid.Column="1"
-											   Text="{Binding Path=ProposalMessage,Converter={converters:HyphenIfEmpty}}"
-											   Style="{DynamicResource ItemValueLabel}" />
-									</Grid>
+						<controls:TextButton
+							Command="{Binding OpenServerSignatureCommand}"
+							IsVisible="{Binding HasServerSignature}"
+							LabelData="{l:Localize ServerSignatureButtonTitle}"
+							Style="{DynamicResource OutlinedTextButton}" />
+
+						<controls:DisclosureSection
+							IsVisible="{Binding HasMachineReadableContent}"
+							Summary="{l:Localize MachineReadableInfoText}"
+							Title="{l:Localize RawDetails}">
+							<VerticalStackLayout Spacing="8">
+								<Editor
+									AutoSize="TextChanges"
+									HeightRequest="220"
+									IsReadOnly="True"
+									Text="{Binding MachineReadableContent}"
+									TextColor="{DynamicResource ContentPrimaryWL}" />
+								<controls:TextButton
+									Command="{Binding CopyCommand}"
+									CommandParameter="{Binding MachineReadableContent}"
+									LabelData="{l:Localize CopyToClipboard}"
+									Style="{DynamicResource TransparentTextButton}" />
+							</VerticalStackLayout>
+						</controls:DisclosureSection>
+
+						<Border Padding="12" Style="{DynamicResource BorderSubSet}">
+							<VerticalStackLayout Spacing="10">
+								<VerticalStackLayout
+									IsVisible="{Binding CanObsoleteContract}"
+									Spacing="4">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize ObsoleteContract}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+									<Label
+										Style="{DynamicResource ItemDescriptionLabel}"
+										Text="{l:Localize ObsoleteRemoteContractDescription}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<controls:TextButton
+										Command="{Binding ObsoleteContractCommand}"
+										LabelData="{l:Localize ObsoleteContract}"
+										Style="{DynamicResource OutlinedTextButton}" />
 								</VerticalStackLayout>
 
-							</Border>
-
-
-							<Border Style="{DynamicResource BorderSubSet}"
-									Margin="0">
-								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-									<Grid ColumnDefinitions="auto, *"
-										  ColumnSpacing="{DynamicResource MediumSpacing}">
-										<Label Grid.Column="0"
-											   Text="{l:Localize Title}"
-											   Style="{DynamicResource ItemTitleLabel}" />
-										<Label Grid.Column="1"
-											   Text="{Binding Path=Contract.Category}"
-											   Style="{DynamicResource ItemValueLabel}" />
-									</Grid>
-
-									<Grid ColumnDefinitions="auto, *">
-										<Label Grid.Column="0"
-											   Text="{l:Localize Status}"
-											   Style="{DynamicResource ItemTitleLabel}" />
-										<controls:TemplateSelectorContentView Grid.Column="1"
-																			  Item="{Binding Contract}"
-																			  TemplateSelector="{DynamicResource ContractStateSelector}" />
-									</Grid>
-
-									<Grid ColumnDefinitions="auto, *">
-										<Label Grid.Column="0"
-											   Text="{l:Localize Visibility}"
-											   Style="{DynamicResource ItemTitleLabel}" />
-										<Label Grid.Column="1"
-											   Text="{Binding Visibility}"
-											   Style="{DynamicResource ItemValueLabel}" />
-									</Grid>
+								<VerticalStackLayout
+									IsVisible="{Binding CanDeleteContract}"
+									Spacing="4">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize DeleteContract}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+									<Label
+										Style="{DynamicResource ItemDescriptionLabel}"
+										Text="{l:Localize DeleteRemoteContractDescription}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<controls:TextButton
+										Command="{Binding DeleteContractCommand}"
+										LabelData="{l:Localize DeleteContract}"
+										Style="{DynamicResource FilledTextButtonDecline}" />
 								</VerticalStackLayout>
 
-							</Border>
-
-							<Image x:Name="QrCode"
-								   Source="{Binding QrCode}"
-								   IsVisible="{Binding HasQrCode}"
-								   WidthRequest="{Binding QrCodeWidth}"
-								   HeightRequest="{Binding QrCodeHeight}"
-								   HorizontalOptions="Center">
-								<Image.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}"
-														  CommandParameter="{Binding Contract.ContractId}" />
-								</Image.GestureRecognizers>
-							</Image>
-						</VerticalStackLayout>
-
-					</Border>
-
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
-											  TopLabelText="{l:Localize ReviewContractTitle}"
-											  BottomLabelText="{l:Localize ReviewContractDescription2}"
-											  Command="{Binding GoToReviewCommand}" />
-
-					<!-- Roles Button -->
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.RolesPath}"
-											  TopLabelText="{l:Localize ViewRolesTitle}"
-											  BottomLabelText="{l:Localize ViewRolesDescription}"
-											  Command="{Binding GoToRolesCommand}" />
-
-					<!-- Parameters Button -->
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
-											  TopLabelText="{l:Localize ViewParametersTitle}"
-											  BottomLabelText="{l:Localize ViewParametersDescription}"
-											  Command="{Binding GoToParametersCommand}" />
-
-
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
-											  TopLabelText="{l:Localize ServerSignatureButtonTitle}"
-											  BottomLabelText="{l:Localize ServerSignatureButtonDescription}"
-											  Command="{Binding OpenServerSignatureCommand}" />
-
-					<controls:TextButton LabelData="{l:Localize ObsoleteContract}"
-										 Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
-										 Command="{Binding Path=ObsoleteContractCommand}"
-										 IsVisible="{Binding Path=CanObsoleteContract}"
-										 Margin="{DynamicResource SmallTopBottomMargins}" />
-					<controls:TextButton LabelData="{l:Localize DeleteContract}"
-										 Style="{DynamicResource FilledTextButtonDecline}"
-										 Command="{Binding Path=DeleteContractCommand}"
-										 IsVisible="{Binding Path=CanDeleteContract}"
-										 Margin="{DynamicResource SmallBottomMargins}" />
-
-				</VerticalStackLayout>
-			</ScrollView>
-		</RefreshView>
-
-		<!-- BOTTOM BAR -->
-		<Grid Grid.Row="1" RowDefinitions="*">
-			<!-- Loading bottom bar while awaiting post-create completion -->
-			<Border Style="{DynamicResource BottomBarBorder}" IsVisible="{Binding IsAwaitingPostCreateCompletion}">
-				<Grid HorizontalOptions="Fill" VerticalOptions="Center" Padding="{DynamicResource SmallMargins}">
-					<ActivityIndicator IsRunning="True" IsVisible="True" VerticalOptions="Center" HorizontalOptions="Center" />
-				</Grid>
-			</Border>
-
-			<!-- Sign bottom bar shown only when signable and not awaiting -->
-			<Border Style="{DynamicResource BottomBarBorder}" IsVisible="{Binding CanShowSignBar}">
-				<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
-					<controls:TextButton Style="{DynamicResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Sign}" Command="{Binding GoToSignCommand}" />
-				</Grid>
-			</Border>
-		</Grid>
-
-	</Grid>
+								<VerticalStackLayout
+									IsVisible="{Binding CanRemoveLocalReference}"
+									Spacing="4">
+									<Label
+										FontAttributes="Bold"
+										Text="{l:Localize RemoveLocalReference}"
+										TextColor="{DynamicResource ContentPrimaryWL}" />
+									<Label
+										Style="{DynamicResource ItemDescriptionLabel}"
+										Text="{l:Localize RemoveLocalReferenceDescription}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+									<controls:TextButton
+										Command="{Binding RemoveLocalReferenceCommand}"
+										LabelData="{l:Localize RemoveLocalReference}"
+										Style="{DynamicResource OutlinedTextButton}" />
+								</VerticalStackLayout>
+							</VerticalStackLayout>
+						</Border>
+					</VerticalStackLayout>
+				</controls:DisclosureSection>
+			</VerticalStackLayout>
+		</ScrollView>
+	</RefreshView>
 </views:BaseViewContractView>

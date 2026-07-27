@@ -3360,12 +3360,6 @@
   <data name="CurrentVariables" xml:space="preserve">
     <value>Variáveis atuais</value>
   </data>
-  <data name="TokenEvents" xml:space="preserve">
-    <value>Eventos do token</value>
-  </data>
-  <data name="TokenEventsDescription" xml:space="preserve">
-    <value>A seguir estão os eventos públicos registrados para o token. Seus eventos privados também estão incluídos.</value>
-  </data>
   <data name="TextNote" xml:space="preserve">
     <value>Nota de texto</value>
   </data>
@@ -3767,5 +3761,510 @@
   </data>
   <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
     <value>Não foi possível ler o chip. Verifique a digitalização e tente novamente.</value>
+  </data>
+  <data name="ViewEmbeddedLayout" xml:space="preserve">
+    <value>Ver layout incorporado</value>
+  </data>
+  <data name="KillerUser" xml:space="preserve">
+    <value>Utilizador que desativou</value>
+  </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Visão geral</value>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Atividade</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>Avançado</value>
+  </data>
+  <data name="Agreement" xml:space="preserve">
+    <value>Acordo</value>
+  </data>
+  <data name="PeopleAndSignatures" xml:space="preserve">
+    <value>Pessoas e assinaturas</value>
+  </data>
+  <data name="KeyTerms" xml:space="preserve">
+    <value>Termos principais</value>
+  </data>
+  <data name="ImportantDates" xml:space="preserve">
+    <value>Datas importantes</value>
+  </data>
+  <data name="Attachments" xml:space="preserve">
+    <value>Anexos</value>
+  </data>
+  <data name="NextStep" xml:space="preserve">
+    <value>Próximo passo</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Ativo</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>Expirado</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Concluído</value>
+  </data>
+  <data name="NeedsAttention" xml:space="preserve">
+    <value>Requer atenção</value>
+  </data>
+  <data name="Unavailable" xml:space="preserve">
+    <value>Indisponível</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Desconhecido</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>Tentar novamente</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="Refreshing" xml:space="preserve">
+    <value>Atualizando…</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Limpar filtros</value>
+  </data>
+  <data name="RecentlyUpdated" xml:space="preserve">
+    <value>Atualizados recentemente</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Ordenar por</value>
+  </data>
+  <data name="OwnedByYou" xml:space="preserve">
+    <value>É seu</value>
+  </data>
+  <data name="RelatedContract" xml:space="preserve">
+    <value>Contrato relacionado</value>
+  </data>
+  <data name="TechnicalDetails" xml:space="preserve">
+    <value>Detalhes técnicos</value>
+  </data>
+  <data name="RawDetails" xml:space="preserve">
+    <value>Dados brutos</value>
+  </data>
+  <data name="StateAndVariables" xml:space="preserve">
+    <value>Estado e variáveis</value>
+  </data>
+  <data name="MarketplaceActions" xml:space="preserve">
+    <value>Ações do mercado</value>
+  </data>
+  <data name="TokensSubtitle" xml:space="preserve">
+    <value>Itens digitais que você possui ou pode usar</value>
+  </data>
+  <data name="TokenSearchPlaceholder" xml:space="preserve">
+    <value>Pesquisar por nome, categoria, etiqueta ou ID</value>
+  </data>
+  <data name="LoadingTokens" xml:space="preserve">
+    <value>Carregando tokens…</value>
+  </data>
+  <data name="LoadingMoreTokens" xml:space="preserve">
+    <value>Carregando mais tokens…</value>
+  </data>
+  <data name="NoTokensFoundTitle" xml:space="preserve">
+    <value>Ainda não há tokens</value>
+  </data>
+  <data name="NoTokensFoundDescription" xml:space="preserve">
+    <value>Os tokens que você receber ou criar aparecerão aqui.</value>
+  </data>
+  <data name="NoMatchingTokensTitle" xml:space="preserve">
+    <value>Nenhum token correspondente</value>
+  </data>
+  <data name="NoMatchingTokensDescription" xml:space="preserve">
+    <value>Altere a pesquisa ou limpe um filtro para ver mais tokens.</value>
+  </data>
+  <data name="TokensUnavailableDescription" xml:space="preserve">
+    <value>Não foi possível carregar seus tokens. Verifique a conexão e tente novamente.</value>
+  </data>
+  <data name="PartialTokenResults" xml:space="preserve">
+    <value>Exibindo os resultados carregados enquanto os demais tokens são verificados.</value>
+  </data>
+  <data name="FilterTokens" xml:space="preserve">
+    <value>Filtrar tokens</value>
+  </data>
+  <data name="FilterNeedsAttention" xml:space="preserve">
+    <value>Requer atenção</value>
+  </data>
+  <data name="FilterActive" xml:space="preserve">
+    <value>Ativos</value>
+  </data>
+  <data name="FilterExpired" xml:space="preserve">
+    <value>Expirados</value>
+  </data>
+  <data name="FilterCategory" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="FilterOwnership" xml:space="preserve">
+    <value>Propriedade</value>
+  </data>
+  <data name="SortByExpiry" xml:space="preserve">
+    <value>Validade</value>
+  </data>
+  <data name="SortByValue" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="TokenActivityEmptyTitle" xml:space="preserve">
+    <value>Ainda não há atividade</value>
+  </data>
+  <data name="TokenActivityEmptyDescription" xml:space="preserve">
+    <value>As atualizações registradas para este token aparecerão aqui.</value>
+  </data>
+  <data name="TokenActivityCreated" xml:space="preserve">
+    <value>Token criado</value>
+  </data>
+  <data name="TokenActivityOwnerChanged" xml:space="preserve">
+    <value>O proprietário mudou</value>
+  </data>
+  <data name="TokenActivityTransferred" xml:space="preserve">
+    <value>Token transferido</value>
+  </data>
+  <data name="TokenActivityDonated" xml:space="preserve">
+    <value>Token doado</value>
+  </data>
+  <data name="TokenActivityDestroyed" xml:space="preserve">
+    <value>Token destruído</value>
+  </data>
+  <data name="TokenActivityKilled" xml:space="preserve">
+    <value>Token desativado permanentemente</value>
+  </data>
+  <data name="TokenActivityValueChanged" xml:space="preserve">
+    <value>O valor mudou</value>
+  </data>
+  <data name="TokenActivityExternalUpdate" xml:space="preserve">
+    <value>Atualização adicionada por outra parte</value>
+  </data>
+  <data name="TokenActivityPersonalUpdate" xml:space="preserve">
+    <value>Atualização privada</value>
+  </data>
+  <data name="TokenActivityUnsupportedEvent" xml:space="preserve">
+    <value>Atividade não suportada</value>
+  </data>
+  <data name="TokenActivityUnknownActor" xml:space="preserve">
+    <value>Participante desconhecido</value>
+  </data>
+  <data name="TokenActivityViewRelatedContract" xml:space="preserve">
+    <value>Ver contrato relacionado</value>
+  </data>
+  <data name="AddTokenUpdate" xml:space="preserve">
+    <value>Adicionar atualização</value>
+  </data>
+  <data name="TokenUpdateComposerTitle" xml:space="preserve">
+    <value>Adicionar atualização do token</value>
+  </data>
+  <data name="TextUpdate" xml:space="preserve">
+    <value>Atualização de texto</value>
+  </data>
+  <data name="XmlUpdate" xml:space="preserve">
+    <value>Atualização XML</value>
+  </data>
+  <data name="TextUpdatePlaceholder" xml:space="preserve">
+    <value>Escreva uma atualização sobre este token</value>
+  </data>
+  <data name="XmlUpdatePlaceholder" xml:space="preserve">
+    <value>Cole um XML válido</value>
+  </data>
+  <data name="PersonalUpdate" xml:space="preserve">
+    <value>Atualização privada</value>
+  </data>
+  <data name="PersonalUpdateDescription" xml:space="preserve">
+    <value>Somente você pode ver esta atualização enquanto possuir o token. Ela será removida se o token for transferido para um novo proprietário.</value>
+  </data>
+  <data name="XmlUpdateDescription" xml:space="preserve">
+    <value>Use XML somente quando o token ou o destinatário exigir dados estruturados.</value>
+  </data>
+  <data name="InvalidXmlUpdate" xml:space="preserve">
+    <value>Insira um XML válido antes de enviar.</value>
+  </data>
+  <data name="SendUpdate" xml:space="preserve">
+    <value>Enviar atualização</value>
+  </data>
+  <data name="UpdateSent" xml:space="preserve">
+    <value>Atualização enviada</value>
+  </data>
+  <data name="UpdateSentRefreshFailed" xml:space="preserve">
+    <value>A atualização foi enviada, mas não foi possível carregar a atividade mais recente.</value>
+  </data>
+  <data name="UpdateOutcomeUncertain" xml:space="preserve">
+    <value>Não foi possível confirmar o resultado. Atualize a atividade antes de tentar novamente para evitar o envio duplicado.</value>
+  </data>
+  <data name="UnsafeTokenAction" xml:space="preserve">
+    <value>Esta ação foi bloqueada porque não foi possível confirmar que suas instruções eram seguras.</value>
+  </data>
+  <data name="TokenActionUnavailable" xml:space="preserve">
+    <value>Esta ação não está disponível para o estado atual do token ou para sua função.</value>
+  </data>
+  <data name="ConfirmTokenAction" xml:space="preserve">
+    <value>Confirmar ação do token</value>
+  </data>
+  <data name="IrreversibleActionWarning" xml:space="preserve">
+    <value>Revise com atenção o token, a parte afetada e o resultado. Esta ação pode não ser reversível.</value>
+  </data>
+  <data name="TokenDefinedActionFallback" xml:space="preserve">
+    <value>Ação definida pelo token</value>
+  </data>
+  <data name="TokenDefinedActions" xml:space="preserve">
+    <value>Ações disponíveis</value>
+  </data>
+  <data name="TokenDefinedActionsDescription" xml:space="preserve">
+    <value>Ações fornecidas por este token e disponíveis para sua função e o estado atual dele.</value>
+  </data>
+  <data name="LoadingTokenDefinedActions" xml:space="preserve">
+    <value>Carregando ações disponíveis…</value>
+  </data>
+  <data name="TokenDefinedActionsUnavailable" xml:space="preserve">
+    <value>Não foi possível carregar as ações disponíveis. Atualize para verificar a disponibilidade atual.</value>
+  </data>
+  <data name="TokenCommandParameterInvalidFormat" xml:space="preserve">
+    <value>{0} tem um valor inválido.</value>
+  </data>
+  <data name="TokenCommandDefaultConfirmationFormat" xml:space="preserve">
+    <value>Deseja continuar com “{0}” para {1}?</value>
+  </data>
+  <data name="TokenCommandInvalidParameters" xml:space="preserve">
+    <value>Revise os valores destacados antes de continuar.</value>
+  </data>
+  <data name="TokenCommandUnsupportedResult" xml:space="preserve">
+    <value>Esta ação não gerou uma atualização de texto ou XML compatível.</value>
+  </data>
+  <data name="TokenCommandOwnerContext" xml:space="preserve">
+    <value>Disponível porque você possui este token.</value>
+  </data>
+  <data name="TokenCommandExternalContext" xml:space="preserve">
+    <value>Disponível como uma ação externa para este token.</value>
+  </data>
+  <data name="TokenCommandPublicUpdateDescription" xml:space="preserve">
+    <value>Esta ação adiciona uma atualização à atividade do token que pode ficar visível para outros participantes autorizados.</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="TokenRulesAndPermissions" xml:space="preserve">
+    <value>Regras e permissões</value>
+  </data>
+  <data name="TokenRulesAndPermissionsDescription" xml:space="preserve">
+    <value>Visibilidade, prazos de arquivamento e permissões de destruição definidos pelo token.</value>
+  </data>
+  <data name="ArchiveRequired" xml:space="preserve">
+    <value>Período de arquivamento obrigatório após o vencimento</value>
+  </data>
+  <data name="ArchiveOptional" xml:space="preserve">
+    <value>Período de arquivamento opcional após a retenção obrigatória</value>
+  </data>
+  <data name="MachineId" xml:space="preserve">
+    <value>ID da máquina de estados</value>
+  </data>
+  <data name="CreationContractTemplate" xml:space="preserve">
+    <value>Modelo do contrato de criação</value>
+  </data>
+  <data name="TokenShareActionDescription" xml:space="preserve">
+    <value>Visualize um link QR que abre este token.</value>
+  </data>
+  <data name="TokenSendActionDescription" xml:space="preserve">
+    <value>Revise e envie o link e todos os dados legíveis por máquina do token para um contato.</value>
+  </data>
+  <data name="TokenSharePayloadUnavailable" xml:space="preserve">
+    <value>Não foi possível preparar as informações do token para compartilhamento.</value>
+  </data>
+  <data name="TokenSendPreviewTitle" xml:space="preserve">
+    <value>Revisar informações do token</value>
+  </data>
+  <data name="TokenSendPreviewFormat" xml:space="preserve">
+    <value>Token: {0}
+Destinatário: {1}
+Link: {2}
+
+Isso envia o link e todos os dados legíveis por máquina do token. Envie somente para alguém em quem você confia.</value>
+  </data>
+  <data name="MarketplaceIdentityRequired" xml:space="preserve">
+    <value>É necessária uma identidade legal aprovada para criar um acordo do mercado.</value>
+  </data>
+  <data name="PublishMarketplaceDescription" xml:space="preserve">
+    <value>Crie um acordo público de consignação para este token no mercado.</value>
+  </data>
+  <data name="OfferToSellDescription" xml:space="preserve">
+    <value>Inicie um acordo de transferência no qual você oferece este token para venda.</value>
+  </data>
+  <data name="OfferToBuyDescription" xml:space="preserve">
+    <value>Inicie um acordo de transferência propondo comprar este token do proprietário.</value>
+  </data>
+  <data name="StateAndVariablesDescription" xml:space="preserve">
+    <value>Consulte o estado atual do token e as variáveis da máquina de estados.</value>
+  </data>
+  <data name="StateMachineUnavailableDescription" xml:space="preserve">
+    <value>Este token não define uma máquina de estados, portanto o estado e as variáveis atuais não estão disponíveis.</value>
+  </data>
+  <data name="ReportsAndPresentation" xml:space="preserve">
+    <value>Relatórios e apresentação</value>
+  </data>
+  <data name="ReportsAndPresentationDescription" xml:space="preserve">
+    <value>Abra a visualização incorporada e consulte relatórios atuais, históricos, de diagramas e de perfil.</value>
+  </data>
+  <data name="ReportsAndPresentationUnavailable" xml:space="preserve">
+    <value>Este token não inclui uma visualização incorporada nem relatórios de uma máquina de estados.</value>
+  </data>
+  <data name="MarketplaceActionsDescription" xml:space="preserve">
+    <value>Estas ações iniciam um fluxo de contrato público. Você pode revisar o acordo antes de criá-lo.</value>
+  </data>
+  <data name="RawDetailsDescription" xml:space="preserve">
+    <value>Consulte assinaturas, provas de esquema e todos os dados legíveis por máquina do token.</value>
+  </data>
+  <data name="RawDetailsUnavailable" xml:space="preserve">
+    <value>Não há provas brutas nem definição legível por máquina disponíveis para este token.</value>
+  </data>
+  <data name="EmbeddedLayoutUnavailable" xml:space="preserve">
+    <value>Este token não inclui uma visualização incorporada ou não foi possível renderizá-la.</value>
+  </data>
+  <data name="MachineVariablesUnavailable" xml:space="preserve">
+    <value>O estado e as variáveis atuais não estão disponíveis para este token.</value>
+  </data>
+  <data name="NoCurrentVariables" xml:space="preserve">
+    <value>Nenhuma variável atual foi informada para este estado.</value>
+  </data>
+  <data name="MachineReportUnavailable" xml:space="preserve">
+    <value>Este relatório não está disponível para o estado atual do token ou não pôde ser carregado.</value>
+  </data>
+  <data name="MachineReportRefreshFailed" xml:space="preserve">
+    <value>Não foi possível carregar o relatório mais recente. O relatório anterior continua visível.</value>
+  </data>
+  <data name="UntitledContract" xml:space="preserve">
+    <value>Contrato sem título</value>
+  </data>
+  <data name="ContractPartiesSingular" xml:space="preserve">
+    <value>1 parte</value>
+  </data>
+  <data name="ContractPartiesPluralFormat" xml:space="preserve">
+    <value>{0} partes</value>
+  </data>
+  <data name="ContractSignByFormat" xml:space="preserve">
+    <value>Assinar até {0}</value>
+  </data>
+  <data name="ContractSavedDetailsUnavailable" xml:space="preserve">
+    <value>Os detalhes salvos do contrato não estão disponíveis. Abra o contrato para atualizá-los.</value>
+  </data>
+  <data name="ContractReferenceUnavailable" xml:space="preserve">
+    <value>Esta referência de contrato salva não tem ID de contrato. Ela permanece neste dispositivo, mas não pode ser aberta.</value>
+  </data>
+  <data name="ContractsSubtitle" xml:space="preserve">
+    <value>Acordos que você cria, revisa ou assina</value>
+  </data>
+  <data name="LoadingContracts" xml:space="preserve">
+    <value>Carregando contratos…</value>
+  </data>
+  <data name="LoadingMoreContracts" xml:space="preserve">
+    <value>Carregando mais contratos…</value>
+  </data>
+  <data name="NoMatchingContractsTitle" xml:space="preserve">
+    <value>Nenhum contrato correspondente</value>
+  </data>
+  <data name="NoMatchingContractsDescription" xml:space="preserve">
+    <value>Altere a pesquisa ou limpe um filtro para ver mais contratos.</value>
+  </data>
+  <data name="ContractsUnavailableDescription" xml:space="preserve">
+    <value>Não foi possível carregar seus contratos. Verifique a conexão e tente novamente.</value>
+  </data>
+  <data name="ContractNeedsAttention" xml:space="preserve">
+    <value>Requer sua ação</value>
+  </data>
+  <data name="ContractOther" xml:space="preserve">
+    <value>Outros contratos</value>
+  </data>
+  <data name="ContractYourRoleFormat" xml:space="preserve">
+    <value>Sua função: {0}</value>
+  </data>
+  <data name="SignatureProgressFormat" xml:space="preserve">
+    <value>{0} de {1} assinaturas</value>
+  </data>
+  <data name="ReviewAndSign" xml:space="preserve">
+    <value>Revisar e assinar</value>
+  </data>
+  <data name="RespondToProposal" xml:space="preserve">
+    <value>Responder à proposta</value>
+  </data>
+  <data name="UsingSavedContract" xml:space="preserve">
+    <value>Exibindo o contrato salvo</value>
+  </data>
+  <data name="SavedContractMayBeOutOfDate" xml:space="preserve">
+    <value>Este contrato salvo pode estar desatualizado.</value>
+  </data>
+  <data name="ContractRefreshFailedUsingSaved" xml:space="preserve">
+    <value>Não foi possível carregar o contrato mais recente. Você ainda pode revisar a cópia salva.</value>
+  </data>
+  <data name="ContractAttachmentUnavailable" xml:space="preserve">
+    <value>Este anexo não está disponível no momento.</value>
+  </data>
+  <data name="OpenAttachment" xml:space="preserve">
+    <value>Abrir anexo</value>
+  </data>
+  <data name="ContractAttachmentsDescription" xml:space="preserve">
+    <value>Arquivos incluídos neste acordo. Abra apenas anexos em que você confia.</value>
+  </data>
+  <data name="ContractAttachmentLabelFormat" xml:space="preserve">
+    <value>Anexo {0}</value>
+  </data>
+  <data name="ContractAttachmentImage" xml:space="preserve">
+    <value>Imagem</value>
+  </data>
+  <data name="ContractAttachmentFile" xml:space="preserve">
+    <value>Arquivo</value>
+  </data>
+  <data name="RemoveLocalReference" xml:space="preserve">
+    <value>Remover deste dispositivo</value>
+  </data>
+  <data name="RemoveLocalReferenceDescription" xml:space="preserve">
+    <value>Remove a referência salva deste dispositivo. Não exclui nem torna obsoleto o contrato remoto.</value>
+  </data>
+  <data name="ContractCurrentDetails" xml:space="preserve">
+    <value>Detalhes mais recentes</value>
+  </data>
+  <data name="ContractActivityDescription" xml:space="preserve">
+    <value>Registos de data e hora disponíveis deste acordo. Isto não é um registo de auditoria completo.</value>
+  </data>
+  <data name="ContractAdvancedDescription" xml:space="preserve">
+    <value>Identificadores, regras exatas, conteúdo legível por máquina, provas de assinatura e gestão do contrato.</value>
+  </data>
+  <data name="DeleteRemoteContractDescription" xml:space="preserve">
+    <value>Marca o contrato remoto como eliminado. Isto é diferente de remover a referência guardada deste dispositivo.</value>
+  </data>
+  <data name="ObsoleteRemoteContractDescription" xml:space="preserve">
+    <value>Marca o contrato remoto como obsoleto. A referência guardada permanece neste dispositivo.</value>
+  </data>
+  <data name="ContractCreationDetailsAndParties" xml:space="preserve">
+    <value>Detalhes e pessoas</value>
+  </data>
+  <data name="ContractCreationReviewDescription" xml:space="preserve">
+    <value>Revise o resumo e o acordo completo antes de criar o contrato.</value>
+  </data>
+  <data name="ContractCreationSuccessDescription" xml:space="preserve">
+    <value>Seu contrato foi criado e está pronto para visualização.</value>
+  </data>
+  <data name="ContractFieldNeedsAttention" xml:space="preserve">
+    <value>Verifique este campo antes de continuar.</value>
+  </data>
+  <data name="ContractCreationApprovedIdentityRequired" xml:space="preserve">
+    <value>É necessária uma identidade legal aprovada para criar e assinar este contrato.</value>
+  </data>
+  <data name="TokensCreatedByAgreementDescription" xml:space="preserve">
+    <value>Tokens criados por este contrato</value>
+  </data>
+  <data name="RelatedTokens" xml:space="preserve">
+    <value>Tokens relacionados</value>
+  </data>
+  <data name="RelatedTokensDescription" xml:space="preserve">
+    <value>Tokens que este contrato criou ou afetou</value>
+  </data>
+  <data name="RelatedTokensUnavailable" xml:space="preserve">
+    <value>Não foi possível atualizar os links de tokens relacionados. Os links existentes continuam disponíveis.</value>
+  </data>
+  <data name="TokenCreatedByAgreement" xml:space="preserve">
+    <value>Criado por este contrato</value>
+  </data>
+  <data name="TokenAffectedByAgreement" xml:space="preserve">
+    <value>Afetado por este contrato</value>
+  </data>
+  <data name="BrowseCreatedTokens" xml:space="preserve">
+    <value>Explorar todos os tokens criados</value>
+  </data>
+  <data name="PetitionUnavailable" xml:space="preserve">
+    <value>Esta solicitação de acesso expirou ou não está mais disponível.</value>
   </data>
 </root>

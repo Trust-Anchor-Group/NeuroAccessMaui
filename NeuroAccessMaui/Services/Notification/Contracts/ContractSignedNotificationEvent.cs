@@ -1,10 +1,8 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using System.Text;
 using System.Xml;
 using Waher.Networking.XMPP.Contracts;
@@ -60,10 +58,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// </summary>
 		public override async Task Open()
 		{
-			this.Contract ??= await this.GetContract();
-			ViewContractNavigationArgs Args = new(this.Contract, false);
-
-			await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+			await this.OpenContractAsync();
 		}
 
 		/// <summary>
