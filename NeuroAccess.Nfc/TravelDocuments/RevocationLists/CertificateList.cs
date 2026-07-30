@@ -68,10 +68,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			if (CertificateListVector.FirstElement is not Vector TbsCertList)
 				return false;
 
-			if (CertificateListVector[1] is not Vector AlgorithmIdentifier)
+			ISignatureAlgorithm? SignatureAlgorithm;
+
+			if (CertificateListVector[1] is ISignatureAlgorithm Algorithm)
+				SignatureAlgorithm = Algorithm;
+			else if (CertificateListVector[1] is Vector AlgorithmIdentifier)
+				SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+			else
 				return false;
 
-			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
 			if (SignatureAlgorithm is null)
 				return false;
 

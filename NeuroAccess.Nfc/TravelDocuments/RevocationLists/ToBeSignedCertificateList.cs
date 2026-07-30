@@ -1,4 +1,4 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.Certificates;
+using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
@@ -84,10 +84,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				i++;
 			}
 
-			if (i >= c || TbsCertList[i++] is not Vector AlgorithmIdentifier)
+			if (i >= c)
 				return false;
 
-			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+			object? AlgorithmIdentifier = TbsCertList[i++];
+			ISignatureAlgorithm? SignatureAlgorithm;
+
+			if (AlgorithmIdentifier is ISignatureAlgorithm Algorithm)
+				SignatureAlgorithm = Algorithm;
+			else if (AlgorithmIdentifier is Vector AlgorithmIdentifierVector)
+				SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifierVector);
+			else
+				return false;
+
 			if (SignatureAlgorithm is null)
 				return false;
 
