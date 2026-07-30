@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implement Plan Task"
+  short_description: "Implement one approved plan task"
+  default_prompt: "Use $implement-plan-task to implement the next unchecked task from this plan."

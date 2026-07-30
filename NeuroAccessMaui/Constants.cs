@@ -634,6 +634,11 @@ namespace NeuroAccessMaui
 			public const string SourceId = "SID";
 
 			/// <summary>
+			/// Preview identity marker used when promoting preview identities.
+			/// </summary>
+			public const string Preview = "PREVIEW";
+
+			/// <summary>
 			/// Partition
 			/// </summary>
 			public const string Partition = "PT";

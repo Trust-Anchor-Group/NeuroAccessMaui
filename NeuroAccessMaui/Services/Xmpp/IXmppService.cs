@@ -541,6 +541,39 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<IdApplicationAttributesEventArgs> GetIdApplicationAttributes();
 
 		/// <summary>
+		/// Adds a preview legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		Task<LegalIdentity> AddPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys, params LegalIdentityAttachment[] Attachments);
+
+		/// <summary>
+		/// Applies a preview legal identity without uploading attachments or marking it ready for approval.
+		/// </summary>
+		/// <param name="Props">The array holding all values needed for the preview identity.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <returns>Reserved preview legal identity.</returns>
+		Task<LegalIdentity> ApplyPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys);
+
+		/// <summary>
+		/// Uploads attachments to an existing legal identity without marking it ready for approval.
+		/// </summary>
+		/// <param name="legalIdentityId">The legal identity identifier.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>The legal identity after attachments have been uploaded.</returns>
+		Task<LegalIdentity> UploadLegalIdentityAttachments(CaseInsensitiveString legalIdentityId, params LegalIdentityAttachment[] Attachments);
+
+		/// <summary>
+		/// Uploads attachments for a preview legal identity and marks it ready for approval.
+		/// </summary>
+		/// <param name="legalIdentityId">The preview legal identity identifier.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Submitted preview legal identity.</returns>
+		Task<LegalIdentity> CompletePreviewLegalIdentity(CaseInsensitiveString legalIdentityId, params LegalIdentityAttachment[] Attachments);
+
+		/// <summary>
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>

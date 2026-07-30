@@ -8,11 +8,17 @@ namespace NeuroAccessMaui.Services.Kyc
 	/// </summary>
 	public sealed class KycApplicationPage
 	{
-		public KycApplicationPage(IReadOnlyList<KycApplicationTemplate> templates, ResultPage? resultPage, bool usedFallback)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KycApplicationPage"/> class.
+		/// </summary>
+		/// <param name="Templates">The templates included on this page.</param>
+		/// <param name="ResultPage">The optional XEP-0059 pagination metadata.</param>
+		/// <param name="UsedFallback">If the bundled fallback template was used.</param>
+		public KycApplicationPage(IReadOnlyList<KycApplicationTemplate> Templates, ResultPage? ResultPage, bool UsedFallback)
 		{
-			this.Templates = templates;
-			this.ResultPage = resultPage;
-			this.UsedFallback = usedFallback;
+			this.Templates = Templates;
+			this.ResultPage = ResultPage;
+			this.UsedFallback = UsedFallback;
 		}
 
 		/// <summary>

@@ -19,8 +19,6 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Persistence;
-using Waher.Persistence.Filters;
 
 namespace NeuroAccessMaui.Services.Notification
 {
@@ -123,19 +121,19 @@ namespace NeuroAccessMaui.Services.Notification
 				KycReference? reference = null;
 				try
 				{
-					reference = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), Intent.EntityId));
+					reference = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(Intent.EntityId);
 				}
 				catch (Exception ex)
 				{
 					ServiceRef.LogService.LogException(ex);
 				}
 
-				bool isApproved = state == IdentityState.Approved || reference?.CreatedIdentityState == IdentityState.Approved;
+				bool isApproved = state == IdentityState.Approved || reference?.GetEffectiveApplicationIdentityState() == IdentityState.Approved;
 
 				if (reference is not null && !isApproved)
 				{
 					KycProcessNavigationArgs args = new(reference);
-					await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), args);
+					await ServiceRef.NavigationService.GoToAsync(nameof(KycApplicationStatusPage), args);
 					return NotificationRouteResult.Success;
 				}
 

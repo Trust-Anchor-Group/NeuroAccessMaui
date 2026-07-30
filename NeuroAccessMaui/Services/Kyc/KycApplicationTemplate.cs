@@ -5,10 +5,15 @@ namespace NeuroAccessMaui.Services.Kyc
 	/// </summary>
 	public sealed class KycApplicationTemplate
 	{
-		public KycApplicationTemplate(KycReference reference, KycApplicationItem? source)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KycApplicationTemplate"/> class.
+		/// </summary>
+		/// <param name="Reference">The parsed KYC reference constructed from the template XML.</param>
+		/// <param name="Source">The optional PubSub metadata that produced the template.</param>
+		public KycApplicationTemplate(KycReference Reference, KycApplicationItem? Source)
 		{
-			this.Reference = reference;
-			this.Source = source;
+			this.Reference = Reference;
+			this.Source = Source;
 		}
 
 		/// <summary>

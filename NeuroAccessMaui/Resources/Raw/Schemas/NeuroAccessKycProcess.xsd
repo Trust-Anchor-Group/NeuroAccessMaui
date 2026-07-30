@@ -27,8 +27,80 @@
   <xs:complexType name="KycProcessType">
     <xs:sequence>
       <xs:element name="Name" type="LocalizedTextType" minOccurs="0"/>
+      <xs:element name="IdentityApplication" type="IdentityApplicationType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Evidence" type="EvidenceType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="Page" type="PageType" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <!--
+    Optional process-level identity application policy.
+    If omitted, applications use Direct mode and existing one-step submission behavior.
+  -->
+  <xs:complexType name="IdentityApplicationType">
+    <xs:sequence>
+      <xs:element name="Mode" type="ApplicationModeType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Content" type="ApplicationContentType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="ApplicationModeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Direct"/>
+      <xs:enumeration value="Preview"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!--
+    Content routing policy.
+    Include entries are sent with the first application only.
+    Keep entries are sent with the first application and retained for final promotion.
+  -->
+  <xs:complexType name="ApplicationContentType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Include" type="ApplicationPropertyContentType"/>
+      <xs:element name="Keep" type="ApplicationPropertyContentType"/>
+      <xs:element name="IncludeAttachment" type="ApplicationAttachmentContentType"/>
+      <xs:element name="KeepAttachment" type="ApplicationAttachmentContentType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="ApplicationPropertyContentType">
+    <xs:sequence/>
+    <xs:attribute name="key" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ApplicationAttachmentContentType">
+    <xs:sequence/>
+    <xs:attribute name="name" type="xs:string" use="optional"/>
+    <xs:attribute name="tag" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!--
+    Optional process-level evidence policy.
+    If omitted, no travel-document NFC evidence is required by this process.
+  -->
+  <xs:complexType name="EvidenceType">
+    <xs:sequence>
+      <xs:element name="TravelDocument" type="TravelDocumentEvidenceType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Travel-document evidence requirements for the process. -->
+  <xs:complexType name="TravelDocumentEvidenceType">
+    <xs:sequence>
+      <xs:element name="Nfc" type="NfcEvidenceType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
+  </xs:complexType>
+
+  <!-- NFC readout evidence policy and attachment metadata. -->
+  <xs:complexType name="NfcEvidenceType">
+    <xs:sequence/>
+    <xs:attribute name="enabled" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="attachmentName" type="xs:string" use="optional" default="NFC.xml"/>
+    <xs:attribute name="contentType" type="xs:string" use="optional" default="text/xml"/>
   </xs:complexType>
 
   <!-- Individual page definition -->
@@ -37,6 +109,7 @@
       <xs:element name="Title" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="Description" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="Condition" type="ConditionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Metadata" type="PageMetadataType" minOccurs="0" maxOccurs="1"/>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="Field" type="FieldType"/>
         <xs:element name="Section" type="SectionType"/>
@@ -44,6 +117,16 @@
     </xs:sequence>
     <xs:attribute name="id" type="xs:string" use="required"/>
     <xs:attribute name="title" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- Page metadata used to declare built-in flow behavior without relying on page IDs. -->
+  <xs:complexType name="PageMetadataType">
+    <xs:sequence>
+      <!-- Built-in action name, such as TravelDocumentNfc. -->
+      <xs:element name="Action" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <!-- Evidence key that the page helps satisfy, such as TravelDocument.Nfc. -->
+      <xs:element name="RequiredEvidence" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
   </xs:complexType>
 
   <!-- Section grouping fields within a page -->

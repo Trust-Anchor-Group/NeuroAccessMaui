@@ -64,15 +64,11 @@ We use a **Git Flow** branching strategy to manage the development process effic
 
 ## Coding Guidelines
 
-To maintain consistency and quality across the codebase, please follow these guidelines:
+To maintain consistency and quality across the codebase, use the repository root [AGENTS.md](../AGENTS.md) as the canonical coding and agent workflow guide.
 
-### Style Guide
-- Use **PascalCase** for function and method names.
-- Use **PascalCase** for class and interface names.
-- Use **PascalCase** for public properties.
-- Use **camelCase** for private variables.
-- Always include XML documentation for public methods and classes.
-- Try to use meaningful names for variables, methods, and classes that clearly express their intent.
+At a high level:
+
+- Follow the .NET, C#, MAUI, MVVM, documentation, testing, navigation, and safe-area rules in `AGENTS.md`.
 
 ### Commit Messages
 

@@ -250,7 +250,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.DefaultRetryTimeout = 30000;
 					this.xmppClient.DefaultNrRetries = 0;
 					this.xmppClient.RequestRosterOnStartup = false;
-					this.xmppClient.TrustServer = !IsIpAddress;
+#if DEBUG
+					this.xmppClient.TrustServer = IsIpAddress;
+#else
+					this.xmppClient.TrustServer = false;
+#endif
 					this.xmppClient.AllowCramMD5 = false;
 					this.xmppClient.AllowDigestMD5 = false;
 					this.xmppClient.AllowPlain = false;
@@ -1172,7 +1176,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Client.AllowRegistration();
 				}
 
-				Client.TrustServer = !IsIpAddress;
+#if DEBUG
+				Client.TrustServer = IsIpAddress;
+#else
+					Client.TrustServer = false;
+#endif
 				Client.AllowCramMD5 = false;
 				Client.AllowDigestMD5 = false;
 				Client.AllowPlain = false;
@@ -1211,6 +1219,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 					TrySetResult(false); // Attempt to signal timeout if not already completed
 					Succeeded = false;
 				}
+
+#if !DEBUG
+				// Only connect if encryption is enabled, otherwise fail
+				// May give strange behaviour if encryption is not enabled, but hackers dont get to have a nice app.
+				Succeeded &= StartingEncryption;
+#endif
 
 				// Call ConnectedFunc if successful
 				if (Succeeded && ConnectedFunc is not null)
@@ -2116,7 +2130,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						{
 							try
 							{
-								Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
+								Ref = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(AppId.Id);
 							}
 							catch (Exception Ex2)
 							{
@@ -2129,18 +2143,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 							try
 							{
 								List<KycReference> All = [.. await Database.Find<KycReference>()];
-								if (AppId is not null)
-								{
-									Ref = All.FirstOrDefault(r => string.Equals(r.CreatedIdentityId, AppId.Id, StringComparison.OrdinalIgnoreCase));
-								}
-
 								Ref ??= All
-									.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.Where(r => r.GetEffectiveApplicationIdentityState() == IdentityState.Created && !string.IsNullOrEmpty(r.GetActiveApplicationIdentityId()))
 									.OrderByDescending(r => r.UpdatedUtc)
 									.FirstOrDefault();
 
 								Ref ??= All
-									.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.Where(r => !string.IsNullOrEmpty(r.GetActiveApplicationIdentityId()))
 									.OrderByDescending(r => r.UpdatedUtc)
 									.FirstOrDefault();
 							}
@@ -2237,11 +2246,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// BankIdRFA22: Unknown error. Please try again.
 			Message = Message.Trim();
 
-			bool ShouldShowAlert = Review is null ||
-				(Review.InvalidClaims.Length == 0 &&
-				Review.InvalidPhotos.Length == 0 &&
-				Review.UnvalidatedClaims.Length == 0 &&
-				Review.UnvalidatedPhotos.Length == 0);
+			bool HasReviewFindings = Review is not null &&
+				(Review.InvalidClaims.Length > 0 ||
+				Review.InvalidPhotos.Length > 0 ||
+				Review.UnvalidatedClaims.Length > 0 ||
+				Review.UnvalidatedPhotos.Length > 0);
+			bool IsReviewOnlyDiagnostic = Review is not null &&
+				!HasReviewFindings &&
+				string.IsNullOrWhiteSpace(Review.Code);
+			bool ShouldShowAlert = Review is null || (!HasReviewFindings && !IsReviewOnlyDiagnostic);
 
 			if (ShouldShowAlert)
 			{
@@ -3133,6 +3146,68 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Adds a preview legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		public async Task<LegalIdentity> AddPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys,
+			params LegalIdentityAttachment[] Attachments)
+		{
+			LegalIdentity Identity = await this.ApplyPreviewLegalIdentity(Props, GenerateNewKeys);
+			return await this.CompletePreviewLegalIdentity(Identity.Id, Attachments);
+		}
+
+		/// <summary>
+		/// Applies a preview legal identity without uploading attachments or marking it ready for approval.
+		/// </summary>
+		/// <param name="Props">The array holding all values needed for the preview identity.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <returns>Reserved preview legal identity.</returns>
+		public async Task<LegalIdentity> ApplyPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys)
+		{
+			if (GenerateNewKeys)
+				await this.GenerateNewKeys();
+
+			return await this.ContractsClient.ApplyAsync(Props, true);
+		}
+
+		/// <summary>
+		/// Uploads attachments to an existing legal identity without marking it ready for approval.
+		/// </summary>
+		/// <param name="legalIdentityId">The legal identity identifier.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>The legal identity after attachments have been uploaded.</returns>
+		public async Task<LegalIdentity> UploadLegalIdentityAttachments(CaseInsensitiveString legalIdentityId,
+			params LegalIdentityAttachment[] Attachments)
+		{
+			LegalIdentity Identity = await this.ContractsClient.GetLegalIdentityAsync(legalIdentityId);
+			foreach (LegalIdentityAttachment Attachment in Attachments)
+			{
+				Identity = await this.ContractsClient.UploadLegalIdAttachmentAsync(Identity.Id,
+					Path.GetFileName(Attachment.FileName), Attachment.Data, Attachment.ContentType);
+			}
+
+			return Identity;
+		}
+
+		/// <summary>
+		/// Uploads attachments for a preview legal identity and marks it ready for approval.
+		/// </summary>
+		/// <param name="legalIdentityId">The preview legal identity identifier.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Submitted preview legal identity.</returns>
+		public async Task<LegalIdentity> CompletePreviewLegalIdentity(CaseInsensitiveString legalIdentityId,
+			params LegalIdentityAttachment[] Attachments)
+		{
+			LegalIdentity Identity = await this.UploadLegalIdentityAttachments(legalIdentityId, Attachments);
+			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
+
+			return Identity;
+		}
+
+		/// <summary>
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>
@@ -3155,10 +3230,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<LegalIdentity> AddLegalIdentity(Property[] Props, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
+			return await this.AddLegalIdentityInternalAsync(Props, GenerateNewKeys, false, Attachments);
+		}
+
+		private async Task<LegalIdentity> AddLegalIdentityInternalAsync(Property[] Props, bool GenerateNewKeys, bool Preview,
+			params LegalIdentityAttachment[] Attachments)
+		{
 			if (GenerateNewKeys)
 				await this.GenerateNewKeys();
 
-			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props);
+			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props, Preview);
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
@@ -3226,11 +3307,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			HashSet<string> RefreshedIdentityIds = new(StringComparer.OrdinalIgnoreCase);
 			foreach (KycReference Reference in References
 				.Where(Candidate =>
-					!string.IsNullOrEmpty(Candidate.CreatedIdentityId) &&
-					(Candidate.CreatedIdentityState is null || Candidate.CreatedIdentityState == IdentityState.Created))
+					!string.IsNullOrEmpty(Candidate.GetActiveApplicationIdentityId()) &&
+					(Candidate.GetEffectiveApplicationIdentityState() is null || Candidate.GetEffectiveApplicationIdentityState() == IdentityState.Created))
 				.OrderByDescending(Candidate => Candidate.UpdatedUtc))
 			{
-				string IdentityId = Reference.CreatedIdentityId!;
+				string IdentityId = Reference.GetActiveApplicationIdentityId()!;
 				if (!RefreshedIdentityIds.Add(IdentityId))
 					continue;
 
@@ -3246,8 +3327,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 					continue;
 				}
 
-				bool StateChanged = Reference.CreatedIdentityState != Identity.State;
-				if (StateChanged || Reference.CreatedIdentityState is null)
+				bool StateChanged = Reference.GetEffectiveApplicationIdentityState() != Identity.State;
+				if (StateChanged || Reference.GetEffectiveApplicationIdentityState() is null)
 				{
 					try
 					{
@@ -3259,7 +3340,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 				}
 
-				await this.RefreshIdentityApplicationProfileAsync(Identity);
+				KycPreviewPromotionResult? PromotionResult = await TryPromoteApprovedPreviewAsync(Reference, Identity);
+				if (PromotionResult is null)
+					await RefreshIdentityApplicationProfileAsync(Identity);
 
 				if (StateChanged && ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage &&
 					AppPage.BindingContext is ApplicationsViewModel Model)
@@ -3302,6 +3385,36 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			if (CurrentApplication is null || CurrentApplication.Id == Identity.Id)
 				await ServiceRef.TagProfile.SetIdentityApplication(Identity, false);
+		}
+
+		private static async Task<KycPreviewPromotionResult?> TryPromoteApprovedPreviewAsync(KycReference? Reference, LegalIdentity Identity)
+		{
+			if (Reference is null ||
+				Identity is null ||
+				!Identity.IsApproved() ||
+				!Reference.IsPreviewIdentity(Identity.Id))
+			{
+				return null;
+			}
+
+			try
+			{
+				IKycPreviewPromotionService PromotionService = ServiceRef.Provider.GetRequiredService<IKycPreviewPromotionService>();
+				KycPreviewPromotionResult Result = await PromotionService.HandleApprovedPreviewIdentityAsync(Reference, Identity);
+				if (!Result.Succeeded)
+				{
+					ServiceRef.LogService.LogWarning(
+						"Approved preview identity was not promoted.",
+						new KeyValuePair<string, object?>("Reason", Result.Reason));
+				}
+
+				return Result;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.PreviewPromotion"));
+				return KycPreviewPromotionResult.NoChange("PromotionFailed");
+			}
 		}
 
 		/// <summary>
@@ -3402,11 +3515,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_IdentityUpdated(object? Sender, LegalIdentityEventArgs e)
 		{
+			KycReference? Ref = null;
+			KycPreviewPromotionResult? PreviewPromotionResult = null;
+
 			try
 			{
-				KycReference? Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), e.Identity.Id));
+				Ref = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(e.Identity.Id);
+
 				if (Ref is not null)
 					await ServiceRef.KycService.UpdateSubmissionStateAsync(Ref, e.Identity);
+
+				PreviewPromotionResult = await TryPromoteApprovedPreviewAsync(Ref, e.Identity);
 
 				if (ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage)
 				{
@@ -3421,6 +3540,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
+				if (PreviewPromotionResult is not null)
+				{
+					await this.IdentityApplicationChanged.Raise(this, e);
+
+					return;
+				}
+
 				if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id)
 				{
 					if (ServiceRef.TagProfile.LegalIdentity.Created > e.Identity.Created)

@@ -32,6 +32,7 @@ using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
+using NeuroAccessMaui.UI.Pages.Main.NfcTester;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
@@ -618,7 +619,11 @@ namespace NeuroAccessMaui
 
 			// Applications:
 			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
+			Routing.RegisterRoute(nameof(KycApplicationStatusPage), typeof(KycApplicationStatusPage));
 			Routing.RegisterRoute(nameof(KycProcessPage), typeof(KycProcessPage));
+			Routing.RegisterRoute(nameof(KycDocumentMrzScannerPage), typeof(KycDocumentMrzScannerPage));
+			Routing.RegisterRoute(nameof(KycProfilePhotoCameraPage), typeof(KycProfilePhotoCameraPage));
+			Routing.RegisterRoute(nameof(KycTravelDocumentPage), typeof(KycTravelDocumentPage));
 
 			// Contacts
 			Routing.RegisterRoute(nameof(ChatPage), typeof(ChatPage));
@@ -642,6 +647,7 @@ namespace NeuroAccessMaui
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(XmppFormPage), typeof(XmppFormPage));
 			Routing.RegisterRoute(nameof(AppsPage), typeof(AppsPage));
+            Routing.RegisterRoute(nameof(NfcTesterPage), typeof(NfcTesterPage));
 
 			//Notifications
 			Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));

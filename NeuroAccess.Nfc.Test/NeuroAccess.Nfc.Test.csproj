@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Sensitive\NFC EF_SOD problem.txt">
+    <Content Include="Sensitive\NFC EF_SOD problem.txt" Condition="Exists('Sensitive\NFC EF_SOD problem.txt')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

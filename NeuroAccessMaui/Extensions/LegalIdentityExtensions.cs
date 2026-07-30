@@ -85,6 +85,46 @@ namespace NeuroAccessMaui.Extensions
 		}
 
 		/// <summary>
+		/// Returns <c>true</c> if the legal identity is approved and has at least a name
+		/// (first + last name, or full name). An account-level identity with a name but
+		/// without personal number or photo satisfies this check.
+		/// </summary>
+		/// <param name="Identity">Identity to check.</param>
+		/// <returns>If the identity is approved and carries a name.</returns>
+		public static bool HasApprovedName(this LegalIdentity? Identity)
+		{
+			if (Identity is null)
+				return false;
+
+			if (!Identity.IsApproved())
+				return false;
+
+			bool HasFullName = false;
+			bool HasFirstName = false;
+			bool HasLastName = false;
+
+			foreach (Property P in Identity.Properties)
+			{
+				switch (P.Name)
+				{
+					case Constants.XmppProperties.FirstName:
+						HasFirstName = true;
+						break;
+
+					case Constants.XmppProperties.LastNames:
+						HasLastName = true;
+						break;
+
+					case Constants.XmppProperties.FullName:
+						HasFullName = true;
+						break;
+				}
+			}
+
+			return (HasFirstName && HasLastName) || HasFullName;
+		}
+
+		/// <summary>
 		/// Returns the JID if the <see cref="LegalIdentity"/> has one, or the empty string otherwise.
 		/// </summary>
 		/// <param name="legalIdentity">The legal identity whose JID to get.</param>

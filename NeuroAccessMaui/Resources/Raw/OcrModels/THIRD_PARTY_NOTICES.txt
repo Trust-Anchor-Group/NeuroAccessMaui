@@ -1,0 +1,18 @@
+MRZ OCR model/runtime notices
+
+DocsaidLab MRZScanner
+Source: https://github.com/DocsaidLab/MRZScanner
+Models:
+- mrzscanner_detection_20250222_fp32.onnx
+- mrzscanner_recognition_20250221_fp32.onnx
+License: Apache License 2.0
+Use in this app: bundled ONNX MRZ region detector and MRZ text recognizer. The app reimplements preprocessing, postprocessing, and decoding in C# for offline ONNX Runtime inference.
+
+ONNX Runtime
+Source: https://github.com/microsoft/onnxruntime
+Package: Microsoft.ML.OnnxRuntime
+License: MIT License
+Use in this app: offline ONNX inference runtime.
+
+Training data notice
+Datasets used only to train or fine-tune models, such as MRZScanner synthetic data inputs, MIDV-2020, DocVQA, or background image datasets, are not bundled with this app. Do not redistribute training datasets in the application package unless their own license terms are separately reviewed and satisfied.

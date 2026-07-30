@@ -1,0 +1,1360 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NeuroAccessMaui.OCR</name>
+    </assembly>
+    <members>
+        <member name="T:NeuroAccessMaui.OCR.Models.DocumentQuad">
+            <summary>
+            Represents a document quadrilateral in source image coordinates.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.DocumentQuad.#ctor(IdApp.Cv.Basic.Point,IdApp.Cv.Basic.Point,IdApp.Cv.Basic.Point,IdApp.Cv.Basic.Point)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.DocumentQuad"/> class.
+            </summary>
+            <param name="TopLeft">The top-left corner.</param>
+            <param name="TopRight">The top-right corner.</param>
+            <param name="BottomRight">The bottom-right corner.</param>
+            <param name="BottomLeft">The bottom-left corner.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuad.TopLeft">
+            <summary>
+            Gets the top-left corner.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuad.TopRight">
+            <summary>
+            Gets the top-right corner.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuad.BottomRight">
+            <summary>
+            Gets the bottom-right corner.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuad.BottomLeft">
+            <summary>
+            Gets the bottom-left corner.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate">
+            <summary>
+            Represents a scored document quadrilateral candidate.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.#ctor(NeuroAccessMaui.OCR.Models.DocumentQuad,System.Single,System.Single,System.Single,System.Single,NeuroAccessMaui.OCR.Models.MrzScanFailureCategory,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate"/> class.
+            </summary>
+            <param name="Quad">The document quadrilateral.</param>
+            <param name="Score">The combined candidate score.</param>
+            <param name="EdgeSupportScore">The edge-support score.</param>
+            <param name="ContrastScore">The inside/outside contrast score.</param>
+            <param name="AreaScore">The document area score.</param>
+            <param name="FailureCategory">The failure category, if the candidate is unusable.</param>
+            <param name="Metadata">Additional candidate metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.Quad">
+            <summary>
+            Gets the document quadrilateral.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.Score">
+            <summary>
+            Gets the combined candidate score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.EdgeSupportScore">
+            <summary>
+            Gets the edge-support score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.ContrastScore">
+            <summary>
+            Gets the inside/outside contrast score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.AreaScore">
+            <summary>
+            Gets the document area score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.FailureCategory">
+            <summary>
+            Gets the failure category, if the candidate is unusable.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQuadCandidate.Metadata">
+            <summary>
+            Gets additional candidate metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics">
+            <summary>
+            Represents image quality metrics used by the MRZ capture pipeline.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics"/> class.
+            </summary>
+            <param name="Mean">The average luminance value.</param>
+            <param name="StandardDeviation">The luminance standard deviation.</param>
+            <param name="DynamicRange">The luminance dynamic range.</param>
+            <param name="Sharpness">The Laplacian edge-energy sharpness estimate.</param>
+            <param name="HighlightRatio">The ratio of near-white pixels.</param>
+            <param name="ShadowRatio">The ratio of near-black pixels.</param>
+            <param name="GlareRatio">The ratio of connected near-white glare candidates.</param>
+            <param name="QualityScore">The combined quality score.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.Mean">
+            <summary>
+            Gets the average luminance value.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.StandardDeviation">
+            <summary>
+            Gets the luminance standard deviation.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.DynamicRange">
+            <summary>
+            Gets the luminance dynamic range.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.Sharpness">
+            <summary>
+            Gets the Laplacian edge-energy sharpness estimate.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.HighlightRatio">
+            <summary>
+            Gets the ratio of near-white pixels.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.ShadowRatio">
+            <summary>
+            Gets the ratio of near-black pixels.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.GlareRatio">
+            <summary>
+            Gets the ratio of connected near-white glare candidates.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentQualityMetrics.QualityScore">
+            <summary>
+            Gets the combined quality score.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.DocumentRegionHint">
+            <summary>
+            Represents an expected document region using normalized coordinates relative to the source image.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.DocumentRegionHint.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.DocumentRegionHint"/> class.
+            </summary>
+            <param name="Left">The normalized left coordinate.</param>
+            <param name="Top">The normalized top coordinate.</param>
+            <param name="Width">The normalized width.</param>
+            <param name="Height">The normalized height.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentRegionHint.Left">
+            <summary>
+            Gets the normalized left coordinate.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentRegionHint.Top">
+            <summary>
+            Gets the normalized top coordinate.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentRegionHint.Width">
+            <summary>
+            Gets the normalized width.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.DocumentRegionHint.Height">
+            <summary>
+            Gets the normalized height.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzCandidateScore">
+            <summary>
+            Represents visual and parser score components for an MRZ candidate.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzCandidateScore.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzCandidateScore"/> class.
+            </summary>
+            <param name="VisualScore">The visual score before OCR.</param>
+            <param name="GeometryScore">The template geometry score.</param>
+            <param name="WidthScore">The standards-derived width score.</param>
+            <param name="AlignmentScore">The line alignment score.</param>
+            <param name="InterlineScore">The interline spacing score.</param>
+            <param name="BottomPlacementScore">The bottom-of-document placement score.</param>
+            <param name="ParserScore">The parser/checksum score after OCR.</param>
+            <param name="Metadata">Additional score metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.VisualScore">
+            <summary>
+            Gets the visual score before OCR.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.GeometryScore">
+            <summary>
+            Gets the template geometry score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.WidthScore">
+            <summary>
+            Gets the standards-derived width score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.AlignmentScore">
+            <summary>
+            Gets the line alignment score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.InterlineScore">
+            <summary>
+            Gets the interline spacing score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.BottomPlacementScore">
+            <summary>
+            Gets the bottom-of-document placement score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.ParserScore">
+            <summary>
+            Gets the parser/checksum score after OCR.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzCandidateScore.Metadata">
+            <summary>
+            Gets additional score metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState">
+            <summary>
+            Describes the next user-facing scanner guidance state for MRZ capture.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.FindPage">
+            <summary>
+            The scanner is looking for the document page.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.FitAllCorners">
+            <summary>
+            The scanner needs all document corners in view.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.ReduceGlare">
+            <summary>
+            The scanner detected glare that should be reduced.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.MoveCloser">
+            <summary>
+            The document should be moved closer to the camera.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.HoldSteady">
+            <summary>
+            The frame is usable and the user should hold still.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.Capturing">
+            <summary>
+            A commit capture is in progress.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.Review">
+            <summary>
+            The scan has reached review or validation.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState.ManualFallback">
+            <summary>
+            Automatic capture is unlikely to succeed and manual fallback should be offered.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzDocumentFormat">
+            <summary>
+            Identifies the supported MRZ document layouts.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzDocumentFormat.Td1">
+            <summary>
+            TD1 identity-card layout with three 30-character lines.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzDocumentFormat.Td2">
+            <summary>
+            TD2 visa or card layout with two 36-character lines.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzDocumentFormat.Td3">
+            <summary>
+            TD3 passport layout with two 44-character lines.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzLineCandidate">
+            <summary>
+            Represents one detected MRZ text line in rectified document coordinates.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzLineCandidate.#ctor(IdApp.Cv.Basic.Rect,System.Single,System.Single,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzLineCandidate"/> class.
+            </summary>
+            <param name="Bounds">The line bounds in rectified document coordinates.</param>
+            <param name="Score">The line score.</param>
+            <param name="BaselineY">The estimated baseline y-coordinate.</param>
+            <param name="Metadata">Additional line metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCandidate.Bounds">
+            <summary>
+            Gets the line bounds in rectified document coordinates.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCandidate.Score">
+            <summary>
+            Gets the line score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCandidate.BaselineY">
+            <summary>
+            Gets the estimated baseline y-coordinate.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCandidate.Metadata">
+            <summary>
+            Gets additional line metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzLineCrop">
+            <summary>
+            Represents one OCR-ready MRZ line crop.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzLineCrop.#ctor(System.Int32,IdApp.Cv.Matrix{System.Single},IdApp.Cv.Basic.Rect,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzLineCrop"/> class.
+            </summary>
+            <param name="LineIndex">The zero-based line index.</param>
+            <param name="Image">The OCR-ready line image.</param>
+            <param name="Bounds">The crop bounds in rectified document coordinates.</param>
+            <param name="Metadata">Additional crop metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCrop.LineIndex">
+            <summary>
+            Gets the zero-based line index.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCrop.Image">
+            <summary>
+            Gets the OCR-ready line image.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCrop.Bounds">
+            <summary>
+            Gets the crop bounds in rectified document coordinates.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzLineCrop.Metadata">
+            <summary>
+            Gets additional crop metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest">
+            <summary>
+            Represents a lightweight preview-analysis request for MRZ capture.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest.#ctor(IdApp.Cv.IMatrix,System.Int32,NeuroAccessMaui.OCR.Models.DocumentRegionHint,NeuroAccessMaui.OCR.Models.OcrDocumentKindHint,NeuroAccessMaui.OCR.Models.OcrDocumentSideHint,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest"/> class.
+            </summary>
+            <param name="Image">The preview image.</param>
+            <param name="SourceRotationDegrees">Clockwise source-rotation degrees to normalize before analysis.</param>
+            <param name="ExpectedDocumentRegion">The optional whole-document guide region.</param>
+            <param name="DocumentKindHint">The expected document kind, if known.</param>
+            <param name="DocumentSideHint">The expected document side, if known.</param>
+            <param name="Metadata">Additional caller metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest.Image">
+            <summary>
+            Gets the preview image.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest.SourceRotationDegrees">
+            <summary>
+            Gets clockwise source-rotation degrees to normalize before analysis.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest.ExpectedDocumentRegion">
+            <summary>
+            Gets the optional whole-document guide region.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest.DocumentKindHint">
+            <summary>
+            Gets the expected document kind, if known.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest.DocumentSideHint">
+            <summary>
+            Gets the expected document side, if known.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest.Metadata">
+            <summary>
+            Gets additional caller metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult">
+            <summary>
+            Represents the result of lightweight preview analysis for MRZ capture.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.#ctor(NeuroAccessMaui.OCR.Models.MrzCaptureGuidanceState,NeuroAccessMaui.OCR.Models.DocumentQualityMetrics,NeuroAccessMaui.OCR.Models.DocumentQuadCandidate,System.Single,System.Boolean,NeuroAccessMaui.OCR.Models.MrzScanFailureCategory,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String},NeuroAccessMaui.OCR.Models.MrzRegionCandidate)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult"/> class.
+            </summary>
+            <param name="GuidanceState">The next guidance state.</param>
+            <param name="QualityMetrics">The preview quality metrics.</param>
+            <param name="DocumentQuadCandidate">The document quad candidate, if any.</param>
+            <param name="MrzPlausibilityScore">The rough MRZ plausibility score.</param>
+            <param name="IsCommitReady">If the frame can be considered for commit capture.</param>
+            <param name="FailureCategory">The primary failure category, if any.</param>
+            <param name="Metadata">Additional analysis metadata.</param>
+            <param name="MrzCandidate">The preview MRZ candidate, if any.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.GuidanceState">
+            <summary>
+            Gets the next guidance state.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.QualityMetrics">
+            <summary>
+            Gets the preview quality metrics.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.DocumentQuadCandidate">
+            <summary>
+            Gets the document quad candidate, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.MrzCandidate">
+            <summary>
+            Gets the preview MRZ candidate, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.MrzPlausibilityScore">
+            <summary>
+            Gets the rough MRZ plausibility score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.IsCommitReady">
+            <summary>
+            Gets a value indicating whether the frame can be considered for commit capture.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.FailureCategory">
+            <summary>
+            Gets the primary failure category, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult.Metadata">
+            <summary>
+            Gets additional analysis metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzPreviewFrame">
+            <summary>
+            Represents a preview frame retained for stable commit capture.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzPreviewFrame.#ctor(IdApp.Cv.IMatrix,System.Int32,System.DateTimeOffset)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzPreviewFrame"/> class.
+            </summary>
+            <param name="Image">The source image.</param>
+            <param name="SourceRotationDegrees">Clockwise source-rotation degrees to normalize before scanning.</param>
+            <param name="Timestamp">The frame timestamp.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewFrame.Image">
+            <summary>
+            Gets the source image.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewFrame.SourceRotationDegrees">
+            <summary>
+            Gets clockwise source-rotation degrees to normalize before scanning.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzPreviewFrame.Timestamp">
+            <summary>
+            Gets the frame timestamp.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult">
+            <summary>
+            Represents OCR and parser output for one MRZ visual candidate.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.#ctor(NeuroAccessMaui.OCR.Models.MrzRegionCandidate,System.String,System.String,NeuroAccess.Nfc.TravelDocuments.DocumentInformation,System.Nullable{NeuroAccessMaui.OCR.Models.MrzDocumentFormat},System.Single,System.Boolean,NeuroAccessMaui.OCR.Models.MrzScanFailureCategory,System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult"/> class.
+            </summary>
+            <param name="Candidate">The visual MRZ candidate.</param>
+            <param name="RawText">The raw OCR text.</param>
+            <param name="NormalizedText">The normalized MRZ text.</param>
+            <param name="DocumentInformation">The parsed document information, if available.</param>
+            <param name="Format">The MRZ format, if decoded.</param>
+            <param name="Confidence">The confidence score.</param>
+            <param name="IsStrictSuccess">If the parser accepted the result strictly.</param>
+            <param name="FailureCategory">The failure category, if any.</param>
+            <param name="FailureReason">The failure reason, if any.</param>
+            <param name="Metadata">Additional recognition metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.Candidate">
+            <summary>
+            Gets the visual MRZ candidate.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.RawText">
+            <summary>
+            Gets the raw OCR text.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.NormalizedText">
+            <summary>
+            Gets the normalized MRZ text.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.DocumentInformation">
+            <summary>
+            Gets the parsed document information, if available.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.Format">
+            <summary>
+            Gets the MRZ format, if decoded.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.Confidence">
+            <summary>
+            Gets the confidence score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.IsStrictSuccess">
+            <summary>
+            Gets a value indicating whether the parser accepted the result strictly.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.FailureCategory">
+            <summary>
+            Gets the failure category, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.FailureReason">
+            <summary>
+            Gets the failure reason, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRecognitionCandidateResult.Metadata">
+            <summary>
+            Gets additional recognition metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzRegionCandidate">
+            <summary>
+            Represents a complete MRZ region candidate in rectified document coordinates.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzRegionCandidate.#ctor(System.String,NeuroAccessMaui.OCR.Models.MrzDocumentFormat,IdApp.Cv.Basic.Rect,System.Collections.Generic.IReadOnlyList{NeuroAccessMaui.OCR.Models.MrzLineCandidate},NeuroAccessMaui.OCR.Models.MrzCandidateScore,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzRegionCandidate"/> class.
+            </summary>
+            <param name="Name">The stable candidate name.</param>
+            <param name="Format">The MRZ document format hypothesis.</param>
+            <param name="Bounds">The region bounds in rectified document coordinates.</param>
+            <param name="Lines">The detected line candidates.</param>
+            <param name="Score">The candidate score.</param>
+            <param name="Metadata">Additional candidate metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRegionCandidate.Name">
+            <summary>
+            Gets the stable candidate name.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRegionCandidate.Format">
+            <summary>
+            Gets the MRZ document format hypothesis.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRegionCandidate.Bounds">
+            <summary>
+            Gets the region bounds in rectified document coordinates.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRegionCandidate.Lines">
+            <summary>
+            Gets the detected line candidates.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRegionCandidate.Score">
+            <summary>
+            Gets the candidate score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzRegionCandidate.Metadata">
+            <summary>
+            Gets additional candidate metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory">
+            <summary>
+            Describes the main failure category for an MRZ scan.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.None">
+            <summary>
+            No categorized failure occurred.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.DocumentNotFound">
+            <summary>
+            No usable document page was found.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.DocumentTooBlurred">
+            <summary>
+            The document image was too blurred for reliable recognition.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.GlareInMrzArea">
+            <summary>
+            Glare intersects the document or MRZ area.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.MrzRegionNotFound">
+            <summary>
+            A document was found but no plausible MRZ region was localized.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.OcrNoText">
+            <summary>
+            OCR returned no useful text for the selected MRZ candidate.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.MrzChecksumFailed">
+            <summary>
+            OCR text was found but MRZ validation failed.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.MrzScanFailureCategory.UnsupportedDocumentSide">
+            <summary>
+            The visible document side does not appear to contain the requested MRZ.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.MrzScanResult">
+            <summary>
+            Contains parsed MRZ data returned by a successful scan.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.MrzScanResult.#ctor(NeuroAccessMaui.OCR.Models.MrzDocumentFormat,System.String,NeuroAccess.Nfc.TravelDocuments.DocumentInformation)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.MrzScanResult"/> class.
+            </summary>
+            <param name="Format">The detected MRZ format.</param>
+            <param name="NormalizedText">The normalized MRZ text.</param>
+            <param name="Document">The parsed document information.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzScanResult.Format">
+            <summary>
+            Gets the detected MRZ format.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzScanResult.NormalizedText">
+            <summary>
+            Gets the normalized MRZ text.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.MrzScanResult.Document">
+            <summary>
+            Gets the parsed document information.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrArtifactBundle">
+            <summary>
+            Describes a persisted debug-artifact session for a scan.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.OcrArtifactBundle.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.OcrArtifactBundle"/> class.
+            </summary>
+            <param name="SessionId">The unique session identifier.</param>
+            <param name="SessionDirectoryPath">The persisted session directory.</param>
+            <param name="ManifestPath">The manifest file path.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrArtifactBundle.SessionId">
+            <summary>
+            Gets the unique session identifier.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrArtifactBundle.SessionDirectoryPath">
+            <summary>
+            Gets the persisted session directory path.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrArtifactBundle.ManifestPath">
+            <summary>
+            Gets the manifest file path.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrDocumentKindHint">
+            <summary>
+            Describes the caller's best knowledge of the document family being scanned.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrDocumentKindHint.Unknown">
+            <summary>
+            The document family is not known.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrDocumentKindHint.Passport">
+            <summary>
+            The document is expected to be a passport biodata page.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrDocumentKindHint.IdentityCard">
+            <summary>
+            The document is expected to be a national identity card.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrDocumentSideHint">
+            <summary>
+            Describes the caller's best knowledge of the document side being scanned.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrDocumentSideHint.Unknown">
+            <summary>
+            The document side is not known.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrDocumentSideHint.Front">
+            <summary>
+            The front side is expected.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrDocumentSideHint.Back">
+            <summary>
+            The back side is expected.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrDocumentSideHint.BiodataPage">
+            <summary>
+            A passport or document biodata page is expected.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrScanMode">
+            <summary>
+            Describes the intended scanner workload for a request.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanMode.StillImage">
+            <summary>
+            Runs the normal still-image compatibility path.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanMode.PreviewAnalysis">
+            <summary>
+            Runs a lightweight preview analysis pass.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanMode.Commit">
+            <summary>
+            Runs the full commit scan after a preview frame has been accepted.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrScanRequest">
+            <summary>
+            Represents a single OCR scan request against a source image or preview frame.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.OcrScanRequest.#ctor(IdApp.Cv.IMatrix,NeuroAccessMaui.OCR.Models.OcrScanTargetKind,System.String,NeuroAccessMaui.OCR.Models.OcrScanSourceKind,NeuroAccessMaui.OCR.Models.DocumentRegionHint,System.Int32,NeuroAccessMaui.OCR.Models.OcrDocumentKindHint,NeuroAccessMaui.OCR.Models.OcrDocumentSideHint,System.Nullable{NeuroAccessMaui.OCR.Models.OcrScanMode},System.Boolean,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.OcrScanRequest"/> class.
+            </summary>
+            <param name="Image">The source image matrix.</param>
+            <param name="TargetKind">The requested scan target.</param>
+            <param name="ProviderId">The explicitly selected provider identifier, if any.</param>
+            <param name="SourceKind">The source kind.</param>
+            <param name="ExpectedDocumentRegion">An optional normalized document-region hint.</param>
+            <param name="SourceRotationDegrees">Clockwise source-rotation degrees to normalize before scanning.</param>
+            <param name="DocumentKindHint">The expected document kind, if known.</param>
+            <param name="DocumentSideHint">The expected document side, if known.</param>
+            <param name="ScanMode">The intended scanner workload.</param>
+            <param name="CaptureDebugArtifacts">If debug artifacts should be persisted.</param>
+            <param name="Metadata">Optional caller metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.Image">
+            <summary>
+            Gets the source image matrix.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.TargetKind">
+            <summary>
+            Gets the requested scan target.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.ProviderId">
+            <summary>
+            Gets the explicitly selected provider identifier, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.SourceKind">
+            <summary>
+            Gets the source kind.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.ExpectedDocumentRegion">
+            <summary>
+            Gets the optional normalized document-region hint.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.SourceRotationDegrees">
+            <summary>
+            Gets clockwise source-rotation degrees to normalize before scanning.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.DocumentKindHint">
+            <summary>
+            Gets the expected document kind, if known.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.DocumentSideHint">
+            <summary>
+            Gets the expected document side, if known.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.ScanMode">
+            <summary>
+            Gets the intended scanner workload.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.CaptureDebugArtifacts">
+            <summary>
+            Gets a value indicating whether debug artifacts should be persisted.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanRequest.Metadata">
+            <summary>
+            Gets caller-supplied metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrScanResult">
+            <summary>
+            Represents the final outcome of a simplified OCR scan.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.OcrScanResult.#ctor(NeuroAccessMaui.OCR.Models.OcrScanTargetKind,NeuroAccessMaui.OCR.Models.OcrScanSourceKind,System.String,NeuroAccessMaui.OCR.Models.OcrScanValidationStatus,System.String,System.String,NeuroAccessMaui.OCR.Models.MrzScanResult,System.Single,System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String},NeuroAccessMaui.OCR.Models.OcrArtifactBundle)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.OcrScanResult"/> class.
+            </summary>
+            <param name="TargetKind">The requested scan target.</param>
+            <param name="SourceKind">The source kind.</param>
+            <param name="ProviderId">The provider that handled the scan.</param>
+            <param name="ValidationStatus">The final validation status.</param>
+            <param name="RawText">The raw OCR text.</param>
+            <param name="NormalizedText">The normalized target text.</param>
+            <param name="Mrz">The parsed MRZ result, if valid.</param>
+            <param name="Confidence">The result confidence.</param>
+            <param name="FailureReason">The failure reason, if any.</param>
+            <param name="Metadata">Additional result metadata.</param>
+            <param name="ArtifactBundle">The persisted debug-artifact bundle, if any.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.TargetKind">
+            <summary>
+            Gets the requested scan target.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.SourceKind">
+            <summary>
+            Gets the source kind.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.ProviderId">
+            <summary>
+            Gets the provider that handled the scan.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.ValidationStatus">
+            <summary>
+            Gets the final validation status.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.RawText">
+            <summary>
+            Gets the raw OCR text.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.NormalizedText">
+            <summary>
+            Gets the normalized target text.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.Mrz">
+            <summary>
+            Gets the parsed MRZ result when validation succeeded.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.Confidence">
+            <summary>
+            Gets the overall confidence score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.FailureReason">
+            <summary>
+            Gets the failure reason, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.Metadata">
+            <summary>
+            Gets additional result metadata.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.ArtifactBundle">
+            <summary>
+            Gets the persisted debug-artifact bundle, if any.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrScanResult.IsSuccessful">
+            <summary>
+            Gets a value indicating whether the scan succeeded with a strictly valid result.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrScanSourceKind">
+            <summary>
+            Identifies the source mode used by a scan request.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanSourceKind.StillImage">
+            <summary>
+            The request uses a still image.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanSourceKind.PreviewFrame">
+            <summary>
+            The request uses a live preview frame.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrScanTargetKind">
+            <summary>
+            Identifies the scan target handled by the OCR service.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanTargetKind.Mrz">
+            <summary>
+            Reads a machine-readable zone.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanTargetKind.QrCode">
+            <summary>
+            Reserved QR-code target for future workflows.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrScanValidationStatus">
+            <summary>
+            Describes the final validation outcome of a scan attempt.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanValidationStatus.Succeeded">
+            <summary>
+            The scan produced a strictly valid result.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanValidationStatus.Invalid">
+            <summary>
+            OCR ran, but the target content was invalid or incomplete.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanValidationStatus.UnsupportedTarget">
+            <summary>
+            The requested target is not implemented.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.OcrScanValidationStatus.Failed">
+            <summary>
+            The scan failed before validation could complete.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.OcrTextRecognitionResult">
+            <summary>
+            Represents the raw text output returned by a provider.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.OcrTextRecognitionResult.#ctor(System.String,System.Collections.Generic.IReadOnlyList{System.String},System.Single,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.OcrTextRecognitionResult"/> class.
+            </summary>
+            <param name="RawText">The raw text returned by the provider.</param>
+            <param name="Lines">The provider text split into lines.</param>
+            <param name="Confidence">The provider confidence score.</param>
+            <param name="Metadata">Additional provider metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrTextRecognitionResult.RawText">
+            <summary>
+            Gets the raw text returned by the provider.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrTextRecognitionResult.Lines">
+            <summary>
+            Gets the provider text split into lines.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrTextRecognitionResult.Confidence">
+            <summary>
+            Gets the provider confidence score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.OcrTextRecognitionResult.Metadata">
+            <summary>
+            Gets additional provider metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.QrCodeResult">
+            <summary>
+            Represents a single decoded QR code.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.QrCodeResult.#ctor(System.String,System.String,System.Single,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.QrCodeResult"/> class.
+            </summary>
+            <param name="Value">The decoded value.</param>
+            <param name="Format">The reported code format, if available.</param>
+            <param name="Confidence">The provider confidence score.</param>
+            <param name="Metadata">Additional provider metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.QrCodeResult.Value">
+            <summary>
+            Gets the decoded QR value.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.QrCodeResult.Format">
+            <summary>
+            Gets the reported code format, if available.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.QrCodeResult.Confidence">
+            <summary>
+            Gets the provider confidence score.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.QrCodeResult.Metadata">
+            <summary>
+            Gets additional provider metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.RectifiedDocument">
+            <summary>
+            Represents a source document image after perspective rectification.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.RectifiedDocument.#ctor(IdApp.Cv.Matrix{System.Single},NeuroAccessMaui.OCR.Models.DocumentQuad,NeuroAccessMaui.OCR.Models.DocumentQualityMetrics,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.RectifiedDocument"/> class.
+            </summary>
+            <param name="Image">The rectified grayscale document image.</param>
+            <param name="SourceQuad">The source document quadrilateral.</param>
+            <param name="QualityMetrics">The quality metrics for the rectified document.</param>
+            <param name="Metadata">Additional rectification metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.RectifiedDocument.Image">
+            <summary>
+            Gets the rectified grayscale document image.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.RectifiedDocument.SourceQuad">
+            <summary>
+            Gets the source document quadrilateral.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.RectifiedDocument.QualityMetrics">
+            <summary>
+            Gets the quality metrics for the rectified document.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.RectifiedDocument.Metadata">
+            <summary>
+            Gets additional rectification metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.StructuredTextObservation">
+            <summary>
+            Represents one OCR observation that contributes to specialized structured-text decoding.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Models.StructuredTextObservation.#ctor(NeuroAccessMaui.OCR.Models.StructuredTextObservationSourceKind,System.String,System.Collections.Generic.IReadOnlyList{System.String},System.Single,System.Nullable{System.Int32},System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Models.StructuredTextObservation"/> class.
+            </summary>
+            <param name="SourceKind">The observation source kind.</param>
+            <param name="RawText">The raw text returned by OCR.</param>
+            <param name="Lines">The OCR text split into lines.</param>
+            <param name="Confidence">The OCR confidence.</param>
+            <param name="LineIndex">The zero-based line index for line observations, if known.</param>
+            <param name="Metadata">Additional observation metadata.</param>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.StructuredTextObservation.SourceKind">
+            <summary>
+            Gets the observation source kind.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.StructuredTextObservation.RawText">
+            <summary>
+            Gets the raw OCR text.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.StructuredTextObservation.Lines">
+            <summary>
+            Gets the OCR text split into lines.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.StructuredTextObservation.Confidence">
+            <summary>
+            Gets the OCR confidence.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.StructuredTextObservation.LineIndex">
+            <summary>
+            Gets the zero-based line index for line observations, if known.
+            </summary>
+        </member>
+        <member name="P:NeuroAccessMaui.OCR.Models.StructuredTextObservation.Metadata">
+            <summary>
+            Gets additional observation metadata.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Models.StructuredTextObservationSourceKind">
+            <summary>
+            Identifies how a structured-text OCR observation was produced.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.StructuredTextObservationSourceKind.Block">
+            <summary>
+            The observation came from one OCR pass over the whole localized text block.
+            </summary>
+        </member>
+        <member name="F:NeuroAccessMaui.OCR.Models.StructuredTextObservationSourceKind.Line">
+            <summary>
+            The observation came from one OCR pass over an individual localized text line.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.OcrServiceCollectionExtensions">
+            <summary>
+            Provides dependency injection registration helpers for the OCR subsystem.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.OcrServiceCollectionExtensions.RegisterOcrServices(Microsoft.Maui.Hosting.MauiAppBuilder)">
+            <summary>
+            Registers the OCR services and the active ONNX-backed MRZ scanner.
+            </summary>
+            <param name="Builder">The MAUI application builder.</param>
+            <returns>The same builder instance for chaining.</returns>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Pipeline.MrzFrameStabilityTracker">
+            <summary>
+            Tracks a short preview-frame window and selects stable commit frames.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzFrameStabilityTracker.Add(NeuroAccessMaui.OCR.Models.MrzPreviewFrame,NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisResult)">
+            <summary>
+            Adds a preview analysis result and frame to the stability window.
+            </summary>
+            <param name="Frame">The preview frame.</param>
+            <param name="AnalysisResult">The preview analysis result.</param>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzFrameStabilityTracker.Reset">
+            <summary>
+            Clears the tracked preview window.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzFrameStabilityTracker.TryGetCommitFrame(NeuroAccessMaui.OCR.Models.MrzPreviewFrame@)">
+            <summary>
+            Attempts to select the best stable commit frame.
+            </summary>
+            <param name="Frame">The selected frame, if stable.</param>
+            <returns>If a stable frame was selected.</returns>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzFrameStabilityTracker.CreateDiagnostics">
+            <summary>
+            Creates a diagnostic snapshot of the current preview stability window.
+            </summary>
+            <returns>A dictionary containing preview readiness and stability measurements.</returns>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Pipeline.MrzRegionRectifier">
+            <summary>
+            Rectifies detected MRZ quadrilaterals into upright MRZ region images.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzRegionRectifier.Rectify(IdApp.Cv.Matrix{System.Single},NeuroAccessMaui.OCR.Models.DocumentQuadCandidate,System.Threading.CancellationToken)">
+            <summary>
+            Rectifies the MRZ region using the detected quadrilateral.
+            </summary>
+            <param name="Image">The upright grayscale source image.</param>
+            <param name="QuadCandidate">The selected MRZ quadrilateral candidate.</param>
+            <param name="CancellationToken">The cancellation token.</param>
+            <returns>The rectified MRZ region image.</returns>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzDetector">
+            <summary>
+            Runs the DocsaidLab MRZScanner ONNX model used to locate MRZ polygons.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzDetector.#ctor(NeuroAccessMaui.OCR.Pipeline.OnnxModelAssetLoader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzDetector"/> class.
+            </summary>
+            <param name="ModelAssetLoader">The packaged model asset loader.</param>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzDetector.Dispose">
+            <summary>
+            Releases resources owned by the detector.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzRecognizer">
+            <summary>
+            Runs the DocsaidLab MRZScanner ONNX recognition model for corrected MRZ crops.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzRecognizer.#ctor(NeuroAccessMaui.OCR.Pipeline.OnnxModelAssetLoader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzRecognizer"/> class.
+            </summary>
+            <param name="ModelAssetLoader">The packaged model asset loader.</param>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzRecognizer.Dispose">
+            <summary>
+            Releases resources owned by the recognizer.
+            </summary>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Pipeline.OnnxModelAssetLoader">
+            <summary>
+            Copies packaged ONNX model assets to a file-system location that ONNX Runtime can open.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.OnnxModelAssetLoader.Dispose">
+            <summary>
+            Releases resources owned by the asset loader.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.OnnxModelAssetLoader.GetCachedAssetPathAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Resolves a packaged OCR model asset to a cached file path.
+            </summary>
+            <param name="AssetPath">The packaged MAUI asset path.</param>
+            <param name="CancellationToken">The cancellation token.</param>
+            <returns>The local file path that can be passed to ONNX Runtime.</returns>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Pipeline.OnnxMrzScanEngine">
+            <summary>
+            Orchestrates MRZScanner detection, CV correction, MRZScanner recognition, and MRZ validation.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Pipeline.OnnxMrzScanEngine.#ctor(NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzDetector,NeuroAccessMaui.OCR.Pipeline.MrzRegionRectifier,NeuroAccessMaui.OCR.Pipeline.MrzScannerMrzRecognizer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Pipeline.OnnxMrzScanEngine"/> class.
+            </summary>
+            <param name="Detector">The MRZScanner detector.</param>
+            <param name="MrzRectifier">The CV MRZ region rectifier.</param>
+            <param name="Recognizer">The MRZScanner recognizer.</param>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Services.IMrzPreviewAnalysisService">
+            <summary>
+            Provides lightweight preview analysis for MRZ capture guidance.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.IMrzPreviewAnalysisService.Analyze(NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest,System.Threading.CancellationToken)">
+            <summary>
+            Analyzes a preview frame without invoking OCR.
+            </summary>
+            <param name="Request">The preview analysis request.</param>
+            <param name="CancellationToken">The cancellation token.</param>
+            <returns>The preview analysis result.</returns>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Services.IOcrArtifactExportService">
+            <summary>
+            Shares persisted OCR debug-artifact bundles.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.IOcrArtifactExportService.ShareAsync(NeuroAccessMaui.OCR.Models.OcrArtifactBundle,System.Threading.CancellationToken)">
+            <summary>
+            Shares the supplied artifact bundle.
+            </summary>
+            <param name="Bundle">The artifact bundle to share.</param>
+            <param name="CancellationToken">The cancellation token.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Services.IOcrScanService">
+            <summary>
+            Provides the simplified OCR scan entrypoint used by the application.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.IOcrScanService.ScanAsync(NeuroAccessMaui.OCR.Models.OcrScanRequest,System.Threading.CancellationToken)">
+            <summary>
+            Processes the supplied scan request.
+            </summary>
+            <param name="Request">The scan request.</param>
+            <param name="CancellationToken">The cancellation token.</param>
+            <returns>The scan result.</returns>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Services.MrzPreviewAnalysisService">
+            <summary>
+            Provides preview analysis for MRZ capture guidance using the ONNX MRZ pipeline.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.MrzPreviewAnalysisService.#ctor(NeuroAccessMaui.OCR.Pipeline.OnnxMrzScanEngine)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Services.MrzPreviewAnalysisService"/> class.
+            </summary>
+            <param name="ScanEngine">The ONNX MRZ scan engine.</param>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.MrzPreviewAnalysisService.Analyze(NeuroAccessMaui.OCR.Models.MrzPreviewAnalysisRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Services.OcrArtifactExportService">
+            <summary>
+            Shares persisted OCR debug-artifact bundles as zip archives.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.OcrArtifactExportService.ShareAsync(NeuroAccessMaui.OCR.Models.OcrArtifactBundle,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:NeuroAccessMaui.OCR.Services.OcrScanService">
+            <summary>
+            Implements the OCR scan workflow used by the application.
+            </summary>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.OcrScanService.#ctor(NeuroAccessMaui.OCR.Pipeline.OnnxMrzScanEngine)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NeuroAccessMaui.OCR.Services.OcrScanService"/> class.
+            </summary>
+            <param name="ScanEngine">The ONNX MRZ scan engine.</param>
+        </member>
+        <member name="M:NeuroAccessMaui.OCR.Services.OcrScanService.ScanAsync(NeuroAccessMaui.OCR.Models.OcrScanRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

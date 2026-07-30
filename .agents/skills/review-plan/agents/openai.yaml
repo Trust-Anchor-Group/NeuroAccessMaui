@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Plan"
+  short_description: "Review requirements, design, and tasks"
+  default_prompt: "Use $review-plan to review this plan before implementation."

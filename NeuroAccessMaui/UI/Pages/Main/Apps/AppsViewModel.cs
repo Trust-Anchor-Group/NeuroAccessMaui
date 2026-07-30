@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.Services.Authentication;
 using System; // For EventHandler
+using NeuroAccessMaui.UI.Pages.Main.NfcTester;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
@@ -208,6 +209,28 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				else
 				{
 					await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), BackMethod.Pop);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task ShowNfcTester()
+		{
+			try
+			{
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					await ServiceRef.NavigationService.GoToAsync(nameof(NfcTesterPage), BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)

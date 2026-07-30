@@ -24,6 +24,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// Loads (or creates) the persisted KYC reference and ensures process XML is available.
 		/// </summary>
 		/// <param name="Lang">Optional language code.</param>
+		/// <param name="Template">Optional KYC application template to apply to the reference.</param>
 		Task<KycReference> LoadKycReferenceAsync(string? Lang = null, KycApplicationTemplate? Template = null);
 
 		/// <summary>
@@ -31,6 +32,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		/// <param name="Reference">Reference to persist.</param>
 		Task SaveKycReferenceAsync(KycReference Reference);
+
+		/// <summary>
+		/// Finds the latest KYC reference that tracks a reserved preview, preview, final, or legacy identity identifier.
+		/// </summary>
+		/// <param name="IdentityId">The identity identifier to match.</param>
+		/// <returns>The matching KYC reference, or null if no match is found.</returns>
+		Task<KycReference?> FindReferenceByIdentityIdAsync(string? IdentityId);
 
 		/// <summary>
 		/// Loads available KYC processes from server, falling back to bundled test KYC.
@@ -71,6 +79,14 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task<(IReadOnlyList<Property> Properties, IReadOnlyList<LegalIdentityAttachment> Attachments)> PreparePropertiesAndAttachmentsAsync(Kyc.Models.KycProcess Process, CancellationToken CancellationToken);
 
 		/// <summary>
+		/// Prepares the minimal preview identity properties used to reserve an identity before NFC readout.
+		/// </summary>
+		/// <param name="Reference">Reference containing the active KYC process and field values.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <returns>Preview reservation properties.</returns>
+		Task<IReadOnlyList<Property>> PreparePreviewReservationPropertiesAsync(KycReference Reference, CancellationToken CancellationToken);
+
+		/// <summary>
 		/// Updates snapshot information and schedules an autosave.
 		/// </summary>
 		Task ScheduleSnapshotAsync(KycReference Reference, Kyc.Models.KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId);
@@ -84,6 +100,41 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// Persists submission details after an application is sent.
 		/// </summary>
 		Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
+		/// Persists submission details after a preview application is sent.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted preview identity.</param>
+		Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
+		/// Persists a preview identity that has been reserved but not submitted for review.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Reserved preview identity.</param>
+		Task SetReservedPreviewIdentityAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
+		/// Clears a reserved preview identity without changing captured evidence or user-entered fields.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="ReservedPreviewIdentityId">Reserved preview identity identifier to forget.</param>
+		Task ForgetReservedPreviewIdentityAsync(KycReference Reference, string ReservedPreviewIdentityId);
+
+		/// <summary>
+		/// Marks an approved preview identity as ready for finalization.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Approved preview identity.</param>
+		Task MarkPreviewApprovedForFinalizationAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
+		/// Persists submission details after a final promoted application is sent.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted final identity.</param>
+		Task ApplyFinalSubmissionAsync(KycReference Reference, LegalIdentity Identity);
 
 		/// <summary>
 		/// Updates stored submission state without clearing any existing application review.

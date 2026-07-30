@@ -7,6 +7,7 @@ using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Kyc;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using EDaler;
@@ -16,10 +17,6 @@ using NeuroAccessMaui.UI.Pages.Main.Settings;
 using System.Globalization;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
-using NeuroAccessMaui.Services.Data; // Added for Database access
-using System.Linq;
-using Waher.Persistence;
-using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag; // Added for ordering
@@ -44,8 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[ObservableProperty]
 		bool themeLoaded = false;
 
-		private IdentityState? latestCreatedIdentityState; // Cached state from latest stored KYC reference
-		private ApplicationReview? latestApplicationReview;
+		private IdentityApplicationGateDecision? latestIdentityDecision;
 		private bool reviewEventSubscribed;
 
 		public string BannerUri =>
@@ -73,8 +69,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			try
 			{
-				// Load latest stored KYC reference state
-				await this.LoadLatestKycStateAsync();
+				await this.LoadLatestIdentityDecisionAsync();
 				
 				try
 				{
@@ -139,7 +134,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
 		{
-			Task.Run(this.LoadLatestKycStateAsync);
+			Task.Run(this.LoadLatestIdentityDecisionAsync);
 		}
 
 		private void TagProfile_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -148,34 +143,24 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				e.PropertyName == nameof(ITagProfile.IdentityApplication) ||
 				e.PropertyName == nameof(ITagProfile.LegalIdentity))
 			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
-					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
-					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
-					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-					this.OnPropertyChanged(nameof(this.ShowIdButtonText));
-				});
+				Task.Run(this.LoadLatestIdentityDecisionAsync);
 			}
 		}
 
 		private async Task XmppService_IdentityApplicationChanged(object? Sender, EventArgs e)
 		{
-			// Refresh cached KYC state when identity application changes
-			await this.LoadLatestKycStateAsync();
+			await this.LoadLatestIdentityDecisionAsync();
 		}
 
 		private async Task XmppService_LegalIdentityChanged(object? Sender, EventArgs e)
 		{
-			await this.LoadLatestKycStateAsync();
+			await this.LoadLatestIdentityDecisionAsync();
 		}
 
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
-
+			await this.LoadLatestIdentityDecisionAsync();
 			await this.OnIsConnectedChanged(); // Call this method in case the connection state has already changed before the view model was initialized.
 		}
 
@@ -213,26 +198,14 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		public string ShowIdButtonText => this.HasPersonalIdentity ? ServiceRef.Localizer[nameof(AppResources.ShowIDShort)] : ServiceRef.Localizer[nameof(AppResources.ShowAccount)];
 
-		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
-		public bool HasPendingIdentity => this.CheckPendingIdentity();
+		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedName() ?? false;
+		public bool HasPendingIdentity => this.latestIdentityDecision?.Route == IdentityApplicationRoute.ApplicationPending;
 
 		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox;
-		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity();
-		// Only show pending while the application is in Created (review may be ongoing but not rejected).
-		public bool ShowPendingIdBox => this.CheckPendingIdentity();
-		public bool ShowRejectedIdBox => this.CheckRejectedIdentity();
-
-		private bool CheckPendingIdentity()
-		{
-			IdentityState? state = this.latestCreatedIdentityState ?? ServiceRef.TagProfile.IdentityApplication?.State;
-			return state == IdentityState.Created;
-		}
-
-		private bool CheckRejectedIdentity()
-		{
-			IdentityState? state = this.latestCreatedIdentityState ?? ServiceRef.TagProfile.IdentityApplication?.State;
-			return state == IdentityState.Rejected;
-		}
+		public bool ShowApplyIdBox => this.latestIdentityDecision?.Route == IdentityApplicationRoute.StartOrResumeApplication ||
+			this.latestIdentityDecision?.Route == IdentityApplicationRoute.NeedsOnboarding;
+		public bool ShowPendingIdBox => this.latestIdentityDecision?.Route == IdentityApplicationRoute.ApplicationPending;
+		public bool ShowRejectedIdBox => this.latestIdentityDecision?.Route == IdentityApplicationRoute.ApplicationNeedsAttention;
 
 		private Task NotificationService_OnNotificationAdded(object? Sender, NotificationRecordEventArgs e)
 		{
@@ -280,13 +253,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.OnPropertyChanged(nameof(this.HasUnreadNotifications));
 		}
 
-		private async Task LoadLatestKycStateAsync()
+		private async Task LoadLatestIdentityDecisionAsync()
 		{
 			try
 			{
-				KycReference? LatestReference = await FindMostRecentReferenceAsync();
-				this.latestCreatedIdentityState = LatestReference?.CreatedIdentityState;
-				this.latestApplicationReview = LatestReference?.ApplicationReview;
+				this.latestIdentityDecision = await ServiceRef.IdentityApplicationGateService.EvaluateAsync();
 
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
@@ -307,45 +278,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		private void KycService_ApplicationReviewUpdated(object? sender, ApplicationReviewEventArgs e)
 		{
-			this.latestApplicationReview = e.Review;
-			MainThread.BeginInvokeOnMainThread(() =>
+			_ = Task.Run(async () =>
 			{
-				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
-				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
-				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-				this.OnPropertyChanged(nameof(this.ShowIdButtonText));
+				await this.LoadLatestIdentityDecisionAsync();
 			});
-		}
-
-		private static async Task<KycReference?> FindMostRecentReferenceAsync()
-		{
-			LegalIdentity? IdentityApplication = ServiceRef.TagProfile.IdentityApplication;
-			if (IdentityApplication is not null)
-			{
-				try
-				{
-					KycReference? Match = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), IdentityApplication.Id));
-					if (Match is not null)
-						return Match;
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-				}
-			}
-
-			try
-			{
-				IEnumerable<KycReference> All = await Database.Find<KycReference>();
-				return All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-
-			return null;
 		}
 
 		public bool CanScanQrCode => true;
@@ -391,7 +327,32 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+				IdentityApplicationGateDecision Decision = await ServiceRef.IdentityApplicationGateService.EvaluateAsync();
+				switch (Decision.Route)
+				{
+					case IdentityApplicationRoute.NeedsOnboarding:
+						await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup });
+						break;
+
+					case IdentityApplicationRoute.ApplicationPending:
+					case IdentityApplicationRoute.ApplicationNeedsAttention:
+						if (Decision.Reference is not null)
+							await ServiceRef.NavigationService.GoToAsync(nameof(KycApplicationStatusPage), new KycProcessNavigationArgs(Decision.Reference));
+						else
+							await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+						break;
+
+					case IdentityApplicationRoute.ShowApprovedIdentity:
+						if (Decision.ApprovedIdentity is not null)
+							await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Decision.ApprovedIdentity));
+						else
+							await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+						break;
+
+					default:
+						await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+						break;
+				}
 			}
 			catch (Exception Ex)
 			{

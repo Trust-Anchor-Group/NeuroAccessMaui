@@ -4102,6 +4102,195 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string KycDocumentMrzScannerBackAction {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerBackAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold still.
+        /// </summary>
+        public static string KycDocumentMrzScannerConfirmingStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerConfirmingStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This document cannot be used for verification..
+        /// </summary>
+        public static string KycDocumentMrzScannerExpiredDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerExpiredDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document expired.
+        /// </summary>
+        public static string KycDocumentMrzScannerExpiredStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerExpiredStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place the machine-readable lines inside the highlighted area..
+        /// </summary>
+        public static string KycDocumentMrzScannerFindMrzDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerFindMrzDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find the document lines.
+        /// </summary>
+        public static string KycDocumentMrzScannerFindMrzStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerFindMrzStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tilt the document or move away from bright reflections..
+        /// </summary>
+        public static string KycDocumentMrzScannerGlareDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerGlareDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reduce glare.
+        /// </summary>
+        public static string KycDocumentMrzScannerGlareStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerGlareStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place the machine-readable lines inside the highlighted area..
+        /// </summary>
+        public static string KycDocumentMrzScannerInitialDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerInitialDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan the document lines.
+        /// </summary>
+        public static string KycDocumentMrzScannerInitialStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerInitialStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep the document still..
+        /// </summary>
+        public static string KycDocumentMrzScannerKeepStillDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerKeepStillDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep the document lines sharp and fill more of the guide..
+        /// </summary>
+        public static string KycDocumentMrzScannerMoveCloserDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerMoveCloserDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move closer.
+        /// </summary>
+        public static string KycDocumentMrzScannerMoveCloserStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerMoveCloserStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading the document lines..
+        /// </summary>
+        public static string KycDocumentMrzScannerOneMoreDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerOneMoreDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan the document page.
+        /// </summary>
+        public static string KycDocumentMrzScannerTitle {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try again.
+        /// </summary>
+        public static string KycDocumentMrzScannerTryAgainStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerTryAgainStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use a supported passport or ID card..
+        /// </summary>
+        public static string KycDocumentMrzScannerUnsupportedDetail {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerUnsupportedDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document not supported.
+        /// </summary>
+        public static string KycDocumentMrzScannerUnsupportedStatus {
+            get {
+                return ResourceManager.GetString("KycDocumentMrzScannerUnsupportedStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow camera access to scan your document. You can try again after enabling it..
+        /// </summary>
+        public static string KycDocumentScanCameraPermissionDescription {
+            get {
+                return ResourceManager.GetString("KycDocumentScanCameraPermissionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera access needed.
+        /// </summary>
+        public static string KycDocumentScanCameraPermissionTitle {
+            get {
+                return ResourceManager.GetString("KycDocumentScanCameraPermissionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try again.
+        /// </summary>
+        public static string KycDocumentScanRetryAction {
+            get {
+                return ResourceManager.GetString("KycDocumentScanRetryAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix issues and edit form.
         /// </summary>
         public static string KycFixInvalidClaimsButton {
@@ -4152,6 +4341,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string KycPendingManualReviewHint {
             get {
                 return ResourceManager.GetString("KycPendingManualReviewHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Center your face in the frame.
+        /// </summary>
+        public static string KycProfilePhotoCameraGuidance {
+            get {
+                return ResourceManager.GetString("KycProfilePhotoCameraGuidance", resourceCulture);
             }
         }
         
@@ -4224,6 +4422,546 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string KycReviewTitle {
             get {
                 return ResourceManager.GetString("KycReviewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string KycTravelDocumentContinueButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentContinueButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan the machine-readable lines on your travel document, then hold the document against your phone to read the chip. The secure readout is attached as NFC.xml when you apply..
+        /// </summary>
+        public static string KycTravelDocumentDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This symbol means the document has a chip..
+        /// </summary>
+        public static string KycTravelDocumentEligibilityChipSymbol {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentEligibilityChipSymbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document should have machine-readable lines or text that the camera can scan..
+        /// </summary>
+        public static string KycTravelDocumentEligibilityMrzLines {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentEligibilityMrzLines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use a phone with NFC enabled..
+        /// </summary>
+        public static string KycTravelDocumentEligibilityNfcPhone {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentEligibilityNfcPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you see it on your document?.
+        /// </summary>
+        public static string KycTravelDocumentEligibilityTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentEligibilityTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It may be on the front, back, or inside cover..
+        /// </summary>
+        public static string KycTravelDocumentHeroDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentHeroDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Look for this symbol.
+        /// </summary>
+        public static string KycTravelDocumentHeroTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentHeroTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MRZ could not be validated. Check the document number, birth date, expiry date, and check digits..
+        /// </summary>
+        public static string KycTravelDocumentInvalidMrz {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentInvalidMrz", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use another method.
+        /// </summary>
+        public static string KycTravelDocumentManualFallbackButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentManualFallbackButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MRZ.
+        /// </summary>
+        public static string KycTravelDocumentMrzLabel {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste the MRZ lines from your document.
+        /// </summary>
+        public static string KycTravelDocumentMrzPlaceholder {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the camera and place the machine-readable lines inside the guide. We use them to unlock the chip readout..
+        /// </summary>
+        public static string KycTravelDocumentMrzStepDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzStepDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MRZ captured. We also filled in matching application fields from the document where possible..
+        /// </summary>
+        public static string KycTravelDocumentMrzStepReadyDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzStepReadyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan the machine-readable lines.
+        /// </summary>
+        public static string KycTravelDocumentMrzStepTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzStepTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip could not be authenticated with the saved MRZ. Check the MRZ and try again..
+        /// </summary>
+        public static string KycTravelDocumentNfcAuthenticationFailed {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcAuthenticationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC readout was cancelled..
+        /// </summary>
+        public static string KycTravelDocumentNfcCancelled {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The NFC connection was lost. Keep the document still and try again..
+        /// </summary>
+        public static string KycTravelDocumentNfcConnectionLost {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcConnectionLost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC readout failed. Check the MRZ and try again..
+        /// </summary>
+        public static string KycTravelDocumentNfcFailed {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More than one NFC tag was detected. Move other cards away and try again..
+        /// </summary>
+        public static string KycTravelDocumentNfcMultipleTags {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcMultipleTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preparing secure verification. Keep this screen open..
+        /// </summary>
+        public static string KycTravelDocumentNfcPreparing {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcPreparing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip authenticated, but the document data could not be read. Try again..
+        /// </summary>
+        public static string KycTravelDocumentNfcReadFailed {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading the document chip. Keep the document still..
+        /// </summary>
+        public static string KycTravelDocumentNfcReading {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading and verifying the document chip..
+        /// </summary>
+        public static string KycTravelDocumentNfcReadingDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReadingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold still.
+        /// </summary>
+        public static string KycTravelDocumentNfcReadingTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReadingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to read. Hold the travel document near your phone and keep it still..
+        /// </summary>
+        public static string KycTravelDocumentNfcReady {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secure verification could not be prepared. Try again, rescan the document, or continue manually..
+        /// </summary>
+        public static string KycTravelDocumentNfcReservationFailed {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReservationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the document slowly until the chip is found..
+        /// </summary>
+        public static string KycTravelDocumentNfcStepDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcStepDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold it to your phone.
+        /// </summary>
+        public static string KycTravelDocumentNfcStepTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcStepTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC chip readout saved and ready to attach to this application..
+        /// </summary>
+        public static string KycTravelDocumentNfcSuccess {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC readout timed out. Start again and hold the document near your phone..
+        /// </summary>
+        public static string KycTravelDocumentNfcTimedOut {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcTimedOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chip reading is not available on this device or app configuration. You can continue manually instead..
+        /// </summary>
+        public static string KycTravelDocumentNfcUnavailable {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The detected NFC tag is not a supported travel-document chip..
+        /// </summary>
+        public static string KycTravelDocumentNfcUnsupportedTag {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcUnsupportedTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No compatible chip document? Continue manually and complete the same application form..
+        /// </summary>
+        public static string KycTravelDocumentNoTypingHint {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNoTypingHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use document chip.
+        /// </summary>
+        public static string KycTravelDocumentOpenButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentOpenButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, scan document.
+        /// </summary>
+        public static string KycTravelDocumentPrimaryScanButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentPrimaryScanButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detect chip.
+        /// </summary>
+        public static string KycTravelDocumentProgressDetectChip {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressDetectChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string KycTravelDocumentProgressDone {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In progress.
+        /// </summary>
+        public static string KycTravelDocumentProgressInProgress {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Needs attention.
+        /// </summary>
+        public static string KycTravelDocumentProgressNeedsAttention {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressNeedsAttention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read data.
+        /// </summary>
+        public static string KycTravelDocumentProgressReadData {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressReadData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secure connection.
+        /// </summary>
+        public static string KycTravelDocumentProgressSecureConnection {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressSecureConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading document.
+        /// </summary>
+        public static string KycTravelDocumentProgressTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verify document.
+        /// </summary>
+        public static string KycTravelDocumentProgressVerifyDocument {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressVerifyDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting.
+        /// </summary>
+        public static string KycTravelDocumentProgressWaiting {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentProgressWaiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC readout is already ready for this application..
+        /// </summary>
+        public static string KycTravelDocumentReadoutReady {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentReadoutReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan document again.
+        /// </summary>
+        public static string KycTravelDocumentRescanButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentRescanButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read chip.
+        /// </summary>
+        public static string KycTravelDocumentRetryNfcButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentRetryNfcButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save MRZ.
+        /// </summary>
+        public static string KycTravelDocumentSaveButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSaveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document details saved. Now hold the document chip against your phone..
+        /// </summary>
+        public static string KycTravelDocumentSaved {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan MRZ.
+        /// </summary>
+        public static string KycTravelDocumentScanMrzButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentScanMrzButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start NFC readout.
+        /// </summary>
+        public static string KycTravelDocumentStartNfcButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentStartNfcButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip readout is saved for this application. Continue to review the details before applying..
+        /// </summary>
+        public static string KycTravelDocumentSuccessDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSuccessDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document chip read.
+        /// </summary>
+        public static string KycTravelDocumentSuccessTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSuccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan a compatible travel document to include a secure chip readout with this application..
+        /// </summary>
+        public static string KycTravelDocumentSummaryMissing {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSummaryMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MRZ saved. Tap the document with your phone to read the chip before applying..
+        /// </summary>
+        public static string KycTravelDocumentSummaryMrzReady {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSummaryMrzReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC chip readout is ready and will be attached to this application..
+        /// </summary>
+        public static string KycTravelDocumentSummaryReadoutReady {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSummaryReadoutReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document chip readout.
+        /// </summary>
+        public static string KycTravelDocumentSummaryTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentSummaryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal ID.
+        /// </summary>
+        public static string KycTravelDocumentTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string KycTravelDocumentUnsureButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentUnsureButton", resourceCulture);
             }
         }
         
@@ -4827,6 +5565,384 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string NFC {
             get {
                 return ResourceManager.GetString("NFC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC tester.
+        /// </summary>
+        public static string NfcTesterAppName {
+            get {
+                return ResourceManager.GetString("NfcTesterAppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custody information.
+        /// </summary>
+        public static string NfcTesterCustodyInformation {
+            get {
+                return ResourceManager.GetString("NfcTesterCustodyInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of birth.
+        /// </summary>
+        public static string NfcTesterDateOfBirth {
+            get {
+                return ResourceManager.GetString("NfcTesterDateOfBirth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan a passport or identity document to test its chip. This does not apply for or update an identity..
+        /// </summary>
+        public static string NfcTesterDescription {
+            get {
+                return ResourceManager.GetString("NfcTesterDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document number.
+        /// </summary>
+        public static string NfcTesterDocumentNumber {
+            get {
+                return ResourceManager.GetString("NfcTesterDocumentNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document type.
+        /// </summary>
+        public static string NfcTesterDocumentType {
+            get {
+                return ResourceManager.GetString("NfcTesterDocumentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expiry date.
+        /// </summary>
+        public static string NfcTesterExpiryDate {
+            get {
+                return ResourceManager.GetString("NfcTesterExpiryDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First names.
+        /// </summary>
+        public static string NfcTesterFirstNames {
+            get {
+                return ResourceManager.GetString("NfcTesterFirstNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full name.
+        /// </summary>
+        public static string NfcTesterFullName {
+            get {
+                return ResourceManager.GetString("NfcTesterFullName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gender.
+        /// </summary>
+        public static string NfcTesterGender {
+            get {
+                return ResourceManager.GetString("NfcTesterGender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide raw XML.
+        /// </summary>
+        public static string NfcTesterHideRawXml {
+            get {
+                return ResourceManager.GetString("NfcTesterHideRawXml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Issuing state.
+        /// </summary>
+        public static string NfcTesterIssuingState {
+            get {
+                return ResourceManager.GetString("NfcTesterIssuingState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last names.
+        /// </summary>
+        public static string NfcTesterLastNames {
+            get {
+                return ResourceManager.GetString("NfcTesterLastNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nationality.
+        /// </summary>
+        public static string NfcTesterNationality {
+            get {
+                return ResourceManager.GetString("NfcTesterNationality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start a new test.
+        /// </summary>
+        public static string NfcTesterNewTestButton {
+            get {
+                return ResourceManager.GetString("NfcTesterNewTestButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No human-readable document data was returned..
+        /// </summary>
+        public static string NfcTesterNoReadableData {
+            get {
+                return ResourceManager.GetString("NfcTesterNoReadableData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional data.
+        /// </summary>
+        public static string NfcTesterOptionalData {
+            get {
+                return ResourceManager.GetString("NfcTesterOptionalData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other names.
+        /// </summary>
+        public static string NfcTesterOtherNames {
+            get {
+                return ResourceManager.GetString("NfcTesterOtherNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other numbers.
+        /// </summary>
+        public static string NfcTesterOtherNumbers {
+            get {
+                return ResourceManager.GetString("NfcTesterOtherNumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The readout did not complete, but available diagnostic data is shown below..
+        /// </summary>
+        public static string NfcTesterPartialResult {
+            get {
+                return ResourceManager.GetString("NfcTesterPartialResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permanent address.
+        /// </summary>
+        public static string NfcTesterPermanentAddress {
+            get {
+                return ResourceManager.GetString("NfcTesterPermanentAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal number.
+        /// </summary>
+        public static string NfcTesterPersonalNumber {
+            get {
+                return ResourceManager.GetString("NfcTesterPersonalNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal summary.
+        /// </summary>
+        public static string NfcTesterPersonalSummary {
+            get {
+                return ResourceManager.GetString("NfcTesterPersonalSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string NfcTesterPersonalTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterPersonalTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place of birth.
+        /// </summary>
+        public static string NfcTesterPlaceOfBirth {
+            get {
+                return ResourceManager.GetString("NfcTesterPlaceOfBirth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profession.
+        /// </summary>
+        public static string NfcTesterProfession {
+            get {
+                return ResourceManager.GetString("NfcTesterProfession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raw NFC XML.
+        /// </summary>
+        public static string NfcTesterRawXmlTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterRawXmlTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try NFC again.
+        /// </summary>
+        public static string NfcTesterReadAgainButton {
+            get {
+                return ResourceManager.GetString("NfcTesterReadAgainButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading the document chip. Keep the document still..
+        /// </summary>
+        public static string NfcTesterReading {
+            get {
+                return ResourceManager.GetString("NfcTesterReading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold the document near your phone and keep it still..
+        /// </summary>
+        public static string NfcTesterReady {
+            get {
+                return ResourceManager.GetString("NfcTesterReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data found.
+        /// </summary>
+        public static string NfcTesterResultsTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterResultsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan document.
+        /// </summary>
+        public static string NfcTesterScanButton {
+            get {
+                return ResourceManager.GetString("NfcTesterScanButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share NFC.xml.
+        /// </summary>
+        public static string NfcTesterShareButton {
+            get {
+                return ResourceManager.GetString("NfcTesterShareButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share.
+        /// </summary>
+        public static string NfcTesterShareConfirmButton {
+            get {
+                return ResourceManager.GetString("NfcTesterShareConfirmButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share sensitive NFC data?.
+        /// </summary>
+        public static string NfcTesterShareConfirmTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterShareConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC.xml could not be shared. Try again..
+        /// </summary>
+        public static string NfcTesterShareFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterShareFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC.xml can contain sensitive personal and protocol data. Share it only with someone you trust..
+        /// </summary>
+        public static string NfcTesterShareWarning {
+            get {
+                return ResourceManager.GetString("NfcTesterShareWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show raw XML.
+        /// </summary>
+        public static string NfcTesterShowRawXml {
+            get {
+                return ResourceManager.GetString("NfcTesterShowRawXml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The NFC readout completed successfully..
+        /// </summary>
+        public static string NfcTesterSuccess {
+            get {
+                return ResourceManager.GetString("NfcTesterSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telephone.
+        /// </summary>
+        public static string NfcTesterTelephone {
+            get {
+                return ResourceManager.GetString("NfcTesterTelephone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test document NFC.
+        /// </summary>
+        public static string NfcTesterTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC document scanning is not available on this device or app configuration..
+        /// </summary>
+        public static string NfcTesterUnavailable {
+            get {
+                return ResourceManager.GetString("NfcTesterUnavailable", resourceCulture);
             }
         }
         

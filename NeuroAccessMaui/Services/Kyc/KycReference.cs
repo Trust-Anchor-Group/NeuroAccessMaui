@@ -13,15 +13,59 @@ using NeuroAccessMaui.Services.Kyc.ViewModels;
 namespace NeuroAccessMaui.Services.Kyc
 {
 	/// <summary>
+	/// Represents the current phase of an identity application created from a KYC reference.
+	/// </summary>
+	public enum KycIdentityApplicationStage
+	{
+		/// <summary>
+		/// No identity application has been submitted.
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// A preview identity has been reserved but has not been submitted for review.
+		/// </summary>
+		ReservedPreview = 5,
+
+		/// <summary>
+		/// A preview identity has been submitted and is awaiting review.
+		/// </summary>
+		PreviewPendingReview = 1,
+
+		/// <summary>
+		/// The preview identity has been approved and final identity creation is in progress.
+		/// </summary>
+		FinalizationInProgress = 2,
+
+		/// <summary>
+		/// The final identity has been submitted and is awaiting approval.
+		/// </summary>
+		FinalPendingApproval = 3,
+
+		/// <summary>
+		/// The identity application flow completed with an approved identity.
+		/// </summary>
+		Completed = 4
+	}
+
+	/// <summary>
 	/// Contains a local reference to a KYC process.
 	/// </summary>
 	[CollectionName("KycReferences")]
 	[Index(nameof(UpdatedUtc), nameof(UpdatedUtc))]
 	[Index(nameof(CreatedIdentityId))]
+	[Index(nameof(ReservedPreviewIdentityId))]
+	[Index(nameof(PreviewIdentityId))]
+	[Index(nameof(FinalIdentityId))]
 	public class KycReference
 	{
 		private KycProcess? process;
 		private ApplicationReview? applicationReview;
+
+		/// <summary>
+		/// Gets the derived process value key that indicates whether travel-document NFC evidence is complete.
+		/// </summary>
+		public const string TravelDocumentNfcCompletedEvidenceFieldId = "evidence.travelDocument.nfc.completed";
 
 		/// <summary>
 		/// Object ID
@@ -81,6 +125,72 @@ namespace NeuroAccessMaui.Services.Kyc
 		public IdentityState? CreatedIdentityState { get; set; }
 
 		/// <summary>
+		/// Gets or sets the legal identity identifier reserved for a preview identity before submission.
+		/// </summary>
+		[DefaultValueNull]
+		public string? ReservedPreviewIdentityId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the legal identity identifier for a submitted preview identity.
+		/// </summary>
+		[DefaultValueNull]
+		public string? PreviewIdentityId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the last known state of the preview identity.
+		/// </summary>
+		[DefaultValueNull]
+		public IdentityState? PreviewIdentityState { get; set; }
+
+		/// <summary>
+		/// Gets or sets the legal identity identifier for the final identity created from this application.
+		/// </summary>
+		[DefaultValueNull]
+		public string? FinalIdentityId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the last known state of the final identity.
+		/// </summary>
+		[DefaultValueNull]
+		public IdentityState? FinalIdentityState { get; set; }
+
+		/// <summary>
+		/// Gets or sets the current phase of the identity application flow.
+		/// </summary>
+		[DefaultValue(KycIdentityApplicationStage.None)]
+		public KycIdentityApplicationStage IdentityStage { get; set; }
+
+		/// <summary>
+		/// Gets or sets the latest travel-document MRZ captured for this application.
+		/// </summary>
+		[DefaultValueNull]
+		public string? TravelDocumentMrz { get; set; }
+
+		/// <summary>
+		/// Gets a value indicating whether the stored travel-document MRZ has a full MRZ shape.
+		/// </summary>
+		[IgnoreMember]
+		public bool HasFullTravelDocumentMrz => KycReference.IsFullTravelDocumentMrz(this.TravelDocumentMrz);
+
+		/// <summary>
+		/// Gets or sets when the latest travel-document MRZ was captured.
+		/// </summary>
+		[DefaultValueNull]
+		public DateTime? TravelDocumentMrzUpdatedUtc { get; set; }
+
+		/// <summary>
+		/// Gets or sets the latest NFC travel-document readout XML captured for this application.
+		/// </summary>
+		[DefaultValueNull]
+		public string? NfcReadoutXml { get; set; }
+
+		/// <summary>
+		/// Gets or sets when the latest NFC travel-document readout was captured.
+		/// </summary>
+		[DefaultValueNull]
+		public DateTime? NfcReadoutUpdatedUtc { get; set; }
+
+		/// <summary>
 		/// Progress of the KYC process (0.0–1.0), persisted for UI display.
 		/// </summary>
 		[DefaultValue(0.0)]
@@ -114,6 +224,18 @@ namespace NeuroAccessMaui.Services.Kyc
 
 			set => this.applicationReview = value;
 		}
+
+		/// <summary>
+		/// Gets the identity identifier that should currently be treated as the active application.
+		/// </summary>
+		[IgnoreMember]
+		public string? ActiveApplicationIdentityId => this.GetActiveApplicationIdentityId();
+
+		/// <summary>
+		/// Gets the effective identity state used by application status and resume logic.
+		/// </summary>
+		[IgnoreMember]
+		public IdentityState? EffectiveApplicationIdentityState => this.GetEffectiveApplicationIdentityState();
 
 		/// <summary>
 		/// Legacy rejection message retained for persistence migration. Do not use directly.
@@ -160,18 +282,23 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Gets a parsed KYC process, populating its fields from the reference.
 		/// </summary>
-		/// <param name="lang">Optional language.</param>
+		/// <param name="Lang">Optional language.</param>
 		/// <returns>The parsed and populated KYC process, or null if XML is missing.</returns>
-		public async Task<KycProcess?> GetProcess(string? lang = null)
+		public async Task<KycProcess?> GetProcess(string? Lang = null)
 		{
 			if (this.process is null && this.KycXml is not null)
 			{
-				this.process = await KycProcessParser.LoadProcessAsync(this.KycXml, lang).ConfigureAwait(false);
+				this.process = await KycProcessParser.LoadProcessAsync(this.KycXml, Lang).ConfigureAwait(false);
 
 				if (this.Fields is not null)
 				{
 					foreach (KycFieldValue Field in this.Fields)
+					{
+						if (KycReference.IsDerivedProcessValue(Field.FieldId))
+							continue;
+
 						this.process.Values[Field.FieldId] = Field.Value;
+					}
 
 					foreach (KycPage Page in this.process.Pages)
 					{
@@ -185,36 +312,47 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 
+			this.ApplyEvidenceStateToProcess(this.process);
+			if (this.process is not null)
+			{
+				foreach (KycPage Page in this.process.Pages)
+					Page.UpdateVisibilities(this.process.Values);
+			}
+
 			return this.process;
 		}
 
 		/// <summary>
 		/// Stores a parsed KYC process into the reference.
 		/// </summary>
-		/// <param name="process">KYC process.</param>
-		/// <param name="xml">Process XML.</param>
-		public void SetProcess(KycProcess process, string xml)
+		/// <param name="Process">KYC process.</param>
+		/// <param name="Xml">Process XML.</param>
+		public void SetProcess(KycProcess Process, string Xml)
 		{
-			this.SetProcess(process, xml, DateTime.UtcNow, DateTime.UtcNow);
+			this.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
 		}
 
 		/// <summary>
 		/// Stores a parsed KYC process into the reference with explicit timestamps.
 		/// </summary>
-		/// <param name="process">KYC process.</param>
-		/// <param name="xml">Process XML.</param>
-		/// <param name="created">Created time.</param>
-		/// <param name="updated">Updated time.</param>
-		public void SetProcess(KycProcess process, string xml, DateTime created, DateTime updated)
+		/// <param name="Process">KYC process.</param>
+		/// <param name="Xml">Process XML.</param>
+		/// <param name="Created">Created time.</param>
+		/// <param name="Updated">Updated time.</param>
+		public void SetProcess(KycProcess Process, string Xml, DateTime Created, DateTime Updated)
 		{
-			this.process = process;
-			this.KycXml = xml;
-			this.CreatedUtc = created;
-			this.UpdatedUtc = updated;
+			this.process = Process;
+			this.KycXml = Xml;
+			this.CreatedUtc = Created;
+			this.UpdatedUtc = Updated;
 			this.FetchedUtc = DateTime.UtcNow;
-			this.Fields = process.Values.Select(p => new KycFieldValue(p.Key, p.Value)).ToArray();
+			this.Fields = KycReference.CreatePersistentFields(Process);
 		}
 
+		/// <summary>
+		/// Applies the stored value for a field to the supplied observable field.
+		/// </summary>
+		/// <param name="Field">The observable field to update.</param>
 		public void ApplyFieldValue(ObservableKycField Field)
 		{
 			if (this.process is null || !this.process.Values.TryGetValue(Field.Id, out string? Val) || Val is null)
@@ -225,23 +363,140 @@ namespace NeuroAccessMaui.Services.Kyc
 		// SetFieldValue removed; logic is now in Field.StringValue
 
 		/// <summary>
+		/// Determines whether this reference tracks the specified identity identifier.
+		/// </summary>
+		/// <param name="IdentityId">Identity identifier to compare.</param>
+		/// <returns><c>true</c> if the identifier matches a reserved preview, preview, final, or legacy identity id; otherwise, <c>false</c>.</returns>
+		public bool MatchesIdentityId(string? IdentityId)
+		{
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return false;
+
+			string NormalizedIdentityId = IdentityId.Trim();
+			return string.Equals(this.ReservedPreviewIdentityId, NormalizedIdentityId, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(this.PreviewIdentityId, NormalizedIdentityId, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(this.FinalIdentityId, NormalizedIdentityId, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(this.CreatedIdentityId, NormalizedIdentityId, StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Determines whether the specified identity identifier matches the preview identity.
+		/// </summary>
+		/// <param name="IdentityId">Identity identifier to compare.</param>
+		/// <returns><c>true</c> if the identifier matches the preview identity; otherwise, <c>false</c>.</returns>
+		public bool IsPreviewIdentity(string? IdentityId)
+		{
+			return !string.IsNullOrWhiteSpace(IdentityId) &&
+				!string.IsNullOrWhiteSpace(this.PreviewIdentityId) &&
+				string.Equals(this.PreviewIdentityId, IdentityId.Trim(), StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Determines whether the specified identity identifier matches the reserved preview identity.
+		/// </summary>
+		/// <param name="IdentityId">Identity identifier to compare.</param>
+		/// <returns><c>true</c> if the identifier matches the reserved preview identity; otherwise, <c>false</c>.</returns>
+		public bool IsReservedPreviewIdentity(string? IdentityId)
+		{
+			return !string.IsNullOrWhiteSpace(IdentityId) &&
+				!string.IsNullOrWhiteSpace(this.ReservedPreviewIdentityId) &&
+				string.Equals(this.ReservedPreviewIdentityId, IdentityId.Trim(), StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Determines whether the specified identity identifier matches the final identity.
+		/// </summary>
+		/// <param name="IdentityId">Identity identifier to compare.</param>
+		/// <returns><c>true</c> if the identifier matches the final identity; otherwise, <c>false</c>.</returns>
+		public bool IsFinalIdentity(string? IdentityId)
+		{
+			return !string.IsNullOrWhiteSpace(IdentityId) &&
+				!string.IsNullOrWhiteSpace(this.FinalIdentityId) &&
+				string.Equals(this.FinalIdentityId, IdentityId.Trim(), StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Determines whether this reference tracks only a reserved preview identity that has not been submitted.
+		/// </summary>
+		/// <param name="IdentityId">Identity identifier to compare.</param>
+		/// <returns><c>true</c> if the identifier matches an unsubmitted reserved preview identity; otherwise, <c>false</c>.</returns>
+		public bool IsUnsubmittedReservedPreviewIdentity(string? IdentityId)
+		{
+			return (this.IdentityStage == KycIdentityApplicationStage.ReservedPreview ||
+				this.IdentityStage == KycIdentityApplicationStage.None) &&
+				this.IsReservedPreviewIdentity(IdentityId) &&
+				!this.IsPreviewIdentity(IdentityId) &&
+				!this.IsFinalIdentity(IdentityId);
+		}
+
+		/// <summary>
+		/// Gets the identity identifier that should currently be treated as the active application.
+		/// </summary>
+		/// <returns>The active application identity identifier, or <c>null</c> if no application identity is tracked.</returns>
+		public string? GetActiveApplicationIdentityId()
+		{
+			if (this.IdentityStage == KycIdentityApplicationStage.ReservedPreview && !string.IsNullOrWhiteSpace(this.ReservedPreviewIdentityId))
+				return this.ReservedPreviewIdentityId;
+
+			if ((this.IdentityStage == KycIdentityApplicationStage.FinalPendingApproval ||
+				this.IdentityStage == KycIdentityApplicationStage.Completed) &&
+				!string.IsNullOrWhiteSpace(this.FinalIdentityId))
+			{
+				return this.FinalIdentityId;
+			}
+
+			if ((this.IdentityStage == KycIdentityApplicationStage.PreviewPendingReview ||
+				this.IdentityStage == KycIdentityApplicationStage.FinalizationInProgress) &&
+				!string.IsNullOrWhiteSpace(this.PreviewIdentityId))
+			{
+				return this.PreviewIdentityId;
+			}
+
+			if (!string.IsNullOrWhiteSpace(this.FinalIdentityId))
+				return this.FinalIdentityId;
+
+			if (!string.IsNullOrWhiteSpace(this.PreviewIdentityId))
+				return this.PreviewIdentityId;
+
+			return this.CreatedIdentityId;
+		}
+
+		/// <summary>
+		/// Gets the effective identity state used by application status and resume logic.
+		/// </summary>
+		/// <returns>The effective application identity state, or <c>null</c> if no state is tracked.</returns>
+		public IdentityState? GetEffectiveApplicationIdentityState()
+		{
+			return this.IdentityStage switch
+			{
+				KycIdentityApplicationStage.ReservedPreview => null,
+				KycIdentityApplicationStage.FinalizationInProgress => IdentityState.Created,
+				KycIdentityApplicationStage.FinalPendingApproval => this.FinalIdentityState ?? IdentityState.Created,
+				KycIdentityApplicationStage.Completed => this.FinalIdentityState ?? IdentityState.Approved,
+				KycIdentityApplicationStage.PreviewPendingReview => this.PreviewIdentityState ?? this.CreatedIdentityState,
+				KycIdentityApplicationStage.None when this.IsReservedPreviewIdentity(this.CreatedIdentityId) => this.FinalIdentityState ?? this.PreviewIdentityState,
+				_ => this.FinalIdentityState ?? this.PreviewIdentityState ?? this.CreatedIdentityState
+			};
+		}
+
+		/// <summary>
 		/// Creates a KycReference from a KycProcess, serializing its field values.
 		/// </summary>
-		/// <param name="process">The KYC process to serialize.</param>
-		/// <param name="xml">The process XML.</param>
-		/// <param name="friendlyName">Optional friendly name.</param>
+		/// <param name="Process">The KYC process to serialize.</param>
+		/// <param name="Xml">The process XML.</param>
+		/// <param name="FriendlyName">Optional friendly name.</param>
 		/// <returns>A new KycReference instance.</returns>
-		public static KycReference FromProcess(KycProcess process, string xml, string? friendlyName = null)
+		public static KycReference FromProcess(KycProcess Process, string Xml, string? FriendlyName = null)
 		{
 			KycReference Reference = new KycReference
 			{
-				process = process,
-				KycXml = xml,
+				process = Process,
+				KycXml = Xml,
 				CreatedUtc = DateTime.UtcNow,
 				UpdatedUtc = DateTime.UtcNow,
 				FetchedUtc = DateTime.UtcNow,
-				Fields = process.Values.Select(P => new KycFieldValue(P.Key, P.Value)).ToArray(),
-				FriendlyName = friendlyName ?? string.Empty
+				Fields = KycReference.CreatePersistentFields(Process),
+				FriendlyName = FriendlyName ?? string.Empty
 			};
 			return Reference;
 		}
@@ -252,16 +507,27 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// visible fields. Useful when <see cref="Fields"/> has been updated after a prior
 		/// call to <see cref="GetProcess(string?)"/> created the cached process.
 		/// </summary>
-		/// <param name="lang">Optional language when creating a new process.</param>
-		public async Task ApplyFieldsToProcessAsync(string? lang = null)
+		/// <param name="Lang">Optional language when creating a new process.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public async Task ApplyFieldsToProcessAsync(string? Lang = null)
 		{
-			KycProcess? Proc = await this.GetProcess(lang).ConfigureAwait(false);
+			KycProcess? Proc = await this.GetProcess(Lang).ConfigureAwait(false);
 
-			if (Proc is null || this.Fields is null)
+			if (Proc is null)
 				return;
 
-			foreach (KycFieldValue Field in this.Fields)
-				Proc.Values[Field.FieldId] = Field.Value;
+			if (this.Fields is not null)
+			{
+				foreach (KycFieldValue Field in this.Fields)
+				{
+					if (KycReference.IsDerivedProcessValue(Field.FieldId))
+						continue;
+
+					Proc.Values[Field.FieldId] = Field.Value;
+				}
+			}
+
+			this.ApplyEvidenceStateToProcess(Proc);
 
 			foreach (KycPage Page in Proc.Pages)
 			{
@@ -279,11 +545,66 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Creates a KycProcess from this reference, populating its fields.
 		/// </summary>
-		/// <param name="lang">Optional language.</param>
+		/// <param name="Lang">Optional language.</param>
 		/// <returns>The populated KycProcess, or null if XML is missing.</returns>
-		public async Task<KycProcess?> ToProcess(string? lang = null)
+		public async Task<KycProcess?> ToProcess(string? Lang = null)
 		{
-			return await this.GetProcess(lang);
+			return await this.GetProcess(Lang);
+		}
+
+		/// <summary>
+		/// Applies derived evidence values to a process without persisting them as user-entered fields.
+		/// </summary>
+		/// <param name="Process">The process to update.</param>
+		public void ApplyEvidenceStateToProcess(KycProcess? Process)
+		{
+			if (Process is null)
+				return;
+
+			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] =
+				string.IsNullOrWhiteSpace(this.NfcReadoutXml) ? "false" : "true";
+		}
+
+		/// <summary>
+		/// Determines whether a process value is derived from reference evidence rather than entered by the user.
+		/// </summary>
+		/// <param name="FieldId">The process value key.</param>
+		/// <returns><c>true</c> if the key identifies derived evidence state; otherwise, <c>false</c>.</returns>
+		public static bool IsDerivedProcessValue(string? FieldId)
+		{
+			return string.Equals(FieldId, KycReference.TravelDocumentNfcCompletedEvidenceFieldId, StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Creates the persisted field snapshot for a process, excluding derived evidence state.
+		/// </summary>
+		/// <param name="Process">The process containing current values.</param>
+		/// <returns>The field values that should be stored with the reference.</returns>
+		public static KycFieldValue[] CreatePersistentFields(KycProcess Process)
+		{
+			return [.. Process.Values
+				.Where(Pair => !KycReference.IsDerivedProcessValue(Pair.Key))
+				.Select(Pair => new KycFieldValue(Pair.Key, Pair.Value))];
+		}
+
+		/// <summary>
+		/// Determines if a travel-document MRZ value has the shape of a full printed MRZ.
+		/// </summary>
+		/// <param name="MrzText">The MRZ text to inspect.</param>
+		/// <returns>True if the value has a full printed MRZ shape; otherwise false.</returns>
+		public static bool IsFullTravelDocumentMrz(string? MrzText)
+		{
+			string Normalized = MrzText?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(Normalized))
+				return false;
+
+			string Compact = new string(
+				Normalized
+					.Where(Character => Character != '\r' && Character != '\n' && !char.IsWhiteSpace(Character))
+					.ToArray());
+			return Compact.Length == 72 ||
+				Compact.Length == 88 ||
+				Compact.Length == 90;
 		}
 
 		private void TryMigrateLegacyReview()

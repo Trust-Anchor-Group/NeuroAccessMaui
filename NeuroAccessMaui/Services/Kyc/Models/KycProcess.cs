@@ -13,6 +13,17 @@ namespace NeuroAccessMaui.Services.Kyc.Models
         /// Optional process-level localized name for display.
         /// </summary>
         public KycLocalizedText? Name { get; set; }
+
+		/// <summary>
+		/// Gets or sets the identity application policy for the process.
+		/// </summary>
+		public KycApplicationPolicy ApplicationPolicy { get; set; } = new KycApplicationPolicy();
+
+		/// <summary>
+		/// Gets or sets the evidence policy for the process.
+		/// </summary>
+		public KycEvidencePolicy EvidencePolicy { get; set; } = new KycEvidencePolicy();
+
 		private readonly Dictionary<string, string?> values = new();
 
 		/// <summary>
