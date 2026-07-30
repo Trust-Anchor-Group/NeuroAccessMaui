@@ -114,16 +114,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			// ICAO Doc 9303-12, Table 9:
 			// https://www.icao.int/sites/default/files/publications/DocSeries/9303_p12_cons_en.pdf#page=43
 			// The revokedCertificates sequence is omitted when no certificates are revoked.
-			System.Collections.IEnumerable RevokedCertificateEntries = Array.Empty<object>();
+			System.Collections.IEnumerable RevokedCertificates = Array.Empty<object>();
 			if (i < c && TbsCertList[i] is Sequence RevokedCertificatesSequence)
 			{
 				i++;
-				RevokedCertificateEntries = RevokedCertificatesSequence;
+				RevokedCertificates = RevokedCertificatesSequence;
 			}
 
 			ChunkedList<RevokedCertificate> RevokedCertificates2 = [];
 
-			foreach (object? Item in RevokedCertificateEntries)
+			foreach (object? Item in RevokedCertificates)
 			{
 				if (Item is not Vector RevokedCertificate)
 					return false;
