@@ -18,7 +18,10 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_01_Parse(string Base64)
 		{
 			byte[] Bin = Convert.FromBase64String(Base64);
-			TravelDocumentsClient Client = new(new MockIsoDepInterface(), new DocumentInformation(), null);
+			TravelDocumentsClient Client = new(new MockIsoDepInterface(), new DocumentInformation(), null)
+			{
+				AppInfo = new ApplicationLevelInformation(Array.Empty<byte>(), 1, 8, 0, 0, null)
+			};
 			Assert.IsTrue(TravelDocumentsClient.TryParseDataObject(Bin, Client, out DocumentSecurityObject? SecurityInfo));
 		}
 

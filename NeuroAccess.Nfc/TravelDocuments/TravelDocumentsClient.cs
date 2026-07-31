@@ -94,7 +94,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Application-level information, if available.
 		/// </summary>
-		public ApplicationLevelInformation? AppInfo => this.appInfo;
+		public ApplicationLevelInformation? AppInfo
+		{
+			get => this.appInfo;
+			set => this.appInfo = value;
+		}
 
 		/// <summary>
 		/// Event raised when <see cref="AppInfo"/> is updated.
