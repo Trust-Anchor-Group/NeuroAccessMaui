@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Xml;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
@@ -61,6 +60,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private byte[]? zeroIv = null;
 		private bool encrypted = false;
 		private bool enhancedSecurity = false;
+		private bool permitPlatformDependentValidation = true;
 		private bool disposed = false;
 
 		/// <summary>
@@ -98,6 +98,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			get => this.appInfo;
 			set => this.appInfo = value;
+		}
+
+		/// <summary>
+		/// If platform-dependent signature validation operations are permitted.
+		/// </summary>
+		public bool PermitPlatformDependentValidation
+		{
+			get => this.permitPlatformDependentValidation;
+			set => this.permitPlatformDependentValidation = value;
 		}
 
 		/// <summary>

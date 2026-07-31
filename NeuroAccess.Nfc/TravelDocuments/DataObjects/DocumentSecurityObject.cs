@@ -84,6 +84,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					}
 					else
 					{
+						if (!Client.PermitPlatformDependentValidation)
+							return false;
+
 						// If platform/OS-independent signature validation fails
 						// (implemetation error?), double-check with platform/OS-dependent
 						// signature validation.
