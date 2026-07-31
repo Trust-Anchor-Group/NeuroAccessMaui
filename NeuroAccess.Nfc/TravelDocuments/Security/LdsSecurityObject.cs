@@ -41,7 +41,21 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			if (SecurityInfo.FirstElement is not System.Numerics.BigInteger Version)
 				return false;
 
-			if (SecurityInfo[1] is not Vector HashFunctions)
+			ChunkedList<HashFunction> HashFunctions2 = [];
+
+			if (SecurityInfo[1] is HashFunction HashFunction)
+				HashFunctions2.Add(HashFunction);
+			else if (SecurityInfo[1] is Vector HashFunctions)
+			{
+				foreach (object Item in HashFunctions)
+				{
+					if (Item is null || Item is not HashFunction HashFunction2)
+						return false;
+
+					HashFunctions2.Add(HashFunction2);
+				}
+			}
+			else
 				return false;
 
 			if (SecurityInfo[2] is not Vector DataGroupHashValues)
@@ -49,16 +63,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 
 			this.Version = (int)Version;
 
-			ChunkedList<HashFunction> HashFunctions2 = [];
 			Dictionary<int, byte[]> DataGroupHashValues2 = [];
-
-			foreach (object Item in HashFunctions)
-			{
-				if (Item is null || Item is not HashFunction HashFunction)
-					return false;
-
-				HashFunctions2.Add(HashFunction);
-			}
 
 			foreach (object Item in DataGroupHashValues)
 			{
