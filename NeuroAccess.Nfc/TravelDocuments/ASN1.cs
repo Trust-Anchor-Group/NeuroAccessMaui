@@ -89,6 +89,27 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public static bool TryDecodeDer(ICommunicationLayer? Client, byte[] Data, out object? Value)
 		{
 			AsnReader Reader = new(Data, AsnEncodingRules.DER);
+
+			ReadOnlyMemory<byte> Section = Reader.PeekEncodedValue();
+			int i, c;
+
+			if ((i = Section.Length) < (c = Data.Length))
+			{
+				while (i < c)
+				{
+					if (Data[i++] != 0)
+					{
+						Value = null;
+						return false;
+					}
+				}
+
+				// Truncate trailing zeroes, as some implementations have been observed to add these.
+
+				Array.Resize(ref Data, Section.Length);
+				Reader = new(Data, AsnEncodingRules.DER);
+			}
+
 			if (!TryDecodeAsn1(Client, Reader, out Value))
 				return false;
 
