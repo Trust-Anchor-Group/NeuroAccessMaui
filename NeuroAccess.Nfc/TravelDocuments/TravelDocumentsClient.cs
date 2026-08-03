@@ -319,11 +319,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte P2 = Command[3];
 			byte Lc;
 			byte Le;
+			bool HasLe;
 
 			if (Command.Length == 5)
 			{
 				Lc = 0;
 				Le = Command[4];
+				HasLe = true;
 			}
 			else
 			{
@@ -331,7 +333,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (5 + Lc > Command.Length)
 					throw new ArgumentException("Command data length exceeds command length.", nameof(Command));
 
-				Le = Lc + 5 < Command.Length ? Command[Lc + 5] : (byte)0;
+				HasLe = Lc + 5 < Command.Length;
+				Le = HasLe ? Command[Lc + 5] : (byte)0;
 			}
 
 			byte[] Header =
@@ -375,15 +378,19 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.HasSniffers)
 				this.Information("Encrypted data: " + Hashes.BinaryToString(EncryptedData));
 
-			byte[] Footer =
-			[
-				0x97,
-				1,
-				Le
-			];
+			byte[] Footer;
 
-			byte[] FooterPadding = new byte[BlockSize - 3];
-			FooterPadding[0] = 0x80;
+			if (HasLe)
+			{
+				Footer =
+				[
+					0x97,
+					1,
+					Le
+				];
+			}
+			else
+				Footer = [];
 
 			byte[] EncryptedDataHeader = PaddedDataLen == 0 ? [] :
 			[
