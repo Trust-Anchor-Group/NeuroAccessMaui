@@ -19,19 +19,22 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Application-Level Information. Reference: §4.6.1, EF.COM, ICAO Doc 9303-10, Table 35.
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
+		/// <param name="LdsVersion">LDS Version string.</param>
 		/// <param name="LdsMajorVersion">LDS Major Version</param>
 		/// <param name="LdsMinorVersion">LDS Minor Version</param>
 		/// <param name="UnicodeMajorVersion">Unicode Major Version</param>
 		/// <param name="UnicodeMinorVersion">Unicode Minor Version</param>
-		public ApplicationLevelInformation(byte[] Value, int LdsMajorVersion,
-			int LdsMinorVersion, int UnicodeMajorVersion, int UnicodeMinorVersion,
+		public ApplicationLevelInformation(byte[] Value, string? LdsVersion, int LdsMajorVersion,
+			int LdsMinorVersion, string? UnicodeVersion, int UnicodeMajorVersion, int UnicodeMinorVersion,
 			TagList? TagList)
 			: base(Value)
 		{
+			this.LdsVersion = LdsVersion;
 			this.LdsMajorVersion = LdsMajorVersion;
 			this.LdsMinorVersion = LdsMinorVersion;
 			this.UnicodeMajorVersion = UnicodeMajorVersion;
 			this.UnicodeMinorVersion = UnicodeMinorVersion;
+			this.UnicodeVersion = UnicodeVersion;
 			this.TagList = TagList;
 		}
 
@@ -51,6 +54,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public int LdsMinorVersion { get; }
 
 		/// <summary>
+		/// LDS Version number.
+		/// </summary>
+		public string? LdsVersion { get; }
+
+		/// <summary>
 		/// Unicode Major Version
 		/// </summary>
 		public int UnicodeMajorVersion { get; }
@@ -59,6 +67,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Unicode Minor Version
 		/// </summary>
 		public int UnicodeMinorVersion { get; }
+
+		/// <summary>
+		/// Unicode Version number.
+		/// </summary>
+		public string? UnicodeVersion { get; }
 
 		/// <summary>
 		/// Supported tags
@@ -92,8 +105,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				}
 			}
 
-			return new ApplicationLevelInformation(Value, LdsVersion?.MajorVersion ?? 0,
-				LdsVersion?.MinorVersion ?? 0, UnicodeVersion?.MajorVersion ?? 0,
+			return new ApplicationLevelInformation(Value, LdsVersion?.Version,
+				LdsVersion?.MajorVersion ?? 0, LdsVersion?.MinorVersion ?? 0,
+				UnicodeVersion?.Version, UnicodeVersion?.MajorVersion ?? 0,
 				UnicodeVersion?.MinorVersion ?? 0, TagList);
 		}
 

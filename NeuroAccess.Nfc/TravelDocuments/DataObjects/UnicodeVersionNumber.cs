@@ -25,13 +25,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <param name="MajorVersion">Major version number.</param>
 		/// <param name="MinorVersion">Minor version number.</param>
 		/// <param name="Release">Release</param>
-		public UnicodeVersionNumber(byte[] Value, int MajorVersion, int MinorVersion,
-			int Release)
+		public UnicodeVersionNumber(byte[] Value, int MajorVersion, int MinorVersion, int Release,
+			string Version)
 			: base(Value)
 		{
 			this.MajorVersion = MajorVersion;
 			this.MinorVersion = MinorVersion;
 			this.Release = Release;
+			this.Version = Version;
 		}
 
 		/// <summary>
@@ -55,6 +56,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public int Release { get; }
 
 		/// <summary>
+		/// Version string.
+		/// </summary>
+		public string? Version { get; }
+
+		/// <summary>
 		/// Tries to parse a binary representation of the data object.
 		/// </summary>
 		/// <param name="Value">Binary representation</param>
@@ -66,9 +72,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		{
 			if (Value.Length == 6)
 			{
-				string MajorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 0, 2));
-				string MinorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 2, 2));
-				string ReleaseVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 4, 2));
+				string VersionString = Encoding.ASCII.GetString(Value);
+				string MajorVersion = TrimLeadingZeroes(VersionString[0..2]);
+				string MinorVersion = TrimLeadingZeroes(VersionString[2..4]);
+				string ReleaseVersion = TrimLeadingZeroes(VersionString[4..6]);
 
 				Client.Information("Unicode version: " + MajorVersion + "." + MinorVersion +
 					"." + ReleaseVersion);
@@ -77,7 +84,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					int.TryParse(MinorVersion, out int MinorVersionInt) &&
 					int.TryParse(ReleaseVersion, out int ReleaseVersionInt))
 				{
-					Parsed = new UnicodeVersionNumber(Value, MajorVersionInt, MinorVersionInt, ReleaseVersionInt);
+					Parsed = new UnicodeVersionNumber(Value, MajorVersionInt, MinorVersionInt,
+						ReleaseVersionInt, VersionString);
 					return true;
 				}
 			}

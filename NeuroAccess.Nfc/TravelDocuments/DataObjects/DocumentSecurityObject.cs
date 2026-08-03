@@ -61,99 +61,102 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		{
 			Parsed = null;
 
-			if (Client.AppInfo?.HasAtLeastLdsVersion(1, 8) ?? false)
+			try
 			{
-				try
+				if (!SignedMessage.TryParse(Value, out SignedMessage? SignedData))
 				{
-					if (!SignedMessage.TryParse(Value, out SignedMessage? SignedData))
+					Client.Warning("Could not parse Signed CMS:\r\n\r\n " +
+						Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
+					return false;
+				}
+
+				byte[]? Content;
+				string? ContentOid;
+
+				// First use platform/OS-independent signature validation implementation.
+
+				if (SignedData.CheckSignature(false, Client))   // No need to validate certificate at this point, as it is validated when the certificate chain is validated.
+				{
+					Content = SignedData.Data.EncapsulatedContent;
+					ContentOid = SignedData.Data.EncapsulatedContentOid;
+				}
+				else
+				{
+					if (!Client.PermitPlatformDependentValidation)
+						return false;
+
+					// If platform/OS-independent signature validation fails
+					// (implemetation error?), double-check with platform/OS-dependent
+					// signature validation.
+
+					try
 					{
-						Client.Warning("Could not parse Signed CMS:\r\n\r\n " +
+						SignedCms SignedDataX = new();  // Backup, in case of implementation error in SignedMessage.
+						SignedDataX.Decode(Value);
+
+						SignedDataX.CheckSignature(true);
+
+						Content = SignedDataX.ContentInfo?.Content;
+						ContentOid = SignedDataX.ContentInfo?.ContentType?.Value;
+
+						Log.Debug("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful. Check communication logs for more details.");
+
+						Client.Warning("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful:\r\n\r\n" +
+							Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
+					}
+					catch (Exception)
+					{
+						Client.Warning("Could not validate signatures in Signed CMS:\r\n\r\n " +
 							Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
 						return false;
 					}
-
-					byte[]? Content;
-					string? ContentOid;
-
-					// First use platform/OS-independent signature validation implementation.
-
-					if (SignedData.CheckSignature(false, Client))   // No need to validate certificate at this point, as it is validated when the certificate chain is validated.
-					{
-						Content = SignedData.Data.EncapsulatedContent;
-						ContentOid = SignedData.Data.EncapsulatedContentOid;
-					}
-					else
-					{
-						if (!Client.PermitPlatformDependentValidation)
-							return false;
-
-						// If platform/OS-independent signature validation fails
-						// (implemetation error?), double-check with platform/OS-dependent
-						// signature validation.
-
-						try
-						{
-							SignedCms SignedDataX = new();  // Backup, in case of implementation error in SignedMessage.
-							SignedDataX.Decode(Value);
-
-							SignedDataX.CheckSignature(true);
-
-							Content = SignedDataX.ContentInfo?.Content;
-							ContentOid = SignedDataX.ContentInfo?.ContentType?.Value;
-
-							Log.Debug("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful. Check communication logs for more details.");
-
-							Client.Warning("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful:\r\n\r\n" +
-								Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
-						}
-						catch (Exception)
-						{
-							Client.Warning("Could not validate signatures in Signed CMS:\r\n\r\n " +
-								Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
-							return false;
-						}
-					}
-
-					if (Content is null || string.IsNullOrEmpty(ContentOid))
-						return false;
-
-					if (!ASN1.TryInstantiate(ContentOid, out ISecurityObject? SecurityObject))
-					{
-						Client.Warning("OID not recognized: " + ContentOid);
-						ASN1.ReportOidNotRecognized(ContentOid);
-						return false;
-					}
-
-					if (SecurityObject is not LdsSecurityObject LdsSecurityObject)
-						return false;
-
-					ASN1.TryDecodeDer(Client, Content, out object? ParsedContent);
-
-					if (ParsedContent is not Vector ContentVector)
-						return false;
-
-					if (!LdsSecurityObject.IsConfigured)
-					{
-						if (!LdsSecurityObject.Configure(ContentVector))
-						{
-							ASN1.ReportOidNotConfigured(LdsSecurityObject.Oid);
-							return false;
-						}
-					}
-
-					Parsed = new DocumentSecurityObject(Value, SignedData.Data, LdsSecurityObject);
-					return true;
 				}
-				catch (Exception ex)
+
+				if (Content is null || string.IsNullOrEmpty(ContentOid))
+					return false;
+
+				if (!ASN1.TryInstantiate(ContentOid, out ISecurityObject? SecurityObject))
 				{
-					Client.Exception(ex);
+					Client.Warning("OID not recognized: " + ContentOid);
+					ASN1.ReportOidNotRecognized(ContentOid);
 					return false;
 				}
-			}
-			else
-			{
-				// TODO: LDS version < 1.8 support
 
+				if (SecurityObject is not LdsSecurityObject LdsSecurityObject)
+					return false;
+
+				ASN1.TryDecodeDer(Client, Content, out object? ParsedContent);
+
+				if (ParsedContent is not Vector ContentVector)
+					return false;
+
+				if (!LdsSecurityObject.IsConfigured)
+				{
+					if (!LdsSecurityObject.Configure(ContentVector))
+					{
+						ASN1.ReportOidNotConfigured(LdsSecurityObject.Oid);
+						return false;
+					}
+				}
+
+				if ((Client.AppInfo?.HasAtLeastLdsVersion(1, 8) ?? false) &&
+					ContentVector.Length > 3 &&
+					ContentVector[3] is Vector VersionNumbers &&
+					VersionNumbers.Length >= 2 &&
+					VersionNumbers[0] is string LdsVersion &&
+					VersionNumbers[1] is string UnicodeVersion &&
+					(LdsVersion != Client.AppInfo.LdsVersion ||
+					UnicodeVersion != Client.AppInfo.UnicodeVersion))
+				{
+					return false;
+				}
+
+				Parsed = new DocumentSecurityObject(Value, SignedData.Data, LdsSecurityObject);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Client.Exception(ex);
 				return false;
 			}
 		}

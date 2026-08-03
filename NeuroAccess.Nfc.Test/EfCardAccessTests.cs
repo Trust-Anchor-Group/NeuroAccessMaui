@@ -21,7 +21,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[] Bin = Convert.FromBase64String(Base64);
 			TravelDocumentsClient Client = new(new MockIsoDepInterface(), new DocumentInformation(), null)
 			{
-				AppInfo = new ApplicationLevelInformation([], 1, 8, 0, 0, null),
+				AppInfo = new ApplicationLevelInformation([], "0108", 1, 8, "040000", 4, 0, null),
 				PermitPlatformDependentValidation = false
 			};
 

@@ -30,7 +30,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[] Bin;
 
 			if (EfCom is null)
-				Client.AppInfo = new ApplicationLevelInformation([], 1, 8, 0, 0, null);
+				Client.AppInfo = new ApplicationLevelInformation([], "0108", 1, 8, "040000", 0, 0, null);
 			else
 			{
 				Bin = Convert.FromBase64String(EfCom);
