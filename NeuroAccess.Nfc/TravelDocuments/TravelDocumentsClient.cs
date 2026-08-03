@@ -1107,16 +1107,39 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 
 				if (!P.Value && !ExpectedLength.HasValue)
-				{
-					await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
-					return File.ToArray();
-				}
+					break;
 
 				Offset += (uint)P.Key.Length;
 			}
 
+			byte[] Downloaded = File.ToArray();
+			int c = Downloaded.Length;
+
+			if (ExpectedLength.HasValue && c > ExpectedLength.Value)
+			{
+				bool AllZeroes = true;
+				int i;
+
+				for (i = ExpectedLength.Value; i < c; i++)
+				{
+					if (Downloaded[i] != 0)
+					{
+						AllZeroes = false;
+						break;
+					}
+				}
+
+				if (AllZeroes)
+				{
+					Array.Resize(ref Downloaded, ExpectedLength.Value);
+					this.Warning("Downloaded data exceeds expected length, but excess data is all zeroes. Truncating to expected length.");
+				}
+				else
+					this.Warning("Downloaded data exceeds expected length, and excess data is not all zeroes, so it is not truncated.");
+			}
+
 			await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
-			return File.ToArray();
+			return Downloaded;
 		}
 
 		private static int? GetExpectedLength(byte[] Bin)
@@ -2777,7 +2800,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					i += Len;
 				}
 
-				if (dataObjects.TryGetValue(Tag, out IDataObject? TypedObject))
+				if (Tag == 0 && Len == 0)
+					break;
+				else if (dataObjects.TryGetValue(Tag, out IDataObject? TypedObject))
 				{
 					if (TypedObject.TryParse(Value, Client, out IDataObject? ParsedObject))
 						Found.Add(ParsedObject);

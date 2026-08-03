@@ -14,6 +14,7 @@ namespace NeuroAccess.Nfc.Test
 		[DataRow("YBZfAQQwMTA3XzYGMDQwMDAwXARhdWNu")]
 		[DataRow("YBhfAQQwMTA3XzYGMDQwMDAwXAZhdWNnbm8=")]
 		[DataRow("YBlfAQQwMTA3XzYGMDQwMDAwXAdhdWNrbG1u")]
+		[DataRow("YBlfAQQwMTA3XzYGMDQwMDAwXAdhdWNrbG1uAAAA")]
 		public async Task Test_01_Parse(string Base64)
 		{
 			byte[] Bin = Convert.FromBase64String(Base64);
