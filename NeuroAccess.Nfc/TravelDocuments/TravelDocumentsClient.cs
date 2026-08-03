@@ -1832,11 +1832,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.encrypted)
 				return Data;
 
-			this.Information("Retrying EF.CardAccess after explicit master file selection.");
-			if (!await this.SelectMaster())
+			this.Information("Unable to find EF.CardAccess. Selecting LDS1 eMRTD application first, and trying again.");
+
+			if (!await this.SelectApplication(Applications.DF1))
 			{
-				this.Error("Unable to select the master file before reading EF.CardAccess.");
-				return Data;
+				this.Error("Unable to select the LDS1 eMRTD application.");
+				return null;
 			}
 
 			Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
