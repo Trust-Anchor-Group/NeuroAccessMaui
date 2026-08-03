@@ -1182,7 +1182,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="CardAccess">Contents of EF.CardAccess file.</param>
 		/// <returns>if a protocol was found matching the contents of the EF.CardAccess file.</returns>
-		private async Task<bool> TryFindPaceProtocol(object? CardAccess)
+		public async Task<bool> TryFindPaceProtocol(object? CardAccess)
 		{
 			await this.SetState(TravelDocumentsState.FindingCipher);
 

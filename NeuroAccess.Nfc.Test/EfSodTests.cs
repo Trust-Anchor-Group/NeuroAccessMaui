@@ -26,7 +26,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(TravelDocumentsClient.TryParseDataObject(Bin, Client, out DocumentSecurityObject? SecurityInfo));
 		}
 
-		private class MockIsoDepInterface : IIsoDepInterface
+		internal class MockIsoDepInterface : IIsoDepInterface
 		{
 			public INfcTag? Tag => null;
 			public void CloseIfOpen() { }
