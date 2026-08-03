@@ -124,6 +124,10 @@ namespace NeuroAccessMaui.Services.Nfc
 									case AuthenticateResult.UnableToGetBacChallenge:
 									// Unable to get BAC challenge. (Probably not a valid/working travel document.)
 
+									case AuthenticateResult.UnableToAuthenticateBac:
+									// Unable to authenticate using the selected BAC protocol.
+									// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+
 									case AuthenticateResult.BacNotImplemented:
 									// Old Travel Document requiring BAC, which is not supported.
 

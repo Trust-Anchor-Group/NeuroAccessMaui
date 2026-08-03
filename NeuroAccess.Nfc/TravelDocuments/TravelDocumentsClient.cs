@@ -1690,15 +1690,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[] Challenge = new byte[8];
 			Buffer.BlockCopy(Response, 0, Challenge, 0, 8);
 
-			return Response;
+			return Challenge;
 		}
 
 		/// <summary>
 		/// Send Response to challenge (§7.1.5.4, §D.3)
 		/// </summary>
 		/// <param name="ChallengeResponse">ChallengeResponse.</param>
-		/// <returns>Challenge</returns>
-		private async Task<byte[]?> ExternalBacAuthenticate(byte[] ChallengeResponse)
+		/// <returns>E.IC and M.IC</returns>
+		private async Task<KeyValuePair<byte[]?, byte[]?>> ExternalBacAuthenticate(byte[] ChallengeResponse)
 		{
 			await this.SetState(TravelDocumentsState.RespondingToChallenge);
 
@@ -1721,18 +1721,21 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[] Response = await this.ExecuteCommand(Command);
 
 			if (!this.CheckResponse(Response))
-				return null;
+				return new KeyValuePair<byte[]?, byte[]?>(null, null);
 
-			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+			if (Response.Length != 42 || Response[40] != 0x90 || Response[41] != 0x00)
 			{
 				this.Error("Unexpected response received.");
-				return null;
+				return new KeyValuePair<byte[]?, byte[]?>(null, null);
 			}
 
-			byte[] Challenge = new byte[8];
-			Buffer.BlockCopy(Response, 0, Challenge, 0, 8);
+			byte[] EIC = new byte[32];
+			byte[] MIC = new byte[8];
 
-			return Response;
+			Buffer.BlockCopy(Response, 0, EIC, 0, 32);
+			Buffer.BlockCopy(Response, 32, MIC, 0, 8);
+
+			return new KeyValuePair<byte[]?, byte[]?>(EIC, MIC);
 		}
 
 		/// <summary>
@@ -1778,13 +1781,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			else
 			{
 				// BAC
-				// §4.2 4. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+				// §4.2 4. https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
 				this.Information("Attempting legacy BAC protocol.");
 
-				// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
+				// §4.3, §D.3, https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
-				byte[]? Challenge = await this.GetBacChallenge();
+				byte[]? Challenge = await this.GetBacChallenge();   // RND.IC
 
 				if (Challenge is null)
 				{
@@ -1793,8 +1796,18 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 
 				byte[] ChallengeResponse = CalcChallengeResponse3DES(this.documentInformation, Challenge);
-				byte[]? Response = await this.ExternalBacAuthenticate(ChallengeResponse);
+				KeyValuePair<byte[]?, byte[]?> Result = await this.ExternalBacAuthenticate(ChallengeResponse);
+				byte[]? EIC = Result.Key;	// E.IC
+				byte[]? MIC = Result.Value;	// M.IC
 
+				if (EIC is null || MIC is null)
+				{
+					this.Error("Unable to complete BAC authentication.");
+					return AuthenticateResult.UnableToAuthenticateBac;
+				}
+
+				this.Error("BAC not implemented.");
+				
 				// TODO: Implement/Test BAC
 
 				return AuthenticateResult.BacNotImplemented;
@@ -1835,7 +1848,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public static byte[] CalcChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
 			byte[] KEnc, byte[] KMac)
 		{
-			byte[] S = CONCAT(Rnd1, Challenge, Rnd2);
+			byte[] S = CONCAT(Rnd1, Challenge, Rnd2);   // RND.IFD || RND.IC || K.IFD
 			byte[] EIFD;
 			byte[] MIFD;
 
@@ -1912,8 +1925,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Response</returns>
 		public static byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge)
 		{
-			byte[] Rnd1 = new byte[8];
-			byte[] Rnd2 = new byte[16];
+			byte[] Rnd1 = new byte[8];  // RND.IFD
+			byte[] Rnd2 = new byte[16]; // K.IFD
 
 			using (RandomNumberGenerator Rnd = RandomNumberGenerator.Create())
 			{
