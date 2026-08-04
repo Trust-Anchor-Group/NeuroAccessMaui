@@ -2397,7 +2397,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						if (RevokedCertificates.HasBeenRevoked(Cert, out RevokedReason Reason))
 						{
 							this.Error("Certificate " + Cert.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
-							return ReadTravelDocumentResult.InvalidCertificate;
+							return ReadTravelDocumentResult.RevokedCertificate;
 						}
 
 						foreach (Certificate Certificate2 in Certificates)
@@ -2405,7 +2405,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							if (RevokedCertificates.HasBeenRevoked(Certificate2, out Reason))
 							{
 								this.Error("Certificate " + Certificate2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
-								return ReadTravelDocumentResult.InvalidCertificate;
+								return ReadTravelDocumentResult.RevokedCertificate;
 							}
 						}
 
@@ -2420,7 +2420,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (!CrlCheckPassed)
 				{
 					this.Error("Unable to verify CRL.");
-					return ReadTravelDocumentResult.InvalidCertificate;
+					return ReadTravelDocumentResult.RevocationStatusUnknown;
 				}
 
 				this.Information("Verifying certificate chain.");

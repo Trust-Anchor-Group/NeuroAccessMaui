@@ -3374,6 +3374,8 @@
   <data name="NfcTesterCertificateReasonNoCertificate" xml:space="preserve"><value>No document signer certificate was found.</value></data>
   <data name="NfcTesterCertificateReasonMultipleCertificates" xml:space="preserve"><value>The document contained an unexpected number of signer certificates.</value></data>
   <data name="NfcTesterCertificateReasonInvalidCertificate" xml:space="preserve"><value>The signer certificate chain, signature, trust, or revocation check failed.</value></data>
+  <data name="NfcTesterCertificateReasonRevokedCertificate" xml:space="preserve"><value>The signer certificate has been revoked.</value></data>
+  <data name="NfcTesterCertificateReasonRevocationStatusUnknown" xml:space="preserve"><value>Unable to validate the revocation status of the signer certificate.</value></data>
   <data name="NfcTesterCertificateReasonCertificateNotYetValid" xml:space="preserve"><value>The signer certificate is not valid yet.</value></data>
   <data name="NfcTesterCertificateReasonCertificateExpired" xml:space="preserve"><value>The signer certificate has expired.</value></data>
   <data name="NfcTesterCertificateReasonDataGroupHashMismatch" xml:space="preserve"><value>Document data does not match the hashes signed in EF.SOD.</value></data>

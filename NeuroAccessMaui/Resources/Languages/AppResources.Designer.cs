@@ -5578,6 +5578,249 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Certificate issuer.
+        /// </summary>
+        public static string NfcTesterCertificateIssuer {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateIssuer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip application information could not be understood before certificate verification..
+        /// </summary>
+        public static string NfcTesterCertificateReasonApplicationInformationParseFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonApplicationInformationParseFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip application information could not be read before certificate verification..
+        /// </summary>
+        public static string NfcTesterCertificateReasonApplicationInformationReadFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonApplicationInformationReadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip could not be authenticated, so the certificate was not checked..
+        /// </summary>
+        public static string NfcTesterCertificateReasonAuthenticationFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonAuthenticationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The signer certificate has expired..
+        /// </summary>
+        public static string NfcTesterCertificateReasonCertificateExpired {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonCertificateExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The signer certificate is not valid yet..
+        /// </summary>
+        public static string NfcTesterCertificateReasonCertificateNotYetValid {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonCertificateNotYetValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document data does not match the hashes signed in EF.SOD..
+        /// </summary>
+        public static string NfcTesterCertificateReasonDataGroupHashMismatch {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonDataGroupHashMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The certificate was checked, but not all document data could be understood..
+        /// </summary>
+        public static string NfcTesterCertificateReasonDataGroupParseFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonDataGroupParseFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The certificate was checked, but not all document data could be read..
+        /// </summary>
+        public static string NfcTesterCertificateReasonDataGroupReadFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonDataGroupReadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The signer certificate chain, signature, trust, or revocation check failed..
+        /// </summary>
+        public static string NfcTesterCertificateReasonInvalidCertificate {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonInvalidCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip does not contain a supported electronic travel-document application..
+        /// </summary>
+        public static string NfcTesterCertificateReasonLdsApplicationNotFound {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonLdsApplicationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document contained an unexpected number of signer certificates..
+        /// </summary>
+        public static string NfcTesterCertificateReasonMultipleCertificates {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonMultipleCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No document signer certificate was found..
+        /// </summary>
+        public static string NfcTesterCertificateReasonNoCertificate {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonNoCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to validate the revocation status of the signer certificate..
+        /// </summary>
+        public static string NfcTesterCertificateReasonRevocationStatusUnknown {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonRevocationStatusUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The signer certificate has been revoked..
+        /// </summary>
+        public static string NfcTesterCertificateReasonRevokedCertificate {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonRevokedCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document security object (EF.SOD) could not be understood..
+        /// </summary>
+        public static string NfcTesterCertificateReasonSecurityObjectParseFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonSecurityObjectParseFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document security object (EF.SOD) could not be read..
+        /// </summary>
+        public static string NfcTesterCertificateReasonSecurityObjectReadFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonSecurityObjectReadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected error interrupted certificate verification..
+        /// </summary>
+        public static string NfcTesterCertificateReasonUnexpectedError {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateReasonUnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate serial number.
+        /// </summary>
+        public static string NfcTesterCertificateSerialNumber {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateSerialNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate verification.
+        /// </summary>
+        public static string NfcTesterCertificateStatus {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verification incomplete.
+        /// </summary>
+        public static string NfcTesterCertificateStatusIncomplete {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateStatusIncomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not verified.
+        /// </summary>
+        public static string NfcTesterCertificateStatusInvalid {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateStatusInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not verified.
+        /// </summary>
+        public static string NfcTesterCertificateStatusNotVerified {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateStatusNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified.
+        /// </summary>
+        public static string NfcTesterCertificateStatusValid {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateStatusValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signer.
+        /// </summary>
+        public static string NfcTesterCertificateSubject {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate valid from.
+        /// </summary>
+        public static string NfcTesterCertificateValidFrom {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateValidFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate valid until.
+        /// </summary>
+        public static string NfcTesterCertificateValidUntil {
+            get {
+                return ResourceManager.GetString("NfcTesterCertificateValidUntil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custody information.
         /// </summary>
         public static string NfcTesterCustodyInformation {
