@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		/// Value as script
 		/// </summary>
 		[ObservableProperty]
-		private string asScript = Expression.ToString(Value);
+		private string asScript = Expression.ToExpressionString(Value);
 
 		/// <summary>
 		/// Updates the value of the variable.
@@ -39,7 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		public void UpdateValue(object Value)
 		{
 			this.Value = Value;
-			this.AsScript = Expression.ToString(Value);
+			this.AsScript = Expression.ToExpressionString(Value);
 		}
 
 		#region Commands

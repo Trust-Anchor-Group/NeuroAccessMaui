@@ -34,6 +34,12 @@
 		UnableToGetBacChallenge,
 
 		/// <summary>
+		/// Unable to authenticate using the selected BAC protocol.
+		/// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+		/// </summary>
+		UnableToAuthenticateBac,
+
+		/// <summary>
 		/// Old Travel Document requiring BAC, which is not supported.
 		/// </summary>
 		BacNotImplemented

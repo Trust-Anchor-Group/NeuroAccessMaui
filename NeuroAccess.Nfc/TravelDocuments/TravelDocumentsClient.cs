@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Xml;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
@@ -61,6 +60,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private byte[]? zeroIv = null;
 		private bool encrypted = false;
 		private bool enhancedSecurity = false;
+		private bool permitPlatformDependentValidation = true;
 		private bool disposed = false;
 
 		/// <summary>
@@ -94,7 +94,20 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Application-level information, if available.
 		/// </summary>
-		public ApplicationLevelInformation? AppInfo => this.appInfo;
+		public ApplicationLevelInformation? AppInfo
+		{
+			get => this.appInfo;
+			set => this.appInfo = value;
+		}
+
+		/// <summary>
+		/// If platform-dependent signature validation operations are permitted.
+		/// </summary>
+		public bool PermitPlatformDependentValidation
+		{
+			get => this.permitPlatformDependentValidation;
+			set => this.permitPlatformDependentValidation = value;
+		}
 
 		/// <summary>
 		/// Event raised when <see cref="AppInfo"/> is updated.
@@ -306,11 +319,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte P2 = Command[3];
 			byte Lc;
 			byte Le;
+			bool HasLe;
 
 			if (Command.Length == 5)
 			{
 				Lc = 0;
 				Le = Command[4];
+				HasLe = true;
 			}
 			else
 			{
@@ -318,7 +333,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (5 + Lc > Command.Length)
 					throw new ArgumentException("Command data length exceeds command length.", nameof(Command));
 
-				Le = Lc + 5 < Command.Length ? Command[Lc + 5] : (byte)0;
+				HasLe = Lc + 5 < Command.Length;
+				Le = HasLe ? Command[Lc + 5] : (byte)0;
 			}
 
 			byte[] Header =
@@ -362,15 +378,19 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.HasSniffers)
 				this.Information("Encrypted data: " + Hashes.BinaryToString(EncryptedData));
 
-			byte[] Footer =
-			[
-				0x97,
-				1,
-				Le
-			];
+			byte[] Footer;
 
-			byte[] FooterPadding = new byte[BlockSize - 3];
-			FooterPadding[0] = 0x80;
+			if (HasLe)
+			{
+				Footer =
+				[
+					0x97,
+					1,
+					Le
+				];
+			}
+			else
+				Footer = [];
 
 			byte[] EncryptedDataHeader = PaddedDataLen == 0 ? [] :
 			[
@@ -1094,16 +1114,39 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 
 				if (!P.Value && !ExpectedLength.HasValue)
-				{
-					await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
-					return File.ToArray();
-				}
+					break;
 
 				Offset += (uint)P.Key.Length;
 			}
 
+			byte[] Downloaded = File.ToArray();
+			int c = Downloaded.Length;
+
+			if (ExpectedLength.HasValue && c > ExpectedLength.Value)
+			{
+				bool AllZeroes = true;
+				int i;
+
+				for (i = ExpectedLength.Value; i < c; i++)
+				{
+					if (Downloaded[i] != 0)
+					{
+						AllZeroes = false;
+						break;
+					}
+				}
+
+				if (AllZeroes)
+				{
+					Array.Resize(ref Downloaded, ExpectedLength.Value);
+					this.Warning("Downloaded data exceeds expected length, but excess data is all zeroes. Truncating to expected length.");
+				}
+				else
+					this.Warning("Downloaded data exceeds expected length, and excess data is not all zeroes, so it is not truncated.");
+			}
+
 			await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
-			return File.ToArray();
+			return Downloaded;
 		}
 
 		private static int? GetExpectedLength(byte[] Bin)
@@ -1169,7 +1212,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="CardAccess">Contents of EF.CardAccess file.</param>
 		/// <returns>if a protocol was found matching the contents of the EF.CardAccess file.</returns>
-		private async Task<bool> TryFindPaceProtocol(object? CardAccess)
+		public async Task<bool> TryFindPaceProtocol(object? CardAccess)
 		{
 			await this.SetState(TravelDocumentsState.FindingCipher);
 
@@ -1654,15 +1697,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[] Challenge = new byte[8];
 			Buffer.BlockCopy(Response, 0, Challenge, 0, 8);
 
-			return Response;
+			return Challenge;
 		}
 
 		/// <summary>
 		/// Send Response to challenge (§7.1.5.4, §D.3)
 		/// </summary>
 		/// <param name="ChallengeResponse">ChallengeResponse.</param>
-		/// <returns>Challenge</returns>
-		private async Task<byte[]?> ExternalBacAuthenticate(byte[] ChallengeResponse)
+		/// <returns>E.IC and M.IC</returns>
+		private async Task<KeyValuePair<byte[]?, byte[]?>> ExternalBacAuthenticate(byte[] ChallengeResponse)
 		{
 			await this.SetState(TravelDocumentsState.RespondingToChallenge);
 
@@ -1685,18 +1728,21 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[] Response = await this.ExecuteCommand(Command);
 
 			if (!this.CheckResponse(Response))
-				return null;
+				return new KeyValuePair<byte[]?, byte[]?>(null, null);
 
-			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+			if (Response.Length != 42 || Response[40] != 0x90 || Response[41] != 0x00)
 			{
 				this.Error("Unexpected response received.");
-				return null;
+				return new KeyValuePair<byte[]?, byte[]?>(null, null);
 			}
 
-			byte[] Challenge = new byte[8];
-			Buffer.BlockCopy(Response, 0, Challenge, 0, 8);
+			byte[] EIC = new byte[32];
+			byte[] MIC = new byte[8];
 
-			return Response;
+			Buffer.BlockCopy(Response, 0, EIC, 0, 32);
+			Buffer.BlockCopy(Response, 32, MIC, 0, 8);
+
+			return new KeyValuePair<byte[]?, byte[]?>(EIC, MIC);
 		}
 
 		/// <summary>
@@ -1742,13 +1788,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			else
 			{
 				// BAC
-				// §4.2 4. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+				// §4.2 4. https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
 				this.Information("Attempting legacy BAC protocol.");
 
-				// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
+				// §4.3, §D.3, https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
-				byte[]? Challenge = await this.GetBacChallenge();
+				byte[]? Challenge = await this.GetBacChallenge();   // RND.IC
 
 				if (Challenge is null)
 				{
@@ -1757,8 +1803,18 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 
 				byte[] ChallengeResponse = CalcChallengeResponse3DES(this.documentInformation, Challenge);
-				byte[]? Response = await this.ExternalBacAuthenticate(ChallengeResponse);
+				KeyValuePair<byte[]?, byte[]?> Result = await this.ExternalBacAuthenticate(ChallengeResponse);
+				byte[]? EIC = Result.Key;	// E.IC
+				byte[]? MIC = Result.Value;	// M.IC
 
+				if (EIC is null || MIC is null)
+				{
+					this.Error("Unable to complete BAC authentication.");
+					return AuthenticateResult.UnableToAuthenticateBac;
+				}
+
+				this.Error("BAC not implemented.");
+				
 				// TODO: Implement/Test BAC
 
 				return AuthenticateResult.BacNotImplemented;
@@ -1776,11 +1832,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.encrypted)
 				return Data;
 
-			this.Information("Retrying EF.CardAccess after explicit master file selection.");
-			if (!await this.SelectMaster())
+			this.Information("Unable to find EF.CardAccess. Selecting LDS1 eMRTD application first, and trying again.");
+
+			if (!await this.SelectApplication(Applications.DF1))
 			{
-				this.Error("Unable to select the master file before reading EF.CardAccess.");
-				return Data;
+				this.Error("Unable to select the LDS1 eMRTD application.");
+				return null;
 			}
 
 			Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
@@ -1799,7 +1856,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public static byte[] CalcChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
 			byte[] KEnc, byte[] KMac)
 		{
-			byte[] S = CONCAT(Rnd1, Challenge, Rnd2);
+			byte[] S = CONCAT(Rnd1, Challenge, Rnd2);   // RND.IFD || RND.IC || K.IFD
 			byte[] EIFD;
 			byte[] MIFD;
 
@@ -1876,8 +1933,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Response</returns>
 		public static byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge)
 		{
-			byte[] Rnd1 = new byte[8];
-			byte[] Rnd2 = new byte[16];
+			byte[] Rnd1 = new byte[8];  // RND.IFD
+			byte[] Rnd2 = new byte[16]; // K.IFD
 
 			using (RandomNumberGenerator Rnd = RandomNumberGenerator.Create())
 			{
@@ -2764,7 +2821,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					i += Len;
 				}
 
-				if (dataObjects.TryGetValue(Tag, out IDataObject? TypedObject))
+				if (Tag == 0 && Len == 0)
+					break;
+				else if (dataObjects.TryGetValue(Tag, out IDataObject? TypedObject))
 				{
 					if (TypedObject.TryParse(Value, Client, out IDataObject? ParsedObject))
 						Found.Add(ParsedObject);
