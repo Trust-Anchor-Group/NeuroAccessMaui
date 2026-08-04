@@ -4,7 +4,9 @@ using System.Runtime.ExceptionServices;
 using NeuroAccessMaui.Exceptions;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using Waher.Content.Getters;
 using Waher.Events;
+using Waher.Networking;
 using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
 using Waher.Networking.XMPP;
@@ -78,6 +80,45 @@ namespace NeuroAccessMaui.Services.Network
 			}
 
 			return (DomainName, defaultXmppPortNumber, false);
+		}
+
+		/// <inheritdoc/>
+		public async Task<IDisposable> EnableNeuronHttpProxyAsync(int TokenSeconds, ICommunicationLayer? CommunicationLayer, CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+
+			string? Domain = null;
+			string? Token = null;
+
+			try
+			{
+				Domain = ServiceRef.TagProfile.Domain?.Trim();
+				if (string.IsNullOrWhiteSpace(Domain))
+				{
+					ServiceRef.LogService.LogWarning("Neuron HTTP proxy error. Missing broker domain.");
+					CommunicationLayer?.Warning("Neuron HTTP proxy error. Missing broker domain.");
+				}
+				else
+				{
+					Token = await ServiceRef.XmppService.GetApiToken(TokenSeconds);
+					CancellationToken.ThrowIfCancellationRequested();
+
+					if (string.IsNullOrWhiteSpace(Token))
+					{
+						ServiceRef.LogService.LogWarning("Neuron HTTP proxy error. Unable to get API token.");
+						CommunicationLayer?.Warning("Neuron HTTP proxy error. Unable to get API token.");
+					}
+				}
+			}
+			catch (Exception Ex) when (Ex is not OperationCanceledException)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				CommunicationLayer?.Warning("Neuron HTTP proxy error. " + Ex.Message);
+				Domain = null;
+				Token = null;
+			}
+
+			return new NeuronHttpProxyScope(Domain, Token);
 		}
 
 		public async Task<bool> TryRequest(Func<Task> func, bool rethrowException = false, bool displayAlert = true,
@@ -231,6 +272,62 @@ namespace NeuroAccessMaui.Services.Network
 			}
 
 			return [];
+		}
+
+		private sealed class NeuronHttpProxyScope : IDisposable
+		{
+			private readonly bool previousEnforceHttps;
+			private readonly string? proxyUriPrefix;
+			private readonly string? token;
+			private bool isDisposed;
+			private bool isRegistered;
+
+			public NeuronHttpProxyScope(string? Domain, string? Token)
+			{
+				this.previousEnforceHttps = WebGetter.EnforceHttps;
+				WebGetter.EnforceHttps = true;
+
+				if (string.IsNullOrWhiteSpace(Domain) || string.IsNullOrWhiteSpace(Token))
+					return;
+
+				this.proxyUriPrefix = "https://" + Domain.Trim().TrimEnd('/') + "/HttpProxy/";
+				this.token = Token;
+				WebGetter.HttpUriEventHandler += this.ViaProxy;
+				this.isRegistered = true;
+			}
+
+			public void Dispose()
+			{
+				if (this.isDisposed)
+					return;
+
+				if (this.isRegistered)
+				{
+					WebGetter.HttpUriEventHandler -= this.ViaProxy;
+					this.isRegistered = false;
+				}
+
+				WebGetter.EnforceHttps = this.previousEnforceHttps;
+				this.isDisposed = true;
+			}
+
+			private void ViaProxy(object? Sender, HttpUriEventArgs e)
+			{
+				ArgumentNullException.ThrowIfNull(e);
+
+				if (this.proxyUriPrefix is null || string.IsNullOrEmpty(this.token))
+					return;
+
+				if (!string.Equals(e.Uri.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+					return;
+
+				e.Uri = new Uri(this.proxyUriPrefix + WebUtility.UrlEncode(e.Uri.ToString()));
+
+				if (e.Request.Headers.Contains("Authorization"))
+					e.Request.Headers.Remove("Authorization");
+
+				e.Request.Headers.Add("Authorization", "Bearer " + this.token);
+			}
 		}
 	}
 }

@@ -126,6 +126,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
+		private int tokenValiditySeconds;
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
 #endif
@@ -2636,8 +2637,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			DateTime Now = DateTime.UtcNow;
 
-			if (!string.IsNullOrEmpty(this.token) && Now.Subtract(this.tokenCreated).TotalSeconds < Seconds - 10)
+			if (!string.IsNullOrEmpty(this.token) &&
+				this.tokenValiditySeconds >= Seconds &&
+				Now.Subtract(this.tokenCreated).TotalSeconds < this.tokenValiditySeconds - 10)
+			{
 				return this.token;
+			}
 
 			if (!this.IsOnline)
 			{
@@ -2649,7 +2654,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				throw new Exception("Not connected to XMPP network.");
 
 			this.token = await this.httpxClient.GetJwtTokenAsync(Seconds);
-			this.tokenCreated = Now;
+			this.tokenCreated = DateTime.UtcNow;
+			this.tokenValiditySeconds = string.IsNullOrEmpty(this.token) ? 0 : Seconds;
 
 			return this.token;
 		}

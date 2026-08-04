@@ -410,6 +410,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			using XmlWriter XmlOutput = XmlWriter.Create(XmlBuilder, XML.WriterSettings(false, true));
 			XmlWriterSniffer InMemoryXmlWriterSniffer = new XmlWriterSniffer(XmlOutput, BinaryPresentationMethod.Base64, "NFC");
 			TravelDocumentsClient? Client = null;
+			IDisposable? HttpProxyScope = null;
 
 			TravelDocumentReadoutService.InitializeReadoutXml(XmlOutput, InMemoryXmlWriterSniffer, Request.MrzText);
 
@@ -424,6 +425,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 
 				Client = new TravelDocumentsClient(IsoDepInterface, Request.DocumentInformation, LocalKeySeed, Sniffers);
 				TravelDocumentReadoutService.RegisterReadoutEvents(Client);
+				HttpProxyScope = await ServiceRef.NetworkService.EnableNeuronHttpProxyAsync(600, Client, CancellationToken);
 
 				Client.Information("Starting readout.");
 				CancellationToken.ThrowIfCancellationRequested();
@@ -484,6 +486,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			}
 			finally
 			{
+				HttpProxyScope?.Dispose();
 				Client?.Dispose();
 				IsoDepInterface.CloseIfOpen();
 			}
