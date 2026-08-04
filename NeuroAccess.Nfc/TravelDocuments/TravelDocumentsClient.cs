@@ -1804,8 +1804,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				byte[] ChallengeResponse = CalcChallengeResponse3DES(this.documentInformation, Challenge);
 				KeyValuePair<byte[]?, byte[]?> Result = await this.ExternalBacAuthenticate(ChallengeResponse);
-				byte[]? EIC = Result.Key;	// E.IC
-				byte[]? MIC = Result.Value;	// M.IC
+				byte[]? EIC = Result.Key;   // E.IC
+				byte[]? MIC = Result.Value; // M.IC
 
 				if (EIC is null || MIC is null)
 				{
@@ -1814,7 +1814,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 
 				this.Error("BAC not implemented.");
-				
+
 				// TODO: Implement/Test BAC
 
 				return AuthenticateResult.BacNotImplemented;
@@ -2369,41 +2369,58 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return ReadTravelDocumentResult.InvalidCertificate;
 				}
 
+				bool CrlCheckPassed = false;
+
 				foreach (string CrlUrl in CrlUrls.Keys)
 				{
-					this.Information("Retrieving CRL: " + CrlUrl);
-
-					CertificateList? RevokedCertificates = await CertificateStore.TryLoadCrl(CrlUrl, this);
-					if (RevokedCertificates is null)
+					try
 					{
-						this.Error("Unable to load CRL.");
-						return ReadTravelDocumentResult.InvalidCertificate;
-					}
+						this.Information("Retrieving CRL: " + CrlUrl);
 
-					this.Information("Verifying CRL signature.");
-
-					if (!await RevokedCertificates.VerifySignature(IdDomain, CountryCode!, this))
-					{
-						this.Error("CRL Signature invalid.");
-						return ReadTravelDocumentResult.InvalidCertificate;
-					}
-
-					this.Information("Checking if certificates are revoked.");
-
-					if (RevokedCertificates.HasBeenRevoked(Cert, out RevokedReason Reason))
-					{
-						this.Error("Certificate " + Cert.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
-						return ReadTravelDocumentResult.InvalidCertificate;
-					}
-
-					foreach (Certificate Certificate2 in Certificates)
-					{
-						if (RevokedCertificates.HasBeenRevoked(Certificate2, out Reason))
+						CertificateList? RevokedCertificates = await CertificateStore.TryLoadCrl(CrlUrl, this);
+						if (RevokedCertificates is null)
 						{
-							this.Error("Certificate " + Certificate2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
+							this.Error("Unable to load CRL.");
+							continue;
+						}
+
+						this.Information("Verifying CRL signature.");
+
+						if (!await RevokedCertificates.VerifySignature(IdDomain, CountryCode!, this))
+						{
+							this.Error("CRL Signature invalid.");
+							continue;
+						}
+
+						this.Information("Checking if certificates are revoked.");
+
+						if (RevokedCertificates.HasBeenRevoked(Cert, out RevokedReason Reason))
+						{
+							this.Error("Certificate " + Cert.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
 							return ReadTravelDocumentResult.InvalidCertificate;
 						}
+
+						foreach (Certificate Certificate2 in Certificates)
+						{
+							if (RevokedCertificates.HasBeenRevoked(Certificate2, out Reason))
+							{
+								this.Error("Certificate " + Certificate2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
+								return ReadTravelDocumentResult.InvalidCertificate;
+							}
+						}
+
+						CrlCheckPassed = true;
 					}
+					catch (Exception ex)
+					{
+						this.Exception(ex.Message);
+					}
+				}
+
+				if (!CrlCheckPassed)
+				{
+					this.Error("Unable to verify CRL.");
+					return ReadTravelDocumentResult.InvalidCertificate;
 				}
 
 				this.Information("Verifying certificate chain.");
