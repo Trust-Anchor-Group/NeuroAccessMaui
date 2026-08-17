@@ -12153,8 +12153,14 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ContractOther => ResourceManager.GetString("ContractOther", resourceCulture);
         /// <summary>Gets the localized contract-role format.</summary>
         public static string ContractYourRoleFormat => ResourceManager.GetString("ContractYourRoleFormat", resourceCulture);
+        /// <summary>Gets the localized contract-counterparty format.</summary>
+        public static string ContractCounterpartyFormat => ResourceManager.GetString("ContractCounterpartyFormat", resourceCulture);
         /// <summary>Gets the localized signature-progress format.</summary>
         public static string SignatureProgressFormat => ResourceManager.GetString("SignatureProgressFormat", resourceCulture);
+        /// <summary>Gets the localized being-signed progress format.</summary>
+        public static string ContractBeingSignedProgressFormat => ResourceManager.GetString("ContractBeingSignedProgressFormat", resourceCulture);
+        /// <summary>Gets the localized signed-contract progress format.</summary>
+        public static string ContractSignedProgressFormat => ResourceManager.GetString("ContractSignedProgressFormat", resourceCulture);
         /// <summary>Gets the localized review-and-sign action.</summary>
         public static string ReviewAndSign => ResourceManager.GetString("ReviewAndSign", resourceCulture);
         /// <summary>Gets the localized proposal-response action.</summary>
@@ -12165,6 +12171,8 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string SavedContractMayBeOutOfDate => ResourceManager.GetString("SavedContractMayBeOutOfDate", resourceCulture);
         /// <summary>Gets the localized saved-contract fallback message.</summary>
         public static string ContractRefreshFailedUsingSaved => ResourceManager.GetString("ContractRefreshFailedUsingSaved", resourceCulture);
+        /// <summary>Gets the localized dated saved-contract fallback format.</summary>
+        public static string ContractRefreshFailedUsingSavedFormat => ResourceManager.GetString("ContractRefreshFailedUsingSavedFormat", resourceCulture);
         /// <summary>Gets the localized unavailable-attachment message.</summary>
         public static string ContractAttachmentUnavailable => ResourceManager.GetString("ContractAttachmentUnavailable", resourceCulture);
         /// <summary>Gets the localized open-attachment action.</summary>
@@ -12183,6 +12191,8 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string RemoveLocalReferenceDescription => ResourceManager.GetString("RemoveLocalReferenceDescription", resourceCulture);
         /// <summary>Gets the localized current-contract freshness status.</summary>
         public static string ContractCurrentDetails => ResourceManager.GetString("ContractCurrentDetails", resourceCulture);
+        /// <summary>Gets the localized full-agreement section label.</summary>
+        public static string FullAgreement => ResourceManager.GetString("FullAgreement", resourceCulture);
         /// <summary>Gets the localized contract activity limitation.</summary>
         public static string ContractActivityDescription => ResourceManager.GetString("ContractActivityDescription", resourceCulture);
         /// <summary>Gets the localized advanced contract details explanation.</summary>

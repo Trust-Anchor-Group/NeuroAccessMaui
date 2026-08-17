@@ -4186,8 +4186,17 @@ Esto envía el enlace y todos los datos legibles por máquina del token. Envíal
   <data name="ContractYourRoleFormat" xml:space="preserve">
     <value>Tu rol: {0}</value>
   </data>
+  <data name="ContractCounterpartyFormat" xml:space="preserve">
+    <value>Con {0}</value>
+  </data>
   <data name="SignatureProgressFormat" xml:space="preserve">
     <value>{0} de {1} firmas</value>
+  </data>
+  <data name="ContractBeingSignedProgressFormat" xml:space="preserve">
+    <value>Esperando firmas ({0}/{1})</value>
+  </data>
+  <data name="ContractSignedProgressFormat" xml:space="preserve">
+    <value>Firmado ({0}/{1})</value>
   </data>
   <data name="ReviewAndSign" xml:space="preserve">
     <value>Revisar y firmar</value>
@@ -4203,6 +4212,9 @@ Esto envía el enlace y todos los datos legibles por máquina del token. Envíal
   </data>
   <data name="ContractRefreshFailedUsingSaved" xml:space="preserve">
     <value>No se pudo cargar el contrato más reciente. Aún puedes revisar la copia guardada.</value>
+  </data>
+  <data name="ContractRefreshFailedUsingSavedFormat" xml:space="preserve">
+    <value>No se pudo actualizar. Se muestran los detalles de {0}.</value>
   </data>
   <data name="ContractAttachmentUnavailable" xml:space="preserve">
     <value>Este archivo adjunto no está disponible en este momento.</value>
@@ -4230,6 +4242,9 @@ Esto envía el enlace y todos los datos legibles por máquina del token. Envíal
   </data>
   <data name="ContractCurrentDetails" xml:space="preserve">
     <value>Detalles más recientes</value>
+  </data>
+  <data name="FullAgreement" xml:space="preserve">
+    <value>Acuerdo completo</value>
   </data>
   <data name="ContractActivityDescription" xml:space="preserve">
     <value>Marcas de tiempo disponibles de este acuerdo. No es un registro de auditoría completo.</value>

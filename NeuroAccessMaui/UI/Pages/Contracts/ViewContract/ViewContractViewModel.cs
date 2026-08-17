@@ -17,7 +17,6 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Xmpp;
-using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
@@ -355,37 +354,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Gets the localized title used by the persistent agreement summary.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasSummaryCategory))]
 		private string summaryTitle = string.Empty;
 
 		/// <summary>
-		/// Gets the optional category shown beneath the agreement title.
+		/// Gets the optional human-readable counterparty shown beneath the agreement title.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasSummaryCategory))]
-		private string summaryCategory = string.Empty;
+		[NotifyPropertyChangedFor(nameof(HasSummaryCounterparty))]
+		private string summaryCounterpartyText = string.Empty;
 
 		/// <summary>
-		/// Gets whether an agreement category is available.
+		/// Gets whether a human-readable counterparty is available.
 		/// </summary>
-		public bool HasSummaryCategory =>
-			!string.IsNullOrWhiteSpace(this.SummaryCategory) &&
-			!string.Equals(
-				this.SummaryCategory,
-				this.SummaryTitle,
-				StringComparison.CurrentCultureIgnoreCase);
+		public bool HasSummaryCounterparty =>
+			!string.IsNullOrWhiteSpace(this.SummaryCounterpartyText);
 
 		/// <summary>
 		/// Gets the localized agreement state.
 		/// </summary>
 		[ObservableProperty]
 		private string summaryStateText = string.Empty;
-
-		/// <summary>
-		/// Gets the semantic tone for the agreement state.
-		/// </summary>
-		[ObservableProperty]
-		private StatusPillTone summaryStateTone = StatusPillTone.Neutral;
 
 		/// <summary>
 		/// Gets the current person's role summary.
@@ -410,6 +398,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Gets whether signature progress is available.
 		/// </summary>
 		public bool HasSignatureProgress => !string.IsNullOrWhiteSpace(this.SignatureProgressText);
+
+		/// <summary>
+		/// Gets signature progress when it is not already included in the lifecycle state.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasSummaryProgress))]
+		private string summaryProgressText = string.Empty;
+
+		/// <summary>
+		/// Gets whether separate signature progress should be shown in the agreement summary.
+		/// </summary>
+		public bool HasSummaryProgress => !string.IsNullOrWhiteSpace(this.SummaryProgressText);
 
 		/// <summary>
 		/// Gets the most important agreement date or deadline.
@@ -1520,20 +1520,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			Contract Agreement = this.Contract.Contract;
 			string FriendlyName = await ContractModel.GetName(Agreement);
-			string ContractId = Agreement.ContractId ?? string.Empty;
-			string ShortId = ContractId.Length > 16
-				? ContractId[..8] + "…" + ContractId[^6..]
-				: ContractId;
-
-			this.SummaryCategory = this.Contract.Category ?? string.Empty;
-			this.SummaryTitle = FirstNonEmpty(
+			string Purpose = FirstNonEmpty(
+				this.Contract.Category,
+				this.sourceContractReference?.Category);
+			string CounterpartyName = FirstNonEmpty(
 				FriendlyName,
-				this.sourceContractReference?.Name,
-				this.SummaryCategory,
-				ShortId,
+				this.sourceContractReference?.Name);
+			bool HasRecognizableCounterparty =
+				ContractModel.IsRecognizableDisplayName(
+					CounterpartyName,
+					Agreement.ContractId);
+
+			this.SummaryTitle = FirstNonEmpty(
+				Purpose,
+				HasRecognizableCounterparty ? CounterpartyName : null,
 				ServiceRef.Localizer[nameof(AppResources.UntitledContract)]);
-			this.SummaryStateText = GetContractStateText(Agreement.State);
-			this.SummaryStateTone = GetContractStateTone(Agreement.State);
+			this.SummaryCounterpartyText =
+				!string.IsNullOrWhiteSpace(Purpose) &&
+				HasRecognizableCounterparty &&
+				!string.Equals(
+					CounterpartyName,
+					this.SummaryTitle,
+					StringComparison.CurrentCultureIgnoreCase)
+					? string.Format(
+						CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.ContractCounterpartyFormat)],
+						CounterpartyName)
+					: string.Empty;
 
 			string RoleName = string.Join(
 				", ",
@@ -1563,6 +1576,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					ServiceRef.Localizer[nameof(AppResources.SignatureProgressFormat)],
 					SignedCount,
 					RequiredSignatures);
+			this.SummaryStateText = GetContractStateText(
+				Agreement.State,
+				SignedCount,
+				RequiredSignatures);
+			this.SummaryProgressText =
+				RequiredSignatures > 0 &&
+				Agreement.State is not (ContractState.BeingSigned or ContractState.Signed)
+					? this.SignatureProgressText
+					: string.Empty;
 
 			this.ImportantDateText = GetImportantDateText(Agreement);
 			this.NextActionText = this.IsProposal
@@ -1948,8 +1970,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			if (!this.IsRefreshing && this.refreshFailedUsingSaved)
 			{
-				this.FreshnessWarningText =
-					ServiceRef.Localizer[nameof(AppResources.ContractRefreshFailedUsingSaved)];
+				DateTime Timestamp = this.Contract?.Contract.Updated ?? DateTime.MinValue;
+				if (Timestamp == DateTime.MinValue)
+					Timestamp = this.Contract?.Contract.Created ?? DateTime.MinValue;
+
+				this.FreshnessWarningText = Timestamp == DateTime.MinValue
+					? ServiceRef.Localizer[nameof(AppResources.ContractRefreshFailedUsingSaved)]
+					: string.Format(
+						CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.ContractRefreshFailedUsingSavedFormat)],
+						Timestamp.ToLocalTime().ToString("g", CultureInfo.CurrentCulture));
 			}
 			else
 				this.FreshnessWarningText = string.Empty;
@@ -2039,8 +2069,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					Timestamp.ToLocalTime().ToString("g", CultureInfo.CurrentCulture));
 		}
 
-		private static string GetContractStateText(ContractState State)
+		private static string GetContractStateText(
+			ContractState State,
+			int SignedCount,
+			int RequiredSignatures)
 		{
+			if (RequiredSignatures > 0)
+			{
+				if (State == ContractState.BeingSigned)
+				{
+					return string.Format(
+						CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.ContractBeingSignedProgressFormat)],
+						SignedCount,
+						RequiredSignatures);
+				}
+
+				if (State == ContractState.Signed)
+				{
+					return string.Format(
+						CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.ContractSignedProgressFormat)],
+						SignedCount,
+						RequiredSignatures);
+				}
+			}
+
 			return State switch
 			{
 				ContractState.Proposed => ServiceRef.Localizer[nameof(AppResources.Proposed)],
@@ -2052,22 +2106,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				ContractState.Obsoleted => ServiceRef.Localizer[nameof(AppResources.Obsoleted)],
 				ContractState.Deleted => ServiceRef.Localizer[nameof(AppResources.Deleted)],
 				_ => State.ToString()
-			};
-		}
-
-		private static StatusPillTone GetContractStateTone(ContractState State)
-		{
-			return State switch
-			{
-				ContractState.Signed => StatusPillTone.Success,
-				ContractState.Rejected or
-				ContractState.Failed or
-				ContractState.Obsoleted or
-				ContractState.Deleted => StatusPillTone.Danger,
-				ContractState.Proposed or
-				ContractState.Approved or
-				ContractState.BeingSigned => StatusPillTone.Information,
-				_ => StatusPillTone.Neutral
 			};
 		}
 

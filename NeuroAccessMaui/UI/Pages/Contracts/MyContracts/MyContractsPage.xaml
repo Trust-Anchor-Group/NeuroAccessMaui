@@ -10,6 +10,65 @@
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts">
+	<base:BaseContentPage.Resources>
+		<Style x:Key="ContractStateRailStyle" TargetType="BoxView">
+			<Setter Property="BackgroundColor" Value="{DynamicResource ContentSecondaryWL}" />
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="BoxView" Value="{x:Static controls:StatusPillTone.Information}">
+					<Setter Property="BackgroundColor" Value="{DynamicResource TnPInfoFigureWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="BoxView" Value="{x:Static controls:StatusPillTone.Success}">
+					<Setter Property="BackgroundColor" Value="{DynamicResource TnPSuccessFigureWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="BoxView" Value="{x:Static controls:StatusPillTone.Warning}">
+					<Setter Property="BackgroundColor" Value="{DynamicResource TnPWarningFigureWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="BoxView" Value="{x:Static controls:StatusPillTone.Danger}">
+					<Setter Property="BackgroundColor" Value="{DynamicResource TnPDangerFigureWL}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="ContractStateIconStyle" TargetType="controls:SvgView">
+			<Setter Property="HeightRequest" Value="18" />
+			<Setter Property="InputTransparent" Value="True" />
+			<Setter Property="TintColor" Value="{DynamicResource ContentSecondaryWL}" />
+			<Setter Property="WidthRequest" Value="18" />
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="controls:SvgView" Value="{x:Static controls:StatusPillTone.Information}">
+					<Setter Property="TintColor" Value="{DynamicResource TnPInfoContentWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="controls:SvgView" Value="{x:Static controls:StatusPillTone.Success}">
+					<Setter Property="TintColor" Value="{DynamicResource TnPSuccessContentWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="controls:SvgView" Value="{x:Static controls:StatusPillTone.Warning}">
+					<Setter Property="TintColor" Value="{DynamicResource TnPWarningContentWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="controls:SvgView" Value="{x:Static controls:StatusPillTone.Danger}">
+					<Setter Property="TintColor" Value="{DynamicResource TnPDangerContentWL}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="ContractStateTextStyle" TargetType="Label">
+			<Setter Property="FontAttributes" Value="Bold" />
+			<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="Label" Value="{x:Static controls:StatusPillTone.Information}">
+					<Setter Property="TextColor" Value="{DynamicResource TnPInfoContentWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="Label" Value="{x:Static controls:StatusPillTone.Success}">
+					<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="Label" Value="{x:Static controls:StatusPillTone.Warning}">
+					<Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding StateTone}" TargetType="Label" Value="{x:Static controls:StatusPillTone.Danger}">
+					<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+	</base:BaseContentPage.Resources>
 
 	<Grid
 		BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
@@ -18,16 +77,18 @@
 
 		<Grid
 			Grid.Row="0"
-			ColumnDefinitions="Auto,*"
-			ColumnSpacing="12"
-			Margin="16,8,16,12"
+			ColumnDefinitions="48,*"
+			ColumnSpacing="8"
+			Margin="12,0,12,8"
 			MaximumWidthRequest="960"
 			HorizontalOptions="Fill">
 			<controls:SvgButton
 				Command="{Binding GoBackCommand}"
-				HorizontalOptions="Start"
+				HorizontalOptions="Center"
+				MinimumHeightRequest="48"
+				MinimumWidthRequest="48"
 				SemanticProperties.Description="{l:Localize Close}"
-				Style="{DynamicResource IconButton}"
+				Style="{DynamicResource IconButtonSmall}"
 				SvgSource="close.svg"
 				VerticalOptions="Center" />
 			<VerticalStackLayout
@@ -35,11 +96,15 @@
 				Spacing="2"
 				VerticalOptions="Center">
 				<Label
+					FontSize="24"
+					LineBreakMode="TailTruncation"
+					MaxLines="1"
 					SemanticProperties.HeadingLevel="Level1"
-					Style="{DynamicResource PageTitleLabel}"
+					Style="{DynamicResource PageTitleLabelSmall}"
 					Text="{Binding Title}" />
 				<Label
-					MaxLines="2"
+					LineBreakMode="TailTruncation"
+					MaxLines="1"
 					Style="{DynamicResource ItemDescriptionLabel}"
 					Text="{Binding Description}"
 					TextColor="{DynamicResource ContentSecondaryWL}" />
@@ -55,7 +120,7 @@
 			RowSpacing="10">
 			<Grid
 				Grid.Row="0"
-				ColumnDefinitions="*,Auto,Auto"
+				ColumnDefinitions="*,48,Auto"
 				ColumnSpacing="8">
 				<SearchBar
 					Placeholder="{l:Localize Search}"
@@ -64,14 +129,19 @@
 				<controls:SvgButton
 					Grid.Column="1"
 					Command="{Binding OpenFilterPopupCommand}"
+					HorizontalOptions="Center"
+					MinimumHeightRequest="48"
+					MinimumWidthRequest="48"
 					SemanticProperties.Description="{l:Localize SelectFilter}"
-					Style="{DynamicResource IconButtonOnBackground}"
+					Style="{DynamicResource IconButtonSmall}"
 					SvgSource="filter.svg" />
-				<controls:StatusPill
+				<Label
 					Grid.Column="2"
+					FontAttributes="Bold"
 					IsVisible="{Binding HasActiveFilter}"
+					Style="{DynamicResource ItemDescriptionLabel}"
 					Text="{Binding ActiveFilterCount}"
-					Tone="Information"
+					TextColor="{DynamicResource ContentPrimaryWL}"
 					VerticalOptions="Center" />
 			</Grid>
 
@@ -97,10 +167,13 @@
 						Text="{l:Localize ContractNeedsAttention}"
 						TextColor="{DynamicResource TnPWarningContentWL}"
 						VerticalTextAlignment="Center" />
-					<controls:StatusPill
+					<Label
 						Grid.Column="2"
+						FontAttributes="Bold"
+						Style="{DynamicResource ItemDescriptionLabel}"
 						Text="{Binding AttentionContractsCount}"
-						Tone="Warning" />
+						TextColor="{DynamicResource TnPWarningContentWL}"
+						VerticalOptions="Center" />
 				</Grid>
 			</Border>
 
@@ -207,18 +280,18 @@
 				<CollectionView
 					x:Name="Contracts"
 					IsVisible="{Binding HasContracts}"
-					ItemSizingStrategy="MeasureFirstItem"
+					ItemSizingStrategy="MeasureAllItems"
 					ItemsSource="{Binding Contracts}"
 					RemainingItemsThreshold="{Binding HasMore}"
 					RemainingItemsThresholdReachedCommand="{Binding LoadMoreContractsCommand}"
 					SelectionMode="None">
 					<CollectionView.ItemsLayout>
-						<LinearItemsLayout ItemSpacing="8" Orientation="Vertical" />
+						<LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
 					</CollectionView.ItemsLayout>
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="objectmodel:ContractModel">
 							<Border
-								Margin="0,4"
+								Margin="0,2"
 								Padding="0"
 								Style="{DynamicResource BorderSet}">
 								<Border.Triggers>
@@ -227,76 +300,57 @@
 										<Setter Property="StrokeThickness" Value="2" />
 									</DataTrigger>
 								</Border.Triggers>
-								<Grid>
-									<controls:TemplatedButton
+								<Grid ColumnDefinitions="4,*">
+									<BoxView Style="{StaticResource ContractStateRailStyle}" />
+									<Grid Grid.Column="1">
+										<controls:TemplatedButton
 										Command="{Binding ContractSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
 										CommandParameter="{Binding .}"
 										IsEnabled="{Binding CanOpen}"
 										Padding="0"
 										SemanticProperties.Description="{Binding Title}">
-										<Grid
-											ColumnDefinitions="Auto,*"
-											ColumnSpacing="12"
-											Padding="12"
-											RowDefinitions="Auto,Auto,Auto,Auto"
-											RowSpacing="6">
-											<Border
-												Grid.RowSpan="4"
-												BackgroundColor="{DynamicResource SurfaceElevation2WL}"
-												HeightRequest="40"
-												Padding="9"
-												Stroke="{DynamicResource SurfaceStrokeWL}"
-												StrokeShape="RoundRectangle 10"
-												VerticalOptions="Start"
-												WidthRequest="40">
-												<controls:SvgView InputTransparent="True" Source="contract.svg" TintColor="{DynamicResource ContentPrimaryWL}" />
-											</Border>
-
-											<VerticalStackLayout Grid.Column="1" Margin="0,0,44,0" Spacing="1">
+										<VerticalStackLayout Padding="14" Spacing="6">
+											<VerticalStackLayout Margin="0,0,44,0" Spacing="1">
 												<Label
 													FontAttributes="Bold"
 													FontSize="18"
-													IsVisible="{Binding HasCategory}"
 													LineBreakMode="TailTruncation"
-													MaxLines="1"
-													Text="{Binding Category}"
+													MaxLines="2"
+													Text="{Binding Title}"
 													TextColor="{DynamicResource ContentPrimaryWL}" />
 												<Label
-													FontAttributes="Bold"
-													FontSize="18"
+													IsVisible="{Binding HasCounterparty}"
 													LineBreakMode="TailTruncation"
 													MaxLines="1"
-													Text="{Binding Title}"
-													TextColor="{DynamicResource ContentPrimaryWL}">
-													<Label.Triggers>
-														<DataTrigger Binding="{Binding HasCategory}" TargetType="Label" Value="True">
-															<Setter Property="FontAttributes" Value="None" />
-															<Setter Property="FontSize" Value="14" />
-															<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
-														</DataTrigger>
-													</Label.Triggers>
-												</Label>
+													Style="{DynamicResource ItemDescriptionLabel}"
+													Text="{Binding CounterpartyText}"
+													TextColor="{DynamicResource ContentSecondaryWL}" />
 											</VerticalStackLayout>
 
-											<FlexLayout Grid.Row="1" Grid.Column="1" AlignItems="Center" Direction="Row" Wrap="Wrap">
-												<controls:StatusPill Margin="0,0,8,2" Text="{Binding StateText}" Tone="{Binding StateTone}" />
-												<controls:StatusPill IsVisible="{Binding HasTemplateKind}" Margin="0,0,8,2" Text="{Binding TemplateKindText}" Tone="Neutral" />
-												<controls:StatusPill IconSource="notifications.svg" IsVisible="{Binding HasEvents}" Margin="0,0,8,2" Text="{Binding NrEvents}" Tone="Information" />
-											</FlexLayout>
+											<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="7">
+												<controls:SvgView
+													Source="{Binding StateIconSource}"
+													Style="{StaticResource ContractStateIconStyle}"
+													VerticalOptions="Center" />
+												<Label
+													Grid.Column="1"
+													LineBreakMode="WordWrap"
+													Style="{StaticResource ContractStateTextStyle}"
+													Text="{Binding StateText}"
+													VerticalTextAlignment="Center" />
+												<HorizontalStackLayout Grid.Column="2" IsVisible="{Binding HasEvents}" SemanticProperties.Description="{l:Localize Notifications}" Spacing="4" VerticalOptions="Center">
+													<controls:SvgView HeightRequest="16" InputTransparent="True" Source="notifications.svg" TintColor="{DynamicResource ContentSecondaryWL}" WidthRequest="16" />
+													<Label FontAttributes="Bold" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding NrEvents}" TextColor="{DynamicResource ContentSecondaryWL}" />
+												</HorizontalStackLayout>
+											</Grid>
+											<Label IsVisible="{Binding HasTemplateKind}" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding TemplateKindText}" TextColor="{DynamicResource ContentSecondaryWL}" />
 
-											<FlexLayout Grid.Row="2" Grid.Column="1" AlignItems="Center" Direction="Row" Wrap="Wrap">
-												<Label IsVisible="{Binding HasRole}" Margin="0,0,14,2" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding RoleText}" TextColor="{DynamicResource ContentPrimaryWL}" />
-												<Label IsVisible="{Binding HasSignatureProgress}" Margin="0,0,14,2" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding SignatureProgressText}" TextColor="{DynamicResource ContentSecondaryWL}" />
-												<Label IsVisible="{Binding HasParties}" Margin="0,0,14,2" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding PartiesText}" TextColor="{DynamicResource ContentSecondaryWL}">
-													<Label.Triggers>
-														<DataTrigger Binding="{Binding HasSignatureProgress}" TargetType="Label" Value="True">
-															<Setter Property="IsVisible" Value="False" />
-														</DataTrigger>
-													</Label.Triggers>
-												</Label>
-											</FlexLayout>
+											<VerticalStackLayout Spacing="2">
+												<Label IsVisible="{Binding HasRole}" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding RoleText}" TextColor="{DynamicResource ContentSecondaryWL}" />
+												<Label IsVisible="{Binding HasSignatureProgress}" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding SignatureProgressText}" TextColor="{DynamicResource ContentSecondaryWL}" />
+											</VerticalStackLayout>
 
-											<VerticalStackLayout Grid.Row="3" Grid.Column="1" Spacing="4">
+											<VerticalStackLayout Spacing="4">
 												<Label IsVisible="{Binding NeedsDetailsDownload}" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding RecoveryText}" TextColor="{DynamicResource ContentSecondaryWL}" />
 												<Border BackgroundColor="{DynamicResource TnPWarningbgWL}" IsVisible="{Binding HasRecoveryWarning}" Padding="8,6" Stroke="{DynamicResource TnPWarningContentWL}" StrokeShape="RoundRectangle 8">
 													<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding RecoveryText}" TextColor="{DynamicResource TnPWarningContentWL}" />
@@ -306,21 +360,23 @@
 													<Label Grid.Column="1" FontAttributes="Bold" IsVisible="{Binding HasNextAction}" LineBreakMode="TailTruncation" MaxLines="1" Text="{Binding NextActionText}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center" />
 												</Grid>
 											</VerticalStackLayout>
-										</Grid>
-									</controls:TemplatedButton>
+										</VerticalStackLayout>
+										</controls:TemplatedButton>
 
-									<controls:SvgButton
+										<controls:SvgButton
 										Command="{Binding ShareTemplateQRCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
 										CommandParameter="{Binding .}"
 										HorizontalOptions="End"
 										IsVisible="{Binding CanShareTemplate, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-										Margin="0,8,8,0"
+										Margin="0,4,4,0"
+										MinimumHeightRequest="48"
+										MinimumWidthRequest="48"
 										SemanticProperties.Description="{l:Localize Share}"
-										Style="{DynamicResource IconButtonOnBackground}"
+										Style="{DynamicResource IconButtonSmall}"
 										SvgSource="share.svg"
 										VerticalOptions="Start" />
 
-									<Border
+										<Border
 										BackgroundColor="{DynamicResource SurfaceElevation1WL}"
 										IsVisible="{Binding IsOpening}"
 										Opacity="0.96"
@@ -331,7 +387,8 @@
 											<ActivityIndicator Color="{DynamicResource ContentPrimaryWL}" IsRunning="{Binding IsOpening}" />
 											<Label FontAttributes="Bold" Text="{l:Localize Opening}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center" />
 										</HorizontalStackLayout>
-									</Border>
+										</Border>
+									</Grid>
 								</Grid>
 							</Border>
 						</DataTemplate>

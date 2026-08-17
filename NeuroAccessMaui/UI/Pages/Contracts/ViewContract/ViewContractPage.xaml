@@ -15,10 +15,35 @@
 	<Grid x:Name="TheMainGrid" BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="Auto,*">
 		<controls:Background Grid.RowSpan="2" />
 
-		<Grid Grid.Row="0" Margin="16,6,16,10" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HorizontalOptions="Fill" MaximumWidthRequest="960">
-			<controls:SvgButton Command="{Binding BackCommand}" SemanticProperties.Description="{l:Localize Close}" Style="{DynamicResource IconButton}" SvgSource="close.svg" VerticalOptions="Center" />
-			<Label Grid.Column="1" FontSize="28" LineBreakMode="TailTruncation" MaxLines="1" SemanticProperties.HeadingLevel="Level1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Agreement}" VerticalOptions="Center" />
-			<controls:SvgButton Grid.Column="2" Command="{Binding ShareCommand}" SemanticProperties.Description="{l:Localize Share}" Style="{DynamicResource IconButton}" SvgSource="share.svg" VerticalOptions="Center" />
+		<Grid Grid.Row="0" Margin="12,0,12,4" ColumnDefinitions="48,*,48" ColumnSpacing="8" HorizontalOptions="Fill" MaximumWidthRequest="960">
+			<controls:SvgButton
+				Command="{Binding BackCommand}"
+				HorizontalOptions="Center"
+				MinimumHeightRequest="48"
+				MinimumWidthRequest="48"
+				SemanticProperties.Description="{l:Localize Close}"
+				Style="{DynamicResource IconButtonSmall}"
+				SvgSource="close.svg"
+				VerticalOptions="Center" />
+			<Label
+				Grid.Column="1"
+				FontSize="24"
+				LineBreakMode="TailTruncation"
+				MaxLines="1"
+				SemanticProperties.HeadingLevel="Level1"
+				Style="{DynamicResource PageTitleLabelSmall}"
+				Text="{l:Localize Agreement}"
+				VerticalOptions="Center" />
+			<controls:SvgButton
+				Grid.Column="2"
+				Command="{Binding ShareCommand}"
+				HorizontalOptions="Center"
+				MinimumHeightRequest="48"
+				MinimumWidthRequest="48"
+				SemanticProperties.Description="{l:Localize Share}"
+				Style="{DynamicResource IconButtonSmall}"
+				SvgSource="share.svg"
+				VerticalOptions="Center" />
 		</Grid>
 
 		<Grid x:Name="StateGrid" Grid.Row="1" HorizontalOptions="Fill" MaximumWidthRequest="960" mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}">

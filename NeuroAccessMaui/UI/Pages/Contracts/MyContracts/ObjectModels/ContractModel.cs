@@ -65,6 +65,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				ContractRef.Category ?? string.Empty,
 				ContractRef.State.ToString(),
 				StatusPillTone.Neutral,
+				"status_help.svg",
+				string.Empty,
 				string.Empty,
 				string.Empty,
 				string.Empty,
@@ -90,6 +92,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			string Category,
 			string StateText,
 			StatusPillTone StateTone,
+			string StateIconSource,
+			string CounterpartyText,
 			string TemplateKindText,
 			string RoleText,
 			string PartiesText,
@@ -112,6 +116,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			this.Category = Category;
 			this.StateText = StateText;
 			this.StateTone = StateTone;
+			this.StateIconSource = StateIconSource;
+			this.CounterpartyText = CounterpartyText;
 			this.TemplateKindText = TemplateKindText;
 			this.RoleText = RoleText;
 			this.PartiesText = PartiesText;
@@ -153,7 +159,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 						 ServiceRef.XmppService.BareJid,
 						 StringComparison.OrdinalIgnoreCase));
 
-				if (IsCurrentUser)
+				if (IsCurrentUser || IsTrustProviderPart(Part))
 					continue;
 
 				string FriendlyName = await ContactInfo.GetFriendlyName(Part.LegalId);
@@ -167,6 +173,119 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			}
 
 			return Builder?.ToString() ?? string.Empty;
+		}
+
+		/// <summary>
+		/// Derives a recognizable counterparty name exclusively from locally saved contract data.
+		/// </summary>
+		/// <param name="Contract">Saved contract content.</param>
+		/// <param name="PersistedName">Legacy persisted summary name.</param>
+		/// <param name="ContractId">Durable contract identifier.</param>
+		/// <returns>A recognizable non-provider counterparty name, or an empty string.</returns>
+		internal static async Task<string> GetCounterpartyNameAsync(
+			Contract? Contract,
+			string? PersistedName,
+			string? ContractId)
+		{
+			if (Contract?.Parts is null)
+				return string.Empty;
+
+			Dictionary<string, ClientSignature> Signatures = [];
+			List<string> FriendlyNames = [];
+			bool ExcludedTrustProvider = false;
+			bool HasCounterpartyPart = false;
+
+			foreach (ClientSignature Signature in Contract.ClientSignatures ?? [])
+				Signatures[Signature.LegalId] = Signature;
+
+			foreach (Part Part in Contract.Parts)
+			{
+				bool IsCurrentUser =
+					Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id ||
+					(Signatures.TryGetValue(Part.LegalId, out ClientSignature? Signature) &&
+					 string.Equals(
+						 Signature.BareJid,
+						 ServiceRef.XmppService.BareJid,
+						 StringComparison.OrdinalIgnoreCase));
+
+				if (IsCurrentUser)
+					continue;
+
+				if (IsTrustProviderPart(Part))
+				{
+					ExcludedTrustProvider = true;
+					continue;
+				}
+
+				HasCounterpartyPart = true;
+				try
+				{
+					ContactInfo? Contact = await ContactInfo.FindByLegalId(Part.LegalId);
+					string Candidate = !string.IsNullOrWhiteSpace(Contact?.FriendlyName)
+						? Contact.FriendlyName
+						: Contact?.LegalIdentity is not null
+							? ContactInfo.GetFriendlyName(Contact.LegalIdentity)
+							: string.Empty;
+
+					if (IsRecognizableDisplayName(Candidate, ContractId) &&
+						!FriendlyNames.Contains(Candidate, StringComparer.CurrentCultureIgnoreCase))
+					{
+						FriendlyNames.Add(Candidate.Trim());
+					}
+				}
+				catch
+				{
+					// A missing or malformed local contact must not prevent the contract list from loading.
+				}
+			}
+
+			if (FriendlyNames.Count > 0)
+				return string.Join(", ", FriendlyNames);
+
+			return HasCounterpartyPart &&
+				!ExcludedTrustProvider &&
+				IsRecognizableDisplayName(PersistedName, ContractId)
+					? PersistedName!.Trim()
+					: string.Empty;
+		}
+
+		private static bool IsTrustProviderPart(Part Part)
+		{
+			return string.Equals(
+				Part.Role,
+				"TrustProvider",
+				StringComparison.OrdinalIgnoreCase) ||
+				(!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.TrustProviderId) &&
+				 string.Equals(
+					 Part.LegalId,
+					 ServiceRef.TagProfile.TrustProviderId,
+					 StringComparison.OrdinalIgnoreCase));
+		}
+
+		/// <summary>
+		/// Determines whether summary text is suitable for prominent user-facing presentation.
+		/// </summary>
+		/// <param name="Candidate">Candidate summary text.</param>
+		/// <param name="ContractId">Durable contract identifier to exclude from prominent presentation.</param>
+		/// <returns><see langword="true"/> when the text appears human-readable rather than protocol-derived.</returns>
+		internal static bool IsRecognizableDisplayName(string? Candidate, string? ContractId)
+		{
+			if (string.IsNullOrWhiteSpace(Candidate))
+				return false;
+
+			string Value = Candidate.Trim();
+			if (!string.IsNullOrWhiteSpace(ContractId) &&
+				string.Equals(Value, ContractId, StringComparison.OrdinalIgnoreCase))
+			{
+				return false;
+			}
+
+			if (Value.Contains("@legal.", StringComparison.OrdinalIgnoreCase))
+				return false;
+
+			int AtIndex = Value.IndexOf('@');
+			string IdentifierCandidate = AtIndex > 0 ? Value[..AtIndex] : Value;
+			return !Guid.TryParse(IdentifierCandidate, out _);
 		}
 
 		/// <summary>
@@ -255,6 +374,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public string Name => this.contractRef.Name ?? string.Empty;
 
 		/// <summary>
+		/// Gets a recognizable counterparty description when one is available.
+		/// </summary>
+		public string CounterpartyText { get; }
+
+		/// <summary>
+		/// Gets whether a recognizable counterparty description is available.
+		/// </summary>
+		public bool HasCounterparty => !string.IsNullOrWhiteSpace(this.CounterpartyText);
+
+		/// <summary>
 		/// Gets the title used by existing callers.
 		/// </summary>
 		public string NameOrCategory => this.Title;
@@ -283,6 +412,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// Gets the semantic tone for the contract state.
 		/// </summary>
 		public StatusPillTone StateTone { get; }
+
+		/// <summary>
+		/// Gets the presentation asset that reinforces the localized contract state.
+		/// </summary>
+		public string StateIconSource { get; }
 
 		/// <summary>
 		/// Gets the localized template-kind label.

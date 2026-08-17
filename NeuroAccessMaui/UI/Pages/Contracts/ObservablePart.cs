@@ -123,8 +123,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (this.IsMe)
 					return ServiceRef.Localizer[nameof(AppResources.Me)];
 
-				if (this.Part.LegalId == ServiceRef.TagProfile.TrustProviderId && !string.IsNullOrEmpty(ServiceRef.TagProfile.Domain))
-					return ServiceRef.TagProfile.Domain;
+				if (this.IsTrustProvider)
+					return this.GetTrustProviderDomain();
 
 				ContactInfo Info = await Database.FindFirstIgnoreRest<ContactInfo>(new FilterFieldEqualTo("LegalId", this.Part.LegalId));
 				if (Info is not null && !string.IsNullOrEmpty(Info.FriendlyName))
@@ -146,6 +146,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 
 			return this.LegalId;
+		}
+
+		private string GetTrustProviderDomain()
+		{
+			if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.Domain))
+				return ServiceRef.TagProfile.Domain.Trim();
+
+			int AtIndex = this.LegalId.IndexOf('@');
+			if (AtIndex < 0 || AtIndex == this.LegalId.Length - 1)
+				return string.Empty;
+
+			string Domain = this.LegalId[(AtIndex + 1)..].Trim();
+			return Domain.StartsWith("legal.", StringComparison.OrdinalIgnoreCase)
+				? Domain[6..]
+				: Domain;
 		}
 		#region Properties
 		private LegalIdentity? identity;
@@ -172,6 +187,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 
 		public string Role => this.Part.Role;
+
+		/// <summary>
+		/// Gets whether the participant supplies trust infrastructure rather than acting as a counterparty.
+		/// </summary>
+		public bool IsTrustProvider =>
+			string.Equals(this.Role, "TrustProvider", StringComparison.OrdinalIgnoreCase) ||
+			(!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.TrustProviderId) &&
+			 string.Equals(
+				 this.LegalId,
+				 ServiceRef.TagProfile.TrustProviderId,
+				 StringComparison.OrdinalIgnoreCase));
 
 		/// <summary>
 		/// The friendly name for the part

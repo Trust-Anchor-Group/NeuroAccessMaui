@@ -54,10 +54,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 
 			string Category = FirstNonEmpty(ContractRef.Category, ParsedCategory);
 			string ContractId = Convert.ToString(ContractRef.ContractId) ?? string.Empty;
+			string PersistedName = ContractRef.Name ?? string.Empty;
+			string CounterpartyName = await ContractModel.GetCounterpartyNameAsync(
+				Contract,
+				PersistedName,
+				ContractId).ConfigureAwait(false);
+			string CounterpartyText = string.IsNullOrWhiteSpace(CounterpartyName)
+				? string.Empty
+				: string.Format(
+					CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.ContractCounterpartyFormat)],
+					CounterpartyName);
 			string Title = FirstNonEmpty(
-				ContractRef.Name,
 				Category,
-				ShortenIdentifier(ContractId),
 				ServiceRef.Localizer[nameof(AppResources.UntitledContract)]);
 
 			(
@@ -69,12 +78,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			if (string.IsNullOrWhiteSpace(RoleName))
 				RoleName = ProposalRole;
 
-			string RoleText = string.IsNullOrWhiteSpace(RoleName)
-				? string.Empty
-				: string.Format(
-					CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.ContractYourRoleFormat)],
-					RoleName);
+			string RoleText = RoleName.Trim();
 
 			int PartyCount = Contract is null ? 0 : GetPartyCount(Contract);
 			string PartiesText = PartyCount switch
@@ -87,9 +91,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 					PartyCount)
 			};
 
-			string SignatureProgressText = Contract is null
-				? string.Empty
-				: GetSignatureProgress(Contract);
+			(int SignedCount, int RequiredSignatures) = Contract is null
+				? (0, 0)
+				: GetSignatureCounts(Contract);
+			string SignatureProgressText = GetSignatureProgress(
+				SignedCount,
+				RequiredSignatures);
+			string StateText = HasStoredState
+				? GetStateText(State, SignedCount, RequiredSignatures)
+				: CanOpen
+					? ServiceRef.Localizer[nameof(AppResources.ContractDetailsNotDownloaded)]
+					: ServiceRef.Localizer[nameof(AppResources.Unavailable)];
+			if (State is ContractState.BeingSigned or ContractState.Signed)
+				SignatureProgressText = string.Empty;
 			string TimeContextText = GetTimeContext(ContractRef, Contract, State);
 			string RecoveryText = GetRecoveryText(ContractRef, Contract, CanOpen);
 			bool CanSign = Contract is not null &&
@@ -123,12 +137,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				SummaryGroup,
 				Title,
 				Category,
-				HasStoredState
-					? GetStateText(State)
-					: CanOpen
-						? ServiceRef.Localizer[nameof(AppResources.ContractDetailsNotDownloaded)]
-						: ServiceRef.Localizer[nameof(AppResources.Unavailable)],
+				StateText,
 				HasStoredState ? GetStateTone(State) : StatusPillTone.Neutral,
+				GetStateIconSource(State, HasStoredState),
+				CounterpartyText,
 				GetTemplateKindText(Mode),
 				RoleText,
 				PartiesText,
@@ -223,16 +235,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			return Parties.Count;
 		}
 
-		private static string GetSignatureProgress(Contract Contract)
+		private static (int SignedCount, int RequiredSignatures) GetSignatureCounts(
+			Contract Contract)
 		{
 			int RequiredSignatures = 0;
 			foreach (Role Role in Contract.Roles ?? [])
 				RequiredSignatures += Math.Max(0, Role.MinCount);
 
-			if (RequiredSignatures == 0)
+			int SignedCount = Math.Min(
+				Contract.ClientSignatures?.Length ?? 0,
+				RequiredSignatures);
+			return (SignedCount, RequiredSignatures);
+		}
+
+		private static string GetSignatureProgress(
+			int SignedCount,
+			int RequiredSignatures)
+		{
+			if (RequiredSignatures <= 0)
 				return string.Empty;
 
-			int SignedCount = Math.Min(Contract.ClientSignatures?.Length ?? 0, RequiredSignatures);
 			return string.Format(
 				CultureInfo.CurrentCulture,
 				ServiceRef.Localizer[nameof(AppResources.SignatureProgressFormat)],
@@ -480,8 +502,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			};
 		}
 
-		private static string GetStateText(ContractState State)
+		private static string GetStateText(
+			ContractState State,
+			int SignedCount,
+			int RequiredSignatures)
 		{
+			if (RequiredSignatures > 0)
+			{
+				if (State == ContractState.BeingSigned)
+				{
+					return string.Format(
+						CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.ContractBeingSignedProgressFormat)],
+						SignedCount,
+						RequiredSignatures);
+				}
+
+				if (State == ContractState.Signed)
+				{
+					return string.Format(
+						CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.ContractSignedProgressFormat)],
+						SignedCount,
+						RequiredSignatures);
+				}
+			}
+
 			return State switch
 			{
 				ContractState.Proposed => ServiceRef.Localizer[nameof(AppResources.Proposed)],
@@ -512,6 +558,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			};
 		}
 
+		private static string GetStateIconSource(ContractState State, bool HasStoredState)
+		{
+			if (!HasStoredState)
+				return "status_help.svg";
+
+			return State switch
+			{
+				ContractState.Proposed => "status_schedule.svg",
+				ContractState.Approved => "status_check_circle.svg",
+				ContractState.BeingSigned => "status_schedule.svg",
+				ContractState.Signed => "status_check_circle.svg",
+				ContractState.Rejected => "status_block.svg",
+				ContractState.Failed => "status_error.svg",
+				ContractState.Obsoleted => "status_archive.svg",
+				ContractState.Deleted => "delete_light.svg",
+				_ => "status_help.svg"
+			};
+		}
+
 		private static string FirstNonEmpty(params string?[] Values)
 		{
 			foreach (string? Value in Values)
@@ -523,15 +588,5 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			return string.Empty;
 		}
 
-		private static string ShortenIdentifier(string ContractId)
-		{
-			if (string.IsNullOrWhiteSpace(ContractId))
-				return string.Empty;
-
-			const int VisibleCharacters = 8;
-			return ContractId.Length <= VisibleCharacters * 2 + 1
-				? ContractId
-				: ContractId[..VisibleCharacters] + "…" + ContractId[^VisibleCharacters..];
-		}
 	}
 }

@@ -4171,8 +4171,17 @@ Detta skickar tokenlänken och fullständiga maskinläsbara uppgifter. Skicka ba
   <data name="ContractYourRoleFormat" xml:space="preserve">
     <value>Din roll: {0}</value>
   </data>
+  <data name="ContractCounterpartyFormat" xml:space="preserve">
+    <value>Med {0}</value>
+  </data>
   <data name="SignatureProgressFormat" xml:space="preserve">
     <value>{0} av {1} signaturer</value>
+  </data>
+  <data name="ContractBeingSignedProgressFormat" xml:space="preserve">
+    <value>Signeras ({0}/{1})</value>
+  </data>
+  <data name="ContractSignedProgressFormat" xml:space="preserve">
+    <value>Signerad ({0}/{1})</value>
   </data>
   <data name="ReviewAndSign" xml:space="preserve">
     <value>Granska och signera</value>
@@ -4188,6 +4197,9 @@ Detta skickar tokenlänken och fullständiga maskinläsbara uppgifter. Skicka ba
   </data>
   <data name="ContractRefreshFailedUsingSaved" xml:space="preserve">
     <value>Det senaste kontraktet kunde inte läsas in. Du kan fortfarande granska den sparade kopian.</value>
+  </data>
+  <data name="ContractRefreshFailedUsingSavedFormat" xml:space="preserve">
+    <value>Kunde inte uppdatera. Visar uppgifter från {0}.</value>
   </data>
   <data name="ContractAttachmentUnavailable" xml:space="preserve">
     <value>Bilagan är inte tillgänglig just nu.</value>
@@ -4215,6 +4227,9 @@ Detta skickar tokenlänken och fullständiga maskinläsbara uppgifter. Skicka ba
   </data>
   <data name="ContractCurrentDetails" xml:space="preserve">
     <value>Senaste uppgifter</value>
+  </data>
+  <data name="FullAgreement" xml:space="preserve">
+    <value>Fullständigt avtal</value>
   </data>
   <data name="ContractActivityDescription" xml:space="preserve">
     <value>Tillgängliga tidsstämplar från detta avtal. Detta är inte ett fullständigt revisionsspår.</value>

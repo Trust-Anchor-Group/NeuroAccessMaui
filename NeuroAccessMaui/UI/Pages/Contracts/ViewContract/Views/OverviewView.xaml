@@ -167,68 +167,62 @@
 
 				<Border
 					IsVisible="{Binding HasContract}"
-					Padding="16"
+					Margin="0,4"
+					Padding="16,14"
 					Style="{DynamicResource BorderSet}">
-					<Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
-						<Border
-							Grid.RowSpan="3"
-							BackgroundColor="{DynamicResource SurfaceElevation2WL}"
-							HeightRequest="52"
-							Padding="11"
-							Stroke="{DynamicResource SurfaceStrokeWL}"
-							StrokeShape="RoundRectangle 14"
-							VerticalOptions="Start"
-							WidthRequest="52">
-							<controls:SvgView InputTransparent="True" Source="contract.svg" TintColor="{DynamicResource ContentPrimaryWL}" />
-						</Border>
-
-						<VerticalStackLayout Grid.Column="1" Spacing="2">
+					<VerticalStackLayout Spacing="6">
+						<VerticalStackLayout Spacing="2">
 							<Label
 								FontAttributes="Bold"
-								FontSize="20"
+								FontSize="22"
 								LineBreakMode="TailTruncation"
 								MaxLines="2"
+								SemanticProperties.HeadingLevel="Level2"
 								Text="{Binding SummaryTitle}"
 								TextColor="{DynamicResource ContentPrimaryWL}" />
 							<Label
-								IsVisible="{Binding HasSummaryCategory}"
+								IsVisible="{Binding HasSummaryCounterparty}"
+								LineBreakMode="TailTruncation"
+								MaxLines="1"
 								Style="{DynamicResource ItemDescriptionLabel}"
-								Text="{Binding SummaryCategory}"
+								Text="{Binding SummaryCounterpartyText}"
 								TextColor="{DynamicResource ContentSecondaryWL}" />
 						</VerticalStackLayout>
 
-						<VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
-							<controls:StatusPill
-								HorizontalOptions="Start"
+						<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+							<Label
+								FontAttributes="Bold"
 								Text="{Binding SummaryStateText}"
-								Tone="{Binding SummaryStateTone}" />
+								TextColor="{DynamicResource ContentPrimaryWL}"
+								VerticalOptions="Center" />
+							<ActivityIndicator
+								Grid.Column="1"
+								HeightRequest="18"
+								IsRunning="{Binding IsRefreshing}"
+								IsVisible="{Binding IsRefreshing}"
+								VerticalOptions="Center"
+								WidthRequest="18" />
+						</Grid>
+
+						<VerticalStackLayout Spacing="2">
+							<Label
+								IsVisible="{Binding HasSummaryProgress}"
+								Style="{DynamicResource ItemDescriptionLabel}"
+								Text="{Binding SummaryProgressText}"
+								TextColor="{DynamicResource ContentSecondaryWL}" />
 							<Label
 								IsVisible="{Binding HasSummaryRole}"
-								Text="{Binding SummaryRoleText}"
-								TextColor="{DynamicResource ContentPrimaryWL}" />
-							<Label
-								IsVisible="{Binding HasSignatureProgress}"
 								Style="{DynamicResource ItemDescriptionLabel}"
-								Text="{Binding SignatureProgressText}"
+								Text="{Binding SummaryRoleText}"
 								TextColor="{DynamicResource ContentSecondaryWL}" />
-							<Grid IsVisible="{Binding HasImportantDate}" ColumnDefinitions="*,Auto" ColumnSpacing="8">
-								<Label
-									Style="{DynamicResource ItemDescriptionLabel}"
-									Text="{Binding ImportantDateText}"
-									TextColor="{DynamicResource ContentSecondaryWL}" />
-								<ActivityIndicator
-									Grid.Column="1"
-									HeightRequest="18"
-									IsRunning="{Binding IsRefreshing}"
-									IsVisible="{Binding IsRefreshing}"
-									VerticalOptions="Center"
-									WidthRequest="18" />
-							</Grid>
+							<Label
+								IsVisible="{Binding HasImportantDate}"
+								Style="{DynamicResource ItemDescriptionLabel}"
+								Text="{Binding ImportantDateText}"
+								TextColor="{DynamicResource ContentSecondaryWL}" />
 						</VerticalStackLayout>
 
 						<Border
-							Grid.Row="2"
-							Grid.ColumnSpan="2"
 							BackgroundColor="{DynamicResource TnPWarningbgWL}"
 							IsVisible="{Binding HasFreshnessWarning}"
 							Padding="10,8"
@@ -247,7 +241,7 @@
 									Style="{DynamicResource TransparentTextButton}" />
 							</Grid>
 						</Border>
-					</Grid>
+					</VerticalStackLayout>
 				</Border>
 
 				<Border
@@ -274,30 +268,15 @@
 					</VerticalStackLayout>
 				</Border>
 
-				<Border
+				<controls:TextButton
+					Command="{Binding GoToReviewCommand}"
 					IsVisible="{Binding HasPrimaryAction}"
-					Padding="16"
-					Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="10">
-						<Label
-							FontAttributes="Bold"
-							SemanticProperties.HeadingLevel="Level2"
-							Text="{l:Localize NextStep}"
-							TextColor="{DynamicResource ContentPrimaryWL}" />
-						<Label
-							Text="{Binding NextActionText}"
-							TextColor="{DynamicResource ContentSecondaryWL}" />
-						<controls:TextButton
-							Command="{Binding GoToReviewCommand}"
-							LabelData="{Binding PrimaryActionText}"
-							Style="{DynamicResource FilledTextButton}" />
-					</VerticalStackLayout>
-				</Border>
+					LabelData="{Binding PrimaryActionText}"
+					Style="{DynamicResource FilledTextButton}" />
 
 				<controls:DisclosureSection
 					IconSource="info.svg"
-					IsExpanded="True"
-					Summary="{Binding SignatureProgressText}"
+					IsExpanded="False"
 					Title="{l:Localize KeyTerms}">
 					<VerticalStackLayout Spacing="8">
 						<VerticalStackLayout
@@ -318,9 +297,9 @@
 
 				<controls:DisclosureSection
 					IconSource="contract.svg"
-					IsExpanded="True"
+					IsExpanded="False"
 					Summary="{l:Localize ReviewContractDescription2}"
-					Title="{l:Localize Agreement}">
+					Title="{l:Localize FullAgreement}">
 					<controls:TextButton
 						Command="{Binding GoToReviewCommand}"
 						LabelData="{l:Localize ReviewContractTitle}"

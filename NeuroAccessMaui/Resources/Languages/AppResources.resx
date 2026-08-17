@@ -4378,8 +4378,17 @@ This sends the token link and its complete machine-readable details. Only send i
   <data name="ContractYourRoleFormat" xml:space="preserve">
     <value>Your role: {0}</value>
   </data>
+  <data name="ContractCounterpartyFormat" xml:space="preserve">
+    <value>With {0}</value>
+  </data>
   <data name="SignatureProgressFormat" xml:space="preserve">
     <value>{0} of {1} signatures</value>
+  </data>
+  <data name="ContractBeingSignedProgressFormat" xml:space="preserve">
+    <value>Being signed ({0}/{1})</value>
+  </data>
+  <data name="ContractSignedProgressFormat" xml:space="preserve">
+    <value>Signed ({0}/{1})</value>
   </data>
   <data name="ReviewAndSign" xml:space="preserve">
     <value>Review and sign</value>
@@ -4395,6 +4404,9 @@ This sends the token link and its complete machine-readable details. Only send i
   </data>
   <data name="ContractRefreshFailedUsingSaved" xml:space="preserve">
     <value>The latest contract could not be loaded. You can still review the saved copy.</value>
+  </data>
+  <data name="ContractRefreshFailedUsingSavedFormat" xml:space="preserve">
+    <value>Couldn’t refresh. Showing details from {0}.</value>
   </data>
   <data name="ContractAttachmentUnavailable" xml:space="preserve">
     <value>This attachment is currently unavailable.</value>
@@ -4422,6 +4434,9 @@ This sends the token link and its complete machine-readable details. Only send i
   </data>
   <data name="ContractCurrentDetails" xml:space="preserve">
     <value>Latest details</value>
+  </data>
+  <data name="FullAgreement" xml:space="preserve">
+    <value>Full agreement</value>
   </data>
   <data name="ContractActivityDescription" xml:space="preserve">
     <value>Available timestamps from this agreement. This is not a complete audit trail.</value>
