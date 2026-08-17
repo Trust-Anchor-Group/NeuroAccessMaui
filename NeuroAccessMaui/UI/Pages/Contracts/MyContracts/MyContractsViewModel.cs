@@ -13,7 +13,9 @@ using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.UI.Popups.QR;
+using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Script;
@@ -38,6 +40,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private Dictionary<string, NotificationRecord[]> notificationsByContractId =
 			new(StringComparer.OrdinalIgnoreCase);
 		private CancellationTokenSource? searchDebounceCancellation;
+		private CancellationTokenSource? incomingContractRefreshCancellation;
+		private readonly EventHandlerAsync<ContractReferenceEventArgs> contractUpdatedHandler;
+		private readonly EventHandlerAsync<ContractSignedEventArgs> contractSignedHandler;
 		private Contract? selectedContract;
 		private bool refreshOnNextAppearance;
 		private string currentCategory = string.Empty;
@@ -53,6 +58,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <param name="Args">Navigation arguments, or <see langword="null"/> for the contracts mode.</param>
 		public MyContractsViewModel(MyContractsNavigationArgs? Args)
 		{
+			this.contractUpdatedHandler = new EventHandlerAsync<ContractReferenceEventArgs>(
+				this.OnContractUpdatedAsync);
+			this.contractSignedHandler = new EventHandlerAsync<ContractSignedEventArgs>(
+				this.OnContractSignedAsync);
 			this.contractsListMode = Args?.Mode ?? ContractsListMode.Contracts;
 			this.Action = Args?.Action ?? SelectContractAction.ViewContract;
 			this.selection = Args?.Selection;
@@ -198,6 +207,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
+			ServiceRef.XmppService.ContractUpdated += this.contractUpdatedHandler;
+			ServiceRef.XmppService.ContractSigned += this.contractSignedHandler;
 
 			long Generation = Interlocked.Increment(ref this.queryGeneration);
 			await this.LoadCategoriesAsync(Generation).ConfigureAwait(false);
@@ -214,6 +225,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			else if (this.refreshOnNextAppearance)
 			{
 				this.refreshOnNextAppearance = false;
+				CancellationTokenSource? Cancellation = Interlocked.Exchange(
+					ref this.incomingContractRefreshCancellation,
+					null);
+				Cancellation?.Cancel();
 				long Generation = Interlocked.Increment(ref this.queryGeneration);
 				await this.LoadCategoriesAsync(Generation).ConfigureAwait(false);
 				await this.ReloadAsync(Generation).ConfigureAwait(false);
@@ -251,12 +266,71 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			this.isDisposed = true;
 			if (Disposing)
 			{
+				ServiceRef.XmppService.ContractUpdated -= this.contractUpdatedHandler;
+				ServiceRef.XmppService.ContractSigned -= this.contractSignedHandler;
 				Interlocked.Increment(ref this.queryGeneration);
 				CancellationTokenSource? Cancellation =
 					Interlocked.Exchange(ref this.searchDebounceCancellation, null);
 				Cancellation?.Cancel();
 				Cancellation?.Dispose();
+				Cancellation = Interlocked.Exchange(
+					ref this.incomingContractRefreshCancellation,
+					null);
+				Cancellation?.Cancel();
 				this.selection?.TrySetResult(this.selectedContract);
+			}
+		}
+
+		private Task OnContractUpdatedAsync(object? Sender, ContractReferenceEventArgs e)
+		{
+			this.QueueIncomingContractRefresh();
+			return Task.CompletedTask;
+		}
+
+		private Task OnContractSignedAsync(object? Sender, ContractSignedEventArgs e)
+		{
+			this.QueueIncomingContractRefresh();
+			return Task.CompletedTask;
+		}
+
+		private void QueueIncomingContractRefresh()
+		{
+			if (this.isDisposed || this.contractsListMode != ContractsListMode.Contracts)
+				return;
+
+			this.refreshOnNextAppearance = true;
+			CancellationTokenSource RefreshCancellation = new();
+			CancellationTokenSource? PreviousCancellation = Interlocked.Exchange(
+				ref this.incomingContractRefreshCancellation,
+				RefreshCancellation);
+			PreviousCancellation?.Cancel();
+			_ = this.RefreshAfterIncomingContractAsync(RefreshCancellation);
+		}
+
+		private async Task RefreshAfterIncomingContractAsync(
+			CancellationTokenSource RefreshCancellation)
+		{
+			try
+			{
+				await Task.Delay(150, RefreshCancellation.Token).ConfigureAwait(false);
+				if (this.isDisposed || RefreshCancellation.IsCancellationRequested)
+					return;
+
+				this.refreshOnNextAppearance = false;
+				long Generation = Interlocked.Increment(ref this.queryGeneration);
+				await this.LoadCategoriesAsync(Generation).ConfigureAwait(false);
+				await this.ReloadAsync(Generation).ConfigureAwait(false);
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			finally
+			{
+				Interlocked.CompareExchange(
+					ref this.incomingContractRefreshCancellation,
+					null,
+					RefreshCancellation);
+				RefreshCancellation.Dispose();
 			}
 		}
 

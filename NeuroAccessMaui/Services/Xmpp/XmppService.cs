@@ -4424,6 +4424,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ContractsClient_ContractUpdated(object? Sender, ContractReferenceEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
+			await this.ReconcileIncomingContractAsync(e.ContractId, null);
 
 			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedTitle)];
 			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedBody)];
@@ -4461,6 +4462,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ContractsClient_ContractSigned(object? Sender, ContractSignedEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
+			await this.ReconcileIncomingContractAsync(e.ContractId, e.Contract);
 
 			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedTitle)];
 			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedBody)];
@@ -4478,6 +4480,39 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.ContractSigned.Raise(this, e);
+		}
+
+		private async Task ReconcileIncomingContractAsync(
+			CaseInsensitiveString ContractId,
+			Contract? IncomingContract)
+		{
+			try
+			{
+				Contract Contract = IncomingContract ??
+					await this.ContractsClient.GetContractAsync(ContractId);
+				string ExpectedContractId = ContractId.ToString();
+				if (!string.Equals(
+					Contract.ContractId,
+					ExpectedContractId,
+					StringComparison.OrdinalIgnoreCase))
+				{
+					ServiceRef.LogService.LogWarning(
+						"Incoming contract reconciliation returned a different identifier and was ignored.");
+					return;
+				}
+
+				await UpdateContractReference(Contract);
+			}
+			catch (Exception Ex)
+			{
+				// Notification delivery and page-level refresh remain available if the
+				// background reconciliation cannot retrieve or persist the latest version.
+				ServiceRef.LogService.LogWarning(
+					"Incoming contract reconciliation failed.",
+					new KeyValuePair<string, object?>(
+						"FailureType",
+						Ex.GetType().Name));
+			}
 		}
 
 		/// <summary>

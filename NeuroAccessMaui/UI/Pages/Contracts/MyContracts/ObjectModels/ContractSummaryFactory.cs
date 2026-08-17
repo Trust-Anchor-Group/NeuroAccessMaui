@@ -318,7 +318,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			if (CanSign)
 				return ServiceRef.Localizer[nameof(AppResources.ReviewAndSign)];
 
-			return ServiceRef.Localizer[nameof(AppResources.ViewContract)];
+			return string.Empty;
 		}
 
 		private static bool CanCurrentUserSign(

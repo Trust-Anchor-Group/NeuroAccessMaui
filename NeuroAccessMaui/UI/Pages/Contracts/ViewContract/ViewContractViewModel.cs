@@ -133,8 +133,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					_ = this.ApplyPostCreateCompletionAsync(this.args.PostCreateCompletion.Task);
 				}
 
-				// Mark initialized: allow future refreshes, but do not force a refresh here
+				// Saved content makes the workspace immediately usable. Reconcile it quietly
+				// after the first overview is visible so cached-first loading never looks like
+				// an error and the opening interaction is not blocked by the network.
 				this.initialized = true;
+				if (this.isUsingSavedContract)
+					this.RequestRefresh(null);
 			}
 			catch (Exception Ex)
 			{
@@ -430,18 +434,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		[ObservableProperty]
 		private string primaryActionText = string.Empty;
-
-		/// <summary>
-		/// Gets the concise freshness state for the loaded agreement.
-		/// </summary>
-		[ObservableProperty]
-		private string freshnessText = string.Empty;
-
-		/// <summary>
-		/// Gets the semantic tone for the agreement freshness state.
-		/// </summary>
-		[ObservableProperty]
-		private StatusPillTone freshnessTone = StatusPillTone.Neutral;
 
 		/// <summary>
 		/// Gets the optional warning shown when a refresh cannot replace the saved agreement.
@@ -1577,7 +1569,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				? ServiceRef.Localizer[nameof(AppResources.RespondToProposal)]
 				: this.CanSign
 					? ServiceRef.Localizer[nameof(AppResources.ReviewAndSign)]
-					: ServiceRef.Localizer[nameof(AppResources.ViewContract)];
+					: string.Empty;
 			this.PrimaryActionText = this.NextActionText;
 
 			this.KeyParameters.Clear();
@@ -1954,33 +1946,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		private void UpdateFreshnessPresentation()
 		{
-			if (this.IsRefreshing)
+			if (!this.IsRefreshing && this.refreshFailedUsingSaved)
 			{
-				this.FreshnessText = ServiceRef.Localizer[nameof(AppResources.Refreshing)];
-				this.FreshnessTone = StatusPillTone.Information;
-				this.FreshnessWarningText = string.Empty;
-			}
-			else if (this.refreshFailedUsingSaved)
-			{
-				this.FreshnessText = ServiceRef.Localizer[nameof(AppResources.UsingSavedContract)];
-				this.FreshnessTone = StatusPillTone.Warning;
 				this.FreshnessWarningText =
 					ServiceRef.Localizer[nameof(AppResources.ContractRefreshFailedUsingSaved)];
 			}
-			else if (this.isUsingSavedContract)
-			{
-				this.FreshnessText = ServiceRef.Localizer[nameof(AppResources.UsingSavedContract)];
-				this.FreshnessTone = StatusPillTone.Warning;
-				this.FreshnessWarningText =
-					ServiceRef.Localizer[nameof(AppResources.SavedContractMayBeOutOfDate)];
-			}
 			else
-			{
-				this.FreshnessText =
-					ServiceRef.Localizer[nameof(AppResources.ContractCurrentDetails)];
-				this.FreshnessTone = StatusPillTone.Success;
 				this.FreshnessWarningText = string.Empty;
-			}
 		}
 
 		private void NotifyContractPresentationChanged()

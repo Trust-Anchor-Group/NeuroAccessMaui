@@ -280,7 +280,6 @@
 
 											<FlexLayout Grid.Row="1" Grid.Column="1" AlignItems="Center" Direction="Row" Wrap="Wrap">
 												<controls:StatusPill Margin="0,0,8,2" Text="{Binding StateText}" Tone="{Binding StateTone}" />
-												<controls:StatusPill IsVisible="{Binding IsNeedsAttention}" Margin="0,0,8,2" Text="{l:Localize ContractNeedsAttention}" Tone="Warning" />
 												<controls:StatusPill IsVisible="{Binding HasTemplateKind}" Margin="0,0,8,2" Text="{Binding TemplateKindText}" Tone="Neutral" />
 												<controls:StatusPill IconSource="notifications.svg" IsVisible="{Binding HasEvents}" Margin="0,0,8,2" Text="{Binding NrEvents}" Tone="Information" />
 											</FlexLayout>
@@ -304,7 +303,7 @@
 												</Border>
 												<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
 													<Label IsVisible="{Binding HasTimeContext}" LineBreakMode="TailTruncation" MaxLines="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding TimeContextText}" TextColor="{DynamicResource ContentSecondaryWL}" VerticalTextAlignment="Center" />
-													<Label Grid.Column="1" FontAttributes="Bold" IsVisible="{Binding IsNeedsAttention}" LineBreakMode="TailTruncation" MaxLines="1" Text="{Binding NextActionText}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center" />
+													<Label Grid.Column="1" FontAttributes="Bold" IsVisible="{Binding HasNextAction}" LineBreakMode="TailTruncation" MaxLines="1" Text="{Binding NextActionText}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center" />
 												</Grid>
 											</VerticalStackLayout>
 										</Grid>

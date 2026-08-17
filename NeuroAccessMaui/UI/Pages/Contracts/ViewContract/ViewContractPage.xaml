@@ -12,53 +12,16 @@
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
 	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views">
 
-	<Grid x:Name="TheMainGrid" BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="Auto,Auto,*">
-		<controls:Background Grid.RowSpan="3" />
+	<Grid x:Name="TheMainGrid" BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="Auto,*">
+		<controls:Background Grid.RowSpan="2" />
 
-		<Grid Grid.Row="0" Margin="16,8,16,12" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HorizontalOptions="Fill" MaximumWidthRequest="960">
+		<Grid Grid.Row="0" Margin="16,6,16,10" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" HorizontalOptions="Fill" MaximumWidthRequest="960">
 			<controls:SvgButton Command="{Binding BackCommand}" SemanticProperties.Description="{l:Localize Close}" Style="{DynamicResource IconButton}" SvgSource="close.svg" VerticalOptions="Center" />
-			<VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-				<Label SemanticProperties.HeadingLevel="Level1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Agreement}" />
-				<Label IsVisible="{Binding HasContract}" LineBreakMode="TailTruncation" MaxLines="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding SummaryTitle}" TextColor="{DynamicResource ContentSecondaryWL}" />
-			</VerticalStackLayout>
+			<Label Grid.Column="1" FontSize="28" LineBreakMode="TailTruncation" MaxLines="1" SemanticProperties.HeadingLevel="Level1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Agreement}" VerticalOptions="Center" />
 			<controls:SvgButton Grid.Column="2" Command="{Binding ShareCommand}" SemanticProperties.Description="{l:Localize Share}" Style="{DynamicResource IconButton}" SvgSource="share.svg" VerticalOptions="Center" />
 		</Grid>
 
-		<Border Grid.Row="1" IsVisible="{Binding HasContract}" Margin="16,0,16,12" MaximumWidthRequest="960" Padding="16" Style="{DynamicResource BorderSet}" HorizontalOptions="Fill">
-			<Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
-				<Border Grid.RowSpan="4" BackgroundColor="{DynamicResource SurfaceElevation2WL}" HeightRequest="52" Padding="11" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 14" VerticalOptions="Start" WidthRequest="52">
-					<controls:SvgView InputTransparent="True" Source="contract.svg" TintColor="{DynamicResource ContentPrimaryWL}" />
-				</Border>
-
-				<Grid Grid.Column="1">
-					<VerticalStackLayout Spacing="2">
-						<Label FontAttributes="Bold" FontSize="20" LineBreakMode="TailTruncation" MaxLines="2" Text="{Binding SummaryTitle}" TextColor="{DynamicResource ContentPrimaryWL}" />
-						<Label IsVisible="{Binding HasSummaryCategory}" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding SummaryCategory}" TextColor="{DynamicResource ContentSecondaryWL}" />
-					</VerticalStackLayout>
-				</Grid>
-
-				<FlexLayout Grid.Row="1" Grid.Column="1" AlignItems="Center" Direction="Row" Wrap="Wrap">
-					<controls:StatusPill Margin="0,0,8,4" Text="{Binding SummaryStateText}" Tone="{Binding SummaryStateTone}" />
-					<controls:StatusPill IsVisible="{Binding HasSummaryRole}" Margin="0,0,8,4" Text="{Binding SummaryRoleText}" Tone="Neutral" />
-					<Label IsVisible="{Binding HasSignatureProgress}" Margin="0,0,16,4" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding SignatureProgressText}" TextColor="{DynamicResource ContentSecondaryWL}" />
-					<Label IsVisible="{Binding HasImportantDate}" Margin="0,0,16,4" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding ImportantDateText}" TextColor="{DynamicResource ContentSecondaryWL}" />
-				</FlexLayout>
-
-				<Border Grid.Row="2" Grid.Column="1" BackgroundColor="{DynamicResource SurfaceElevation2WL}" Padding="10,8" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
-					<Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-						<Label FontAttributes="Bold" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize NextStep}" TextColor="{DynamicResource ContentSecondaryWL}" />
-						<Label Grid.Column="1" Text="{Binding NextActionText}" TextColor="{DynamicResource ContentPrimaryWL}" />
-					</Grid>
-				</Border>
-
-				<FlexLayout Grid.Row="3" Grid.Column="1" AlignItems="Center" Direction="Row" Wrap="Wrap">
-					<controls:StatusPill Margin="0,0,8,4" Text="{Binding FreshnessText}" Tone="{Binding FreshnessTone}" />
-					<Label IsVisible="{Binding HasFreshnessWarning}" Margin="0,0,0,4" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding FreshnessWarningText}" TextColor="{DynamicResource TnPWarningContentWL}" />
-				</FlexLayout>
-			</Grid>
-		</Border>
-
-		<Grid x:Name="StateGrid" Grid.Row="2" HorizontalOptions="Fill" MaximumWidthRequest="960" mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}">
+		<Grid x:Name="StateGrid" Grid.Row="1" HorizontalOptions="Fill" MaximumWidthRequest="960" mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}">
 			<mct:StateContainer.StateViews>
 				<views:OverviewView mct:StateView.StateKey="Overview" />
 				<views:LoadingView mct:StateView.StateKey="Loading" />

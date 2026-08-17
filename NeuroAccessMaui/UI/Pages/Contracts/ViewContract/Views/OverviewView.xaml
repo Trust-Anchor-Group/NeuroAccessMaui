@@ -6,6 +6,7 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
 	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
@@ -32,30 +33,49 @@
 			x:Key="ActivityItemTemplate"
 			x:DataType="viewmodel:ContractActivityItem">
 			<Border
-				Margin="0,4"
-				Padding="12"
+				Margin="0,2"
+				Padding="12,10"
 				Style="{DynamicResource BorderSubSet}">
-				<Grid
-					ColumnDefinitions="*,Auto"
-					ColumnSpacing="12"
-					RowDefinitions="Auto,Auto">
-					<Label
-						FontAttributes="Bold"
-						Text="{Binding Title}"
-						TextColor="{DynamicResource ContentPrimaryWL}" />
-					<Label
-						Grid.Column="1"
-						Style="{DynamicResource ItemDescriptionLabel}"
-						Text="{Binding TimestampText}"
-						TextColor="{DynamicResource ContentSecondaryWL}" />
-					<Label
-						Grid.Row="1"
-						Grid.ColumnSpan="2"
-						IsVisible="{Binding HasDescription}"
-						Style="{DynamicResource ItemDescriptionLabel}"
-						Text="{Binding Description}"
-						TextColor="{DynamicResource ContentSecondaryWL}" />
-				</Grid>
+				<mct:Expander x:Name="ActivityExpander">
+					<mct:Expander.Header>
+						<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+							<Label
+								FontAttributes="Bold"
+								LineBreakMode="TailTruncation"
+								MaxLines="1"
+								Text="{Binding Title}"
+								TextColor="{DynamicResource ContentPrimaryWL}" />
+							<Label
+								Grid.Column="1"
+								Style="{DynamicResource ItemDescriptionLabel}"
+								Text="{Binding TimestampText}"
+								TextColor="{DynamicResource ContentSecondaryWL}" />
+							<Image
+								Grid.Column="2"
+								HeightRequest="14"
+								IsVisible="{Binding HasDescription}"
+								VerticalOptions="Center"
+								WidthRequest="14">
+								<Image.Triggers>
+									<DataTrigger Binding="{Binding IsExpanded, Source={x:Reference ActivityExpander}}" TargetType="Image" Value="True">
+										<Setter Property="Source" Value="{AppThemeBinding Light=arrow_up_light, Dark=arrow_up_dark}" />
+									</DataTrigger>
+									<DataTrigger Binding="{Binding IsExpanded, Source={x:Reference ActivityExpander}}" TargetType="Image" Value="False">
+										<Setter Property="Source" Value="{AppThemeBinding Light=arrow_down_light, Dark=arrow_down_dark}" />
+									</DataTrigger>
+								</Image.Triggers>
+							</Image>
+						</Grid>
+					</mct:Expander.Header>
+					<mct:Expander.Content>
+						<Label
+							IsVisible="{Binding HasDescription}"
+							Margin="0,8,0,0"
+							Style="{DynamicResource ItemDescriptionLabel}"
+							Text="{Binding Description}"
+							TextColor="{DynamicResource ContentSecondaryWL}" />
+					</mct:Expander.Content>
+				</mct:Expander>
 			</Border>
 		</DataTemplate>
 
@@ -144,6 +164,91 @@
 			<VerticalStackLayout
 				Padding="{DynamicResource MediumLeftRightMargins}"
 				Spacing="12">
+
+				<Border
+					IsVisible="{Binding HasContract}"
+					Padding="16"
+					Style="{DynamicResource BorderSet}">
+					<Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+						<Border
+							Grid.RowSpan="3"
+							BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+							HeightRequest="52"
+							Padding="11"
+							Stroke="{DynamicResource SurfaceStrokeWL}"
+							StrokeShape="RoundRectangle 14"
+							VerticalOptions="Start"
+							WidthRequest="52">
+							<controls:SvgView InputTransparent="True" Source="contract.svg" TintColor="{DynamicResource ContentPrimaryWL}" />
+						</Border>
+
+						<VerticalStackLayout Grid.Column="1" Spacing="2">
+							<Label
+								FontAttributes="Bold"
+								FontSize="20"
+								LineBreakMode="TailTruncation"
+								MaxLines="2"
+								Text="{Binding SummaryTitle}"
+								TextColor="{DynamicResource ContentPrimaryWL}" />
+							<Label
+								IsVisible="{Binding HasSummaryCategory}"
+								Style="{DynamicResource ItemDescriptionLabel}"
+								Text="{Binding SummaryCategory}"
+								TextColor="{DynamicResource ContentSecondaryWL}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6">
+							<controls:StatusPill
+								HorizontalOptions="Start"
+								Text="{Binding SummaryStateText}"
+								Tone="{Binding SummaryStateTone}" />
+							<Label
+								IsVisible="{Binding HasSummaryRole}"
+								Text="{Binding SummaryRoleText}"
+								TextColor="{DynamicResource ContentPrimaryWL}" />
+							<Label
+								IsVisible="{Binding HasSignatureProgress}"
+								Style="{DynamicResource ItemDescriptionLabel}"
+								Text="{Binding SignatureProgressText}"
+								TextColor="{DynamicResource ContentSecondaryWL}" />
+							<Grid IsVisible="{Binding HasImportantDate}" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+								<Label
+									Style="{DynamicResource ItemDescriptionLabel}"
+									Text="{Binding ImportantDateText}"
+									TextColor="{DynamicResource ContentSecondaryWL}" />
+								<ActivityIndicator
+									Grid.Column="1"
+									HeightRequest="18"
+									IsRunning="{Binding IsRefreshing}"
+									IsVisible="{Binding IsRefreshing}"
+									VerticalOptions="Center"
+									WidthRequest="18" />
+							</Grid>
+						</VerticalStackLayout>
+
+						<Border
+							Grid.Row="2"
+							Grid.ColumnSpan="2"
+							BackgroundColor="{DynamicResource TnPWarningbgWL}"
+							IsVisible="{Binding HasFreshnessWarning}"
+							Padding="10,8"
+							Stroke="{DynamicResource TnPWarningFigureWL}"
+							StrokeShape="RoundRectangle 10">
+							<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+								<Label
+									Style="{DynamicResource ItemDescriptionLabel}"
+									Text="{Binding FreshnessWarningText}"
+									TextColor="{DynamicResource TnPWarningContentWL}"
+									VerticalOptions="Center" />
+								<controls:TextButton
+									Grid.Column="1"
+									Command="{Binding RefreshContractCommand}"
+									LabelData="{l:Localize Retry}"
+									Style="{DynamicResource TransparentTextButton}" />
+							</Grid>
+						</Border>
+					</Grid>
+				</Border>
 
 				<Border
 					IsVisible="{Binding IsProposal}"

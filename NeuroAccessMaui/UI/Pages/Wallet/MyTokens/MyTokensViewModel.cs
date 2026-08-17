@@ -26,6 +26,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			new(StringComparer.OrdinalIgnoreCase);
 		private readonly Dictionary<string, TokenSummaryItem> summaryByTokenId =
 			new(StringComparer.OrdinalIgnoreCase);
+		private readonly HashSet<string> pendingTokenRefreshIds = new(StringComparer.OrdinalIgnoreCase);
+		private readonly HashSet<string> activeTokenRefreshIds = new(StringComparer.OrdinalIgnoreCase);
 		private readonly object loadedTokensSync = new();
 		private readonly SemaphoreSlim loadGate = new(1, 1);
 		private CancellationTokenSource? queryCancellationTokenSource;
@@ -35,6 +37,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		private bool initialLoadFailed;
 		private bool suppressQueryChanges;
 		private bool navigationMessageConsumed;
+		private bool hasAppeared;
+		private bool isDisposed;
 
 		private string RelatedContractId =>
 			this.navigationArgs?.RelatedContractId?.Trim() ?? string.Empty;
@@ -122,15 +126,31 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 
 			ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
 			ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
+			ServiceRef.XmppService.NeuroFeatureStateUpdated += this.Wallet_TokenStateUpdated;
+			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_TokenVariablesUpdated;
 
 			await this.RefreshTokens();
 		}
 
 		/// <inheritdoc/>
+		public override async Task OnAppearingAsync()
+		{
+			await base.OnAppearingAsync();
+
+			if (this.hasAppeared)
+				await this.RefreshTokens();
+			else
+				this.hasAppeared = true;
+		}
+
+		/// <inheritdoc/>
 		public override Task OnDisposeAsync()
 		{
+			this.isDisposed = true;
 			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
+			ServiceRef.XmppService.NeuroFeatureStateUpdated -= this.Wallet_TokenStateUpdated;
+			ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_TokenVariablesUpdated;
 
 			this.queryCancellationTokenSource?.Cancel();
 			this.queryCancellationTokenSource?.Dispose();
@@ -931,6 +951,109 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 
 			long Generation = Volatile.Read(ref this.queryGeneration);
 			return this.ApplyCurrentQueryAsync(Generation);
+		}
+
+		private Task Wallet_TokenStateUpdated(object? Sender, NewStateEventArgs e)
+		{
+			this.QueueTokenRefresh(e.TokenId);
+			return Task.CompletedTask;
+		}
+
+		private Task Wallet_TokenVariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
+		{
+			this.QueueTokenRefresh(e.TokenId);
+			return Task.CompletedTask;
+		}
+
+		private void QueueTokenRefresh(string TokenId)
+		{
+			if (this.isDisposed || string.IsNullOrWhiteSpace(TokenId))
+				return;
+
+			lock (this.loadedTokensSync)
+			{
+				if (!this.loadedTokenIds.Contains(TokenId))
+					return;
+
+				this.pendingTokenRefreshIds.Add(TokenId);
+				if (!this.activeTokenRefreshIds.Add(TokenId))
+					return;
+			}
+
+			_ = this.ProcessQueuedTokenRefreshAsync(TokenId);
+		}
+
+		private async Task ProcessQueuedTokenRefreshAsync(string TokenId)
+		{
+			while (!this.isDisposed)
+			{
+				lock (this.loadedTokensSync)
+				{
+					if (!this.pendingTokenRefreshIds.Remove(TokenId))
+					{
+						this.activeTokenRefreshIds.Remove(TokenId);
+						return;
+					}
+				}
+
+				await this.RefreshTokenFromIncomingEventAsync(TokenId).ConfigureAwait(false);
+			}
+
+			lock (this.loadedTokensSync)
+			{
+				this.pendingTokenRefreshIds.Remove(TokenId);
+				this.activeTokenRefreshIds.Remove(TokenId);
+			}
+		}
+
+		private async Task RefreshTokenFromIncomingEventAsync(string TokenId)
+		{
+			if (this.isDisposed || string.IsNullOrWhiteSpace(TokenId))
+				return;
+
+			lock (this.loadedTokensSync)
+			{
+				if (!this.loadedTokenIds.Contains(TokenId))
+					return;
+			}
+
+			try
+			{
+				Token UpdatedToken = await ServiceRef.XmppService.GetNeuroFeature(TokenId)
+					.ConfigureAwait(false);
+				if (this.isDisposed)
+					return;
+				if (!string.Equals(
+					UpdatedToken.TokenId,
+					TokenId,
+					StringComparison.OrdinalIgnoreCase))
+				{
+					return;
+				}
+
+				NotificationEvent[] Events = this.GetNotificationEvents(TokenId);
+				lock (this.loadedTokensSync)
+				{
+					int Index = this.loadedTokens.FindIndex(Token =>
+						string.Equals(
+							Token.TokenId,
+							TokenId,
+							StringComparison.OrdinalIgnoreCase));
+					if (Index < 0)
+						return;
+
+					this.loadedTokens[Index] = UpdatedToken;
+					this.notificationEventsByTokenId[TokenId] = Events;
+					this.summaryByTokenId.Remove(TokenId);
+				}
+
+				long Generation = Volatile.Read(ref this.queryGeneration);
+				await this.ApplyCurrentQueryAsync(Generation).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				LogRedactedFailure("Incoming token refresh failed.", Ex);
+			}
 		}
 
 		private static void LogRedactedFailure(string Message, Exception Exception)
