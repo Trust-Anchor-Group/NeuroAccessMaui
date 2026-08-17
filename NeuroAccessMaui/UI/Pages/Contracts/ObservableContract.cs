@@ -32,17 +32,48 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Creates a new instance of <see cref="ObservableContract"/> and initializes the roles and parameters.
 		/// </summary>
 		/// <param name="contract">The Contract object to wrap.</param>
-		public static async Task<ObservableContract> CreateAsync(Contract contract)
+		/// <returns>The initialized observable contract.</returns>
+		public static Task<ObservableContract> CreateAsync(Contract contract)
+		{
+			return CreateAsync(contract, false);
+		}
+
+		/// <summary>
+		/// Creates and initializes an observable contract with configurable participant enrichment.
+		/// </summary>
+		/// <param name="contract">The contract object to wrap.</param>
+		/// <param name="DeferParticipantInitialization">
+		/// If <see langword="true"/>, participant identity enrichment continues after the
+		/// contract structure is ready for presentation.
+		/// </param>
+		/// <returns>The initialized observable contract.</returns>
+		public static async Task<ObservableContract> CreateAsync(
+			Contract contract,
+			bool DeferParticipantInitialization)
 		{
 			ObservableContract ContractWrapper = new(contract);
-			await ContractWrapper.InitializeAsync();
+			await ContractWrapper.InitializeAsync(DeferParticipantInitialization);
 			return ContractWrapper;
 		}
 
 		/// <summary>
 		/// Initializes the contract data, such as category and parameters.
 		/// </summary>
-		public async Task InitializeAsync()
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public Task InitializeAsync()
+		{
+			return this.InitializeAsync(false);
+		}
+
+		/// <summary>
+		/// Initializes contract data with configurable participant enrichment.
+		/// </summary>
+		/// <param name="DeferParticipantInitialization">
+		/// If <see langword="true"/>, participant identity enrichment continues after the
+		/// contract structure is ready for presentation.
+		/// </param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public async Task InitializeAsync(bool DeferParticipantInitialization)
 		{
 			this.Category = await ContractModel.GetCategory(this.Contract) ?? string.Empty;
 
@@ -55,7 +86,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			foreach (Role Role in this.Contract.Roles ?? Enumerable.Empty<Role>())
 			{
 				ObservableRole ObservableRole = new(Role);
-				await ObservableRole.InitializeAsync(this.Contract);
+				await ObservableRole.InitializeAsync(
+					this.Contract,
+					DeferParticipantInitialization);
 				this.Roles.Add(ObservableRole);
 			}
 			if (this.IsTemplate)
@@ -64,7 +97,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == part.Role);
 					if (Role is not null)
-						await Role.AddPart(part);
+						await Role.AddPart(part, DeferParticipantInitialization);
 				}
 			}
 			else
@@ -73,7 +106,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == signature.Role);
 					if (Role is not null)
-						await Role.AddPart(signature);
+						await Role.AddPart(signature, DeferParticipantInitialization);
 				}
 			}
 
@@ -229,9 +262,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			if (disposing)
 			{
-				// Unsubscribe from the event to prevent memory leaks
 				this.Parameters.CollectionChanged -= this.Parameters_CollectionChanged;
 				this.Roles.CollectionChanged -= this.Roles_CollectionChanged;
+				foreach (ObservableParameter Parameter in this.Parameters)
+					Parameter.PropertyChanged -= this.Parameter_OnPropertyChanged;
+
+				foreach (ObservableRole Role in this.Roles)
+				{
+					Role.PropertyChanged -= this.Role_OnPropertyChanged;
+					Role.Parts.CollectionChanged -= this.Parts_CollectionChanged;
+					foreach (ObservablePart Part in Role.Parts)
+						Part.Dispose();
+				}
 			}
 
 			this.disposed = true;

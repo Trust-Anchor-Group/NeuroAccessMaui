@@ -125,7 +125,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				Category,
 				HasStoredState
 					? GetStateText(State)
-					: ServiceRef.Localizer[nameof(AppResources.Unavailable)],
+					: CanOpen
+						? ServiceRef.Localizer[nameof(AppResources.ContractDetailsNotDownloaded)]
+						: ServiceRef.Localizer[nameof(AppResources.Unavailable)],
 				HasStoredState ? GetStateTone(State) : StatusPillTone.Neutral,
 				GetTemplateKindText(Mode),
 				RoleText,
@@ -273,7 +275,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			if (Contract is null)
 			{
 				return CanOpen
-					? ServiceRef.Localizer[nameof(AppResources.ContractSavedDetailsUnavailable)]
+					? ServiceRef.Localizer[nameof(AppResources.ContractReferenceRecovered)]
 					: ServiceRef.Localizer[nameof(AppResources.ContractReferenceUnavailable)];
 			}
 
@@ -311,7 +313,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				return ServiceRef.Localizer[nameof(AppResources.RespondToProposal)];
 
 			if (Contract is null)
-				return ServiceRef.Localizer[nameof(AppResources.Refresh)];
+				return ServiceRef.Localizer[nameof(AppResources.DownloadContractDetails)];
 
 			if (CanSign)
 				return ServiceRef.Localizer[nameof(AppResources.ReviewAndSign)];

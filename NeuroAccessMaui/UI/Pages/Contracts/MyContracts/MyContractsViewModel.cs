@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 	/// <summary>
 	/// Presents a paged, locally summarized collection of contracts or contract templates.
 	/// </summary>
-	public partial class MyContractsViewModel : BaseViewModel
+	public partial class MyContractsViewModel : BaseViewModel, IDisposable
 	{
 		private const int contractBatchSize = 24;
 		private const int remainingItemsThreshold = 5;
@@ -38,6 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			new(StringComparer.OrdinalIgnoreCase);
 		private CancellationTokenSource? searchDebounceCancellation;
 		private Contract? selectedContract;
+		private bool refreshOnNextAppearance;
 		private string currentCategory = string.Empty;
 		private string searchText = string.Empty;
 		private int loadedContracts;
@@ -104,6 +105,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		public bool ShowEmptyState => !this.IsInitialLoading && !this.HasLoadError && !this.HasContracts;
 
 		/// <summary>
+		/// Gets whether server-backed reference recovery is relevant to the current empty view.
+		/// </summary>
+		public bool CanRecoverContracts =>
+			this.contractsListMode == ContractsListMode.Contracts &&
+			string.IsNullOrEmpty(this.searchText) &&
+			string.IsNullOrEmpty(this.currentCategory);
+
+		/// <summary>
 		/// Gets or sets the collection title.
 		/// </summary>
 		[ObservableProperty]
@@ -160,6 +169,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private string loadErrorMessage = string.Empty;
 
 		/// <summary>
+		/// Gets or sets whether missing contract references are being recovered.
+		/// </summary>
+		[ObservableProperty]
+		private bool isRecoveringContracts;
+
+		/// <summary>
 		/// Gets or sets whether at least one summary is displayed.
 		/// </summary>
 		[ObservableProperty]
@@ -190,18 +205,53 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 				await this.GoBack();
+			else if (this.refreshOnNextAppearance)
+			{
+				this.refreshOnNextAppearance = false;
+				long Generation = Interlocked.Increment(ref this.queryGeneration);
+				await this.LoadCategoriesAsync(Generation).ConfigureAwait(false);
+				await this.ReloadAsync(Generation).ConfigureAwait(false);
+			}
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
-			this.isDisposed = true;
-			Interlocked.Increment(ref this.queryGeneration);
-			this.searchDebounceCancellation?.Cancel();
-			this.searchDebounceCancellation?.Dispose();
-			this.selection?.TrySetResult(this.selectedContract);
+			this.Dispose();
 
 			await base.OnDisposeAsync();
+		}
+
+		/// <summary>
+		/// Releases the search debounce cancellation source owned by this view model.
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Releases resources owned by this view model.
+		/// </summary>
+		/// <param name="Disposing">
+		/// <see langword="true"/> when called from <see cref="Dispose()"/>.
+		/// </param>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.isDisposed)
+				return;
+
+			this.isDisposed = true;
+			if (Disposing)
+			{
+				Interlocked.Increment(ref this.queryGeneration);
+				CancellationTokenSource? Cancellation =
+					Interlocked.Exchange(ref this.searchDebounceCancellation, null);
+				Cancellation?.Cancel();
+				Cancellation?.Dispose();
+				this.selection?.TrySetResult(this.selectedContract);
+			}
 		}
 
 		/// <summary>
@@ -225,6 +275,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.searchText = NewSearchText;
 			this.OnPropertyChanged(nameof(this.SearchText));
+			this.OnPropertyChanged(nameof(this.CanRecoverContracts));
 			long Generation = Interlocked.Increment(ref this.queryGeneration);
 
 			this.searchDebounceCancellation?.Cancel();
@@ -285,6 +336,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					StringComparison.OrdinalIgnoreCase);
 
 			this.currentCategory = NewCategory;
+			this.OnPropertyChanged(nameof(this.CanRecoverContracts));
 			SelectableTag? SelectedTag = this.FilterTags.FirstOrDefault(Item => Item.IsSelected);
 			if (SelectedTag is not null)
 				this.TagSelected?.Invoke(SelectedTag);
@@ -301,6 +353,36 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			long Generation = Interlocked.Increment(ref this.queryGeneration);
 			await this.ReloadAsync(Generation).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Recovers missing server contract IDs without loading contract contents.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task RecoverContracts()
+		{
+			if (!this.CanRecoverContracts)
+				return;
+
+			this.IsRecoveringContracts = true;
+			try
+			{
+				await ServiceRef.XmppService.RecoverContractReferences();
+				long Generation = Interlocked.Increment(ref this.queryGeneration);
+				await this.LoadCategoriesAsync(Generation);
+				await this.ReloadAsync(Generation);
+			}
+			catch
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			finally
+			{
+				this.IsRecoveringContracts = false;
+			}
 		}
 
 		/// <summary>
@@ -738,16 +820,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case SelectContractAction.ViewContract:
 						if (this.contractsListMode == ContractsListMode.Contracts)
 						{
-							Contract Contract = await this.GetOrRecoverContractAsync(Model)
-								.ConfigureAwait(false);
-							await ServiceRef.ContractOrchestratorService.OpenContract(
-								Contract,
-								ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)],
-								null,
-								Reference,
-								Model.ProposalRole,
-								Model.ProposalMessage,
-								Model.ProposalFromJid).ConfigureAwait(false);
+							this.refreshOnNextAppearance = true;
+							if (Model.LocalContract is null)
+							{
+								// Present the loading workspace first. Hydration and persistence
+								// then happen inside the destination without blocking this collection.
+								await ServiceRef.ContractOrchestratorService.OpenContract(
+									Reference,
+									Model.ProposalRole,
+									Model.ProposalMessage,
+									Model.ProposalFromJid).ConfigureAwait(false);
+							}
+							else
+							{
+								await ServiceRef.ContractOrchestratorService.OpenContract(
+									Model.LocalContract,
+									ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)],
+									null,
+									Reference,
+									Model.ProposalRole,
+									Model.ProposalMessage,
+									Model.ProposalFromJid).ConfigureAwait(false);
+							}
 						}
 						else
 						{
@@ -759,10 +853,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						break;
 
 					case SelectContractAction.Select:
-						Contract Contract = await this.GetOrRecoverContractAsync(Model)
+						Contract SelectedContract = await this.GetOrRecoverContractAsync(Model)
 							.ConfigureAwait(false);
-						this.selectedContract = Contract;
-						this.selection?.TrySetResult(Contract);
+						this.selectedContract = SelectedContract;
+						this.selection?.TrySetResult(SelectedContract);
 						await MainThread.InvokeOnMainThreadAsync(this.GoBack);
 						break;
 				}
@@ -786,6 +880,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			string ContractId = Convert.ToString(Reference.ContractId) ?? string.Empty;
 			Contract Contract = await ServiceRef.XmppService.GetContract(ContractId)
 				.ConfigureAwait(false);
+			if (string.IsNullOrWhiteSpace(Contract.ContractId) ||
+				!string.Equals(
+					Contract.ContractId,
+					ContractId,
+					StringComparison.OrdinalIgnoreCase))
+			{
+				throw new InvalidOperationException(
+					"The downloaded contract did not match the saved reference identifier.");
+			}
 
 			// Recovery overwrites only the same persisted reference after an explicit open.
 			// Missing or malformed XML is never deleted merely because summary parsing failed.

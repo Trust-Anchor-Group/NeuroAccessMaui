@@ -36,8 +36,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Initializes the role in regards to a contract.
 		/// E.g Sets the description of the role, with the contract language.
 		/// </summary>
-		/// <param name="contract"></param>
-		public async Task InitializeAsync(Contract contract)
+		/// <param name="contract">The contract that defines the role and its participants.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public Task InitializeAsync(Contract contract)
+		{
+			return this.InitializeAsync(contract, false);
+		}
+
+		/// <summary>
+		/// Initializes the role with configurable participant identity enrichment.
+		/// </summary>
+		/// <param name="contract">The contract that defines the role and its participants.</param>
+		/// <param name="DeferParticipantInitialization">
+		/// If <see langword="true"/>, participants are added immediately and identity
+		/// enrichment continues in the background.
+		/// </param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public async Task InitializeAsync(
+			Contract contract,
+			bool DeferParticipantInitialization)
 		{
 			try
 			{
@@ -52,7 +69,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					if (Part.Role == this.Name)
 					{
-						await this.AddPart(Part);
+						await this.AddPart(
+							Part,
+							DeferParticipantInitialization);
 					}
 				}
 			}
@@ -189,8 +208,42 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// Adds a part with a given LegalId to the role.
 		/// </summary>
-		/// <param name="LegalId"></param>
-		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true, bool PresetFromArgs = false)
+		/// <param name="LegalId">The legal identity identifier to add.</param>
+		/// <param name="Notify">Whether to notify listeners that the parts collection changed.</param>
+		/// <param name="AutoPetition">Whether missing identity details may be petitioned automatically.</param>
+		/// <param name="PresetFromArgs">Whether the participant was supplied by navigation arguments.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public Task AddPart(
+			string LegalId,
+			bool Notify = true,
+			bool AutoPetition = true,
+			bool PresetFromArgs = false)
+		{
+			return this.AddPart(
+				LegalId,
+				Notify,
+				AutoPetition,
+				PresetFromArgs,
+				false);
+		}
+
+		/// <summary>
+		/// Adds a participant with configurable identity enrichment.
+		/// </summary>
+		/// <param name="LegalId">The legal identity identifier to add.</param>
+		/// <param name="Notify">Whether to notify listeners that the parts collection changed.</param>
+		/// <param name="AutoPetition">Whether missing identity details may be petitioned automatically.</param>
+		/// <param name="PresetFromArgs">Whether the participant was supplied by navigation arguments.</param>
+		/// <param name="DeferInitialization">
+		/// Whether identity lookup should continue after the participant has been added.
+		/// </param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public async Task AddPart(
+			string LegalId,
+			bool Notify,
+			bool AutoPetition,
+			bool PresetFromArgs,
+			bool DeferInitialization)
 		{
 			//Check if Part Exists
 			if (this.Parts.Any(p => string.Equals(p.LegalId, LegalId, StringComparison.OrdinalIgnoreCase)))
@@ -202,11 +255,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				IsPresetFromArgs = PresetFromArgs
 			};
-			await ObservablePart.InitializeAsync(AutoPetition);
 
-			//Notify changes
-			TaskCompletionSource TaskCompletionSource = new();
-			MainThread.BeginInvokeOnMainThread(() =>
+			if (!DeferInitialization)
+				await ObservablePart.InitializeAsync(AutoPetition);
+
+			// Deferred initialization adds the participant before optional network
+			// enrichment so contract navigation never depends on an identity provider.
+			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.Parts.Add(ObservablePart);
 				this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
@@ -214,25 +269,73 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.IsSelectedByMe));
 				if (Notify)
 					this.OnPropertyChanged(nameof(this.Parts));
-				TaskCompletionSource.SetResult();
 			});
-			await TaskCompletionSource.Task;
+
+			if (DeferInitialization)
+				_ = ObservablePart.InitializeAsync(AutoPetition);
 		}
 
 		/// <summary>
 		/// Adds a part object to the role.
 		/// </summary>
-		public async Task AddPart(Part part)
+		/// <param name="part">The participant to add.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public Task AddPart(Part part)
 		{
-			await this.AddPart(part.LegalId);
+			return this.AddPart(part, false);
+		}
+
+		/// <summary>
+		/// Adds a part object with configurable identity enrichment.
+		/// </summary>
+		/// <param name="part">The participant to add.</param>
+		/// <param name="DeferInitialization">
+		/// Whether identity lookup should continue after the participant has been added.
+		/// </param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public async Task AddPart(Part part, bool DeferInitialization)
+		{
+			await this.AddPart(
+				part.LegalId,
+				true,
+				true,
+				false,
+				DeferInitialization);
 		}
 
 		/// <summary>
 		/// Add a part from a signature, or mark the part as signed if it already exists.
 		/// </summary>
-		public async Task AddPart(ClientSignature signature)
+		/// <param name="signature">The client signature and participant identity to add.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public Task AddPart(ClientSignature signature)
 		{
-			await this.AddPart(signature.LegalId, true, false);
+			return this.AddPart(signature, false);
+		}
+
+		/// <summary>
+		/// Adds a signed participant with configurable identity enrichment.
+		/// </summary>
+		/// <param name="signature">The client signature and participant identity to add.</param>
+		/// <param name="DeferInitialization">
+		/// Whether identity lookup should continue after the participant has been added.
+		/// </param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public async Task AddPart(
+			ClientSignature signature,
+			bool DeferInitialization)
+		{
+			bool ParticipantAlreadyExists = this.Parts.Any(
+				Part => string.Equals(
+					Part.LegalId,
+					signature.LegalId,
+					StringComparison.OrdinalIgnoreCase));
+			await this.AddPart(
+				signature.LegalId,
+				true,
+				false,
+				false,
+				DeferInitialization);
 			ObservablePart? Found = this.Parts.FirstOrDefault(p => p.LegalId == signature.LegalId);
 			if (Found is not null)
 			{
@@ -240,7 +343,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					Found.Signature = signature;
 				});
-				await Found.InitializeAsync(false);
+
+				if (ParticipantAlreadyExists && !DeferInitialization)
+					await Found.InitializeAsync(false);
 			}
 		}
 

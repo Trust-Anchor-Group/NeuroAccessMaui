@@ -719,6 +719,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<string[]> GetSignedContractReferences();
 
 		/// <summary>
+		/// Restores locally missing references for contracts associated with the current account.
+		/// </summary>
+		/// <returns>The number of references restored on this device.</returns>
+		Task<int> RecoverContractReferences();
+
+		/// <summary>
 		/// Signs a given contract.
 		/// </summary>
 		/// <param name="Contract">The contract to sign.</param>
@@ -726,6 +732,20 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Transferable">Whether the contract is transferable or not.</param>
 		/// <returns>Smart Contract</returns>
 		Task<Contract> SignContract(Contract Contract, string Role, bool Transferable);
+
+		/// <summary>
+		/// Signs a contract while bounding the foreground wait and reconciling matching contract updates.
+		/// </summary>
+		/// <param name="Contract">The contract to sign.</param>
+		/// <param name="Role">The role of the signer.</param>
+		/// <param name="Transferable">Whether the contract signature is transferable.</param>
+		/// <param name="Timeout">The maximum foreground wait.</param>
+		/// <returns>The confirmed foreground signing outcome and best available contract state.</returns>
+		Task<ContractSigningResult> SignContractWithOutcomeAsync(
+			Contract Contract,
+			string Role,
+			bool Transferable,
+			TimeSpan Timeout);
 
 		/// <summary>
 		/// Obsoletes a contract.

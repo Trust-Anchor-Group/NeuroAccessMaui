@@ -7,6 +7,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;

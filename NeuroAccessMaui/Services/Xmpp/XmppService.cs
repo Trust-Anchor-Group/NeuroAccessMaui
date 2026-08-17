@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Channels;
 using System.Xml;
 using CommunityToolkit.Mvvm.Messaging;
 using EDaler;
@@ -3768,6 +3769,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Smart Contracts
 
+		private static readonly SemaphoreSlim contractReferenceSemaphore = new(1, 1);
 		private readonly Dictionary<CaseInsensitiveString, DateTime> lastContractEvent = [];
 
 		/// <summary>
@@ -3800,6 +3802,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.ContractsClient.PetitionedPeerReviewIDResponseReceived += this.ContractsClient_PetitionedPeerReviewIdResponseReceived;
 			this.ContractsClient.PetitionClientUrlReceived += this.ContractsClient_PetitionClientUrlReceived;
 			this.ContractsClient.ContractProposalReceived += this.ContractsClient_ContractProposalReceived;
+			this.ContractsClient.ContractCreated += this.ContractsClient_ContractCreated;
 			this.ContractsClient.ContractUpdated += this.ContractsClient_ContractUpdated;
 			this.ContractsClient.ContractSigned += this.ContractsClient_ContractSigned;
 			this.ContractsClient.ClientMessage += this.ContractsClient_ClientMessage;
@@ -3862,6 +3865,28 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Restores locally missing references for contracts associated with the current account.
+		/// </summary>
+		/// <returns>The number of references restored on this device.</returns>
+		public async Task<int> RecoverContractReferences()
+		{
+			string[] CreatedContractIds = await this.GetCreatedContractReferences();
+			string[] SignedContractIds = await this.GetSignedContractReferences();
+			HashSet<string> ContractIds = new(StringComparer.OrdinalIgnoreCase);
+			ContractIds.UnionWith(CreatedContractIds);
+			ContractIds.UnionWith(SignedContractIds);
+
+			int Recovered = 0;
+			foreach (string ContractId in ContractIds)
+			{
+				if (await EnsureContractReference(ContractId, DateTime.MinValue))
+					Recovered++;
+			}
+
+			return Recovered;
+		}
+
+		/// <summary>
 		/// Signs a given contract.
 		/// </summary>
 		/// <param name="Contract">The contract to sign.</param>
@@ -3869,6 +3894,230 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Transferable">Whether the contract is transferable or not.</param>
 		/// <returns>Smart Contract</returns>
 		public async Task<Contract> SignContract(Contract Contract, string Role, bool Transferable)
+		{
+			this.PrepareContractSigning(Contract);
+
+			Contract Result = await this.ContractsClient.SignContractAsync(Contract, Role, Transferable);
+			await UpdateContractReference(Result);
+			return Result;
+		}
+
+		/// <summary>
+		/// Signs a contract while bounding the foreground wait and reconciling matching contract updates.
+		/// </summary>
+		/// <param name="Contract">The contract to sign.</param>
+		/// <param name="Role">The role of the signer.</param>
+		/// <param name="Transferable">Whether the contract signature is transferable.</param>
+		/// <param name="Timeout">The maximum foreground wait.</param>
+		/// <returns>The confirmed foreground signing outcome and best available contract state.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="Contract"/> is null.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="Timeout"/> is not positive.</exception>
+		public async Task<ContractSigningResult> SignContractWithOutcomeAsync(
+			Contract Contract,
+			string Role,
+			bool Transferable,
+			TimeSpan Timeout)
+		{
+			ArgumentNullException.ThrowIfNull(Contract);
+			if (Timeout <= TimeSpan.Zero)
+				throw new ArgumentOutOfRangeException(nameof(Timeout), "The signing timeout must be positive.");
+
+			Stopwatch OperationTimer = Stopwatch.StartNew();
+			UnboundedChannelOptions ChannelOptions = new()
+			{
+				SingleReader = true,
+				SingleWriter = false
+			};
+			Channel<bool> ContractUpdates = Channel.CreateUnbounded<bool>(ChannelOptions);
+			EventHandlerAsync<ContractReferenceEventArgs> ContractUpdatedHandler = (Sender, EventArgs) =>
+			{
+				if (EventArgs.ContractId == Contract.ContractId)
+					ContractUpdates.Writer.TryWrite(true);
+
+				return Task.CompletedTask;
+			};
+
+			using CancellationTokenSource DeadlineCancellation = new();
+			Task DeadlineTask = Task.Delay(Timeout, DeadlineCancellation.Token);
+			Task<Contract> SigningTask;
+			this.ContractUpdated += ContractUpdatedHandler;
+
+			try
+			{
+				try
+				{
+					this.PrepareContractSigning(Contract);
+					SigningTask = this.ContractsClient.SignContractAsync(Contract, Role, Transferable);
+				}
+				catch (Exception)
+				{
+					LogContractSigningIssue(
+						Contract.ContractId,
+						"Request",
+						ContractSigningOutcome.TerminalFailure,
+						ContractSigningFailureCategory.OperationFault,
+						OperationTimer.ElapsedMilliseconds);
+
+					return new ContractSigningResult(
+						ContractSigningOutcome.TerminalFailure,
+						Contract,
+						ContractSigningFailureCategory.OperationFault);
+				}
+
+				Task<bool> UpdateTask = ContractUpdates.Reader.WaitToReadAsync().AsTask();
+				while (true)
+				{
+					Task CompletedTask = await Task.WhenAny(SigningTask, UpdateTask, DeadlineTask);
+
+					if (SigningTask.IsFaulted || SigningTask.IsCanceled)
+					{
+						try
+						{
+							await SigningTask;
+						}
+						catch (Exception)
+						{
+							// The privacy-safe result below deliberately omits protocol error content.
+						}
+
+						LogContractSigningIssue(
+							Contract.ContractId,
+							"Request",
+							ContractSigningOutcome.TerminalFailure,
+							ContractSigningFailureCategory.OperationFault,
+							OperationTimer.ElapsedMilliseconds);
+
+						return new ContractSigningResult(
+							ContractSigningOutcome.TerminalFailure,
+							Contract,
+							ContractSigningFailureCategory.OperationFault);
+					}
+
+					if (UpdateTask.IsCompletedSuccessfully && await UpdateTask)
+					{
+						while (ContractUpdates.Reader.TryRead(out bool _))
+						{
+						}
+
+						Task<Contract> ReconciliationTask = this.ContractsClient.GetContractAsync(Contract.ContractId);
+						Task ReconciliationCompletedTask = await Task.WhenAny(
+							ReconciliationTask,
+							SigningTask,
+							DeadlineTask);
+
+						if (ReconciliationTask.IsCompleted)
+						{
+							try
+							{
+								Contract ReconciledContract = await ReconciliationTask;
+								if (IsFailedOrRejected(ReconciledContract))
+								{
+									_ = ObserveContractSigningOperationAsync(
+										UpdateContractReference(ReconciledContract),
+										Contract.ContractId,
+										"Persistence");
+
+									if (!SigningTask.IsCompleted)
+									{
+										_ = ObserveContractSigningOperationAsync(
+											SigningTask,
+											Contract.ContractId,
+											"LateRequest");
+									}
+
+									LogContractSigningIssue(
+										Contract.ContractId,
+										"Reconciliation",
+										ContractSigningOutcome.TerminalFailure,
+										ContractSigningFailureCategory.TerminalContractState,
+										OperationTimer.ElapsedMilliseconds);
+
+									return new ContractSigningResult(
+										ContractSigningOutcome.TerminalFailure,
+										ReconciledContract,
+										ContractSigningFailureCategory.TerminalContractState);
+								}
+							}
+							catch (Exception)
+							{
+								LogContractSigningIssue(
+									Contract.ContractId,
+									"Reconciliation",
+									ContractSigningOutcome.OutcomeUnknown,
+									ContractSigningFailureCategory.OperationFault,
+									OperationTimer.ElapsedMilliseconds);
+							}
+						}
+						else
+						{
+							_ = ObserveContractSigningOperationAsync(
+								ReconciliationTask,
+								Contract.ContractId,
+								ReconciliationCompletedTask == DeadlineTask
+									? "LateReconciliation"
+									: "Reconciliation");
+						}
+
+						UpdateTask = ContractUpdates.Reader.WaitToReadAsync().AsTask();
+					}
+
+					if (SigningTask.IsCompletedSuccessfully)
+					{
+						Contract SignedContract = await SigningTask;
+						if (IsFailedOrRejected(SignedContract))
+						{
+							_ = ObserveContractSigningOperationAsync(
+								UpdateContractReference(SignedContract),
+								Contract.ContractId,
+								"Persistence");
+
+							return new ContractSigningResult(
+								ContractSigningOutcome.TerminalFailure,
+								SignedContract,
+								ContractSigningFailureCategory.TerminalContractState);
+						}
+
+						_ = ObserveContractSigningOperationAsync(
+							UpdateContractReference(SignedContract),
+							Contract.ContractId,
+							"Persistence");
+
+						return new ContractSigningResult(
+							ContractSigningOutcome.Confirmed,
+							SignedContract,
+							ContractSigningFailureCategory.None);
+					}
+
+					if (CompletedTask == DeadlineTask)
+					{
+						_ = ObserveContractSigningOperationAsync(
+							SigningTask,
+							Contract.ContractId,
+							"LateRequest");
+
+						LogContractSigningIssue(
+							Contract.ContractId,
+							"Deadline",
+							ContractSigningOutcome.OutcomeUnknown,
+							ContractSigningFailureCategory.Timeout,
+							OperationTimer.ElapsedMilliseconds);
+
+						return new ContractSigningResult(
+							ContractSigningOutcome.OutcomeUnknown,
+							Contract,
+							ContractSigningFailureCategory.Timeout);
+					}
+				}
+			}
+			finally
+			{
+				this.ContractUpdated -= ContractUpdatedHandler;
+				ContractUpdates.Writer.TryComplete();
+				DeadlineCancellation.Cancel();
+			}
+		}
+
+		private void PrepareContractSigning(Contract Contract)
 		{
 			if (Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace && (
 				Contract.ForMachinesLocalName == Constants.ContractMachineNames.BuyEDaler ||
@@ -3882,10 +4131,48 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.currentTransactions[Contract.ContractId] = new PaymentTransaction(TransactionId, Currency);
 				}
 			}
+		}
 
-			Contract Result = await this.ContractsClient.SignContractAsync(Contract, Role, Transferable);
-			await UpdateContractReference(Result);
-			return Result;
+		private static bool IsFailedOrRejected(Contract Contract)
+		{
+			return Contract.State is ContractState.Failed or ContractState.Rejected;
+		}
+
+		private static async Task ObserveContractSigningOperationAsync(
+			Task OperationTask,
+			CaseInsensitiveString ContractId,
+			string Stage)
+		{
+			Stopwatch OperationTimer = Stopwatch.StartNew();
+			try
+			{
+				await OperationTask.ConfigureAwait(false);
+			}
+			catch (Exception)
+			{
+				LogContractSigningIssue(
+					ContractId,
+					Stage,
+					ContractSigningOutcome.OutcomeUnknown,
+					ContractSigningFailureCategory.OperationFault,
+					OperationTimer.ElapsedMilliseconds);
+			}
+		}
+
+		private static void LogContractSigningIssue(
+			CaseInsensitiveString ContractId,
+			string Stage,
+			ContractSigningOutcome Outcome,
+			ContractSigningFailureCategory FailureCategory,
+			long ElapsedMilliseconds)
+		{
+			ServiceRef.LogService.LogWarning(
+				"Contract signing stage did not complete normally.",
+				new KeyValuePair<string, object?>("Stage", Stage),
+				new KeyValuePair<string, object?>("Outcome", Outcome.ToString()),
+				new KeyValuePair<string, object?>("FailureCategory", FailureCategory.ToString()),
+				new KeyValuePair<string, object?>("ElapsedMilliseconds", ElapsedMilliseconds),
+				new KeyValuePair<string, object?>("ContractId", ContractId));
 		}
 
 		/// <summary>
@@ -4034,26 +4321,64 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private static async Task UpdateContractReference(Contract Contract)
 		{
-			ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
-				new FilterFieldEqualTo("ContractId", Contract.ContractId));
-
-			if (Ref is null)
+			await contractReferenceSemaphore.WaitAsync();
+			try
 			{
+				ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
+					new FilterFieldEqualTo("ContractId", Contract.ContractId));
+
+				if (Ref is null)
+				{
+					Ref = new ContractReference()
+					{
+						ContractId = Contract.ContractId
+					};
+
+					await Ref.SetContract(Contract);
+					await Database.Insert(Ref);
+				}
+				else
+				{
+					await Ref.SetContract(Contract);
+					await Database.Update(Ref);
+				}
+
+				ServiceRef.TagProfile.CheckContractReference(Ref);
+			}
+			finally
+			{
+				contractReferenceSemaphore.Release();
+			}
+		}
+
+		private static async Task<bool> EnsureContractReference(
+			CaseInsensitiveString ContractId,
+			DateTime ReferenceTimestamp)
+		{
+			await contractReferenceSemaphore.WaitAsync();
+			try
+			{
+				ContractReference Ref = await Database.FindFirstIgnoreRest<ContractReference>(
+					new FilterFieldEqualTo("ContractId", ContractId));
+				if (Ref is not null)
+					return false;
+
 				Ref = new ContractReference()
 				{
-					ContractId = Contract.ContractId
+					ContractId = ContractId,
+					Created = ReferenceTimestamp,
+					Updated = ReferenceTimestamp,
+					State = ContractState.Approved
 				};
 
-				await Ref.SetContract(Contract);
 				await Database.Insert(Ref);
+				ServiceRef.TagProfile.CheckContractReference(Ref);
+				return true;
 			}
-			else
+			finally
 			{
-				await Ref.SetContract(Contract);
-				await Database.Update(Ref);
+				contractReferenceSemaphore.Release();
 			}
-
-			ServiceRef.TagProfile.CheckContractReference(Ref);
 		}
 
 		/// <summary>
@@ -4088,6 +4413,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Event raised when contract was updated.
 		/// </summary>
 		public event EventHandlerAsync<ContractReferenceEventArgs>? ContractUpdated;
+
+		private async Task ContractsClient_ContractCreated(object? Sender, ContractReferenceEventArgs e)
+		{
+			// Persist the durable server ID before parsing or signing can fail. The full
+			// serialized contract replaces this placeholder when the response completes.
+			await EnsureContractReference(e.ContractId, DateTime.UtcNow);
+		}
 
 		private async Task ContractsClient_ContractUpdated(object? Sender, ContractReferenceEventArgs e)
 		{

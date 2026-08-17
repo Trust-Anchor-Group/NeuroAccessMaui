@@ -57,8 +57,9 @@
 			</Grid>
 
 			<CollectionView
-				HeightRequest="48"
+				HeightRequest="56"
 				HorizontalScrollBarVisibility="Never"
+				ItemSizingStrategy="MeasureAllItems"
 				ItemsSource="{Binding Steps}"
 				SelectionMode="None">
 				<CollectionView.ItemsLayout>
@@ -69,22 +70,31 @@
 						<controls:TemplatedButton
 							Command="{Binding GoToStepDescriptorCommand, Source={RelativeSource AncestorType={x:Type viewmodel:NewContractViewModel}}, x:DataType=viewmodel:NewContractViewModel}"
 							CommandParameter="{Binding .}"
-							SemanticProperties.Description="{Binding Title}">
+							HorizontalOptions="Start"
+							Padding="0"
+							SemanticProperties.Description="{Binding Title}"
+							VerticalOptions="Center">
 							<Border
 								BackgroundColor="{DynamicResource SurfaceElevation1WL}"
 								InputTransparent="True"
+								MinimumHeightRequest="44"
 								Padding="12,8"
 								Stroke="{DynamicResource SurfaceStrokeWL}"
+								VerticalOptions="Center"
 								Style="{DynamicResource RoundedBorder}">
-								<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
+								<HorizontalStackLayout
+									Spacing="{DynamicResource SmallSpacing}"
+									VerticalOptions="Center">
 									<Label
 										Style="{DynamicResource KeyLabel}"
-										Text="{Binding DisplayNumber}" />
+										Text="{Binding DisplayNumber}"
+										VerticalTextAlignment="Center" />
 									<Label
-										LineBreakMode="TailTruncation"
+										LineBreakMode="NoWrap"
 										MaxLines="1"
 										Style="{DynamicResource ValueLabel}"
-										Text="{Binding Title}" />
+										Text="{Binding Title}"
+										VerticalTextAlignment="Center" />
 								</HorizontalStackLayout>
 								<Border.Triggers>
 									<DataTrigger
@@ -131,7 +141,7 @@
 				ColumnDefinitions="Auto,*,Auto"
 				ColumnSpacing="{DynamicResource MediumSpacing}"
 				Padding="16,8"
-				RowDefinitions="Auto,Auto,Auto"
+				RowDefinitions="Auto,Auto,Auto,Auto"
 				RowSpacing="{DynamicResource SmallSpacing}">
 				<Grid
 					Grid.ColumnSpan="3"
@@ -169,21 +179,35 @@
 					</VerticalStackLayout>
 				</Border>
 
-				<controls:TextButton
+				<Border
 					Grid.Row="2"
+					Grid.ColumnSpan="3"
+					BackgroundColor="{DynamicResource TnPWarningbgWL}"
+					IsVisible="{Binding IsCreationOutcomeUncertain}"
+					Padding="{DynamicResource SmallMargins}"
+					Stroke="{DynamicResource TnPWarningFigureWL}"
+					Style="{DynamicResource RoundedBorder}">
+					<Label
+						Style="{DynamicResource BottomBarLabel}"
+						Text="{l:Localize ContractCreationOutcomeUncertain}"
+						TextColor="{DynamicResource TnPWarningContentWL}" />
+				</Border>
+
+				<controls:TextButton
+					Grid.Row="3"
 					Command="{Binding GoPreviousStepCommand}"
 					IsEnabled="{Binding CanGoBack}"
 					LabelData="{l:Localize Back}"
 					Style="{DynamicResource SecondaryButton}" />
 				<ActivityIndicator
-					Grid.Row="2"
+					Grid.Row="3"
 					Grid.Column="1"
 					Color="{DynamicResource ContentPrimaryWL}"
 					HorizontalOptions="Center"
 					IsRunning="{Binding IsValidatingParameters}"
 					IsVisible="{Binding IsValidatingParameters}" />
 				<controls:TextButton
-					Grid.Row="2"
+					Grid.Row="3"
 					Grid.Column="2"
 					Command="{Binding GoNextStepCommand}"
 					IsEnabled="{Binding CanAdvanceCurrentStep}"

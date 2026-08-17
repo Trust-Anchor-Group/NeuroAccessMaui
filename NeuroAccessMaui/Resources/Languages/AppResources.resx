@@ -4333,6 +4333,18 @@ This sends the token link and its complete machine-readable details. Only send i
   <data name="ContractSavedDetailsUnavailable" xml:space="preserve">
     <value>Saved contract details are unavailable. Open the contract to refresh them.</value>
   </data>
+  <data name="ContractDetailsNotDownloaded" xml:space="preserve">
+    <value>Details not downloaded</value>
+  </data>
+  <data name="ContractReferenceRecovered" xml:space="preserve">
+    <value>Recovered from your account. Download the details to view this contract.</value>
+  </data>
+  <data name="DownloadContractDetails" xml:space="preserve">
+    <value>Download details</value>
+  </data>
+  <data name="ContractDetailsDownloadFailed" xml:space="preserve">
+    <value>Contract details could not be downloaded. Check your connection and try again.</value>
+  </data>
   <data name="ContractReferenceUnavailable" xml:space="preserve">
     <value>This saved contract reference has no contract ID. It remains on this device but cannot be opened.</value>
   </data>
@@ -4458,5 +4470,38 @@ This sends the token link and its complete machine-readable details. Only send i
   </data>
   <data name="PetitionUnavailable" xml:space="preserve">
     <value>This access request has expired or is no longer available.</value>
+  </data>
+  <data name="RecoverContracts" xml:space="preserve">
+    <value>Recover contracts</value>
+  </data>
+  <data name="RecoverContractsDescription" xml:space="preserve">
+    <value>Find contracts linked to your account that are missing from this device. Contract contents load only when you open one.</value>
+  </data>
+  <data name="ContractCreationOutcomeUncertainTitle" xml:space="preserve">
+    <value>Creation outcome unknown</value>
+  </data>
+  <data name="ContractCreationOutcomeUncertain" xml:space="preserve">
+    <value>The server may have created this contract, but the app could not confirm it. Do not create it again yet. Check Contracts and use Recover contracts if it is missing.</value>
+  </data>
+  <data name="ContractPostCreateActionsIncomplete" xml:space="preserve">
+    <value>The contract was created, but one or more signatures or proposals could not be completed. Review the contract status and retry the remaining actions.</value>
+  </data>
+  <data name="ContractSigningOutcomeUnknownTitle" xml:space="preserve">
+    <value>Signing outcome unknown</value>
+  </data>
+  <data name="ContractPostCreateSigningOutcomeUnknown" xml:space="preserve">
+    <value>The contract was created, but the app could not confirm whether your signature completed. Open the contract and check its current status before trying again.</value>
+  </data>
+  <data name="ContractPostCreateSigningFailed" xml:space="preserve">
+    <value>The contract was created, but the signature was rejected or could not be completed. Open the contract to review its status.</value>
+  </data>
+  <data name="ContractSigningFailed" xml:space="preserve">
+    <value>The signature was rejected or could not be completed. Review the current contract status before trying again.</value>
+  </data>
+  <data name="ContractSigningOutcomeUnknown" xml:space="preserve">
+    <value>The app could not confirm whether your signature completed. The contract is being refreshed. Check its current status before trying again.</value>
+  </data>
+  <data name="ContractCreatedNavigationFailed" xml:space="preserve">
+    <value>The contract was created, but the app could not open it. It remains available from Contracts.</value>
   </data>
 </root>

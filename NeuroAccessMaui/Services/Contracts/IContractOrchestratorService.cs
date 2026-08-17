@@ -73,6 +73,20 @@ namespace NeuroAccessMaui.Services.Contracts
 			string? FromJid = null);
 
 		/// <summary>
+		/// Opens a saved contract reference before downloading any missing contract details.
+		/// </summary>
+		/// <param name="SourceReference">The persisted reference to open.</param>
+		/// <param name="Role">The proposed role when opening a contract proposal.</param>
+		/// <param name="Proposal">The proposal message, if any.</param>
+		/// <param name="FromJid">The sender of the proposal, if any.</param>
+		/// <returns>A task representing the navigation operation.</returns>
+		Task OpenContract(
+			ContractReference SourceReference,
+			string? Role = null,
+			string? Proposal = null,
+			string? FromJid = null);
+
+		/// <summary>
 		/// TAG Signature request scanned.
 		/// </summary>
 		/// <param name="Request">Request string.</param>

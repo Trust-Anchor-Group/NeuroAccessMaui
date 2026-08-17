@@ -4126,6 +4126,18 @@ Detta skickar tokenlänken och fullständiga maskinläsbara uppgifter. Skicka ba
   <data name="ContractSavedDetailsUnavailable" xml:space="preserve">
     <value>Sparade kontraktsuppgifter är inte tillgängliga. Öppna kontraktet för att uppdatera dem.</value>
   </data>
+  <data name="ContractDetailsNotDownloaded" xml:space="preserve">
+    <value>Detaljer ej hämtade</value>
+  </data>
+  <data name="ContractReferenceRecovered" xml:space="preserve">
+    <value>Återställt från ditt konto. Hämta detaljerna för att visa kontraktet.</value>
+  </data>
+  <data name="DownloadContractDetails" xml:space="preserve">
+    <value>Hämta detaljer</value>
+  </data>
+  <data name="ContractDetailsDownloadFailed" xml:space="preserve">
+    <value>Kontraktsdetaljerna kunde inte hämtas. Kontrollera anslutningen och försök igen.</value>
+  </data>
   <data name="ContractReferenceUnavailable" xml:space="preserve">
     <value>Den sparade kontraktsreferensen saknar kontrakts-ID. Den finns kvar på enheten men kan inte öppnas.</value>
   </data>
@@ -4251,5 +4263,38 @@ Detta skickar tokenlänken och fullständiga maskinläsbara uppgifter. Skicka ba
   </data>
   <data name="PetitionUnavailable" xml:space="preserve">
     <value>Den här åtkomstbegäran har löpt ut eller är inte längre tillgänglig.</value>
+  </data>
+  <data name="RecoverContracts" xml:space="preserve">
+    <value>Återställ kontrakt</value>
+  </data>
+  <data name="RecoverContractsDescription" xml:space="preserve">
+    <value>Hitta kontrakt som är kopplade till ditt konto men saknas på den här enheten. Kontraktsinnehåll hämtas först när du öppnar ett kontrakt.</value>
+  </data>
+  <data name="ContractCreationOutcomeUncertainTitle" xml:space="preserve">
+    <value>Resultatet av skapandet är okänt</value>
+  </data>
+  <data name="ContractCreationOutcomeUncertain" xml:space="preserve">
+    <value>Servern kan ha skapat kontraktet, men appen kunde inte bekräfta det. Skapa inte kontraktet igen ännu. Kontrollera Kontrakt och använd Återställ kontrakt om det saknas.</value>
+  </data>
+  <data name="ContractPostCreateActionsIncomplete" xml:space="preserve">
+    <value>Kontraktet skapades, men en eller flera signeringar eller förslag kunde inte slutföras. Kontrollera kontraktets status och försök utföra återstående åtgärder igen.</value>
+  </data>
+  <data name="ContractSigningOutcomeUnknownTitle" xml:space="preserve">
+    <value>Signeringsresultatet är okänt</value>
+  </data>
+  <data name="ContractPostCreateSigningOutcomeUnknown" xml:space="preserve">
+    <value>Kontraktet skapades, men appen kunde inte bekräfta om din signering slutfördes. Öppna kontraktet och kontrollera dess aktuella status innan du försöker igen.</value>
+  </data>
+  <data name="ContractPostCreateSigningFailed" xml:space="preserve">
+    <value>Kontraktet skapades, men signeringen avvisades eller kunde inte slutföras. Öppna kontraktet för att kontrollera dess status.</value>
+  </data>
+  <data name="ContractSigningFailed" xml:space="preserve">
+    <value>Signeringen avvisades eller kunde inte slutföras. Kontrollera kontraktets aktuella status innan du försöker igen.</value>
+  </data>
+  <data name="ContractSigningOutcomeUnknown" xml:space="preserve">
+    <value>Appen kunde inte bekräfta om din signering slutfördes. Kontraktet uppdateras. Kontrollera dess aktuella status innan du försöker igen.</value>
+  </data>
+  <data name="ContractCreatedNavigationFailed" xml:space="preserve">
+    <value>Kontraktet skapades, men appen kunde inte öppna det. Det finns fortfarande tillgängligt under Kontrakt.</value>
   </data>
 </root>

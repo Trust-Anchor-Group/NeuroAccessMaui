@@ -27,21 +27,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			try
 			{
-				MainThread.BeginInvokeOnMainThread(async () =>
+				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					HorizontalStackLayout filterLayout = this.FindByName<HorizontalStackLayout>("FilterTagsLayout");
-					ScrollView filterScroll = this.FindByName<ScrollView>("FilterTagsScroll");
-					if (filterLayout is null || filterScroll is null)
-						return;
-
-					foreach (object child in filterLayout.Children)
-					{
-						if (child is VisualElement ve && ve.BindingContext == tag)
-						{
-							await filterScroll.ScrollToAsync(ve, ScrollToPosition.Center, true);
-							break;
-						}
-					}
+					this.FilterTagsCollection.ScrollTo(
+						tag,
+						position: ScrollToPosition.Center,
+						animate: true);
 				});
 			}
 			catch (Exception Ex)

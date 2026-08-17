@@ -12123,6 +12123,14 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ContractSignByFormat => ResourceManager.GetString("ContractSignByFormat", resourceCulture);
         /// <summary>Gets the localized unavailable saved-details explanation.</summary>
         public static string ContractSavedDetailsUnavailable => ResourceManager.GetString("ContractSavedDetailsUnavailable", resourceCulture);
+        /// <summary>Gets the localized status for contract details that have not been downloaded.</summary>
+        public static string ContractDetailsNotDownloaded => ResourceManager.GetString("ContractDetailsNotDownloaded", resourceCulture);
+        /// <summary>Gets the localized recovered contract-reference explanation.</summary>
+        public static string ContractReferenceRecovered => ResourceManager.GetString("ContractReferenceRecovered", resourceCulture);
+        /// <summary>Gets the localized action for downloading contract details.</summary>
+        public static string DownloadContractDetails => ResourceManager.GetString("DownloadContractDetails", resourceCulture);
+        /// <summary>Gets the localized contract-details download failure explanation.</summary>
+        public static string ContractDetailsDownloadFailed => ResourceManager.GetString("ContractDetailsDownloadFailed", resourceCulture);
         /// <summary>Gets the localized unusable contract-reference explanation.</summary>
         public static string ContractReferenceUnavailable => ResourceManager.GetString("ContractReferenceUnavailable", resourceCulture);
         /// <summary>Gets the localized Contracts page subtitle.</summary>
@@ -12207,5 +12215,27 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string BrowseCreatedTokens => ResourceManager.GetString("BrowseCreatedTokens", resourceCulture);
         /// <summary>Gets the localized unavailable-petition message.</summary>
         public static string PetitionUnavailable => ResourceManager.GetString("PetitionUnavailable", resourceCulture);
+        /// <summary>Gets the localized recover-contracts action.</summary>
+        public static string RecoverContracts => ResourceManager.GetString("RecoverContracts", resourceCulture);
+        /// <summary>Gets the localized recover-contracts explanation.</summary>
+        public static string RecoverContractsDescription => ResourceManager.GetString("RecoverContractsDescription", resourceCulture);
+        /// <summary>Gets the localized title for an uncertain contract-creation outcome.</summary>
+        public static string ContractCreationOutcomeUncertainTitle => ResourceManager.GetString("ContractCreationOutcomeUncertainTitle", resourceCulture);
+        /// <summary>Gets the localized explanation for an uncertain contract-creation outcome.</summary>
+        public static string ContractCreationOutcomeUncertain => ResourceManager.GetString("ContractCreationOutcomeUncertain", resourceCulture);
+        /// <summary>Gets the localized explanation for incomplete post-create contract actions.</summary>
+        public static string ContractPostCreateActionsIncomplete => ResourceManager.GetString("ContractPostCreateActionsIncomplete", resourceCulture);
+        /// <summary>Gets the localized title for an uncertain contract-signing outcome.</summary>
+        public static string ContractSigningOutcomeUnknownTitle => ResourceManager.GetString("ContractSigningOutcomeUnknownTitle", resourceCulture);
+        /// <summary>Gets the localized post-create explanation for an uncertain contract-signing outcome.</summary>
+        public static string ContractPostCreateSigningOutcomeUnknown => ResourceManager.GetString("ContractPostCreateSigningOutcomeUnknown", resourceCulture);
+        /// <summary>Gets the localized post-create contract-signing failure explanation.</summary>
+        public static string ContractPostCreateSigningFailed => ResourceManager.GetString("ContractPostCreateSigningFailed", resourceCulture);
+        /// <summary>Gets the localized contract-signing failure explanation.</summary>
+        public static string ContractSigningFailed => ResourceManager.GetString("ContractSigningFailed", resourceCulture);
+        /// <summary>Gets the localized explanation for an uncertain contract-signing outcome.</summary>
+        public static string ContractSigningOutcomeUnknown => ResourceManager.GetString("ContractSigningOutcomeUnknown", resourceCulture);
+        /// <summary>Gets the localized explanation when a created contract cannot be opened.</summary>
+        public static string ContractCreatedNavigationFailed => ResourceManager.GetString("ContractCreatedNavigationFailed", resourceCulture);
     }
 }

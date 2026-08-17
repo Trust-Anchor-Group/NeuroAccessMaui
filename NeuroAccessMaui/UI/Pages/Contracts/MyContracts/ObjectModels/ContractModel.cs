@@ -266,7 +266,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <summary>
 		/// Gets whether a category is available.
 		/// </summary>
-		public bool HasCategory => !string.IsNullOrWhiteSpace(this.Category);
+		public bool HasCategory =>
+			!string.IsNullOrWhiteSpace(this.Category) &&
+			!string.Equals(
+				this.Category,
+				this.Title,
+				StringComparison.CurrentCultureIgnoreCase);
 
 		/// <summary>
 		/// Gets the localized contract state.
@@ -347,6 +352,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// Gets whether a recovery or freshness explanation is available.
 		/// </summary>
 		public bool HasRecoveryText => !string.IsNullOrWhiteSpace(this.RecoveryText);
+
+		/// <summary>
+		/// Gets whether this is a recovered reference whose contract details have not been downloaded yet.
+		/// </summary>
+		public bool NeedsDetailsDownload => !this.HasLocalContract && this.CanOpen;
+
+		/// <summary>
+		/// Gets whether the recovery text represents a warning about saved contract data.
+		/// </summary>
+		public bool HasRecoveryWarning => this.HasRecoveryText && !this.NeedsDetailsDownload;
 
 		/// <summary>
 		/// Gets whether the saved XML was parsed into a local contract summary.

@@ -785,6 +785,42 @@ namespace NeuroAccessMaui.Services.Contracts
 				FromJid);
 		}
 
+		/// <summary>
+		/// Opens a saved contract reference before downloading any missing contract details.
+		/// </summary>
+		/// <param name="SourceReference">The persisted reference to open.</param>
+		/// <param name="Role">The proposed role when opening a contract proposal.</param>
+		/// <param name="Proposal">The proposal message, if any.</param>
+		/// <param name="FromJid">The sender of the proposal, if any.</param>
+		/// <returns>A task representing the navigation operation.</returns>
+		public async Task OpenContract(
+			ContractReference SourceReference,
+			string? Role = null,
+			string? Proposal = null,
+			string? FromJid = null)
+		{
+			ArgumentNullException.ThrowIfNull(SourceReference);
+
+			string ContractId = Convert.ToString(SourceReference.ContractId)?.Trim() ?? string.Empty;
+			if (string.IsNullOrEmpty(ContractId))
+				throw new ArgumentException("A contract identifier is required.", nameof(SourceReference));
+
+			ViewContractNavigationArgs Args = new(
+				null,
+				false,
+				Role,
+				Proposal,
+				FromJid,
+				null,
+				SourceReference);
+
+			await MainThread.InvokeOnMainThreadAsync(
+				() => ServiceRef.NavigationService.GoToAsync(
+					nameof(ViewContractPage),
+					Args,
+					BackMethod.Pop));
+		}
+
 		private async Task OpenContractAsync(
 			string ContractId,
 			string Purpose,

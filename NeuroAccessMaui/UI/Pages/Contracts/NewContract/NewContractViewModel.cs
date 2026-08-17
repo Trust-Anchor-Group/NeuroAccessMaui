@@ -6,6 +6,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
@@ -26,6 +27,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
 	public partial class NewContractViewModel : BaseViewModel, ILinkableView, IDisposable
 	{
+		private static readonly TimeSpan contractCreationTimeout = TimeSpan.FromSeconds(45);
+		private static readonly TimeSpan stateChangeWaitTimeout = TimeSpan.FromSeconds(2);
+
 		#region Constructors
 
 		/// <summary>
@@ -48,7 +52,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private bool suppressParameterValidation;
 		private bool hasAttemptedParameterStep;
 		private int validationGeneration;
-		private TaskCompletionSource<Contract?>? postCreateCompletion;
 
 
 		#endregion
@@ -132,6 +135,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
 		private bool isValidationDisabled = false;
 
+		/// <summary>
+		/// Gets or sets whether contract creation may have completed without a confirmed response.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanCreate))]
+		[NotifyPropertyChangedFor(nameof(CanAdvanceCurrentStep))]
+		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
+		private bool isCreationOutcomeUncertain;
+
 		public string ProgressText =>
 			this.IsTransientPreview && this.CurrentState == nameof(NewContractStep.Preview)
 				? ServiceRef.Localizer[nameof(AppResources.ContractWizardReviewHumanReadable)]
@@ -161,6 +173,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public bool CanAdvanceCurrentStep =>
 			!this.IsValidatingParameters &&
+			!this.IsCreationOutcomeUncertain &&
 			(!this.IsOnPreviewStep || this.IsContractOk);
 
 		partial void OnCurrentStepChanged(StepDescriptor? oldValue, StepDescriptor? newValue)
@@ -380,10 +393,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 
 		public bool CanCreate =>
-			(this.IsParametersOk && this.IsRolesOk && this.IsContractOk
+			!this.IsCreationOutcomeUncertain &&
+			((this.IsParametersOk && this.IsRolesOk && this.IsContractOk
 			&& this.SelectedContractVisibilityItem is not null
 			&& this.IsSelectedIdentityEligible)
-			|| this.IsValidationDisabled;
+			|| this.IsValidationDisabled);
 
 		partial void OnIsContractOkChanged(bool value)
 		{
@@ -520,8 +534,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		/// <summary>
 		/// Navigates to the specified state.
-		/// Can only navigate when <see cref="CanStateChange"/> is true.
-		/// Otherwise it stalls until it can navigate.
+		/// Uses animation when available and falls back to a direct state change.
 		/// </summary>
 		/// <param name="NewStep">The new step to navigate to.</param>
 		private async Task GoToState(NewContractStep NewStep)
@@ -534,12 +547,81 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (NewState == this.CurrentState)
 				return;
 
-			while (!this.CanStateChange)
-				await Task.Delay(100);
+			DateTime WaitUntil = DateTime.UtcNow + stateChangeWaitTimeout;
+			while (!this.CanStateChange && DateTime.UtcNow < WaitUntil)
+				await Task.Delay(50);
 
-			await MainThread.InvokeOnMainThreadAsync(async () =>
+			if (!this.CanStateChange)
 			{
-				await StateContainer.ChangeStateWithAnimation(this.StateObject, NewState);
+				ServiceRef.LogService.LogWarning(
+					"Contract creation animation did not become available; applying state directly.");
+				await this.SetStateDirectlyAsync(NewState);
+				return;
+			}
+
+			using CancellationTokenSource TransitionTimeout =
+				new(stateChangeWaitTimeout);
+			Task TransitionTask = MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await StateContainer.ChangeStateWithAnimation(
+					this.StateObject,
+					NewState,
+					TransitionTimeout.Token);
+			});
+			Task CompletedTask = await Task.WhenAny(
+				TransitionTask,
+				Task.Delay(stateChangeWaitTimeout));
+			if (CompletedTask != TransitionTask)
+			{
+				TransitionTimeout.Cancel();
+				_ = ObserveStateTransitionAsync(TransitionTask);
+				ServiceRef.LogService.LogWarning(
+					"Contract creation animation timed out; applying state directly.");
+				await this.SetStateDirectlyAsync(NewState);
+				return;
+			}
+
+			try
+			{
+				await TransitionTask;
+			}
+			catch (OperationCanceledException) when (TransitionTimeout.IsCancellationRequested)
+			{
+				ServiceRef.LogService.LogWarning(
+					"Contract creation animation timed out; applying state directly.");
+				await this.SetStateDirectlyAsync(NewState);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogWarning(
+					"Contract creation animation failed; applying state directly.",
+					new KeyValuePair<string, object?>("FailureType", Ex.GetType().Name));
+				await this.SetStateDirectlyAsync(NewState);
+			}
+		}
+
+		private static async Task ObserveStateTransitionAsync(Task TransitionTask)
+		{
+			try
+			{
+				await TransitionTask.ConfigureAwait(false);
+			}
+			catch
+			{
+				// The direct fallback has already restored the requested state.
+			}
+		}
+
+		private Task SetStateDirectlyAsync(string NewState)
+		{
+			return MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				if (this.StateObject is null)
+					return;
+
+				StateContainer.SetCurrentState(this.StateObject, NewState);
+				this.CurrentState = NewState;
+				this.CanStateChange = true;
 			});
 		}
 
@@ -652,7 +734,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				LogPostCreateFailure("Created contract navigation failed.", Ex);
 			}
 			this.IsCurrentStepValid = Ok;
 			this.CurrentStep.IsComplete = Ok;
@@ -1012,6 +1094,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			if (this.Contract is null)
 				return;
+			if (this.IsCreationOutcomeUncertain)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ContractCreationOutcomeUncertainTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ContractCreationOutcomeUncertain)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				return;
+			}
 
 			if (!await this.ValidateCreationAndNavigateAsync())
 				return;
@@ -1024,9 +1114,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-			ContractsClient Client = ServiceRef.XmppService.ContractsClient;
-
-			Contract? CreatedContract = null;
 			List<Part> Parts = [];
 			foreach (ObservableRole Role in this.Contract.Roles)
 			{
@@ -1036,68 +1123,38 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 			}
 
+			Contract CreatedContract;
+			Task<Contract> CreationTask = ServiceRef.XmppService.CreateContract(
+				this.Contract.Contract.ContractId,
+				[.. Parts],
+				this.Contract.Contract.Parameters,
+				this.SelectedContractVisibilityItem?.Visibility ?? this.Contract.Visibility,
+				ContractParts.ExplicitlyDefined,
+				this.Contract.Contract.Duration ?? Duration.FromYears(1),
+				this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
+				this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
+				null, null, false);
+
 			try
 			{
-				CreatedContract = await Client.CreateContractAsync(
-					this.Contract.Contract.ContractId,
-					[.. Parts],
-					this.Contract.Contract.Parameters,
-					this.SelectedContractVisibilityItem?.Visibility ?? this.Contract.Visibility,
-					ContractParts.ExplicitlyDefined,
-					this.Contract.Contract.Duration ?? Duration.FromYears(1),
-					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
-					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
-					null, null, false);
-				this.lastCreatedContract = CreatedContract;
-				await this.OpenCreatedContract();
-				// Sign for all selected roles (could be none)
-				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
-				if (!string.IsNullOrEmpty(MyId))
-				{
-					foreach (ObservableRole Role in this.Contract.Roles)
-					{
-						if (Role.Parts.Any(p => p.LegalId == MyId))
-						{
-							CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, Role.Name, false);
-						}
-					}
-				}
-
-				foreach (Part Part in Parts)
-				{
-					if (this.args?.SuppressedProposalLegalIds is not null && Array.IndexOf<CaseInsensitiveString>(this.args.SuppressedProposalLegalIds, Part.LegalId) >= 0)
-						continue;
-
-					if (Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
-						continue;
-
-					ContactInfo? Info = await ContactInfo.FindByLegalId(Part.LegalId);
-					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
-						continue;
-					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, Info.BareJid, true);
-
-					string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
-						ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
-						ServiceRef.Localizer[nameof(AppResources.Send)],
-						ServiceRef.Localizer[nameof(AppResources.Cancel)]);
-
-					if (!string.IsNullOrEmpty(Proposal))
-						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
-					else
-						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
-				}
+				CreatedContract = await CreationTask.WaitAsync(contractCreationTimeout);
 			}
-			catch (Waher.Networking.XMPP.XmppException)
+			catch (TimeoutException)
 			{
-				// Protocol exception text can expose technical details; the localized failure below is retry-safe.
+				// The mutation may have succeeded even though its response did not complete.
+				// Keep observing persistence, but block retries that could create a duplicate.
+				_ = ObserveContractCreationAsync(CreationTask);
+				this.IsCreationOutcomeUncertain = true;
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ContractCreationOutcomeUncertainTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ContractCreationOutcomeUncertain)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoToState(NewContractStep.Preview);
+				return;
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-
-			if (CreatedContract is null)
-			{
+				LogPostCreateFailure("Contract creation failed.", Ex);
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Error)],
 					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
@@ -1106,12 +1163,309 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-			// Directly open created contract (no Final step)
+			// Preserve a reachable navigation target before any post-create mutation begins.
 			this.lastCreatedContract = CreatedContract;
-			// Complete the post-create TCS so ViewContract can update signing UI
-			this.postCreateCompletion?.TrySetResult(CreatedContract);
-			this.postCreateCompletion = null;
+			bool NavigationCompleted = false;
+			TaskCompletionSource<Contract?>? PostCreateCompletion = null;
+			try
+			{
+				(Contract CompletedContract, bool Incomplete, ContractSigningOutcome? SigningOutcome) PostCreateResult =
+					await this.CompletePostCreateActionsAsync(CreatedContract, Parts);
+				CreatedContract = PostCreateResult.CompletedContract;
+				this.lastCreatedContract = CreatedContract;
 
+				if (PostCreateResult.SigningOutcome == ContractSigningOutcome.TerminalFailure)
+				{
+					await this.SetStateDirectlyAsync(nameof(NewContractStep.Preview));
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ContractCreated)],
+						ServiceRef.Localizer[nameof(AppResources.ContractPostCreateSigningFailed)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+				else if (PostCreateResult.SigningOutcome == ContractSigningOutcome.OutcomeUnknown)
+				{
+					await this.SetStateDirectlyAsync(nameof(NewContractStep.Preview));
+					PostCreateCompletion = new TaskCompletionSource<Contract?>(
+						TaskCreationOptions.RunContinuationsAsynchronously);
+					_ = ReconcilePostCreateSigningOutcomeAsync(
+						CreatedContract.ContractId,
+						PostCreateCompletion);
+
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ContractSigningOutcomeUnknownTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ContractPostCreateSigningOutcomeUnknown)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+				else if (PostCreateResult.Incomplete)
+				{
+					await this.SetStateDirectlyAsync(nameof(NewContractStep.Preview));
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ContractCreated)],
+						ServiceRef.Localizer[nameof(AppResources.ContractPostCreateActionsIncomplete)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+
+				// Navigation begins only after post-create work has completed. This avoids a
+				// cycle where the destination waits for work blocked behind its own navigation.
+				await this.OpenCreatedContract(PostCreateCompletion);
+				NavigationCompleted = true;
+			}
+			catch (Exception Ex)
+			{
+				await this.SetStateDirectlyAsync(nameof(NewContractStep.Preview));
+				LogPostCreateFailure("Created contract navigation failed.", Ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ContractCreated)],
+					ServiceRef.Localizer[nameof(AppResources.ContractCreatedNavigationFailed)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			finally
+			{
+				if (!NavigationCompleted &&
+					this.CurrentState == nameof(NewContractStep.Loading))
+				{
+					await this.SetStateDirectlyAsync(nameof(NewContractStep.Preview));
+				}
+			}
+		}
+
+		private static async Task ObserveContractCreationAsync(Task<Contract> CreationTask)
+		{
+			try
+			{
+				await CreationTask.ConfigureAwait(false);
+			}
+			catch
+			{
+				// The foreground path already reports that the outcome is unknown.
+			}
+		}
+
+		private async Task<(
+			Contract CompletedContract,
+			bool Incomplete,
+			ContractSigningOutcome? SigningOutcome)>
+			CompletePostCreateActionsAsync(
+				Contract CreatedContract,
+				IReadOnlyList<Part> Parts)
+		{
+			bool Incomplete = false;
+			ContractSigningOutcome? SigningOutcome = null;
+			string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+			if (!string.IsNullOrEmpty(MyId) && this.Contract is not null)
+			{
+				foreach (ObservableRole Role in this.Contract.Roles)
+				{
+					if (!Role.Parts.Any(Part => Part.LegalId == MyId))
+						continue;
+
+					ContractSigningResult SigningResult =
+						await ServiceRef.XmppService.SignContractWithOutcomeAsync(
+							CreatedContract,
+							Role.Name,
+							false,
+							contractCreationTimeout);
+
+					SigningOutcome = SigningResult.Outcome;
+					if (SigningResult.Contract is not null)
+						CreatedContract = SigningResult.Contract;
+
+					if (SigningResult.Outcome != ContractSigningOutcome.Confirmed)
+						return (CreatedContract, true, SigningResult.Outcome);
+				}
+			}
+
+			foreach (Part Part in Parts)
+			{
+				if (this.args?.SuppressedProposalLegalIds is not null &&
+					Array.IndexOf<CaseInsensitiveString>(
+						this.args.SuppressedProposalLegalIds,
+						Part.LegalId) >= 0)
+				{
+					continue;
+				}
+
+				if (Part.LegalId == MyId)
+					continue;
+
+				try
+				{
+					ContactInfo? Info = await ContactInfo.FindByLegalId(Part.LegalId);
+					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
+						continue;
+
+					Task AuthorizationTask =
+						ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(
+							CreatedContract.ContractId,
+							Info.BareJid,
+							true);
+					if (!await CompletePostCreateOperationAsync(
+						AuthorizationTask,
+						CreatedContract.ContractId,
+						"AccessAuthorization"))
+					{
+						Incomplete = true;
+						continue;
+					}
+
+					string? Proposal = await ServiceRef.UiService.DisplayPrompt(
+						ServiceRef.Localizer[nameof(AppResources.Proposal)],
+						ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
+						ServiceRef.Localizer[nameof(AppResources.Send)],
+						ServiceRef.Localizer[nameof(AppResources.Cancel)]);
+
+					Task ProposalTask = ServiceRef.XmppService.SendContractProposal(
+						CreatedContract,
+						Part.Role,
+						Info.BareJid,
+						!string.IsNullOrEmpty(Proposal)
+							? Proposal
+							: ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
+					if (!await CompletePostCreateOperationAsync(
+						ProposalTask,
+						CreatedContract.ContractId,
+						"ProposalDelivery"))
+					{
+						Incomplete = true;
+					}
+				}
+				catch (Exception Ex)
+				{
+					Incomplete = true;
+					LogPostCreateFailure("Post-create contract proposal failed.", Ex);
+				}
+			}
+
+			return (CreatedContract, Incomplete, SigningOutcome);
+		}
+
+		private static async Task<bool> CompletePostCreateOperationAsync(
+			Task OperationTask,
+			CaseInsensitiveString ContractId,
+			string Stage)
+		{
+			long Started = Environment.TickCount64;
+			try
+			{
+				await OperationTask.WaitAsync(contractCreationTimeout);
+				return true;
+			}
+			catch (TimeoutException Ex)
+			{
+				_ = ObservePostCreateOperationAsync(OperationTask, ContractId, Stage);
+				LogPostCreateFailure(
+					"Post-create operation timed out.",
+					Ex,
+					ContractId,
+					Stage,
+					"Timeout",
+					Environment.TickCount64 - Started);
+				return false;
+			}
+			catch (Exception Ex)
+			{
+				LogPostCreateFailure(
+					"Post-create operation failed.",
+					Ex,
+					ContractId,
+					Stage,
+					"OperationFault",
+					Environment.TickCount64 - Started);
+				return false;
+			}
+		}
+
+		private static async Task ObservePostCreateOperationAsync(
+			Task OperationTask,
+			CaseInsensitiveString ContractId,
+			string Stage)
+		{
+			long Started = Environment.TickCount64;
+			try
+			{
+				await OperationTask.ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				LogPostCreateFailure(
+					"Late post-create operation failed.",
+					Ex,
+					ContractId,
+					Stage,
+					"LateOperationFault",
+					Environment.TickCount64 - Started);
+			}
+		}
+
+		private static async Task ReconcilePostCreateSigningOutcomeAsync(
+			CaseInsensitiveString ContractId,
+			TaskCompletionSource<Contract?> Completion)
+		{
+			long Started = Environment.TickCount64;
+			Task<Contract>? RefreshTask = null;
+			try
+			{
+				RefreshTask = ServiceRef.XmppService.GetContract(ContractId);
+				Contract RefreshedContract = await RefreshTask.WaitAsync(contractCreationTimeout);
+				Completion.TrySetResult(RefreshedContract);
+			}
+			catch (TimeoutException Ex)
+			{
+				if (RefreshTask is not null)
+				{
+					_ = ObservePostCreateOperationAsync(
+						RefreshTask,
+						ContractId,
+						"SigningReconciliation");
+				}
+				LogPostCreateFailure(
+					"Post-create signing reconciliation timed out.",
+					Ex,
+					ContractId,
+					"SigningReconciliation",
+					"Timeout",
+					Environment.TickCount64 - Started);
+				Completion.TrySetResult(null);
+			}
+			catch (Exception Ex)
+			{
+				LogPostCreateFailure(
+					"Post-create signing reconciliation failed.",
+					Ex,
+					ContractId,
+					"SigningReconciliation",
+					"OperationFault",
+					Environment.TickCount64 - Started);
+				Completion.TrySetResult(null);
+			}
+		}
+
+		private static void LogPostCreateFailure(string Message, Exception Exception)
+		{
+			// Contract content, identities, roles, and proposal text are deliberately omitted.
+			ServiceRef.LogService.LogWarning(
+				Message,
+				new KeyValuePair<string, object?>(
+					"FailureType",
+					Exception.GetType().Name));
+		}
+
+		private static void LogPostCreateFailure(
+			string Message,
+			Exception Exception,
+			CaseInsensitiveString ContractId,
+			string Stage,
+			string OutcomeCategory,
+			long ElapsedMilliseconds)
+		{
+			// Contract content, identities, roles, proposal text, and exception details are deliberately omitted.
+			ServiceRef.LogService.LogWarning(
+				Message,
+				new KeyValuePair<string, object?>("Stage", Stage),
+				new KeyValuePair<string, object?>("OutcomeCategory", OutcomeCategory),
+				new KeyValuePair<string, object?>("ElapsedMilliseconds", ElapsedMilliseconds),
+				new KeyValuePair<string, object?>("ContractId", ContractId),
+				new KeyValuePair<string, object?>("FailureType", Exception.GetType().Name));
 		}
 
 		private async Task<bool> ValidateCreationAndNavigateAsync()
@@ -1202,14 +1556,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.Back();
 		}
 
-		private async Task OpenCreatedContract()
+		private async Task OpenCreatedContract(
+			TaskCompletionSource<Contract?>? PostCreateCompletion = null)
 		{
 			if (this.lastCreatedContract is null)
 				return;
-			TaskCompletionSource<Contract?> Tcs = new TaskCompletionSource<Contract?>();
-			ViewContractNavigationArgs Args = new(this.lastCreatedContract, false, null, string.Empty, null, Tcs);
+			ViewContractNavigationArgs Args = new(
+				this.lastCreatedContract,
+				false,
+				null,
+				string.Empty,
+				null,
+				PostCreateCompletion);
 			await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
-			this.postCreateCompletion = Tcs;
 		}
 
 		/// <summary>

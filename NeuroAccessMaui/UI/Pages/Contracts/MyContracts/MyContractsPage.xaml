@@ -69,48 +69,67 @@
 					WidthRequest="46" />
 			</Grid>
 
-			<ScrollView
-				x:Name="FilterTagsScroll"
+			<CollectionView
+				x:Name="FilterTagsCollection"
+				HeightRequest="44"
 				HorizontalScrollBarVisibility="Never"
-				Orientation="Horizontal">
-				<HorizontalStackLayout
-					x:Name="FilterTagsLayout"
-					BindableLayout.ItemsSource="{Binding FilterTags}"
-					Spacing="{DynamicResource SmallSpacing}">
-					<BindableLayout.ItemTemplate>
-						<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
-							<controls:TemplatedButton
-								Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-								CommandParameter="{Binding .}"
-								Padding="0">
-								<Border
-									BackgroundColor="{DynamicResource TnPNeutralv300bgWL}"
-									Padding="12,7"
-									Stroke="{DynamicResource SurfaceStrokeWL}"
-									StrokeShape="RoundRectangle 20">
-									<Label
-										FontSize="14"
-										Text="{Binding Category}"
-										TextColor="{DynamicResource TnPNeutralv300ContentWL}" />
-									<Border.Triggers>
+				ItemSizingStrategy="MeasureAllItems"
+				ItemsSource="{Binding FilterTags}"
+				SelectionMode="None">
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout
+						ItemSpacing="{DynamicResource SmallSpacing}"
+						Orientation="Horizontal" />
+				</CollectionView.ItemsLayout>
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
+						<controls:TemplatedButton
+							Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+							CommandParameter="{Binding .}"
+							HorizontalOptions="Start"
+							Padding="0"
+							VerticalOptions="Center">
+							<Border
+								BackgroundColor="{DynamicResource TnPNeutralv300bgWL}"
+								HeightRequest="36"
+								Padding="12,0"
+								Stroke="{DynamicResource SurfaceStrokeWL}"
+								StrokeShape="RoundRectangle 18"
+								VerticalOptions="Center">
+								<Label
+									LineBreakMode="NoWrap"
+									Style="{DynamicResource StatusPillControlLabel}"
+									Text="{Binding Category}"
+									VerticalTextAlignment="Center">
+									<Label.Triggers>
 										<DataTrigger
 											Binding="{Binding IsSelected}"
-											TargetType="Border"
+											TargetType="Label"
 											Value="True">
 											<Setter
-												Property="BackgroundColor"
-												Value="{DynamicResource TnPInfobgWL}" />
-											<Setter
-												Property="Stroke"
+												Property="TextColor"
 												Value="{DynamicResource TnPInfoContentWL}" />
 										</DataTrigger>
-									</Border.Triggers>
-								</Border>
-							</controls:TemplatedButton>
-						</DataTemplate>
-					</BindableLayout.ItemTemplate>
-				</HorizontalStackLayout>
-			</ScrollView>
+									</Label.Triggers>
+								</Label>
+								<Border.Triggers>
+									<DataTrigger
+										Binding="{Binding IsSelected}"
+										TargetType="Border"
+										Value="True">
+										<Setter
+											Property="BackgroundColor"
+											Value="{DynamicResource TnPInfobgWL}" />
+										<Setter
+											Property="Stroke"
+											Value="{DynamicResource TnPInfoContentWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+							</Border>
+						</controls:TemplatedButton>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
 		</VerticalStackLayout>
 
 		<Grid Grid.Row="2">
@@ -142,11 +161,11 @@
 						Style="{DynamicResource ItemDescriptionLabel}"
 						Text="{Binding LoadErrorMessage}"
 						TextColor="{DynamicResource ContentSecondaryWL}" />
-					<Button
+					<controls:TextButton
 						Command="{Binding RetryCommand}"
 						HorizontalOptions="Start"
-						Style="{DynamicResource SecondaryButton}"
-						Text="{l:Localize Retry}" />
+						LabelData="{l:Localize Retry}"
+						Style="{DynamicResource SecondaryButton}" />
 				</VerticalStackLayout>
 			</Border>
 
@@ -168,6 +187,22 @@
 						Style="{DynamicResource ItemDescriptionLabel}"
 						Text="{l:Localize NoMatchingContractsDescription}"
 						TextColor="{DynamicResource ContentSecondaryWL}" />
+					<Label
+						HorizontalTextAlignment="Center"
+						IsVisible="{Binding CanRecoverContracts}"
+						Style="{DynamicResource ItemDescriptionLabel}"
+						Text="{l:Localize RecoverContractsDescription}"
+						TextColor="{DynamicResource ContentSecondaryWL}" />
+					<controls:TextButton
+						Command="{Binding RecoverContractsCommand}"
+						HorizontalOptions="Center"
+						IsVisible="{Binding CanRecoverContracts}"
+						LabelData="{l:Localize RecoverContracts}"
+						Style="{DynamicResource SecondaryButton}" />
+					<ActivityIndicator
+						Color="{DynamicResource TnPInfoContentWL}"
+						IsRunning="{Binding IsRecoveringContracts}"
+						IsVisible="{Binding IsRecoveringContracts}" />
 				</VerticalStackLayout>
 			</Border>
 
@@ -291,11 +326,19 @@
 											TextColor="{DynamicResource ContentSecondaryWL}" />
 									</FlexLayout>
 
+									<Label
+										Grid.Row="3"
+										Grid.ColumnSpan="2"
+										IsVisible="{Binding NeedsDetailsDownload}"
+										Style="{DynamicResource ItemDescriptionLabel}"
+										Text="{Binding RecoveryText}"
+										TextColor="{DynamicResource ContentSecondaryWL}" />
+
 									<Border
 										Grid.Row="3"
 										Grid.ColumnSpan="2"
 										BackgroundColor="{DynamicResource TnPWarningbgWL}"
-										IsVisible="{Binding HasRecoveryText}"
+										IsVisible="{Binding HasRecoveryWarning}"
 										Padding="10,8"
 										Stroke="{DynamicResource TnPWarningContentWL}"
 										StrokeShape="RoundRectangle 8">

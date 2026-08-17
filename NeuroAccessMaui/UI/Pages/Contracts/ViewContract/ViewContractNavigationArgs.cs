@@ -79,9 +79,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public string? FromJID { get; } = FromJID;
 
 		/// <summary>
-		/// Optional completion source that will complete once post-create signing completes.
-		/// If set, the View will await this before enabling signing UI. If it returns a non-null Contract, it will be shown.
+		/// Optional completion source used by compatible callers that perform work after navigation.
 		/// </summary>
 		public TaskCompletionSource<Contract?>? PostCreateCompletion { get; } = PostCreateCompletion;
+
 	}
 }

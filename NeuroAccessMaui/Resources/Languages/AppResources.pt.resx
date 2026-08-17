@@ -4141,6 +4141,18 @@ Isso envia o link e todos os dados legíveis por máquina do token. Envie soment
   <data name="ContractSavedDetailsUnavailable" xml:space="preserve">
     <value>Os detalhes salvos do contrato não estão disponíveis. Abra o contrato para atualizá-los.</value>
   </data>
+  <data name="ContractDetailsNotDownloaded" xml:space="preserve">
+    <value>Detalhes não baixados</value>
+  </data>
+  <data name="ContractReferenceRecovered" xml:space="preserve">
+    <value>Recuperado da sua conta. Baixe os detalhes para ver este contrato.</value>
+  </data>
+  <data name="DownloadContractDetails" xml:space="preserve">
+    <value>Baixar detalhes</value>
+  </data>
+  <data name="ContractDetailsDownloadFailed" xml:space="preserve">
+    <value>Não foi possível baixar os detalhes do contrato. Verifique sua conexão e tente novamente.</value>
+  </data>
   <data name="ContractReferenceUnavailable" xml:space="preserve">
     <value>Esta referência de contrato salva não tem ID de contrato. Ela permanece neste dispositivo, mas não pode ser aberta.</value>
   </data>
@@ -4266,5 +4278,38 @@ Isso envia o link e todos os dados legíveis por máquina do token. Envie soment
   </data>
   <data name="PetitionUnavailable" xml:space="preserve">
     <value>Esta solicitação de acesso expirou ou não está mais disponível.</value>
+  </data>
+  <data name="RecoverContracts" xml:space="preserve">
+    <value>Recuperar contratos</value>
+  </data>
+  <data name="RecoverContractsDescription" xml:space="preserve">
+    <value>Encontre contratos vinculados à sua conta que estão ausentes neste dispositivo. O conteúdo só é carregado quando você abre um contrato.</value>
+  </data>
+  <data name="ContractCreationOutcomeUncertainTitle" xml:space="preserve">
+    <value>Resultado da criação desconhecido</value>
+  </data>
+  <data name="ContractCreationOutcomeUncertain" xml:space="preserve">
+    <value>O servidor pode ter criado este contrato, mas o aplicativo não conseguiu confirmar. Não crie o contrato novamente ainda. Verifique Contratos e use Recuperar contratos se ele não aparecer.</value>
+  </data>
+  <data name="ContractPostCreateActionsIncomplete" xml:space="preserve">
+    <value>O contrato foi criado, mas uma ou mais assinaturas ou propostas não puderam ser concluídas. Revise o status do contrato e tente novamente as ações restantes.</value>
+  </data>
+  <data name="ContractSigningOutcomeUnknownTitle" xml:space="preserve">
+    <value>Resultado da assinatura desconhecido</value>
+  </data>
+  <data name="ContractPostCreateSigningOutcomeUnknown" xml:space="preserve">
+    <value>O contrato foi criado, mas o aplicativo não conseguiu confirmar se sua assinatura foi concluída. Abra o contrato e verifique o status atual antes de tentar novamente.</value>
+  </data>
+  <data name="ContractPostCreateSigningFailed" xml:space="preserve">
+    <value>O contrato foi criado, mas a assinatura foi rejeitada ou não pôde ser concluída. Abra o contrato para revisar o status.</value>
+  </data>
+  <data name="ContractSigningFailed" xml:space="preserve">
+    <value>A assinatura foi rejeitada ou não pôde ser concluída. Revise o status atual do contrato antes de tentar novamente.</value>
+  </data>
+  <data name="ContractSigningOutcomeUnknown" xml:space="preserve">
+    <value>O aplicativo não conseguiu confirmar se sua assinatura foi concluída. O contrato está sendo atualizado. Verifique o status atual antes de tentar novamente.</value>
+  </data>
+  <data name="ContractCreatedNavigationFailed" xml:space="preserve">
+    <value>O contrato foi criado, mas o aplicativo não conseguiu abri-lo. Ele continua disponível em Contratos.</value>
   </data>
 </root>

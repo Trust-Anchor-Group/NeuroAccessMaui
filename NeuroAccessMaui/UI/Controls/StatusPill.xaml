@@ -16,65 +16,65 @@
 				<VisualState x:Name="Neutral">
 					<VisualState.Setters>
 						<Setter TargetName="PillBorder"
-								Property="BackgroundColor"
+								Property="Border.BackgroundColor"
 								Value="{DynamicResource TnPNeutralv300bgWL}" />
 						<Setter TargetName="PillLabel"
-								Property="TextColor"
+								Property="Label.TextColor"
 								Value="{DynamicResource TnPNeutralv300ContentWL}" />
 						<Setter TargetName="PillIcon"
-								Property="TintColor"
+								Property="controls:SvgView.TintColor"
 								Value="{DynamicResource TnPNeutralv300ContentWL}" />
 					</VisualState.Setters>
 				</VisualState>
 				<VisualState x:Name="Information">
 					<VisualState.Setters>
 						<Setter TargetName="PillBorder"
-								Property="BackgroundColor"
+								Property="Border.BackgroundColor"
 								Value="{DynamicResource TnPInfobgWL}" />
 						<Setter TargetName="PillLabel"
-								Property="TextColor"
+								Property="Label.TextColor"
 								Value="{DynamicResource TnPInfoContentWL}" />
 						<Setter TargetName="PillIcon"
-								Property="TintColor"
+								Property="controls:SvgView.TintColor"
 								Value="{DynamicResource TnPInfoFigureWL}" />
 					</VisualState.Setters>
 				</VisualState>
 				<VisualState x:Name="Success">
 					<VisualState.Setters>
 						<Setter TargetName="PillBorder"
-								Property="BackgroundColor"
+								Property="Border.BackgroundColor"
 								Value="{DynamicResource TnPSuccessbgWL}" />
 						<Setter TargetName="PillLabel"
-								Property="TextColor"
+								Property="Label.TextColor"
 								Value="{DynamicResource TnPSuccessContentWL}" />
 						<Setter TargetName="PillIcon"
-								Property="TintColor"
+								Property="controls:SvgView.TintColor"
 								Value="{DynamicResource TnPSuccessFigureWL}" />
 					</VisualState.Setters>
 				</VisualState>
 				<VisualState x:Name="Warning">
 					<VisualState.Setters>
 						<Setter TargetName="PillBorder"
-								Property="BackgroundColor"
+								Property="Border.BackgroundColor"
 								Value="{DynamicResource TnPWarningbgWL}" />
 						<Setter TargetName="PillLabel"
-								Property="TextColor"
+								Property="Label.TextColor"
 								Value="{DynamicResource TnPWarningContentWL}" />
 						<Setter TargetName="PillIcon"
-								Property="TintColor"
+								Property="controls:SvgView.TintColor"
 								Value="{DynamicResource TnPWarningFigureWL}" />
 					</VisualState.Setters>
 				</VisualState>
 				<VisualState x:Name="Danger">
 					<VisualState.Setters>
 						<Setter TargetName="PillBorder"
-								Property="BackgroundColor"
+								Property="Border.BackgroundColor"
 								Value="{DynamicResource TnPDangerbgWL}" />
 						<Setter TargetName="PillLabel"
-								Property="TextColor"
+								Property="Label.TextColor"
 								Value="{DynamicResource TnPDangerContentWL}" />
 						<Setter TargetName="PillIcon"
-								Property="TintColor"
+								Property="controls:SvgView.TintColor"
 								Value="{DynamicResource TnPDangerFigureWL}" />
 					</VisualState.Setters>
 				</VisualState>

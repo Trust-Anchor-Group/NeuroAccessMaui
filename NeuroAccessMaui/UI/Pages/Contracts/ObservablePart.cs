@@ -44,7 +44,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			try
 			{
 				// Set Friendly name before anything can go wrong
-				this.FriendlyName = await this.GetFriendlyNameAsync();
+				string InitialFriendlyName = await this.GetFriendlyNameAsync();
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.FriendlyName = InitialFriendlyName;
+				});
 				if (sendPetition)
 					await this.PetitionIdentityAsync();
 				else

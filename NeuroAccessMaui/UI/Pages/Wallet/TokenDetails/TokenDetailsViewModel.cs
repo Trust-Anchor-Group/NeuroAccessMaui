@@ -923,7 +923,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				string.IsNullOrWhiteSpace(CreationContractTemplate)
 					? null
 					: new AsyncRelayCommand(
-						() => this.ViewContract(CreationContractTemplate)));
+						() => ViewContract(CreationContractTemplate)));
 
 			this.AddTechnicalItem(
 				this.PermissionItems,

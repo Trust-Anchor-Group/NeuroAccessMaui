@@ -9,104 +9,106 @@
 	x:Name="This"
 	SemanticProperties.Description="{Binding Title, Source={x:Reference This}}">
 
-	<Border Style="{DynamicResource DisclosureSectionBorder}">
-		<mct:Expander
-			IsExpanded="{Binding IsExpanded, Mode=TwoWay, Source={x:Reference This}}">
-			<mct:Expander.Header>
-				<Border
-					SemanticProperties.Description="{Binding Title, Source={x:Reference This}}"
-					Style="{DynamicResource DisclosureSectionHeaderBorder}">
-					<Grid
-						ColumnDefinitions="Auto,*,Auto"
-						ColumnSpacing="{DynamicResource SmallSpacing}"
-						RowDefinitions="Auto,Auto"
-						RowSpacing="0">
-						<controls:SvgView
-							x:Name="SectionIcon"
-							HeightRequest="20"
-							InputTransparent="True"
-							IsVisible="True"
-							Source="{Binding IconSource, Source={x:Reference This}}"
-							TintColor="{DynamicResource ContentPrimaryWL}"
-							VerticalOptions="Center"
-							WidthRequest="20">
-							<controls:SvgView.Triggers>
-								<DataTrigger
-									Binding="{Binding IconSource, Source={x:Reference This}}"
-									TargetType="controls:SvgView"
-									Value="{x:Null}">
-									<Setter Property="IsVisible" Value="False" />
-								</DataTrigger>
-								<DataTrigger
-									Binding="{Binding IconSource, Source={x:Reference This}}"
-									TargetType="controls:SvgView"
-									Value="">
-									<Setter Property="IsVisible" Value="False" />
-								</DataTrigger>
-							</controls:SvgView.Triggers>
-						</controls:SvgView>
-						<Label
-							Grid.Column="1"
-							SemanticProperties.HeadingLevel="Level2"
-							Style="{DynamicResource DisclosureSectionTitleLabel}"
-							Text="{Binding Title, Source={x:Reference This}}"
-							VerticalOptions="Center" />
-						<Image
-							Grid.Column="2"
-							HeightRequest="16"
-							InputTransparent="True"
-							VerticalOptions="Center"
-							WidthRequest="16">
-							<Image.Triggers>
-								<DataTrigger
-									Binding="{Binding IsExpanded, Source={x:Reference This}}"
-									TargetType="Image"
-									Value="True">
-									<Setter
-										Property="Source"
-										Value="{AppThemeBinding Light=arrow_up_light, Dark=arrow_up_dark}" />
-								</DataTrigger>
-								<DataTrigger
-									Binding="{Binding IsExpanded, Source={x:Reference This}}"
-									TargetType="Image"
-									Value="False">
-									<Setter
-										Property="Source"
-										Value="{AppThemeBinding Light=arrow_down_light, Dark=arrow_down_dark}" />
-								</DataTrigger>
-							</Image.Triggers>
-						</Image>
-						<Label
-							Grid.Row="1"
-							Grid.Column="1"
-							Grid.ColumnSpan="2"
-							IsVisible="True"
-							Margin="{DynamicResource SmallTopMargins}"
-							Style="{DynamicResource DisclosureSectionSummaryLabel}"
-							Text="{Binding Summary, Source={x:Reference This}}">
-							<Label.Triggers>
-								<DataTrigger
-									Binding="{Binding Summary, Source={x:Reference This}}"
-									TargetType="Label"
-									Value="{x:Null}">
-									<Setter Property="IsVisible" Value="False" />
-								</DataTrigger>
-								<DataTrigger
-									Binding="{Binding Summary, Source={x:Reference This}}"
-									TargetType="Label"
-									Value="">
-									<Setter Property="IsVisible" Value="False" />
-								</DataTrigger>
-							</Label.Triggers>
-						</Label>
-					</Grid>
-				</Border>
-			</mct:Expander.Header>
-			<mct:Expander.Content>
-				<ContentView
-					Content="{Binding SectionContent, Source={x:Reference This}}"
-					Padding="{DynamicResource MediumLeftRightBottomMargins}" />
-			</mct:Expander.Content>
-		</mct:Expander>
-	</Border>
+	<pages:BaseContentView.Content>
+		<Border Style="{DynamicResource DisclosureSectionBorder}">
+			<mct:Expander
+				IsExpanded="{Binding IsExpanded, Mode=TwoWay, Source={x:Reference This}}">
+				<mct:Expander.Header>
+					<Border
+						SemanticProperties.Description="{Binding Title, Source={x:Reference This}}"
+						Style="{DynamicResource DisclosureSectionHeaderBorder}">
+						<Grid
+							ColumnDefinitions="Auto,*,Auto"
+							ColumnSpacing="{DynamicResource SmallSpacing}"
+							RowDefinitions="Auto,Auto"
+							RowSpacing="0">
+							<controls:SvgView
+								x:Name="SectionIcon"
+								HeightRequest="20"
+								InputTransparent="True"
+								IsVisible="True"
+								Source="{Binding IconSource, Source={x:Reference This}}"
+								TintColor="{DynamicResource ContentPrimaryWL}"
+								VerticalOptions="Center"
+								WidthRequest="20">
+								<controls:SvgView.Triggers>
+									<DataTrigger
+										Binding="{Binding IconSource, Source={x:Reference This}}"
+										TargetType="controls:SvgView"
+										Value="{x:Null}">
+										<Setter Property="IsVisible" Value="False" />
+									</DataTrigger>
+									<DataTrigger
+										Binding="{Binding IconSource, Source={x:Reference This}}"
+										TargetType="controls:SvgView"
+										Value="">
+										<Setter Property="IsVisible" Value="False" />
+									</DataTrigger>
+								</controls:SvgView.Triggers>
+							</controls:SvgView>
+							<Label
+								Grid.Column="1"
+								SemanticProperties.HeadingLevel="Level2"
+								Style="{DynamicResource DisclosureSectionTitleLabel}"
+								Text="{Binding Title, Source={x:Reference This}}"
+								VerticalOptions="Center" />
+							<Image
+								Grid.Column="2"
+								HeightRequest="16"
+								InputTransparent="True"
+								VerticalOptions="Center"
+								WidthRequest="16">
+								<Image.Triggers>
+									<DataTrigger
+										Binding="{Binding IsExpanded, Source={x:Reference This}}"
+										TargetType="Image"
+										Value="True">
+										<Setter
+											Property="Source"
+											Value="{AppThemeBinding Light=arrow_up_light, Dark=arrow_up_dark}" />
+									</DataTrigger>
+									<DataTrigger
+										Binding="{Binding IsExpanded, Source={x:Reference This}}"
+										TargetType="Image"
+										Value="False">
+										<Setter
+											Property="Source"
+											Value="{AppThemeBinding Light=arrow_down_light, Dark=arrow_down_dark}" />
+									</DataTrigger>
+								</Image.Triggers>
+							</Image>
+							<Label
+								Grid.Row="1"
+								Grid.Column="1"
+								Grid.ColumnSpan="2"
+								IsVisible="True"
+								Margin="{DynamicResource SmallTopMargins}"
+								Style="{DynamicResource DisclosureSectionSummaryLabel}"
+								Text="{Binding Summary, Source={x:Reference This}}">
+								<Label.Triggers>
+									<DataTrigger
+										Binding="{Binding Summary, Source={x:Reference This}}"
+										TargetType="Label"
+										Value="{x:Null}">
+										<Setter Property="IsVisible" Value="False" />
+									</DataTrigger>
+									<DataTrigger
+										Binding="{Binding Summary, Source={x:Reference This}}"
+										TargetType="Label"
+										Value="">
+										<Setter Property="IsVisible" Value="False" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+						</Grid>
+					</Border>
+				</mct:Expander.Header>
+				<mct:Expander.Content>
+					<ContentView
+						Content="{Binding SectionContent, Source={x:Reference This}}"
+						Padding="{DynamicResource MediumLeftRightBottomMargins}" />
+				</mct:Expander.Content>
+			</mct:Expander>
+		</Border>
+	</pages:BaseContentView.Content>
 </pages:BaseContentView>
