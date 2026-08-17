@@ -250,9 +250,9 @@ namespace NeuroAccess.Nfc.Test
 			// Example from Appendix D.3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 			// Example from Appendix D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-			byte[] Challenge = Hashes.StringToBinary("4608F91988702212");
-			byte[] Rnd1 = Hashes.StringToBinary("781723860C06C226");
-			byte[] Rnd2 = Hashes.StringToBinary("0B795240CB7049B01C19B33E32804F0B");
+			byte[] Challenge = Hashes.StringToBinary("4608F91988702212");				// RND.IC
+			byte[] Rnd1 = Hashes.StringToBinary("781723860C06C226");					// RND.IFD
+			byte[] Rnd2 = Hashes.StringToBinary("0B795240CB7049B01C19B33E32804F0B");    // K.IFD
 			byte[] KEnc = Hashes.StringToBinary("AB94FDECF2674FDFB9B391F85D7F76F2");
 			byte[] KMac = Hashes.StringToBinary("7962D9ECE03D1ACD4C76089DCE131543");
 

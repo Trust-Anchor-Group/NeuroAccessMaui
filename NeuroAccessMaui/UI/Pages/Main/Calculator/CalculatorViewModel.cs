@@ -491,7 +491,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 						break;
 
 					case "MR":
-						this.Value = Expression.ToString(this.Memory);
+						this.Value = Expression.ToExpressionString(this.Memory);
 						this.Entering = false;
 						break;
 
@@ -538,7 +538,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 
 				object y = await Expression.EvalAsync(Script, v);
 
-				this.Value = Expression.ToString(y);
+				this.Value = Expression.ToExpressionString(y);
 				this.Entering = false;
 			}
 			catch (Exception)
@@ -572,7 +572,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 
 					x = await Expression.EvalAsync(Item.Script, v);
 
-					this.Value = Expression.ToString(x);
+					this.Value = Expression.ToExpressionString(x);
 					this.Entering = false;
 				}
 				catch (Exception)
@@ -617,7 +617,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 
 				object y = await Expression.EvalAsync(Script, v);
 
-				this.Value = Expression.ToString(y);
+				this.Value = Expression.ToExpressionString(y);
 				this.Entering = false;
 			}
 			catch (Exception)
@@ -722,7 +722,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 				StringBuilder sb = new();
 
 				sb.Append("M: ");
-				sb.Append(Expression.ToString(this.Memory));
+				sb.Append(Expression.ToExpressionString(this.Memory));
 				sb.Append(" (");
 				sb.Append(this.MemoryItems.Count.ToString(CultureInfo.InvariantCulture));
 				sb.Append(')');

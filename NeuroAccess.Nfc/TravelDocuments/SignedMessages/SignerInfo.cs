@@ -107,29 +107,46 @@ namespace NeuroAccess.Nfc.TravelDocuments.SignedMessages
 			if (SignerInfoVector.FirstElement is not System.Numerics.BigInteger Version)
 				return false;
 
-			if (SignerInfoVector[1] is not Vector SignerIdentifierVector)
-				return false;
-
 			System.Numerics.BigInteger? SerialNumber = null;
 			byte[]? SubjectKeyIdentifier = null;
 			Names? Signer = null;
 
-			foreach (object Item in SignerIdentifierVector.Elements)
+			if (SignerInfoVector[1] is byte[] KeyIdentifier)
 			{
-				if (Item is Vector v)
-					Signer ??= new Names(v);
-				else if (Item is System.Numerics.BigInteger SN)
-					SerialNumber = SN;
-				else if (Item is SubjectKeyIdentifier Ski)
-					SubjectKeyIdentifier = Ski.Identifier;
-				else if (Item is byte[] Bin)
-					SubjectKeyIdentifier = Bin;
+				if (ASN1.TryDecodeDerAs(UniversalTagNumber.OctetString, KeyIdentifier, out object? ParsedKeyIdentifier) &&
+					ParsedKeyIdentifier is byte[] ParsedSubjectKeyIdentifier)
+				{
+					SubjectKeyIdentifier = ParsedSubjectKeyIdentifier;
+				}
+				else
+					return false;
 			}
-
-			if (SignerInfoVector[2] is not Vector DigestAlgorithmVector ||
-				DigestAlgorithmVector.FirstElement is not HashFunction DigestAlgorithm)
+			else if (SignerInfoVector[1] is Vector IssuerAndSerialNumber)
 			{
+				foreach (object Item in IssuerAndSerialNumber.Elements)
+				{
+					if (Item is Vector v)
+						Signer ??= new Names(v);
+					else if (Item is System.Numerics.BigInteger SN)
+						SerialNumber = SN;
+					else if (Item is SubjectKeyIdentifier Ski)
+						SubjectKeyIdentifier = Ski.Identifier;
+					else if (Item is byte[] Bin)
+						SubjectKeyIdentifier = Bin;
+				}
+			}
+			else
 				return false;
+
+			if (SignerInfoVector[2] is not HashFunction DigestAlgorithm)
+			{
+				if (SignerInfoVector[2] is Vector DigestAlgorithmVector &&
+					DigestAlgorithmVector.FirstElement is HashFunction DigestAlgorithm2)
+				{
+					DigestAlgorithm = DigestAlgorithm2;
+				}
+				else
+					return false;
 			}
 
 			i = 3;

@@ -84,10 +84,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				i++;
 			}
 
-			if (i >= c || TbsCertList[i++] is not Vector AlgorithmIdentifier)
+			if (i >= c)
 				return false;
 
-			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+			object? AlgorithmIdentifier = TbsCertList[i++];
+			ISignatureAlgorithm? SignatureAlgorithm;
+
+			if (AlgorithmIdentifier is ISignatureAlgorithm Algorithm)
+				SignatureAlgorithm = Algorithm;
+			else if (AlgorithmIdentifier is Vector AlgorithmIdentifierVector)
+				SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifierVector);
+			else
+				return false;
+
 			if (SignatureAlgorithm is null)
 				return false;
 
@@ -102,8 +111,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			else
 				NextUpdate = DateTime.MaxValue;
 
-			if (i >= c || TbsCertList[i++] is not Vector RevokedCertificates)
-				return false;
+			// ICAO Doc 9303-12, Table 9:
+			// https://www.icao.int/sites/default/files/publications/DocSeries/9303_p12_cons_en.pdf#page=43
+			// The revokedCertificates sequence is omitted when no certificates are revoked.
+			System.Collections.IEnumerable RevokedCertificates = Array.Empty<object>();
+			if (i < c && TbsCertList[i] is Sequence RevokedCertificatesSequence)
+			{
+				i++;
+				RevokedCertificates = RevokedCertificatesSequence;
+			}
 
 			ChunkedList<RevokedCertificate> RevokedCertificates2 = [];
 

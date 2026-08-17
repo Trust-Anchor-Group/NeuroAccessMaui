@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.Records;
 using NeuroAccessMaui.Resources.Languages;

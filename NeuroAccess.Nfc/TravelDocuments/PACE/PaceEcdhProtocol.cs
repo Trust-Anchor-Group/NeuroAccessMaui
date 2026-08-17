@@ -44,17 +44,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 
 			switch ((int)this.ParameterId.Value)
 			{
-				case 0:
-					return false;   // TODO: 1024 - bit MODP Group with 160 - bit Prime Order, RFC 5114
-
-				case 1:
-					return false;   // TODO: 2048 - bit MODP Group with 224 - bit Prime Order, RFC 5114
-
-				case 2:
-					return false;   // TODO: 2048 - bit MODP Group with 256 - bit Prime Order
-
-				// 3-7: Reserved for future use
-
 				case 8:
 					this.curve = new NistP192();
 					return true;

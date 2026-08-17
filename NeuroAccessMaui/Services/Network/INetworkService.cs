@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Waher.Networking;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Network
@@ -22,6 +23,15 @@ namespace NeuroAccessMaui.Services.Network
 		/// <param name="domainName">The domain name whose name to resolve.</param>
 		/// <returns>Host Name, TCP Port number, and if the host is an IP Address or not.</returns>
 		Task<(string HostName, int Port, bool IsIpAddress)> LookupXmppHostnameAndPort(string domainName);
+
+		/// <summary>
+		/// Enables Neuron HTTP proxy for HTTP requests
+		/// </summary>
+		/// <param name="TokenSeconds">Number of seconds for which the authentication token should be valid.</param>
+		/// <param name="CommunicationLayer">Optional communication layer for outputting error messages.</param>
+		/// <param name="CancellationToken">Token used to cancel proxy setup.</param>
+		/// <returns>A disposable scope that restores the previous web getter state.</returns>
+		Task<IDisposable> EnableNeuronHttpProxyAsync(int TokenSeconds, ICommunicationLayer? CommunicationLayer, CancellationToken CancellationToken);
 
 		/// <summary>
 		/// Determines whether we have network (wifi/cellular/other) or not.

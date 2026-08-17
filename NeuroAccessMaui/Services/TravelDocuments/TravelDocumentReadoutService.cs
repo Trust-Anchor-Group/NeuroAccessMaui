@@ -90,6 +90,12 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 		/// <summary>The signer certificate chain, revocation, or signature checks failed.</summary>
 		InvalidCertificate,
 
+		/// <summary>A certificate used in the travel document has been revoked.</summary>
+		RevokedCertificate,
+
+		/// <summary>Unable to validate the revocation status of a certificate used in the travel document.</summary>
+		RevocationStatusUnknown,
+
 		/// <summary>The signer certificate is not valid yet.</summary>
 		CertificateNotYetValid,
 
@@ -404,6 +410,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			using XmlWriter XmlOutput = XmlWriter.Create(XmlBuilder, XML.WriterSettings(false, true));
 			XmlWriterSniffer InMemoryXmlWriterSniffer = new XmlWriterSniffer(XmlOutput, BinaryPresentationMethod.Base64, "NFC");
 			TravelDocumentsClient? Client = null;
+			IDisposable? HttpProxyScope = null;
 
 			TravelDocumentReadoutService.InitializeReadoutXml(XmlOutput, InMemoryXmlWriterSniffer, Request.MrzText);
 
@@ -418,6 +425,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 
 				Client = new TravelDocumentsClient(IsoDepInterface, Request.DocumentInformation, LocalKeySeed, Sniffers);
 				TravelDocumentReadoutService.RegisterReadoutEvents(Client);
+				HttpProxyScope = await ServiceRef.NetworkService.EnableNeuronHttpProxyAsync(600, Client, CancellationToken);
 
 				Client.Information("Starting readout.");
 				CancellationToken.ThrowIfCancellationRequested();
@@ -478,6 +486,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			}
 			finally
 			{
+				HttpProxyScope?.Dispose();
 				Client?.Dispose();
 				IsoDepInterface.CloseIfOpen();
 			}
@@ -548,6 +557,8 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 				ReadTravelDocumentResult.NoCertificates => (TravelDocumentCertificateValidationStatus.Invalid, TravelDocumentCertificateValidationReason.NoCertificate),
 				ReadTravelDocumentResult.MultipleCertificates => (TravelDocumentCertificateValidationStatus.Invalid, TravelDocumentCertificateValidationReason.MultipleCertificates),
 				ReadTravelDocumentResult.InvalidCertificate => (TravelDocumentCertificateValidationStatus.Invalid, TravelDocumentCertificateValidationReason.InvalidCertificate),
+				ReadTravelDocumentResult.RevokedCertificate => (TravelDocumentCertificateValidationStatus.Invalid, TravelDocumentCertificateValidationReason.RevokedCertificate),
+				ReadTravelDocumentResult.RevocationStatusUnknown => (TravelDocumentCertificateValidationStatus.Incomplete, TravelDocumentCertificateValidationReason.RevocationStatusUnknown),
 				ReadTravelDocumentResult.DgHashDigestInvalid => (TravelDocumentCertificateValidationStatus.Invalid, TravelDocumentCertificateValidationReason.DataGroupHashMismatch),
 				ReadTravelDocumentResult.UnableToReadEfDg when HasSecurityInfo => (TravelDocumentCertificateValidationStatus.Incomplete, TravelDocumentCertificateValidationReason.DataGroupReadFailed),
 				ReadTravelDocumentResult.UnableToParseEfDg when HasSecurityInfo => (TravelDocumentCertificateValidationStatus.Incomplete, TravelDocumentCertificateValidationReason.DataGroupParseFailed),

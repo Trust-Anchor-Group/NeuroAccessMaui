@@ -37,9 +37,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
         public static bool AreNamesSimilar(string s1, string s2)
         {
             if (s1 is null || s2 is null)
-                return string.Compare(s1, s2, true) == 0;
+                return string.Compare(s1, s2, StringComparison.OrdinalIgnoreCase) == 0;
 
-            if (string.Compare(s1, s2, true) == 0)
+            if (string.Compare(s1, s2, StringComparison.OrdinalIgnoreCase) == 0)
                 return true;
 
             HashSet<string> v1 = GenerateVariants(s1);

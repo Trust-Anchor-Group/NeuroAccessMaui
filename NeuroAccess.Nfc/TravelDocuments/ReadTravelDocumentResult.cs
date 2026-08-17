@@ -68,6 +68,16 @@
 		/// <summary>
 		/// Certificate provided in EF.SOD is not a valid certificate.
 		/// </summary>
-		InvalidCertificate
+		InvalidCertificate,
+
+		/// <summary>
+		/// A certificate used in the travel document has been revoked.
+		/// </summary>
+		RevokedCertificate,
+
+		/// <summary>
+		/// Unable to validate the revocation status of a certificate used in the travel document.
+		/// </summary>
+		RevocationStatusUnknown
 	}
 }
