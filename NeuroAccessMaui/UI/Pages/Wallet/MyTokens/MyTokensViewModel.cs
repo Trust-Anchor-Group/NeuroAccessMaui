@@ -17,6 +17,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 	/// </summary>
 	public partial class MyTokensViewModel : XmppViewModel
 	{
+		private const int openingFeedbackMilliseconds = 50;
+
 		private readonly MyTokensNavigationArgs? navigationArgs;
 		private readonly List<Token> loadedTokens = [];
 		private readonly HashSet<string> loadedTokenIds = new(StringComparer.OrdinalIgnoreCase);
@@ -497,6 +499,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 				return;
 			}
 
+			await Task.Delay(openingFeedbackMilliseconds);
 			await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(Item.TokenId, Item.Token);
 		}
 

@@ -4162,6 +4162,9 @@ Esto envía el enlace y todos los datos legibles por máquina del token. Envíal
   <data name="LoadingContracts" xml:space="preserve">
     <value>Cargando contratos…</value>
   </data>
+  <data name="Opening" xml:space="preserve">
+    <value>Abriendo…</value>
+  </data>
   <data name="LoadingMoreContracts" xml:space="preserve">
     <value>Cargando más contratos…</value>
   </data>

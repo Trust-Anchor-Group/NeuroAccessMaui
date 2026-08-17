@@ -28,6 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private const int contractBatchSize = 24;
 		private const int remainingItemsThreshold = 5;
 		private const int searchDebounceMilliseconds = 250;
+		private const int openingFeedbackMilliseconds = 50;
 
 		private readonly ContractsListMode contractsListMode;
 		private readonly TaskCompletionSource<Contract?>? selection;
@@ -60,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			switch (this.contractsListMode)
 			{
 				case ContractsListMode.Contracts:
-					this.Title = ServiceRef.Localizer[nameof(AppResources.Contracts)];
+					this.Title = ServiceRef.Localizer[nameof(AppResources.MyContracts)];
 					this.Description = ServiceRef.Localizer[nameof(AppResources.ContractsSubtitle)];
 					this.CanShareTemplate = false;
 					break;
@@ -80,11 +81,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <summary>
-		/// Occurs when a category tag is selected and should be brought into view.
-		/// </summary>
-		public event Action<SelectableTag>? TagSelected;
-
-		/// <summary>
 		/// Gets the available category filters.
 		/// </summary>
 		public ObservableCollection<SelectableTag> FilterTags { get; } = [];
@@ -98,6 +94,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// Gets whether at least one loaded contract needs the current person's attention.
 		/// </summary>
 		public bool HasAttentionContracts => this.AttentionContractsCount > 0;
+
+		/// <summary>
+		/// Gets whether a category filter is active.
+		/// </summary>
+		public bool HasActiveFilter => !string.IsNullOrWhiteSpace(this.currentCategory);
+
+		/// <summary>
+		/// Gets the number of active category filters.
+		/// </summary>
+		public int ActiveFilterCount => this.HasActiveFilter ? 1 : 0;
 
 		/// <summary>
 		/// Gets whether the empty-state panel should be displayed.
@@ -337,10 +343,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.currentCategory = NewCategory;
 			this.OnPropertyChanged(nameof(this.CanRecoverContracts));
-			SelectableTag? SelectedTag = this.FilterTags.FirstOrDefault(Item => Item.IsSelected);
-			if (SelectedTag is not null)
-				this.TagSelected?.Invoke(SelectedTag);
-
+			this.OnPropertyChanged(nameof(this.HasActiveFilter));
+			this.OnPropertyChanged(nameof(this.ActiveFilterCount));
 			long Generation = Interlocked.Increment(ref this.queryGeneration);
 			await this.ReloadAsync(Generation).ConfigureAwait(false);
 		}
@@ -813,6 +817,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				return;
 			}
 
+			await MainThread.InvokeOnMainThreadAsync(() => Model.IsOpening = true);
+			await Task.Delay(openingFeedbackMilliseconds);
+
 			try
 			{
 				switch (this.Action)
@@ -868,6 +875,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.ContractSavedDetailsUnavailable)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() => Model.IsOpening = false);
 			}
 		}
 

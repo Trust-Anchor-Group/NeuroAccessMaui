@@ -55,7 +55,7 @@
 				ColumnSpacing="8">
 				<SearchBar
 					Grid.Column="0"
-					Placeholder="{l:Localize TokenSearchPlaceholder}"
+					Placeholder="{l:Localize Search}"
 					SemanticProperties.Description="{l:Localize TokenSearchPlaceholder}"
 					Text="{Binding SearchText}" />
 				<controls:SvgButton
@@ -113,128 +113,52 @@
 						</CollectionView.ItemsLayout>
 						<CollectionView.ItemTemplate>
 							<DataTemplate x:DataType="objectmodel:TokenSummaryItem">
-								<controls:TemplatedButton
-									Command="{Binding ActivateCommand}"
-									SemanticProperties.Description="{Binding DisplayName}">
-									<Border
-										Margin="0,4"
-									Padding="12"
-										Style="{DynamicResource BorderSet}">
-										<Grid
-											ColumnDefinitions="Auto,*"
-											ColumnSpacing="14"
-											RowDefinitions="Auto,Auto">
-											<Border
-												Grid.RowSpan="2"
-												BackgroundColor="{DynamicResource SurfaceElevation2WL}"
-										HeightRequest="44"
-												Padding="6"
-												Stroke="{DynamicResource SurfaceStrokeWL}"
-												StrokeShape="RoundRectangle 12"
-												VerticalOptions="Start"
-										WidthRequest="44">
-												<Grid>
-													<Image
-														Aspect="AspectFit"
-														IsVisible="{Binding HasGlyphImage}"
-														Source="{Binding GlyphImage}" />
-													<Label
-														FontAttributes="Bold"
-														FontSize="20"
-														HorizontalTextAlignment="Center"
-														Text="{Binding FallbackGlyphText}"
-														TextColor="{DynamicResource ContentPrimaryWL}"
-														VerticalTextAlignment="Center">
-														<Label.Triggers>
-															<DataTrigger
-																Binding="{Binding HasGlyphImage}"
-																TargetType="Label"
-																Value="True">
-																<Setter Property="IsVisible" Value="False" />
-															</DataTrigger>
-														</Label.Triggers>
-													</Label>
-												</Grid>
-											</Border>
+								<Border Margin="0,4" Padding="0" Style="{DynamicResource BorderSet}">
+									<Grid>
+										<controls:TemplatedButton Command="{Binding ActivateCommand}" Padding="0" SemanticProperties.Description="{Binding DisplayName}">
+											<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Padding="12" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
+												<Border Grid.RowSpan="3" BackgroundColor="{DynamicResource SurfaceElevation2WL}" HeightRequest="40" Padding="6" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10" VerticalOptions="Start" WidthRequest="40">
+													<Grid>
+														<Image Aspect="AspectFit" IsVisible="{Binding HasGlyphImage}" Source="{Binding GlyphImage}" />
+														<Label FontAttributes="Bold" FontSize="18" HorizontalTextAlignment="Center" Text="{Binding FallbackGlyphText}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center">
+															<Label.Triggers>
+																<DataTrigger Binding="{Binding HasGlyphImage}" TargetType="Label" Value="True">
+																	<Setter Property="IsVisible" Value="False" />
+																</DataTrigger>
+															</Label.Triggers>
+														</Label>
+													</Grid>
+												</Border>
 
-										<Grid Grid.Column="1">
-												<VerticalStackLayout Spacing="2">
-													<Label
-														FontAttributes="Bold"
-														FontSize="18"
-														LineBreakMode="TailTruncation"
-														Text="{Binding DisplayName}"
-														TextColor="{DynamicResource ContentPrimaryWL}" />
-													<Label
-														IsVisible="{Binding HasDescription}"
-														LineBreakMode="TailTruncation"
-														MaxLines="2"
-														Style="{DynamicResource ItemDescriptionLabel}"
-														Text="{Binding Description}"
-														TextColor="{DynamicResource ContentSecondaryWL}" />
-												</VerticalStackLayout>
-										</Grid>
+												<Label Grid.Column="1" FontAttributes="Bold" FontSize="18" LineBreakMode="TailTruncation" MaxLines="1" Text="{Binding DisplayName}" TextColor="{DynamicResource ContentPrimaryWL}" />
+												<Label Grid.Column="2" FontAttributes="Bold" IsVisible="{Binding HasValue}" LineBreakMode="NoWrap" Text="{Binding ValueText}" TextColor="{DynamicResource ContentPrimaryWL}" />
 
-											<VerticalStackLayout
-												Grid.Row="1"
-												Grid.Column="1"
-										Margin="0,6,0,0"
-												Spacing="6">
-											<FlexLayout
-												AlignItems="Center"
-												Direction="Row"
-												Wrap="Wrap">
-												<controls:StatusPill
-													Margin="0,0,8,4"
-													Text="{Binding AttentionText}"
-													Tone="{Binding StatusTone}" />
-													<Label
-														Margin="0,0,12,4"
-														IsVisible="{Binding HasCategory}"
-														Style="{DynamicResource ItemDescriptionLabel}"
-														Text="{Binding Category}"
-														TextColor="{DynamicResource ContentSecondaryWL}" />
-													<Label
-														Margin="0,0,12,4"
-														IsVisible="{Binding HasOwnership}"
-														Style="{DynamicResource ItemDescriptionLabel}"
-														Text="{Binding OwnershipText}"
-														TextColor="{DynamicResource ContentSecondaryWL}" />
-													<Label
-														Margin="0,0,12,4"
-														IsVisible="{Binding HasValue}"
-														Style="{DynamicResource ItemDescriptionLabel}"
-														Text="{Binding ValueText}"
-														TextColor="{DynamicResource ContentPrimaryWL}" />
-													<Label
-														Margin="0,0,12,4"
-														IsVisible="{Binding HasExpiry}"
-														Style="{DynamicResource ItemDescriptionLabel}"
-														Text="{Binding ExpiryText}"
-														TextColor="{DynamicResource ContentSecondaryWL}">
+												<Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsVisible="{Binding HasDescription}" LineBreakMode="TailTruncation" MaxLines="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding Description}" TextColor="{DynamicResource ContentSecondaryWL}" />
+
+												<FlexLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" AlignItems="Center" Direction="Row" Wrap="Wrap">
+													<controls:StatusPill Margin="0,0,8,2" Text="{Binding AttentionText}" Tone="{Binding StatusTone}" />
+													<controls:StatusPill IsVisible="{Binding HasCategory}" Margin="0,0,8,2" Text="{Binding Category}" Tone="Neutral" />
+													<Label IsVisible="{Binding HasOwnership}" Margin="0,0,12,2" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding OwnershipText}" TextColor="{DynamicResource ContentSecondaryWL}" />
+													<Label IsVisible="{Binding HasExpiry}" Margin="0,0,12,2" Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding ExpiryText}" TextColor="{DynamicResource ContentSecondaryWL}">
 														<Label.Triggers>
 															<DataTrigger Binding="{Binding IsExpiringSoon}" TargetType="Label" Value="True">
 																<Setter Property="IsVisible" Value="False" />
 															</DataTrigger>
 														</Label.Triggers>
 													</Label>
+													<controls:StatusPill IconSource="notifications.svg" IsVisible="{Binding HasUnreadEvents}" Margin="0,0,8,2" Text="{Binding UnreadCount}" Tone="Information" />
 												</FlexLayout>
-												<Grid ColumnDefinitions="*,Auto">
-													<Label
-														LineBreakMode="TailTruncation"
-														Style="{DynamicResource ItemDescriptionLabel}"
-														Text="{Binding UpdatedText}"
-														TextColor="{DynamicResource ContentSecondaryWL}" />
-													<controls:StatusPill
-														Grid.Column="1"
-														IsVisible="{Binding HasUnreadEvents}"
-														Text="{Binding UnreadCount}"
-														Tone="Information" />
-												</Grid>
-											</VerticalStackLayout>
-										</Grid>
-									</Border>
-								</controls:TemplatedButton>
+											</Grid>
+										</controls:TemplatedButton>
+
+										<Border BackgroundColor="{DynamicResource SurfaceElevation1WL}" IsVisible="{Binding ActivateCommand.IsRunning}" Opacity="0.96" Padding="12" SemanticProperties.Description="{l:Localize Opening}" StrokeThickness="0">
+											<HorizontalStackLayout HorizontalOptions="Center" Spacing="8" VerticalOptions="Center">
+												<ActivityIndicator Color="{DynamicResource ContentPrimaryWL}" IsRunning="{Binding ActivateCommand.IsRunning}" />
+												<Label FontAttributes="Bold" Text="{l:Localize Opening}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center" />
+											</HorizontalStackLayout>
+										</Border>
+									</Grid>
+								</Border>
 							</DataTemplate>
 						</CollectionView.ItemTemplate>
 						<CollectionView.Footer>

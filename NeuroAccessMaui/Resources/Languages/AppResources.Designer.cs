@@ -12137,6 +12137,8 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ContractsSubtitle => ResourceManager.GetString("ContractsSubtitle", resourceCulture);
         /// <summary>Gets the localized contract-loading status.</summary>
         public static string LoadingContracts => ResourceManager.GetString("LoadingContracts", resourceCulture);
+        /// <summary>Gets the localized opening status.</summary>
+        public static string Opening => ResourceManager.GetString("Opening", resourceCulture);
         /// <summary>Gets the localized contract-page loading status.</summary>
         public static string LoadingMoreContracts => ResourceManager.GetString("LoadingMoreContracts", resourceCulture);
         /// <summary>Gets the localized no-contract-results title.</summary>

@@ -48,6 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		private readonly ContractReference contractRef;
 		private readonly int additionalNotificationCount;
 		private NotificationEvent[] events;
+		private bool isOpening;
 
 		/// <summary>
 		/// Initializes a compatibility summary from persisted reference metadata.
@@ -372,6 +373,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// Gets whether the reference has enough identity information to be opened or refreshed.
 		/// </summary>
 		public bool CanOpen { get; }
+
+		/// <summary>
+		/// Gets or sets whether this contract is currently opening.
+		/// </summary>
+		public bool IsOpening
+		{
+			get => this.isOpening;
+			internal set
+			{
+				if (this.isOpening == value)
+					return;
+
+				this.isOpening = value;
+				this.OnPropertyChanged(nameof(this.IsOpening));
+			}
+		}
 
 		/// <summary>
 		/// Gets whether the contract has a locally derivable action for the current person.

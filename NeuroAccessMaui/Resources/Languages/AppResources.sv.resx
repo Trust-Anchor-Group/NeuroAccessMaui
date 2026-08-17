@@ -4147,6 +4147,9 @@ Detta skickar tokenlänken och fullständiga maskinläsbara uppgifter. Skicka ba
   <data name="LoadingContracts" xml:space="preserve">
     <value>Läser in kontrakt…</value>
   </data>
+  <data name="Opening" xml:space="preserve">
+    <value>Öppnar…</value>
+  </data>
   <data name="LoadingMoreContracts" xml:space="preserve">
     <value>Läser in fler kontrakt…</value>
   </data>

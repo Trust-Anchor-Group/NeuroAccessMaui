@@ -4354,6 +4354,9 @@ This sends the token link and its complete machine-readable details. Only send i
   <data name="LoadingContracts" xml:space="preserve">
     <value>Loading contracts…</value>
   </data>
+  <data name="Opening" xml:space="preserve">
+    <value>Opening…</value>
+  </data>
   <data name="LoadingMoreContracts" xml:space="preserve">
     <value>Loading more contracts…</value>
   </data>
