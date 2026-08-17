@@ -70,24 +70,19 @@
 				Margin="0,3"
 				Padding="12"
 				Style="{DynamicResource BorderSubSet}">
-				<Grid
-					ColumnDefinitions="*,Auto"
-					ColumnSpacing="8"
-					RowDefinitions="Auto,Auto">
+				<VerticalStackLayout Spacing="6">
 					<Label
 						FontAttributes="Bold"
 						Style="{DynamicResource ItemDescriptionLabel}"
 						Text="{Binding Label}"
 						TextColor="{DynamicResource ContentSecondaryWL}" />
 					<Label
-						Grid.Row="1"
 						LineBreakMode="MiddleTruncation"
-						MaxLines="2"
+						MaxLines="1"
 						Text="{Binding Value}"
 						TextColor="{DynamicResource ContentPrimaryWL}" />
 					<HorizontalStackLayout
-						Grid.RowSpan="2"
-						Grid.Column="1"
+						HorizontalOptions="Start"
 						Spacing="4"
 						VerticalOptions="Center">
 						<controls:TextButton
@@ -101,7 +96,7 @@
 							LabelData="{l:Localize Details}"
 							Style="{DynamicResource TransparentTextButton}" />
 					</HorizontalStackLayout>
-				</Grid>
+				</VerticalStackLayout>
 			</Border>
 		</DataTemplate>
 
@@ -112,7 +107,7 @@
 				Margin="0,3"
 				Padding="12"
 				Style="{DynamicResource BorderSubSet}">
-				<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<VerticalStackLayout Spacing="6">
 					<VerticalStackLayout Spacing="2">
 						<Label
 							FontAttributes="Bold"
@@ -120,12 +115,13 @@
 							Text="{Binding Label}"
 							TextColor="{DynamicResource ContentSecondaryWL}" />
 						<Label
-							LineBreakMode="TailTruncation"
+							LineBreakMode="MiddleTruncation"
+							MaxLines="1"
 							Text="{Binding FriendlyName}"
 							TextColor="{DynamicResource ContentPrimaryWL}" />
 					</VerticalStackLayout>
 					<HorizontalStackLayout
-						Grid.Column="1"
+						HorizontalOptions="Start"
 						Spacing="4"
 						VerticalOptions="Center">
 						<controls:TextButton
@@ -141,32 +137,19 @@
 							LabelData="{l:Localize Chat}"
 							Style="{DynamicResource TransparentTextButton}" />
 					</HorizontalStackLayout>
-				</Grid>
+				</VerticalStackLayout>
 			</Border>
 		</DataTemplate>
 
 		<DataTemplate
 			x:Key="TokenActivityItemTemplate"
 			x:DataType="objectmodel:TokenActivityItem">
-			<Border
-				Margin="0,4"
-				Padding="16"
-				Style="{DynamicResource BorderSet}">
+			<controls:DisclosureSection
+				IconSource="history.svg"
+				IsExpanded="False"
+				Summary="{Binding SummaryText}"
+				Title="{Binding Title}">
 				<VerticalStackLayout Spacing="10">
-					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-						<controls:StatusPill
-							HorizontalOptions="Start"
-							Text="{Binding Title}"
-							Tone="{Binding StatusTone}" />
-						<Label
-							Grid.Column="1"
-							IsVisible="{Binding HasTimestamp}"
-							Style="{DynamicResource ItemDescriptionLabel}"
-							Text="{Binding TimestampText}"
-							TextColor="{DynamicResource ContentSecondaryWL}"
-							VerticalTextAlignment="Center" />
-					</Grid>
-
 					<controls:StatusPill
 						HorizontalOptions="Start"
 						IsVisible="{Binding IsPersonal}"
@@ -336,7 +319,7 @@
 						</VerticalStackLayout>
 					</controls:DisclosureSection>
 				</VerticalStackLayout>
-			</Border>
+			</controls:DisclosureSection>
 		</DataTemplate>
 	</base:BaseContentPage.Resources>
 
@@ -362,12 +345,13 @@
 				Style="{DynamicResource PageTitleLabel}"
 				Text="{l:Localize TokenDetails}"
 				VerticalTextAlignment="Center" />
-			<controls:TextButton
+			<controls:SvgButton
 				Grid.Column="2"
 				Command="{Binding RefreshTokenCommand}"
 				IsEnabled="{Binding IsRefreshing, Converter={StaticResource InvertedBoolConverter}}"
-				LabelData="{l:Localize Refresh}"
-				Style="{DynamicResource TransparentTextButton}"
+				SemanticProperties.Description="{l:Localize Refresh}"
+				Style="{DynamicResource IconButtonOnBackground}"
+				SvgSource="refresh.svg"
 				VerticalOptions="Center" />
 		</Grid>
 
@@ -441,10 +425,7 @@
 								</Grid>
 							</Border>
 
-							<Grid
-								Grid.Column="1"
-								ColumnDefinitions="*,Auto"
-								ColumnSpacing="8">
+							<Grid Grid.Column="1">
 								<VerticalStackLayout Spacing="3">
 									<Label
 										FontAttributes="Bold"
@@ -465,10 +446,6 @@
 										Text="{Binding DescriptionText}"
 										TextColor="{DynamicResource ContentSecondaryWL}" />
 								</VerticalStackLayout>
-								<controls:StatusPill
-									Grid.Column="1"
-									Text="{Binding StatusText}"
-									Tone="{Binding StatusTone}" />
 							</Grid>
 
 							<VerticalStackLayout
@@ -480,6 +457,10 @@
 									AlignItems="Center"
 									Direction="Row"
 									Wrap="Wrap">
+									<controls:StatusPill
+										Margin="0,0,10,4"
+										Text="{Binding AttentionText}"
+										Tone="{Binding StatusTone}" />
 									<Label
 										Margin="0,0,14,4"
 										Style="{DynamicResource ItemDescriptionLabel}"
@@ -496,7 +477,13 @@
 										IsVisible="{Binding HasExpiry}"
 										Style="{DynamicResource ItemDescriptionLabel}"
 										Text="{Binding ExpiryText}"
-										TextColor="{DynamicResource ContentSecondaryWL}" />
+										TextColor="{DynamicResource ContentSecondaryWL}">
+										<Label.Triggers>
+											<DataTrigger Binding="{Binding IsExpiringSoon}" TargetType="Label" Value="True">
+												<Setter Property="IsVisible" Value="False" />
+											</DataTrigger>
+										</Label.Triggers>
+									</Label>
 								</FlexLayout>
 								<Label
 									Style="{DynamicResource ItemDescriptionLabel}"
@@ -507,57 +494,72 @@
 					</Border>
 
 					<Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-						<controls:TextButton
-							Command="{Binding ShowOverviewCommand}"
-							LabelData="{l:Localize Overview}"
-							Style="{DynamicResource OutlinedTextButton}">
-							<controls:TextButton.Triggers>
-								<DataTrigger
-									Binding="{Binding IsOverviewSelected}"
-									TargetType="controls:TextButton"
-									Value="True">
-									<Setter Property="Style" Value="{DynamicResource FilledTextButton}" />
-								</DataTrigger>
-							</controls:TextButton.Triggers>
-						</controls:TextButton>
-						<controls:TextButton
+						<controls:TemplatedButton Command="{Binding ShowOverviewCommand}" SemanticProperties.Description="{l:Localize Overview}">
+							<Border BackgroundColor="{DynamicResource SurfaceElevation1WL}" MinimumHeightRequest="44" Padding="6" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+								<Label FontAttributes="Bold" FontSize="14" HorizontalTextAlignment="Center" LineBreakMode="NoWrap" Text="{l:Localize Overview}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center">
+									<Label.Triggers>
+										<DataTrigger Binding="{Binding IsOverviewSelected}" TargetType="Label" Value="True">
+											<Setter Property="TextColor" Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+								<Border.Triggers>
+									<DataTrigger Binding="{Binding IsOverviewSelected}" TargetType="Border" Value="True">
+										<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+										<Setter Property="Stroke" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+							</Border>
+						</controls:TemplatedButton>
+						<controls:TemplatedButton
 							Grid.Column="1"
 							Command="{Binding ShowActivityCommand}"
-							LabelData="{l:Localize Activity}"
-							Style="{DynamicResource OutlinedTextButton}">
-							<controls:TextButton.Triggers>
-								<DataTrigger
-									Binding="{Binding IsActivitySelected}"
-									TargetType="controls:TextButton"
-									Value="True">
-									<Setter Property="Style" Value="{DynamicResource FilledTextButton}" />
-								</DataTrigger>
-							</controls:TextButton.Triggers>
-						</controls:TextButton>
-						<controls:TextButton
+							SemanticProperties.Description="{l:Localize Activity}">
+							<Border BackgroundColor="{DynamicResource SurfaceElevation1WL}" MinimumHeightRequest="44" Padding="6" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+								<Label FontAttributes="Bold" FontSize="14" HorizontalTextAlignment="Center" LineBreakMode="NoWrap" Text="{l:Localize Activity}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center">
+									<Label.Triggers>
+										<DataTrigger Binding="{Binding IsActivitySelected}" TargetType="Label" Value="True">
+											<Setter Property="TextColor" Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+								<Border.Triggers>
+									<DataTrigger Binding="{Binding IsActivitySelected}" TargetType="Border" Value="True">
+										<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+										<Setter Property="Stroke" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+							</Border>
+						</controls:TemplatedButton>
+						<controls:TemplatedButton
 							Grid.Column="2"
 							Command="{Binding ShowAdvancedCommand}"
-							LabelData="{l:Localize Advanced}"
-							Style="{DynamicResource OutlinedTextButton}">
-							<controls:TextButton.Triggers>
-								<DataTrigger
-									Binding="{Binding IsAdvancedSelected}"
-									TargetType="controls:TextButton"
-									Value="True">
-									<Setter Property="Style" Value="{DynamicResource FilledTextButton}" />
-								</DataTrigger>
-							</controls:TextButton.Triggers>
-						</controls:TextButton>
+							SemanticProperties.Description="{l:Localize Advanced}">
+							<Border BackgroundColor="{DynamicResource SurfaceElevation1WL}" MinimumHeightRequest="44" Padding="6" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+								<Label FontAttributes="Bold" FontSize="14" HorizontalTextAlignment="Center" LineBreakMode="NoWrap" Text="{l:Localize Advanced}" TextColor="{DynamicResource ContentPrimaryWL}" VerticalTextAlignment="Center">
+									<Label.Triggers>
+										<DataTrigger Binding="{Binding IsAdvancedSelected}" TargetType="Label" Value="True">
+											<Setter Property="TextColor" Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+								<Border.Triggers>
+									<DataTrigger Binding="{Binding IsAdvancedSelected}" TargetType="Border" Value="True">
+										<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+										<Setter Property="Stroke" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+							</Border>
+						</controls:TemplatedButton>
 					</Grid>
 
 					<VerticalStackLayout
 						IsVisible="{Binding IsOverviewSelected}"
 						Spacing="12">
-						<Border
+						<VerticalStackLayout
 							IsVisible="{Binding HasDescription}"
-							Padding="16"
-							Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout Spacing="8">
+							Margin="4,8"
+							Spacing="8">
 								<Label
 									FontAttributes="Bold"
 									FontSize="18"
@@ -579,8 +581,7 @@
 										</DataTrigger>
 									</Label.Triggers>
 								</Label>
-							</VerticalStackLayout>
-						</Border>
+						</VerticalStackLayout>
 
 						<Border Padding="16" Style="{DynamicResource BorderSet}">
 							<VerticalStackLayout Spacing="10">
@@ -588,26 +589,10 @@
 									FontAttributes="Bold"
 									FontSize="18"
 									SemanticProperties.HeadingLevel="Level2"
-									Text="{l:Localize NextStep}" />
-								<controls:StatusPill
-									Text="{Binding AttentionText}"
-									Tone="{Binding StatusTone}" />
+									Text="{l:Localize Actions}" />
 								<VerticalStackLayout
 									BindableLayout.ItemTemplate="{StaticResource TokenActionTemplate}"
 									BindableLayout.ItemsSource="{Binding PrimaryActions}" />
-								<Label
-									Style="{DynamicResource ItemDescriptionLabel}"
-									Text="{Binding NextActionExplanation}"
-									TextColor="{DynamicResource ContentSecondaryWL}">
-									<Label.Triggers>
-										<DataTrigger
-											Binding="{Binding HasPrimaryActions}"
-											TargetType="Label"
-											Value="True">
-											<Setter Property="IsVisible" Value="False" />
-										</DataTrigger>
-									</Label.Triggers>
-								</Label>
 								<VerticalStackLayout
 									BindableLayout.ItemTemplate="{StaticResource TokenActionTemplate}"
 									BindableLayout.ItemsSource="{Binding SecondaryActions}" />

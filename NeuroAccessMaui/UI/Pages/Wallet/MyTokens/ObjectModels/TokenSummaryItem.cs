@@ -53,12 +53,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels
 			DateTime Now = UtcNow ?? DateTime.UtcNow;
 			this.HasExpiry = HasMeaningfulDate(Token.Expires);
 			this.IsExpired = this.HasExpiry && ToUtc(Token.Expires) <= Now;
-			bool ExpiresSoon = this.HasExpiry &&
+			this.IsExpiringSoon = this.HasExpiry &&
 				!this.IsExpired &&
 				ToUtc(Token.Expires) <= Now.Add(expiryAttentionWindow);
+			this.ExpiryText = this.HasExpiry
+				? ServiceRef.Localizer[nameof(AppResources.ExpiresFormat), Token.Expires]
+				: string.Empty;
 
 			bool HasValidIdentity = !string.IsNullOrWhiteSpace(this.TokenId);
-			this.NeedsAttention = !HasValidIdentity || this.UnreadCount > 0 || this.IsExpired || ExpiresSoon;
+			this.NeedsAttention = !HasValidIdentity || this.UnreadCount > 0 || this.IsExpired || this.IsExpiringSoon;
 
 			if (!HasValidIdentity)
 			{
@@ -81,12 +84,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels
 				this.StatusTone = StatusPillTone.Success;
 			}
 
+			this.AttentionText = !HasValidIdentity
+				? ServiceRef.Localizer[nameof(AppResources.Unavailable)]
+				: this.IsExpired
+					? ServiceRef.Localizer[nameof(AppResources.Expired)]
+					: this.IsExpiringSoon
+						? this.ExpiryText
+						: this.UnreadCount > 0
+							? ServiceRef.Localizer[nameof(AppResources.NotificationsUnreadLabel)]
+							: this.StatusText;
+
 			this.HasValue = !string.IsNullOrWhiteSpace(Token.Currency) || Token.Value != 0;
 			this.ValueText = this.HasValue
 				? FormatValue(Token.Value, Token.Currency)
-				: string.Empty;
-			this.ExpiryText = this.HasExpiry
-				? ServiceRef.Localizer[nameof(AppResources.ExpiresFormat), Token.Expires]
 				: string.Empty;
 			this.UpdatedText = HasMeaningfulDate(Token.Updated)
 				? ServiceRef.Localizer[
@@ -146,6 +156,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels
 		/// Gets the localized lifecycle or attention status.
 		/// </summary>
 		public string StatusText { get; }
+
+		/// <summary>
+		/// Gets the specific lifecycle or attention reason shown to the user.
+		/// </summary>
+		public string AttentionText { get; }
 
 		/// <summary>
 		/// Gets the theme-driven semantic status tone.
@@ -216,6 +231,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels
 		/// Gets a value indicating whether the token has expired.
 		/// </summary>
 		public bool IsExpired { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether the token expires within the attention window.
+		/// </summary>
+		public bool IsExpiringSoon { get; }
 
 		/// <summary>
 		/// Gets a value indicating whether the current app user owns the token.

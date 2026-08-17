@@ -1,177 +1,84 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseViewContractView
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.SignView"
+	x:DataType="base:ViewContractViewModel"
+	x:Name="ThisPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views">
 
-<views:BaseViewContractView x:Name="ThisPage"
-									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.SignView"
-									 x:DataType="base:ViewContractViewModel"
-									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-									 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-									 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-									 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-									 xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
-
-	<ContentView.Resources>
-		<Style x:Key="RoleTitleLabel"
-				 TargetType="Label"
-				 BaseResourceKey="BoldItemTitleLabel">
-			<Setter Property="FontSize"
-					  Value="18" />
-			<Setter Property="HorizontalTextAlignment"
-					  Value="Start" />
-		</Style>
-		<Style x:Key="RoleDescriptionLabel"
-				 TargetType="Label"
-				 BasedOn="{StaticResource ItemDescriptionLabel}">
-			<Setter Property="FontSize"
-					  Value="14" />
-			<Setter Property="Margin"
-					  Value="0" />
-			<Setter Property="HorizontalTextAlignment"
-					  Value="Start" />
-			<Setter Property="FontFamily"
-					  Value="SpaceGroteskMedium" />
-		</Style>
-	</ContentView.Resources>
-
-	<Grid RowDefinitions="*, auto"
-			ColumnDefinitions="*">
-
-		<!-- Roles Collection -->
-		<CollectionView Grid.Row="0"
-							 ItemsSource="{Binding SignableRoles}"
-							 SelectionMode="None"
-							 IsGrouped="False"
-							 ItemSizingStrategy="MeasureAllItems"
-							 Margin="{DynamicResource SmallMargins}">
+	<Grid RowDefinitions="*,Auto">
+		<CollectionView Grid.Row="0" ItemsSource="{Binding SignableRoles}" SelectionMode="None" ItemSizingStrategy="MeasureAllItems" Margin="16,4,16,20">
 			<CollectionView.Header>
-				<Grid>
-					<Border Style="{DynamicResource BorderSet}">
-						<VerticalStackLayout>
-							<Label Text="{l:Localize SelectYourRole}"
-									 Style="{DynamicResource RoleTitleLabel}" />
-							<controls:CompositePicker Style="{DynamicResource RegularCompositePicker}"
-														Placeholder="{l:Localize SelectYourRoleInThisContract}"
-														ItemsSource="{Binding SignableRoles}"
-														SelectedItem="{Binding SelectedRole}">
+				<VerticalStackLayout Spacing="14" Margin="0,0,0,16">
+					<VerticalStackLayout Spacing="4">
+						<Label SemanticProperties.HeadingLevel="Level2" Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Sign}" />
+						<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize SelectYourRoleInThisContract}" TextColor="{DynamicResource ContentSecondaryWL}" />
+					</VerticalStackLayout>
+					<Border Margin="0" Padding="16" Style="{DynamicResource BorderSet}">
+						<VerticalStackLayout Spacing="8">
+							<Label FontAttributes="Bold" Text="{l:Localize SelectYourRole}" TextColor="{DynamicResource ContentPrimaryWL}" />
+							<controls:CompositePicker Style="{DynamicResource RegularCompositePicker}" Placeholder="{l:Localize SelectYourRoleInThisContract}" ItemsSource="{Binding SignableRoles}" SelectedItem="{Binding SelectedRole}">
 								<controls:CompositePicker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
-									<Binding Path="Name"
-											 x:DataType="objectModel:ObservableRole" />
+									<Binding Path="Name" x:DataType="objectModel:ObservableRole" />
 								</controls:CompositePicker.ItemDisplayBinding>
 							</controls:CompositePicker>
 						</VerticalStackLayout>
 					</Border>
-				</Grid>
+				</VerticalStackLayout>
 			</CollectionView.Header>
+			<CollectionView.ItemsLayout>
+				<LinearItemsLayout ItemSpacing="10" Orientation="Vertical" />
+			</CollectionView.ItemsLayout>
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="objectModel:ObservableRole">
-					<Grid>
-						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout>
-								<Label Text="{Binding Name}"
-										 Style="{DynamicResource RoleTitleLabel}" />
-								<Label Text="{Binding Description}"
-										 Style="{DynamicResource RoleDescriptionLabel}" />
-								<!-- Part Collection -->
-								<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="objectModel:ObservablePart">
-											<Border Style="{DynamicResource BorderSet}">
-												<Grid ColumnDefinitions="*, auto"
-														RowDefinitions="auto,auto">
-													<controls:TemplatedButton Grid.Column="0"
-																					  Grid.Row="0"
-																					  Command="{Binding OpenIdentityCommand}">
-														<Label Text="{Binding FriendlyName}"
-																 Style="{DynamicResource RoleDescriptionLabel}"
-																 VerticalOptions="Center"
-																 HorizontalOptions="Center"
-																 TextColor="{DynamicResource ButtonAccessTertiaryContentWL}" />
-													</controls:TemplatedButton>
-													<Grid ColumnDefinitions="*, auto, *"
-															Grid.Column="0"
-															Grid.Row="1">
-														<Border Grid.Column="1"
-																  Padding="{DynamicResource SmallLeftRightMargins}"
-																  Style="{DynamicResource RoundedBorder}"
-																  BackgroundColor="{DynamicResource TnPWarningbgWL}"
-																  IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
-															<Label Style="{DynamicResource RoleDescriptionLabel}"
-																	 Text="{l:Localize IDRequestSent}"
-																	 TextColor="{DynamicResource TnPWarningContentWL}"
-																	 VerticalOptions="Center" />
-														</Border>
-													</Grid>
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</VerticalStackLayout>
-
-								<Border Style="{DynamicResource BorderSet}"
-										  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
-									<Label Text="{l:Localize None}"
-											 Style="{DynamicResource RoleDescriptionLabel}"
-											 TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"
-											 HorizontalTextAlignment="Center"
-											 VerticalTextAlignment="Center" />
-								</Border>
+					<Border Margin="0" Padding="16" Style="{DynamicResource BorderSet}">
+						<VerticalStackLayout Spacing="12">
+							<VerticalStackLayout Spacing="2">
+								<Label FontAttributes="Bold" FontSize="18" Text="{Binding Name}" TextColor="{DynamicResource ContentPrimaryWL}" />
+								<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding Description}" TextColor="{DynamicResource ContentSecondaryWL}" />
 							</VerticalStackLayout>
-						</Border>
-					</Grid>
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}" Spacing="8">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="objectModel:ObservablePart">
+										<Border BackgroundColor="{DynamicResource SurfaceElevation2WL}" Padding="12" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+											<Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" RowDefinitions="Auto,Auto" RowSpacing="4">
+												<Border Grid.RowSpan="2" BackgroundColor="{DynamicResource SurfaceElevation1WL}" HeightRequest="40" Padding="9" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10" WidthRequest="40">
+													<controls:SvgView InputTransparent="True" Source="person.svg" TintColor="{DynamicResource ContentPrimaryWL}" />
+												</Border>
+												<controls:TemplatedButton Grid.Column="1" Command="{Binding OpenIdentityCommand}" HorizontalOptions="Start" Padding="0">
+													<Label FontAttributes="Bold" Text="{Binding FriendlyName}" TextColor="{DynamicResource ButtonAccessTertiaryContentWL}" />
+												</controls:TemplatedButton>
+												<controls:StatusPill Grid.Row="1" Grid.Column="1" HorizontalOptions="Start" IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}" Text="{l:Localize IDRequestSent}" Tone="Warning" />
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+							<Border BackgroundColor="{DynamicResource SurfaceElevation2WL}" IsVisible="{Binding HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}" Padding="12" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+								<Label HorizontalTextAlignment="Center" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize None}" TextColor="{DynamicResource ContentSecondaryWL}" />
+							</Border>
+						</VerticalStackLayout>
+					</Border>
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
-		<!-- BOTTOM BAR -->
-		<Grid RowDefinitions="auto,auto"
-				Grid.Row="1">
-			<Border Grid.Row="0"
-					  Style="{DynamicResource BottomBarBorder}">
-				<Grid HorizontalOptions="Center"
-						VerticalOptions="Center"
-						ColumnSpacing="{DynamicResource SmallSpacing}"
-						Padding="{DynamicResource SmallMargins}">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="auto" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
 
-					<CheckBox Grid.Column="0"
-								 IsChecked="{Binding IsContractOk}"
-								 Color="{DynamicResource ContentPrimaryWL}" />
-					<Label Grid.Column="1"
-							 Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
-							 Style="{DynamicResource BottomBarLabel}" />
-				</Grid>
-			</Border>
-
-			<Border Grid.Row="1"
-					  Style="{DynamicResource BottomBarBorder}">
-				<Grid HorizontalOptions="Fill"
-						VerticalOptions="Center"
-						ColumnSpacing="{DynamicResource SmallSpacing}"
-						Padding="{DynamicResource SmallMargins}">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-												Grid.Column="0"
-												LabelData="{l:Localize Back}"
-												Command="{Binding BackCommand}" />
-					<controls:TextButton Style="{DynamicResource FilledTextButton}"
-												Grid.Column="1"
-												LabelData="{l:Localize Sign}"
-												Command="{Binding SignCommand}" />
-
-				</Grid>
-			</Border>
-		</Grid>
+		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder2}">
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="12" Padding="16,10" RowDefinitions="Auto,Auto" RowSpacing="8">
+				<Border Grid.ColumnSpan="2" BackgroundColor="{DynamicResource SurfaceElevation1WL}" Padding="10,8" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+					<Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+						<CheckBox IsChecked="{Binding IsContractOk}" Color="{DynamicResource ContentPrimaryWL}" />
+						<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{DynamicResource BottomBarLabel}" VerticalTextAlignment="Center" />
+					</Grid>
+				</Border>
+				<controls:TextButton Grid.Row="1" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" Style="{DynamicResource SecondaryButton}" />
+				<controls:TextButton Grid.Row="1" Grid.Column="1" LabelData="{l:Localize Sign}" Command="{Binding SignCommand}" IsEnabled="{Binding ReadyToSign}" Style="{DynamicResource PrimaryButton}" />
+			</Grid>
+		</Border>
 	</Grid>
-
 </views:BaseViewContractView>

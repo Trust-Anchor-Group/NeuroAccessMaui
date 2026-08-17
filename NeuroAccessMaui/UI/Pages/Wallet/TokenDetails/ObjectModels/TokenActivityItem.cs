@@ -59,6 +59,29 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.ObjectModels
 				? ServiceRef.Localizer[nameof(AppResources.PersonalUpdate)]
 				: string.Empty;
 
+			List<string> SummaryParts = [];
+			if (this.HasTimestamp)
+				SummaryParts.Add(this.TimestampText);
+			if (this.HasActor)
+			{
+				SummaryParts.Add(string.IsNullOrWhiteSpace(this.ActorLabel)
+					? this.ActorName
+					: string.Concat(this.ActorLabel, ": ", this.ActorName));
+			}
+			else if (this.HasOwner)
+			{
+				SummaryParts.Add(string.Concat(
+					ServiceRef.Localizer[nameof(AppResources.Owner)],
+					": ",
+					this.OwnerName));
+			}
+			if (this.HasValue)
+				SummaryParts.Add(this.ValueText);
+			if (this.IsPersonal)
+				SummaryParts.Add(this.PrivacyText);
+
+			this.SummaryText = string.Join(" · ", SummaryParts);
+
 			if (!string.IsNullOrEmpty(this.ActorId))
 				this.OpenActorCommand = new AsyncRelayCommand(() => OpenIdentityAsync(this.ActorId));
 
@@ -111,6 +134,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.ObjectModels
 		/// Gets the event timestamp formatted for the current culture.
 		/// </summary>
 		public string TimestampText { get; }
+
+		/// <summary>
+		/// Gets the compact metadata summary shown while the activity entry is collapsed.
+		/// </summary>
+		public string SummaryText { get; }
 
 		/// <summary>
 		/// Gets a value indicating whether a meaningful timestamp is available.

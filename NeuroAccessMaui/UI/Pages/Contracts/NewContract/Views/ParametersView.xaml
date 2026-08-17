@@ -34,25 +34,23 @@
 		SelectionMode="None">
 		<CollectionView.Header>
 			<VerticalStackLayout
-				Padding="{DynamicResource MediumLeftRightBottomMargins}"
-				Spacing="{DynamicResource MediumSpacing}">
-				<Border Margin="0" Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				Padding="16,4,16,16"
+				Spacing="14">
+				<VerticalStackLayout Spacing="4">
 						<Label
-							SemanticProperties.HeadingLevel="Level1"
+							SemanticProperties.HeadingLevel="Level2"
 							Style="{DynamicResource SectionTitleLabel}"
 							Text="{l:Localize Parameters}" />
 						<Label
 							Style="{DynamicResource ItemDescriptionLabel}"
 							Text="{l:Localize SetParametersDescription}" />
-					</VerticalStackLayout>
-				</Border>
+				</VerticalStackLayout>
 
 				<Border
 					BackgroundColor="{DynamicResource TnPWarningbgWL}"
 					IsVisible="{Binding FirstInvalidParameter, Converter={StaticResource NullToBooleanConverter}}"
 					Margin="0"
-					Padding="{DynamicResource SmallMargins}"
+					Padding="12,10"
 					Stroke="{DynamicResource TnPWarningFigureWL}"
 					Style="{DynamicResource RoundedBorder}">
 					<VerticalStackLayout Spacing="2">
@@ -69,7 +67,7 @@
 			</VerticalStackLayout>
 		</CollectionView.Header>
 		<CollectionView.ItemsLayout>
-			<LinearItemsLayout ItemSpacing="16" Orientation="Vertical" />
+			<LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
 		</CollectionView.ItemsLayout>
 		<CollectionView.EmptyView>
 			<Label

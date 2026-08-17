@@ -13,10 +13,10 @@
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
 
 	<Grid RowDefinitions="*">
-		<ActivityIndicator VerticalOptions="Center"
-								 HorizontalOptions="Center"
-								 IsVisible="true"
-								 IsRunning="true" />
+		<VerticalStackLayout HorizontalOptions="Center" Spacing="12" VerticalOptions="Center">
+			<ActivityIndicator Color="{DynamicResource TnPInfoContentWL}" IsRunning="True" />
+			<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize LoadingContracts}" TextColor="{DynamicResource ContentSecondaryWL}" />
+		</VerticalStackLayout>
 	</Grid>
 
 

@@ -11,56 +11,68 @@
 	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views">
 	<ScrollView>
 		<VerticalStackLayout
-			Padding="{DynamicResource MediumLeftRightBottomMargins}"
-			Spacing="{DynamicResource MediumSpacing}">
-			<Border Margin="0" Style="{DynamicResource BorderSet}">
-				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+			Padding="16,4,16,24"
+			Spacing="20">
+			<Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+				<Border
+					BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+					HeightRequest="56"
+					Padding="12"
+					Stroke="{DynamicResource SurfaceStrokeWL}"
+					StrokeShape="RoundRectangle 16"
+					WidthRequest="56">
+					<controls:SvgView InputTransparent="True" Source="contract.svg" TintColor="{DynamicResource ContentPrimaryWL}" />
+				</Border>
+				<VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
 					<Label
 						Style="{DynamicResource KeyLabel}"
 						Text="{l:Localize ContractWizardContractLabel}" />
 					<Label
-						SemanticProperties.HeadingLevel="Level1"
-						Style="{DynamicResource PageTitleLabel}"
+						SemanticProperties.HeadingLevel="Level2"
+						Style="{DynamicResource SectionTitleLabel}"
 						Text="{Binding Contract.Category}" />
 					<Label
 						Style="{DynamicResource ItemDescriptionLabel}"
 						Text="{l:Localize ContractCreationDetailsAndParties}" />
 				</VerticalStackLayout>
-			</Border>
+			</Grid>
 
-			<Border Margin="0" Style="{DynamicResource BorderSet}">
-				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+			<VerticalStackLayout Spacing="10">
+				<VerticalStackLayout Spacing="3">
 					<Label
 						SemanticProperties.HeadingLevel="Level2"
 						Style="{DynamicResource SectionTitleLabel}"
 						Text="{l:Localize ContractWizardSettings}" />
+					<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize ContractWizardVisibilityPlaceholder}" />
+				</VerticalStackLayout>
+				<Border Margin="0" Padding="16" Style="{DynamicResource BorderSet}">
 					<controls:CompositePicker
 						ItemsSource="{Binding ContractVisibilityItems}"
 						LabelText="{l:Localize Visibility}"
 						Placeholder="{l:Localize ContractWizardVisibilityPlaceholder}"
 						SelectedItem="{Binding SelectedContractVisibilityItem}"
 						Style="{DynamicResource RegularCompositePicker}" />
-				</VerticalStackLayout>
-			</Border>
+				</Border>
+			</VerticalStackLayout>
 
-			<Border Margin="0" Style="{DynamicResource BorderSubSet}">
-				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+			<VerticalStackLayout Spacing="8">
 					<Label
+						SemanticProperties.HeadingLevel="Level2"
 						Style="{DynamicResource SectionTitleLabel}"
 						Text="{l:Localize NextStep}" />
-					<Label
-						Style="{DynamicResource ItemDescriptionLabel}"
-						Text="{l:Localize SetParametersDescription}" />
-					<Label
-						Style="{DynamicResource ItemDescriptionLabel}"
-						Text="{l:Localize SelectRolesDescription}" />
-				</VerticalStackLayout>
-			</Border>
+				<Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" RowDefinitions="Auto,Auto" RowSpacing="8">
+					<controls:StatusPill Text="1" Tone="Information" />
+					<Label Grid.Column="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize SetParametersDescription}" VerticalTextAlignment="Center" />
+					<controls:StatusPill Grid.Row="1" Text="2" Tone="Information" />
+					<Label Grid.Row="1" Grid.Column="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize SelectRolesDescription}" VerticalTextAlignment="Center" />
+				</Grid>
+			</VerticalStackLayout>
 
 			<controls:TextButton
 				Command="{Binding ShowPreviewFromIntroCommand}"
+				HorizontalOptions="Start"
 				LabelData="{l:Localize ContractWizardReviewHumanReadable}"
-				Style="{DynamicResource SecondaryButton}" />
+				Style="{DynamicResource OutlinedTextButton}" />
 		</VerticalStackLayout>
 	</ScrollView>
 </views:BaseNewContractView>

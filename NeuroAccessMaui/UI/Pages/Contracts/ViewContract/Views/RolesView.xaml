@@ -1,156 +1,67 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseViewContractView
+	x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.RolesView"
+	x:DataType="base:ViewContractViewModel"
+	x:Name="ThisPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views">
 
-<views:BaseViewContractView x:Name="ThisPage"
-									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.RolesView"
-									 x:DataType="base:ViewContractViewModel"
-									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-									 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-									 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-									 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-									 xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
-
-	<ContentView.Resources>
-		<Style x:Key="RoleTitleLabel"
-				 TargetType="Label"
-				 BaseResourceKey="BoldItemTitleLabel">
-			<Setter Property="FontSize"
-					  Value="18" />
-			<Setter Property="HorizontalTextAlignment"
-					  Value="Start" />
-		</Style>
-		<Style x:Key="RoleDescriptionLabel"
-				 TargetType="Label"
-			     BaseResourceKey="ItemDescriptionLabel">
-			<Setter Property="FontSize"
-					  Value="14" />
-			<Setter Property="Margin"
-					  Value="0" />
-			<Setter Property="HorizontalTextAlignment"
-					  Value="Start" />
-			<Setter Property="FontFamily"
-					  Value="SpaceGroteskMedium" />
-		</Style>
-	</ContentView.Resources>
-
-	<!-- Roles Collection -->
-	<CollectionView ItemsSource="{Binding Contract.Roles}"
-						 SelectionMode="None"
-						 IsGrouped="False"
-						 ItemSizingStrategy="MeasureAllItems"
-						 Margin="{DynamicResource SmallMargins}">
+	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" ItemSizingStrategy="MeasureAllItems" Margin="16,4,16,20">
+		<CollectionView.Header>
+			<VerticalStackLayout Spacing="4" Margin="0,0,0,16">
+				<Label SemanticProperties.HeadingLevel="Level2" Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PeopleAndSignatures}" />
+				<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding SignatureProgressText}" TextColor="{DynamicResource ContentSecondaryWL}" />
+			</VerticalStackLayout>
+		</CollectionView.Header>
+		<CollectionView.ItemsLayout>
+			<LinearItemsLayout ItemSpacing="10" Orientation="Vertical" />
+		</CollectionView.ItemsLayout>
 		<CollectionView.ItemTemplate>
 			<DataTemplate x:DataType="objectModel:ObservableRole">
-				<Grid>
-					<Border Style="{DynamicResource BorderSet}">
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Label Text="{Binding Name}"
-									 Style="{DynamicResource RoleTitleLabel}" />
-							<Label Text="{Binding Description}"
-									 Style="{DynamicResource RoleDescriptionLabel}" />
-							<!-- Part Collection -->
-							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
-								<BindableLayout.ItemTemplate>
-									<DataTemplate x:DataType="objectModel:ObservablePart">
-										<Border Style="{DynamicResource BorderSet}">
-											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-												<!-- Friendly name (clickable) -->
-												<controls:TemplatedButton Command="{Binding OpenIdentityCommand}"
-																				  Grid.Column="0">
-													<Label Text="{Binding FriendlyName}"
-															 Style="{DynamicResource RoleDescriptionLabel}"
-															 VerticalOptions="Center"
-															 HorizontalOptions="Center"
-														   TextColor="{DynamicResource ContentPrimaryWL}" />
-												</controls:TemplatedButton>
-												<Grid ColumnDefinitions="auto,*">
-													<VerticalStackLayout Grid.Column="0"
-																				HorizontalOptions="Center"
-																				Spacing="2">
-														<!-- "ID request sent" (only visible if identity not retrieved) -->
-														<Grid ColumnDefinitions="auto"
-																IsVisible="{Binding HasSentPetition}">
-															<controls:StatusPill
-																Text="{l:Localize IDRequestSent}"
-																Tone="Warning" />
-														</Grid>
-
-														<!-- Pending signature (if not signed) -->
-														<Grid ColumnDefinitions="auto"
-																IsVisible="{Binding HasSigned, Converter={StaticResource InvertedBoolConverter}}">
-															<controls:StatusPill
-																Text="{l:Localize PendingSignature}"
-																Tone="Warning" />
-														</Grid>
-
-														<Grid ColumnDefinitions="auto"
-																IsVisible="{Binding HasSigned}">
-															<controls:StatusPill
-																Text="{l:Localize Signed}"
-																Tone="Success" />
-														</Grid>
-													</VerticalStackLayout>
-
-													<!-- View signature button (if signed) -->
-												<VerticalStackLayout Grid.Column="1"
-																		HorizontalOptions="End"
-																		Spacing="{DynamicResource SmallSpacing}">
-													<controls:TemplatedButton Command="{Binding SendProposalToPartCommand, Source={RelativeSource AncestorType={x:Type base:ViewContractViewModel}}, x:DataType=base:ViewContractViewModel}"
-																				CommandParameter="{Binding .}"
-																				IsVisible="{Binding CanSendProposal}"
-																				VerticalOptions="End"
-																				HorizontalOptions="End">
-														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
-																  Margin="0">
-															<Label Text="{l:Localize SendProposal}"
-																	 Style="{DynamicResource FilledTemplateButtonLabel}"
-																	 HorizontalTextAlignment="Center"
-																	 VerticalTextAlignment="Center" />
-														</Border>
-													</controls:TemplatedButton>
-
-													<controls:TemplatedButton Command="{Binding OpenSignatureCommand}"
-																						  VerticalOptions="End"
-																						  IsVisible="{Binding HasSigned}"
-																						  HorizontalOptions="End">
-														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
-																  Margin="0">
-															<Label Text="{l:Localize ViewSignature}"
-																	 Style="{DynamicResource FilledTemplateButtonLabel}"
-																	 HorizontalTextAlignment="Center"
-																	 VerticalTextAlignment="Center" />
-														</Border>
-
-													</controls:TemplatedButton>
-												</VerticalStackLayout>
-
-												</Grid>
-
-
-											</VerticalStackLayout>
-										</Border>
-									</DataTemplate>
-								</BindableLayout.ItemTemplate>
-							</VerticalStackLayout>
-
-							<Border Style="{DynamicResource BorderSet}"
-									  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
-								<Label Text="{l:Localize None}"
-										 Style="{DynamicResource RoleDescriptionLabel}"
-										 TextColor="{DynamicResource ButtonAccessPrimarybgWL}"
-										 HorizontalTextAlignment="Center"
-										 VerticalTextAlignment="Center" />
-							</Border>
+				<Border Margin="0" Padding="16" Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="12">
+						<VerticalStackLayout Spacing="2">
+							<Label FontAttributes="Bold" FontSize="18" Text="{Binding Name}" TextColor="{DynamicResource ContentPrimaryWL}" />
+							<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding Description}" TextColor="{DynamicResource ContentSecondaryWL}" />
 						</VerticalStackLayout>
-					</Border>
-				</Grid>
+
+						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}" Spacing="8">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="objectModel:ObservablePart">
+									<Border BackgroundColor="{DynamicResource SurfaceElevation2WL}" Padding="12" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+										<Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+											<Border Grid.RowSpan="2" BackgroundColor="{DynamicResource SurfaceElevation1WL}" HeightRequest="40" Padding="9" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10" VerticalOptions="Center" WidthRequest="40">
+												<controls:SvgView InputTransparent="True" Source="person.svg" TintColor="{DynamicResource ContentPrimaryWL}" />
+											</Border>
+											<controls:TemplatedButton Grid.Column="1" Command="{Binding OpenIdentityCommand}" HorizontalOptions="Start" Padding="0">
+												<Label FontAttributes="Bold" Text="{Binding FriendlyName}" TextColor="{DynamicResource ButtonAccessTertiaryContentWL}" />
+											</controls:TemplatedButton>
+											<FlexLayout Grid.Row="1" Grid.Column="1" Direction="Row" Wrap="Wrap">
+												<controls:StatusPill IsVisible="{Binding HasSentPetition}" Margin="0,0,6,2" Text="{l:Localize IDRequestSent}" Tone="Warning" />
+												<controls:StatusPill IsVisible="{Binding HasSigned, Converter={StaticResource InvertedBoolConverter}}" Margin="0,0,6,2" Text="{l:Localize PendingSignature}" Tone="Warning" />
+												<controls:StatusPill IsVisible="{Binding HasSigned}" Margin="0,0,6,2" Text="{l:Localize Signed}" Tone="Success" />
+											</FlexLayout>
+											<HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="8">
+												<controls:TextButton Command="{Binding SendProposalToPartCommand, Source={RelativeSource AncestorType={x:Type base:ViewContractViewModel}}, x:DataType=base:ViewContractViewModel}" CommandParameter="{Binding .}" IsVisible="{Binding CanSendProposal}" LabelData="{l:Localize SendProposal}" Style="{DynamicResource OutlinedTextButton}" />
+												<controls:TextButton Command="{Binding OpenSignatureCommand}" IsVisible="{Binding HasSigned}" LabelData="{l:Localize ViewSignature}" Style="{DynamicResource OutlinedTextButton}" />
+											</HorizontalStackLayout>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
+
+						<Border BackgroundColor="{DynamicResource SurfaceElevation2WL}" IsVisible="{Binding HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}" Padding="12" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+							<Label HorizontalTextAlignment="Center" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize None}" TextColor="{DynamicResource ContentSecondaryWL}" />
+						</Border>
+					</VerticalStackLayout>
+				</Border>
 			</DataTemplate>
 		</CollectionView.ItemTemplate>
 	</CollectionView>
-
 </views:BaseViewContractView>

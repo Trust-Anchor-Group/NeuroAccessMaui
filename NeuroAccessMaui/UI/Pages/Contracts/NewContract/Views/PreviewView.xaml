@@ -17,7 +17,7 @@
 				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label
-							SemanticProperties.HeadingLevel="Level1"
+							SemanticProperties.HeadingLevel="Level2"
 							Style="{DynamicResource SectionTitleLabel}"
 							Text="{l:Localize Summary}" />
 						<Label

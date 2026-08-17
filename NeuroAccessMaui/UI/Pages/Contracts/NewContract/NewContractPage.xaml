@@ -18,105 +18,42 @@
 		<mct:IsStringNotNullOrEmptyConverter x:Key="IsNotEmptyString" />
 	</base:BaseContentPage.Resources>
 
-	<Grid
-		BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-		RowDefinitions="Auto,Auto,*,Auto">
-		<controls:Background Grid.Row="0" Grid.RowSpan="4" />
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="Auto,Auto,*,Auto">
+		<controls:Background Grid.RowSpan="4" />
 
-		<Grid
-			Grid.Row="0"
-			ColumnDefinitions="Auto,*"
-			ColumnSpacing="{DynamicResource SmallSpacing}"
-			Margin="{DynamicResource MediumLeftRightBottomMargins}">
-			<controls:SvgButton
-				Command="{Binding BackCommand}"
-				SemanticProperties.Description="{l:Localize Close}"
-				Style="{DynamicResource IconButton}"
-				SvgSource="close.svg" />
-			<Label
-				Grid.Column="1"
-				HorizontalTextAlignment="End"
-				Style="{DynamicResource PageTitleLabel}"
-				Text="{l:Localize NewContract}" />
+		<Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12" HorizontalOptions="Fill" Margin="16,8,16,10" MaximumWidthRequest="960">
+			<controls:SvgButton Command="{Binding BackCommand}" SemanticProperties.Description="{l:Localize Close}" Style="{DynamicResource IconButton}" SvgSource="close.svg" VerticalOptions="Center" />
+			<VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+				<Label SemanticProperties.HeadingLevel="Level1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize NewContract}" />
+			</VerticalStackLayout>
 		</Grid>
 
-		<VerticalStackLayout
-			Grid.Row="1"
-			IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}"
-			Margin="{DynamicResource MediumLeftRightBottomMargins}"
-			Spacing="{DynamicResource SmallSpacing}">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource SmallSpacing}">
-				<Label
-					Style="{DynamicResource SectionTitleLabel}"
-					Text="{Binding CurrentStepTitle}" />
-				<Label
-					Grid.Column="1"
-					Style="{DynamicResource InfoLabel}"
-					Text="{Binding ProgressText}"
-					VerticalOptions="Center" />
-			</Grid>
+		<Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="12" HorizontalOptions="Fill" IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}" Margin="16,0,16,12" MaximumWidthRequest="960">
+			<Label FontAttributes="Bold" Style="{DynamicResource InfoLabel}" Text="{Binding ProgressText}" VerticalOptions="Center" />
+			<CollectionView Grid.Column="1" HeightRequest="36" HorizontalOptions="End" HorizontalScrollBarVisibility="Never" ItemSizingStrategy="MeasureAllItems" ItemsSource="{Binding Steps}" SelectionMode="None">
+					<CollectionView.ItemsLayout>
+						<LinearItemsLayout ItemSpacing="10" Orientation="Horizontal" />
+					</CollectionView.ItemsLayout>
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="viewmodel:StepDescriptor">
+							<controls:TemplatedButton Command="{Binding GoToStepDescriptorCommand, Source={RelativeSource AncestorType={x:Type viewmodel:NewContractViewModel}}, x:DataType=viewmodel:NewContractViewModel}" CommandParameter="{Binding .}" IsEnabled="{Binding IsEnabled}" Padding="0" SemanticProperties.Description="{Binding Title}">
+								<Border BackgroundColor="{DynamicResource SurfaceElevation2WL}" HeightRequest="34" Padding="0" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 17" WidthRequest="34">
+									<Label FontAttributes="Bold" FontSize="13" HorizontalTextAlignment="Center" Text="{Binding DisplayNumber}" TextColor="{DynamicResource ContentSecondaryWL}" VerticalTextAlignment="Center" />
+									<Border.Triggers>
+										<DataTrigger Binding="{Binding IsCurrent}" TargetType="Border" Value="True">
+											<Setter Property="BackgroundColor" Value="{DynamicResource TnPInfobgWL}" />
+											<Setter Property="Stroke" Value="{DynamicResource TnPInfoContentWL}" />
+											<Setter Property="StrokeThickness" Value="2" />
+										</DataTrigger>
+									</Border.Triggers>
+								</Border>
+							</controls:TemplatedButton>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+		</Grid>
 
-			<CollectionView
-				HeightRequest="56"
-				HorizontalScrollBarVisibility="Never"
-				ItemSizingStrategy="MeasureAllItems"
-				ItemsSource="{Binding Steps}"
-				SelectionMode="None">
-				<CollectionView.ItemsLayout>
-					<LinearItemsLayout ItemSpacing="8" Orientation="Horizontal" />
-				</CollectionView.ItemsLayout>
-				<CollectionView.ItemTemplate>
-					<DataTemplate x:DataType="viewmodel:StepDescriptor">
-						<controls:TemplatedButton
-							Command="{Binding GoToStepDescriptorCommand, Source={RelativeSource AncestorType={x:Type viewmodel:NewContractViewModel}}, x:DataType=viewmodel:NewContractViewModel}"
-							CommandParameter="{Binding .}"
-							HorizontalOptions="Start"
-							Padding="0"
-							SemanticProperties.Description="{Binding Title}"
-							VerticalOptions="Center">
-							<Border
-								BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-								InputTransparent="True"
-								MinimumHeightRequest="44"
-								Padding="12,8"
-								Stroke="{DynamicResource SurfaceStrokeWL}"
-								VerticalOptions="Center"
-								Style="{DynamicResource RoundedBorder}">
-								<HorizontalStackLayout
-									Spacing="{DynamicResource SmallSpacing}"
-									VerticalOptions="Center">
-									<Label
-										Style="{DynamicResource KeyLabel}"
-										Text="{Binding DisplayNumber}"
-										VerticalTextAlignment="Center" />
-									<Label
-										LineBreakMode="NoWrap"
-										MaxLines="1"
-										Style="{DynamicResource ValueLabel}"
-										Text="{Binding Title}"
-										VerticalTextAlignment="Center" />
-								</HorizontalStackLayout>
-								<Border.Triggers>
-									<DataTrigger
-										Binding="{Binding IsCurrent}"
-										TargetType="Border"
-										Value="True">
-										<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation2WL}" />
-										<Setter Property="Stroke" Value="{DynamicResource ContentPrimaryWL}" />
-									</DataTrigger>
-								</Border.Triggers>
-							</Border>
-						</controls:TemplatedButton>
-					</DataTemplate>
-				</CollectionView.ItemTemplate>
-			</CollectionView>
-		</VerticalStackLayout>
-
-		<Grid
-			x:Name="StateGrid"
-			Grid.Row="2"
-			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}"
-			mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}">
+		<Grid x:Name="StateGrid" Grid.Row="2" HorizontalOptions="Fill" MaximumWidthRequest="960" mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}">
 			<mct:StateContainer.StateViews>
 				<views:LoadingView mct:StateView.StateKey="Loading" />
 				<views:IntroView mct:StateView.StateKey="Intro" />
@@ -124,95 +61,31 @@
 				<views:RolesView mct:StateView.StateKey="Roles" />
 				<views:PreviewView mct:StateView.StateKey="Preview" />
 			</mct:StateContainer.StateViews>
-
-			<Label
-				HorizontalTextAlignment="Center"
-				Text="{l:Localize SomethingWentWrong}"
-				VerticalTextAlignment="Center" />
+			<Label HorizontalTextAlignment="Center" Text="{l:Localize SomethingWentWrong}" VerticalTextAlignment="Center" />
 		</Grid>
 
-		<Border
-			Grid.Row="3"
-			IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}"
-			Margin="0"
-			Padding="0"
-			Style="{DynamicResource BottomBarBorder2}">
-			<Grid
-				ColumnDefinitions="Auto,*,Auto"
-				ColumnSpacing="{DynamicResource MediumSpacing}"
-				Padding="16,8"
-				RowDefinitions="Auto,Auto,Auto,Auto"
-				RowSpacing="{DynamicResource SmallSpacing}">
-				<Grid
-					Grid.ColumnSpan="3"
-					ColumnDefinitions="Auto,*"
-					ColumnSpacing="{DynamicResource SmallSpacing}"
-					IsVisible="{Binding IsOnPreviewStep}"
-					Padding="{DynamicResource SmallTopMargins}">
-					<CheckBox
-						Color="{DynamicResource ContentPrimaryWL}"
-						IsChecked="{Binding IsContractOk}" />
-					<Label
-						Grid.Column="1"
-						Style="{DynamicResource BottomBarLabel}"
-						Text="{l:Localize IHaveReadAndUnderstoodTheContract}" />
-				</Grid>
-
-				<Border
-					Grid.Row="1"
-					Grid.ColumnSpan="3"
-					BackgroundColor="{DynamicResource TnPWarningbgWL}"
-					IsVisible="{Binding ShowNoRolesWarning}"
-					Padding="{DynamicResource SmallMargins}"
-					Stroke="{DynamicResource TnPWarningFigureWL}"
-					Style="{DynamicResource RoundedBorder}">
+		<Border Grid.Row="3" IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}" Margin="0" Padding="0" Style="{DynamicResource BottomBarBorder2}">
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="12" HorizontalOptions="Fill" MaximumWidthRequest="960" Padding="16,10" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+				<Border Grid.ColumnSpan="2" BackgroundColor="{DynamicResource SurfaceElevation1WL}" IsVisible="{Binding IsOnPreviewStep}" Padding="10,8" Stroke="{DynamicResource SurfaceStrokeWL}" StrokeShape="RoundRectangle 10">
+					<Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+						<CheckBox Color="{DynamicResource ContentPrimaryWL}" IsChecked="{Binding IsContractOk}" />
+						<Label Grid.Column="1" Style="{DynamicResource BottomBarLabel}" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" VerticalTextAlignment="Center" />
+					</Grid>
+				</Border>
+				<Border Grid.Row="1" Grid.ColumnSpan="2" BackgroundColor="{DynamicResource TnPWarningbgWL}" IsVisible="{Binding ShowNoRolesWarning}" Padding="10,8" Stroke="{DynamicResource TnPWarningFigureWL}" StrokeShape="RoundRectangle 10">
 					<VerticalStackLayout Spacing="2">
-						<Label
-							Style="{DynamicResource BottomBarLabel}"
-							Text="{Binding RolesValidationMessage}"
-							TextColor="{DynamicResource TnPWarningContentWL}" />
-						<Label
-							IsVisible="{Binding RolesValidationContext, Converter={StaticResource IsNotEmptyString}}"
-							Style="{DynamicResource InfoLabel}"
-							Text="{Binding RolesValidationContext}"
-							TextColor="{DynamicResource TnPWarningContentWL}" />
+						<Label Style="{DynamicResource BottomBarLabel}" Text="{Binding RolesValidationMessage}" TextColor="{DynamicResource TnPWarningContentWL}" />
+						<Label IsVisible="{Binding RolesValidationContext, Converter={StaticResource IsNotEmptyString}}" Style="{DynamicResource InfoLabel}" Text="{Binding RolesValidationContext}" TextColor="{DynamicResource TnPWarningContentWL}" />
 					</VerticalStackLayout>
 				</Border>
-
-				<Border
-					Grid.Row="2"
-					Grid.ColumnSpan="3"
-					BackgroundColor="{DynamicResource TnPWarningbgWL}"
-					IsVisible="{Binding IsCreationOutcomeUncertain}"
-					Padding="{DynamicResource SmallMargins}"
-					Stroke="{DynamicResource TnPWarningFigureWL}"
-					Style="{DynamicResource RoundedBorder}">
-					<Label
-						Style="{DynamicResource BottomBarLabel}"
-						Text="{l:Localize ContractCreationOutcomeUncertain}"
-						TextColor="{DynamicResource TnPWarningContentWL}" />
+				<Border Grid.Row="2" Grid.ColumnSpan="2" BackgroundColor="{DynamicResource TnPWarningbgWL}" IsVisible="{Binding IsCreationOutcomeUncertain}" Padding="10,8" Stroke="{DynamicResource TnPWarningFigureWL}" StrokeShape="RoundRectangle 10">
+					<Label Style="{DynamicResource BottomBarLabel}" Text="{l:Localize ContractCreationOutcomeUncertain}" TextColor="{DynamicResource TnPWarningContentWL}" />
 				</Border>
-
-				<controls:TextButton
-					Grid.Row="3"
-					Command="{Binding GoPreviousStepCommand}"
-					IsEnabled="{Binding CanGoBack}"
-					LabelData="{l:Localize Back}"
-					Style="{DynamicResource SecondaryButton}" />
-				<ActivityIndicator
-					Grid.Row="3"
-					Grid.Column="1"
-					Color="{DynamicResource ContentPrimaryWL}"
-					HorizontalOptions="Center"
-					IsRunning="{Binding IsValidatingParameters}"
-					IsVisible="{Binding IsValidatingParameters}" />
-				<controls:TextButton
-					Grid.Row="3"
-					Grid.Column="2"
-					Command="{Binding GoNextStepCommand}"
-					IsEnabled="{Binding CanAdvanceCurrentStep}"
-					LabelData="{Binding PrimaryActionText}"
-					Style="{DynamicResource PrimaryButton}" />
+				<controls:TextButton Grid.Row="3" Command="{Binding GoPreviousStepCommand}" IsEnabled="{Binding CanGoBack}" LabelData="{l:Localize Back}" Style="{DynamicResource SecondaryButton}" />
+				<Grid Grid.Row="3" Grid.Column="1">
+					<controls:TextButton Command="{Binding GoNextStepCommand}" IsEnabled="{Binding CanAdvanceCurrentStep}" LabelData="{Binding PrimaryActionText}" Style="{DynamicResource PrimaryButton}" />
+					<ActivityIndicator Color="{DynamicResource ContentPrimaryWL}" HorizontalOptions="Center" IsRunning="{Binding IsValidatingParameters}" IsVisible="{Binding IsValidatingParameters}" InputTransparent="True" VerticalOptions="Center" />
+				</Grid>
 			</Grid>
 		</Border>
 	</Grid>

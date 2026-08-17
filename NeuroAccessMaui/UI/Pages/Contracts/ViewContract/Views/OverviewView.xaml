@@ -190,6 +190,7 @@
 				</Border>
 
 				<controls:DisclosureSection
+					IconSource="info.svg"
 					IsExpanded="True"
 					Summary="{Binding SignatureProgressText}"
 					Title="{l:Localize KeyTerms}">
@@ -211,6 +212,7 @@
 				</controls:DisclosureSection>
 
 				<controls:DisclosureSection
+					IconSource="contract.svg"
 					IsExpanded="True"
 					Summary="{l:Localize ReviewContractDescription2}"
 					Title="{l:Localize Agreement}">
@@ -221,6 +223,7 @@
 				</controls:DisclosureSection>
 
 				<controls:DisclosureSection
+					IconSource="token.svg"
 					IsVisible="{Binding HasRelatedTokensSection}"
 					Summary="{l:Localize RelatedTokensDescription}"
 					Title="{l:Localize RelatedTokens}">
@@ -247,6 +250,7 @@
 				</controls:DisclosureSection>
 
 				<controls:DisclosureSection
+					IconSource="assets.svg"
 					IsVisible="{Binding HasAttachments}"
 					Summary="{l:Localize ContractAttachmentsDescription}"
 					Title="{l:Localize Attachments}">
@@ -256,6 +260,7 @@
 				</controls:DisclosureSection>
 
 				<controls:DisclosureSection
+					IconSource="person.svg"
 					Summary="{Binding SignatureProgressText}"
 					Title="{l:Localize PeopleAndSignatures}">
 					<VerticalStackLayout Spacing="8">
@@ -275,6 +280,7 @@
 				</controls:DisclosureSection>
 
 				<controls:DisclosureSection
+					IconSource="history.svg"
 					Summary="{l:Localize ContractActivityDescription}"
 					Title="{l:Localize Activity}">
 					<VerticalStackLayout Spacing="6">
@@ -291,6 +297,7 @@
 				</controls:DisclosureSection>
 
 				<controls:DisclosureSection
+					IconSource="cog.svg"
 					Summary="{l:Localize ContractAdvancedDescription}"
 					Title="{l:Localize Advanced}">
 					<VerticalStackLayout Spacing="12">
@@ -454,6 +461,7 @@
 							Style="{DynamicResource OutlinedTextButton}" />
 
 						<controls:DisclosureSection
+							IconSource="info.svg"
 							IsVisible="{Binding HasMachineReadableContent}"
 							Summary="{l:Localize MachineReadableInfoText}"
 							Title="{l:Localize RawDetails}">

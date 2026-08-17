@@ -250,10 +250,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				this.UpdatedText = Summary.UpdatedText;
 				this.HasValue = Summary.HasValue;
 				this.HasExpiry = Summary.HasExpiry;
+				this.IsExpiringSoon = Summary.IsExpiringSoon;
 				this.NeedsAttention = Summary.NeedsAttention;
-				this.AttentionText = Summary.NeedsAttention
-					? ServiceRef.Localizer[nameof(AppResources.NeedsAttention)]
-					: Summary.StatusText;
+				this.AttentionText = Summary.AttentionText;
 				this.DefinitionSchemaUrl = BuildDefinitionSchemaUrl(Token);
 
 				if (!string.IsNullOrEmpty(this.TokenId))
@@ -1116,7 +1115,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.LoadErrorMessage = Message;
 			this.StatusText = ServiceRef.Localizer[nameof(AppResources.Unavailable)];
 			this.StatusTone = StatusPillTone.Neutral;
-			this.AttentionText = ServiceRef.Localizer[nameof(AppResources.NeedsAttention)];
+			this.AttentionText = ServiceRef.Localizer[nameof(AppResources.Unavailable)];
+			this.IsExpiringSoon = false;
 			this.NeedsAttention = true;
 			this.PrimaryActions.Clear();
 			this.SecondaryActions.Clear();
@@ -1714,6 +1714,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		[ObservableProperty]
 		private bool hasExpiry;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the expiry date is already represented by the attention summary.
+		/// </summary>
+		[ObservableProperty]
+		private bool isExpiringSoon;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the token needs attention.
