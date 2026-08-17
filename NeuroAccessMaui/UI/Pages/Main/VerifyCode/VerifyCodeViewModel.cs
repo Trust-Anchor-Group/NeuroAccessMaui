@@ -13,6 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 	public partial class VerifyCodeViewModel : BaseViewModel
 	{
 		private readonly VerifyCodeNavigationArgs? navigationArgs;
+		private bool autoVerifyStarted;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="VerifyCodeViewModel"/> class.
@@ -37,6 +38,35 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
 
 			this.LocalizationManagerEventHandler(null, new(null));
+			this.TryStartAutoVerify();
+		}
+
+		private void TryStartAutoVerify()
+		{
+			if (this.autoVerifyStarted || this.navigationArgs?.AutoVerifyCode is null)
+				return;
+
+			this.autoVerifyStarted = true;
+			_ = Task.Run(async () =>
+			{
+				try
+				{
+					string? Code = await this.navigationArgs.AutoVerifyCode();
+					if (string.IsNullOrWhiteSpace(Code))
+						return;
+
+					await MainThread.InvokeOnMainThreadAsync(async () =>
+					{
+						this.VerifyCodeText = Code;
+						if (this.VerifyCommand.CanExecute(null))
+							await this.VerifyCommand.ExecuteAsync(null);
+					});
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			});
 		}
 
 		/// <inheritdoc/>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -23,6 +25,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 	/// </summary>
 	public partial class ValidatePhoneOnboardingStepViewModel : BaseOnboardingStepViewModel, ICodeVerification
 	{
+		private const int hiddenTestModeOtpMaxAttempts = 8;
+		private static readonly TimeSpan hiddenTestModeOtpAttemptDelay = TimeSpan.FromMilliseconds(500);
+		private static readonly Regex otpRegex = new(
+			@"Verification\s*code:\s*<strong>\s*(?<otp>\d{4,10})\s*</strong>",
+			RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+
 		private bool codeVerified;
 
 		/// <summary>
@@ -304,6 +312,33 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			this.OnPropertyChanged(nameof(this.ShowValidationError));
 		}
 
+		private static bool IsHiddenUsTestNumber(string FullPhoneNumber)
+		{
+			return FullPhoneNumber.StartsWith("+1555", StringComparison.Ordinal);
+		}
+
+		private void ApplyHiddenUsTestNumber()
+		{
+			if (ISO_3166_1.TryGetCountryByCode("US", out ISO_3166_Country? UsCountry) && UsCountry is not null)
+				this.SelectedCountry = UsCountry;
+
+			int Suffix = Random.Shared.Next(0, 1_000_000);
+			this.PhoneNumber = "555" + Suffix.ToString("D6", CultureInfo.InvariantCulture);
+		}
+
+		[RelayCommand]
+		private async Task ActivateHiddenTestMode()
+		{
+			if (this.IsPhoneReadOnly)
+				return;
+
+			this.ApplyHiddenUsTestNumber();
+			this.OnPhoneNumberChanged(this.PhoneNumber);
+
+			if (this.CanSendCode)
+				await this.SendCode();
+		}
+
 		#region Commands
 
 		[RelayCommand]
@@ -363,7 +398,29 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					else
 					{
 						this.StartTimer();
-						VerifyCodeNavigationArgs NavigationArgs = new(this, FullPhoneNumber);
+						VerifyCodeNavigationArgs NavigationArgs;
+						if (IsHiddenUsTestNumber(FullPhoneNumber))
+						{
+							NavigationArgs = VerifyCodeNavigationArgs.CreateAutoVerify(
+								this,
+								FullPhoneNumber,
+								async () =>
+								{
+									string? Otp = null;
+									for (int i = 0; i < hiddenTestModeOtpMaxAttempts && string.IsNullOrEmpty(Otp); i++)
+									{
+										await Task.Delay(hiddenTestModeOtpAttemptDelay);
+										Otp = await TryGetTestOtpAsync(FullPhoneNumber);
+									}
+
+									return Otp;
+								});
+						}
+						else
+						{
+							NavigationArgs = new VerifyCodeNavigationArgs(this, FullPhoneNumber);
+						}
+
 						await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
 						string? Code = await NavigationArgs.VarifyCode!.Task;
 						if (!string.IsNullOrEmpty(Code))
@@ -547,6 +604,52 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					this.CountDownSeconds--;
 				else
 					this.CountDownTimer.Stop();
+			}
+		}
+
+		private static async Task<string?> TryGetTestOtpAsync(string PhoneNumber)
+		{
+			try
+			{
+				if (string.IsNullOrWhiteSpace(Constants.Domains.IdDomain) || string.IsNullOrWhiteSpace(PhoneNumber))
+					return null;
+
+				string BaseDomain = Constants.Domains.IdDomain.Trim();
+				if (!BaseDomain.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+					!BaseDomain.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+				{
+					BaseDomain = "https://" + BaseDomain + "/ID";
+				}
+
+				Uri BaseUri = new(BaseDomain.TrimEnd('/') + "/");
+				Uri Endpoint = new(BaseUri, "TestOTP.md");
+				using HttpClientHandler Handler = new()
+				{
+					AllowAutoRedirect = true
+				};
+				using HttpClient Client = new(Handler)
+				{
+					Timeout = TimeSpan.FromSeconds(10)
+				};
+
+				Client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml");
+				Client.DefaultRequestHeaders.Referrer = BaseUri;
+
+				using FormUrlEncodedContent Content = new(new[]
+				{
+					new KeyValuePair<string, string>("PhoneNr", PhoneNumber)
+				});
+				using HttpResponseMessage Response = await Client.PostAsync(Endpoint, Content);
+				if (!Response.IsSuccessStatusCode)
+					return null;
+
+				string Html = await Response.Content.ReadAsStringAsync();
+				Match Match = otpRegex.Match(Html);
+				return Match.Success ? Match.Groups["otp"].Value : null;
+			}
+			catch (Exception)
+			{
+				return null;
 			}
 		}
 

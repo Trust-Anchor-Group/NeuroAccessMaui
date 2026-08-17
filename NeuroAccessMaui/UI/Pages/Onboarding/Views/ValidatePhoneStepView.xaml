@@ -11,7 +11,8 @@
                                x:DataType="viewmodels:ValidatePhoneOnboardingStepViewModel">
     <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
         <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-            <Label Style="{DynamicResource PageTitleLabel}"
+            <Label x:Name="TitleLabel"
+                   Style="{DynamicResource PageTitleLabel}"
                    Text="{l:Localize OnboardingPhonePageTitle}" />
 
             <Label Text="{l:Localize OnboardingPhonePageDetails}" />

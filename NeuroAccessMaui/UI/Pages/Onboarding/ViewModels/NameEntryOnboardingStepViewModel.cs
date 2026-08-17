@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -53,6 +54,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			if (!string.IsNullOrEmpty(ServiceRef.TagProfile.Account) && this.CoordinatorViewModel is not null)
 			{
 				await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.CreateAccount);
+			}
+
+			if (ServiceRef.TagProfile.TestOtpTimestamp is not null)
+			{
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.Username = "TestUser" +
+						RandomNumberGenerator.GetInt32(0, 10_000_000).ToString("D7", CultureInfo.InvariantCulture);
+				});
 			}
 		}
 
