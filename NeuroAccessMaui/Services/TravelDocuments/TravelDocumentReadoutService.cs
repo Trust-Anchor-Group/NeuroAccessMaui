@@ -412,6 +412,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			TravelDocumentsClient? Client = null;
 			IDisposable? HttpProxyScope = null;
 
+			InMemoryXmlWriterSniffer.DisableMask();
 			TravelDocumentReadoutService.InitializeReadoutXml(XmlOutput, InMemoryXmlWriterSniffer, Request.MrzText);
 
 			try
