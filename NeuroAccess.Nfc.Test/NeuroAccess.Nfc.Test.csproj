@@ -17,12 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MSTest" Version="4.2.1" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.10" />
-    <PackageReference Include="Waher.Content" Version="3.6.2" />
+    <PackageReference Include="MSTest" Version="4.3.3" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.11" />
+    <PackageReference Include="Waher.Content" Version="3.6.3" />
     <PackageReference Include="Waher.Persistence" Version="2.0.1" />
-    <PackageReference Include="Waher.Persistence.Files" Version="2.0.1" />
-    <PackageReference Include="Waher.Persistence.Serialization.Compiled" Version="1.13.1" />
+    <PackageReference Include="Waher.Persistence.Files" Version="2.0.2" />
+    <PackageReference Include="Waher.Persistence.Serialization.Compiled" Version="1.13.2" />
     <PackageReference Include="Waher.Runtime.Settings" Version="1.2.2" />
   </ItemGroup>
 
