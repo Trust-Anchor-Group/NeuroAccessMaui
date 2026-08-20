@@ -1425,6 +1425,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			try
 			{
 				IdApplicationAttributesEventArgs AttributesEventArgs = await ServiceRef.XmppService.GetIdApplicationAttributes();
+
+				// TODO: Analyze the following properties to determine what properties and
+				//       attachments can be used on the Broker for automatic processing
+				// 
+				// AttributesEventArgs.AuthenticatorServices;
+				// AttributesEventArgs.PeerReviewServices;
+
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.PeerReview = AttributesEventArgs.PeerReview;
