@@ -146,6 +146,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.process is not null &&
 			this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview &&
 			this.process.EvidencePolicy.TravelDocument.Nfc.Enabled &&
+			ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported &&
 			!this.HasNfcReadout &&
 			!this.HasManualDocumentEvidence;
 
@@ -544,6 +545,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.kycReference.TravelDocumentMrzUpdatedUtc = null;
 			this.kycReference.NfcReadoutXml = null;
 			this.kycReference.NfcReadoutUpdatedUtc = null;
+			this.kycReference.NfcVerifiedFieldIds = null;
 			this.kycReference.LastVisitedMode = "Form";
 			this.kycReference.LastVisitedPageId = null;
 			this.kycReference.Version++;
@@ -579,6 +581,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (string.IsNullOrWhiteSpace(mapping)) return;
 			if (this.process is null) return;
 			if (this.ApplicationSentPublic) return; // Cannot edit after application sent
+			if (!this.process.IsMappingEditable(mapping)) return;
 
 			int TargetIndex = this.FindPageIndexByMapping(mapping);
 			if (TargetIndex < 0) return;
@@ -797,6 +800,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				.Concat(this.process.Pages.SelectMany(p => p.AllSections).SelectMany(s => s.AllFields));
 			foreach (ObservableKycField Field in AllFields)
 			{
+				if (!Field.IsEditable) continue;
+				if (Field.FieldType == FieldType.Image || Field.FieldType == FieldType.File) continue;
 				if (!string.IsNullOrWhiteSpace(Field.StringValue)) continue;
 				if (Field.Mappings.Count == 0) continue;
 				foreach (KycMapping Map in Field.Mappings)

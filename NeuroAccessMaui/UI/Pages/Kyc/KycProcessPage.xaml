@@ -81,7 +81,8 @@
 			<!-- Text field template -->
 			<DataTemplate x:Key="TextFieldTemplate"
 						  x:DataType="fields:ObservableGenericField">
-				<VerticalStackLayout Spacing="2">
+				<VerticalStackLayout Spacing="2"
+								 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeEntry EntryData="{Binding StringValue, Mode=TwoWay}"
 											 LabelText="{Binding Label.Text}"
 											 Placeholder="{Binding Placeholder.Text}"
@@ -94,7 +95,8 @@
 			<!-- Date field template -->
 			<DataTemplate x:Key="DateFieldTemplate"
 						  x:DataType="fields:ObservableDateField">
-				<VerticalStackLayout Spacing="2">
+				<VerticalStackLayout Spacing="2"
+								 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeDatePicker LabelText="{Binding Label.Text}"
 												  NullableDate="{Binding DateValue, Mode=TwoWay}"
 												  Placeholder="{Binding Placeholder.Text}"
@@ -113,7 +115,8 @@
 			<!-- Integer field template -->
 			<DataTemplate x:Key="IntegerFieldTemplate"
 						  x:DataType="fields:ObservableIntegerField">
-				<VerticalStackLayout Spacing="2">
+				<VerticalStackLayout Spacing="2"
+								 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeEntry EntryData="{Binding IntValue, Mode=TwoWay}"
 											 LabelText="{Binding Label.Text}"
 											 Placeholder="{Binding Placeholder.Text}"
@@ -127,7 +130,8 @@
 			<!-- Decimal field template -->
 			<DataTemplate x:Key="DecimalFieldTemplate"
 						  x:DataType="fields:ObservableDecimalField">
-				<VerticalStackLayout Spacing="2">
+				<VerticalStackLayout Spacing="2"
+								 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeEntry EntryData="{Binding DecimalValue, Mode=TwoWay}"
 											 LabelText="{Binding Label.Text}"
 											 Placeholder="{Binding Placeholder.Text}"
@@ -141,7 +145,8 @@
 			<!-- Picker field template -->
 			<DataTemplate x:Key="PickerFieldTemplate"
 						  x:DataType="fields:ObservablePickerField">
-				<VerticalStackLayout Spacing="2">
+				<VerticalStackLayout Spacing="2"
+								 IsEnabled="{Binding IsEditable}">
 					<controls:CompositePicker ItemsSource="{Binding Options}"
 											  LabelText="{Binding Label.Text}"
 											  Placeholder="{Binding Placeholder.Text}"
@@ -165,7 +170,8 @@
 			<!-- Radio field template -->
 			<DataTemplate x:Key="RadioFieldTemplate"
 						  x:DataType="fields:ObservableRadioField">
-				<VerticalStackLayout Spacing="2">
+				<VerticalStackLayout Spacing="2"
+								 IsEnabled="{Binding IsEditable}">
 					<controls:CompositePicker ItemsSource="{Binding Options}"
 											  LabelText="{Binding Label.Text}"
 											  Placeholder="{Binding Placeholder.Text}"
@@ -183,7 +189,8 @@
 			<!-- Country field template -->
 			<DataTemplate x:Key="CountryFieldTemplate"
 						  x:DataType="fields:ObservableCountryField">
-				<VerticalStackLayout Spacing="2">
+				<VerticalStackLayout Spacing="2"
+								 IsEnabled="{Binding IsEditable}">
 					<controls:CompositePicker ItemsSource="{Binding Options}"
 											  LabelText="{Binding Label.Text}"
 											  Placeholder="{Binding Placeholder.Text}"
@@ -207,6 +214,7 @@
 			<DataTemplate x:Key="CheckboxFieldTemplate"
 						  x:DataType="fields:ObservableCheckboxField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
+											 IsEnabled="{Binding IsEditable}"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
@@ -240,6 +248,7 @@
 			<DataTemplate x:Key="BooleanFieldTemplate"
 						  x:DataType="fields:ObservableBooleanField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
+											 IsEnabled="{Binding IsEditable}"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
@@ -262,6 +271,7 @@
 			<DataTemplate x:Key="FileUploadFieldTemplate"
 						  x:DataType="fields:ObservableFileField">
 				<Grid ColumnDefinitions="*,auto,auto,*"
+					  IsEnabled="{Binding IsEditable}"
 					  ColumnSpacing="{DynamicResource SmallSpacing}"
 					  RowDefinitions="auto,auto,auto,*"
 					  RowSpacing="{DynamicResource SmallSpacing}">
@@ -297,6 +307,7 @@
 			<DataTemplate x:Key="ImageUploadTemplate"
 						  x:DataType="fields:ObservableImageField">
 				<Grid RowDefinitions="auto, auto"
+					  IsEnabled="{Binding IsEditable}"
 					  ColumnDefinitions="*, auto"
 					  ColumnSpacing="16"
 					  RowSpacing="8">
@@ -436,7 +447,7 @@
 						  x:DataType="IDSF:DisplayQuad">
 				<controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}"
 										  CommandParameter="{Binding Mapping}"
-										  IsEnabled="{Binding FromField}">
+										  IsEnabled="{Binding CanEdit}">
 					<controls:TemplatedButton.Triggers>
 						<DataTrigger TargetType="controls:TemplatedButton"
 									 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}"
@@ -468,7 +479,7 @@
 										  Source="sign.svg"
 										  HeightRequest="20"
 										  WidthRequest="20"
-										  IsVisible="{Binding FromField}"
+										  IsVisible="{Binding CanEdit}"
 										  TintColor="{DynamicResource ContentSecondaryWL}">
 							<controls:SvgView.Triggers>
 								<DataTrigger TargetType="controls:SvgView"

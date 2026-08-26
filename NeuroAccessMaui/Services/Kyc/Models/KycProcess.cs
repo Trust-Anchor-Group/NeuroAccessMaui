@@ -101,6 +101,58 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			}
 		}
 
+		/// <summary>
+		/// Determines whether the first field matching an identity mapping can be edited.
+		/// </summary>
+		/// <param name="Mapping">The identity mapping key.</param>
+		/// <returns><c>true</c> when a matching field exists and is editable; otherwise, <c>false</c>.</returns>
+		public bool IsMappingEditable(string Mapping)
+		{
+			if (string.IsNullOrWhiteSpace(Mapping))
+				return false;
+
+			foreach (KycPage Page in this.Pages)
+			{
+				if (!Page.IsVisible(this.values))
+					continue;
+
+				IEnumerable<ObservableKycField> Fields = Page.AllFields.Concat(
+					Page.AllSections.SelectMany(Section => Section.AllFields));
+				foreach (ObservableKycField Field in Fields)
+				{
+					if (Field.IsVisible && FieldMatchesMapping(Field, Mapping))
+						return Field.IsEditable;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FieldMatchesMapping(ObservableKycField Field, string Mapping)
+		{
+			foreach (KycMapping Map in Field.Mappings)
+			{
+				if (string.Equals(Map.Key, Mapping, StringComparison.OrdinalIgnoreCase))
+					return true;
+
+				if (Mapping.Equals(Constants.CustomXmppProperties.BirthDate, StringComparison.OrdinalIgnoreCase) &&
+					(string.Equals(Map.Key, Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
+					 string.Equals(Map.Key, Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
+					 string.Equals(Map.Key, Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase)))
+				{
+					return true;
+				}
+
+				if (Mapping.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase) &&
+					Map.Key.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		private bool FindMapping(string Mapping)
 		{
 			foreach (KycPage Page in this.Pages)

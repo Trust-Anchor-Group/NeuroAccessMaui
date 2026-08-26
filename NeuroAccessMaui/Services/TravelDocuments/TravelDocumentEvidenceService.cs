@@ -148,6 +148,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 
 			Reference.NfcReadoutXml = Xml;
 			Reference.NfcReadoutUpdatedUtc = DateTime.UtcNow;
+			Reference.NfcVerifiedFieldIds = null;
 			await ServiceRef.KycService.SaveKycReferenceAsync(Reference).ConfigureAwait(false);
 			return true;
 		}

@@ -480,9 +480,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				return;
 
 			string Xml = Template.Reference.KycXml;
-			KycProcess? Process = await Template.Reference.GetProcess(Lang).ConfigureAwait(false);
-			if (Process is null)
-				Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
+			KycProcess Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
 
 			Reference.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
 			string? ItemId = Template.Source?.ItemId;
@@ -975,6 +973,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.TravelDocumentMrzUpdatedUtc = null;
 				Reference.NfcReadoutXml = null;
 				Reference.NfcReadoutUpdatedUtc = null;
+				Reference.NfcVerifiedFieldIds = null;
 				Reference.SubmittedKycTemplateId = null;
 				Reference.SubmittedVerificationMethod = null;
 				Reference.Version++;
@@ -1019,6 +1018,8 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			if (Reference is null)
 				return;
+
+			KycFieldValue[] ReusableSeedFields = await this.FilterReusableSeedFieldsAsync(Reference, Language, SeedFields).ConfigureAwait(false);
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
@@ -1043,10 +1044,11 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.TravelDocumentMrzUpdatedUtc = null;
 				Reference.NfcReadoutXml = null;
 				Reference.NfcReadoutUpdatedUtc = null;
+				Reference.NfcVerifiedFieldIds = null;
 				Reference.SubmittedKycTemplateId = null;
 				Reference.SubmittedVerificationMethod = null;
-				if (SeedFields is not null && SeedFields.Count > 0)
-					Reference.Fields = SeedFields.Select(Field => new KycFieldValue(Field.FieldId, Field.Value)).ToArray();
+				if (ReusableSeedFields.Length > 0)
+					Reference.Fields = ReusableSeedFields;
 				else
 					Reference.Fields = null;
 				Reference.Version++;
@@ -1054,7 +1056,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				await SaveReferenceAsync(Reference);
 			}
 
-			if (SeedFields is not null && SeedFields.Count > 0 && !string.IsNullOrWhiteSpace(Language))
+			if (ReusableSeedFields.Length > 0 && !string.IsNullOrWhiteSpace(Language))
 			{
 				try
 				{
@@ -1065,6 +1067,31 @@ namespace NeuroAccessMaui.Services.Kyc
 					ServiceRef.LogService.LogException(Exception, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				}
 			}
+		}
+
+		private async Task<KycFieldValue[]> FilterReusableSeedFieldsAsync(
+			KycReference Reference,
+			string? Language,
+			IReadOnlyList<KycFieldValue>? SeedFields)
+		{
+			if (SeedFields is null || SeedFields.Count == 0)
+				return Array.Empty<KycFieldValue>();
+
+			KycProcess? Process = await Reference.GetProcess(Language).ConfigureAwait(false);
+			if (Process is null)
+				return Array.Empty<KycFieldValue>();
+
+			HashSet<string> ReusableFieldIds = Process.Pages
+				.SelectMany(Page => Page.AllFields.Concat(Page.AllSections.SelectMany(Section => Section.AllFields)))
+				.Where(Field => Field.FieldType != FieldType.Image && Field.FieldType != FieldType.File)
+				.Select(Field => Field.Id)
+				.Where(FieldId => !string.IsNullOrWhiteSpace(FieldId))
+				.ToHashSet(StringComparer.Ordinal);
+
+			return SeedFields
+				.Where(Field => Field is not null && ReusableFieldIds.Contains(Field.FieldId))
+				.Select(Field => new KycFieldValue(Field.FieldId, Field.Value))
+				.ToArray();
 		}
 
 		/// <summary>

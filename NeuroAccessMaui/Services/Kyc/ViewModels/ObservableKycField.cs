@@ -178,6 +178,27 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         }
 
         private bool isVisible = true;
+
+		private bool isReadOnly;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the field value is protected from user editing.
+		/// </summary>
+		public bool IsReadOnly
+		{
+			get => this.isReadOnly;
+			set
+			{
+				if (this.SetProperty(ref this.isReadOnly, value))
+					this.OnPropertyChanged(nameof(this.IsEditable));
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether the field can be edited by the user.
+		/// </summary>
+		public bool IsEditable => !this.IsReadOnly;
+
         public bool IsVisible
         {
             get => this.isVisible;

@@ -22,13 +22,34 @@ namespace NeuroAccessMaui.Services.Identity
 		public bool FromField { get; }
 		public bool IsInvalid { get; }
 
-		public DisplayQuad(string Label, string Value, string? Mapping, bool FromField, bool IsInvalid = false)
+		/// <summary>
+		/// Gets a value indicating whether the summary item can open its source field for editing.
+		/// </summary>
+		public bool CanEdit { get; }
+
+		/// <summary>
+		/// Initializes a displayable summary item.
+		/// </summary>
+		/// <param name="Label">The display label.</param>
+		/// <param name="Value">The display value.</param>
+		/// <param name="Mapping">The source identity mapping, if any.</param>
+		/// <param name="FromField">Whether the value originates from a process field.</param>
+		/// <param name="IsInvalid">Whether the value is marked invalid.</param>
+		/// <param name="CanEdit">Whether the source field can be edited, or <c>null</c> to use <paramref name="FromField"/>.</param>
+		public DisplayQuad(
+			string Label,
+			string Value,
+			string? Mapping,
+			bool FromField,
+			bool IsInvalid = false,
+			bool? CanEdit = null)
 		{
 			this.Label = Label;
 			this.Value = Value;
 			this.Mapping = Mapping;
 			this.FromField = FromField;
 			this.IsInvalid = IsInvalid;
+			this.CanEdit = CanEdit ?? FromField;
 		}
 	}
 
@@ -240,7 +261,7 @@ namespace NeuroAccessMaui.Services.Identity
 				}
 
 				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
-				Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
+				Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid, Process.IsMappingEditable(Key)));
 			}
 
             // Address
@@ -256,7 +277,7 @@ namespace NeuroAccessMaui.Services.Identity
 					Val = ISO_3166_1.ToName(Val) ?? Val;
 
 				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
-				Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
+				Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid, Process.IsMappingEditable(Key)));
             }
 
 			// Company Info
@@ -267,7 +288,7 @@ namespace NeuroAccessMaui.Services.Identity
 
 				string Label = GetLabel(LabelMap, Key);
 				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
-				Result.CompanyInfo.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
+				Result.CompanyInfo.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid, Process.IsMappingEditable(Key)));
 			}
 
 			// Company Address
@@ -278,7 +299,7 @@ namespace NeuroAccessMaui.Services.Identity
 
 				string Label = GetLabel(LabelMap, Key);
 				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
-				Result.CompanyAddress.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
+				Result.CompanyAddress.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid, Process.IsMappingEditable(Key)));
 			}
 
 			// Company Representative
@@ -288,7 +309,7 @@ namespace NeuroAccessMaui.Services.Identity
 					continue;
 				string Label = GetLabel(LabelMap, Key);
 				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
-				Result.CompanyRepresentative.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
+				Result.CompanyRepresentative.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid, Process.IsMappingEditable(Key)));
 			}
 
 			// Attachments
@@ -352,7 +373,7 @@ namespace NeuroAccessMaui.Services.Identity
                     }
 
                     bool IsInvalid = InvalidMappings?.Contains(Base) ?? false;
-                    Result.Attachments.Add(new DisplayQuad(Att.FileName, Description, Base, Process.HasMapping(Base), IsInvalid));
+                    Result.Attachments.Add(new DisplayQuad(Att.FileName, Description, Base, Process.HasMapping(Base), IsInvalid, Process.IsMappingEditable(Base)));
                 }
             }
 

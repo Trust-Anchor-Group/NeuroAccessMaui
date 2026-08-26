@@ -191,6 +191,12 @@ namespace NeuroAccessMaui.Services.Kyc
 		public DateTime? NfcReadoutUpdatedUtc { get; set; }
 
 		/// <summary>
+		/// Gets or sets the field identifiers populated from a successfully verified NFC readout.
+		/// </summary>
+		[DefaultValueNull]
+		public string[]? NfcVerifiedFieldIds { get; set; }
+
+		/// <summary>
 		/// Gets or sets the server template identifier for the active KYC process.
 		/// </summary>
 		[DefaultValueNull]
@@ -579,8 +585,23 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (Process is null)
 				return;
 
-			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] =
-				string.IsNullOrWhiteSpace(this.NfcReadoutXml) ? "false" : "true";
+			bool HasNfcReadout = !string.IsNullOrWhiteSpace(this.NfcReadoutXml);
+			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] = HasNfcReadout ? "true" : "false";
+			HashSet<string> VerifiedFieldIds = HasNfcReadout
+				? new HashSet<string>(this.NfcVerifiedFieldIds ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase)
+				: new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+			foreach (KycPage Page in Process.Pages)
+			{
+				foreach (ObservableKycField Field in Page.AllFields)
+					Field.IsReadOnly = VerifiedFieldIds.Contains(Field.Id);
+
+				foreach (KycSection Section in Page.AllSections)
+				{
+					foreach (ObservableKycField Field in Section.AllFields)
+						Field.IsReadOnly = VerifiedFieldIds.Contains(Field.Id);
+				}
+			}
 		}
 
 		/// <summary>

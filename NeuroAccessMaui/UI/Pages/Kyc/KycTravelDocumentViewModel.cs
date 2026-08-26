@@ -16,6 +16,7 @@ using NeuroAccessMaui.Services.TravelDocuments;
 using NeuroAccessMaui.Services.UI;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -314,7 +315,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.LogFlowEvent(
 				"Appearing",
 				new KeyValuePair<string, object?>("NfcSupported", this.nfcIsoDepSessionService.IsPlatformSupported));
-			if (!this.nfcIsoDepSessionService.IsPlatformSupported)
+			if (!await this.IsNfcFlowAvailableAsync())
 			{
 				await this.ReturnToApplicationAsync();
 				return;
@@ -423,7 +424,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			if (!this.nfcIsoDepSessionService.IsPlatformSupported)
+			if (!await this.IsNfcFlowAvailableAsync())
 			{
 				this.LogFlowEvent("StartNfcUnsupported");
 				await this.ReturnToApplicationAsync();
@@ -445,6 +446,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (Evidence is null || string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId))
 			{
 				this.LogFlowEvent("StartNfcReservationMissing");
+				await this.ForgetReservedPreviewIdentityAsync("NfcReservationMissingForgotten");
 				await this.SetStatusAsync("KycTravelDocumentNfcReservationFailed", false, true, false, KycTravelDocumentFlowState.Error);
 				return;
 			}
@@ -507,6 +509,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			else
 				await ServiceRef.NavigationService.GoBackAsync();
+		}
+
+		/// <inheritdoc/>
+		public override async Task GoBack()
+		{
+			await this.ReturnToApplicationAsync();
+		}
+
+		private async Task<bool> IsNfcFlowAvailableAsync()
+		{
+			if (!this.nfcIsoDepSessionService.IsPlatformSupported || this.reference is null)
+				return false;
+
+			KycProcess? Process = await this.reference.GetProcess(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+			return Process is not null &&
+				Process.ApplicationPolicy.Mode == KycApplicationMode.Preview &&
+				Process.EvidencePolicy.TravelDocument.Nfc.Enabled;
 		}
 
 		private async Task ReadTravelDocumentAsync(
@@ -576,7 +595,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				if (Result.IsSuccess &&
 					!string.IsNullOrWhiteSpace(Result.Xml) &&
-					await this.SaveReadoutXmlAsync(Result.Xml, ReadCancellationToken))
+					await this.SaveReadoutAsync(Result, ReadCancellationToken))
 				{
 					this.TrackTerminalNfcSession(SessionId, "Succeeded", string.Empty);
 					await this.SetStatusAsync("KycTravelDocumentNfcSuccess", false, false, true, KycTravelDocumentFlowState.Success);
@@ -802,19 +821,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
-		private async Task<bool> SaveReadoutXmlAsync(string Xml, CancellationToken CancellationToken)
+		private async Task<bool> SaveReadoutAsync(TravelDocumentReadoutResult Result, CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
-			if (string.IsNullOrWhiteSpace(Xml))
+			if (string.IsNullOrWhiteSpace(Result.Xml))
 				return false;
 
 			if (this.reference is not null)
 			{
-				await this.SaveReferenceEvidenceAsync(null, Xml);
+				await this.SaveReferenceEvidenceAsync(null, Result.Xml, null, Result.DocumentData);
 				return true;
 			}
 
-			return await this.evidenceService.SaveReadoutXmlAsync(Xml, CancellationToken);
+			return await this.evidenceService.SaveReadoutXmlAsync(Result.Xml, CancellationToken);
 		}
 
 		private async Task UploadFailedReservedPreviewReadoutAsync(TravelDocumentReadoutResult Result)
@@ -895,7 +914,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
-		private async Task SaveReferenceEvidenceAsync(string? MrzText, string? ReadoutXml, DocumentInformation? DocumentInformation = null)
+		private async Task SaveReferenceEvidenceAsync(
+			string? MrzText,
+			string? ReadoutXml,
+			DocumentInformation? DocumentInformation = null,
+			TravelDocumentData? DocumentData = null)
 		{
 			if (this.reference is null)
 				return;
@@ -910,10 +933,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				this.reference.NfcReadoutXml = ReadoutXml;
 				this.reference.NfcReadoutUpdatedUtc = DateTime.UtcNow;
+				this.reference.NfcVerifiedFieldIds = null;
 			}
 
 			if (DocumentInformation is not null)
-				await this.SeedReferenceFieldsFromMrzAsync(DocumentInformation);
+				await this.ApplyMrzFieldsAsync(DocumentInformation);
+
+			if (DocumentData is not null && !string.IsNullOrWhiteSpace(ReadoutXml))
+				this.reference.NfcVerifiedFieldIds = await this.ApplyNfcFieldsAsync(DocumentData);
+
+			KycProcess? Process = await this.reference.GetProcess(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+			this.reference.ApplyEvidenceStateToProcess(Process);
+			this.reference.Version++;
+			this.reference.UpdatedUtc = DateTime.UtcNow;
 
 			await ServiceRef.KycService.SaveKycReferenceAsync(this.reference);
 			this.LogFlowEvent(
@@ -924,47 +956,108 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("ReferenceHasReadout", !string.IsNullOrWhiteSpace(this.reference.NfcReadoutXml)));
 		}
 
-		private async Task SeedReferenceFieldsFromMrzAsync(DocumentInformation DocumentInformation)
+		private async Task ApplyMrzFieldsAsync(DocumentInformation DocumentInformation)
 		{
-			if (this.reference is null)
-				return;
-
-			string CountryCode = ResolveIssuingCountryCode(DocumentInformation);
-			Dictionary<string, string> Values = new Dictionary<string, string>(StringComparer.Ordinal)
+			Dictionary<string, string> Values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 			{
-				["firstNames"] = JoinNameParts(DocumentInformation.SecondaryIdentifier),
-				["lastNames"] = JoinNameParts(DocumentInformation.PrimaryIdentifier)
+				[Constants.XmppProperties.FirstName] = JoinNameParts(DocumentInformation.SecondaryIdentifier),
+				[Constants.XmppProperties.LastNames] = JoinNameParts(DocumentInformation.PrimaryIdentifier),
+				[Constants.XmppProperties.Nationality] = ResolveAlpha2CountryCode(DocumentInformation.Nationality)
 			};
 
-			if (!string.IsNullOrWhiteSpace(CountryCode))
-				Values["country"] = CountryCode;
-
 			if (TryResolveGenderCode(DocumentInformation.Gender, out string GenderCode))
-				Values["gender"] = GenderCode;
+				Values[Constants.XmppProperties.Gender] = GenderCode;
 
-			string PersonalNumber = await ResolvePersonalNumberAsync(DocumentInformation, CountryCode);
+			string CountryCode = ResolveAlpha2CountryCode(DocumentInformation.Nationality);
+			if (string.IsNullOrWhiteSpace(CountryCode))
+				CountryCode = ResolveAlpha2CountryCode(DocumentInformation.IssuingState);
+
+			string PersonalNumber = await ResolvePersonalNumberAsync(DocumentInformation.OptionalData, CountryCode);
 			if (!string.IsNullOrWhiteSpace(PersonalNumber))
-				Values["personalNumber"] = PersonalNumber;
+				Values[Constants.XmppProperties.PersonalNumber] = PersonalNumber;
 
 			if (TryParseMrzBirthDate(DocumentInformation.DateOfBirth, out string DateOfBirth))
-				Values["dob"] = DateOfBirth;
+				AddBirthDateMappings(Values, DateOfBirth);
 
-			List<KycFieldValue> Fields = this.reference.Fields?.ToList() ?? new List<KycFieldValue>();
-			foreach (KeyValuePair<string, string> Pair in Values)
+			await this.ApplyMappedFieldsAsync(Values, false);
+		}
+
+		private async Task<string[]?> ApplyNfcFieldsAsync(TravelDocumentData DocumentData)
+		{
+			Dictionary<string, string> Values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 			{
-				if (string.IsNullOrWhiteSpace(Pair.Value))
-					continue;
+				[Constants.XmppProperties.FirstName] = DocumentData.SecondaryIdentifier?.Trim() ?? string.Empty,
+				[Constants.XmppProperties.LastNames] = DocumentData.PrimaryIdentifier?.Trim() ?? string.Empty,
+				[Constants.XmppProperties.Nationality] = ResolveAlpha2CountryCode(DocumentData.Nationality)
+			};
 
-				KycFieldValue? Existing = Fields.FirstOrDefault(Field => string.Equals(Field.FieldId, Pair.Key, StringComparison.Ordinal));
-				if (Existing is null)
-					Fields.Add(new KycFieldValue(Pair.Key, Pair.Value));
-				else
-					Existing.Value = Pair.Value;
+			if (TryResolveGenderCode(DocumentData.Gender, out string GenderCode))
+				Values[Constants.XmppProperties.Gender] = GenderCode;
+
+			string PersonalNumber = DocumentData.PersonalNumber?.Replace("<", string.Empty).Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(PersonalNumber))
+			{
+				string CountryCode = ResolveAlpha2CountryCode(DocumentData.Nationality);
+				if (string.IsNullOrWhiteSpace(CountryCode))
+					CountryCode = ResolveAlpha2CountryCode(DocumentData.IssuingState);
+
+				PersonalNumber = await ResolvePersonalNumberAsync(DocumentData.OptionalData, CountryCode);
 			}
 
-			this.reference.Fields = Fields.ToArray();
-			string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-			await this.reference.ApplyFieldsToProcessAsync(Language);
+			if (!string.IsNullOrWhiteSpace(PersonalNumber))
+				Values[Constants.XmppProperties.PersonalNumber] = PersonalNumber;
+
+			if ((TryParseMrzBirthDate(DocumentData.AdditionalDateOfBirth, out string DateOfBirth) ||
+				TryParseMrzBirthDate(DocumentData.DateOfBirth, out DateOfBirth)))
+			{
+				AddBirthDateMappings(Values, DateOfBirth);
+			}
+
+			return await this.ApplyMappedFieldsAsync(Values, true);
+		}
+
+		private async Task<string[]?> ApplyMappedFieldsAsync(
+			IReadOnlyDictionary<string, string> Values,
+			bool TrackVerifiedFields)
+		{
+			if (this.reference is null)
+				return null;
+
+			KycProcess? Process = await this.reference.GetProcess(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+			if (Process is null)
+				return null;
+
+			List<string> AppliedFieldIds = new List<string>();
+			IEnumerable<ObservableKycField> Fields = Process.Pages.SelectMany(Page =>
+				Page.AllFields.Concat(Page.AllSections.SelectMany(Section => Section.AllFields)));
+			foreach (ObservableKycField Field in Fields)
+			{
+				if (Field.FieldType == FieldType.Image || Field.FieldType == FieldType.File)
+					continue;
+
+				string Value = ResolveMappedFieldValue(Field, Values);
+				if (string.IsNullOrWhiteSpace(Value))
+					continue;
+
+				string? PreviousValue = Field.StringValue;
+				Field.StringValue = Value;
+				string? AppliedValue = Field.StringValue;
+				if (string.IsNullOrWhiteSpace(AppliedValue) ||
+					!string.Equals(AppliedValue, Value, StringComparison.OrdinalIgnoreCase))
+				{
+					Field.StringValue = PreviousValue;
+					continue;
+				}
+
+				Process.Values[Field.Id] = AppliedValue;
+				if (TrackVerifiedFields)
+					AppliedFieldIds.Add(Field.Id);
+			}
+
+			this.reference.Fields = KycReference.CreatePersistentFields(Process);
+			return AppliedFieldIds.Count == 0
+				? null
+				: AppliedFieldIds.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
 		}
 
 		private async Task StopActiveNfcSessionAsync()
@@ -977,8 +1070,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.activeSessionId = null;
 			this.activeSessionStartedUtc = null;
 			this.CancelAndDisposeActiveSessionCancellation();
-			await this.nfcIsoDepSessionService.StopSessionAsync(SessionId.Value, CancellationToken.None);
-			await MainThread.InvokeOnMainThreadAsync(() => this.IsNfcBusy = false);
+			try
+			{
+				await this.nfcIsoDepSessionService.StopSessionAsync(SessionId.Value, CancellationToken.None);
+			}
+			finally
+			{
+				if (string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml))
+					await this.ForgetReservedPreviewIdentityAsync("StoppedNfcSessionReservationForgotten");
+
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsNfcBusy = false);
+			}
 		}
 
 		private Task SetStatusAsync(
@@ -1183,9 +1285,56 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return string.Join(" ", Parts ?? Array.Empty<string>()).Trim();
 		}
 
-		private static string ResolveIssuingCountryCode(DocumentInformation DocumentInformation)
+		private static void AddBirthDateMappings(IDictionary<string, string> Values, string DateOfBirth)
 		{
-			return ResolveAlpha2CountryCode(DocumentInformation.IssuingState);
+			Values[Constants.XmppProperties.BirthDay] = DateOfBirth;
+			Values[Constants.XmppProperties.BirthMonth] = DateOfBirth;
+			Values[Constants.XmppProperties.BirthYear] = DateOfBirth;
+		}
+
+		private static string ResolveMappedFieldValue(
+			ObservableKycField Field,
+			IReadOnlyDictionary<string, string> Values)
+		{
+			List<KycMapping> SupportedMappings = Field.Mappings
+				.Where(Mapping => Values.TryGetValue(Mapping.Key, out string? Value) && !string.IsNullOrWhiteSpace(Value))
+				.ToList();
+			if (SupportedMappings.Count == 0)
+				return string.Empty;
+
+			if (SupportedMappings.Any(Mapping => !IsBirthDateMapping(Mapping.Key)))
+			{
+				return SupportedMappings.Count == 1
+					? Values[SupportedMappings[0].Key]
+					: string.Empty;
+			}
+
+			KycMapping BirthDateMapping = SupportedMappings[0];
+			string DateValue = Values[BirthDateMapping.Key];
+			bool UsesDateTransform = BirthDateMapping.TransformNames.Any(Name =>
+				string.Equals(Name, "day", StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(Name, "month", StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(Name, "year", StringComparison.OrdinalIgnoreCase));
+			if (UsesDateTransform || SupportedMappings.Count > 1 || Field.FieldType == FieldType.Date)
+				return DateValue;
+
+			if (!DateOnly.TryParseExact(DateValue, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly DateOfBirth))
+				return string.Empty;
+
+			if (string.Equals(BirthDateMapping.Key, Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase))
+				return DateOfBirth.Day.ToString(CultureInfo.InvariantCulture);
+
+			if (string.Equals(BirthDateMapping.Key, Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase))
+				return DateOfBirth.Month.ToString(CultureInfo.InvariantCulture);
+
+			return DateOfBirth.Year.ToString(CultureInfo.InvariantCulture);
+		}
+
+		private static bool IsBirthDateMapping(string Mapping)
+		{
+			return string.Equals(Mapping, Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(Mapping, Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(Mapping, Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase);
 		}
 
 		private static string ResolveAlpha2CountryCode(string? CountryCode)
@@ -1219,9 +1368,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return false;
 		}
 
-		private static async Task<string> ResolvePersonalNumberAsync(DocumentInformation DocumentInformation, string CountryCode)
+		private static async Task<string> ResolvePersonalNumberAsync(string? OptionalData, string CountryCode)
 		{
-			string Candidate = DocumentInformation.OptionalData?.Replace("<", string.Empty).Trim() ?? string.Empty;
+			string Candidate = OptionalData?.Replace("<", string.Empty).Trim() ?? string.Empty;
 			if (string.IsNullOrWhiteSpace(Candidate) || string.IsNullOrWhiteSpace(CountryCode))
 				return string.Empty;
 
@@ -1235,21 +1384,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static bool TryParseMrzBirthDate(string? Value, out string DateOfBirth)
 		{
 			DateOfBirth = string.Empty;
-			string Normalized = Value?.Trim() ?? string.Empty;
-			if (Normalized.Length != 6)
+			string Normalized = Value?.Replace("-", string.Empty).Trim() ?? string.Empty;
+			if (Normalized.Length != 6 && Normalized.Length != 8)
 				return false;
 
-			if (!int.TryParse(Normalized[..2], NumberStyles.Integer, CultureInfo.InvariantCulture, out int Year) ||
-				!int.TryParse(Normalized.Substring(2, 2), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Month) ||
-				!int.TryParse(Normalized.Substring(4, 2), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Day))
+			int YearLength = Normalized.Length == 8 ? 4 : 2;
+			if (!int.TryParse(Normalized[..YearLength], NumberStyles.Integer, CultureInfo.InvariantCulture, out int Year) ||
+				!int.TryParse(Normalized.Substring(YearLength, 2), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Month) ||
+				!int.TryParse(Normalized.Substring(YearLength + 2, 2), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Day))
 			{
 				return false;
 			}
 
 			try
 			{
-				DateOnly Parsed = new DateOnly(2000 + Year, Month, Day);
-				if (Parsed > DateOnly.FromDateTime(DateTime.UtcNow.Date))
+				DateOnly Parsed = new DateOnly(YearLength == 2 ? 2000 + Year : Year, Month, Day);
+				if (YearLength == 2 && Parsed > DateOnly.FromDateTime(DateTime.UtcNow.Date))
 					Parsed = Parsed.AddYears(-100);
 
 				DateOfBirth = Parsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
