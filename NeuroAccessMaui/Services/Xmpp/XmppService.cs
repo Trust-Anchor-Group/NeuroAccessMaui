@@ -124,6 +124,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private readonly InMemorySniffer? sniffer = new(250, "Connection In-memory sniffer.");
 		private bool isCreatingClient;
 		private EventFilter? xmppFilteredEventSink;
+		private EventFilter? kycTelemetryEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
 		private int tokenValiditySeconds;
@@ -282,6 +283,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
 						new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
 						EventType.Error);
+					try
+					{
+						this.kycTelemetryEventSink = new EventFilter(
+							"KYC Telemetry Event Filter",
+							new XmppEventSink("KYC Telemetry Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
+							EventType.Informational,
+							(Event) => XmppService.IsKycTelemetryEventId(Event.EventId));
+					}
+					catch
+					{
+						this.kycTelemetryEventSink = null;
+					}
 
 					// Add extensions before connecting
 
@@ -501,6 +514,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.xmppFilteredEventSink = null;
 			}
 
+			await this.DisposeKycTelemetryEventSinkAsync();
+
 			this.contractsClient?.Dispose();
 			this.contractsClient = null;
 
@@ -650,6 +665,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await this.xmppFilteredEventSink.DisposeAsync();
 				this.xmppFilteredEventSink = null;
 			}
+
+			await this.DisposeKycTelemetryEventSinkAsync();
 
 			this.contractsClient?.Dispose();
 			this.contractsClient = null;
@@ -984,6 +1001,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 						//this.RegisterPubSubEventHandlers(this.pubSubClient);
 					}
 
+					if (this.kycTelemetryEventSink is not null)
+						ServiceRef.LogService.AddListener(this.kycTelemetryEventSink);
+
 					await this.RefreshPendingIdentityApplicationsAsync();
 
 					// Check is xmpp password needs updating.
@@ -1014,6 +1034,34 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 
 			await this.OnConnectionStateChanged(NewState);
+		}
+
+		private static bool IsKycTelemetryEventId(string? EventId)
+		{
+			return EventId is
+				Constants.LogEventIds.TravelDocumentNfcScanTelemetry or
+				Constants.LogEventIds.IdApplicationSubmittedTelemetry or
+				Constants.LogEventIds.IdApprovedTelemetry or
+				Constants.LogEventIds.IdRejectedTelemetry;
+		}
+
+		private async Task DisposeKycTelemetryEventSinkAsync()
+		{
+			EventFilter? Sink = this.kycTelemetryEventSink;
+			this.kycTelemetryEventSink = null;
+			if (Sink is null)
+				return;
+
+			try
+			{
+				ServiceRef.LogService.RemoveListener(Sink);
+				await Sink.SecondarySink.DisposeAsync();
+				await Sink.DisposeAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		/// <summary>
@@ -3318,6 +3366,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				.OrderByDescending(Candidate => Candidate.UpdatedUtc))
 			{
 				string IdentityId = Reference.GetActiveApplicationIdentityId()!;
+				if (Reference.IsUnsubmittedReservedPreviewIdentity(IdentityId))
+				{
+					if (string.Equals(ServiceRef.TagProfile.IdentityApplication?.Id, IdentityId, StringComparison.OrdinalIgnoreCase))
+						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+
+					continue;
+				}
+
 				if (!RefreshedIdentityIds.Add(IdentityId))
 					continue;
 
@@ -3546,6 +3602,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
+				if (Ref?.IsUnsubmittedReservedPreviewIdentity(e.Identity.Id) == true)
+				{
+					if (string.Equals(ServiceRef.TagProfile.IdentityApplication?.Id, e.Identity.Id, StringComparison.OrdinalIgnoreCase))
+						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+
+					return;
+				}
+
 				if (PreviewPromotionResult is not null)
 				{
 					await this.IdentityApplicationChanged.Raise(this, e);
@@ -3623,7 +3687,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 				}
-				else if (ServiceRef.TagProfile.LegalIdentity is null)
+				else if (ServiceRef.TagProfile.LegalIdentity is null && e.Identity.State != IdentityState.Created)
 				{
 					if (e.Identity.IsDiscarded())
 						return;

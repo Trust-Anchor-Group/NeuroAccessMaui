@@ -516,7 +516,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			}
 
 			KycProcess? Process = await Reference.GetProcess(Language);
-			bool HasNfcPolicy = Process?.EvidencePolicy?.TravelDocument?.Nfc?.Enabled == true;
+			bool HasNfcPolicy = Process is not null &&
+				Process.ApplicationPolicy.Mode == KycApplicationMode.Preview &&
+				Process.EvidencePolicy.TravelDocument.Nfc.Enabled;
 			if (!HasNfcPolicy)
 				return false;
 

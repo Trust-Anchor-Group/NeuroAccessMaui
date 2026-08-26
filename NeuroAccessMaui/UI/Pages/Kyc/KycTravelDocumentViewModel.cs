@@ -71,6 +71,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private readonly KycProcessNavigationArgs? navigationArguments;
 		private KycReference? reference;
 		private Guid? activeSessionId;
+		private Guid? reportedTelemetrySessionId;
+		private DateTime? activeSessionStartedUtc;
 		private CancellationTokenSource? activeSessionCancellationTokenSource;
 		private bool disposedValue;
 
@@ -449,6 +451,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			Guid SessionId = Guid.NewGuid();
 			this.activeSessionId = SessionId;
+			this.activeSessionStartedUtc = DateTime.UtcNow;
 			this.activeSessionCancellationTokenSource = new CancellationTokenSource();
 			this.LogFlowEvent(
 				"StartNfcSessionStarting",
@@ -462,7 +465,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await this.nfcIsoDepSessionService.StartSessionAsync(
 					SessionId,
 					(IsoDepInterface, CancellationToken) => this.ReadTravelDocumentAsync(SessionId, Evidence, IsoDepInterface, CancellationToken),
-					(Failure, CancellationToken) => this.HandleNfcFailureAsync(SessionId, Failure, CancellationToken),
+					(Failure, CancellationToken) => this.HandleNfcFailureAsync(
+						SessionId,
+						Evidence.ApplicationIdentityId,
+						Failure,
+						CancellationToken),
 					NfcIsoDepPollingPreference.Auto,
 					ServiceRef.Localizer["KycTravelDocumentNfcReady"],
 					CancellationToken.None);
@@ -472,11 +479,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			catch (Exception Ex)
 			{
+				this.TrackTerminalNfcSession(SessionId, "PreparationFailed", "SessionStartFailed");
 				this.LogFlowEvent(
 					"StartNfcSessionFailed",
 					new KeyValuePair<string, object?>("SessionId", SessionId),
 					new KeyValuePair<string, object?>("ExceptionType", Ex.GetType().Name));
-				throw;
+				await this.ForgetReservedPreviewIdentityAsync("NfcSessionStartReservationForgotten");
+				await this.CompleteNfcSessionAsync(SessionId);
+				await this.SetStatusAsync("KycTravelDocumentNfcFailed", false, true, false, KycTravelDocumentFlowState.Error);
 			}
 		}
 
@@ -505,7 +515,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			IIsoDepInterface IsoDepInterface,
 			CancellationToken CancellationToken)
 		{
-			if (!this.IsActiveSession(SessionId))
+			if (!this.IsActiveSession(SessionId, Evidence.ApplicationIdentityId))
 			{
 				this.LogFlowEvent(
 					"ReadNfcIgnoredInactiveSession",
@@ -548,7 +558,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					Evidence.ApplicationIdentityId);
 				TravelDocumentReadoutResult Result = await this.readoutService.ReadAsync(IsoDepInterface, Request, ReadCancellationToken);
 
-				if (!this.IsActiveSession(SessionId))
+				if (!this.IsActiveSession(SessionId, Evidence.ApplicationIdentityId))
 				{
 					this.LogFlowEvent(
 						"ReadNfcResultIgnoredInactiveSession",
@@ -568,16 +578,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					!string.IsNullOrWhiteSpace(Result.Xml) &&
 					await this.SaveReadoutXmlAsync(Result.Xml, ReadCancellationToken))
 				{
+					this.TrackTerminalNfcSession(SessionId, "Succeeded", string.Empty);
 					await this.SetStatusAsync("KycTravelDocumentNfcSuccess", false, false, true, KycTravelDocumentFlowState.Success);
 				}
 				else
 				{
+					this.TrackTerminalNfcSession(SessionId, "Failed", Result.Status.ToString());
 					await this.UploadFailedReservedPreviewReadoutAsync(Result);
+					await this.ForgetReservedPreviewIdentityAsync("FailedPreviewReadoutReservationForgotten");
 					await this.SetStatusAsync(this.ResolveReadoutFailureResourceKey(Result.Status), false, true, false, KycTravelDocumentFlowState.Error);
 				}
 			}
 			catch (OperationCanceledException) when (ReadCancellationToken.IsCancellationRequested)
 			{
+				this.TrackTerminalNfcSession(SessionId, "Cancelled", "Cancelled");
+				if (this.IsActiveSession(SessionId, Evidence.ApplicationIdentityId))
+					await this.ForgetReservedPreviewIdentityAsync("CancelledPreviewReadoutReservationForgotten");
 			}
 			finally
 			{
@@ -587,11 +603,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task HandleNfcFailureAsync(
 			Guid SessionId,
+			string? PreviewIdentityId,
 			NfcIsoDepSessionFailure Failure,
 			CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
-			if (!this.IsActiveSession(SessionId))
+			if (!this.IsActiveSession(SessionId, PreviewIdentityId))
 			{
 				this.LogFlowEvent(
 					"NfcFailureIgnoredInactiveSession",
@@ -606,6 +623,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("FailureCode", Failure.FailureCode.ToString()));
 
 			await this.SetStatusAsync(this.ResolveNfcFailureResourceKey(Failure), false, true, false, KycTravelDocumentFlowState.Error);
+			this.TrackTerminalNfcSession(
+				SessionId,
+				Failure.FailureCode == NfcIsoDepSessionFailureCode.Cancelled ? "Cancelled" : "Failed",
+				Failure.FailureCode.ToString());
 			await this.ForgetReservedPreviewIdentityAsync("NfcSessionFailureReservationForgotten");
 
 			if (this.activeSessionId == SessionId)
@@ -617,9 +638,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task CompleteNfcSessionAsync(Guid SessionId)
 		{
-			if (this.activeSessionId == SessionId)
-				this.activeSessionId = null;
+			if (this.activeSessionId != SessionId)
+			{
+				await this.nfcIsoDepSessionService.StopSessionAsync(SessionId, CancellationToken.None);
+				return;
+			}
 
+			this.activeSessionId = null;
+			this.activeSessionStartedUtc = null;
 			this.CancelAndDisposeActiveSessionCancellation();
 			await this.nfcIsoDepSessionService.StopSessionAsync(SessionId, CancellationToken.None);
 			await MainThread.InvokeOnMainThreadAsync(() => this.IsNfcBusy = false);
@@ -692,6 +718,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			LegalIdentity? ExistingIdentity = await this.TryLoadUsableReservedPreviewIdentityAsync(this.reference, CancellationToken);
 			if (ExistingIdentity is not null)
 			{
+				await this.ClearMatchingReservedProfileApplicationAsync(ExistingIdentity.Id).ConfigureAwait(false);
 				return new TravelDocumentMrzEvidence(
 					Evidence.MrzText,
 					Evidence.DocumentInformation,
@@ -716,6 +743,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return null;
 
 			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(this.reference, ReservedIdentity).ConfigureAwait(false);
+			await this.ClearMatchingReservedProfileApplicationAsync(ReservedIdentity.Id).ConfigureAwait(false);
 			return new TravelDocumentMrzEvidence(
 				Evidence.MrzText,
 				Evidence.DocumentInformation,
@@ -822,7 +850,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("XmlLength", Result.Xml.Length),
 				new KeyValuePair<string, object?>("AttachmentName", AttachmentName));
 
-			await this.ForgetReservedPreviewIdentityAsync("FailedPreviewReadoutReservationForgotten").ConfigureAwait(false);
 		}
 
 		private async Task<KycNfcEvidencePolicy> ResolveNfcEvidencePolicyAsync()
@@ -851,10 +878,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
 				return;
 
+			await this.ClearMatchingReservedProfileApplicationAsync(ReservedPreviewIdentityId).ConfigureAwait(false);
+
 			await ServiceRef.KycService.ForgetReservedPreviewIdentityAsync(this.reference, ReservedPreviewIdentityId).ConfigureAwait(false);
 			this.LogFlowEvent(
 				EventName,
 				new KeyValuePair<string, object?>("HasReservedPreviewIdentityId", true));
+		}
+
+		private async Task ClearMatchingReservedProfileApplicationAsync(string PreviewIdentityId)
+		{
+			if (this.reference?.IsUnsubmittedReservedPreviewIdentity(PreviewIdentityId) == true &&
+				string.Equals(ServiceRef.TagProfile.IdentityApplication?.Id, PreviewIdentityId, StringComparison.OrdinalIgnoreCase))
+			{
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true).ConfigureAwait(false);
+			}
 		}
 
 		private async Task SaveReferenceEvidenceAsync(string? MrzText, string? ReadoutXml, DocumentInformation? DocumentInformation = null)
@@ -935,7 +973,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!SessionId.HasValue)
 				return;
 
+			this.TrackTerminalNfcSession(SessionId.Value, "Cancelled", "Cancelled");
 			this.activeSessionId = null;
+			this.activeSessionStartedUtc = null;
 			this.CancelAndDisposeActiveSessionCancellation();
 			await this.nfcIsoDepSessionService.StopSessionAsync(SessionId.Value, CancellationToken.None);
 			await MainThread.InvokeOnMainThreadAsync(() => this.IsNfcBusy = false);
@@ -1001,9 +1041,41 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return KycTravelDocumentFlowState.Intro;
 		}
 
-		private bool IsActiveSession(Guid SessionId)
+		private bool IsActiveSession(Guid SessionId, string? PreviewIdentityId)
 		{
-			return this.activeSessionId == SessionId && !this.HasReadout && this.FlowState != KycTravelDocumentFlowState.Success;
+			return this.activeSessionId == SessionId &&
+				this.reference?.IsReservedPreviewIdentity(PreviewIdentityId) == true &&
+				!this.HasReadout &&
+				this.FlowState != KycTravelDocumentFlowState.Success;
+		}
+
+		private void TrackTerminalNfcSession(Guid SessionId, string Outcome, string FailureCode)
+		{
+			if (this.activeSessionId != SessionId || this.reportedTelemetrySessionId == SessionId)
+				return;
+
+			this.reportedTelemetrySessionId = SessionId;
+			long DurationMs = Math.Max(0, (long)(DateTime.UtcNow - (this.activeSessionStartedUtc ?? DateTime.UtcNow)).TotalMilliseconds);
+			try
+			{
+				ServiceRef.LogService.LogTelemetryEvent(
+					Constants.LogEventIds.TravelDocumentNfcScanTelemetry,
+					Constants.LogEventIds.TravelDocumentNfcScanTelemetry,
+					new KeyValuePair<string, object?>("KycTemplateId", NormalizeTelemetryValue(this.reference?.KycTemplateId)),
+					new KeyValuePair<string, object?>("AttemptId", SessionId.ToString("N")),
+					new KeyValuePair<string, object?>("Outcome", Outcome),
+					new KeyValuePair<string, object?>("FailureCode", FailureCode),
+					new KeyValuePair<string, object?>("DurationMs", DurationMs));
+			}
+			catch
+			{
+			}
+		}
+
+		private static string NormalizeTelemetryValue(string? Value)
+		{
+			string Normalized = Value?.Trim() ?? string.Empty;
+			return string.IsNullOrWhiteSpace(Normalized) ? "Unknown" : Normalized;
 		}
 
 		private void CancelAndDisposeActiveSessionCancellation()

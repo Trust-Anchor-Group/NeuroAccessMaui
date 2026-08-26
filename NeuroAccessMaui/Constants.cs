@@ -33,6 +33,32 @@ namespace NeuroAccessMaui
 		public const int MaxRenderedImageDimensionInPixels = 800;
 
 		/// <summary>
+		/// Stable event identifiers used for server-side event routing.
+		/// </summary>
+		public static class LogEventIds
+		{
+			/// <summary>
+			/// Identifies terminal travel-document NFC attempt telemetry.
+			/// </summary>
+			public const string TravelDocumentNfcScanTelemetry = "TravelDocumentNfcScanTelemetry";
+
+			/// <summary>
+			/// Identifies successful identity-application submission telemetry.
+			/// </summary>
+			public const string IdApplicationSubmittedTelemetry = "IdApplicationSubmittedTelemetry";
+
+			/// <summary>
+			/// Identifies authoritative identity approval telemetry.
+			/// </summary>
+			public const string IdApprovedTelemetry = "IdApprovedTelemetry";
+
+			/// <summary>
+			/// Identifies authoritative identity rejection telemetry.
+			/// </summary>
+			public const string IdRejectedTelemetry = "IdRejectedTelemetry";
+		}
+
+		/// <summary>
 		/// Application-related constants.
 		/// </summary>
 		public static class Application

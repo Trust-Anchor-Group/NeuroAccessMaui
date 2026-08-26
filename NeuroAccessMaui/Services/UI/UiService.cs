@@ -189,7 +189,9 @@ namespace NeuroAccessMaui.Services.UI
 				SKImageInfo ResizedInfo = new(DesiredWidth, DesiredHeight, SKColorType.Gray8);
 
 				// Create a new SKBitmap for the downscaled image
-				SKBitmap ResizedBitmap = OriginalBitmap.Resize(ResizedInfo, SKFilterQuality.Medium);
+				SKBitmap ResizedBitmap = OriginalBitmap.Resize(
+					ResizedInfo,
+					new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
 
 #if PROFILING
 				Profiler.NewState("Prepare");

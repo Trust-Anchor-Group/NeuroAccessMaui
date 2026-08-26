@@ -47,6 +47,9 @@ namespace NeuroAccessMaui.Services.Kyc
 		};
 		private const string kycTemplateNodeId = "NeuroAccessKyc";
 		private const int defaultTemplatePageSize = 20;
+		private const string unknownTelemetryValue = "Unknown";
+		private const string nfcVerificationMethod = "NFC";
+		private const string photoVerificationMethod = "Photo";
 
 		private readonly System.Collections.Concurrent.ConcurrentDictionary<string, AsyncLock> referenceLocks = new();
 		private readonly Channel<string> autosaveChannel;
@@ -482,6 +485,10 @@ namespace NeuroAccessMaui.Services.Kyc
 				Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
 
 			Reference.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
+			string? ItemId = Template.Source?.ItemId;
+			Reference.KycTemplateId = string.IsNullOrWhiteSpace(ItemId)
+				? null
+				: ItemId.Trim();
 			string? FriendlyName = Process.Name?.PrimaryText ?? Template.Reference.FriendlyName;
 			if (!string.IsNullOrWhiteSpace(FriendlyName))
 				Reference.FriendlyName = FriendlyName;
@@ -492,6 +499,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			string Xml = await this.LoadBundledKycXmlAsync(fallbackKycTemplateFiles[0], default).ConfigureAwait(false);
 			KycProcess Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
 			Reference.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
+			Reference.KycTemplateId = null;
 			string? FriendlyName = Process.Name?.Text;
 			if (!string.IsNullOrWhiteSpace(FriendlyName))
 				Reference.FriendlyName = FriendlyName;
@@ -662,13 +670,19 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Records submission data (identity id + state) and persists the reference.
 		/// </summary>
-		public async Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity)
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted identity.</param>
+		/// <param name="UsedNfc">True when NFC evidence was included in the submitted application.</param>
+		public async Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity, bool UsedNfc)
 		{
 			if (Reference is null || Identity is null)
 				return;
+			bool SubmissionTransition;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				SubmissionTransition = !string.Equals(Reference.FinalIdentityId, Identity.Id, StringComparison.OrdinalIgnoreCase) ||
+					Reference.IdentityStage is KycIdentityApplicationStage.None or KycIdentityApplicationStage.ReservedPreview;
 				Reference.CreatedIdentityId = Identity.Id;
 				Reference.CreatedIdentityState = Identity.State;
 				Reference.FinalIdentityId = Identity.Id;
@@ -676,6 +690,8 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.IdentityStage = Identity.State == IdentityState.Approved
 					? KycIdentityApplicationStage.Completed
 					: KycIdentityApplicationStage.FinalPendingApproval;
+				if (SubmissionTransition)
+					KycService.SetSubmittedTelemetry(Reference, UsedNfc);
 				Reference.ApplicationReview = null;
 				Reference.RejectionMessage = null;
 				Reference.RejectionCode = null;
@@ -687,6 +703,12 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
 			}
+
+			if (SubmissionTransition)
+			{
+				KycService.TryLogIdentityTelemetry(Constants.LogEventIds.IdApplicationSubmittedTelemetry, Reference);
+				KycService.TryLogTerminalIdentityTelemetry(Reference, Identity.State, true);
+			}
 		}
 
 		/// <summary>
@@ -694,14 +716,18 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		/// <param name="Reference">Reference to update.</param>
 		/// <param name="Identity">Submitted preview identity.</param>
-		public async Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity)
+		/// <param name="UsedNfc">True when NFC evidence was included in the submitted application.</param>
+		public async Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity, bool UsedNfc)
 		{
 			if (Reference is null || Identity is null)
 				return;
 
+			bool SubmissionTransition;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				SubmissionTransition = !string.Equals(Reference.PreviewIdentityId, Identity.Id, StringComparison.OrdinalIgnoreCase) ||
+					Reference.IdentityStage is KycIdentityApplicationStage.None or KycIdentityApplicationStage.ReservedPreview;
 				Reference.ReservedPreviewIdentityId = null;
 				Reference.PreviewIdentityId = Identity.Id;
 				Reference.PreviewIdentityState = Identity.State;
@@ -710,6 +736,8 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.IdentityStage = KycIdentityApplicationStage.PreviewPendingReview;
 				Reference.CreatedIdentityId = Identity.Id;
 				Reference.CreatedIdentityState = Identity.State;
+				if (SubmissionTransition)
+					KycService.SetSubmittedTelemetry(Reference, UsedNfc);
 				Reference.ApplicationReview = null;
 				Reference.RejectionMessage = null;
 				Reference.RejectionCode = null;
@@ -720,6 +748,12 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
+			}
+
+			if (SubmissionTransition)
+			{
+				KycService.TryLogIdentityTelemetry(Constants.LogEventIds.IdApplicationSubmittedTelemetry, Reference);
+				KycService.TryLogTerminalIdentityTelemetry(Reference, Identity.State, false);
 			}
 		}
 
@@ -829,9 +863,12 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (Reference is null || Identity is null)
 				return;
 
+			bool StateTransition;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				StateTransition = Reference.FinalIdentityState != Identity.State ||
+					!string.Equals(Reference.FinalIdentityId, Identity.Id, StringComparison.OrdinalIgnoreCase);
 				Reference.ReservedPreviewIdentityId = null;
 				Reference.FinalIdentityId = Identity.Id;
 				Reference.FinalIdentityState = Identity.State;
@@ -851,6 +888,9 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
 			}
+
+			if (StateTransition)
+				KycService.TryLogTerminalIdentityTelemetry(Reference, Identity.State, true);
 		}
 
 		/// <summary>
@@ -862,10 +902,23 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			if (Reference is null || Identity is null)
 				return;
+			if (!Reference.MatchesIdentityId(Identity.Id))
+				return;
 
+			bool StateTransition;
+			bool AllowApproval;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				bool WasReservedPreview = Reference.IsReservedPreviewIdentity(Identity.Id) && !Reference.IsPreviewIdentity(Identity.Id);
+				bool WasPreview = Reference.IsPreviewIdentity(Identity.Id);
+				IdentityState? PreviousState = WasReservedPreview
+					? Reference.CreatedIdentityState
+					: WasPreview
+						? Reference.PreviewIdentityState
+						: Reference.FinalIdentityState ?? Reference.CreatedIdentityState;
+				StateTransition = !WasReservedPreview && PreviousState != Identity.State;
+				AllowApproval = !WasPreview;
 				Reference.CreatedIdentityId = Identity.Id;
 				Reference.CreatedIdentityState = Identity.State;
 				if (Reference.IsReservedPreviewIdentity(Identity.Id) && !Reference.IsPreviewIdentity(Identity.Id))
@@ -895,6 +948,9 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
 			}
+
+			if (StateTransition)
+				KycService.TryLogTerminalIdentityTelemetry(Reference, Identity.State, AllowApproval);
 		}
 
 		/// <summary>
@@ -919,6 +975,8 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.TravelDocumentMrzUpdatedUtc = null;
 				Reference.NfcReadoutXml = null;
 				Reference.NfcReadoutUpdatedUtc = null;
+				Reference.SubmittedKycTemplateId = null;
+				Reference.SubmittedVerificationMethod = null;
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
@@ -985,6 +1043,8 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.TravelDocumentMrzUpdatedUtc = null;
 				Reference.NfcReadoutXml = null;
 				Reference.NfcReadoutUpdatedUtc = null;
+				Reference.SubmittedKycTemplateId = null;
+				Reference.SubmittedVerificationMethod = null;
 				if (SeedFields is not null && SeedFields.Count > 0)
 					Reference.Fields = SeedFields.Select(Field => new KycFieldValue(Field.FieldId, Field.Value)).ToArray();
 				else
@@ -1059,6 +1119,44 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			string Key = Reference.ObjectId ?? string.Empty;
 			return this.referenceLocks.GetOrAdd(Key, _ => new AsyncLock());
+		}
+
+		private static void SetSubmittedTelemetry(KycReference Reference, bool UsedNfc)
+		{
+			Reference.SubmittedKycTemplateId = KycService.NormalizeTelemetryValue(Reference.KycTemplateId);
+			Reference.SubmittedVerificationMethod = UsedNfc ? nfcVerificationMethod : photoVerificationMethod;
+		}
+
+		private static void TryLogTerminalIdentityTelemetry(
+			KycReference Reference,
+			IdentityState State,
+			bool AllowApproval)
+		{
+			if (State == IdentityState.Approved && AllowApproval)
+				KycService.TryLogIdentityTelemetry(Constants.LogEventIds.IdApprovedTelemetry, Reference);
+			else if (State == IdentityState.Rejected)
+				KycService.TryLogIdentityTelemetry(Constants.LogEventIds.IdRejectedTelemetry, Reference);
+		}
+
+		private static void TryLogIdentityTelemetry(string EventId, KycReference Reference)
+		{
+			try
+			{
+				ServiceRef.LogService.LogTelemetryEvent(
+					EventId,
+					EventId,
+					new KeyValuePair<string, object?>("KycTemplateId", KycService.NormalizeTelemetryValue(Reference.SubmittedKycTemplateId)),
+					new KeyValuePair<string, object?>("VerificationMethod", KycService.NormalizeTelemetryValue(Reference.SubmittedVerificationMethod)));
+			}
+			catch
+			{
+			}
+		}
+
+		private static string NormalizeTelemetryValue(string? Value)
+		{
+			string Normalized = Value?.Trim() ?? string.Empty;
+			return string.IsNullOrWhiteSpace(Normalized) ? unknownTelemetryValue : Normalized;
 		}
 
 		private static string ResolveMode(KycNavigationSnapshot Navigation)
@@ -1325,7 +1423,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				{
 					SKImageInfo Info = Bmp.Info;
 					SKImageInfo Ni = new(W, H, Info.ColorType, Info.AlphaType, Info.ColorSpace);
-					SKBitmap? Resized = Bmp.Resize(Ni, SKFilterQuality.High);
+					SKBitmap? Resized = Bmp.Resize(Ni, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
 					if (Resized is not null) { Bmp.Dispose(); Bmp = Resized; }
 				}
 				byte[] Bytes2;

@@ -837,13 +837,17 @@ namespace NeuroAccessMaui.UI.Controls
 			using SKCanvas canvas = new SKCanvas(resized);
 			using SKPaint paint = new SKPaint
 			{
-				FilterQuality = SKFilterQuality.High,
 				IsAntialias = true
 			};
 
 			SKRect srcRect = new SKRect(0, 0, width, height);
 			SKRect destRect = new SKRect(0, 0, newWidth, newHeight);
-			canvas.DrawBitmap(sourceBitmap, srcRect, destRect, paint);
+			canvas.DrawBitmap(
+				sourceBitmap,
+				srcRect,
+				destRect,
+				new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear),
+				paint);
 
 			return resized;
 		}

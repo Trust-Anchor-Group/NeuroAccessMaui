@@ -65,7 +65,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 		/// <summary>
 		/// Gets a value indicating whether the captured image bytes should be attached without recompression.
 		/// </summary>
-		public bool PreserveOriginalCapture => this.GetBooleanMetadataValue("PreserveOriginalCapture") ?? this.CameraOnly || this.ShouldCrop == false;
+		public bool PreserveOriginalCapture => this.GetBooleanMetadataValue("PreserveOriginalCapture") ?? false;
 
 		/// <summary>
 		/// Gets a value indicating whether the field should use the image cropper before storing its value.
@@ -130,7 +130,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 
             try
             {
-				if (this.CameraOnly || this.PreserveOriginalCapture || this.ShouldCrop == false)
+				if (this.CameraOnly)
 				{
 					TaskCompletionSource<byte[]?> Tcs = new();
 					await ServiceRef.NavigationService.GoToAsync(nameof(KycProfilePhotoCameraPage), new KycProfilePhotoCameraNavigationArgs

@@ -191,6 +191,24 @@ namespace NeuroAccessMaui.Services.Kyc
 		public DateTime? NfcReadoutUpdatedUtc { get; set; }
 
 		/// <summary>
+		/// Gets or sets the server template identifier for the active KYC process.
+		/// </summary>
+		[DefaultValueNull]
+		public string? KycTemplateId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the template identifier captured when the current application was submitted.
+		/// </summary>
+		[DefaultValueNull]
+		public string? SubmittedKycTemplateId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the verification method captured when the current application was submitted.
+		/// </summary>
+		[DefaultValueNull]
+		public string? SubmittedVerificationMethod { get; set; }
+
+		/// <summary>
 		/// Progress of the KYC process (0.0–1.0), persisted for UI display.
 		/// </summary>
 		[DefaultValue(0.0)]

@@ -99,14 +99,18 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Persists submission details after an application is sent.
 		/// </summary>
-		Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity);
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted identity.</param>
+		/// <param name="UsedNfc">True when NFC evidence was included in the submitted application.</param>
+		Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity, bool UsedNfc);
 
 		/// <summary>
 		/// Persists submission details after a preview application is sent.
 		/// </summary>
 		/// <param name="Reference">Reference to update.</param>
 		/// <param name="Identity">Submitted preview identity.</param>
-		Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity);
+		/// <param name="UsedNfc">True when NFC evidence was included in the submitted application.</param>
+		Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity, bool UsedNfc);
 
 		/// <summary>
 		/// Persists a preview identity that has been reserved but not submitted for review.
