@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>O Neuro-Access precisa de acesso à câmera para tirar fotos para sua identificação digital e quando você quiser que ela digitalize códigos QR.</value>
+    <value>O Intrusion Aware precisa de acesso à câmera para tirar fotos para sua identificação digital e quando você quiser que ela digitalize códigos QR.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>O Neuro-Access precisa ser capaz de adicionar fotos às suas galerias, se você quiser salvar as fotos tiradas para uso posterior.</value>
+    <value>O Intrusion Aware precisa ser capaz de adicionar fotos às suas galerias, se você quiser salvar as fotos tiradas para uso posterior.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>O Neuro-Access precisa de acesso à galeria de fotos para que você possa selecionar uma foto de perfil para seu documento de identificação, obter códigos QR de outros aplicativos ou compartilhar imagens com contatos em bate-papos.</value>
+    <value>O Intrusion Aware precisa de acesso à galeria de fotos para que você possa selecionar uma foto de perfil para seu documento de identificação, obter códigos QR de outros aplicativos ou compartilhar imagens com contatos em bate-papos.</value>
   </data>
   <data name="NFCReaderUsageDescription" xml:space="preserve">
-    <value>O Neuro-Access precisa de acesso à tag NFC para ler mensagens NDEF no aplicativo.</value>
+    <value>O Intrusion Aware precisa de acesso à tag NFC para ler mensagens NDEF no aplicativo.</value>
   </data>
 </root>

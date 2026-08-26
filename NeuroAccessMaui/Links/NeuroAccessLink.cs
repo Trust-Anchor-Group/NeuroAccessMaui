@@ -8,7 +8,7 @@ using Waher.Security.JWT;
 namespace NeuroAccessMaui.Links
 {
 	/// <summary>
-	/// Opens Neuro-Access App links.
+	/// Opens Intrusion Aware App links.
 	/// </summary>
 	public class NeuroAccessLink : ILinkOpener
 	{

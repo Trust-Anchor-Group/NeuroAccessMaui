@@ -403,7 +403,7 @@
     <value>You have been invited to create an account on {0}. Press OK, and enter the name of the account you wish to create.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>This code represents a Neuro-Access invitation, and cannot be claimed at this time.</value>
+    <value>This code represents an Intrusion Aware invitation, and cannot be claimed at this time.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} does not follow the ubiquitous encryption policy</value>
@@ -574,7 +574,7 @@
     <value>Almost done</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access works best when using {0}. Would you like to enable this feature? This can also be changed in the settings later</value>
+    <value>Intrusion Aware works best when using {0}. Would you like to enable this feature? This can also be changed in the settings later</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Create</value>
@@ -946,7 +946,7 @@
     <value>Identity applications</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
-    <value>Neuro-Access Account</value>
+    <value>Intrusion Aware Account</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organizational ID</value>
@@ -1759,7 +1759,7 @@
     <value>Taking a photo is not supported on this device</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>You need to scan a different type of QR Code, one that represents a Neuro-Access identity</value>
+    <value>You need to scan a different type of QR Code, one that represents an Intrusion Aware identity</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>This has been successfully disowned. It can now be claimed by a new owner.</value>
@@ -2119,13 +2119,13 @@
     <value>What is {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Biometric authentication uses your unique physical features, like your face or fingerprint, to ensure it's really you. It provides a simple and secure way to access Neuro-Access.</value>
+    <value>Biometric authentication uses your unique physical features, like your face or fingerprint, to ensure it's really you. It provides a simple and secure way to access Intrusion Aware.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID recognizes your face to ensure it's really you, providing a simple and secure way to access Neuro-Access.</value>
+    <value>Face ID recognizes your face to ensure it's really you, providing a simple and secure way to access Intrusion Aware.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID uses your fingerprint to ensure it's really you, providing a quick and secure way to access Neuro-Access.</value>
+    <value>Touch ID uses your fingerprint to ensure it's really you, providing a quick and secure way to access Intrusion Aware.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Transfer Identity</value>
@@ -2149,7 +2149,7 @@
     <value>Hardware</value>
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
-    <value>Welcome to Neuro-Access</value>
+    <value>Welcome to Intrusion Aware</value>
   </data> 
   <data name="CreateNewAccount">
     <value>Create new account</value>

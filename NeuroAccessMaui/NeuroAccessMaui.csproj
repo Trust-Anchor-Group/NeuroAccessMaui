@@ -13,11 +13,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>Neuro-Access</ApplicationTitle>
+		<ApplicationTitle>Intrusion Aware</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId Condition="$(TargetFramework) == 'net8.0-android'">com.tag.NeuroAccess</ApplicationId>
-		<ApplicationId Condition="$(TargetFramework) != 'net8.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) == 'net8.0-android'">com.awaretools.intrusionaware</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) != 'net8.0-android'">com.awaretools.intrusionaware</ApplicationId>
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -33,13 +33,13 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</TargetPlatformMinVersion>
 		<PublishTrimmed>False</PublishTrimmed>
 		<PublishAot>False</PublishAot>
-		<Title>Neuro-Access</Title>
-		<Company>Trust Anchor Group AB</Company>
-		<Product>Neuro-Access</Product>
-		<Description>Maui App giving users access to Neuro-services, such as quick-login, digital identities, smart contracts, Neuro-Feature tokens and eDaler.</Description>
-		<Copyright>Copyright © Trust Anchor Group 2018-2024. All rights reserved.</Copyright>
+		<Title>Intrusion Aware</Title>
+		<Company>Aware Tools</Company>
+		<Product>Intrusion Aware</Product>
+		<Description>Intrusion Aware mobile app for quick login, digital identities, smart contracts, feature tokens, and eDaler.</Description>
+		<Copyright>Copyright © Aware Tools 2026. All rights reserved.</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
-		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
+		<RepositoryUrl>https://github.com/awaretools/NeuroAccessMaui-Intrusion.aware</RepositoryUrl>
 
 	</PropertyGroup>
 

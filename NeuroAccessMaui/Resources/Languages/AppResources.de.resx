@@ -403,7 +403,7 @@
     <value>Sie wurden eingeladen, ein Konto auf {0} zu erstellen. Drücken Sie OK und geben Sie den Namen des Kontos ein, das Sie erstellen möchten.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Dieser Code stellt eine Neuro-Access-Einladung dar und kann derzeit nicht beansprucht werden.</value>
+    <value>Dieser Code stellt eine Intrusion Aware-Einladung dar und kann derzeit nicht beansprucht werden.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} folgt nicht der allgegenwärtigen Verschlüsselungsrichtlinie</value>
@@ -574,7 +574,7 @@
     <value>Fast fertig</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access funktioniert am besten, wenn Sie {0} verwenden. Möchten Sie diese Funktion aktivieren? Dies kann auch nachträglich in den Einstellungen geändert werden</value>
+    <value>Intrusion Aware funktioniert am besten, wenn Sie {0} verwenden. Möchten Sie diese Funktion aktivieren? Dies kann auch nachträglich in den Einstellungen geändert werden</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Schaffen</value>
@@ -946,7 +946,7 @@
     <value>Identitäts-Anwendungen</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
-    <value>Neuro-Access-Konto</value>
+    <value>Intrusion Aware-Konto</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organisations-ID</value>
@@ -1759,7 +1759,7 @@
     <value>Das Aufnehmen eines Fotos wird auf diesem Gerät nicht unterstützt</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Sie müssen eine andere Art von QR-Code scannen, einen, der eine Neuro-Access-Identität darstellt</value>
+    <value>Sie müssen eine andere Art von QR-Code scannen, einen, der eine Intrusion Aware-Identität darstellt</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Dies wurde erfolgreich verleugnet. Es kann jetzt von einem neuen Besitzer beansprucht werden.</value>
@@ -2119,13 +2119,13 @@
     <value>Was ist {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Die biometrische Authentifizierung verwendet Ihre einzigartigen physischen Merkmale wie Ihr Gesicht oder Ihren Fingerabdruck, um sicherzustellen, dass Sie es wirklich sind. Es bietet eine einfache und sichere Möglichkeit, auf Neuro-Access zuzugreifen.</value>
+    <value>Die biometrische Authentifizierung verwendet Ihre einzigartigen physischen Merkmale wie Ihr Gesicht oder Ihren Fingerabdruck, um sicherzustellen, dass Sie es wirklich sind. Es bietet eine einfache und sichere Möglichkeit, auf Intrusion Aware zuzugreifen.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID erkennt Ihr Gesicht, um sicherzustellen, dass Sie es wirklich sind, und bietet eine einfache und sichere Möglichkeit, auf Neuro-Access zuzugreifen.</value>
+    <value>Face ID erkennt Ihr Gesicht, um sicherzustellen, dass Sie es wirklich sind, und bietet eine einfache und sichere Möglichkeit, auf Intrusion Aware zuzugreifen.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID verwendet Ihren Fingerabdruck, um sicherzustellen, dass Sie es wirklich sind, und bietet eine schnelle und sichere Möglichkeit, auf Neuro-Access zuzugreifen.</value>
+    <value>Touch ID verwendet Ihren Fingerabdruck, um sicherzustellen, dass Sie es wirklich sind, und bietet eine schnelle und sichere Möglichkeit, auf Intrusion Aware zuzugreifen.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Identität übertragen</value>
@@ -2149,7 +2149,7 @@
     <value>Hardware</value>
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
-    <value>Willkommen bei Neuro-Access</value>
+    <value>Willkommen bei Intrusion Aware</value>
   </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Neues Konto erstellen</value>

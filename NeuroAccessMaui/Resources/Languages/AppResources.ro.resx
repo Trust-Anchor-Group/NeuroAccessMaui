@@ -403,7 +403,7 @@
     <value>Ați fost invitat să creați un cont pe {0}. Apăsați OK și introduceți numele contului pe care doriți să îl creați.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Acest cod reprezintă o invitație Neuro-Access și nu poate fi revendicat în acest moment.</value>
+    <value>Acest cod reprezintă o invitație Intrusion Aware și nu poate fi revendicat în acest moment.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} nu respectă politica de criptare omniprezentă</value>
@@ -574,7 +574,7 @@
     <value>Aproape gata</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access funcționează cel mai bine atunci când utilizați {0}. Doriți să activați această caracteristică? Acest lucru poate fi, de asemenea, modificat în setări mai târziu</value>
+    <value>Intrusion Aware funcționează cel mai bine atunci când utilizați {0}. Doriți să activați această caracteristică? Acest lucru poate fi, de asemenea, modificat în setări mai târziu</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Crea</value>
@@ -946,7 +946,7 @@
     <value>Cereri de identitate</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
-    <value>Cont Neuro-Access</value>
+    <value>Cont Intrusion Aware</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>ID organizație</value>
@@ -1759,7 +1759,7 @@
     <value>Realizarea unei fotografii nu este acceptată pe acest dispozitiv</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Trebuie să scanați un alt tip de cod QR, unul care reprezintă o identitate Neuro-Access</value>
+    <value>Trebuie să scanați un alt tip de cod QR, unul care reprezintă o identitate Intrusion Aware</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Acest lucru a fost renegat cu succes. Acum poate fi revendicat de un nou proprietar.</value>
@@ -2119,13 +2119,13 @@
     <value>Ce este {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Autentificarea biometrică utilizează caracteristicile fizice unice, cum ar fi fața sau amprenta, pentru a se asigura că ești cu adevărat tu. Oferă o modalitate simplă și sigură de a accesa Neuro-Access.</value>
+    <value>Autentificarea biometrică utilizează caracteristicile fizice unice, cum ar fi fața sau amprenta, pentru a se asigura că ești cu adevărat tu. Oferă o modalitate simplă și sigură de a accesa Intrusion Aware.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID îți recunoaște fața pentru a te asigura că ești cu adevărat tu, oferind o modalitate simplă și sigură de a accesa Neuro-Access.</value>
+    <value>Face ID îți recunoaște fața pentru a te asigura că ești cu adevărat tu, oferind o modalitate simplă și sigură de a accesa Intrusion Aware.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID îți folosește amprenta pentru a se asigura că ești cu adevărat tu, oferind o modalitate rapidă și sigură de a accesa Neuro-Access.</value>
+    <value>Touch ID îți folosește amprenta pentru a se asigura că ești cu adevărat tu, oferind o modalitate rapidă și sigură de a accesa Intrusion Aware.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Transfer identitate</value>
@@ -2149,7 +2149,7 @@
     <value>Hardware</value>
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
-    <value>Bine ați venit la Neuro-Access</value>
+    <value>Bine ați venit la Intrusion Aware</value>
   </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Creați un cont nou</value>

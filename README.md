@@ -1,6 +1,6 @@
-# Neuro-Access
+# Intrusion Aware
 
-**Neuro-Access** is a .NET Maui app written in C#, provided by [Trust Anchor Group](https://trustanchorgroup.com/).
+**Intrusion Aware** is a .NET MAUI app written in C# and maintained by **Aware Tools**.
 The app is based on [TAG ID App](https://github.com/Trust-Anchor-Group/IdApp)
 
 # Documentation
@@ -36,7 +36,6 @@ This documentation provides information you need to get started with the project
   - [Coding Guidelines](Content/contributing.md#style-guide)
   - [Issue Reporting](Content/contributing.md#issue-reporting)
 - [License](LICENSE)
-
 
 
 

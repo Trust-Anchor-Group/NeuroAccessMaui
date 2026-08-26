@@ -403,7 +403,7 @@
     <value>Вам было предложено создать учетную запись на {0}. Нажмите OK и введите имя учетной записи, которую вы хотите создать.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Этот код представляет собой приглашение Neuro-Access и в настоящее время не может быть востребован.</value>
+    <value>Этот код представляет собой приглашение Intrusion Aware и в настоящее время не может быть востребован.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} не придерживается повсеместной политики шифрования</value>
@@ -574,7 +574,7 @@
     <value>Почти готово</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access лучше всего работает при использовании {0}. Хотите включить эту функцию? Это также можно изменить в настройках позже</value>
+    <value>Intrusion Aware лучше всего работает при использовании {0}. Хотите включить эту функцию? Это также можно изменить в настройках позже</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Создавать</value>
@@ -946,7 +946,7 @@
     <value>Приложения для идентификации</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
-    <value>Учетная запись Neuro-Access</value>
+    <value>Учетная запись Intrusion Aware</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Идентификатор организации</value>
@@ -1759,7 +1759,7 @@
     <value>Фотосъемка на этом устройстве не поддерживается</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Вам нужно отсканировать QR-код другого типа, который представляет собой удостоверение Neuro-Access</value>
+    <value>Вам нужно отсканировать QR-код другого типа, который представляет собой удостоверение Intrusion Aware</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>От этого успешно открещиваются. Теперь на него может претендовать новый владелец.</value>
@@ -2119,13 +2119,13 @@
     <value>Что такое {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Биометрическая аутентификация использует ваши уникальные физические признаки, такие как лицо или отпечаток пальца, чтобы убедиться, что это действительно вы. Он предоставляет простой и безопасный способ доступа к Neuro-Access.</value>
+    <value>Биометрическая аутентификация использует ваши уникальные физические признаки, такие как лицо или отпечаток пальца, чтобы убедиться, что это действительно вы. Он предоставляет простой и безопасный способ доступа к Intrusion Aware.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID распознает ваше лицо, чтобы убедиться, что это действительно вы, обеспечивая простой и безопасный способ доступа к Neuro-Access.</value>
+    <value>Face ID распознает ваше лицо, чтобы убедиться, что это действительно вы, обеспечивая простой и безопасный способ доступа к Intrusion Aware.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID использует ваш отпечаток пальца, чтобы убедиться, что это действительно вы, обеспечивая быстрый и безопасный способ доступа к Neuro-Access.</value>
+    <value>Touch ID использует ваш отпечаток пальца, чтобы убедиться, что это действительно вы, обеспечивая быстрый и безопасный способ доступа к Intrusion Aware.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Перенос удостоверения</value>
@@ -2149,7 +2149,7 @@
     <value>Скобяные изделия</value>
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
-    <value>Добро пожаловать в Neuro-Access</value>
+    <value>Добро пожаловать в Intrusion Aware</value>
   </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Создать новую учетную запись</value>

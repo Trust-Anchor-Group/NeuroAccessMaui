@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		public ContactSupportViewModel() : base(RegistrationStep.ContactSupport)
 		{
-			this.SupportEmail = "neuro-access@trustanchorgroup.com";
+			this.SupportEmail = "contacto@aware.tools";
 		}
 
 		[ObservableProperty]

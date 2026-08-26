@@ -403,7 +403,7 @@
     <value>Sinua on pyydetty luomaan tili {0}. Paina OK ja kirjoita luotavan tilin nimi.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Tämä koodi edustaa Neuro-Access-kutsua, eikä sitä voi lunastaa tällä hetkellä.</value>
+    <value>Tämä koodi edustaa Intrusion Aware-kutsua, eikä sitä voi lunastaa tällä hetkellä.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} ei noudata kaikkialla läsnä olevaa salauskäytäntöä</value>
@@ -574,7 +574,7 @@
     <value>Melkein valmis</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access toimii parhaiten {0} käytettäessä. Haluatko ottaa tämän ominaisuuden käyttöön? Tätä voidaan muuttaa myös asetuksissa myöhemmin</value>
+    <value>Intrusion Aware toimii parhaiten {0} käytettäessä. Haluatko ottaa tämän ominaisuuden käyttöön? Tätä voidaan muuttaa myös asetuksissa myöhemmin</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Luoda</value>
@@ -946,7 +946,7 @@
     <value>Henkilöllisyyttä koskevat hakemukset</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
-    <value>Neuro-Access-tili</value>
+    <value>Intrusion Aware-tili</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organisaation tunnus</value>
@@ -1759,7 +1759,7 @@
     <value>Tämä laite ei tue valokuvan ottamista</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Sinun on skannattava erityyppinen QR-koodi, joka edustaa Neuro-Access-identiteettiä</value>
+    <value>Sinun on skannattava erityyppinen QR-koodi, joka edustaa Intrusion Aware-identiteettiä</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Tämä on onnistuneesti hylätty. Uusi omistaja voi nyt lunastaa sen.</value>
@@ -2119,13 +2119,13 @@
     <value>Mikä on {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Biometrinen todennus käyttää ainutlaatuisia fyysisiä ominaisuuksiasi, kuten kasvojasi tai sormenjälkeäsi, varmistaakseen, että kyseessä todella olet sinä. Se tarjoaa yksinkertaisen ja turvallisen tavan käyttää Neuro-Accessia.</value>
+    <value>Biometrinen todennus käyttää ainutlaatuisia fyysisiä ominaisuuksiasi, kuten kasvojasi tai sormenjälkeäsi, varmistaakseen, että kyseessä todella olet sinä. Se tarjoaa yksinkertaisen ja turvallisen tavan käyttää Intrusion Awareia.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID tunnistaa kasvosi varmistaakseen, että ne todella olet sinä, ja tarjoaa yksinkertaisen ja turvallisen tavan käyttää Neuro-Accessia.</value>
+    <value>Face ID tunnistaa kasvosi varmistaakseen, että ne todella olet sinä, ja tarjoaa yksinkertaisen ja turvallisen tavan käyttää Intrusion Awareia.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID käyttää sormenjälkeäsi varmistaakseen, että kyseessä todella olet sinä, tarjoten nopean ja turvallisen tavan käyttää Neuro-Accessia.</value>
+    <value>Touch ID käyttää sormenjälkeäsi varmistaakseen, että kyseessä todella olet sinä, tarjoten nopean ja turvallisen tavan käyttää Intrusion Awareia.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Siirrä henkilöllisyys</value>
@@ -2149,7 +2149,7 @@
     <value>Laitteisto</value>
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
-    <value>Tervetuloa Neuro-Accessiin</value>
+    <value>Tervetuloa Intrusion Awareiin</value>
   </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Luo uusi tili</value>

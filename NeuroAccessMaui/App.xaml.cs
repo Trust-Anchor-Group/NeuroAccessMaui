@@ -63,7 +63,7 @@ using Waher.Things;
 namespace NeuroAccessMaui
 {
 	/// <summary>
-	/// Represents an instance of the Neuro-Access app.
+	/// Represents an instance of the Intrusion Aware app.
 	/// </summary>
 	public partial class App : Application, IDisposableAsync
 	{

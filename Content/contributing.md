@@ -1,4 +1,4 @@
-# Contributing to Neuro-Access
+# Contributing to Intrusion Aware
 
 This guide outlines the process for contributing, the branching strategy, coding guidelines, and other important aspects to ensure that your contributions are as smooth and impactful as possible.
 
@@ -80,7 +80,7 @@ To maintain consistency and quality across the codebase, please follow these gui
 
 ## Issue Reporting
 
-We appreciate your feedback and help in making Neuro-Access better. To report an issue, please follow these steps:
+We appreciate your feedback and help in making Intrusion Aware better. To report an issue, please follow these steps:
 
 1. **Check for Existing Issues**: Before creating a new issue, check if it has already been reported.
 2. **Open a New Issue**: If the issue is new, [open an issue](https://github.com/NeuroAccess/NeuroAccessMaui/issues/new) with a descriptive title and detailed information.
@@ -92,6 +92,6 @@ We appreciate your feedback and help in making Neuro-Access better. To report an
    - Proposed solution - if any.
 ## Thank You!
 
-We value your contributions and feedback. Together, we can make Neuro-Access even better!
+We value your contributions and feedback. Together, we can make Intrusion Aware even better!
 
 ---

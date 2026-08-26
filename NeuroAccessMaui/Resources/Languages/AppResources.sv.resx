@@ -403,7 +403,7 @@
     <value>Du har blivit inbjuden att skapa ett konto på {0}. Tryck på Ok och ange namnet på det konto du vill skapa.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Den här koden representerar en Neuro-Access-inbjudan och kan inte användas just nu.</value>
+    <value>Den här koden representerar en Intrusion Aware-inbjudan och kan inte användas just nu.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} följer inte den närvarande krypteringspolicyn</value>
@@ -574,7 +574,7 @@
     <value>Nästan klar</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
+    <value>Intrusion Aware fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skapa</value>
@@ -946,7 +946,7 @@
     <value>Identitetsansökan</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
-    <value>Neuro-Access-konto</value>
+    <value>Intrusion Aware-konto</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organisations-ID</value>
@@ -1759,7 +1759,7 @@
     <value>Det går inte att ta ett foto på den här enheten</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Du måste skanna en annan typ av QR-kod, en som representerar en Neuro-Access identitet</value>
+    <value>Du måste skanna en annan typ av QR-kod, en som representerar en Intrusion Aware identitet</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Detta har framgångsrikt förnekats. Den kan nu tas i anspråk av en ny ägare.</value>
@@ -2119,13 +2119,13 @@
     <value>What is {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Biometrisk autentisering använder dina unika fysiska egenskaper, som ditt ansikte eller fingeravtryck, för att säkerställa att det verkligen är du. Det ger ett enkelt och säkert sätt att komma åt Neuro-Access.</value>
+    <value>Biometrisk autentisering använder dina unika fysiska egenskaper, som ditt ansikte eller fingeravtryck, för att säkerställa att det verkligen är du. Det ger ett enkelt och säkert sätt att komma åt Intrusion Aware.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID känner igen ditt ansikte för att säkerställa att det verkligen är du, vilket ger ett enkelt och säkert sätt att komma åt Neuro-Access.</value>
+    <value>Face ID känner igen ditt ansikte för att säkerställa att det verkligen är du, vilket ger ett enkelt och säkert sätt att komma åt Intrusion Aware.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID använder ditt fingeravtryck för att säkerställa att det verkligen är du, vilket ger ett snabbt och säkert sätt att komma åt Neuro-Access.</value>
+    <value>Touch ID använder ditt fingeravtryck för att säkerställa att det verkligen är du, vilket ger ett snabbt och säkert sätt att komma åt Intrusion Aware.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Överför Identitet</value>
@@ -2149,7 +2149,7 @@
     <value>Hårdvara</value>
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
-    <value>Välkommen till Neuro-Access</value>
+    <value>Välkommen till Intrusion Aware</value>
   </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Skapa nytt konto</value>

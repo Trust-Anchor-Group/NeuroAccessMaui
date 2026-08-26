@@ -203,7 +203,8 @@ namespace NeuroAccessMaui.Services
 
 			Intent.AddFlags(ActivityFlags.GrantReadUriPermission);
 			Intent.AddFlags(ActivityFlags.GrantWriteUriPermission);
-			Intent.PutExtra(Intent.ExtraStream, FileProvider.GetUriForFile(Context, "com.tag.IdApp.fileprovider", fileDir));
+			Intent.PutExtra(Intent.ExtraStream, FileProvider.GetUriForFile(Context,
+				$"{Microsoft.Maui.ApplicationModel.AppInfo.PackageName}.fileprovider", fileDir));
 
 			Intent? MyIntent = Intent.CreateChooser(Intent, Title);
 

@@ -1,6 +1,6 @@
 # Services
 
-This document provides an overview of services included with **Neuro-Access**
+This document provides an overview of services included with **Intrusion Aware**
 
 ## Table of Contents
 
@@ -41,7 +41,7 @@ If any call fails, they will catch errors, log them and display alerts to the us
 
 ### LogService ###
 
-The [LogService](../NeuroAccessMaui/Services/EventLog/ILogService.cs) handles **Neuro-Access** logging, allows logging of exceptions and messages of different severity, which can be reported back to the Neuron server. You can also subscribe to certain events and redirect them to other sources.
+The [LogService](../NeuroAccessMaui/Services/EventLog/ILogService.cs) handles **Intrusion Aware** logging, allows logging of exceptions and messages of different severity, which can be reported back to the Neuron server. You can also subscribe to certain events and redirect them to other sources.
 
 ### StorageService ###
 

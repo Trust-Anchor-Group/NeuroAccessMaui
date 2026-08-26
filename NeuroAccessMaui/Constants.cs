@@ -23,7 +23,7 @@
 			/// <summary>
 			/// Name of application
 			/// </summary>
-			public const string Name = "Neuro-Access";
+			public const string Name = "Intrusion Aware";
 		}
 
 		/// <summary>
@@ -248,12 +248,12 @@
 		public static class Domains
 		{
 			/// <summary>
-			/// Neuro-Access domain.
+			/// Intrusion Aware domain.
 			/// </summary>
 			public const string IdDomain = "id.tagroot.io";
 
 			/// <summary>
-			/// Neuro-Access onboarding domain.
+			/// Intrusion Aware onboarding domain.
 			/// </summary>
 			public const string OnboardingDomain = "onboarding.id.tagroot.io";
 		}
@@ -640,7 +640,7 @@
 			/// <summary>
 			/// ResolutionGroupName used for resolving Effects.
 			/// </summary>
-			public const string ResolutionGroupName = "com.tag.NeuroAccess";
+			public const string ResolutionGroupName = "com.awaretools.intrusionaware";
 
 			/// <summary>
 			/// PasswordMaskTogglerEffect.
@@ -723,7 +723,7 @@
 			/// <summary>
 			/// Resource where Android App can be downloaded.
 			/// </summary>
-			public const string AndroidApp = "https://play.google.com/store/apps/details?id=com.tag.NeuroAccess";
+			public const string AndroidApp = "https://play.google.com/store/apps/details?id=com.awaretools.intrusionaware";
 
 			/// <summary>
 			/// Resource where iPhone App can be downloaded.

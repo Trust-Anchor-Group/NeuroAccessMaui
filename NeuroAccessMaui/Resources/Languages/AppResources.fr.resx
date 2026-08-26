@@ -574,7 +574,7 @@
     <value>Presque terminé</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access fonctionne mieux lors de l’utilisation de {0}. Souhaitez-vous activer cette fonctionnalité ? Cela peut également être modifié dans les paramètres ultérieurement</value>
+    <value>Intrusion Aware fonctionne mieux lors de l’utilisation de {0}. Souhaitez-vous activer cette fonctionnalité ? Cela peut également être modifié dans les paramètres ultérieurement</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Créer</value>
@@ -1759,7 +1759,7 @@
     <value>La prise de photo n’est pas prise en charge sur cet appareil</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Vous devez scanner un autre type de code QR, qui représente une identité Neuro-Access</value>
+    <value>Vous devez scanner un autre type de code QR, qui représente une identité Intrusion Aware</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Cela a été désavoué avec succès. Il peut maintenant être réclamé par un nouveau propriétaire.</value>
@@ -2122,10 +2122,10 @@
     <value>L’authentification biométrique utilise vos caractéristiques physiques uniques, comme votre visage ou votre empreinte digitale, pour s’assurer qu’il s’agit bien de vous. Il offre un moyen simple et sécuritaire d’accéder à Neuro-Accès.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID reconnaît votre visage pour s’assurer qu’il s’agit bien de vous, offrant ainsi un moyen simple et sécurisé d’accéder à Neuro-Access.</value>
+    <value>Face ID reconnaît votre visage pour s’assurer qu’il s’agit bien de vous, offrant ainsi un moyen simple et sécurisé d’accéder à Intrusion Aware.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID utilise votre empreinte digitale pour s’assurer qu’il s’agit bien de vous, offrant ainsi un moyen rapide et sécurisé d’accéder à Neuro-Access.</value>
+    <value>Touch ID utilise votre empreinte digitale pour s’assurer qu’il s’agit bien de vous, offrant ainsi un moyen rapide et sécurisé d’accéder à Intrusion Aware.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Transférer l’identité</value>

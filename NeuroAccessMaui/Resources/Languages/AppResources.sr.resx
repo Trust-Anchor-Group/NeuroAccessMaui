@@ -574,7 +574,7 @@
     <value>Zamalo da završim</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access najbolje funkcioniše kada se koriste {0}. Želite li da omogućite ovu funkciju? Ovo se kasnije može promeniti i u postavkama</value>
+    <value>Intrusion Aware najbolje funkcioniše kada se koriste {0}. Želite li da omogućite ovu funkciju? Ovo se kasnije može promeniti i u postavkama</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Kreirate</value>
@@ -1759,7 +1759,7 @@
     <value>Fotografisanje nije podržano na ovom uređaju</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Potrebno je da skenirate drugi tip QR koda, onaj koji predstavlja Neuro-Access identitet</value>
+    <value>Potrebno je da skenirate drugi tip QR koda, onaj koji predstavlja Intrusion Aware identitet</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Ovo se uspešno odreklo. Sada ga može tražiti novi vlasnik.</value>
@@ -2149,7 +2149,7 @@
     <value>Hardver</value>
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
-    <value>Dobrodošli u Neuro-Access</value>
+    <value>Dobrodošli u Intrusion Aware</value>
   </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Kreiraj novi nalog</value>

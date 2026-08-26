@@ -29,17 +29,17 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon_ios.appiconset</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Neuro-Access needs access to the camera to take photos for your digital ID, and when you want it to scan QR codes.</string>
+	<string>Intrusion Aware needs access to the camera to take photos for your digital ID, and when you want it to scan QR codes.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Neuro-Access needs access to the photo gallery for you to be able to select a profile photo for your ID, get QR codes from other apps, or share images with contacts in chats.</string>
+	<string>Intrusion Aware needs access to the photo gallery for you to be able to select a profile photo for your ID, get QR codes from other apps, or share images with contacts in chats.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Neuro-Access needs to be able to add photos to your galleries, if you want to save photos you take for later use.</string>
+	<string>Intrusion Aware needs to be able to add photos to your galleries, if you want to save photos you take for later use.</string>
 	<key>NFCReaderUsageDescription</key>
-	<string>Neuro-Access needs access the NFC reader, to be able to read NFC tags containing references to IDs, contracts, tokens, things, etc.</string>
+	<string>Intrusion Aware needs access the NFC reader, to be able to read NFC tags containing references to IDs, contracts, tokens, things, etc.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Neuro-Access needs access to Bluetooth, allowing you to connect with other Neuro-Access apps, and exchange information with other users.</string>
+	<string>Intrusion Aware needs access to Bluetooth, allowing you to connect with other Intrusion Aware apps, and exchange information with other users.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Neuro-Access needs access to Face ID to authenticate you in order to protect your digital ID.</string>
+	<string>Intrusion Aware needs access to Face ID to authenticate you in order to protect your digital ID.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -63,7 +63,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>Neuro-Access</string>
+			<string>Intrusion Aware</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>iotid</string>

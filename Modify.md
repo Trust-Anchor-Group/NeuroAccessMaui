@@ -1,6 +1,6 @@
-# Como modificar la APP Neuro Access
+# Como modificar la app Intrusion Aware
 
-Neuro access esta estructurada como cualquier app de Maui en C#. Si explorar el codigo fuente de la app, notaras que hay una gran cantidad de archivos con extension XAML. XAML es un markup language que se utiliza para definir interfaces de usuario en aplicaciones de .NET. El entry point de la app se encuentra en `NeuroAccessMaui/App.xaml`, aca se definen los puntos de entrada de la app y se inicializan los servicios necesarios para que la app funcione correctamente.
+Intrusion Aware está estructurada como cualquier app de .NET MAUI en C#. Si exploras el código fuente de la app, notarás que hay una gran cantidad de archivos con extensión XAML. XAML es un lenguaje de marcado que se utiliza para definir interfaces de usuario en aplicaciones de .NET. El punto de entrada de la app se encuentra en `NeuroAccessMaui/App.xaml`; ahí se definen los puntos de entrada de la app y se inicializan los servicios necesarios para que funcione correctamente.
 
 Si deseas modificar la applicacion, no estaras interesado en modificar los archivos `.cs` ya que estos son codigos en C# que definen la logica de la app pero no su estilo. Si deseas modificar el estilo de la app, deberas modificar los archivos `.xaml` que se encuentran en la carpeta `NeuroAccessMaui/Views`. Estos archivos definen la interfaz de usuario de la app y son los que deberas modificar si deseas cambiar el estilo de la app.
 

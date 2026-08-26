@@ -1,6 +1,6 @@
 # Project Architecture
 
-This document provides an overview of the architecture of **Neuro-Access**. It covers the project structure, the MVVM pattern, the use of dependency injection.
+This document provides an overview of the architecture of **Intrusion Aware**. It covers the project structure, the MVVM pattern, the use of dependency injection.
 
 ## Table of Contents
 
@@ -79,7 +79,7 @@ NeuroAccessMaui/
 
 ## MVVM Pattern
 
-**Neuro-Access** follows the Model-View-ViewModel (MVVM) architectural pattern, which separates the business logic, user interface, and data binding logic into distinct layers. The following is a brief overview of the MVVM pattern, more information can be found at [Microsoft official docs](https://learn.microsoft.com/en-us/dotnet/maui/xaml/fundamentals/mvvm?view=net-maui-8.0)
+**Intrusion Aware** follows the Model-View-ViewModel (MVVM) architectural pattern, which separates the business logic, user interface, and data binding logic into distinct layers. The following is a brief overview of the MVVM pattern, more information can be found at [Microsoft official docs](https://learn.microsoft.com/en-us/dotnet/maui/xaml/fundamentals/mvvm?view=net-maui-8.0)
 
 ### Model
 
@@ -115,11 +115,11 @@ Example MAUI Page (XAML):
 ```
 ### BaseContentPage / BaseContentView
 
-> In **Neuro-Access** a base class for pages and views are provided which enables it's corresponding viewModel to access specific lifecycle methods usually only accessable by the view, such as OnAppearing, OnLoaded, etc...
+> In **Intrusion Aware** a base class for pages and views are provided which enables it's corresponding viewModel to access specific lifecycle methods usually only accessable by the view, such as OnAppearing, OnLoaded, etc...
 
 Note: The ViewModel needs to inherit from **BaseViewModel**
 
-Example Neuro-Access Page (XAML):
+Example Intrusion Aware Page (XAML):
 
 ```xml
 <base:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -180,7 +180,7 @@ Note: This base class is not needed for the app to work properly, but is recomme
 
 ### Using the .NET MAUI Community Toolkit
 
-**Neuro-Access** leverages the .NET MAUI Community Toolkit to simplify the implementation of the MVVM pattern. The toolkit provides a variety of utilities and attributes that reduce boilerplate code and make the codebase more maintainable.
+**Intrusion Aware** leverages the .NET MAUI Community Toolkit to simplify the implementation of the MVVM pattern. The toolkit provides a variety of utilities and attributes that reduce boilerplate code and make the codebase more maintainable.
 
 #### Observable Properties with `[ObservableProperty]`
 
@@ -236,7 +236,7 @@ In this example, the `UpdateMessage` method is automatically exposed as an `ICom
 
 ## Dependency Injection and Dependency Resolution
 
-**Neuro-Access** utilizes a combination of the built in dependency injection (DI) of.NET MAUI and a custom implementation for dependency resolution called `Types`.
+**Intrusion Aware** utilizes a combination of the built in dependency injection (DI) of.NET MAUI and a custom implementation for dependency resolution called `Types`.
 
 Note: As a rule of thumb dependency injection is used for injecting ViewModels into their corresponding views, while dependency resolution is used for services
 
@@ -281,7 +281,7 @@ public partial class ExamplePage : BaseContentPage
 
 ### Setting up dependency resolution
 
-**Neuro-Access** uses a custom light-weight `Inversion of Control` implementation for dependency resolution called `Types`.
+**Intrusion Aware** uses a custom light-weight `Inversion of Control` implementation for dependency resolution called `Types`.
 The reason for this is that the built-in `DependencyService` is just a service locator, not a dependency injection container.
 It is rather limited, therefore swapping it out for `Types` is recommended. In order to specify how types should be resolved you can use
 two attributes:
