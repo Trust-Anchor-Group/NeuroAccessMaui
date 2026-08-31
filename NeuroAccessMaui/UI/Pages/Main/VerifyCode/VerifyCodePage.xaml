@@ -134,7 +134,6 @@
 										 Text="{Binding VerifyCodeText}"
 										 TextChanged="InnerCodeEntry_TextChanged"
 										 AutomationId="{Binding VerificationContext, StringFormat='input_{0}_verification_code'}" />
-									 AutomationId="{Binding VerificationContext, StringFormat='input_{0}_verification_code'}" />
 							</Grid>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
