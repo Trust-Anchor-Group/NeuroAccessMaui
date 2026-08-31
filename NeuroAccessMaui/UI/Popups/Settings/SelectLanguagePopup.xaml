@@ -9,7 +9,17 @@
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:vm="clr-namespace:NeuroAccessMaui.UI.Popups.Settings">
 	<base:BasePopup.Resources>
-		<!-- one DataTemplate only -->
+		<Style x:Key="LanguageOptionLabel"
+			   TargetType="Label"
+			   BaseResourceKey="RegularItemTitleLabel">
+			<Setter Property="FontFamily"
+					Value="{x:Null}" />
+			<Setter Property="FontAttributes"
+					Value="Bold" />
+			<Setter Property="FontSize"
+					Value="15" />
+		</Style>
+
 		<DataTemplate x:Key="SelectLanguageDataTemplate"
 					  x:DataType="vm:ObservableLanguage">
 
@@ -34,7 +44,7 @@
 				</Border.GestureRecognizers>
 
 				<Label HorizontalOptions="Center"
-					   Style="{DynamicResource BoldItemTitleLabel}"
+					   Style="{StaticResource LanguageOptionLabel}"
 					   Text="{Binding Language.MyNativeName}"
 					   TextColor="{DynamicResource ContentPrimaryWL}">
 					<Label.Triggers>
@@ -50,12 +60,33 @@
 		</DataTemplate>
 	</base:BasePopup.Resources>
 
-	<ScrollView x:Name="InnerScrollView"
-				x:DataType="vm:SelectLanguagePopupViewModel"
-				VerticalOptions="Center">
-		<VerticalStackLayout x:Name="LanguagesContainer"
-							 Spacing="{DynamicResource MediumSpacing}"
-							 BindableLayout.ItemsSource="{Binding Languages}"
-							 BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}" />
-	</ScrollView>
+	<Grid RowDefinitions="Auto,*"
+		  RowSpacing="{DynamicResource MediumSpacing}">
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="*,Auto"
+			  ColumnSpacing="{DynamicResource MediumSpacing}">
+			<Label Style="{DynamicResource PageTitleLabel}"
+				   Text="{l:Localize LanguageOptions}"
+				   VerticalOptions="Center" />
+			<controls:SvgButton Grid.Column="1"
+							Command="{Binding CloseCommand}"
+							SvgSource="close.svg"
+							Style="{DynamicResource IconButton}"
+							SemanticProperties.Description="{l:Localize Close}"
+							WidthRequest="44"
+							HeightRequest="44"
+							HorizontalOptions="End"
+							VerticalOptions="Center" />
+		</Grid>
+
+		<ScrollView x:Name="InnerScrollView"
+					Grid.Row="1"
+					x:DataType="vm:SelectLanguagePopupViewModel"
+					VerticalOptions="Fill">
+			<VerticalStackLayout x:Name="LanguagesContainer"
+								 Spacing="{DynamicResource MediumSpacing}"
+								 BindableLayout.ItemsSource="{Binding Languages}"
+								 BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}" />
+		</ScrollView>
+	</Grid>
 </base:BasePopup>

@@ -1069,7 +1069,7 @@
     <value>Nationalitet</value>
   </data>
   <data name="Other" xml:space="preserve">
-    <value>Andra __________</value>
+    <value>Annat</value>
   </data>
   <data name="SelectGender" xml:space="preserve">
     <value>Välj kön</value>
@@ -3202,7 +3202,7 @@
     <value>Okänt, vänligen uppdatera</value>
   </data>
   <data name="SelectForMe" xml:space="preserve">
-    <value>Välj åt mig</value>
+    <value>Fortsätt ändå</value>
   </data>
   <data name="ShareDescription" xml:space="preserve">
     <value>Nedan hittar du ytterligare alternativ för att dela QR-koden.</value>

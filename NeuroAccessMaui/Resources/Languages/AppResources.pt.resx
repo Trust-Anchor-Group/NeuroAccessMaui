@@ -3202,7 +3202,7 @@
     <value>Desconhecido, por favor atualize</value>
   </data>
   <data name="SelectForMe" xml:space="preserve">
-    <value>Selecionar por mim</value>
+    <value>Continuar mesmo assim</value>
   </data>
   <data name="ShareDescription" xml:space="preserve">
     <value>Abaixo, você pode encontrar opções adicionais para compartilhar o código QR.</value>

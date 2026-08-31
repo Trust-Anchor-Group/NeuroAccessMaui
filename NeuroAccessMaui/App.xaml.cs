@@ -471,7 +471,7 @@ namespace NeuroAccessMaui
                 return;
             }
 
-            if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
+            if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(90)))
                 throw new Exception("Initialization did not complete in time.");
         }
 

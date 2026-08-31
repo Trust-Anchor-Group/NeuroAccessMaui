@@ -3565,7 +3565,7 @@
     <value>Unknown, please refresh</value>
   </data>
   <data name="SelectForMe" xml:space="preserve">
-    <value>Select for me</value>
+    <value>Continue anyway</value>
   </data>
   <data name="ShareDescription" xml:space="preserve">
     <value>Below, you can find additional options for sharing the QR-code.</value>

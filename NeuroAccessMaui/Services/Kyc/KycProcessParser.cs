@@ -591,8 +591,12 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				foreach (ISO_5218_Gender Gender in ISO_5218.Genders)
 				{
+					string LocalizedName = ServiceRef.Localizer[Gender.LocalizedNameId];
+					string DisplayText = Gender.Code == 9
+						? LocalizedName
+						: new string(Gender.Unicode, 1) + "\t" + LocalizedName;
 					KycLocalizedText LocalizedText = new KycLocalizedText();
-					LocalizedText.Add(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, new string(Gender.Unicode, 1) + "\t" + ServiceRef.Localizer[Gender.LocalizedNameId]);
+					LocalizedText.Add(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, DisplayText);
 
 					Field.Options.Add(new KycOption(Gender.Letter, LocalizedText));
 				}

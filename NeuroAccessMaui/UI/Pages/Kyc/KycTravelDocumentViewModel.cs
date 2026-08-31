@@ -317,7 +317,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("NfcSupported", this.nfcIsoDepSessionService.IsPlatformSupported));
 			if (!await this.IsNfcFlowAvailableAsync())
 			{
-				await this.ReturnToApplicationAsync();
+				await this.ContinueToApplicationAsync(BackMethod.Pop2);
 				return;
 			}
 
@@ -427,7 +427,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!await this.IsNfcFlowAvailableAsync())
 			{
 				this.LogFlowEvent("StartNfcUnsupported");
-				await this.ReturnToApplicationAsync();
+				await this.ContinueToApplicationAsync(BackMethod.Pop2);
 				return;
 			}
 
@@ -495,6 +495,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand]
 		private async Task ReturnToApplicationAsync()
 		{
+			await this.ContinueToApplicationAsync(BackMethod.Pop);
+		}
+
+		private async Task ContinueToApplicationAsync(BackMethod BackMethod)
+		{
 			await this.StopActiveNfcSessionAsync();
 
 			KycReference? Reference = this.reference;
@@ -505,7 +510,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					ForceFormResume = !HasCompletedReadout,
 					AbandonTravelDocumentAttempt = !HasCompletedReadout
-				}, BackMethod.CurrentPage);
+				}, BackMethod);
 			}
 			else
 				await ServiceRef.NavigationService.GoBackAsync();
@@ -514,7 +519,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <inheritdoc/>
 		public override async Task GoBack()
 		{
-			await this.ReturnToApplicationAsync();
+			await this.StopActiveNfcSessionAsync();
+			await base.GoBack();
 		}
 
 		private async Task<bool> IsNfcFlowAvailableAsync()

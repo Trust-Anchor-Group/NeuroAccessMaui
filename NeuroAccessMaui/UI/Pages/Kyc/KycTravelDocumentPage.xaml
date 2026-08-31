@@ -34,7 +34,7 @@
 		<Grid Padding="16,8"
 			  ColumnDefinitions="44,*"
 			  ColumnSpacing="12">
-			<controls:SvgButton Command="{Binding ReturnToApplicationCommand}"
+			<controls:SvgButton Command="{Binding GoBackCommand}"
 								SvgSource="close.svg"
 								Style="{DynamicResource IconButton}"
 								WidthRequest="44"
