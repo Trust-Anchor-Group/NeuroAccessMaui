@@ -9,7 +9,8 @@
                                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                                x:DataType="viewmodels:FinalizeOnboardingStepViewModel">
     <Grid RowSpacing="{DynamicResource LargeSpacing}"
-          RowDefinitions="*, auto">
+          RowDefinitions="*, auto"
+          AutomationId="screen_success">
         <Grid RowSpacing="{DynamicResource LargeSpacing}"
               RowDefinitions="*, auto">
             <VerticalStackLayout Grid.Row="0"
@@ -42,6 +43,7 @@
                              VerticalOptions="End"
                              Command="{Binding ContinueCommand}"
                              Style="{DynamicResource FilledTextButton}"
-                             LabelData="{l:Localize Continue}" />
+                             LabelData="{l:Localize Continue}"
+                             AutomationId="button_continue_success" />
     </Grid>
 </onboarding:BaseOnboardingView>

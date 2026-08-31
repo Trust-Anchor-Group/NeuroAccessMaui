@@ -42,6 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsSummaryStep))]
 		[NotifyPropertyChangedFor(nameof(IsOnWelcomeStep))]
+		[NotifyPropertyChangedFor(nameof(BackButtonAutomationId))]
 		private OnboardingStep currentStep;
 
 		[ObservableProperty]
@@ -79,6 +80,19 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		public bool IsSummaryStep => this.CurrentStep == OnboardingStep.Finalize;
 
 		public bool IsOnWelcomeStep => this.CurrentStep == OnboardingStep.Welcome;
+
+		public string BackButtonAutomationId
+		{
+			get
+			{
+				return this.CurrentStep switch
+				{
+					OnboardingStep.ValidateEmail => "button_back_phone_verification",
+					OnboardingStep.NameEntry => "button_back_email_code_verification",
+					_ => "button_back_onboarding"
+				};
+			}
+		}
 
 		public OnboardingScenario Scenario => this.scenario;
 

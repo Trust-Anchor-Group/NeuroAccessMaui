@@ -71,7 +71,8 @@
 		</ResourceDictionary>
 	</VisualElement.Resources>
 
-	<Grid x:Name="TheMainGrid" RowDefinitions="auto,*">
+	<Grid x:Name="TheMainGrid" RowDefinitions="auto,*"
+		  AutomationId="{Binding VerificationContext, StringFormat='screen_{0}_code_verification'}">
 		<controls:Background Grid.RowSpan="2" />
 
 		<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*">
@@ -80,7 +81,8 @@
 						   Top="{StaticResource LargeSpacing}"
 						   Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
-			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}"
+								   AutomationId="{Binding VerificationContext, StringFormat='button_back_{0}_verification'}" />
 			<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
 
 		</Grid>
@@ -130,17 +132,21 @@
 										 Keyboard="Numeric"
 										 Opacity="0"
 										 Text="{Binding VerifyCodeText}"
-										 TextChanged="InnerCodeEntry_TextChanged" />
+										 TextChanged="InnerCodeEntry_TextChanged"
+										 AutomationId="{Binding VerificationContext, StringFormat='input_{0}_verification_code'}" />
+									 AutomationId="{Binding VerificationContext, StringFormat='input_{0}_verification_code'}" />
 							</Grid>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 
 					<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
 						<controls:TextButton HorizontalOptions="Fill" Command="{Binding VerifyCommand}"
-													Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize Verify}" />
+												Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize Verify}"
+												AutomationId="{Binding VerificationContext, StringFormat='button_verify_{0}_code'}" />
 
-						<controls:TextButton HorizontalOptions="Fill" Command="{Binding CodeVerification.ResendCodeCommand}"
-													Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}" />
+					<controls:TextButton HorizontalOptions="Fill" Command="{Binding CodeVerification.ResendCodeCommand}"
+												Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}"
+												AutomationId="{Binding VerificationContext, StringFormat='button_resend_{0}_code'}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
