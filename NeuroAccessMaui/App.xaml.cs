@@ -180,17 +180,17 @@ namespace NeuroAccessMaui
         public static readonly LanguageInfo[] SupportedLanguages =
         [
             new("en", "English"),
-            new("sv", "svenska"),
-            new("es", "español"),
-            new("fr", "français"),
+            new("sv", "Svenska"),
+            new("es", "Español"),
+            new("fr", "Français"),
             new("de", "Deutsch"),
-            new("da", "dansk"),
-            new("no", "norsk"),
-            new("fi", "suomi"),
-            new("sr", "српски"),
-            new("pt", "português"),
-            new("ro", "română"),
-            new("ru", "русский")
+            new("da", "Dansk"),
+            new("no", "Norsk"),
+            new("fi", "Suomi"),
+            new("sr", "Српски"),
+            new("pt", "Português"),
+            new("ro", "Română"),
+            new("ru", "Русский")
         ];
 
         /// <summary>
