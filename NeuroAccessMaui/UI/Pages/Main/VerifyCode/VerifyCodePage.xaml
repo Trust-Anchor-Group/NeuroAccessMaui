@@ -79,7 +79,7 @@
 				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
-			<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
+			<Image HorizontalOptions="Center" Source="logo.png" WidthRequest="50" HeightRequest="50" />
 
 		</Grid>
 

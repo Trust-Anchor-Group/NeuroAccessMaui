@@ -53,7 +53,7 @@
 				 IconImageSource="{AppThemeBinding Light=thing_light, Dark=thing_dark}"/>
 
 	<MenuItem Text="{l:Localize Applications}" Command="{Binding ShowApplicationsCommand}" StyleId="MenuItemLabel"
-				 IconImageSource="{AppThemeBinding Light=neuro_access_light, Dark=neuro_access_dark}"/>
+				 IconImageSource="logo.png"/>
 
 	<MenuItem Text="{l:Localize Settings}" Command="{Binding ShowSettingsCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=settings_light, Dark=settings_dark}"/>
@@ -103,7 +103,7 @@
 	<Shell.FlyoutHeader>
 		<Frame Style="{StaticResource ShellFrame}" Padding="1" CornerRadius="0">
 			<Grid HeightRequest="200">
-				<Image Aspect="AspectFill" WidthRequest="144" HeightRequest="144" Source="{AppThemeBinding Dark=flyout_header_dark,Light=flyout_header_light}" />
+				<Image Aspect="AspectFit" WidthRequest="144" HeightRequest="144" Source="logo.png" />
 			</Grid>
 		</Frame>
 	</Shell.FlyoutHeader>
