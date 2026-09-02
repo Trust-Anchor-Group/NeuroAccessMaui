@@ -35,6 +35,7 @@
 		</Grid>
 	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
+		  AutomationId="screen_home"
 		  RowDefinitions="auto, *, auto, auto"
 		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 

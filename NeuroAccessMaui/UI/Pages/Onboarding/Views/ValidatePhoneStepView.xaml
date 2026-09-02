@@ -30,7 +30,8 @@
                           ColumnSpacing="{DynamicResource MediumSpacing}">
                         <HorizontalStackLayout Grid.Column="0"
                                                VerticalOptions="Fill"
-                                               Spacing="{DynamicResource SmallSpacing}">
+                                               Spacing="{DynamicResource SmallSpacing}"
+                                               AutomationId="button_select_phone_country">
                             <HorizontalStackLayout.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />
                             </HorizontalStackLayout.GestureRecognizers>
