@@ -1,10 +1,37 @@
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
 }
 
+val registrationUsernameTimestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+val testEnvironmentArguments = mapOf(
+    "testPhoneNumber" to "NEUROACCESS_TEST_PHONE_NUMBER",
+    "testPin" to "NEUROACCESS_TEST_PIN",
+    "testOtpEndpoint" to "NEUROACCESS_TEST_OTP_ENDPOINT"
+)
+val dotenvProperties = Properties().apply {
+    val dotenvFile = rootProject.file(".env")
+    if (dotenvFile.isFile) {
+        dotenvFile.inputStream().use { inputStream ->
+            load(inputStream)
+        }
+    }
+}
+
+
+
 android {
+
     namespace = "com.tag.neuroaccess.neuroaccessespressoautomationtests"
 	compileSdk {
 		version = release(37)
@@ -18,11 +45,26 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["registrationUsernameTimestamp"] = registrationUsernameTimestamp
+        testEnvironmentArguments.forEach { (argumentName, environmentVariableName) ->
+            val argumentValue = providers.environmentVariable(environmentVariableName)
+                .orNull
+                ?: dotenvProperties.getProperty(environmentVariableName)
+
+            argumentValue
+                ?.trim()
+                ?.removeSurrounding("\"")
+                ?.removeSurrounding("'")
+                ?.takeIf { value -> value.isNotBlank() }
+                ?.let { value -> testInstrumentationRunnerArguments[argumentName] = value }
+        }
     }
 
     signingConfigs {
         getByName("debug") {
-            storeFile = File("C:/Users/AlbinKoppared/AppData/Local/Xamarin/Mono for Android/debug.keystore")
+            val localAppDataDirectory = System.getenv("LOCALAPPDATA")
+                ?: error("LOCALAPPDATA must be set to locate the MAUI Android debug keystore.")
+            storeFile = File(localAppDataDirectory, "Xamarin/Mono for Android/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
@@ -43,6 +85,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
 }
 
 dependencies {
@@ -95,15 +138,61 @@ tasks.configureEach {
     }
 }
 
-tasks.register<Exec>("installMauiDebugApk") {
-    val adbExecutable = File(androidSdkDirectory, "platform-tools/adb.exe")
+abstract class InstallMauiDebugApk @Inject constructor(
+    private val execOperations: ExecOperations
+) : DefaultTask() {
+    @get:InputFile
+    abstract val apkFile: RegularFileProperty
 
-    inputs.file(mauiDebugApk)
-    commandLine(adbExecutable.path, "install", "-r", mauiDebugApk.path)
+    @get:InputFile
+    abstract val adbExecutableFile: RegularFileProperty
+
+    @TaskAction
+    fun install() {
+        val devicesOutput = ByteArrayOutputStream()
+        execOperations.exec {
+            commandLine(adbExecutableFile.get().asFile.path, "devices")
+            standardOutput = devicesOutput
+        }.assertNormalExitValue()
+
+        val deviceSerials = devicesOutput.toString()
+            .lineSequence()
+            .drop(1)
+            .map(String::trim)
+            .map { line -> line.split(Regex("\\s+")) }
+            .filter { columns -> columns.size >= 2 && columns[1] == "device" }
+            .map { columns -> columns[0] }
+            .toList()
+
+        check(deviceSerials.isNotEmpty()) {
+            "No authorized Android devices or emulators are connected."
+        }
+
+        deviceSerials.forEach { deviceSerial ->
+            execOperations.exec {
+                commandLine(
+                    adbExecutableFile.get().asFile.path,
+                    "-s",
+                    deviceSerial,
+                    "install",
+                    "-r",
+                    apkFile.get().asFile.path
+                )
+            }.assertNormalExitValue()
+        }
+    }
 }
 
+tasks.register<InstallMauiDebugApk>("installMauiDebugApk") {
+    apkFile.set(mauiDebugApk)
+    adbExecutableFile.set(File(androidSdkDirectory, "platform-tools/adb.exe"))
+}
 tasks.configureEach {
     if (name == "connectedDebugAndroidTest") {
         dependsOn("installMauiDebugApk")
     }
 }
+
+
+
+
