@@ -1,0 +1,227 @@
+# NeuroAccess Android UI Automation Tests
+
+This project contains automated UI and regression tests for the NeuroAccess Android application. The tests run the real MAUI application on an Android emulator or physical Android device using Android Instrumentation, Kotlin, and Espresso.
+
+## Purpose
+
+The tests verify user flows through the actual UI. They do not use coordinates, `Thread.sleep()`, or fake views. When a MAUI `AutomationId` is available, it should be used as the Espresso selector.
+
+The current scope includes onboarding, ID Provider, phone and code verification, username, PIN, biometrics, Success, and Home.
+
+## How selectors work
+
+MAUI exposes `AutomationId` as the Android `contentDescription`. Espresso therefore uses `withContentDescription`:
+
+```kotlin
+onView(withContentDescription("screen_home"))
+    .check(matches(isDisplayed()))
+```
+
+Do not use visible text or coordinates when an AutomationId is available. The complete list is available in [UI_IDS.md](UI_IDS.md).
+
+## Project structure
+
+```text
+neuroaccessespressoautomationtests/
+├── Readme
+├── ESPRESSO.md
+├── UI_IDS.md
+├── common/       # BaseTest and TestData
+├── framework/    # App startup and Espresso wait helpers
+├── helper/       # Test OTP helper
+├── onboarding/   # Test classes
+└── screens/      # Reusable screen objects
+```
+
+| Component | Responsibility |
+| --- | --- |
+| `BaseTest` | Starts NeuroAccess through its real `MainActivity`. |
+| `NeuroAccessApp` | Creates an explicit launcher intent for the application under test. |
+| `ScreenWaiter` | Waits for an AutomationId to be displayed instead of using arbitrary delays. |
+| `screens/` | Groups selectors and UI interactions by screen. |
+| `TestData` | Reads the test phone number, PIN, and timestamp from the test configuration. |
+| `TestOtpClient` | Retrieves the test OTP from the endpoint specified in the test environment. |
+
+## Prerequisites
+
+- Android Studio and the Android SDK.
+- The .NET SDK with the MAUI Android workload.
+- A running emulator or physical Android device with USB debugging authorized.
+- The MAUI application built for the device being used.
+- The test project's `.env` file configured locally and ignored by Git.
+
+### Test environment
+
+Create the file `tests/mobile/andriod/ui/.env` locally:
+
+```dotenv
+NEUROACCESS_TEST_PHONE_NUMBER="<digits-only-test-number>"
+NEUROACCESS_TEST_PIN="<six-digit-test-pin>"
+NEUROACCESS_TEST_OTP_ENDPOINT="<internal-test-otp-endpoint>"
+```
+
+Use a raw URL for `NEUROACCESS_TEST_OTP_ENDPOINT`, not Markdown formatting. The values can instead be supplied as system environment variables; system environment variables take precedence over `.env`.
+
+## Select an Android device
+
+List connected emulators and phones:
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" devices -l
+```
+
+Example serial numbers:
+
+```text
+emulator-5554       # Emulator
+<PHONE_SERIAL>      # Physical Android device
+```
+
+In all commands below, replace `<DEVICE_SERIAL>` with the device you want to use, such as `emulator-5554` or the phone's serial number.
+
+Prefer running with only one connected device at a time. `connectedDebugAndroidTest` runs against every connected device, and an APK built for one architecture cannot be installed on a device with a different CPU architecture.
+
+## Build and launch the MAUI application
+
+Open PowerShell in the MAUI project directory:
+
+```powershell
+cd C:\dev\Neuro-Access\NeuroAccessMaui\NeuroAccessMaui
+```
+
+Build and launch the application on the selected device:
+
+```powershell
+dotnet build .\NeuroAccessMaui.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <DEVICE_SERIAL>"
+```
+
+Example for an emulator:
+
+```powershell
+dotnet build .\NeuroAccessMaui.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s emulator-5554"
+```
+
+Example for a physical phone:
+
+```powershell
+dotnet build .\NeuroAccessMaui.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <PHONE_SERIAL>"
+```
+
+To build only the APK without launching the application:
+
+```powershell
+dotnet build .\NeuroAccessMaui.csproj -f net10.0-android -c Debug
+```
+
+The Debug configuration embeds .NET assemblies in the APK and disables Fast Deployment. This is required because Gradle installs the APK directly and cannot deploy Visual Studio's Fast Deployment files.
+
+## Run the Espresso tests
+
+Go to the Android test project:
+
+```powershell
+cd C:\dev\Neuro-Access\NeuroAccessMaui\tests\mobile\andriod\ui
+```
+
+Compile only the instrumentation tests:
+
+```powershell
+.\gradlew.bat :app:compileDebugAndroidTestKotlin
+```
+
+Run all connected instrumentation tests:
+
+```powershell
+.\gradlew.bat :app:connectedDebugAndroidTest
+```
+
+Run only `RegistrationFlowTest`:
+
+```powershell
+.\gradlew.bat :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+```
+
+Test results are written to:
+
+```text
+app/build/reports/androidTests/connected/debug/index.html
+```
+
+## Run from Android Studio
+
+1. Open Android Studio.
+2. Select **File → Open** and open:
+   `C:\dev\Neuro-Access\NeuroAccessMaui\tests\mobile\andriod\ui`
+3. Wait for the Gradle sync to complete, then connect or start an Android device.
+4. Build the MAUI application for the same device as described in **Build and launch the MAUI application**.
+5. Open `app/src/androidTest/java/com/tag/neuroaccess/neuroaccessespressoautomationtests/onboarding/RegistrationFlowTest.kt`.
+6. Click the green run icon next to the test class or test method, or right-click and select **Run RegistrationFlowTest**.
+
+Run with one device at a time. Android Studio's test runner uses the same Android Instrumentation setup as the Gradle commands above.
+
+## Start from a clean state
+
+`RegistrationFlowTest` expects the application to start in onboarding. If the test application is already registered, clear the application's local data on the current test device:
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" -s <DEVICE_SERIAL> shell pm clear com.tag.NeuroAccess
+```
+
+This command removes local NeuroAccess application data from that device. Use it only with a test profile or test device.
+
+## RegistrationFlowTest
+
+`RegistrationFlowTest` tests the following end-to-end flow:
+
+```text
+ID Provider
+  → Phone verification
+  → Phone code verification
+  → Username
+  → PIN creation
+  → Biometrics (only when supported by the device; the test selects Later)
+  → Success
+  → The application's notification popup is dismissed if displayed
+  → Home
+```
+
+The username is generated with a timestamp, and the test OTP is retrieved from the locally configured test endpoint. The phone number, PIN, and endpoint should therefore not be hard-coded in the test classes.
+
+## Device-dependent UI
+
+- Biometrics is displayed only when the device supports biometric authentication. The test waits for either `screen_biometrics` or `screen_success`. When biometrics is displayed, the test selects `button_biometrics_later`.
+- The application's notification popup has the ID `popup_notification_permission` and is dismissed with `button_notification_permission_skip`.
+- Android's system notification permission dialog is outside the MAUI process and does not have a MAUI `AutomationId`.
+
+## ID convention
+
+| Prefix | Usage |
+| --- | --- |
+| `screen_` | Screen |
+| `popup_` | Popup |
+| `input_` | Input field |
+| `button_` | Button |
+| `option_` | List option |
+
+Example:
+
+```text
+screen_phone_verification
+input_phone_number
+button_send_phone_code
+```
+
+## Contributing new tests
+
+1. Check [UI_IDS.md](UI_IDS.md) first.
+2. Use an existing AutomationId when available.
+3. Add a stable, descriptive AutomationId when one is missing.
+4. Document the new identifier in `UI_IDS.md`.
+5. Add selectors and actions to the appropriate screen object under `screens/`.
+6. Use `ScreenWaiter` for UI synchronization instead of `Thread.sleep()`.
+7. Run the relevant tests before committing the change.
+
+## Related documentation
+
+- [ESPRESSO.md](ESPRESSO.md) – Android Studio and Espresso information.
+- [UI_IDS.md](UI_IDS.md) – Complete list of UI IDs.
