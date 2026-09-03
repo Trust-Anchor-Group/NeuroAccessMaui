@@ -2371,7 +2371,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						CrlUrls[CrlUrl] = true;
 
 					P = GetAuthorityKeyIdentifier(IssuerCertificate);
-					CountryCode = P.Key;
+					if (!string.IsNullOrEmpty(P.Key))
+						CountryCode = P.Key;
+
 					IssuerKeyReference = P.Value;
 				}
 
