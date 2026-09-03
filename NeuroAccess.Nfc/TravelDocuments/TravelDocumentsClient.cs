@@ -62,6 +62,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private bool enhancedSecurity = false;
 		private bool permitPlatformDependentValidation = true;
 		private bool disposed = false;
+		private bool acceptCrlNotAccessible = true;
 
 		/// <summary>
 		/// Disposes of the client and clears any keys.
@@ -107,6 +108,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			get => this.permitPlatformDependentValidation;
 			set => this.permitPlatformDependentValidation = value;
+		}
+
+		/// <summary>
+		/// If a CRL file is not accessible is accepted as a valid state for ICAO certificates.
+		/// </summary>
+		public bool AcceptCrlNotAccessible
+		{
+			get => this.acceptCrlNotAccessible;
+			set => this.acceptCrlNotAccessible = value;
 		}
 
 		/// <summary>
@@ -2325,6 +2335,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				Dictionary<string, bool> Processed = [];
 				string? CountryCode = P.Key;
 				byte[]? IssuerKeyReference = P.Value;
+				bool IcaoCertAdded = false;
 
 				if (string.IsNullOrEmpty(CountryCode) || IssuerKeyReference is null)
 				{
@@ -2352,6 +2363,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					}
 
 					Certificates.Insert(0, IssuerCertificate);
+					IcaoCertAdded = true;
 
 					// Make sure to use Certificate Revocation Lists (CRLs) from ICAO approved certificates.
 
@@ -2421,8 +2433,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (!CrlCheckPassed)
 				{
-					this.Error("Unable to verify CRL.");
-					return ReadTravelDocumentResult.RevocationStatusUnknown;
+					if (this.acceptCrlNotAccessible && IcaoCertAdded)
+						this.Warning("Unable to verify CRL. Validation deferred to ICAO certificate chain.");
+					else
+					{
+						this.Error("Unable to verify CRL.");
+						return ReadTravelDocumentResult.RevocationStatusUnknown;
+					}
 				}
 
 				this.Information("Verifying certificate chain.");
