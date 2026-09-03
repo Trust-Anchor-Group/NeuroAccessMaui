@@ -120,9 +120,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 				{
 					return false;
 				}
+				
+				// TODO: Parse landmark-points
 
-				if (NrLandmarkPoints > 0)
-					return false;               // TODO: Parse landmark points
+				// each Landmark Point block is 8 bytes.
+				// Landmark coordinates are not currently used, so we skip them for now.
+				int LandmarkDataLength = NrLandmarkPoints * 8;
+				if (LandmarkDataLength > RepresentationLength - (Data.Position - RepresentationStart) ||
+					!Data.TryRead(LandmarkDataLength, out byte[] _))
+				{
+					return false;
+				}
 
 
 				if (!Data.TryRead(out byte FaceImageTypeRaw) || FaceImageTypeRaw > 3 ||
