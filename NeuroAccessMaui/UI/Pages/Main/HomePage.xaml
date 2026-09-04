@@ -116,6 +116,7 @@
 
 			<Grid Grid.Row="1" RowDefinitions="auto" VerticalOptions="Center">
 				<controls:TemplatedButton Command="{Binding GoToApplyIdentityCommand}"
+										  AutomationId="button_apply_for_personal_id"
 										  IsVisible="{Binding ShowInfoBubble}">
 					<!-- Missing Neuro ID Box-->
 					<Grid RowDefinitions="auto, auto"

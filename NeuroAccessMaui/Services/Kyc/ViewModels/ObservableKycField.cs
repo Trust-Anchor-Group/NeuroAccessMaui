@@ -137,6 +137,34 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         public ObservableCollection<KycMapping> Mappings { get; } = new();
 
         /// <summary>
+        /// Gets the stable semantic key used to identify this field in UI automation.
+        /// </summary>
+        public string AutomationKey
+        {
+            get
+            {
+                if (this.Mappings.Any(Mapping =>
+                    string.Equals(Mapping.Key, Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(Mapping.Key, Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(Mapping.Key, Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return "bdate";
+                }
+
+                string? Key = this.Mappings
+                    .Select(Mapping => Mapping.Key)
+                    .FirstOrDefault(MappingKey => !string.IsNullOrWhiteSpace(MappingKey));
+
+                return (Key ?? this.Id).Trim().ToLowerInvariant();
+            }
+        }
+
+        /// <summary>
+        /// Gets the stable automation identifier for this field.
+        /// </summary>
+        public string AutomationId => $"field_kyc_{this.AutomationKey}";
+
+        /// <summary>
         /// For Checkbox type: multi-selection of options.
         /// </summary>
         public ObservableCollection<KycOption> SelectedOptions { get; set; } = new();

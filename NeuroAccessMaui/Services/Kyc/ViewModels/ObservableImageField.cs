@@ -62,6 +62,26 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 		[ObservableProperty]
 		private bool allowUpload = true;
 
+		/// <summary>
+		/// Gets a value indicating whether image upload should be available in the current build.
+		/// </summary>
+		public bool CanUpload
+		{
+			get
+			{
+#if DEBUG
+				return true;
+#else
+				return this.AllowUpload;
+#endif
+			}
+		}
+
+		partial void OnAllowUploadChanged(bool value)
+		{
+			this.OnPropertyChanged(nameof(this.CanUpload));
+		}
+
 		[RelayCommand]
         private async Task PickPhoto()
         {

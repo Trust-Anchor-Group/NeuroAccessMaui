@@ -9,7 +9,8 @@
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
     x:DataType="viewmodel:ImageCroppingViewModel">
-    <Grid ColumnDefinitions="*" RowDefinitions="Auto,*,Auto">
+    <Grid AutomationId="screen_image_cropping"
+          ColumnDefinitions="*" RowDefinitions="Auto,*,Auto">
         <!--  Top Bar  -->
         <Grid Grid.Row="0" Padding="10">
             <Grid.ColumnDefinitions>
@@ -48,6 +49,7 @@
                     Style="{DynamicResource FilledTextButton}" />
                 <controls:TextButton
                     Grid.Column="1"
+                    AutomationId="button_accept_image_crop"
                     Command="{Binding CropCommand}"
                     LabelData="{l:Localize Continue}"
                     Style="{DynamicResource FilledTextButton}" />
