@@ -1,27 +1,51 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.framework
 
 import android.app.Activity
+import android.graphics.Rect
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import java.util.concurrent.TimeUnit
 
 object ScreenWaiter {
+
+    private const val IDLING_RESOURCE_TIMEOUT_SECONDS = 120L
+
+    init {
+        IdlingPolicies.setIdlingResourceTimeout(
+            IDLING_RESOURCE_TIMEOUT_SECONDS,
+            TimeUnit.SECONDS
+        )
+        IdlingPolicies.setMasterPolicyTimeout(
+            IDLING_RESOURCE_TIMEOUT_SECONDS,
+            TimeUnit.SECONDS
+        )
+    }
 
     fun waitFor(screenAutomationId: String) {
         this.withContentDescriptionWaiter(screenAutomationId, true) {
             onView(withContentDescription(screenAutomationId))
                 .check(matches(isDisplayed()))
+        }
+    }
+
+    fun waitUntilEnabled(automationId: String) {
+        this.withContentDescriptionWaiter(automationId, true, true) {
+            onView(withContentDescription(automationId))
+                .check(matches(isEnabled()))
         }
     }
 
@@ -62,6 +86,22 @@ object ScreenWaiter {
         return isDisplayed
     }
 
+    fun isDisplayedOnScreen(automationId: String): Boolean {
+        var isDisplayedOnScreen = false
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val resumedActivity = ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(Stage.RESUMED)
+                .firstOrNull()
+
+            isDisplayedOnScreen = resumedActivity?.window?.decorView
+                ?.let { rootView -> this.hasDisplayedContentDescription(rootView, automationId) }
+                ?: false
+        }
+
+        return isDisplayedOnScreen
+    }
+
     private fun hasVisibleContentDescription(view: View, automationId: String): Boolean {
         if (view.visibility == View.VISIBLE && view.contentDescription?.toString() == automationId) {
             return true
@@ -78,6 +118,37 @@ object ScreenWaiter {
         return false
     }
 
+    private fun hasDisplayedContentDescription(view: View, automationId: String): Boolean {
+        if (view.contentDescription?.toString() == automationId && this.isMostlyVisible(view)) {
+            return true
+        }
+
+        if (view is ViewGroup) {
+            for (index in 0 until view.childCount) {
+                if (this.hasDisplayedContentDescription(view.getChildAt(index), automationId)) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun isMostlyVisible(view: View): Boolean {
+        if (!view.isShown || view.width <= 0 || view.height <= 0) {
+            return false
+        }
+
+        val visibleBounds = Rect()
+        if (!view.getGlobalVisibleRect(visibleBounds)) {
+            return false
+        }
+
+        val visibleArea = visibleBounds.width().toLong() * visibleBounds.height().toLong()
+        val totalArea = view.width.toLong() * view.height.toLong()
+        return visibleArea * 100 >= totalArea * 90
+    }
+
     fun waitUntilHidden(automationId: String) {
         this.withContentDescriptionWaiter(automationId, false) {
             onIdle()
@@ -92,9 +163,14 @@ object ScreenWaiter {
     private fun withContentDescriptionWaiter(
         automationId: String,
         shouldBeDisplayed: Boolean,
+        shouldBeEnabled: Boolean = false,
         interaction: () -> Unit
     ) {
-        val idlingResource = ContentDescriptionIdlingResource(automationId, shouldBeDisplayed)
+        val idlingResource = ContentDescriptionIdlingResource(
+            automationId,
+            shouldBeDisplayed,
+            shouldBeEnabled
+        )
         IdlingRegistry.getInstance().register(idlingResource)
 
         try {
@@ -108,7 +184,8 @@ object ScreenWaiter {
 
 private class ContentDescriptionIdlingResource(
     private val expectedContentDescription: String,
-    private val shouldBeDisplayed: Boolean
+    private val shouldBeDisplayed: Boolean,
+    private val shouldBeEnabled: Boolean
 ) : IdlingResource {
 
     @Volatile
@@ -131,7 +208,8 @@ private class ContentDescriptionIdlingResource(
 
     override fun getName(): String {
         val expectedState = if (this.shouldBeDisplayed) "Visible" else "Hidden"
-        return "$expectedState content description: $expectedContentDescription"
+        val enabledState = if (this.shouldBeEnabled) " and enabled" else ""
+        return "$expectedState$enabledState content description: $expectedContentDescription"
     }
 
     override fun isIdleNow(): Boolean {
@@ -171,8 +249,12 @@ private class ContentDescriptionIdlingResource(
             currentRootView?.viewTreeObserver?.addOnGlobalLayoutListener(this.layoutListener)
         }
 
-        val isDisplayed = currentRootView?.let(this::hasVisibleContentDescription) == true
-        this.isIdle = isDisplayed == this.shouldBeDisplayed
+        val matchingView = currentRootView?.let(this::findVisibleContentDescription)
+        this.isIdle = if (this.shouldBeDisplayed) {
+            matchingView != null && (!this.shouldBeEnabled || matchingView.isEnabled)
+        } else {
+            matchingView == null
+        }
         if (this.isIdle) {
             this.callback?.onTransitionToIdle()
         }
@@ -193,20 +275,21 @@ private class ContentDescriptionIdlingResource(
         }
     }
 
-    private fun hasVisibleContentDescription(view: View): Boolean {
-        if (view.visibility == View.VISIBLE && view.contentDescription?.toString() == this.expectedContentDescription) {
-            return true
+    private fun findVisibleContentDescription(view: View): View? {
+        if (view.isShown && view.contentDescription?.toString() == this.expectedContentDescription) {
+            return view
         }
 
         if (view is ViewGroup) {
             for (index in 0 until view.childCount) {
-                if (this.hasVisibleContentDescription(view.getChildAt(index))) {
-                    return true
+                val matchingView = this.findVisibleContentDescription(view.getChildAt(index))
+                if (matchingView != null) {
+                    return matchingView
                 }
             }
         }
 
-        return false
+        return null
     }
 }
 
@@ -297,7 +380,7 @@ private class AnyContentDescriptionIdlingResource(
     }
 
     private fun hasVisibleContentDescription(view: View, automationId: String): Boolean {
-        if (view.visibility == View.VISIBLE && view.contentDescription?.toString() == automationId) {
+        if (view.isShown && view.contentDescription?.toString() == automationId) {
             return true
         }
 

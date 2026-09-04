@@ -17,7 +17,9 @@ val registrationUsernameTimestamp = LocalDateTime.now().format(DateTimeFormatter
 val testEnvironmentArguments = mapOf(
     "testPhoneNumber" to "NEUROACCESS_TEST_PHONE_NUMBER",
     "testPin" to "NEUROACCESS_TEST_PIN",
-    "testOtpEndpoint" to "NEUROACCESS_TEST_OTP_ENDPOINT"
+    "testOtpEndpoint" to "NEUROACCESS_TEST_OTP_ENDPOINT",
+    "personalNumberAgeGroup" to "NEUROACCESS_TEST_PERSONAL_NUMBER_AGE_GROUP",
+    "testSocialSecurityNumber" to "NEUROACCESS_TEST_SSN"
 )
 val dotenvProperties = Properties().apply {
     val dotenvFile = rootProject.file(".env")
@@ -94,6 +96,7 @@ dependencies {
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.espresso.intents)
     androidTestImplementation(libs.androidx.junit)
 }
 val mauiDebugApk = rootProject.file(
@@ -186,11 +189,6 @@ abstract class InstallMauiDebugApk @Inject constructor(
 tasks.register<InstallMauiDebugApk>("installMauiDebugApk") {
     apkFile.set(mauiDebugApk)
     adbExecutableFile.set(File(androidSdkDirectory, "platform-tools/adb.exe"))
-}
-tasks.configureEach {
-    if (name == "connectedDebugAndroidTest") {
-        dependsOn("installMauiDebugApk")
-    }
 }
 
 
