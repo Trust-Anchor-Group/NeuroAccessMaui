@@ -7,9 +7,9 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationIdOrAncestor
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 import org.hamcrest.Matchers.allOf
 
@@ -21,11 +21,11 @@ object PinCreationScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(NEW_PIN))
+        onView(withAutomationId(NEW_PIN))
             .check(matches(isDisplayed()))
-        onView(withContentDescription(CONFIRM_PIN))
+        onView(withAutomationId(CONFIRM_PIN))
             .check(matches(isDisplayed()))
-        onView(withContentDescription(CREATE_PIN))
+        onView(withAutomationId(CREATE_PIN))
             .check(matches(isDisplayed()))
     }
 
@@ -35,7 +35,7 @@ object PinCreationScreen {
     }
 
     fun createPinAndWaitForNextStep(): String {
-        onView(withContentDescription(CREATE_PIN))
+        onView(withAutomationId(CREATE_PIN))
             .perform(click())
 
         return ScreenWaiter.waitForAny(BiometricsScreen.SCREEN, SuccessScreen.SCREEN)
@@ -46,7 +46,7 @@ object PinCreationScreen {
         onView(
             allOf(
                 isAssignableFrom(EditText::class.java),
-                isDescendantOfA(withContentDescription(automationId))
+                withAutomationIdOrAncestor(automationId)
             )
         ).perform(click(), replaceText(text), closeSoftKeyboard())
     }

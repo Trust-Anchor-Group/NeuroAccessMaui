@@ -10,7 +10,7 @@ The current scope includes onboarding, ID Provider, phone and code verification,
 
 ## How selectors work
 
-MAUI can expose `AutomationId` as either Android `contentDescription` or `resource-id`. Use the shared matcher instead of selecting either native representation directly:
+The shared matcher reads MAUI's accessibility-node resource ID or a compiled Android resource ID. It does not use `contentDescription`; localized accessibility text remains independent of test IDs:
 
 ```kotlin
 onView(AutomationIdMatcher.withAutomationId("screen_home"))

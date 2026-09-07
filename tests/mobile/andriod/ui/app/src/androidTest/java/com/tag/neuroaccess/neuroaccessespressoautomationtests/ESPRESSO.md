@@ -125,21 +125,21 @@ Espresso is used to find and interact with UI elements.
 Example:
 
 ```kotlin
-onView(withTagValue(`is`("input_username")))
+onView(AutomationIdMatcher.withAutomationId("input_username"))
     .perform(typeText("testuser"))
 ```
 
 Click a button:
 
 ```kotlin
-onView(withTagValue(`is`("button_continue_username")))
+onView(AutomationIdMatcher.withAutomationId("button_continue_username"))
     .perform(click())
 ```
 
 Verify that a screen is displayed:
 
 ```kotlin
-onView(withTagValue(`is`("screen_username")))
+onView(AutomationIdMatcher.withAutomationId("screen_username"))
     .check(matches(isDisplayed()))
 ```
 

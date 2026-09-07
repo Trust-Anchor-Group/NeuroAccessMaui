@@ -7,9 +7,9 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationIdOrAncestor
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 import org.hamcrest.Matchers.allOf
 
@@ -20,9 +20,9 @@ object UsernameScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(USERNAME))
+        onView(withAutomationId(USERNAME))
             .check(matches(isDisplayed()))
-        onView(withContentDescription(CONTINUE))
+        onView(withAutomationId(CONTINUE))
             .check(matches(isDisplayed()))
     }
 
@@ -30,14 +30,14 @@ object UsernameScreen {
         onView(
             allOf(
                 isAssignableFrom(EditText::class.java),
-                isDescendantOfA(withContentDescription(USERNAME))
+                withAutomationIdOrAncestor(USERNAME)
             )
         ).perform(click(), replaceText(username), closeSoftKeyboard())
     }
 
     fun continueToPinCreation() {
         ScreenWaiter.performActionAndWaitFor(PinCreationScreen.SCREEN) {
-            onView(withContentDescription(CONTINUE))
+            onView(withAutomationId(CONTINUE))
                 .perform(click())
         }
     }

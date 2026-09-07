@@ -5,7 +5,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 
 object SettingsScreen {
@@ -14,12 +14,12 @@ object SettingsScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(SCREEN)).check(matches(isDisplayed()))
+        onView(withAutomationId(SCREEN)).check(matches(isDisplayed()))
     }
 
     fun openChangePin() {
         ScreenWaiter.performActionAndWaitFor(PinAuthenticationPopup.POPUP) {
-            onView(withContentDescription(CHANGE_PIN))
+            onView(withAutomationId(CHANGE_PIN))
                 .perform(scrollTo(), click())
         }
     }

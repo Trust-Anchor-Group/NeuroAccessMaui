@@ -1,6 +1,6 @@
 # NeuroAccess Espresso UI IDs
 
-MAUI can expose an `AutomationId` as either Android `contentDescription` or `resource-id`, depending on the control and handler. Tests must use the shared `AutomationIdMatcher` and `ScreenWaiter` helpers so both representations are supported.
+MAUI 10.0.10 exposes `AutomationId` through the accessibility node's `viewIdResourceName`. Tests use the shared `AutomationIdMatcher` and `ScreenWaiter` helpers, which support this ID and compiled Android resource IDs. They do not match spoken `contentDescription` values. Keep localized accessibility descriptions separate from technical test IDs.
 
 ## ID Provider
 

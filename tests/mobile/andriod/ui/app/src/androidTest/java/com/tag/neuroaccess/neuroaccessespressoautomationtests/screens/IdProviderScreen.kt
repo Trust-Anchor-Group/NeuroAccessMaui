@@ -5,7 +5,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.SupportedLanguage
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
@@ -18,13 +18,13 @@ object IdProviderScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(SELECT_FOR_ME))
+        onView(withAutomationId(SELECT_FOR_ME))
             .check(matches(isDisplayed()))
     }
 
     fun selectForMe() {
         ScreenWaiter.performActionAndWaitFor(PhoneVerificationScreen.SCREEN) {
-            onView(withContentDescription(SELECT_FOR_ME))
+            onView(withAutomationId(SELECT_FOR_ME))
                 .perform(click())
         }
     }

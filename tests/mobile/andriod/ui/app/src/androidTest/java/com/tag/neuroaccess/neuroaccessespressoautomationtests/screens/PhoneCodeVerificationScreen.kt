@@ -6,7 +6,7 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 
 object PhoneCodeVerificationScreen {
@@ -19,29 +19,29 @@ object PhoneCodeVerificationScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(VERIFY_CODE))
+        onView(withAutomationId(VERIFY_CODE))
             .check(matches(isDisplayed()))
-        onView(withContentDescription(RESEND_CODE))
+        onView(withAutomationId(RESEND_CODE))
             .check(matches(isDisplayed()))
-        onView(withContentDescription(BACK))
+        onView(withAutomationId(BACK))
             .check(matches(isDisplayed()))
     }
 
     fun goBack() {
         ScreenWaiter.performActionAndWaitFor(PhoneVerificationScreen.SCREEN) {
-            onView(withContentDescription(BACK))
+            onView(withAutomationId(BACK))
                 .perform(click())
         }
     }
 
     fun enterVerificationCode(verificationCode: String) {
-        onView(withContentDescription(VERIFICATION_CODE))
+        onView(withAutomationId(VERIFICATION_CODE))
             .perform(replaceText(verificationCode), closeSoftKeyboard())
     }
 
     fun verifyCodeAndWaitFor(nextScreen: String) {
         ScreenWaiter.performActionAndWaitFor(nextScreen) {
-            onView(withContentDescription(VERIFY_CODE))
+            onView(withAutomationId(VERIFY_CODE))
                 .perform(click())
         }
     }

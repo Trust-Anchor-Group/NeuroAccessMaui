@@ -13,9 +13,9 @@ import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationIdOrAncestor
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.helper.PersonalIdentityTestData
@@ -60,7 +60,7 @@ object KycProcessScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(SCREEN))
+        onView(withAutomationId(SCREEN))
             .check(matches(isDisplayed()))
     }
 
@@ -82,7 +82,7 @@ object KycProcessScreen {
         }
 
         while (currentPage != PAGE_PERSONAL_INFORMATION) {
-            onView(withContentDescription(BACK))
+            onView(withAutomationId(BACK))
                 .perform(click())
             ScreenWaiter.waitUntilHidden(currentPage)
             currentPage = ScreenWaiter.waitForAny(
@@ -163,7 +163,7 @@ object KycProcessScreen {
         destinationPageAutomationId: String
     ) {
         ScreenWaiter.waitUntilEnabled(buttonAutomationId)
-        onView(withContentDescription(buttonAutomationId))
+        onView(withAutomationId(buttonAutomationId))
             .perform(click())
         ScreenWaiter.waitUntilHidden(currentPageAutomationId)
         ScreenWaiter.waitFor(destinationPageAutomationId)
@@ -171,7 +171,7 @@ object KycProcessScreen {
 
     fun submitFromSummary(pin: String) {
         ScreenWaiter.waitUntilEnabled(NEXT)
-        onView(withContentDescription(NEXT))
+        onView(withAutomationId(NEXT))
             .perform(click())
 
         onView(withText(CONFIRM_DIALOG_TITLE))
@@ -247,12 +247,12 @@ object KycProcessScreen {
                 return
             }
 
-            onView(withContentDescription(pageAutomationId))
+            onView(withAutomationId(pageAutomationId))
                 .perform(swipeUp())
         }
 
         ScreenWaiter.waitFor(fieldAutomationId)
-        onView(withContentDescription(fieldAutomationId))
+        onView(withAutomationId(fieldAutomationId))
             .check(matches(isDisplayed()))
     }
 
@@ -268,7 +268,7 @@ object KycProcessScreen {
 
     private fun editTextWithin(fieldAutomationId: String): Matcher<View> = allOf(
         isAssignableFrom(EditText::class.java),
-        isDescendantOfA(withContentDescription(fieldAutomationId))
+        withAutomationIdOrAncestor(fieldAutomationId)
     )
 }
 

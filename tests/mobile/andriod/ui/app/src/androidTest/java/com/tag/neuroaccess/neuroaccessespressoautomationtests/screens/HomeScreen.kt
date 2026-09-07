@@ -4,7 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 
 object HomeScreen {
@@ -15,34 +15,34 @@ object HomeScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(SCREEN))
+        onView(withAutomationId(SCREEN))
             .check(matches(isDisplayed()))
     }
 
     fun openPersonalIdApplications() {
         ScreenWaiter.performActionAndWaitFor(ApplicationsScreen.SCREEN) {
-            onView(withContentDescription(APPLY_FOR_PERSONAL_ID))
+            onView(withAutomationId(APPLY_FOR_PERSONAL_ID))
                 .perform(click())
         }
     }
 
     fun openSettings() {
         ScreenWaiter.performActionAndWaitFor(SettingsScreen.SCREEN) {
-            onView(withContentDescription(SETTINGS))
+            onView(withAutomationId(SETTINGS))
                 .perform(click())
         }
     }
 
     fun openPersonalIdAndWaitForPinPrompt() {
         ScreenWaiter.performActionAndWaitFor(PinAuthenticationPopup.POPUP) {
-            onView(withContentDescription(SHOW_ID))
+            onView(withAutomationId(SHOW_ID))
                 .perform(click())
         }
     }
 
     fun openPersonalIdWithAuthenticatedSession() {
         ScreenWaiter.performActionAndWaitFor(ViewIdentityScreen.SCREEN) {
-            onView(withContentDescription(SHOW_ID))
+            onView(withAutomationId(SHOW_ID))
                 .perform(click())
         }
     }

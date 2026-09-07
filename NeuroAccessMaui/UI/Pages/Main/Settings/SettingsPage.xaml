@@ -118,7 +118,7 @@
 						<!-- Change Password -->
 						<controls:TemplatedButton HorizontalOptions="Fill"
 											  AutomationId="button_settings_change_pin"
-											  SemanticProperties.Description="button_settings_change_pin"
+											  SemanticProperties.Description="{l:Localize ChangePassword}"
 											  Command="{x:Binding ChangePasswordCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">

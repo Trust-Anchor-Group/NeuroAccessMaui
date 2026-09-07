@@ -11,7 +11,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 import java.io.File
@@ -38,11 +38,11 @@ object IdentityPhotoScreen {
                     )
                 )
 
-            onView(withContentDescription(UPLOAD_PHOTO))
+            onView(withAutomationId(UPLOAD_PHOTO))
                 .perform(click())
 
             ScreenWaiter.waitFor(CROP_SCREEN)
-            onView(withContentDescription(ACCEPT_CROP))
+            onView(withAutomationId(ACCEPT_CROP))
                 .perform(click())
             KycProcessScreen.waitForSelfiePage()
         } finally {

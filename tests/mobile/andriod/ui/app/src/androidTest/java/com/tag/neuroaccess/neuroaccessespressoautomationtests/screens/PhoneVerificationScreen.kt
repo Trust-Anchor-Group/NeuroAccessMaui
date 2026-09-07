@@ -6,7 +6,7 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 
 object PhoneVerificationScreen {
@@ -22,42 +22,42 @@ object PhoneVerificationScreen {
 
     fun assertDisplayed() {
         ScreenWaiter.waitFor(SCREEN)
-        onView(withContentDescription(COUNTRY_SELECTOR))
+        onView(withAutomationId(COUNTRY_SELECTOR))
             .check(matches(isDisplayed()))
-        onView(withContentDescription(PHONE_NUMBER))
+        onView(withAutomationId(PHONE_NUMBER))
             .check(matches(isDisplayed()))
-        onView(withContentDescription(SEND_CODE))
+        onView(withAutomationId(SEND_CODE))
             .check(matches(isDisplayed()))
     }
 
     fun selectUnitedStates() {
         ScreenWaiter.performActionAndWaitFor(COUNTRY_SELECTOR_POPUP) {
-            onView(withContentDescription(COUNTRY_SELECTOR))
+            onView(withAutomationId(COUNTRY_SELECTOR))
                 .perform(click())
         }
-        onView(withContentDescription(COUNTRY_SEARCH))
+        onView(withAutomationId(COUNTRY_SEARCH))
             .perform(replaceText("USA"), closeSoftKeyboard())
         ScreenWaiter.waitFor(UNITED_STATES)
-        onView(withContentDescription(UNITED_STATES))
+        onView(withAutomationId(UNITED_STATES))
             .perform(click())
         ScreenWaiter.waitUntilHidden(COUNTRY_SELECTOR_POPUP)
     }
 
     fun enterPhoneNumber(phoneNumber: String) {
-        onView(withContentDescription(PHONE_NUMBER))
+        onView(withAutomationId(PHONE_NUMBER))
             .perform(replaceText(phoneNumber), closeSoftKeyboard())
     }
 
     fun sendCode() {
         ScreenWaiter.performActionAndWaitFor(PhoneCodeVerificationScreen.SCREEN) {
-            onView(withContentDescription(SEND_CODE))
+            onView(withAutomationId(SEND_CODE))
                 .perform(click())
         }
     }
 
     fun goBack() {
         ScreenWaiter.performActionAndWaitFor(IdProviderScreen.SCREEN) {
-            onView(withContentDescription(BACK))
+            onView(withAutomationId(BACK))
                 .perform(click())
         }
     }

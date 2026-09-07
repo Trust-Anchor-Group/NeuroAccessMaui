@@ -37,7 +37,7 @@ object ScreenWaiter {
     }
 
     fun waitFor(screenAutomationId: String) {
-        this.withContentDescriptionWaiter(screenAutomationId, true) {
+        this.withAutomationIdWaiter(screenAutomationId, true) {
             onView(AutomationIdMatcher.withAutomationId(screenAutomationId))
                 .check(matches(isDisplayed()))
         }
@@ -57,7 +57,7 @@ object ScreenWaiter {
     }
 
     fun waitUntilEnabled(automationId: String) {
-        this.withContentDescriptionWaiter(automationId, true, true) {
+        this.withAutomationIdWaiter(automationId, true, true) {
             onView(AutomationIdMatcher.withAutomationId(automationId))
                 .check(matches(isEnabled()))
         }
@@ -66,7 +66,7 @@ object ScreenWaiter {
     fun waitForAny(vararg screenAutomationIds: String): String {
         require(screenAutomationIds.isNotEmpty()) { "At least one AutomationId is required." }
 
-        val idlingResource = AnyContentDescriptionIdlingResource(screenAutomationIds.toSet())
+        val idlingResource = AnyAutomationIdIdlingResource(screenAutomationIds.toSet())
         IdlingRegistry.getInstance().register(idlingResource)
 
         try {
@@ -93,7 +93,7 @@ object ScreenWaiter {
                 .firstOrNull()
 
             isDisplayed = resumedActivity?.window?.decorView
-                ?.let { rootView -> this.hasVisibleContentDescription(rootView, automationId) }
+                ?.let { rootView -> this.hasVisibleAutomationId(rootView, automationId) }
                 ?: false
         }
 
@@ -109,7 +109,7 @@ object ScreenWaiter {
                 .firstOrNull()
 
             isDisplayedOnScreen = resumedActivity?.window?.decorView
-                ?.let { rootView -> this.hasDisplayedContentDescription(rootView, automationId) }
+                ?.let { rootView -> this.hasDisplayedAutomationId(rootView, automationId) }
                 ?: false
         }
 
@@ -131,14 +131,14 @@ object ScreenWaiter {
         return displayedText
     }
 
-    private fun hasVisibleContentDescription(view: View, automationId: String): Boolean {
+    private fun hasVisibleAutomationId(view: View, automationId: String): Boolean {
         if (view.visibility == View.VISIBLE && AutomationIdMatcher.matches(view, automationId)) {
             return true
         }
 
         if (view is ViewGroup) {
             for (index in 0 until view.childCount) {
-                if (this.hasVisibleContentDescription(view.getChildAt(index), automationId)) {
+                if (this.hasVisibleAutomationId(view.getChildAt(index), automationId)) {
                     return true
                 }
             }
@@ -147,14 +147,14 @@ object ScreenWaiter {
         return false
     }
 
-    private fun hasDisplayedContentDescription(view: View, automationId: String): Boolean {
+    private fun hasDisplayedAutomationId(view: View, automationId: String): Boolean {
         if (AutomationIdMatcher.matches(view, automationId) && this.isMostlyVisible(view)) {
             return true
         }
 
         if (view is ViewGroup) {
             for (index in 0 until view.childCount) {
-                if (this.hasDisplayedContentDescription(view.getChildAt(index), automationId)) {
+                if (this.hasDisplayedAutomationId(view.getChildAt(index), automationId)) {
                     return true
                 }
             }
@@ -200,7 +200,7 @@ object ScreenWaiter {
     }
 
     fun waitUntilHidden(automationId: String) {
-        this.withContentDescriptionWaiter(automationId, false) {
+        this.withAutomationIdWaiter(automationId, false) {
             onIdle()
         }
     }
@@ -210,13 +210,13 @@ object ScreenWaiter {
         this.waitFor(screenAutomationId)
     }
 
-    private fun withContentDescriptionWaiter(
+    private fun withAutomationIdWaiter(
         automationId: String,
         shouldBeDisplayed: Boolean,
         shouldBeEnabled: Boolean = false,
         interaction: () -> Unit
     ) {
-        val idlingResource = ContentDescriptionIdlingResource(
+        val idlingResource = AutomationIdIdlingResource(
             automationId,
             shouldBeDisplayed,
             shouldBeEnabled
@@ -321,8 +321,8 @@ private class TextIdlingResource(
     }
 }
 
-private class ContentDescriptionIdlingResource(
-    private val expectedContentDescription: String,
+private class AutomationIdIdlingResource(
+    private val expectedAutomationId: String,
     private val shouldBeDisplayed: Boolean,
     private val shouldBeEnabled: Boolean
 ) : IdlingResource {
@@ -348,7 +348,7 @@ private class ContentDescriptionIdlingResource(
     override fun getName(): String {
         val expectedState = if (this.shouldBeDisplayed) "Visible" else "Hidden"
         val enabledState = if (this.shouldBeEnabled) " and enabled" else ""
-        return "$expectedState$enabledState content description: $expectedContentDescription"
+        return "$expectedState$enabledState automation ID: $expectedAutomationId"
     }
 
     override fun isIdleNow(): Boolean {
@@ -388,7 +388,7 @@ private class ContentDescriptionIdlingResource(
             currentRootView?.viewTreeObserver?.addOnGlobalLayoutListener(this.layoutListener)
         }
 
-        val matchingView = currentRootView?.let(this::findVisibleContentDescription)
+        val matchingView = currentRootView?.let(this::findVisibleAutomationId)
         this.isIdle = if (this.shouldBeDisplayed) {
             matchingView != null && (!this.shouldBeEnabled || matchingView.isEnabled)
         } else {
@@ -414,14 +414,14 @@ private class ContentDescriptionIdlingResource(
         }
     }
 
-    private fun findVisibleContentDescription(view: View): View? {
-        if (view.isShown && AutomationIdMatcher.matches(view, this.expectedContentDescription)) {
+    private fun findVisibleAutomationId(view: View): View? {
+        if (view.isShown && AutomationIdMatcher.matches(view, this.expectedAutomationId)) {
             return view
         }
 
         if (view is ViewGroup) {
             for (index in 0 until view.childCount) {
-                val matchingView = this.findVisibleContentDescription(view.getChildAt(index))
+                val matchingView = this.findVisibleAutomationId(view.getChildAt(index))
                 if (matchingView != null) {
                     return matchingView
                 }
@@ -432,7 +432,7 @@ private class ContentDescriptionIdlingResource(
     }
 }
 
-private class AnyContentDescriptionIdlingResource(
+private class AnyAutomationIdIdlingResource(
     private val expectedAutomationIds: Set<String>
 ) : IdlingResource {
 
@@ -456,7 +456,7 @@ private class AnyContentDescriptionIdlingResource(
     }
 
     override fun getName(): String {
-        return "Visible content description: one of $expectedAutomationIds"
+        return "Visible automation ID: one of $expectedAutomationIds"
     }
 
     override fun isIdleNow(): Boolean {
@@ -509,7 +509,7 @@ private class AnyContentDescriptionIdlingResource(
 
         this.visibleAutomationId = currentRootView?.let { rootView ->
             this.expectedAutomationIds.firstOrNull { automationId ->
-                this.hasVisibleContentDescription(rootView, automationId)
+                this.hasVisibleAutomationId(rootView, automationId)
             }
         }
 
@@ -518,14 +518,14 @@ private class AnyContentDescriptionIdlingResource(
         }
     }
 
-    private fun hasVisibleContentDescription(view: View, automationId: String): Boolean {
+    private fun hasVisibleAutomationId(view: View, automationId: String): Boolean {
         if (view.isShown && AutomationIdMatcher.matches(view, automationId)) {
             return true
         }
 
         if (view is ViewGroup) {
             for (index in 0 until view.childCount) {
-                if (this.hasVisibleContentDescription(view.getChildAt(index), automationId)) {
+                if (this.hasVisibleAutomationId(view.getChildAt(index), automationId)) {
                     return true
                 }
             }
