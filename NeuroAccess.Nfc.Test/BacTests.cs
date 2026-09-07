@@ -258,7 +258,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[] KEnc = Hashes.StringToBinary("AB94FDECF2674FDFB9B391F85D7F76F2");
 			byte[] KMac = Hashes.StringToBinary("7962D9ECE03D1ACD4C76089DCE131543");
 
-			byte[] Response = TravelDocumentsClient.CalcBacChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
+			byte[] Response = TravelDocumentsClient.CalcBacChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac, null);
 
 			Assert.AreEqual("72C29C2371CC9BDB65B779B8E8D37B29ECC154AA56A8799FAE2F498F76ED92F25F1448EEA8AD90A7",
 				Hashes.BinaryToString(Response).ToUpper(CultureInfo.InvariantCulture));
@@ -274,7 +274,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[]? Ssc;
 
 			Assert.IsTrue(TravelDocumentsClient.AuthenticateBacResponseData(RespData, Challenge, Rnd2,
-				KEnc, KMac, out KIC, out KSEnc, out KSMac, out Ssc));
+				KEnc, KMac, out KIC, out KSEnc, out KSMac, out Ssc, null));
 
 			Assert.IsNotNull(KIC);
 			Assert.IsNotNull(KSEnc);
@@ -367,7 +367,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[] Rnd1 = Hashes.StringToBinary("23E85A993A9AC5B4");					// RND.IFD
 			byte[] Rnd2 = Hashes.StringToBinary("75DC87E50C8EF30047D0B5325E83204D");	// K.IFD
 
-			byte[] Response = TravelDocumentsClient.CalcBacChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
+			byte[] Response = TravelDocumentsClient.CalcBacChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac, null);
 
 			Assert.AreEqual("4782B1700DD4F60373DA6632FCD1AB1E500D46FA11DEBDF9B88C39FCA7FDF8DB" +	// E.IFD
 				"BE51F41D52D4B879",																	// MAC
