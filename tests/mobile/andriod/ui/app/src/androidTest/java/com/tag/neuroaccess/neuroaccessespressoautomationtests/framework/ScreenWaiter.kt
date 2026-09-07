@@ -1,11 +1,9 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.framework
 
-import android.app.Activity
-import android.graphics.Rect
+import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
@@ -13,524 +11,240 @@ import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed as espressoIsDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 import java.util.concurrent.TimeUnit
 
+/**
+ * Waits for view conditions in resumed activities, including MAUI popups hosted in those activities.
+ * Native dialogs have separate window roots and must be handled by their dialog-specific helpers.
+ */
 object ScreenWaiter {
-
     private const val IDLING_RESOURCE_TIMEOUT_SECONDS = 120L
+    private const val CLICK_VISIBLE_PERCENTAGE = 90
 
     init {
-        IdlingPolicies.setIdlingResourceTimeout(
-            IDLING_RESOURCE_TIMEOUT_SECONDS,
-            TimeUnit.SECONDS
-        )
-        IdlingPolicies.setMasterPolicyTimeout(
-            IDLING_RESOURCE_TIMEOUT_SECONDS,
-            TimeUnit.SECONDS
-        )
+        IdlingPolicies.setIdlingResourceTimeout(IDLING_RESOURCE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        IdlingPolicies.setMasterPolicyTimeout(IDLING_RESOURCE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
     }
 
+    /** Waits for an identified view to satisfy Espresso's displayed matcher. */
     fun waitFor(screenAutomationId: String) {
-        this.withAutomationIdWaiter(screenAutomationId, true) {
-            onView(AutomationIdMatcher.withAutomationId(screenAutomationId))
-                .check(matches(isDisplayed()))
-        }
+        this.waitForMatcher(
+            "Displayed automation ID: $screenAutomationId",
+            allOf(AutomationIdMatcher.withAutomationId(screenAutomationId), espressoIsDisplayed())
+        )
     }
 
+    /** Waits for displayed text in an activity root using the same matcher as the assertion. */
     fun waitForText(expectedText: String) {
-        val idlingResource = TextIdlingResource(expectedText)
-        IdlingRegistry.getInstance().register(idlingResource)
-
-        try {
-            onView(withText(expectedText))
-                .check(matches(isDisplayed()))
-        } finally {
-            IdlingRegistry.getInstance().unregister(idlingResource)
-            idlingResource.close()
-        }
+        this.waitForMatcher("Displayed text: $expectedText", allOf(withText(expectedText), espressoIsDisplayed()))
     }
 
+    /** Waits for a displayed, enabled control; use [waitUntilReady] before clicking it. */
     fun waitUntilEnabled(automationId: String) {
-        this.withAutomationIdWaiter(automationId, true, true) {
-            onView(AutomationIdMatcher.withAutomationId(automationId))
-                .check(matches(isEnabled()))
-        }
+        this.waitForMatcher(
+            "Displayed and enabled automation ID: $automationId",
+            allOf(AutomationIdMatcher.withAutomationId(automationId), espressoIsDisplayed(), isEnabled())
+        )
     }
 
+    /** Waits for an enabled control with at least 90 percent visible, matching Espresso click constraints. */
+    fun waitUntilReady(automationId: String) {
+        this.waitForMatcher(
+            "Ready automation ID: $automationId",
+            allOf(AutomationIdMatcher.withAutomationId(automationId), isDisplayingAtLeast(CLICK_VISIBLE_PERCENTAGE), isEnabled())
+        )
+    }
+
+    /** Returns the first requested ID that is displayed in a resumed activity. */
     fun waitForAny(vararg screenAutomationIds: String): String {
         require(screenAutomationIds.isNotEmpty()) { "At least one AutomationId is required." }
-
-        val idlingResource = AnyAutomationIdIdlingResource(screenAutomationIds.toSet())
-        IdlingRegistry.getInstance().register(idlingResource)
-
-        try {
-            onIdle()
-            return checkNotNull(idlingResource.visibleAutomationId) {
-                "No expected AutomationId was visible."
+        var selectedId: String? = null
+        this.awaitCondition("Displayed automation ID: one of ${screenAutomationIds.toList()}") { roots ->
+            selectedId = screenAutomationIds.firstOrNull { id ->
+                roots.any { root ->
+                    findView(root) { view ->
+                        espressoIsDisplayed().matches(view) && AutomationIdMatcher.matches(view, id)
+                    } != null
+                }
             }
-        } finally {
-            IdlingRegistry.getInstance().unregister(idlingResource)
-            idlingResource.close()
+            selectedId != null
         }
+        return checkNotNull(selectedId)
     }
 
+    /** Waits for Espresso's tracked work; this alone does not establish completion of MAUI operations. */
     fun waitForIdle() {
         onIdle()
     }
 
-    fun isDisplayed(automationId: String): Boolean {
-        var isDisplayed = false
-
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            val resumedActivity = ActivityLifecycleMonitorRegistry.getInstance()
-                .getActivitiesInStage(Stage.RESUMED)
-                .firstOrNull()
-
-            isDisplayed = resumedActivity?.window?.decorView
-                ?.let { rootView -> this.hasVisibleAutomationId(rootView, automationId) }
-                ?: false
-        }
-
-        return isDisplayed
+    /** Reports whether a view exists in a shown layout, even when scrolled outside the viewport. */
+    fun isPresentInLayout(automationId: String): Boolean = this.hasView { view ->
+        view.isShown && AutomationIdMatcher.matches(view, automationId)
     }
 
-    fun isDisplayedOnScreen(automationId: String): Boolean {
-        var isDisplayedOnScreen = false
-
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            val resumedActivity = ActivityLifecycleMonitorRegistry.getInstance()
-                .getActivitiesInStage(Stage.RESUMED)
-                .firstOrNull()
-
-            isDisplayedOnScreen = resumedActivity?.window?.decorView
-                ?.let { rootView -> this.hasDisplayedAutomationId(rootView, automationId) }
-                ?: false
-        }
-
-        return isDisplayedOnScreen
+    /** Reports whether an identified view satisfies Espresso's displayed matcher. */
+    fun isDisplayed(automationId: String): Boolean = this.hasView { view ->
+        espressoIsDisplayed().matches(view) && AutomationIdMatcher.matches(view, automationId)
     }
 
-    fun firstDisplayedEnabledText(vararg expectedTexts: String): String? {
-        var displayedText: String? = null
-
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            val resumedActivity = ActivityLifecycleMonitorRegistry.getInstance()
-                .getActivitiesInStage(Stage.RESUMED)
-                .firstOrNull()
-
-            displayedText = resumedActivity?.window?.decorView
-                ?.let { rootView -> this.findDisplayedText(rootView, expectedTexts.toSet()) }
-        }
-
-        return displayedText
+    /** Reports whether at least 90 percent of the identified view is visible, without checking enabled state. */
+    fun isDisplayedOnScreen(automationId: String): Boolean = this.hasView { view ->
+        isDisplayingAtLeast(CLICK_VISIBLE_PERCENTAGE).matches(view) && AutomationIdMatcher.matches(view, automationId)
     }
 
-    private fun hasVisibleAutomationId(view: View, automationId: String): Boolean {
-        if (view.visibility == View.VISIBLE && AutomationIdMatcher.matches(view, automationId)) {
-            return true
+    /** Returns matching enabled text with at least 90 percent visible, in view-tree order. */
+    fun firstDisplayedEnabledText(vararg expectedTexts: String): String? = onMainThread {
+        val expected = expectedTexts.toSet()
+        resumedRoots().firstNotNullOfOrNull { root ->
+            (findView(root) { view ->
+                view is TextView && view.text?.toString() in expected &&
+                    isEnabled().matches(view) && isDisplayingAtLeast(CLICK_VISIBLE_PERCENTAGE).matches(view)
+            } as? TextView)?.text?.toString()
         }
-
-        if (view is ViewGroup) {
-            for (index in 0 until view.childCount) {
-                if (this.hasVisibleAutomationId(view.getChildAt(index), automationId)) {
-                    return true
-                }
-            }
-        }
-
-        return false
     }
 
-    private fun hasDisplayedAutomationId(view: View, automationId: String): Boolean {
-        if (AutomationIdMatcher.matches(view, automationId) && this.isMostlyVisible(view)) {
-            return true
-        }
-
-        if (view is ViewGroup) {
-            for (index in 0 until view.childCount) {
-                if (this.hasDisplayedAutomationId(view.getChildAt(index), automationId)) {
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun findDisplayedText(view: View, expectedTexts: Set<String>): String? {
-        if (view is TextView &&
-            view.text?.toString() in expectedTexts &&
-            view.isEnabled &&
-            this.isMostlyVisible(view)
-        ) {
-            return view.text.toString()
-        }
-
-        if (view is ViewGroup) {
-            for (index in 0 until view.childCount) {
-                val displayedText = this.findDisplayedText(view.getChildAt(index), expectedTexts)
-                if (displayedText != null) {
-                    return displayedText
-                }
-            }
-        }
-
-        return null
-    }
-
-    private fun isMostlyVisible(view: View): Boolean {
-        if (!view.isShown || view.width <= 0 || view.height <= 0) {
-            return false
-        }
-
-        val visibleBounds = Rect()
-        if (!view.getGlobalVisibleRect(visibleBounds)) {
-            return false
-        }
-
-        val visibleArea = visibleBounds.width().toLong() * visibleBounds.height().toLong()
-        val totalArea = view.width.toLong() * view.height.toLong()
-        return visibleArea * 100 >= totalArea * 90
-    }
-
+    /** Waits until no matching view is displayed; an activity transition with no resumed root is not success. */
     fun waitUntilHidden(automationId: String) {
-        this.withAutomationIdWaiter(automationId, false) {
-            onIdle()
+        this.awaitCondition("Hidden automation ID: $automationId") { roots ->
+            roots.none { root ->
+                findView(root) { view ->
+                    espressoIsDisplayed().matches(view) && AutomationIdMatcher.matches(view, automationId)
+                } != null
+            }
         }
     }
 
+    /** Performs an action before waiting for its destination, avoiding an idling dependency on the action itself. */
     fun performActionAndWaitFor(screenAutomationId: String, action: () -> Unit) {
         action()
         this.waitFor(screenAutomationId)
     }
 
-    private fun withAutomationIdWaiter(
-        automationId: String,
-        shouldBeDisplayed: Boolean,
-        shouldBeEnabled: Boolean = false,
-        interaction: () -> Unit
-    ) {
-        val idlingResource = AutomationIdIdlingResource(
-            automationId,
-            shouldBeDisplayed,
-            shouldBeEnabled
-        )
-        IdlingRegistry.getInstance().register(idlingResource)
+    private fun waitForMatcher(description: String, matcher: Matcher<View>) {
+        this.awaitCondition(description) { roots ->
+            roots.any { root -> findView(root, matcher::matches) != null }
+        }
+        onView(matcher).check(matches(matcher))
+    }
 
+    private fun hasView(predicate: (View) -> Boolean): Boolean = onMainThread {
+        resumedRoots().any { root -> findView(root, predicate) != null }
+    }
+
+    private fun awaitCondition(description: String, condition: (List<View>) -> Boolean) {
+        val resource = ViewConditionIdlingResource(description) {
+            val roots = resumedRoots()
+            roots.isNotEmpty() && condition(roots)
+        }
         try {
-            interaction()
+            IdlingRegistry.getInstance().register(resource)
+            resource.start()
+            onIdle()
+            resource.failure?.let { throw it }
         } finally {
-            IdlingRegistry.getInstance().unregister(idlingResource)
-            idlingResource.close()
+            IdlingRegistry.getInstance().unregister(resource)
+            resource.close()
         }
     }
 }
 
-private class TextIdlingResource(
-    private val expectedText: String
-) : IdlingResource {
+/** Returns fresh roots on each observation, so activity changes do not leave stale view references. */
+private fun resumedRoots(): List<View> =
+    ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+        .map { it.window.decorView }
 
-    @Volatile
-    private var callback: IdlingResource.ResourceCallback? = null
-
-    @Volatile
-    private var isIdle = false
-
-    private var observedRootView: View? = null
-
-    private val layoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        this.updateIdleState()
-    }
-
-    init {
-        this.runOnMainThread { this.updateIdleState() }
-    }
-
-    override fun getName(): String = "Visible text: $expectedText"
-
-    override fun isIdleNow(): Boolean {
-        this.runOnMainThread { this.updateIdleState() }
-        return this.isIdle
-    }
-
-    override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback) {
-        this.callback = callback
-        if (this.isIdle) {
-            callback.onTransitionToIdle()
+/** Finds the first matching view without defining a separate visibility policy. */
+private fun findView(view: View, predicate: (View) -> Boolean): View? {
+    if (predicate(view)) return view
+    if (view is ViewGroup) {
+        for (index in 0 until view.childCount) {
+            findView(view.getChildAt(index), predicate)?.let { return it }
         }
     }
-
-    fun close() {
-        this.runOnMainThread { this.removeLayoutListener() }
-    }
-
-    private fun runOnMainThread(action: () -> Unit) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            action()
-        } else {
-            InstrumentationRegistry.getInstrumentation().runOnMainSync(action)
-        }
-    }
-
-    private fun updateIdleState() {
-        val currentRootView = ActivityLifecycleMonitorRegistry.getInstance()
-            .getActivitiesInStage(Stage.RESUMED)
-            .firstOrNull()
-            ?.window
-            ?.decorView
-
-        if (currentRootView !== this.observedRootView) {
-            this.removeLayoutListener()
-            this.observedRootView = currentRootView
-            currentRootView?.viewTreeObserver?.addOnGlobalLayoutListener(this.layoutListener)
-        }
-
-        this.isIdle = currentRootView?.let(this::hasVisibleText) ?: false
-        if (this.isIdle) {
-            this.callback?.onTransitionToIdle()
-        }
-    }
-
-    private fun removeLayoutListener() {
-        val observer = this.observedRootView?.viewTreeObserver
-        if (observer?.isAlive == true) {
-            observer.removeOnGlobalLayoutListener(this.layoutListener)
-        }
-    }
-
-    private fun hasVisibleText(view: View): Boolean {
-        if (view is TextView && view.isShown && view.text?.toString() == this.expectedText) {
-            return true
-        }
-
-        if (view is ViewGroup) {
-            for (index in 0 until view.childCount) {
-                if (this.hasVisibleText(view.getChildAt(index))) {
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
+    return null
 }
 
-private class AutomationIdIdlingResource(
-    private val expectedAutomationId: String,
-    private val shouldBeDisplayed: Boolean,
-    private val shouldBeEnabled: Boolean
-) : IdlingResource {
-
-    @Volatile
-    private var callback: IdlingResource.ResourceCallback? = null
-
-    @Volatile
-    private var isIdle = false
-
-    private var observedRootView: View? = null
-
-    private val layoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        this.updateIdleState()
-    }
-
-    init {
-        this.runOnMainThread {
-            this.updateIdleState()
-        }
-    }
-
-    override fun getName(): String {
-        val expectedState = if (this.shouldBeDisplayed) "Visible" else "Hidden"
-        val enabledState = if (this.shouldBeEnabled) " and enabled" else ""
-        return "$expectedState$enabledState automation ID: $expectedAutomationId"
-    }
-
-    override fun isIdleNow(): Boolean {
-        this.runOnMainThread {
-            this.updateIdleState()
-        }
-
-        return this.isIdle
-    }
-
-    override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback) {
-        this.callback = callback
-        if (this.isIdle) {
-            callback.onTransitionToIdle()
-        }
-    }
-
-    fun close() {
-        this.runOnMainThread {
-            this.removeLayoutListener()
-        }
-    }
-
-    private fun runOnMainThread(action: () -> Unit) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            action()
-        } else {
-            InstrumentationRegistry.getInstrumentation().runOnMainSync(action)
-        }
-    }
-
-    private fun updateIdleState() {
-        val currentRootView = this.getCurrentRootView()
-        if (currentRootView !== this.observedRootView) {
-            this.removeLayoutListener()
-            this.observedRootView = currentRootView
-            currentRootView?.viewTreeObserver?.addOnGlobalLayoutListener(this.layoutListener)
-        }
-
-        val matchingView = currentRootView?.let(this::findVisibleAutomationId)
-        this.isIdle = if (this.shouldBeDisplayed) {
-            matchingView != null && (!this.shouldBeEnabled || matchingView.isEnabled)
-        } else {
-            matchingView == null
-        }
-        if (this.isIdle) {
-            this.callback?.onTransitionToIdle()
-        }
-    }
-
-    private fun getCurrentRootView(): View? {
-        val resumedActivity: Activity? = ActivityLifecycleMonitorRegistry.getInstance()
-            .getActivitiesInStage(Stage.RESUMED)
-            .firstOrNull()
-
-        return resumedActivity?.window?.decorView
-    }
-
-    private fun removeLayoutListener() {
-        val observer = this.observedRootView?.viewTreeObserver
-        if (observer?.isAlive == true) {
-            observer.removeOnGlobalLayoutListener(this.layoutListener)
-        }
-    }
-
-    private fun findVisibleAutomationId(view: View): View? {
-        if (view.isShown && AutomationIdMatcher.matches(view, this.expectedAutomationId)) {
-            return view
-        }
-
-        if (view is ViewGroup) {
-            for (index in 0 until view.childCount) {
-                val matchingView = this.findVisibleAutomationId(view.getChildAt(index))
-                if (matchingView != null) {
-                    return matchingView
-                }
-            }
-        }
-
-        return null
-    }
+/** Evaluates a view query on the UI thread and propagates failures to the instrumentation thread. */
+private fun <T> onMainThread(action: () -> T): T {
+    if (Looper.myLooper() == Looper.getMainLooper()) return action()
+    var result: Result<T>? = null
+    InstrumentationRegistry.getInstrumentation().runOnMainSync { result = runCatching(action) }
+    return checkNotNull(result).getOrThrow()
 }
 
-private class AnyAutomationIdIdlingResource(
-    private val expectedAutomationIds: Set<String>
+/**
+ * Observes one view condition until satisfied. Polling is confined to the registered wait and
+ * catches enabled/text changes without requiring layout events or retaining activity roots.
+ */
+private class ViewConditionIdlingResource(
+    private val description: String,
+    private val condition: () -> Boolean
 ) : IdlingResource {
+    private val handler = Handler(Looper.getMainLooper())
+    private var closed = false
+
+    @Volatile
+    private var idle = false
 
     @Volatile
     private var callback: IdlingResource.ResourceCallback? = null
 
+    /** Query failures are rethrown on the test thread after Espresso has been released. */
     @Volatile
-    var visibleAutomationId: String? = null
+    var failure: Exception? = null
         private set
 
-    private var observedRootView: View? = null
-
-    private val layoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        this.updateIdleState()
-    }
-
-    init {
-        this.runOnMainThread {
-            this.updateIdleState()
+    private val observation = object : Runnable {
+        override fun run() {
+            if (closed || idle) return
+            val satisfied = try {
+                condition()
+            } catch (exception: Exception) {
+                failure = exception
+                true
+            }
+            if (satisfied) {
+                idle = true
+                // One-shot transition; all state updates precede notification.
+                callback?.onTransitionToIdle()
+            } else {
+                handler.postDelayed(this, OBSERVATION_INTERVAL_MILLISECONDS)
+            }
         }
     }
 
-    override fun getName(): String {
-        return "Visible automation ID: one of $expectedAutomationIds"
-    }
+    override fun getName(): String = description
 
-    override fun isIdleNow(): Boolean {
-        this.runOnMainThread {
-            this.updateIdleState()
-        }
-
-        return this.visibleAutomationId != null
-    }
+    override fun isIdleNow(): Boolean = idle
 
     override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback) {
         this.callback = callback
-        if (this.visibleAutomationId != null) {
-            callback.onTransitionToIdle()
-        }
     }
 
+    /** Starts observing after registration; initially satisfied conditions are read by Espresso as idle. */
+    fun start() {
+        onMainThread { observation.run() }
+    }
+
+    /** Cancels pending observations on success, timeout or assertion failure. */
     fun close() {
-        this.runOnMainThread {
-            val observer = this.observedRootView?.viewTreeObserver
-            if (observer?.isAlive == true) {
-                observer.removeOnGlobalLayoutListener(this.layoutListener)
-            }
+        onMainThread {
+            closed = true
+            handler.removeCallbacks(observation)
+            callback = null
         }
     }
 
-    private fun runOnMainThread(action: () -> Unit) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            action()
-        } else {
-            InstrumentationRegistry.getInstrumentation().runOnMainSync(action)
-        }
-    }
-
-    private fun updateIdleState() {
-        val resumedActivity = ActivityLifecycleMonitorRegistry.getInstance()
-            .getActivitiesInStage(Stage.RESUMED)
-            .firstOrNull()
-        val currentRootView = resumedActivity?.window?.decorView
-
-        if (currentRootView !== this.observedRootView) {
-            val previousObserver = this.observedRootView?.viewTreeObserver
-            if (previousObserver?.isAlive == true) {
-                previousObserver.removeOnGlobalLayoutListener(this.layoutListener)
-            }
-
-            this.observedRootView = currentRootView
-            currentRootView?.viewTreeObserver?.addOnGlobalLayoutListener(this.layoutListener)
-        }
-
-        this.visibleAutomationId = currentRootView?.let { rootView ->
-            this.expectedAutomationIds.firstOrNull { automationId ->
-                this.hasVisibleAutomationId(rootView, automationId)
-            }
-        }
-
-        if (this.visibleAutomationId != null) {
-            this.callback?.onTransitionToIdle()
-        }
-    }
-
-    private fun hasVisibleAutomationId(view: View, automationId: String): Boolean {
-        if (view.isShown && AutomationIdMatcher.matches(view, automationId)) {
-            return true
-        }
-
-        if (view is ViewGroup) {
-            for (index in 0 until view.childCount) {
-                if (this.hasVisibleAutomationId(view.getChildAt(index), automationId)) {
-                    return true
-                }
-            }
-        }
-
-        return false
+    private companion object {
+        const val OBSERVATION_INTERVAL_MILLISECONDS = 100L
     }
 }

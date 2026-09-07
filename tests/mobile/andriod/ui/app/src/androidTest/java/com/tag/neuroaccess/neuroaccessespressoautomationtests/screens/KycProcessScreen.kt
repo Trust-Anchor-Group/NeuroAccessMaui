@@ -14,6 +14,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationIdOrAncestor
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher.withAutomationId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -162,16 +164,16 @@ object KycProcessScreen {
         currentPageAutomationId: String,
         destinationPageAutomationId: String
     ) {
-        ScreenWaiter.waitUntilEnabled(buttonAutomationId)
-        onView(withAutomationId(buttonAutomationId))
+        ScreenWaiter.waitUntilReady(buttonAutomationId)
+        onView(allOf(withAutomationId(buttonAutomationId), isDisplayingAtLeast(90), isEnabled()))
             .perform(click())
         ScreenWaiter.waitUntilHidden(currentPageAutomationId)
         ScreenWaiter.waitFor(destinationPageAutomationId)
     }
 
     fun submitFromSummary(pin: String) {
-        ScreenWaiter.waitUntilEnabled(NEXT)
-        onView(withAutomationId(NEXT))
+        ScreenWaiter.waitUntilReady(NEXT)
+        onView(allOf(withAutomationId(NEXT), isDisplayingAtLeast(90), isEnabled()))
             .perform(click())
 
         onView(withText(CONFIRM_DIALOG_TITLE))
@@ -198,7 +200,8 @@ object KycProcessScreen {
     }
 
     private fun replaceOptionalField(fieldAutomationId: String, value: String) {
-        if (ScreenWaiter.isDisplayed(fieldAutomationId)) {
+        if (ScreenWaiter.isPresentInLayout(fieldAutomationId)) {
+            this.scrollFieldIntoView(PAGE_PERSONAL_INFORMATION, fieldAutomationId)
             this.replaceField(fieldAutomationId, value)
         }
     }
