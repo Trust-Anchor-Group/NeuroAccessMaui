@@ -22,9 +22,8 @@ class LanguageOptionsFlowTest : BaseTest() {
         if (currentLanguage.code != language.code) {
             IdProviderScreen.openLanguageSelector(currentLanguage)
             LanguageSelectionPopup.select(language)
-        } else {
-            IdProviderScreen.assertLanguage(language)
         }
+        IdProviderScreen.assertLanguage(language)
     }
 
     @Test
