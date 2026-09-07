@@ -25,22 +25,94 @@ function Get-ConnectedAndroidDeviceSerial {
     return $ConnectedDevices[0]
 }
 
+function Protect-AndroidDiagnosticText {
+    <#
+    .SYNOPSIS
+    Removes literal configuration values from text before it reaches logs or reports.
+    .PARAMETER Text
+    The command output or diagnostic message to sanitize.
+    .PARAMETER SensitiveValues
+    Values collected from the instrumentation arguments.
+    #>
+    param([AllowEmptyString()][string]$Text, [string[]]$SensitiveValues = @())
+
+    $Patterns = @(
+        $SensitiveValues |
+            Where-Object { -not [string]::IsNullOrEmpty($_) } |
+            Sort-Object -Unique -CaseSensitive |
+            Sort-Object -Property Length -Descending |
+            ForEach-Object { [regex]::Escape($_) }
+    )
+    if ($Patterns.Count -eq 0) {
+        return $Text
+    }
+    return [regex]::Replace($Text, ($Patterns -join "|"), "[REDACTED]")
+}
+
 function Invoke-AndroidAdbCommand {
+    <#
+    .SYNOPSIS
+    Executes ADB and sanitizes its output before returning it or reporting a failure.
+    .PARAMETER AdbPath
+    Path to the ADB executable.
+    .PARAMETER DeviceSerial
+    Serial of the target Android device.
+    .PARAMETER AdbArguments
+    Original command arguments, passed unchanged to ADB.
+    #>
     param([string]$AdbPath, [string]$DeviceSerial, [string[]]$AdbArguments)
+
+    $SensitiveValues = [System.Collections.Generic.List[string]]::new()
+    $DiagnosticArguments = @("class", "languageCode", "personalNumberAgeGroup")
+    $TestSelector = ""
+    for ($Index = 0; $Index -lt $AdbArguments.Count - 2; $Index++) {
+        if ($AdbArguments[$Index] -eq "-e") {
+            $ArgumentName = $AdbArguments[$Index + 1]
+            $ArgumentValue = $AdbArguments[$Index + 2]
+            if ($ArgumentName -notin $DiagnosticArguments) {
+                $SensitiveValues.Add($ArgumentValue)
+            } elseif ($ArgumentName -eq "class") {
+                $TestSelector = $ArgumentValue
+            }
+            $Index += 2
+        }
+    }
+
+    $CommandDescription = "ADB command"
+    if ($AdbArguments.Count -ge 3 -and
+        $AdbArguments[0] -eq "shell" -and
+        $AdbArguments[1] -eq "am" -and
+        $AdbArguments[2] -eq "instrument") {
+        $CommandDescription = "ADB instrumentation"
+    }
+    $CommandDescription += " on device '$DeviceSerial'"
+    if (-not [string]::IsNullOrEmpty($TestSelector)) {
+        $CommandDescription += " for test '$TestSelector'"
+    }
+    $SafeDescription = Protect-AndroidDiagnosticText -Text $CommandDescription -SensitiveValues $SensitiveValues.ToArray()
 
     $PreviousErrorActionPreference = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
+    # Keep native stderr in the captured output regardless of the caller's PowerShell setting.
+    $PSNativeCommandUseErrorActionPreference = $false
+    $CommandExitCode = -1
+    $LASTEXITCODE = -1
     try {
         $CommandOutput = & $AdbPath -s $DeviceSerial @AdbArguments 2>&1 | Out-String
         $CommandExitCode = $LASTEXITCODE
+    } catch {
+        # Launch failures can also include arguments; only propagate sanitized text.
+        $SafeFailure = Protect-AndroidDiagnosticText -Text $_.Exception.Message -SensitiveValues $SensitiveValues.ToArray()
+        throw "$SafeDescription could not execute.`n$SafeFailure"
     } finally {
         $ErrorActionPreference = $PreviousErrorActionPreference
     }
 
+    $SafeOutput = Protect-AndroidDiagnosticText -Text $CommandOutput -SensitiveValues $SensitiveValues.ToArray()
     if ($CommandExitCode -ne 0) {
-        throw "ADB command failed: adb $($AdbArguments -join ' ')`n$CommandOutput"
+        throw "$SafeDescription failed (exit code $CommandExitCode).`n$SafeOutput"
     }
-    return $CommandOutput.Trim()
+    return $SafeOutput.Trim()
 }
 
 function Initialize-AndroidTestDevice {
