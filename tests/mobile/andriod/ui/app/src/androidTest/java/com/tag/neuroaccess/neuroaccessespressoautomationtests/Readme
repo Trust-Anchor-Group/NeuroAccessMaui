@@ -6,14 +6,14 @@ This project contains automated UI and regression tests for the NeuroAccess Andr
 
 The tests verify user flows through the actual UI. They do not use coordinates, `Thread.sleep()`, or fake views. When a MAUI `AutomationId` is available, it should be used as the Espresso selector.
 
-The current scope includes onboarding, ID Provider, phone and code verification, username, PIN, biometrics, Success, and Home.
+The current scope includes onboarding, ID Provider, phone and code verification, username, PIN, biometrics, Success, Home, language options, personal identity application, and Change PIN.
 
 ## How selectors work
 
-MAUI exposes `AutomationId` as the Android `contentDescription`. Espresso therefore uses `withContentDescription`:
+MAUI can expose `AutomationId` as either Android `contentDescription` or `resource-id`. Use the shared matcher instead of selecting either native representation directly:
 
 ```kotlin
-onView(withContentDescription("screen_home"))
+onView(AutomationIdMatcher.withAutomationId("screen_home"))
     .check(matches(isDisplayed()))
 ```
 
@@ -30,6 +30,7 @@ neuroaccessespressoautomationtests/
 ├── framework/    # App startup and Espresso wait helpers
 ├── helper/       # Test OTP helper
 ├── onboarding/   # Test classes
+├── options/      # Language options and Change PIN test phases
 └── screens/      # Reusable screen objects
 ```
 
@@ -37,6 +38,7 @@ neuroaccessespressoautomationtests/
 | --- | --- |
 | `BaseTest` | Starts NeuroAccess through its real `MainActivity`. |
 | `NeuroAccessApp` | Creates an explicit launcher intent for the application under test. |
+| `AutomationIdMatcher` | Matches MAUI AutomationIds exposed as Android content descriptions or resource IDs. |
 | `ScreenWaiter` | Waits for an AutomationId to be displayed instead of using arbitrary delays. |
 | `screens/` | Groups selectors and UI interactions by screen. |
 | `TestData` | Reads the test phone number, PIN, and timestamp from the test configuration. |
@@ -57,6 +59,7 @@ Create the file `tests/mobile/andriod/ui/.env` locally:
 ```dotenv
 NEUROACCESS_TEST_PHONE_NUMBER="<digits-only-test-number>"
 NEUROACCESS_TEST_PIN="<six-digit-test-pin>"
+NEUROACCESS_TEST_NEW_PIN="<different-six-digit-test-pin>"
 NEUROACCESS_TEST_OTP_ENDPOINT="<internal-test-otp-endpoint>"
 ```
 
@@ -185,7 +188,45 @@ ID Provider
   → Home
 ```
 
-The username is generated with a timestamp, and the test OTP is retrieved from the locally configured test endpoint. The phone number, PIN, and endpoint should therefore not be hard-coded in the test classes.
+The username is generated with a timestamp, and the test OTP is retrieved from the locally configured test endpoint. The phone number, current PIN, new PIN, and endpoint should therefore not be hard-coded in the test classes.
+
+## Options flows
+
+Run **Language options - cold start** from Android Studio's Run configurations, or run:
+
+```powershell
+.\gradlew.bat :app:languageOptionsColdStartTest
+```
+
+Deploy the MAUI application to the selected device once before running the task. The task keeps that ABI-compatible installation, installs only the instrumentation APK, clears NeuroAccess storage before each language, selects the language in one instrumentation process, force-stops the application, and verifies three translated strings on the ID Provider screen in a new process. Connect exactly one device, or pass `-PdeviceSerial=<serial>`. The combined HTML report is written to `app/build/reports/androidTests/language-options-cold-start/index.html` and the JUnit XML report is written next to it under `app/build/reports/androidTests/results`.
+
+### Full Android suite
+
+All complete flow tests are orchestrated by:
+
+```text
+C:\dev\Neuro-Access\NeuroAccessMaui\tests\mobile\andriod\ui\scripts\run-full-test-suite.ps1
+```
+
+The script requires resolved ADB, test-APK, report-directory, and optional device parameters. The recommended entry point is therefore **Full Android test suite** from Android Studio's Run configurations, or this Gradle command from `tests/mobile/andriod/ui`:
+
+```powershell
+.\gradlew.bat :app:fullAndroidTestSuite
+```
+
+The Gradle task builds the instrumentation APK and invokes `run-full-test-suite.ps1` with the required paths and environment configuration. Do not run dependent flow classes separately from the Android Studio gutter when validating the complete suite because account and identity state must be preserved between them.
+
+The suite runs all 12 language cold-start checks and the standalone ID-provider navigation test with clean application storage. It then clears storage once and preserves state through the dependent chain `RegistrationFlowTest` → `PersonalIdApplicationFlowTest` → `ChangePinFlowTest`. A failed prerequisite marks its dependent flows as skipped instead of producing misleading failures. `NEUROACCESS_TEST_NEW_PIN` is optional for this suite; when omitted, a different six-digit PIN is derived from `NEUROACCESS_TEST_PIN`. The combined HTML report is written to `app/build/reports/androidTests/full-suite/index.html`; JUnit XML is written to `app/build/reports/androidTests/results/TEST-full-android-test-suite.xml`.
+
+`ChangePinFlowTest` expects an existing account with a personal identity. It authenticates with `NEUROACCESS_TEST_PIN`, changes to `NEUROACCESS_TEST_NEW_PIN`, and verifies that the current authenticated session can open the identity directly. The runner then performs `adb force-stop`, verifies that the application process has ended, returns to the Android home screen, waits briefly, starts a fresh instrumentation process, and verifies that the identity can be unlocked with `NEUROACCESS_TEST_NEW_PIN`.
+
+For focused troubleshooting, use **Options → Change PIN** from Android Studio's Run configurations, or run:
+
+```powershell
+.\gradlew.bat :app:changePinTest
+```
+
+The focused task preserves the existing account and identity state. Both `NEUROACCESS_TEST_PIN` and `NEUROACCESS_TEST_NEW_PIN` are required. If a failed run already completed the PIN change, update the environment values before rerunning so `NEUROACCESS_TEST_PIN` contains the PIN currently stored on the device.
 
 ## Device-dependent UI
 
@@ -214,7 +255,7 @@ button_send_phone_code
 ## Contributing new tests
 
 1. Check [UI_IDS.md](UI_IDS.md) first.
-2. Use an existing AutomationId when available.
+2. Use an existing AutomationId through `AutomationIdMatcher` when available.
 3. Add a stable, descriptive AutomationId when one is missing.
 4. Document the new identifier in `UI_IDS.md`.
 5. Add selectors and actions to the appropriate screen object under `screens/`.

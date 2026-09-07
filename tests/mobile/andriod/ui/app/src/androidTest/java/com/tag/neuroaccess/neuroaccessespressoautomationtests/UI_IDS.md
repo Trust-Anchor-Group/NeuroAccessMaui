@@ -1,6 +1,6 @@
 # NeuroAccess Espresso UI IDs
 
-Espresso locates MAUI `AutomationId` values through Android `contentDescription`.
+MAUI can expose an `AutomationId` as either Android `contentDescription` or `resource-id`, depending on the control and handler. Tests must use the shared `AutomationIdMatcher` and `ScreenWaiter` helpers so both representations are supported.
 
 ## ID Provider
 
@@ -8,6 +8,26 @@ Espresso locates MAUI `AutomationId` values through Android `contentDescription`
 | --- | --- |
 | Screen | `screen_onboarding_id_provider` |
 | Select for me | `button_id_provider_select_for_me` |
+| Change language | `button_onboarding_language` |
+| Language selector | `popup_select_language` |
+
+Language options follow the `option_language_<ISO-639-1>` convention, for example `option_language_en` and `option_language_sv`.
+
+## Settings
+
+| Element | UI ID |
+| --- | --- |
+| Screen | `screen_settings` |
+| Open settings from Home | `button_home_settings` |
+| Change PIN | `button_settings_change_pin` |
+
+## PIN Authentication
+
+| Element | UI ID |
+| --- | --- |
+| Popup | `popup_pin_authentication` |
+| PIN input | `input_authentication_pin` |
+| Confirm | `button_authentication_pin_confirm` |
 
 ## Phone Verification
 
@@ -88,3 +108,34 @@ This covers the app's own permission popup. Android's system permission dialog i
 | Element | UI ID |
 | --- | --- |
 | Screen | `screen_home` |
+| Show ID | `button_home_show_id` |
+
+## View Identity
+
+| Element | UI ID |
+| --- | --- |
+| Screen | `screen_view_identity` |
+
+## Change PIN flow mapping
+
+The Change PIN flow uses these IDs in order:
+
+```text
+screen_home
+  → button_home_settings
+  → screen_settings
+  → button_settings_change_pin
+  → popup_pin_authentication
+  → input_authentication_pin
+  → button_authentication_pin_confirm
+  → screen_create_pin
+  → input_new_pin
+  → input_confirm_pin
+  → button_create_pin
+  → screen_success
+  → button_continue_success
+  → button_home_show_id
+  → screen_view_identity
+```
+
+After the PIN is changed, the current authenticated session permits the first identity opening without another PIN prompt. The full-suite runner then force-stops the application, verifies that its process has ended, returns to the Android home screen, and relaunches it. The subsequent identity opening uses `popup_pin_authentication` and verifies `NEUROACCESS_TEST_NEW_PIN`.
