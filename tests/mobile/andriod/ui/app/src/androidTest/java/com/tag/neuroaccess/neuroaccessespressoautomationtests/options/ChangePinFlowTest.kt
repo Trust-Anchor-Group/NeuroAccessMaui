@@ -43,15 +43,13 @@ class ChangePinFlowTest : BaseTest() {
 
     @Test
     fun verifyChangedPinAfterColdStart() {
+        val oldPin = TestData.pin()
         val newPin = TestData.newPin()
         HomeScreen.assertDisplayed()
-        this.openIdentityWithPin(newPin)
-    }
-
-    private fun openIdentityWithPin(pin: String) {
         HomeScreen.openPersonalIdAndWaitForPinPrompt()
         PinAuthenticationPopup.assertDisplayed()
-        PinAuthenticationPopup.enterPinAndWaitFor(pin, ViewIdentityScreen.SCREEN)
+        PinAuthenticationPopup.enterPinAndExpectRejection(oldPin)
+        PinAuthenticationPopup.enterPinAndWaitFor(newPin, ViewIdentityScreen.SCREEN)
         ViewIdentityScreen.assertDisplayed()
     }
 }
