@@ -36,6 +36,7 @@
                                 SvgSource="globe.svg"
                                 Style="{DynamicResource IconButton}"
                                 Command="{Binding ChangeLanguageCommand}"
+                                AutomationId="button_onboarding_language"
                                 LabelText="{Binding SelectedLanguage.MyNativeName}"
                                 LabelPosition="Left"
                                 HorizontalOptions="End"

@@ -49,6 +49,8 @@
 			  ColumnDefinitions="auto, *,auto">
 
 			<controls:SvgButton Command="{Binding ShowSettingsCommand}"
+								AutomationId="button_home_settings"
+								SemanticProperties.Description="button_home_settings"
 								SvgSource="cog.svg"
 								Style="{DynamicResource IconButton}" />
 
@@ -210,6 +212,8 @@
 
 			<!-- Show ID Button -->
 			<controls:TemplatedButton Grid.Column="1"
+									  AutomationId="button_home_show_id"
+									  SemanticProperties.Description="button_home_show_id"
 									  Command="{x:Binding ViewIdCommand}">
 				<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 						InputTransparent="True"

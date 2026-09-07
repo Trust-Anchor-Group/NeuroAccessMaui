@@ -12,7 +12,9 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
+	<Grid AutomationId="screen_settings"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		  RowDefinitions="auto, *">
 
 		<controls:Background Grid.RowSpan="2"/>
 
@@ -114,7 +116,10 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
 						<!-- Change Password -->
-						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangePasswordCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill"
+											  AutomationId="button_settings_change_pin"
+											  SemanticProperties.Description="button_settings_change_pin"
+											  Command="{x:Binding ChangePasswordCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>

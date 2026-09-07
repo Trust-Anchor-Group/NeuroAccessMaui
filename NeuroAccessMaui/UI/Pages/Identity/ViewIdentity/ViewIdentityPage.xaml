@@ -258,7 +258,8 @@
         </Style>
     </VisualElement.Resources>
 
-    <Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+    <Grid AutomationId="screen_view_identity"
+          BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
         <Grid.RowDefinitions>
             <!--  top bar  -->
             <RowDefinition Height="auto" />
