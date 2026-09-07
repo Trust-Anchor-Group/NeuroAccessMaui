@@ -1503,6 +1503,28 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
+		/// Computes the BAC KS_Enc key from the KSeed derived from the BAC challenge-response.
+		/// Ref: Appendix §D.2
+		/// </summary>
+		/// <param name="KSeed">KSeed derived from the BAC challenge-response</param>
+		/// <returns>KS_Enc key</returns>
+		public static byte[] BAC_KSEnc(byte[] KSeed)
+		{
+			return KDF(KSeed, 1, true, Hashes.ComputeSHA1Hash, 16);
+		}
+
+		/// <summary>
+		/// Computes the BAC KS_Mac key from the KSeed derived from the BAC challenge-response.
+		/// Ref: Appendix §D.2
+		/// </summary>
+		/// <param name="KSeed">KSeed derived from the BAC challenge-response</param>
+		/// <returns>KS_Mac key</returns>
+		public static byte[] BAC_KSMac(byte[] KSeed)
+		{
+			return KDF(KSeed, 2, true, Hashes.ComputeSHA1Hash, 16);
+		}
+
+		/// <summary>
 		/// Get PACE Nonce
 		/// </summary>
 		/// <returns>Nonce</returns>
@@ -1714,9 +1736,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Send Response to challenge (§7.1.5.4, §D.3)
 		/// </summary>
 		/// <param name="ChallengeResponse">ChallengeResponse.</param>
-		/// <returns>E.IC and M.IC</returns>
-		private async Task<KeyValuePair<byte[]?, byte[]?>> ExternalBacAuthenticate(byte[] ChallengeResponse)
+		/// <param name="DocumentInformation">Travel document information.</param>
+		/// <returns>If BAC authentication was successful.</returns>
+		private async Task<bool> ExternalBacAuthenticate(byte[] ChallengeResponse,
+			DocumentInformation DocumentInformation)
 		{
+			if (ChallengeResponse.Length != 40)
+			{
+				this.Error("Calculated challenge response has invalid length.");
+				return false;
+			}
+
 			await this.SetState(TravelDocumentsState.RespondingToChallenge);
 
 			this.Information("ChallengeResponse");
@@ -1738,21 +1768,40 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[] Response = await this.ExecuteCommand(Command);
 
 			if (!this.CheckResponse(Response))
-				return new KeyValuePair<byte[]?, byte[]?>(null, null);
+				return false;
 
 			if (Response.Length != 42 || Response[40] != 0x90 || Response[41] != 0x00)
 			{
 				this.Error("Unexpected response received.");
-				return new KeyValuePair<byte[]?, byte[]?>(null, null);
+				return false;
 			}
 
-			byte[] EIC = new byte[32];
-			byte[] MIC = new byte[8];
+			byte[] ResponseData = new byte[40];
+			Buffer.BlockCopy(Response, 0, ResponseData, 0, 40);
 
-			Buffer.BlockCopy(Response, 0, EIC, 0, 32);
-			Buffer.BlockCopy(Response, 32, MIC, 0, 8);
+			byte[] Challenge = new byte[8];
+			Buffer.BlockCopy(ChallengeResponse, 8, Challenge, 0, 8);
 
-			return new KeyValuePair<byte[]?, byte[]?>(EIC, MIC);
+			byte[] KIFD = new byte[16];
+			Buffer.BlockCopy(ChallengeResponse, 16, KIFD, 0, 16);
+
+			byte[] KEnc = BAC_KEnc(DocumentInformation);
+			byte[] KMac = BAC_KMac(DocumentInformation);
+
+			if (!AuthenticateBacResponseData(ResponseData, Challenge, KIFD, KEnc, KMac,
+				out _, out byte[]? KSEnc, out byte[]? KSMac, out byte[]? Ssc))
+			{
+				this.Error("Unable to authenticate BAC response data.");
+				return false;
+			}
+
+			this.ks_Enc = KSEnc;
+			this.ks_Mac = KSMac;
+			this.sendSequenceCounter = Ssc;
+			this.encrypted = true;
+			this.enhancedSecurity = false;
+
+			return true;
 		}
 
 		/// <summary>
@@ -1813,21 +1862,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 
 				byte[] ChallengeResponse = CalcChallengeResponse3DES(this.documentInformation, Challenge);
-				KeyValuePair<byte[]?, byte[]?> Result = await this.ExternalBacAuthenticate(ChallengeResponse);
-				byte[]? EIC = Result.Key;   // E.IC
-				byte[]? MIC = Result.Value; // M.IC
-
-				if (EIC is null || MIC is null)
+				if (!await this.ExternalBacAuthenticate(ChallengeResponse, this.documentInformation))
 				{
 					this.Error("Unable to complete BAC authentication.");
 					return AuthenticateResult.UnableToAuthenticateBac;
 				}
 
-				this.Error("BAC not implemented.");
-
-				// TODO: Implement/Test BAC
-
-				return AuthenticateResult.BacNotImplemented;
+				this.Information("KS_Enc: " + Hashes.BinaryToString(this.ks_Enc));
+				this.Information("KS_Mac: " + Hashes.BinaryToString(this.ks_Mac));
+				this.Information("SSC: " + Hashes.BinaryToString(this.sendSequenceCounter));
 			}
 
 			return AuthenticateResult.Success;
@@ -1863,7 +1906,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="KEnc">Encryption Key</param>
 		/// <param name="KMac">MAC Key</param>
 		/// <returns>Response</returns>
-		public static byte[] CalcChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
+		public static byte[] CalcBacChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
 			byte[] KEnc, byte[] KMac)
 		{
 			byte[] S = CONCAT(Rnd1, Challenge, Rnd2);   // RND.IFD || RND.IC || K.IFD
@@ -1879,6 +1922,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				EIFD = Encryptor.TransformFinalBlock(S, 0, 32);
 			}
 
+			MIFD = CalcBacMac(EIFD, KEnc, KMac);
+
+			return CONCAT(EIFD, MIFD);
+		}
+
+		public static byte[] CalcBacMac(byte[] EIFD, byte[] KEnc, byte[] KMac)
+		{
 			// MAC Algorithm described in ISO/IEC 9797-1
 			// Ref: https://en.wikipedia.org/wiki/ISO/IEC_9797-1
 
@@ -1929,10 +1979,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					H = Encryptor2.TransformFinalBlock(H, 0, 8);
 				}
 
-				MIFD = H;
+				return H;
 			}
-
-			return CONCAT(EIFD, MIFD);
 		}
 
 		/// <summary>
@@ -1952,7 +2000,80 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				Rnd.GetBytes(Rnd2);
 			}
 
-			return CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, BAC_KEnc(Info), BAC_KMac(Info));
+			return CalcBacChallengeResponse3DES(Challenge, Rnd1, Rnd2, BAC_KEnc(Info), BAC_KMac(Info));
+		}
+
+		/// <summary>
+		/// Authenticates a BAC response data and returns the E.IC and M.IC values, if valid.
+		/// </summary>
+		/// <param name="ResponseData">Response data returned from IC.</param>
+		/// <param name="Challenge">Original challenge</param>
+		/// <param name="KIFD">K.IFD random number</param>
+		/// <param name="KEnc">Encryption Key</param>
+		/// <param name="KMac">MAC Key</param>
+		/// <param name="KIC">K.IC random number</param>
+		/// <param name="KSEnc">Session encryption key</param>
+		/// <param name="KSMac">Session MAC key</param>
+		/// <param name="Ssn">Send Sequence Counter</param>
+		/// <returns>KeyValuePair containing E.IC and M.IC values, if valid, null if not.</returns>
+		public static bool AuthenticateBacResponseData(byte[] ResponseData, byte[] Challenge,
+			byte[] KIFD, byte[] KEnc, byte[] KMac, [NotNullWhen(true)] out byte[]? KIC,
+			[NotNullWhen(true)] out byte[]? KSEnc, [NotNullWhen(true)] out byte[]? KSMac,
+			[NotNullWhen(true)] out byte[]? Ssc)
+		{
+			KIC = null;
+			KSEnc = null;
+			KSMac = null;
+			Ssc = null;
+
+			if (ResponseData.Length != 40 || Challenge.Length != 8)
+				return false;
+
+			byte[] Response = ResponseData;
+			byte[] EIC = new byte[32];
+			byte[] MIC = new byte[8];
+
+			Buffer.BlockCopy(Response, 0, EIC, 0, 32);
+			Buffer.BlockCopy(Response, 32, MIC, 0, 8);
+
+			byte[] MIFD = CalcBacMac(EIC, KEnc, KMac);
+			int i;
+
+			for (i = 0; i < 8; i++)
+			{
+				if (MIFD[i] != ResponseData[32 + i])
+					return false;
+			}
+
+			using (TripleDES Cipher = TripleDES.Create())
+			{
+				Cipher.Mode = CipherMode.CBC;
+				Cipher.Padding = PaddingMode.None;
+
+				using ICryptoTransform Encryptor = Cipher.CreateDecryptor(KEnc, new byte[8]);
+				byte[] Decrypted = Encryptor.TransformFinalBlock(EIC, 0, 32);
+
+				for (i = 0; i < 8; i++)
+				{
+					if (Decrypted[i] != Challenge[i])
+						return false;
+				}
+
+				KIC = new byte[16];
+				Buffer.BlockCopy(Decrypted, 16, KIC, 0, 16);
+
+				byte[] KSeed = XOR(KIFD, KIC);
+
+				KSEnc = BAC_KSEnc(KSeed);
+				KSMac = BAC_KSMac(KSeed);
+
+				Ssc = new byte[8];   // Send sequence counter
+
+				Buffer.BlockCopy(Challenge, Challenge.Length - 4, Ssc, 0, 4);
+				Buffer.BlockCopy(Decrypted, 12, Ssc, 4, 4);
+			}
+
+			return true;
 		}
 
 		/// <summary>

@@ -32,6 +32,9 @@ namespace NeuroAccess.Nfc.Test
 				typeof(ISignatureAlgorithm).Assembly,
 				typeof(EllipticCurve).Assembly);
 
+			if (Directory.Exists("Data"))
+				Directory.Delete("Data", true);
+
 			filesProvider = await FilesProvider.CreateAsync("Data", "Default", 8192, 10000, 8192, Encoding.UTF8, 10000, true);
 			Database.Register(filesProvider);
 
@@ -45,6 +48,7 @@ namespace NeuroAccess.Nfc.Test
 
 			if (filesProvider is not null)
 			{
+				await filesProvider.Flush();
 				await filesProvider.DisposeAsync();
 				filesProvider = null;
 			}
