@@ -271,13 +271,15 @@ namespace NeuroAccess.Nfc.Test
 			byte[]? KIC;
 			byte[]? KSEnc;
 			byte[]? KSMac;
+			byte[]? Ssc;
 
 			Assert.IsTrue(TravelDocumentsClient.AuthenticateBacResponseData(RespData, Challenge, Rnd2,
-				KEnc, KMac, out KIC, out KSEnc, out KSMac));
+				KEnc, KMac, out KIC, out KSEnc, out KSMac, out Ssc));
 
 			Assert.IsNotNull(KIC);
 			Assert.IsNotNull(KSEnc);
 			Assert.IsNotNull(KSMac);
+			Assert.IsNotNull(Ssc);
 
 			Assert.AreEqual("0B4F80323EB3191CB04970CB4052790B",
 				Hashes.BinaryToString(KIC).ToUpper(CultureInfo.InvariantCulture));
@@ -287,6 +289,9 @@ namespace NeuroAccess.Nfc.Test
 
 			Assert.AreEqual("F1CB1F1FB5ADF208806B89DC579DC1F8",
 				Hashes.BinaryToString(KSMac).ToUpper(CultureInfo.InvariantCulture));
+
+			Assert.AreEqual("887022120C06C226",
+				Hashes.BinaryToString(Ssc).ToUpper(CultureInfo.InvariantCulture));
 
 			/* IC part:
 			
