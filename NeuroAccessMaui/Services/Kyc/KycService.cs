@@ -1325,7 +1325,8 @@ namespace NeuroAccessMaui.Services.Kyc
 				{
 					SKImageInfo Info = Bmp.Info;
 					SKImageInfo Ni = new(W, H, Info.ColorType, Info.AlphaType, Info.ColorSpace);
-					SKBitmap? Resized = Bmp.Resize(Ni, SKFilterQuality.High);
+					SKSamplingOptions Options = new(SKCubicResampler.Mitchell);   // cf. SKFilterQuality.High
+					SKBitmap? Resized = Bmp.Resize(Ni, Options);
 					if (Resized is not null) { Bmp.Dispose(); Bmp = Resized; }
 				}
 				byte[] Bytes2;

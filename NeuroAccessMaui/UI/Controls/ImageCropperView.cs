@@ -807,45 +807,45 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>
 		/// Resizes the provided bitmap if it exceeds the specified maximum dimensions.
 		/// </summary>
-		/// <param name="sourceBitmap">The source bitmap.</param>
-		/// <param name="maxWidth">The maximum allowed width.</param>
-		/// <param name="maxHeight">The maximum allowed height.</param>
+		/// <param name="SourceBitmap">The source bitmap.</param>
+		/// <param name="MaxWidth">The maximum allowed width.</param>
+		/// <param name="MaxHeight">The maximum allowed height.</param>
 		/// <returns>
 		/// The original bitmap if no resizing is needed; otherwise, a new resized <see cref="SKBitmap"/>.
 		/// </returns>
-		private static SKBitmap ResizeBitmapIfNeeded(SKBitmap sourceBitmap, int maxWidth, int maxHeight)
+		private static SKBitmap ResizeBitmapIfNeeded(SKBitmap SourceBitmap, int MaxWidth, int MaxHeight)
 		{
-			if (sourceBitmap is null || maxWidth <= 0 || maxHeight <= 0)
+			if (SourceBitmap is null || MaxWidth <= 0 || MaxHeight <= 0)
 				return new SKBitmap(1, 1);
 
-			int width = sourceBitmap.Width;
-			int height = sourceBitmap.Height;
+			int Width = SourceBitmap.Width;
+			int Height = SourceBitmap.Height;
 
-			if (width <= maxWidth && height <= maxHeight)
+			if (Width <= MaxWidth && Height <= MaxHeight)
 			{
-				return sourceBitmap;
+				return SourceBitmap;
 			}
 
-			float widthRatio = (float)maxWidth / width;
-			float heightRatio = (float)maxHeight / height;
-			float scale = Math.Min(widthRatio, heightRatio);
+			float WidthRatio = (float)MaxWidth / Width;
+			float HeightRatio = (float)MaxHeight / Height;
+			float Scale = Math.Min(WidthRatio, HeightRatio);
 
-			int newWidth = (int)(width * scale);
-			int newHeight = (int)(height * scale);
+			int NewWidth = (int)(Width * Scale);
+			int NewHeight = (int)(Height * Scale);
 
-			SKBitmap resized = new SKBitmap(newWidth, newHeight, sourceBitmap.ColorType, sourceBitmap.AlphaType);
-			using SKCanvas canvas = new SKCanvas(resized);
-			using SKPaint paint = new SKPaint
+			SKBitmap Resized = new(NewWidth, NewHeight, SourceBitmap.ColorType, SourceBitmap.AlphaType);
+			using SKCanvas Canvas = new(Resized);
+			SKSamplingOptions Options = new(SKCubicResampler.Mitchell);   // cf. SKFilterQuality.High
+			using SKPaint Paint = new()
 			{
-				FilterQuality = SKFilterQuality.High,
 				IsAntialias = true
 			};
 
-			SKRect srcRect = new SKRect(0, 0, width, height);
-			SKRect destRect = new SKRect(0, 0, newWidth, newHeight);
-			canvas.DrawBitmap(sourceBitmap, srcRect, destRect, paint);
+			SKRect SrcRect = new(0, 0, Width, Height);
+			SKRect DestRect = new(0, 0, NewWidth, NewHeight);
+			Canvas.DrawBitmap(SourceBitmap, SrcRect, DestRect, Options, Paint);
 
-			return resized;
+			return Resized;
 		}
 
 		#endregion

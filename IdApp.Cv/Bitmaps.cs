@@ -91,10 +91,11 @@ namespace IdApp.Cv
 				using SKSurface Surface = SKSurface.Create(new SKImageInfo(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
 				SKCanvas Canvas = Surface.Canvas;
 				Canvas.DrawBitmap(Bmp, new SKRect(0, 0, Bmp.Width, Bmp.Height),
-					new SKRect(0, 0, Width, Height), new SKPaint()
+					new SKRect(0, 0, Width, Height),
+					new SKSamplingOptions(SKCubicResampler.Mitchell),   // cf. SKFilterQuality.High
+					new SKPaint()
 					{
-						IsAntialias = true,
-						FilterQuality = SKFilterQuality.High
+						IsAntialias = true
 					});
 
 
