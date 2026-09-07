@@ -102,7 +102,8 @@
 			<controls:ConditionView Condition="{Binding ThemeLoaded}"
 									VerticalOptions="End">
 				<controls:ConditionView.True>
-					<controls:UriImage Source="{Binding BannerUri}"
+					<controls:UriImage AutomationId="image_home_banner"
+                                       Source="{Binding BannerUri}"
 									   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
 									   Grid.Row="0"
 									   HeightRequest="230"

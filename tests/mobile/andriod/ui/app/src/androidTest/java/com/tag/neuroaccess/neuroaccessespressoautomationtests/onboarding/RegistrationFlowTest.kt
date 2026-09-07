@@ -50,7 +50,7 @@ class RegistrationFlowTest : BaseTest() {
         }
 
         SuccessScreen.continueToHome()
-        NotificationPermissionPopup.dismissIfDisplayed()
+        NotificationPermissionPopup.dismissAfterRegistration()
         HomeScreen.assertDisplayed()
     }
 }
