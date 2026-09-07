@@ -210,6 +210,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 #if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 						this.debugSniffer = new RemoteSniffer(debugRecipient, DateTime.MaxValue, this.xmppClient, this.xmppClient,
 							ConcentratorServer.NamespaceConcentratorCurrent);
+						this.debugSniffer.DisableMask();
 #endif
 #if DEBUG_XMPP_REMOTE
 						this.xmppClient.Add(this.debugSniffer);
