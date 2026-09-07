@@ -83,7 +83,10 @@ function Invoke-ReportedTest {
         try {
             Stop-AndroidApplication -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage
         } catch {
-            $Output = "$Output`n`nCleanup force-stop failed: $($_.Exception.Message)"
+            $Status = "FAILED"
+            $CleanupMessage = "Cleanup force-stop failed: $($_.Exception.Message)"
+            $Message = (@($Message, $CleanupMessage) | Where-Object { $_ }) -join "`n"
+            $Output = "$Output`n`n$CleanupMessage"
         }
     }
 
@@ -122,7 +125,10 @@ function Invoke-ReportedLanguageTest {
         try {
             Stop-AndroidApplication -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage
         } catch {
-            $Outputs.Add("Cleanup force-stop failed: $($_.Exception.Message)")
+            $Status = "FAILED"
+            $CleanupMessage = "Cleanup force-stop failed: $($_.Exception.Message)"
+            $Message = (@($Message, $CleanupMessage) | Where-Object { $_ }) -join "`n"
+            $Outputs.Add($CleanupMessage)
         }
     }
 
@@ -141,42 +147,95 @@ function Add-SkippedTest {
     Write-Host "$Name SKIPPED: $Reason" -ForegroundColor Yellow
 }
 
-$StatefulTestArguments = Get-StatefulTestArguments
-$script:SelectedDeviceSerial = Initialize-AndroidTestDevice -AdbPath $AdbPath -TestApkPath $TestApkPath -ApplicationPackage $ApplicationPackage -RequestedDeviceSerial $DeviceSerial
-
-foreach ($LanguageCode in $LanguageCodes) {
-    Write-Host "`n=== Language cold start: $LanguageCode ==="
-    Invoke-ReportedLanguageTest -LanguageCode $LanguageCode
-}
-
-Write-Host "`n=== Standalone onboarding smoke test ==="
-Clear-AndroidApplicationStorage -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage | Out-Null
-Invoke-ReportedTest -Group "Standalone onboarding" -Name "ID provider navigation" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest#selectForMeNavigatesToPhoneVerification" | Out-Null
-
-Write-Host "`n=== Stateful account and identity chain ==="
-Clear-AndroidApplicationStorage -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage | Out-Null
-$RegistrationPassed = Invoke-ReportedTest -Group "Account and identity chain" -Name "Registration" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest#testUserCompletesRegistrationAndReachesHomePage" -InstrumentationArguments $StatefulTestArguments
-if ($RegistrationPassed) {
-    $PersonalIdPassed = Invoke-ReportedTest -Group "Account and identity chain" -Name "Personal ID application" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.identity.PersonalIdApplicationFlowTest#testUserAppliesForPersonalId" -InstrumentationArguments $StatefulTestArguments
-} else {
-    Add-SkippedTest -Group "Account and identity chain" -Name "Personal ID application" -Reason "Registration failed, so the required account state was unavailable."
-    $PersonalIdPassed = $false
-}
-
-if ($PersonalIdPassed) {
-    $ChangePinPassed = Invoke-ReportedTest -Group "Account and identity chain" -Name "Change PIN" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.options.ChangePinFlowTest#changePinAndVerifyIdentityBeforeColdStart" -InstrumentationArguments $StatefulTestArguments
-    if ($ChangePinPassed) {
-        Prepare-AndroidApplicationColdStart -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage
-        Invoke-ReportedTest -Group "Account and identity chain" -Name "Change PIN cold-start verification" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.options.ChangePinFlowTest#verifyChangedPinAfterColdStart" -InstrumentationArguments $StatefulTestArguments | Out-Null
-    } else {
-        Add-SkippedTest -Group "Account and identity chain" -Name "Change PIN cold-start verification" -Reason "Changing the PIN failed, so the new PIN could not be verified after force-stop."
+$RunId = [DateTime]::UtcNow.ToString("yyyyMMddTHHmmssfffZ") + "-" + [guid]::NewGuid().ToString("N").Substring(0, 8)
+$SuiteName = "NeuroAccess full Android test suite (run $RunId)"
+$script:SelectedDeviceSerial = $null
+$SuiteAborted = $false
+$CurrentStage = "Initialize reports"
+$PlannedTests = @(
+    foreach ($LanguageCode in $LanguageCodes) {
+        [PSCustomObject]@{ Group = "Language options cold start"; Name = $LanguageCode }
     }
-} else {
-    Add-SkippedTest -Group "Account and identity chain" -Name "Change PIN" -Reason "Personal ID application failed, so the required identity state was unavailable."
-    Add-SkippedTest -Group "Account and identity chain" -Name "Change PIN cold-start verification" -Reason "Personal ID application failed, so the required identity state was unavailable."
+    [PSCustomObject]@{ Group = "Standalone onboarding"; Name = "ID provider navigation" }
+    foreach ($Name in @("Registration", "Personal ID application", "Change PIN", "Change PIN cold-start verification")) {
+        [PSCustomObject]@{ Group = "Account and identity chain"; Name = $Name }
+    }
+)
+
+try {
+    # Replace previous reports before setup so an interrupted run cannot look like an old success.
+    $PendingResult = New-AndroidAutomationResult -Group "Infrastructure" -Name "Run incomplete" -Status "FAILED" -Message "Run $RunId has started but has no final result yet."
+    Write-AndroidAutomationReports -Results @($PendingResult) -SuiteName $SuiteName -ReportDirectory $ReportDirectory -ReportFileStem "full-android-test-suite"
+
+    $CurrentStage = "Read test configuration"
+    $StatefulTestArguments = Get-StatefulTestArguments
+    $CurrentStage = "Initialize Android device"
+    $script:SelectedDeviceSerial = Initialize-AndroidTestDevice -AdbPath $AdbPath -TestApkPath $TestApkPath -ApplicationPackage $ApplicationPackage -RequestedDeviceSerial $DeviceSerial
+
+    foreach ($LanguageCode in $LanguageCodes) {
+        Write-Host "`n=== Language cold start: $LanguageCode ==="
+        $CurrentStage = "Language cold start: $LanguageCode"
+        Invoke-ReportedLanguageTest -LanguageCode $LanguageCode
+    }
+
+    $CurrentStage = "Prepare standalone onboarding"
+    Write-Host "`n=== Standalone onboarding smoke test ==="
+    Clear-AndroidApplicationStorage -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage | Out-Null
+    Invoke-ReportedTest -Group "Standalone onboarding" -Name "ID provider navigation" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest#selectForMeNavigatesToPhoneVerification" | Out-Null
+
+    $CurrentStage = "Prepare account and identity chain"
+    Write-Host "`n=== Stateful account and identity chain ==="
+    Clear-AndroidApplicationStorage -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage | Out-Null
+    $RegistrationPassed = Invoke-ReportedTest -Group "Account and identity chain" -Name "Registration" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest#testUserCompletesRegistrationAndReachesHomePage" -InstrumentationArguments $StatefulTestArguments
+    if ($RegistrationPassed) {
+        $PersonalIdPassed = Invoke-ReportedTest -Group "Account and identity chain" -Name "Personal ID application" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.identity.PersonalIdApplicationFlowTest#testUserAppliesForPersonalId" -InstrumentationArguments $StatefulTestArguments
+    } else {
+        Add-SkippedTest -Group "Account and identity chain" -Name "Personal ID application" -Reason "Registration failed, so the required account state was unavailable."
+        $PersonalIdPassed = $false
+    }
+
+    if ($PersonalIdPassed) {
+        $ChangePinPassed = Invoke-ReportedTest -Group "Account and identity chain" -Name "Change PIN" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.options.ChangePinFlowTest#changePinAndVerifyIdentityBeforeColdStart" -InstrumentationArguments $StatefulTestArguments
+        if ($ChangePinPassed) {
+            $CurrentStage = "Prepare PIN cold-start verification"
+            Prepare-AndroidApplicationColdStart -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage
+            Invoke-ReportedTest -Group "Account and identity chain" -Name "Change PIN cold-start verification" -TestSelector "com.tag.neuroaccess.neuroaccessespressoautomationtests.options.ChangePinFlowTest#verifyChangedPinAfterColdStart" -InstrumentationArguments $StatefulTestArguments | Out-Null
+        } else {
+            Add-SkippedTest -Group "Account and identity chain" -Name "Change PIN cold-start verification" -Reason "Changing the PIN failed, so the new PIN could not be verified after force-stop."
+        }
+    } else {
+        Add-SkippedTest -Group "Account and identity chain" -Name "Change PIN" -Reason "Personal ID application failed, so the required identity state was unavailable."
+        Add-SkippedTest -Group "Account and identity chain" -Name "Change PIN cold-start verification" -Reason "Personal ID application failed, so the required identity state was unavailable."
+    }
+} catch {
+    $SuiteAborted = $true
+    $FailureMessage = $_.Exception.Message
+    $TestResults.Add(
+        (New-AndroidAutomationResult -Group "Infrastructure" -Name $CurrentStage -Status "FAILED" -Message $FailureMessage -Output $FailureMessage)
+    )
+    Write-Host ("Suite aborted during {0}: {1}" -f $CurrentStage, $FailureMessage) -ForegroundColor Red
+} finally {
+    if ($SuiteAborted -and -not [string]::IsNullOrWhiteSpace($script:SelectedDeviceSerial)) {
+        try {
+            Stop-AndroidApplication -AdbPath $AdbPath -DeviceSerial $script:SelectedDeviceSerial -ApplicationPackage $ApplicationPackage
+        } catch {
+            $CleanupMessage = $_.Exception.Message
+            $TestResults.Add(
+                (New-AndroidAutomationResult -Group "Infrastructure" -Name "Abort cleanup" -Status "FAILED" -Message $CleanupMessage -Output $CleanupMessage)
+            )
+        }
+    }
+    foreach ($PlannedTest in $PlannedTests) {
+        $ExistingResults = @($TestResults | Where-Object {
+            $_.Group -eq $PlannedTest.Group -and $_.Name -eq $PlannedTest.Name
+        })
+        if ($ExistingResults.Count -eq 0) {
+            Add-SkippedTest -Group $PlannedTest.Group -Name $PlannedTest.Name -Reason "Suite aborted during $CurrentStage before this test could complete."
+        }
+    }
+    Write-AndroidAutomationReports -Results $TestResults.ToArray() -SuiteName $SuiteName -ReportDirectory $ReportDirectory -ReportFileStem "full-android-test-suite"
 }
 
-Write-AndroidAutomationReports -Results $TestResults.ToArray() -SuiteName "NeuroAccess full Android test suite" -ReportDirectory $ReportDirectory -ReportFileStem "full-android-test-suite"
 $FailedTestCount = @($TestResults | Where-Object { $_.Status -eq "FAILED" }).Count
 if ($FailedTestCount -gt 0) {
     Write-Host "$FailedTestCount full-suite test(s) failed." -ForegroundColor Red
