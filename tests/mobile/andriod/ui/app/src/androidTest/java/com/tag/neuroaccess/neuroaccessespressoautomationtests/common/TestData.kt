@@ -8,6 +8,7 @@ import com.tag.neuroaccess.neuroaccessespressoautomationtests.helper.PersonalNum
 object TestData {
     private const val PHONE_NUMBER_ARGUMENT = "testPhoneNumber"
     private const val PIN_ARGUMENT = "testPin"
+    private const val NEW_PIN_ARGUMENT = "testNewPin"
     private const val USERNAME_TIMESTAMP_ARGUMENT = "registrationUsernameTimestamp"
     private const val PERSONAL_NUMBER_AGE_GROUP_ARGUMENT = "personalNumberAgeGroup"
     private const val SOCIAL_SECURITY_NUMBER_ARGUMENT = "testSocialSecurityNumber"
@@ -30,6 +31,19 @@ object TestData {
         }
 
         return pin
+    }
+
+    fun newPin(): String {
+        val newPin = this.requiredArgument(NEW_PIN_ARGUMENT)
+
+        check(newPin.matches(Regex("\\d{6}"))) {
+            "The new test PIN must contain exactly six digits."
+        }
+        check(newPin != this.pin()) {
+            "The new test PIN must differ from the current test PIN."
+        }
+
+        return newPin
     }
 
     fun registrationUsername(): String {
