@@ -49,6 +49,21 @@ function Protect-AndroidDiagnosticText {
     return [regex]::Replace($Text, ($Patterns -join "|"), "[REDACTED]")
 }
 
+function ConvertTo-AndroidProcessArgument {
+    <#
+    .SYNOPSIS
+    Quotes one Windows process argument, including embedded quotes and trailing backslashes.
+    .PARAMETER Value
+    The original argument passed to ADB.
+    #>
+    param([AllowEmptyString()][string]$Value)
+
+    $Escaped = [regex]::Replace($Value, '(\\*)"', '$1$1\"')
+    $Escaped = [regex]::Replace($Escaped, '(\\+)$', '$1$1')
+    return '"' + $Escaped + '"'
+}
+
+
 function Invoke-AndroidAdbCommand {
     <#
     .SYNOPSIS
@@ -59,8 +74,11 @@ function Invoke-AndroidAdbCommand {
     Serial of the target Android device.
     .PARAMETER AdbArguments
     Original command arguments, passed unchanged to ADB.
+    .PARAMETER TimeoutSeconds
+    Maximum process and output-drain duration, excluding bounded termination cleanup.
     #>
-    param([string]$AdbPath, [string]$DeviceSerial, [string[]]$AdbArguments)
+    param([string]$AdbPath, [string]$DeviceSerial, [string[]]$AdbArguments,
+        [ValidateRange(1, 86400)][int]$TimeoutSeconds = 120)
 
     $SensitiveValues = [System.Collections.Generic.List[string]]::new()
     $DiagnosticArguments = @("class", "languageCode", "personalNumberAgeGroup")
@@ -91,24 +109,66 @@ function Invoke-AndroidAdbCommand {
     }
     $SafeDescription = Protect-AndroidDiagnosticText -Text $CommandDescription -SensitiveValues $SensitiveValues.ToArray()
 
-    $PreviousErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = "Continue"
-    # Keep native stderr in the captured output regardless of the caller's PowerShell setting.
-    $PSNativeCommandUseErrorActionPreference = $false
+    $Process = [System.Diagnostics.Process]::new()
+    $Process.StartInfo.FileName = $AdbPath
+    $Process.StartInfo.UseShellExecute = $false
+    $Process.StartInfo.CreateNoWindow = $true
+    $Process.StartInfo.RedirectStandardOutput = $true
+    $Process.StartInfo.RedirectStandardError = $true
+    $Process.StartInfo.Arguments = (@(
+        @("-s", $DeviceSerial) + $AdbArguments |
+            ForEach-Object { ConvertTo-AndroidProcessArgument -Value $_ }
+    ) -join " ")
+    $Stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    $Started = $false
+    $TimedOut = $false
     $CommandExitCode = -1
-    $LASTEXITCODE = -1
+    $CommandOutput = ""
     try {
-        $CommandOutput = & $AdbPath -s $DeviceSerial @AdbArguments 2>&1 | Out-String
-        $CommandExitCode = $LASTEXITCODE
+        $Started = $Process.Start()
+        if (-not $Started) { throw "ADB process did not start." }
+        # Drain both pipes concurrently to avoid deadlocks when either buffer fills up.
+        $StandardOutput = $Process.StandardOutput.ReadToEndAsync()
+        $StandardError = $Process.StandardError.ReadToEndAsync()
+        $Remaining = [Math]::Max(0, $TimeoutSeconds * 1000 - [int]$Stopwatch.ElapsedMilliseconds)
+        if (-not $Process.WaitForExit($Remaining)) {
+            $TimedOut = $true
+        } else {
+            $CommandExitCode = $Process.ExitCode
+            $Remaining = [Math]::Max(0, $TimeoutSeconds * 1000 - [int]$Stopwatch.ElapsedMilliseconds)
+            $TimedOut = -not [System.Threading.Tasks.Task]::WaitAll(
+                [System.Threading.Tasks.Task[]]@($StandardOutput, $StandardError), $Remaining)
+        }
+        if ($TimedOut -and -not $Process.HasExited) {
+            $Process.Kill()
+            $Process.WaitForExit(5000) | Out-Null
+        }
+        if ($StandardOutput.Status -eq [System.Threading.Tasks.TaskStatus]::RanToCompletion) {
+            $CommandOutput += $StandardOutput.Result
+        }
+        if ($StandardError.Status -eq [System.Threading.Tasks.TaskStatus]::RanToCompletion) {
+            $CommandOutput += "`n" + $StandardError.Result
+        }
     } catch {
-        # Launch failures can also include arguments; only propagate sanitized text.
         $SafeFailure = Protect-AndroidDiagnosticText -Text $_.Exception.Message -SensitiveValues $SensitiveValues.ToArray()
-        throw "$SafeDescription could not execute.`n$SafeFailure"
+        throw "$SafeDescription could not complete.`n$SafeFailure"
     } finally {
-        $ErrorActionPreference = $PreviousErrorActionPreference
+        try {
+            if ($Started -and -not $Process.HasExited) {
+                $Process.Kill()
+                $Process.WaitForExit(5000) | Out-Null
+            }
+        } catch {
+            # Do not replace the original failure or expose raw process exception details.
+        }
+        $Stopwatch.Stop()
+        $Process.Dispose()
     }
 
     $SafeOutput = Protect-AndroidDiagnosticText -Text $CommandOutput -SensitiveValues $SensitiveValues.ToArray()
+    if ($TimedOut) {
+        throw "$SafeDescription timed out after $TimeoutSeconds seconds; local ADB process stopped. Incomplete output may be omitted.`n$SafeOutput"
+    }
     if ($CommandExitCode -ne 0) {
         throw "$SafeDescription failed (exit code $CommandExitCode).`n$SafeOutput"
     }
@@ -178,12 +238,29 @@ function Prepare-AndroidApplicationColdStart {
 }
 
 function Invoke-AndroidInstrumentationTest {
+    <#
+    .SYNOPSIS
+    Runs one instrumentation phase with sanitized diagnostics and a process deadline.
+    .PARAMETER AdbPath
+    Path to the ADB executable.
+    .PARAMETER DeviceSerial
+    Serial of the target Android device.
+    .PARAMETER TestSelector
+    Fully qualified test class and optional method.
+    .PARAMETER TestRunner
+    Android instrumentation runner component.
+    .PARAMETER InstrumentationArguments
+    Named configuration values supplied to the test.
+    .PARAMETER TimeoutSeconds
+    Maximum duration per test phase; defaults to ten minutes.
+    #>
     param(
         [string]$AdbPath,
         [string]$DeviceSerial,
         [string]$TestSelector,
         [string]$TestRunner,
-        [hashtable]$InstrumentationArguments = @{}
+        [hashtable]$InstrumentationArguments = @{},
+        [ValidateRange(1, 86400)][int]$TimeoutSeconds = 600
     )
 
     $AdbArguments = [System.Collections.Generic.List[string]]::new()
@@ -193,7 +270,7 @@ function Invoke-AndroidInstrumentationTest {
     }
     @("-e", "class", $TestSelector, $TestRunner) | ForEach-Object { $AdbArguments.Add($_) }
 
-    $InstrumentationOutput = Invoke-AndroidAdbCommand -AdbPath $AdbPath -DeviceSerial $DeviceSerial -AdbArguments $AdbArguments.ToArray()
+    $InstrumentationOutput = Invoke-AndroidAdbCommand -AdbPath $AdbPath -DeviceSerial $DeviceSerial -AdbArguments $AdbArguments.ToArray() -TimeoutSeconds $TimeoutSeconds
     Write-Host $InstrumentationOutput
     if ($InstrumentationOutput -match "FAILURES!!!" -or
         $InstrumentationOutput -match "INSTRUMENTATION_FAILED" -or
