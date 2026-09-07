@@ -1927,6 +1927,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			return CONCAT(EIFD, MIFD);
 		}
 
+		/// <summary>
+		/// Computes the ISO/IEC 9797-1 MAC Algorithm 3, a.k.a. "Retail MAC", used in BAC.
+		/// </summary>
+		/// <param name="EIFD"></param>
+		/// <param name="KEnc">Encryption Key</param>
+		/// <param name="KMac">MAC Key</param>
+		/// <returns>Retail MAC</returns>
 		public static byte[] CalcBacMac(byte[] EIFD, byte[] KEnc, byte[] KMac)
 		{
 			// MAC Algorithm described in ISO/IEC 9797-1
