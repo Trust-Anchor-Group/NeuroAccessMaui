@@ -2505,7 +2505,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					IssuerKeyReference = P.Value;
 				}
 
-				if (CrlUrls.Count == 0)
+				if (CrlUrls.Count == 0 && !(this.acceptCrlNotAccessible && IcaoCertAdded))
 				{
 					this.Error("No approved CRLs found.");
 					return ReadTravelDocumentResult.InvalidCertificate;
