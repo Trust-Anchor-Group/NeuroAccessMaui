@@ -3,6 +3,7 @@ import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import java.time.LocalDateTime
@@ -17,6 +18,7 @@ val registrationUsernameTimestamp = LocalDateTime.now().format(DateTimeFormatter
 val testEnvironmentArguments = mapOf(
     "testPhoneNumber" to "NEUROACCESS_TEST_PHONE_NUMBER",
     "testPin" to "NEUROACCESS_TEST_PIN",
+    "testNewPin" to "NEUROACCESS_TEST_NEW_PIN",
     "testOtpEndpoint" to "NEUROACCESS_TEST_OTP_ENDPOINT",
     "personalNumberAgeGroup" to "NEUROACCESS_TEST_PERSONAL_NUMBER_AGE_GROUP",
     "testSocialSecurityNumber" to "NEUROACCESS_TEST_SSN"
@@ -189,6 +191,154 @@ abstract class InstallMauiDebugApk @Inject constructor(
 tasks.register<InstallMauiDebugApk>("installMauiDebugApk") {
     apkFile.set(mauiDebugApk)
     adbExecutableFile.set(File(androidSdkDirectory, "platform-tools/adb.exe"))
+}
+
+tasks.register<Exec>("languageOptionsColdStartTest") {
+    group = "verification"
+    description = "Runs every language with cleared storage and a real force-stop before verification."
+    dependsOn("assembleDebugAndroidTest")
+
+    val adbExecutable = File(androidSdkDirectory, "platform-tools/adb.exe")
+    val testApk = layout.buildDirectory.file("outputs/apk/androidTest/debug/app-debug-androidTest.apk")
+    val runnerScript = rootProject.file("scripts/run-language-options-cold-start.ps1")
+    val commonRunnerScript = rootProject.file("scripts/TestRunner.Common.ps1")
+    val reportDirectory = layout.buildDirectory.dir("reports/androidTests/language-options-cold-start")
+
+    inputs.file(runnerScript)
+    inputs.file(commonRunnerScript)
+    inputs.file(testApk)
+    outputs.dir(reportDirectory)
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        val commandArguments = mutableListOf(
+            "powershell.exe",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            runnerScript.absolutePath,
+            "-AdbPath",
+            adbExecutable.absolutePath,
+            "-TestApkPath",
+            testApk.get().asFile.absolutePath,
+            "-ReportDirectory",
+            reportDirectory.get().asFile.absolutePath
+        )
+        providers.gradleProperty("deviceSerial").orNull?.let { deviceSerial ->
+            commandArguments.add("-DeviceSerial")
+            commandArguments.add(deviceSerial)
+        }
+        commandLine(commandArguments)
+    }
+}
+
+tasks.register<Exec>("fullAndroidTestSuite") {
+    group = "verification"
+    description = "Runs all Android flows with explicit clean-state and dependent-state grouping."
+    dependsOn("assembleDebugAndroidTest")
+
+    val adbExecutable = File(androidSdkDirectory, "platform-tools/adb.exe")
+    val testApk = layout.buildDirectory.file("outputs/apk/androidTest/debug/app-debug-androidTest.apk")
+    val runnerScript = rootProject.file("scripts/run-full-test-suite.ps1")
+    val commonRunnerScript = rootProject.file("scripts/TestRunner.Common.ps1")
+    val reportDirectory = layout.buildDirectory.dir("reports/androidTests/full-suite")
+
+    inputs.file(runnerScript)
+    inputs.file(commonRunnerScript)
+    inputs.file(testApk)
+    outputs.dir(reportDirectory)
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        val commandArguments = mutableListOf(
+            "powershell.exe",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            runnerScript.absolutePath,
+            "-AdbPath",
+            adbExecutable.absolutePath,
+            "-TestApkPath",
+            testApk.get().asFile.absolutePath,
+            "-ReportDirectory",
+            reportDirectory.get().asFile.absolutePath
+        )
+        providers.gradleProperty("deviceSerial").orNull?.let { deviceSerial ->
+            commandArguments.add("-DeviceSerial")
+            commandArguments.add(deviceSerial)
+        }
+
+        testEnvironmentArguments.forEach { (_, environmentVariableName) ->
+            val argumentValue = providers.environmentVariable(environmentVariableName)
+                .orNull
+                ?: dotenvProperties.getProperty(environmentVariableName)
+            argumentValue
+                ?.trim()
+                ?.removeSurrounding("\"")
+                ?.removeSurrounding("'")
+                ?.takeIf { value -> value.isNotBlank() }
+                ?.let { value -> environment(environmentVariableName, value) }
+        }
+        environment(
+            "NEUROACCESS_REGISTRATION_USERNAME_TIMESTAMP",
+            registrationUsernameTimestamp
+        )
+        commandLine(commandArguments)
+    }
+}
+
+tasks.register<Exec>("changePinTest") {
+    group = "options"
+    description = "Runs only the Change PIN flow while preserving the existing account and identity state."
+    dependsOn("assembleDebugAndroidTest")
+
+    val adbExecutable = File(androidSdkDirectory, "platform-tools/adb.exe")
+    val testApk = layout.buildDirectory.file("outputs/apk/androidTest/debug/app-debug-androidTest.apk")
+    val runnerScript = rootProject.file("scripts/run-change-pin-test.ps1")
+    val commonRunnerScript = rootProject.file("scripts/TestRunner.Common.ps1")
+    val reportDirectory = layout.buildDirectory.dir("reports/androidTests/change-pin")
+
+    inputs.file(runnerScript)
+    inputs.file(commonRunnerScript)
+    inputs.file(testApk)
+    outputs.dir(reportDirectory)
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        val commandArguments = mutableListOf(
+            "powershell.exe",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            runnerScript.absolutePath,
+            "-AdbPath",
+            adbExecutable.absolutePath,
+            "-TestApkPath",
+            testApk.get().asFile.absolutePath,
+            "-ReportDirectory",
+            reportDirectory.get().asFile.absolutePath
+        )
+        providers.gradleProperty("deviceSerial").orNull?.let { deviceSerial ->
+            commandArguments.add("-DeviceSerial")
+            commandArguments.add(deviceSerial)
+        }
+
+        listOf("NEUROACCESS_TEST_PIN", "NEUROACCESS_TEST_NEW_PIN").forEach { environmentVariableName ->
+            val argumentValue = providers.environmentVariable(environmentVariableName)
+                .orNull
+                ?: dotenvProperties.getProperty(environmentVariableName)
+            argumentValue
+                ?.trim()
+                ?.removeSurrounding("\"")
+                ?.removeSurrounding("'")
+                ?.takeIf { value -> value.isNotBlank() }
+                ?.let { value -> environment(environmentVariableName, value) }
+        }
+        commandLine(commandArguments)
+    }
 }
 
 
