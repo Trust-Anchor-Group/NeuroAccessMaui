@@ -221,7 +221,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>If application was selected.</returns>
 		public async Task<bool> SelectMaster()
 		{
-			// Ref §3.6.1.1, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			// Ref §3.6.1.1, ISOC 9303-10: https://www.icao.int/sites/default/files/publications/DocSeries/9303_p10_cons_en.pdf
 
 			await this.SetState(TravelDocumentsState.SelectingMaster);
 
@@ -251,7 +251,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>If application was selected.</returns>
 		public async Task<bool> SelectApplication(byte[] ApplicationId)
 		{
-			// Ref §3.6.1.2, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			// Ref §3.6.1.2, ISOC 9303-10: https://www.icao.int/sites/default/files/publications/DocSeries/9303_p10_cons_en.pdf
 
 			await this.SetState(TravelDocumentsState.SelectingApplication, ApplicationId);
 
@@ -281,7 +281,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>If file was selected.</returns>
 		public async Task<bool> SelectFile(ushort FileId)
 		{
-			// Ref §3.6.2, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			// Ref §3.6.2, ISOC 9303-10: https://www.icao.int/sites/default/files/publications/DocSeries/9303_p10_cons_en.pdf
 
 			await this.SetState(TravelDocumentsState.SelectingFile, FileId);
 
@@ -315,7 +315,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (!this.encrypted)
 				return await this.tagInterface.ExecuteCommand(Command, this);
 
-			// Ref §9.8.4, ISOC 9303-11: https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Ref §9.8.4, ISOC 9303-11: https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
 			if (this.HasSniffers)
 				this.Information("Encrypting APDU: " + Hashes.BinaryToString(Command));
@@ -1001,7 +1001,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Read data, or null if an error occurred.</returns>
 		public async Task<KeyValuePair<byte[]?, bool>> ReadBinary(uint Offset, byte NrBytes)
 		{
-			// Ref §3.6.3, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			// Ref §3.6.3, ISOC 9303-10: https://www.icao.int/sites/default/files/publications/DocSeries/9303_p10_cons_en.pdf
 
 			await this.SetState(TravelDocumentsState.ReadingBinary, Offset);
 
@@ -1762,7 +1762,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Authentication result.</returns>
 		public async Task<AuthenticateResult> Authenticate()
 		{
-			// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// §4.2 1. https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
 			byte[]? Data = await this.TryDownloadCardAccessForAuthentication();
 
@@ -1774,7 +1774,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return AuthenticateResult.AlreadyEncrypted;   // TODO: Renegotiate session keys, see §9.8.2, ICAO 9303-11.
 
 				// PACE
-				// §4.2 3. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+				// §4.2 3. https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
 				if (this.HasSniffers)
 					this.Information("PACE protocol " + this.protocol!.GetType().Name.Replace('_', '-') + " selected.");

@@ -51,7 +51,7 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		// Testing PACE - Generic Mapping, in accordance with ICAO Doc 9303
-		// Reference tests: §G, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+		// Reference tests: §G, https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
 		[TestMethod]
 		[DataRow(

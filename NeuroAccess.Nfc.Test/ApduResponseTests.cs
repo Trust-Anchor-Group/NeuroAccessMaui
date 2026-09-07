@@ -10,7 +10,7 @@ namespace NeuroAccess.Nfc.Test
 		public async Task Test_01_ReadBinary_Follows_GetResponse_When_Data_Still_Available()
 		{
 			// READ BINARY is specified for LDS files in ICAO 9303-10, section 3.6.3:
-			// https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			// https://www.icao.int/sites/default/files/publications/DocSeries/9303_p10_cons_en.pdf
 
 			ScriptedIsoDepInterface TagInterface = new(
 				[0xde, 0x61, 0x02],
@@ -33,7 +33,7 @@ namespace NeuroAccess.Nfc.Test
 		public async Task Test_02_ReadBinary_Retries_With_Correct_Length_When_Le_Is_Wrong()
 		{
 			// READ BINARY is specified for LDS files in ICAO 9303-10, section 3.6.3:
-			// https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			// https://www.icao.int/sites/default/files/publications/DocSeries/9303_p10_cons_en.pdf
 
 			ScriptedIsoDepInterface TagInterface = new(
 				[0x6c, 0x02],

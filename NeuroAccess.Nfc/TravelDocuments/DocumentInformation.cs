@@ -4,7 +4,7 @@
 	/// Contains parsed information from a machine-readable document information string.
 	/// 
 	/// Reference:
-	/// https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
+	/// https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 	/// </summary>
 	public class DocumentInformation
 	{
