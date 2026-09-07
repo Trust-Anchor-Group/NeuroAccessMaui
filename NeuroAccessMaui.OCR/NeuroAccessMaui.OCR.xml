@@ -1356,5 +1356,11 @@
         <member name="M:NeuroAccessMaui.OCR.Services.OcrScanService.ScanAsync(NeuroAccessMaui.OCR.Models.OcrScanRequest,System.Threading.CancellationToken)">
             <inheritdoc/>
         </member>
+        <member name="T:NeuroAccessMaui.OCR.Resource">
+            <summary>
+            Android Resource Designer class.
+            Exposes the Android Resource designer assembly into the project Namespace.
+            </summary>
+        </member>
     </members>
 </doc>
