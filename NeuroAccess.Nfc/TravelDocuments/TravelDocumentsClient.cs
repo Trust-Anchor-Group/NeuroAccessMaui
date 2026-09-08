@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Xml;
@@ -435,7 +436,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Information("Associated data to sign: " + Hashes.BinaryToString(AssociatedData));
 
 			byte[] Signature = this.cMac?.Sign(AssociatedData, 8)
-				?? CalcBacMac(AssociatedData, this.ks_Enc!, this.ks_Mac!);
+				?? CalcBacMac(AssociatedData, this.ks_Mac!, false, this);
 
 			byte[] EncryptedCommand = CONCAT(
 				Header,
@@ -639,8 +640,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.HasSniffers)
 				this.Information("Associated data to verify: " + Hashes.BinaryToString(AssociatedData));
 
-			if (!this.cMac?.Verify(AssociatedData, ResponseSignature)
-				?? VerifyBacMac(AssociatedData, this.ks_Enc!, this.ks_Mac!, ResponseSignature))
+			if (!(this.cMac?.Verify(AssociatedData, ResponseSignature)
+				?? VerifyBacMac(AssociatedData, this.ks_Mac!, ResponseSignature, this)))
 			{
 				this.Error("Invalid response signature.");
 				return Response;
@@ -1745,11 +1746,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Send Response to challenge (§7.1.5.4, §D.3)
 		/// </summary>
 		/// <param name="Challenge">Original challenge.</param>
+		/// <param name="KIFD">Original K.IFD random number.</param>
 		/// <param name="ChallengeResponse">Challenge Response.</param>
 		/// <param name="DocumentInformation">Travel document information.</param>
 		/// <returns>If BAC authentication was successful.</returns>
-		private async Task<bool> ExternalBacAuthenticate(byte[] Challenge, byte[] ChallengeResponse,
-			DocumentInformation DocumentInformation)
+		private async Task<bool> ExternalBacAuthenticate(byte[] Challenge, byte[] KIFD,
+			byte[] ChallengeResponse, DocumentInformation DocumentInformation)
 		{
 			if (ChallengeResponse.Length != 40)
 			{
@@ -1788,9 +1790,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			byte[] ResponseData = new byte[40];
 			Buffer.BlockCopy(Response, 0, ResponseData, 0, 40);
-
-			byte[] KIFD = new byte[16];
-			Buffer.BlockCopy(ChallengeResponse, 16, KIFD, 0, 16);
 
 			byte[] KEnc = BAC_KEnc(DocumentInformation);
 			byte[] KMac = BAC_KMac(DocumentInformation);
@@ -1868,9 +1867,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return AuthenticateResult.UnableToGetBacChallenge;
 				}
 
-				byte[] ChallengeResponse = this.CalcChallengeResponse3DES(this.documentInformation, Challenge);
+				byte[] ChallengeResponse = this.CalcChallengeResponse3DES(this.documentInformation,
+					Challenge, out byte[] KIFD);
 
-				if (!await this.ExternalBacAuthenticate(Challenge, ChallengeResponse, this.documentInformation))
+				if (!await this.ExternalBacAuthenticate(Challenge, KIFD, ChallengeResponse, this.documentInformation))
 				{
 					this.Error("Unable to complete BAC authentication.");
 					return AuthenticateResult.UnableToAuthenticateBac;
@@ -1920,7 +1920,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			byte[] S = CONCAT(Rnd1, Challenge, Rnd2);   // RND.IFD || RND.IC || K.IFD
 			byte[] EIFD = BacEncrypt(KEnc, new byte[8], S);
-			byte[] MIFD = CalcBacMac(EIFD, KEnc, KMac);
+			byte[] MIFD = CalcBacMac(EIFD, KMac, true, ComLayer);
 
 			ComLayer?.Information("M.IFD: " + Hashes.BinaryToString(MIFD));
 
@@ -1966,13 +1966,39 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
+		/// Checks if a message is padded according to BAC padding rules.
+		/// </summary>
+		/// <param name="Message">Message to check.</param>
+		/// <returns>True if the message is padded, false otherwise.</returns>
+		public static bool IsBacPadded(byte[] Message)
+		{
+			int c = Message.Length;
+			if ((c & 7) != 0 || c == 0)
+				return false;
+
+			while (--c >= 0)
+			{
+				byte b = Message[c];
+
+				if (b == 0x80)
+					return true;
+				else if (b != 0)
+					return false;
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Computes the ISO/IEC 9797-1 MAC Algorithm 3, a.k.a. "Retail MAC", used in BAC.
 		/// </summary>
-		/// <param name="EIFD">Encrypted data to sign.</param>
-		/// <param name="KEnc">Encryption Key</param>
+		/// <param name="Message">Message to sign.</param>
 		/// <param name="KMac">MAC Key</param>
+		/// <param name="AddPadding">If padding should be added.</param>
+		/// <param name="ComLayer">Communication layer</param>
 		/// <returns>Retail MAC</returns>
-		public static byte[] CalcBacMac(byte[] EIFD, byte[] KEnc, byte[] KMac)
+		public static byte[] CalcBacMac(byte[] Message, byte[] KMac, bool AddPadding,
+			ICommunicationLayer? ComLayer)
 		{
 			// MAC Algorithm described in ISO/IEC 9797-1
 			// Ref: https://en.wikipedia.org/wiki/ISO/IEC_9797-1
@@ -1982,13 +2008,24 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				Cipher.Mode = CipherMode.CBC;
 				Cipher.Padding = PaddingMode.None;
 
+				byte[] Data;
 				int i = 0;
-				int c = EIFD.Length;
+				int c = Message.Length;
 				int j;
 
-				byte[] Data = new byte[c + 8];
-				Buffer.BlockCopy(EIFD, 0, Data, 0, c);
-				Data[c] = 0x80;   // Padding method 2, append 80 00 00 00 00 00 00 00
+				if (AddPadding)
+				{
+					int PaddingLength = 8 - (c & 7);
+
+					Data = new byte[c + PaddingLength];
+					Buffer.BlockCopy(Message, 0, Data, 0, c);
+					Data[c] = 0x80;
+					c += PaddingLength;
+
+					ComLayer?.Information("Padded Message: " + Hashes.BinaryToString(Data));
+				}
+				else
+					Data = Message;
 
 				byte[] Ka = new byte[8];
 				byte[] Kb = new byte[8];
@@ -1999,7 +2036,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				byte[] Block = new byte[8];
 				byte[]? H = null;
 
-				c += 8;
 				using (ICryptoTransform Encryptor2 = Cipher.CreateEncryptor(Ka, new byte[8]))
 				{
 					while (i < c)
@@ -2031,18 +2067,40 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Verifies a ISO/IEC 9797-1 MAC Algorithm 3, a.k.a. "Retail MAC", used in BAC.
 		/// </summary>
-		/// <param name="EIFD">Encrypted data to sign.</param>
-		/// <param name="KEnc">Encryption Key</param>
+		/// <param name="Message">Data that was signed.</param>
 		/// <param name="KMac">MAC Key</param>
 		/// <param name="Signature">Signature to verify</param>
+		/// <param name="ComLayer">Communication layer</param>
 		/// <returns>True if the signature is valid, false otherwise</returns>
-		public static bool VerifyBacMac(byte[] EIFD, byte[] KEnc, byte[] KMac, byte[] Signature)
+		public static bool VerifyBacMac(byte[] Message, byte[] KMac, byte[] Signature,
+			ICommunicationLayer? ComLayer)
 		{
-			byte[] Signature0 = CalcBacMac(EIFD, KEnc, KMac);
-			int i, c = Signature0.Length;
-
-			if (c != Signature.Length)
+			if (Message is null)
+			{
+				ComLayer?.Error("Message is null.");
 				return false;
+			}
+
+			if (Signature is null)
+			{
+				ComLayer?.Error("Signature is null.");
+				return false;
+			}
+
+			ComLayer?.Information("Message: " + Hashes.BinaryToString(Message));
+			ComLayer?.Information("Signature: " + Hashes.BinaryToString(Signature));
+			ComLayer?.Information("K(MAC): " + Hashes.BinaryToString(KMac));
+
+			byte[] Signature0 = CalcBacMac(Message, KMac, !IsBacPadded(Message), ComLayer);
+			int i, c = Signature.Length;
+
+			ComLayer?.Information("Expected signature: " + Hashes.BinaryToString(Signature0));
+
+			if (Signature0.Length != c)
+			{
+				ComLayer?.Error("Signature length is invalid.");
+				return false;
+			}
 
 			for (i = 0; i < c; i++)
 			{
@@ -2058,10 +2116,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="Info">Document Information</param>
 		/// <param name="Challenge">Challenge</param>
+		/// <param name="K_IFD">Generated K.IFD random number.</param>
 		/// <returns>Response</returns>
-		public byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge)
+		public byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge,
+			out byte[] K_IFD)
 		{
-			return CalcChallengeResponse3DES(Info, Challenge, this);
+			return CalcChallengeResponse3DES(Info, Challenge, out K_IFD, this);
 		}
 
 		/// <summary>
@@ -2069,28 +2129,30 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="Info">Document Information</param>
 		/// <param name="Challenge">Challenge</param>
+		/// <param name="K_IFD">Generated K.IFD random number.</param>
 		/// <param name="ComLayer">Communication layer</param>
 		/// <returns>Response</returns>
 		public static byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge,
-			ICommunicationLayer ComLayer)
+			out byte[] K_IFD, ICommunicationLayer ComLayer)
 		{
-			byte[] Rnd1 = new byte[8];  // RND.IFD
-			byte[] Rnd2 = new byte[16]; // K.IFD
+			byte[] RND_IFD = new byte[8];  // RND.IFD
+			K_IFD = new byte[16]; // K.IFD
+
 			byte[] KEnc = BAC_KEnc(Info);
 			byte[] KMac = BAC_KMac(Info);
 
 			using (RandomNumberGenerator Rnd = RandomNumberGenerator.Create())
 			{
-				Rnd.GetBytes(Rnd1);
-				Rnd.GetBytes(Rnd2);
+				Rnd.GetBytes(RND_IFD);
+				Rnd.GetBytes(K_IFD);
 			}
 
-			ComLayer?.Information("RND.IFD: " + Hashes.BinaryToString(Rnd1));
-			ComLayer?.Information("K.IFD: " + Hashes.BinaryToString(Rnd2));
+			ComLayer?.Information("RND.IFD: " + Hashes.BinaryToString(RND_IFD));
+			ComLayer?.Information("K.IFD: " + Hashes.BinaryToString(K_IFD));
 			ComLayer?.Information("KEnc: " + Hashes.BinaryToString(KEnc));
 			ComLayer?.Information("KMac: " + Hashes.BinaryToString(KMac));
 
-			return CalcBacChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac, ComLayer);
+			return CalcBacChallengeResponse3DES(Challenge, RND_IFD, K_IFD, KEnc, KMac, ComLayer);
 		}
 
 		/// <summary>
@@ -2098,7 +2160,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="ResponseData">Response data returned from IC.</param>
 		/// <param name="Challenge">Original challenge</param>
-		/// <param name="KIFD">K.IFD random number</param>
+		/// <param name="KIFD">Original K.IFD random number</param>
 		/// <param name="KEnc">Encryption Key</param>
 		/// <param name="KMac">MAC Key</param>
 		/// <param name="KIC">K.IC random number</param>
@@ -2121,6 +2183,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="ResponseData">Response data returned from IC.</param>
 		/// <param name="Challenge">Original challenge</param>
 		/// <param name="KIFD">K.IFD random number</param>
+		/// <param name="KIFDEncrypted">If <paramref name="KIFD"/> is encrypted (i.e. E.IFD)</param>
 		/// <param name="KEnc">Encryption Key</param>
 		/// <param name="KMac">MAC Key</param>
 		/// <param name="KIC">K.IC random number</param>
@@ -2155,7 +2218,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			ComLayer?.Information("E.IC: " + Hashes.BinaryToString(EIC));
 			ComLayer?.Information("M.IC: " + Hashes.BinaryToString(MIC));
 
-			byte[] LocalMIC = CalcBacMac(EIC, KEnc, KMac);
+			ComLayer?.Information("K.IFD: " + Hashes.BinaryToString(KIFD));
+
+			byte[] LocalMIC = CalcBacMac(EIC, KMac, true, ComLayer);
 			int i;
 
 			ComLayer?.Information("Local(M.IC): " + Hashes.BinaryToString(LocalMIC));

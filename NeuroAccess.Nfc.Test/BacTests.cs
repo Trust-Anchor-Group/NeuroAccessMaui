@@ -252,8 +252,8 @@ namespace NeuroAccess.Nfc.Test
 			// Example from Appendix D.3, https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 			// Example from Appendix D.2, Example 4, https://www.icao.int/sites/default/files/publications/DocSeries/9303_p11_cons_en.pdf
 
-			byte[] Challenge = Hashes.StringToBinary("4608F91988702212");				// RND.IC
-			byte[] Rnd1 = Hashes.StringToBinary("781723860C06C226");					// RND.IFD
+			byte[] Challenge = Hashes.StringToBinary("4608F91988702212");               // RND.IC
+			byte[] Rnd1 = Hashes.StringToBinary("781723860C06C226");                    // RND.IFD
 			byte[] Rnd2 = Hashes.StringToBinary("0B795240CB7049B01C19B33E32804F0B");    // K.IFD
 			byte[] KEnc = Hashes.StringToBinary("AB94FDECF2674FDFB9B391F85D7F76F2");
 			byte[] KMac = Hashes.StringToBinary("7962D9ECE03D1ACD4C76089DCE131543");
@@ -268,13 +268,10 @@ namespace NeuroAccess.Nfc.Test
 			// resp_data = 46B9342A41396CD7386BF5803104D7CEDC122B9132139BAF2EEDC94EE178534F2F2D235D074D7449
 
 			byte[] RespData = Hashes.StringToBinary("46B9342A41396CD7386BF5803104D7CEDC122B9132139BAF2EEDC94EE178534F2F2D235D074D7449");
-			byte[]? KIC;
-			byte[]? KSEnc;
-			byte[]? KSMac;
-			byte[]? Ssc;
 
-			Assert.IsTrue(TravelDocumentsClient.AuthenticateBacResponseData(RespData, Challenge, Rnd2,
-				KEnc, KMac, out KIC, out KSEnc, out KSMac, out Ssc, null));
+			Assert.IsTrue(TravelDocumentsClient.AuthenticateBacResponseData(RespData, Challenge,
+				Rnd2, KEnc, KMac, out byte[]? KIC, out byte[]? KSEnc, out byte[]? KSMac,
+				out byte[]? Ssc, null));
 
 			Assert.IsNotNull(KIC);
 			Assert.IsNotNull(KSEnc);
@@ -363,14 +360,14 @@ namespace NeuroAccess.Nfc.Test
 			byte[] KMac = TravelDocumentsClient.BAC_KMac(Info);
 			Assert.AreEqual("EA6445CD622CEAECBF7C9B7CB020B95D", Hashes.BinaryToString(KMac).ToUpper(CultureInfo.InvariantCulture));
 
-			byte[] Challenge = Hashes.StringToBinary("8EAF826F89F1E525");				// RND.ICC
-			byte[] Rnd1 = Hashes.StringToBinary("23E85A993A9AC5B4");					// RND.IFD
-			byte[] Rnd2 = Hashes.StringToBinary("75DC87E50C8EF30047D0B5325E83204D");	// K.IFD
+			byte[] Challenge = Hashes.StringToBinary("8EAF826F89F1E525");               // RND.ICC
+			byte[] Rnd1 = Hashes.StringToBinary("23E85A993A9AC5B4");                    // RND.IFD
+			byte[] Rnd2 = Hashes.StringToBinary("75DC87E50C8EF30047D0B5325E83204D");    // K.IFD
 
 			byte[] Response = TravelDocumentsClient.CalcBacChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac, null);
 
-			Assert.AreEqual("4782B1700DD4F60373DA6632FCD1AB1E500D46FA11DEBDF9B88C39FCA7FDF8DB" +	// E.IFD
-				"BE51F41D52D4B879",																	// MAC
+			Assert.AreEqual("4782B1700DD4F60373DA6632FCD1AB1E500D46FA11DEBDF9B88C39FCA7FDF8DB" +    // E.IFD
+				"BE51F41D52D4B879",                                                                 // MAC
 				Hashes.BinaryToString(Response).ToUpper(CultureInfo.InvariantCulture));
 		}
 	}
