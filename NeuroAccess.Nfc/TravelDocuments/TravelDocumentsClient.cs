@@ -434,7 +434,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.HasSniffers)
 				this.Information("Associated data to sign: " + Hashes.BinaryToString(AssociatedData));
 
-			byte[] Signature = this.cMac!.Sign(AssociatedData, 8);
+			byte[] Signature = this.cMac?.Sign(AssociatedData, 8)
+				?? CalcBacMac(AssociatedData, this.ks_Enc!, this.ks_Mac!);
 
 			byte[] EncryptedCommand = CONCAT(
 				Header,
@@ -638,7 +639,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.HasSniffers)
 				this.Information("Associated data to verify: " + Hashes.BinaryToString(AssociatedData));
 
-			if (!this.cMac.Verify(AssociatedData, ResponseSignature))
+			if (!this.cMac?.Verify(AssociatedData, ResponseSignature)
+				?? VerifyBacMac(AssociatedData, this.ks_Enc!, this.ks_Mac!, ResponseSignature))
 			{
 				this.Error("Invalid response signature.");
 				return Response;
@@ -1966,7 +1968,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Computes the ISO/IEC 9797-1 MAC Algorithm 3, a.k.a. "Retail MAC", used in BAC.
 		/// </summary>
-		/// <param name="EIFD"></param>
+		/// <param name="EIFD">Encrypted data to sign.</param>
 		/// <param name="KEnc">Encryption Key</param>
 		/// <param name="KMac">MAC Key</param>
 		/// <returns>Retail MAC</returns>
@@ -2024,6 +2026,31 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				return H;
 			}
+		}
+
+		/// <summary>
+		/// Verifies a ISO/IEC 9797-1 MAC Algorithm 3, a.k.a. "Retail MAC", used in BAC.
+		/// </summary>
+		/// <param name="EIFD">Encrypted data to sign.</param>
+		/// <param name="KEnc">Encryption Key</param>
+		/// <param name="KMac">MAC Key</param>
+		/// <param name="Signature">Signature to verify</param>
+		/// <returns>True if the signature is valid, false otherwise</returns>
+		public static bool VerifyBacMac(byte[] EIFD, byte[] KEnc, byte[] KMac, byte[] Signature)
+		{
+			byte[] Signature0 = CalcBacMac(EIFD, KEnc, KMac);
+			int i, c = Signature0.Length;
+
+			if (c != Signature.Length)
+				return false;
+
+			for (i = 0; i < c; i++)
+			{
+				if (Signature0[i] != Signature[i])
+					return false;
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -2141,7 +2168,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			byte[] Decrypted = BacDecrypt(KEnc, new byte[8], EIC);
 			ComLayer?.Information("Decrypted(E.IC): " + Hashes.BinaryToString(Decrypted));
-			
+
 			for (i = 0; i < 8; i++)
 			{
 				if (Decrypted[i] != Challenge[i])
