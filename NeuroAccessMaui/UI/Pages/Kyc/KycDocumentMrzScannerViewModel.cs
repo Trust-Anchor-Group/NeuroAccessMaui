@@ -352,9 +352,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public override async Task OnDisposeAsync()
 		{
 			if (!this.resultReturned)
-			{
 				this.navigationArgs?.CompletionSource?.TrySetResult(null);
-			}
 
 			this.Dispose();
 			await base.OnDisposeAsync();
@@ -381,9 +379,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void DismissValidationOverlay()
 		{
 			if (!this.IsValidationOverlayVisible)
-			{
 				return;
-			}
 
 			this.HideValidationOverlay();
 			this.ResetUnsupportedDocumentEvidence();
@@ -397,9 +393,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 #if DEBUG && OCR_DEBUG_ARTIFACTS_NATIVE_SHARE
 			if (Interlocked.CompareExchange(ref this.isSharingDebugArtifacts, 1, 0) != 0)
-			{
 				return;
-			}
 
 			try
 			{
@@ -435,6 +429,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					Metadata: DebugMetadata);
 
 				OcrScanResult Result = await this.ocrScanService.ScanAsync(Request, CancellationToken.None);
+
 				if (Result.ArtifactBundle is not null)
 				{
 					await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -459,14 +454,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 #if DEBUG && OCR_DEBUG_ARTIFACTS_NATIVE_SHARE
 			if (Interlocked.CompareExchange(ref this.isSharingDebugArtifacts, 1, 0) != 0)
-			{
 				return;
-			}
 
 			try
 			{
 				MrzPreviewFrame? Frame = this.latestPreviewFrame;
 				MrzPreviewAnalysisResult? AnalysisResult = this.lastPreviewAnalysisResult;
+
 				if (Frame is null || AnalysisResult is null)
 				{
 					this.SetScannerHint(
@@ -482,6 +476,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					Frame,
 					AnalysisResult,
 					this.frameStabilityTracker.CreateDiagnostics());
+
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 					await this.ocrArtifactExportService.ShareAsync(Bundle, CancellationToken.None));
 			}
@@ -501,14 +496,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		internal void UpdateCameraViewportSize(double Width, double Height)
 		{
 			if (!double.IsFinite(Width) || !double.IsFinite(Height) || Width <= 0d || Height <= 0d)
-			{
 				return;
-			}
 
 			if (Math.Abs(this.cameraViewportWidth - Width) < 0.5d && Math.Abs(this.cameraViewportHeight - Height) < 0.5d)
-			{
 				return;
-			}
 
 			this.cameraViewportWidth = Width;
 			this.cameraViewportHeight = Height;
@@ -526,6 +517,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			bool Completed = this.navigationArgs?.CompletionSource?.TrySetResult(this.pendingSuccessfulResult) ?? false;
+
 			this.LogScannerEvent(
 				"CompletePendingSuccessfulResult",
 				new KeyValuePair<string, object?>("Completed", Completed),
@@ -534,6 +526,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("NormalizedMrzLength", this.pendingSuccessfulResult.NormalizedMrzText.Length),
 				new KeyValuePair<string, object?>("ChipAccessMrzLength", this.pendingSuccessfulResult.Document?.MRZ_Information?.Length ?? 0),
 				new KeyValuePair<string, object?>("DocumentType", this.pendingSuccessfulResult.Document?.DocumentType ?? string.Empty));
+
 			this.pendingSuccessfulResult = null;
 		}
 
@@ -541,9 +534,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			_ = Sender;
 			if (this.resultReturned || this.IsValidationOverlayVisible || Interlocked.CompareExchange(ref this.isProcessingFrame, 1, 0) != 0)
-			{
 				return;
-			}
 
 			try
 			{
@@ -565,9 +556,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task ProcessFrameAsync(CameraFrame Frame, CancellationToken CancellationToken)
 		{
 			if (this.IsValidationOverlayVisible)
-			{
 				return;
-			}
 
 			this.UpdatePreviewFrameAspectRatio(Frame);
 
@@ -599,15 +588,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.UpdateDocumentOutline(AnalysisResult);
 			this.SetScannerTextForGuidance(AnalysisResult);
 			this.frameStabilityTracker.Add(PreviewFrame, AnalysisResult);
+
 			if (!this.frameStabilityTracker.TryGetCommitFrame(out MrzPreviewFrame? CommitFrame) || CommitFrame is null)
-			{
 				return;
-			}
 
 			if (this.IsValidationOverlayVisible)
-			{
 				return;
-			}
 
 			this.SetScannerHint(
 				ScannerHintKey.Reading,
@@ -657,9 +643,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.AddScannerValidationMetadata(Result, ValidationOutcome, true);
 				this.WriteScannerValidationDiagnostics(Result, ValidationOutcome, true);
 				this.frameStabilityTracker.Reset();
+
 				this.ShowValidationOverlay(
 					ServiceRef.Localizer["KycDocumentMrzScannerExpiredStatus"],
 					ServiceRef.Localizer["KycDocumentMrzScannerExpiredDetail"]);
+
 				return;
 			}
 
@@ -669,6 +657,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.AddScannerValidationMetadata(Result, ValidationOutcome, ShouldShowUnsupportedOverlay);
 				this.WriteScannerValidationDiagnostics(Result, ValidationOutcome, ShouldShowUnsupportedOverlay);
 				this.frameStabilityTracker.Reset();
+
 				if (ShouldShowUnsupportedOverlay)
 				{
 					this.ShowValidationOverlay(
@@ -695,6 +684,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.AddScannerValidationMetadata(Result, ValidationOutcome, false);
 			this.WriteScannerValidationDiagnostics(Result, ValidationOutcome, false);
 			TravelDocumentMrzResult DocumentResult = new TravelDocumentMrzResult(Result, Result.Mrz.Document);
+
 			if (!DocumentResult.IsSuccessful)
 			{
 				this.frameStabilityTracker.Reset();
@@ -711,6 +701,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("NormalizedMrzLength", DocumentResult.NormalizedMrzText.Length),
 				new KeyValuePair<string, object?>("ChipAccessMrzLength", DocumentResult.Document?.MRZ_Information?.Length ?? 0),
 				new KeyValuePair<string, object?>("DocumentType", DocumentResult.Document?.DocumentType ?? string.Empty));
+
 			this.CompletePendingSuccessfulResult();
 			this.LogScannerEvent("NavigateBackAfterAcceptedMrz");
 			await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.NavigationService.GoBackAsync());
@@ -725,6 +716,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("HasPendingSuccessfulResult", this.pendingSuccessfulResult is not null),
 				new KeyValuePair<string, object?>("HasNavigationArgs", this.navigationArgs is not null)
 			};
+
 			AllTags.AddRange(Tags);
 			ServiceRef.LogService.LogInformational("KYC MRZ scanner flow", AllTags.ToArray());
 		}
@@ -808,9 +800,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static object? CreateDocumentQuadDiagnostic(DocumentQuadCandidate? Candidate)
 		{
 			if (Candidate is null)
-			{
 				return null;
-			}
 
 			return new
 			{
@@ -833,9 +823,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static object? CreateMrzCandidateDiagnostic(MrzRegionCandidate? Candidate)
 		{
 			if (Candidate is null)
-			{
 				return null;
-			}
 
 			return new
 			{
@@ -863,16 +851,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			OcrArtifactBundle? Bundle = Result.ArtifactBundle;
 			if (Bundle is null)
-			{
 				return;
-			}
 
 			if (string.IsNullOrWhiteSpace(OcrDebugArtifactRecipientJid))
 			{
 				if (Interlocked.CompareExchange(ref this.ocrDebugArtifactConfigurationWarningLogged, 1, 0) == 0)
-				{
 					ServiceRef.LogService.LogWarning("OCR debug artifact sending is enabled, but no recipient JID is configured.");
-				}
 
 				return;
 			}
@@ -958,17 +942,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static string CreateDebugArtifactArchive(OcrArtifactBundle Bundle)
 		{
 			if (!Directory.Exists(Bundle.SessionDirectoryPath))
-			{
 				throw new DirectoryNotFoundException(Bundle.SessionDirectoryPath);
-			}
 
 			string ExportDirectory = Path.Combine(FileSystem.CacheDirectory, "ocr-debug-exports");
 			Directory.CreateDirectory(ExportDirectory);
 			string ArchivePath = Path.Combine(ExportDirectory, Bundle.SessionId + ".zip");
+
 			if (File.Exists(ArchivePath))
-			{
 				File.Delete(ArchivePath);
-			}
 
 			ZipFile.CreateFromDirectory(Bundle.SessionDirectoryPath, ArchivePath, CompressionLevel.Fastest, false);
 			return ArchivePath;
@@ -1002,18 +983,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					DateTimeOffset RequestedLockUntil = IsSticky
 						? DateTimeOffset.MaxValue
 						: Now + MinimumVisibleDuration;
+
 					if (RequestedLockUntil > this.currentHintLockedUntil)
-					{
 						this.currentHintLockedUntil = RequestedLockUntil;
-					}
 
 					return;
 				}
 
 				if (Now < this.currentHintLockedUntil && Priority <= this.currentHintPriority)
-				{
 					return;
-				}
 
 				this.currentHintKey = Key;
 				this.currentHintPriority = Priority;
@@ -1039,14 +1017,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static ScannerHintTone ResolveScannerHintTone(ScannerHintKey Key, ScannerHintPriority Priority)
 		{
 			if (Priority == ScannerHintPriority.Error)
-			{
 				return ScannerHintTone.Error;
-			}
 
 			if (Priority == ScannerHintPriority.Progress || Key == ScannerHintKey.HoldStill || Key == ScannerHintKey.Reading)
-			{
 				return ScannerHintTone.Progress;
-			}
 
 			return Priority == ScannerHintPriority.ImportantGuidance
 				? ScannerHintTone.Attention
@@ -1125,6 +1099,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			string Detail;
 			ScannerHintPriority Priority = ScannerHintPriority.Guidance;
 			TimeSpan MinimumVisibleDuration = MinimumGuidanceHintDuration;
+
 			switch (Result.GuidanceState)
 			{
 				case MrzCaptureGuidanceState.ReduceGlare:
@@ -1221,14 +1196,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private ScannerMrzValidationOutcome ClassifyScannerMrzValidation(OcrScanResult Result, DocumentInformation Document)
 		{
 			if (Result.ValidationStatus != OcrScanValidationStatus.Succeeded)
-			{
 				return ScannerMrzValidationOutcome.BadRead;
-			}
 
 			if (!TryNormalizeDocumentType(Document.DocumentType, out string NormalizedDocumentType))
-			{
 				return ScannerMrzValidationOutcome.BadRead;
-			}
 
 			if (!IsSupportedScannerDocumentType(NormalizedDocumentType))
 			{
@@ -1238,16 +1209,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			if (!HasRequiredScannerDocumentFields(Document))
-			{
 				return ScannerMrzValidationOutcome.BadRead;
-			}
 
 			DateTime? BirthDate = ParseScannerMrzDate(Document.DateOfBirth, true);
 			DateTime? ExpiryDate = ParseScannerMrzDate(Document.ExpiryDate, false);
+
 			if (!BirthDate.HasValue || !ExpiryDate.HasValue)
-			{
 				return ScannerMrzValidationOutcome.BadRead;
-			}
 
 			return ExpiryDate.Value.Date < DateTime.UtcNow.Date
 				? ScannerMrzValidationOutcome.Expired
@@ -1257,6 +1225,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private bool RegisterUnsupportedDocumentEvidence(DocumentInformation Document)
 		{
 			string EvidenceKey = CreateUnsupportedDocumentEvidenceKey(Document);
+
 			if (string.IsNullOrWhiteSpace(EvidenceKey))
 			{
 				this.ResetUnsupportedDocumentEvidence();
@@ -1264,9 +1233,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			if (string.Equals(this.unsupportedDocumentEvidenceKey, EvidenceKey, StringComparison.Ordinal))
-			{
 				this.unsupportedDocumentEvidenceCount++;
-			}
 			else
 			{
 				this.unsupportedDocumentEvidenceKey = EvidenceKey;
@@ -1285,14 +1252,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static string CreateUnsupportedDocumentEvidenceKey(DocumentInformation Document)
 		{
 			if (!TryNormalizeDocumentType(Document.DocumentType, out string NormalizedDocumentType))
-			{
 				return string.Empty;
-			}
 
 			string DocumentNumber = NormalizeEvidenceField(Document.DocumentNumber);
 			string BirthDate = NormalizeEvidenceField(Document.DateOfBirth);
 			string ExpiryDate = NormalizeEvidenceField(Document.ExpiryDate);
 			string Nationality = NormalizeEvidenceField(Document.Nationality);
+
 			if (string.IsNullOrWhiteSpace(DocumentNumber)
 				|| string.IsNullOrWhiteSpace(BirthDate)
 				|| string.IsNullOrWhiteSpace(ExpiryDate)
@@ -1344,9 +1310,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static DateTime? ParseScannerMrzDate(string? Value, bool AssumeBirthDate)
 		{
 			if (string.IsNullOrWhiteSpace(Value) || Value.Length != 6)
-			{
 				return null;
-			}
 
 			if (!int.TryParse(Value[..2], out int Year) ||
 				!int.TryParse(Value.Substring(2, 2), out int Month) ||
@@ -1366,9 +1330,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			if (AssumeBirthDate && Candidate.Date > DateTime.UtcNow.Date)
-			{
 				Candidate = Candidate.AddYears(-100);
-			}
 
 			return Candidate;
 		}
@@ -1405,9 +1367,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void AddScannerValidationMetadata(OcrScanResult Result, ScannerMrzValidationOutcome Outcome, bool OverlayShown)
 		{
 			if (Result.Metadata is not IDictionary<string, string> Metadata)
-			{
 				return;
-			}
 
 			Metadata["ScannerValidationUiOutcome"] = Outcome.ToString();
 			Metadata["ScannerValidationOverlayShown"] = OverlayShown.ToString();
@@ -1418,9 +1378,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void WriteScannerValidationDiagnostics(OcrScanResult Result, ScannerMrzValidationOutcome Outcome, bool OverlayShown)
 		{
 			if (Result.ArtifactBundle is null)
-			{
 				return;
-			}
 
 			try
 			{
@@ -1449,9 +1407,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static string CreateEvidenceKeyDiagnosticHash(string EvidenceKey)
 		{
 			if (string.IsNullOrWhiteSpace(EvidenceKey))
-			{
 				return string.Empty;
-			}
 
 			byte[] Bytes = System.Text.Encoding.UTF8.GetBytes(EvidenceKey);
 			byte[] Hash = System.Security.Cryptography.SHA256.HashData(Bytes);
@@ -1484,16 +1440,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			double Width = Frame.RotationDegrees is 90 or 270 ? Frame.Height : Frame.Width;
 			double Height = Frame.RotationDegrees is 90 or 270 ? Frame.Width : Frame.Height;
+
 			if (Width <= 0d || Height <= 0d)
-			{
 				return;
-			}
 
 			double FrameAspectRatio = Width / Height;
+
 			if (Math.Abs(this.previewFrameAspectRatio - FrameAspectRatio) < 0.01d)
-			{
 				return;
-			}
 
 			this.previewFrameAspectRatio = FrameAspectRatio;
 			this.RequestDocumentOutlineRefresh();
@@ -1504,9 +1458,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (MainThread.IsMainThread)
 			{
 				if (this.lastPreviewAnalysisResult is not null)
-				{
 					this.SetDocumentOutlineCore(this.lastPreviewAnalysisResult);
-				}
 
 				return;
 			}
@@ -1514,15 +1466,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				if (this.lastPreviewAnalysisResult is not null)
-				{
 					this.SetDocumentOutlineCore(this.lastPreviewAnalysisResult);
-				}
 			});
 		}
 
 		private void UpdateDocumentOutline(MrzPreviewAnalysisResult Result)
 		{
 			this.lastPreviewAnalysisResult = Result;
+
 			if (MainThread.IsMainThread)
 			{
 				this.SetDocumentOutlineCore(Result);
@@ -1598,6 +1549,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.DocumentOutlineBottomRight,
 				this.DocumentOutlineBottomLeft,
 				Source);
+
 			this.lastGoodOutlineTimestamp = DateTimeOffset.UtcNow;
 			this.HasDocumentOutline = true;
 		}
@@ -1607,6 +1559,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.lastPreviewAnalysisResult = null;
 			this.displayedOutlineSnapshot = null;
 			this.lastGoodOutlineTimestamp = DateTimeOffset.MinValue;
+
 			if (MainThread.IsMainThread)
 			{
 				this.HasDocumentOutline = false;
@@ -1625,6 +1578,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			double ViewportWidth = this.cameraViewportWidth;
 			double ViewportHeight = this.cameraViewportHeight;
+
 			if (ViewportWidth <= 0d || ViewportHeight <= 0d)
 			{
 				PreviewBounds = Microsoft.Maui.Graphics.Rect.Zero;
@@ -1634,6 +1588,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			double PreviewAspectRatio = this.previewFrameAspectRatio > 0d ? this.previewFrameAspectRatio : ViewportWidth / ViewportHeight;
 			double PreviewContentWidth = ViewportWidth;
 			double PreviewContentHeight = PreviewContentWidth / PreviewAspectRatio;
+
 			if (PreviewContentHeight > ViewportHeight)
 			{
 				PreviewContentHeight = ViewportHeight;
@@ -1643,15 +1598,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			double PreviewLeft = (ViewportWidth - PreviewContentWidth) * 0.5d;
 			double PreviewTop = (ViewportHeight - PreviewContentHeight) * 0.5d;
 			PreviewBounds = new Microsoft.Maui.Graphics.Rect(PreviewLeft, PreviewTop, PreviewContentWidth, PreviewContentHeight);
+
 			return true;
 		}
 
 		private void PreserveRecentOutlineOrHide()
 		{
 			if (this.HasDocumentOutline && DateTimeOffset.UtcNow - this.lastGoodOutlineTimestamp <= OutlineGracePeriod)
-			{
 				return;
-			}
 
 			this.displayedOutlineSnapshot = null;
 			this.lastGoodOutlineTimestamp = DateTimeOffset.MinValue;
@@ -1820,14 +1774,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		protected virtual void Dispose(bool Disposing)
 		{
 			if (this.isDisposed)
-			{
 				return;
-			}
 
 			if (Disposing)
-			{
 				this.DisposePreviewCancellation();
-			}
 
 			this.isDisposed = true;
 		}
@@ -1837,9 +1787,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			CancellationTokenSource? Cancellation = this.previewCancellationTokenSource;
 			this.previewCancellationTokenSource = null;
 			if (Cancellation is null)
-			{
 				return;
-			}
 
 			try
 			{
@@ -1847,6 +1795,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			catch
 			{
+				// Ignore
 			}
 
 			Cancellation.Dispose();
