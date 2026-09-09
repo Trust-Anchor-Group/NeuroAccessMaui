@@ -73,6 +73,25 @@ object TestData {
         )
     }
 
+    /**
+     * Reads the Quick Login page URL supplied by the local test configuration.
+     * @return An HTTPS page URL without embedded credentials.
+     */
+    fun quickLoginPageUrl(): String {
+        val configuredUrl = this.requiredArgument("testQuickLoginPageUrl")
+        return try {
+            java.net.URI(configuredUrl).also {
+                require(it.scheme == "https" && !it.host.isNullOrBlank() && it.rawUserInfo == null)
+            }.toASCIIString()
+        } catch (_: Exception) {
+            error("testQuickLoginPageUrl must be a valid HTTPS URL without credentials.")
+        }
+    }
+
+    /** @return The Quick Login API endpoint on the configured page's server. */
+    fun quickLoginEndpoint(): String =
+        java.net.URI(this.quickLoginPageUrl()).resolve("/QuickLogin").toASCIIString()
+
     private fun requiredArgument(argumentName: String): String =
         InstrumentationRegistry.getArguments()
             .getString(argumentName)

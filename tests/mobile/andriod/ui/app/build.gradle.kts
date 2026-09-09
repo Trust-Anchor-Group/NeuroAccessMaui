@@ -20,6 +20,7 @@ val testEnvironmentArguments = mapOf(
     "testPin" to "NEUROACCESS_TEST_PIN",
     "testNewPin" to "NEUROACCESS_TEST_NEW_PIN",
     "testOtpEndpoint" to "NEUROACCESS_TEST_OTP_ENDPOINT",
+    "testQuickLoginPageUrl" to "NEUROACCESS_TEST_QUICK_LOGIN_PAGE_URL",
     "personalNumberAgeGroup" to "NEUROACCESS_TEST_PERSONAL_NUMBER_AGE_GROUP",
     "testSocialSecurityNumber" to "NEUROACCESS_TEST_SSN"
 )
@@ -340,7 +341,3 @@ tasks.register<Exec>("changePinTest") {
         commandLine(commandArguments)
     }
 }
-
-
-
-
