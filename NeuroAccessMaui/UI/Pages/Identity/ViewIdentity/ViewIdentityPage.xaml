@@ -375,7 +375,7 @@
                         <Label
                             Margin="4,2"
                             HorizontalOptions="Center"
-                            Style="{DynamicResource StatusPillLabel}"
+                            AutomationId="{Binding DisplayedIdentityId, StringFormat='displayed_identity_{0}'}" Style="{DynamicResource StatusPillLabel}"
                             VerticalOptions="Center" />
                     </Border>
                 </Grid>
@@ -455,7 +455,7 @@
 
                 </Grid>
 
-                <Label Style="{DynamicResource FriendlyNameLabel}" Text="{Binding FriendlyName}" />
+                <Label AutomationId="value_view_identity_name" Style="{DynamicResource FriendlyNameLabel}" Text="{Binding FriendlyName}" />
                 <Label Style="{DynamicResource SubTextLabel}" Text="{Binding SubText}" />
 
             </VerticalStackLayout>

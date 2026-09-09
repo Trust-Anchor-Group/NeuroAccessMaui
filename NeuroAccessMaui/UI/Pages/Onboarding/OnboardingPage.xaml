@@ -7,11 +7,17 @@
                       xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                       xmlns:tabs="clr-namespace:NeuroAccessMaui.UI.Controls"
                       xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                      xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                      xmlns:ui="clr-namespace:NeuroAccessMaui.UI" xmlns:services="clr-namespace:NeuroAccessMaui.Services"
                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.Views"
                       x:DataType="viewmodel:OnboardingViewModel">
     <!-- Replicated layout structure from RegistrationPage for visual parity -->
     <Grid x:Name="TheMainGrid" RowDefinitions="auto,*" ColumnDefinitions="*" BackgroundColor="Transparent">
+        <Grid.AutomationId>
+            <MultiBinding StringFormat="identity_profile_{0}_{1}">
+                <Binding Source="{x:Static services:ServiceRef.TagProfile}" Path="LegalIdentity.State" x:DataType="{x:Null}" />
+                <Binding Source="{x:Static services:ServiceRef.TagProfile}" Path="LegalIdentity.Id" x:DataType="{x:Null}" />
+            </MultiBinding>
+        </Grid.AutomationId>
         <controls:Background Grid.RowSpan="2" />
 
         <!-- Top bar identical styling -->

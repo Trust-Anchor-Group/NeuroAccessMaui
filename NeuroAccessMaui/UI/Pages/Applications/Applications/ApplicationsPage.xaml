@@ -69,7 +69,7 @@
 								<Border Style="{DynamicResource BorderSet}"
 										Margin="0"
 										Padding="16">
-									<Grid ColumnDefinitions="auto,*"
+									<Grid AutomationId="{Binding CurrentApplication.CreatedIdentityId, StringFormat='identity_application_{0}'}" ColumnDefinitions="auto,*"
 										  RowDefinitions="auto,auto,auto,auto"
 										  RowSpacing="16">
 										<controls:UriImage Source="{Binding BannerUri}"

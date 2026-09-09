@@ -462,7 +462,7 @@
 						  RowDefinitions="auto, auto">
 						<Label Text="{Binding Label}"
 							   Style="{DynamicResource FieldKeyLabel}" />
-						<Label Text="{Binding Value}"
+						<Label AutomationId="{Binding Mapping, StringFormat='value_kyc_summary_{0}'}" Text="{Binding Value}"
 							   Style="{DynamicResource FieldValueLabel}"
 							   Grid.Row="1">
 							<Label.Triggers>
@@ -566,7 +566,8 @@
 										Padding="{DynamicResource SmallMargins}"
 										Condition="{Binding IsInSummary}">
 					<controls:ConditionView.True>
-						<CollectionView AutomationId="screen_kyc_summary"
+						<Grid AutomationId="screen_kyc_summary">
+						<CollectionView
 										SelectionMode="None"
 										HorizontalOptions="Fill"
 										VerticalOptions="Fill">
@@ -861,11 +862,12 @@
 								</VerticalStackLayout>
 							</CollectionView.Header>
 						</CollectionView>
+						</Grid>
 					</controls:ConditionView.True>
 
 					<controls:ConditionView.False>
+						<Grid AutomationId="{Binding CurrentPage.Id, StringFormat='screen_kyc_page_{0}'}">
 						<CollectionView x:Name="FormCollectionView"
-										AutomationId="{Binding CurrentPage.Id, StringFormat='screen_kyc_page_{0}'}"
 										ItemsSource="{Binding CurrentPage.VisibleSections}"
 										ItemSizingStrategy="MeasureAllItems"
 										SelectionMode="None"
@@ -922,6 +924,7 @@
 								</DataTemplate>
 							</CollectionView.ItemTemplate>
 						</CollectionView>
+						</Grid>
 					</controls:ConditionView.False>
 
 				</controls:ConditionView>

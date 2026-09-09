@@ -88,7 +88,7 @@
 						</controls:TemplatedButton>
 
 						<!-- Revoke -->
-						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding RevokeCommand}">
+						<controls:TemplatedButton AutomationId="button_settings_revoke_identity" HorizontalOptions="Fill" Command="{x:Binding RevokeCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
