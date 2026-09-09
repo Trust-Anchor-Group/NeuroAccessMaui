@@ -48,6 +48,13 @@ object PhoneVerificationScreen {
             .perform(replaceText(phoneNumber), closeSoftKeyboard())
     }
 
+    fun sendCodeAfterRevocation(): String {
+        when (ScreenWaiter.waitForAnyReady("button_continue_success", SEND_CODE)) {
+            "button_continue_success" -> return SuccessScreen.SCREEN
+        }
+        onView(withAutomationId(SEND_CODE)).perform(click())
+        return ScreenWaiter.waitForAny(SuccessScreen.SCREEN, PhoneCodeVerificationScreen.SCREEN)
+    }
     fun sendCode() {
         ScreenWaiter.performActionAndWaitFor(PhoneCodeVerificationScreen.SCREEN) {
             onView(withAutomationId(SEND_CODE))

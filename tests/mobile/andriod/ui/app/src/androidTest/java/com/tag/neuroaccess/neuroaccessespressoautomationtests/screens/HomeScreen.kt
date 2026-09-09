@@ -40,6 +40,15 @@ object HomeScreen {
         }
     }
 
+    fun openPersonalId(pin: String) {
+        ScreenWaiter.clickToLiveScreen(SHOW_ID)
+        if (ScreenWaiter.waitForAnyLive(ViewIdentityScreen.SCREEN, PinAuthenticationPopup.POPUP) ==
+            PinAuthenticationPopup.POPUP) {
+            PinAuthenticationPopup.enterPinAndWaitFor(pin, ViewIdentityScreen.SCREEN)
+        }
+        ViewIdentityScreen.assertDisplayed()
+    }
+
     fun openPersonalIdWithAuthenticatedSession() {
         ScreenWaiter.performActionAndWaitFor(ViewIdentityScreen.SCREEN) {
             onView(withAutomationId(SHOW_ID))

@@ -98,14 +98,16 @@ object KycProcessScreen {
         }
     }
 
-    fun enterPersonalInformation(data: PersonalIdentityTestData) {
+    /** Enters [data] and returns whether the optional middle-name field was filled. */
+    fun enterPersonalInformation(data: PersonalIdentityTestData): Boolean {
         this.replaceField(FIELD_FIRST_NAME, data.firstName)
-        this.replaceOptionalField(FIELD_MIDDLE_NAME, data.middleName)
+        val includesMiddleName = this.replaceOptionalField(FIELD_MIDDLE_NAME, data.middleName)
         this.replaceField(FIELD_LAST_NAME, data.lastName)
         this.replaceField(FIELD_PERSONAL_NUMBER, data.personalNumber)
         this.selectDate(FIELD_DATE_OF_BIRTH, data.dateOfBirth)
         this.selectCountry(data.nationality)
         this.selectGender(data.gender.displayName)
+        return includesMiddleName
     }
 
     fun continueFromPersonalInformation() {
@@ -199,11 +201,13 @@ object KycProcessScreen {
             .perform(replaceText(value), closeSoftKeyboard())
     }
 
-    private fun replaceOptionalField(fieldAutomationId: String, value: String) {
+    private fun replaceOptionalField(fieldAutomationId: String, value: String): Boolean {
         if (ScreenWaiter.isPresentInLayout(fieldAutomationId)) {
             this.scrollFieldIntoView(PAGE_PERSONAL_INFORMATION, fieldAutomationId)
             this.replaceField(fieldAutomationId, value)
+            return true
         }
+        return false
     }
 
     private fun replaceFieldOnPage(

@@ -40,8 +40,13 @@ object PinAuthenticationPopup {
     /** Submits [pin] and waits for successful navigation to [nextScreen]. */
     fun enterPinAndWaitFor(pin: String, nextScreen: String) {
         this.enterPin(pin)
-        ScreenWaiter.performActionAndWaitFor(nextScreen) {
-            onView(withAutomationId(CONFIRM)).perform(click())
+        if (nextScreen == ViewIdentityScreen.SCREEN) {
+            ScreenWaiter.clickToLiveScreen(CONFIRM)
+            ViewIdentityScreen.assertDisplayed()
+        } else {
+            ScreenWaiter.performActionAndWaitFor(nextScreen) {
+                onView(withAutomationId(CONFIRM)).perform(click())
+            }
         }
     }
 

@@ -39,6 +39,16 @@ object PhoneCodeVerificationScreen {
             .perform(replaceText(verificationCode), closeSoftKeyboard())
     }
 
+    fun verifyCodeAfterRevocation(): String {
+        onView(withAutomationId(VERIFY_CODE)).perform(click())
+        ScreenWaiter.waitUntilHidden(SCREEN)
+        // The phone page can appear briefly while async verification advances onboarding.
+        // Only a ready Send code control means a new verification attempt can be started.
+        return when (ScreenWaiter.waitForAnyReady("button_continue_success", "button_send_phone_code")) {
+            "button_continue_success" -> SuccessScreen.SCREEN
+            else -> PhoneVerificationScreen.SCREEN
+        }
+    }
     fun verifyCodeAndWaitFor(nextScreen: String) {
         ScreenWaiter.performActionAndWaitFor(nextScreen) {
             onView(withAutomationId(VERIFY_CODE))

@@ -12,6 +12,8 @@ object SuccessScreen {
     private const val CONTINUE = "button_continue_success"
 
     fun continueToHome() {
+        ScreenWaiter.waitFor(SCREEN)
+        ScreenWaiter.waitUntilReady(CONTINUE)
         ScreenWaiter.performActionAndWaitFor(HomeScreen.SCREEN) {
             onView(withAutomationId(CONTINUE))
                 .check(matches(isDisplayed()))

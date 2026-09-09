@@ -35,6 +35,67 @@ object ScreenWaiter {
         IdlingPolicies.setMasterPolicyTimeout(IDLING_RESOURCE_TIMEOUT_SECONDS, TimeUnit.SECONDS)
     }
 
+    fun clickToLiveScreen(automationId: String) {
+        var point: android.graphics.Point? = null
+        awaitLiveCondition("clickable area of $automationId") {
+            onMainThread {
+                val view = resumedRoots().firstNotNullOfOrNull { root ->
+                    findView(root) { candidate ->
+                        AutomationIdMatcher.matches(candidate, automationId) &&
+                            isEnabled().matches(candidate) &&
+                            isDisplayingAtLeast(CLICK_VISIBLE_PERCENTAGE).matches(candidate)
+                    }
+                }
+                val bounds = android.graphics.Rect()
+                point = if (view != null && view.getGlobalVisibleRect(bounds))
+                    android.graphics.Point(bounds.centerX(), bounds.centerY()) else null
+                point != null
+            }
+        }
+        val target = checkNotNull(point)
+        val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+        val downTime = android.os.SystemClock.uptimeMillis()
+        fun inject(action: Int) {
+            val event = android.view.MotionEvent.obtain(downTime,
+                android.os.SystemClock.uptimeMillis(), action, target.x.toFloat(), target.y.toFloat(), 0)
+            event.source = android.view.InputDevice.SOURCE_TOUCHSCREEN
+            try {
+                check(automation.injectInputEvent(event, true)) { "Could not inject tap on $automationId." }
+            } finally {
+                event.recycle()
+            }
+        }
+        inject(android.view.MotionEvent.ACTION_DOWN)
+        inject(android.view.MotionEvent.ACTION_UP)
+    }
+    fun waitForAnyLive(vararg automationIds: String): String {
+        require(automationIds.isNotEmpty()) { "At least one AutomationId is required." }
+        var selected: String? = null
+        awaitLiveCondition("visible screen among ${automationIds.toList()}") {
+            selected = automationIds.firstOrNull { isDisplayed(it) }
+            selected != null
+        }
+        return checkNotNull(selected)
+    }
+
+    fun waitForLiveText(automationId: String, expectedText: Matcher<String>) {
+        awaitLiveCondition("$automationId displaying $expectedText") {
+            hasView { view ->
+                AutomationIdMatcher.matches(view, automationId) &&
+                    espressoIsDisplayed().matches(view) && withText(expectedText).matches(view)
+            }
+        }
+    }
+
+    private fun awaitLiveCondition(description: String, condition: () -> Boolean) {
+        check(Looper.myLooper() != Looper.getMainLooper()) { "Live waits must run on the instrumentation thread." }
+        val deadline = android.os.SystemClock.uptimeMillis() + 15_000L
+        do {
+            if (condition()) return
+            android.os.SystemClock.sleep(100L)
+        } while (android.os.SystemClock.uptimeMillis() < deadline)
+        error("Timed out waiting for $description on the animated screen.")
+    }
     /** Waits for an identified view to satisfy Espresso's displayed matcher. */
     fun waitFor(screenAutomationId: String) {
         this.waitForMatcher(
@@ -48,6 +109,12 @@ object ScreenWaiter {
         this.waitForMatcher("Displayed text: $expectedText", allOf(withText(expectedText), espressoIsDisplayed()))
     }
 
+    fun waitForText(automationId: String, expectedText: Matcher<String>) {
+        this.waitForMatcher("Text on automation ID: $automationId", allOf(
+            AutomationIdMatcher.withAutomationId(automationId),
+            withText(expectedText), espressoIsDisplayed()
+        ))
+    }
     /** Waits for a displayed, enabled control; use [waitUntilReady] before clicking it. */
     fun waitUntilEnabled(automationId: String) {
         this.waitForMatcher(
@@ -81,6 +148,23 @@ object ScreenWaiter {
         return checkNotNull(selectedId)
     }
 
+    fun waitForAnyReady(vararg automationIds: String): String {
+        require(automationIds.isNotEmpty()) { "At least one AutomationId is required." }
+        var selectedId: String? = null
+        this.awaitCondition("Ready automation ID: one of ${automationIds.toList()}") { roots ->
+            selectedId = automationIds.firstOrNull { id ->
+                roots.any { root ->
+                    findView(root) { view ->
+                        isEnabled().matches(view) &&
+                            isDisplayingAtLeast(CLICK_VISIBLE_PERCENTAGE).matches(view) &&
+                            AutomationIdMatcher.matches(view, id)
+                    } != null
+                }
+            }
+            selectedId != null
+        }
+        return checkNotNull(selectedId)
+    }
     /** Waits for Espresso's tracked work; this alone does not establish completion of MAUI operations. */
     fun waitForIdle() {
         onIdle()

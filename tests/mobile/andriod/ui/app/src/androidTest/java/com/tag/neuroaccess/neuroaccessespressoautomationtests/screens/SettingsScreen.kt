@@ -17,6 +17,10 @@ object SettingsScreen {
         onView(withAutomationId(SCREEN)).check(matches(isDisplayed()))
     }
 
+    fun requestIdentityRevocation() {
+        onView(withAutomationId("button_settings_revoke_identity"))
+            .perform(scrollTo(), click())
+    }
     fun openChangePin() {
         ScreenWaiter.performActionAndWaitFor(PinAuthenticationPopup.POPUP) {
             onView(withAutomationId(CHANGE_PIN))
