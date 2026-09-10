@@ -31,7 +31,11 @@ namespace NeuroAccessMaui.Camera
 		private CameraOptions options = new CameraOptions();
 		private CameraDescriptor? selectedCamera;
 		private DateTimeOffset lastFrameTimestamp = DateTimeOffset.MinValue;
+		private readonly SemaphoreSlim cameraSemaphore = new SemaphoreSlim(1, 1);
+		private bool isCameraConnected;
+		private long previewRequest;
 
+		/// <inheritdoc/>
 		protected override PreviewView CreatePlatformView()
 		{
 			PreviewView View = new PreviewView(this.Context);
@@ -41,95 +45,257 @@ namespace NeuroAccessMaui.Camera
 
 		private partial void Initialize()
 		{
-			this.options = this.VirtualView?.Options ?? new CameraOptions();
-			this.selectedCamera = this.VirtualView?.SelectedCamera;
+			_ = this.SetCameraConnectionAsync(true);
 		}
 
 		private partial void Cleanup()
 		{
-			this.StopPreviewInternal();
+			_ = this.SetCameraConnectionAsync(false);
 		}
 
-		private async partial Task StartPreviewInternalAsync(CancellationToken CancellationToken)
+		/// <summary>
+		/// Observes connection-hook failures while ordering connection changes with native cleanup.
+		/// </summary>
+		/// <param name="IsConnected">Whether the handler is connecting.</param>
+		/// <returns>A task representing the observed connection update.</returns>
+		private async Task SetCameraConnectionAsync(bool IsConnected)
 		{
-			if (this.VirtualView is null || this.PlatformView is null)
+			try
+			{
+				await this.cameraSemaphore.WaitAsync().ConfigureAwait(false);
+				try
+				{
+					await MainThread.InvokeOnMainThreadAsync(() =>
+					{
+						this.previewRequest++;
+						this.isCameraConnected = IsConnected && !this.isDisposed && !this.isReleased;
+						if (!this.isCameraConnected)
+							this.StopPreviewInternal();
+					}).ConfigureAwait(false);
+				}
+				finally
+				{
+					this.cameraSemaphore.Release();
+				}
+			}
+			catch (System.Exception Ex)
+			{
+				LogWarning($"Camera connection update failed. Connected={IsConnected}, ExceptionType={Ex.GetType().FullName}");
+			}
+		}
+
+		private partial Task StartPreviewInternalAsync(CancellationToken CancellationToken)
+		{
+			return this.StartPreviewCoreAsync(false, CancellationToken);
+		}
+
+		/// <summary>
+		/// Admits a preview request and binds it only if it remains current after provider initialization.
+		/// </summary>
+		/// <param name="RequireRunningPreview">Whether this is an automatic restart of an active preview.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <returns>A task representing preview initialization.</returns>
+		private async Task StartPreviewCoreAsync(bool RequireRunningPreview, CancellationToken CancellationToken)
+		{
+			long Request = 0;
+			Context? PreviewContext = null;
+			CameraView? View = null;
+			PreviewView? PreviewControl = null;
+			Task<ProcessCameraProvider>? ProviderTask = null;
+			await this.cameraSemaphore.WaitAsync(CancellationToken).ConfigureAwait(false);
+			try
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					CancellationToken.ThrowIfCancellationRequested();
+					if (!this.IsCameraAvailable() || (RequireRunningPreview && !this.VirtualView.IsPreviewRunning))
+						return;
+
+					Request = ++this.previewRequest;
+					PreviewContext = this.Context;
+					View = this.VirtualView;
+					PreviewControl = this.PlatformView;
+					// Store the task so dispatcher unwrapping cannot keep the gate held during initialization.
+					ProviderTask = GetCameraProviderAsync(PreviewContext, CancellationToken);
+				}).ConfigureAwait(false);
+			}
+			finally
+			{
+				this.cameraSemaphore.Release();
+			}
+
+			if (ProviderTask is null || PreviewContext is null || View is null || PreviewControl is null)
 				return;
 
-			this.options = this.VirtualView.Options ?? new CameraOptions();
-
-			Context Context = this.Context;
-			ProcessCameraProvider Provider = await GetCameraProviderAsync(Context, CancellationToken).ConfigureAwait(false);
-			this.cameraProvider = Provider;
-			await MainThread.InvokeOnMainThreadAsync(() =>
+			ProcessCameraProvider Provider = await ProviderTask.ConfigureAwait(false);
+			await this.cameraSemaphore.WaitAsync(CancellationToken).ConfigureAwait(false);
+			try
 			{
-				this.StopPreviewInternal();
-				this.lastFrameTimestamp = DateTimeOffset.MinValue;
-
-				CameraSelector Selector = this.BuildCameraSelector();
-				bool ShouldEnableFrameAnalysis = this.ShouldEnableFrameAnalysis();
-				ApplyPreviewScaling(this.PlatformView, this.options.PreviewScaling);
-				Preview.Builder PreviewBuilder = new Preview.Builder();
-				ApplyTargetResolution(PreviewBuilder, this.options);
-				Preview Preview = PreviewBuilder.Build();
-				Preview.SetSurfaceProvider(ContextCompat.GetMainExecutor(Context), this.PlatformView.SurfaceProvider);
-
-				ImageAnalysis? Analysis = null;
-				if (ShouldEnableFrameAnalysis)
+				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					ImageAnalysis.Builder AnalysisBuilder = new ImageAnalysis.Builder();
-					AnalysisBuilder.SetBackpressureStrategy(ImageAnalysis.StrategyKeepOnlyLatest);
-					ApplyTargetResolution(AnalysisBuilder, this.options);
-					Analysis = AnalysisBuilder.Build();
-				}
+					CancellationToken.ThrowIfCancellationRequested();
+					if (Request != this.previewRequest || !this.IsCameraAvailable() ||
+						!ReferenceEquals(View, this.VirtualView) || !ReferenceEquals(PreviewControl, this.PlatformView))
+						return;
 
-				ImageCapture.Builder CaptureBuilder = new ImageCapture.Builder();
-				ApplyTargetResolution(CaptureBuilder, this.options);
-				CaptureBuilder.SetCaptureMode(ImageCapture.CaptureModeMaximizeQuality);
-				if (this.options.JpegQuality.HasValue)
-				{
-					int JpegQuality = System.Math.Max(0, System.Math.Min(100, this.options.JpegQuality.Value));
-					CaptureBuilder.SetJpegQuality(JpegQuality);
-				}
-				ImageCapture Capture = CaptureBuilder.Build();
-
-				if (Analysis is not null)
-				{
-					this.analyzerExecutor = Executors.NewSingleThreadExecutor();
-					Analysis.SetAnalyzer(this.analyzerExecutor, new FrameAnalyzer(this));
-				}
-
-				ILifecycleOwner Owner = this.GetLifecycleOwner();
-				List<UseCase> UseCases = new List<UseCase>
-				{
-					Preview,
-					Capture
-				};
-				if (Analysis is not null)
-					UseCases.Insert(1, Analysis);
-
-				this.camera = Provider.BindToLifecycle(Owner, Selector, UseCases.ToArray());
-				this.preview = Preview;
-				this.imageAnalysis = Analysis;
-				this.imageCapture = Capture;
-
-				if (this.VirtualView is not null)
-					this.VirtualView.IsPreviewRunning = true;
-			});
+					this.StopPreviewInternal();
+					this.cameraProvider = Provider;
+					this.options = View.Options ?? new CameraOptions();
+					this.selectedCamera = View.SelectedCamera;
+					this.lastFrameTimestamp = DateTimeOffset.MinValue;
+					try
+					{
+						this.BindPreview(PreviewContext, PreviewControl, Provider);
+						CancellationToken.ThrowIfCancellationRequested();
+						if (!this.IsCameraAvailable())
+						{
+							this.StopPreviewInternal();
+							return;
+						}
+						View.IsPreviewRunning = true;
+					}
+					catch
+					{
+						try
+						{
+							this.StopPreviewInternal();
+						}
+						catch (System.Exception Ex)
+						{
+							LogWarning($"Camera setup cleanup failed. ExceptionType={Ex.GetType().FullName}");
+						}
+						throw;
+					}
+				}).ConfigureAwait(false);
+			}
+			finally
+			{
+				this.cameraSemaphore.Release();
+			}
 		}
+
+		/// <summary>
+		/// Allocates and binds owned use cases on the main thread while the camera semaphore is held.
+		/// </summary>
+		/// <param name="Context">The admitted Android context.</param>
+		/// <param name="PreviewControl">The admitted preview control.</param>
+		/// <param name="Provider">The initialized camera provider.</param>
+		private void BindPreview(Context Context, PreviewView PreviewControl, ProcessCameraProvider Provider)
+		{
+			CameraSelector Selector = this.BuildCameraSelector();
+			bool ShouldEnableFrameAnalysis = this.ShouldEnableFrameAnalysis();
+			ApplyPreviewScaling(PreviewControl, this.options.PreviewScaling);
+			Preview.Builder PreviewBuilder = new Preview.Builder();
+			ApplyTargetResolution(PreviewBuilder, this.options);
+			Preview Preview = PreviewBuilder.Build();
+			this.preview = Preview;
+			Preview.SetSurfaceProvider(ContextCompat.GetMainExecutor(Context), PreviewControl.SurfaceProvider);
+
+			ImageAnalysis? Analysis = null;
+			if (ShouldEnableFrameAnalysis)
+			{
+				ImageAnalysis.Builder AnalysisBuilder = new ImageAnalysis.Builder();
+				AnalysisBuilder.SetBackpressureStrategy(ImageAnalysis.StrategyKeepOnlyLatest);
+				ApplyTargetResolution(AnalysisBuilder, this.options);
+				Analysis = AnalysisBuilder.Build();
+				this.imageAnalysis = Analysis;
+			}
+
+			ImageCapture.Builder CaptureBuilder = new ImageCapture.Builder();
+			ApplyTargetResolution(CaptureBuilder, this.options);
+			CaptureBuilder.SetCaptureMode(ImageCapture.CaptureModeMaximizeQuality);
+			if (this.options.JpegQuality.HasValue)
+			{
+				int JpegQuality = System.Math.Max(0, System.Math.Min(100, this.options.JpegQuality.Value));
+				CaptureBuilder.SetJpegQuality(JpegQuality);
+			}
+			ImageCapture Capture = CaptureBuilder.Build();
+			this.imageCapture = Capture;
+
+			if (Analysis is not null)
+			{
+				this.analyzerExecutor = Executors.NewSingleThreadExecutor();
+				Analysis.SetAnalyzer(this.analyzerExecutor, new FrameAnalyzer(this));
+			}
+
+			ILifecycleOwner Owner = this.GetLifecycleOwner();
+			List<UseCase> UseCases = new List<UseCase>
+			{
+				Preview,
+				Capture
+			};
+			if (Analysis is not null)
+				UseCases.Insert(1, Analysis);
+
+			this.camera = Provider.BindToLifecycle(Owner, Selector, UseCases.ToArray());
+		}
+
+		/// <summary>
+		/// Checks handler availability on the main thread while the camera semaphore is held.
+		/// </summary>
+		/// <returns>Whether native camera work may be initiated.</returns>
+		private bool IsCameraAvailable() => this.isCameraConnected && !this.isDisposed && !this.isReleased &&
+			this.VirtualView is not null && this.PlatformView is not null;
 
 		private partial Task StopPreviewInternalAsync()
 		{
-			return MainThread.InvokeOnMainThreadAsync(() => this.StopPreviewInternal());
+			return this.StopCameraAsync();
 		}
 
 		private partial Task ReleaseInternalAsync()
 		{
-			return MainThread.InvokeOnMainThreadAsync(() => this.StopPreviewInternal());
+			return this.StopCameraAsync();
 		}
 
-		private partial Task<byte[]?> CapturePhotoInternalAsync(CancellationToken CancellationToken)
+		/// <summary>
+		/// Invalidates pending preview requests and cleans resources within the same gate acquisition.
+		/// </summary>
+		/// <returns>A task representing native cleanup.</returns>
+		private async Task StopCameraAsync()
 		{
-			if (this.imageCapture is null)
+			await this.cameraSemaphore.WaitAsync().ConfigureAwait(false);
+			try
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.previewRequest++;
+					this.StopPreviewInternal();
+				}).ConfigureAwait(false);
+			}
+			finally
+			{
+				this.cameraSemaphore.Release();
+			}
+		}
+
+		private async partial Task<byte[]?> CapturePhotoInternalAsync(CancellationToken CancellationToken)
+		{
+			Task<byte[]?>? CaptureTask = null;
+			await this.cameraSemaphore.WaitAsync(CancellationToken).ConfigureAwait(false);
+			try
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					CaptureTask = this.CapturePhotoOnMainThreadAsync(CancellationToken);
+				}).ConfigureAwait(false);
+			}
+			finally
+			{
+				this.cameraSemaphore.Release();
+			}
+
+			return CaptureTask is null ? null : await CaptureTask.ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Initiates native capture on the main thread while the camera semaphore is held.
+		/// </summary>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <returns>The existing callback's capture result task.</returns>
+		private Task<byte[]?> CapturePhotoOnMainThreadAsync(CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			if (!this.IsCameraAvailable() || this.imageCapture is null)
 				return Task.FromResult<byte[]?>(null);
 
 			TaskCompletionSource<byte[]?> CompletionSource = new TaskCompletionSource<byte[]?>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -154,6 +320,7 @@ namespace NeuroAccessMaui.Camera
 				});
 			}
 
+			CancellationToken.ThrowIfCancellationRequested();
 			this.imageCapture.TakePicture(
 				OutputOptions,
 				ContextCompat.GetMainExecutor(this.Context),
@@ -222,62 +389,91 @@ namespace NeuroAccessMaui.Camera
 
 		private partial void OnSelectedCameraChanged(CameraDescriptor? SelectedCamera)
 		{
-			this.selectedCamera = SelectedCamera;
-			if (this.VirtualView?.IsPreviewRunning ?? false)
-				_ = this.StartPreviewInternalAsync(CancellationToken.None);
+			_ = this.RestartPreviewAsync();
 		}
 
 		private partial void OnOptionsChanged(CameraOptions Options)
 		{
-			this.options = Options ?? new CameraOptions();
-			if (this.VirtualView?.IsPreviewRunning ?? false)
-				_ = this.StartPreviewInternalAsync(CancellationToken.None);
+			_ = this.RestartPreviewAsync();
 		}
 
 		private partial void HandleFrameDemandChanged(bool HasFrameDemand)
 		{
 			_ = HasFrameDemand;
-			if (this.VirtualView?.IsPreviewRunning ?? false)
-				_ = this.StartPreviewInternalAsync(CancellationToken.None);
+			_ = this.RestartPreviewAsync();
 		}
 
-			private void StopPreviewInternal()
+		/// <summary>
+		/// Restarts only a preview that is still running when the request is admitted.
+		/// </summary>
+		/// <returns>A task that observes automatic restart failures.</returns>
+		private async Task RestartPreviewAsync()
+		{
+			try
 			{
-				if (this.imageCapture is not null)
-				{
-					this.imageCapture.Dispose();
-					this.imageCapture = null;
-				}
-
-				if (this.imageAnalysis is not null)
-				{
-					this.imageAnalysis.ClearAnalyzer();
-				this.imageAnalysis.Dispose();
-				this.imageAnalysis = null;
+				await this.StartPreviewCoreAsync(true, CancellationToken.None).ConfigureAwait(false);
 			}
+			catch (System.Exception Ex)
+			{
+				LogWarning($"Camera restart failed. ExceptionType={Ex.GetType().FullName}");
+			}
+		}
 
+		/// <summary>
+		/// Unbinds and disposes owned resources on the main thread while the camera semaphore is held.
+		/// </summary>
+		private void StopPreviewInternal()
+		{
+			List<UseCase> UseCases = new List<UseCase>();
+			if (this.imageCapture is not null)
+				UseCases.Add(this.imageCapture);
+			if (this.imageAnalysis is not null)
+				UseCases.Add(this.imageAnalysis);
 			if (this.preview is not null)
-			{
-				this.preview.Dispose();
-				this.preview = null;
-			}
+				UseCases.Add(this.preview);
 
-			if (this.cameraProvider is not null)
-				this.cameraProvider.UnbindAll();
+			List<System.Exception> Failures = new List<System.Exception>();
+			AttemptCleanup(() => this.imageAnalysis?.ClearAnalyzer(), Failures);
+			if (UseCases.Count > 0)
+				AttemptCleanup(() => this.cameraProvider?.Unbind(UseCases.ToArray()), Failures);
 
-			if (this.analyzerExecutor is not null)
-			{
-				this.analyzerExecutor.Shutdown();
-				this.analyzerExecutor.Dispose();
-				this.analyzerExecutor = null;
-			}
+			foreach (UseCase UseCase in UseCases)
+				AttemptCleanup(UseCase.Dispose, Failures);
+			AttemptCleanup(() => this.analyzerExecutor?.Shutdown(), Failures);
+			AttemptCleanup(() => this.analyzerExecutor?.Dispose(), Failures);
 
+			this.imageCapture = null;
+			this.imageAnalysis = null;
+			this.preview = null;
+			this.analyzerExecutor = null;
+			this.cameraProvider = null;
 			this.camera = null;
-			MainThread.BeginInvokeOnMainThread(() =>
+			AttemptCleanup(() =>
 			{
 				if (this.VirtualView is not null)
 					this.VirtualView.IsPreviewRunning = false;
-			});
+			}, Failures);
+
+			if (Failures.Count > 0)
+				throw new AggregateException("Camera cleanup failed.", Failures);
+		}
+
+		/// <summary>
+		/// Records a cleanup failure while allowing remaining native resources to be released.
+		/// </summary>
+		/// <param name="CleanupAction">The native cleanup step.</param>
+		/// <param name="Failures">The failures to return to the initiating caller.</param>
+		private static void AttemptCleanup(System.Action CleanupAction, List<System.Exception> Failures)
+		{
+			try
+			{
+				CleanupAction();
+			}
+			catch (System.Exception Ex)
+			{
+				Failures.Add(Ex);
+				LogWarning($"Camera resource cleanup failed. ExceptionType={Ex.GetType().FullName}");
+			}
 		}
 
 		private CameraSelector BuildCameraSelector()
@@ -430,7 +626,7 @@ namespace NeuroAccessMaui.Camera
 
 		private static void LogWarning(string Message)
 		{
-			Debug.WriteLine($"[CameraViewHandler] {Message}");
+			Android.Util.Log.Warn(nameof(CameraViewHandler), Message);
 		}
 
 		private void HandleImageProxy(IImageProxy Image)
@@ -567,7 +763,7 @@ namespace NeuroAccessMaui.Camera
 				}
 				catch (System.Exception Exception)
 				{
-					LogWarning($"Unhandled Android frame analysis error. Message={Exception.Message}");
+					LogWarning($"Unhandled Android frame analysis error. ExceptionType={Exception.GetType().FullName}");
 				}
 				finally
 				{
@@ -622,10 +818,21 @@ namespace NeuroAccessMaui.Camera
 					_ = Bitmap;
 				}
 
+				/// <summary>
+				/// Schedules saved-image processing away from the native callback's main executor.
+				/// </summary>
+				/// <param name="OutputFileResults">The native saved-file result.</param>
 				public void OnImageSaved(ImageCapture.OutputFileResults? OutputFileResults)
 				{
 					_ = OutputFileResults;
+					_ = Task.Run(this.ProcessSavedImage);
+				}
 
+				/// <summary>
+				/// Reads the saved JPEG, completes the capture, and attempts temporary-file cleanup.
+				/// </summary>
+				private void ProcessSavedImage()
+				{
 					try
 					{
 						string Path = this.outputFile.AbsolutePath;

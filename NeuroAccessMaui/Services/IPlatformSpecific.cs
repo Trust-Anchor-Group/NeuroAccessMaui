@@ -18,8 +18,16 @@ namespace NeuroAccessMaui.Services
 		bool ProhibitScreenCapture { get; set; }
 
 		/// <summary>
-		/// Gets the ID of the device
+		/// Initializes the device identifier before cryptographic services are resolved.
 		/// </summary>
+		/// <returns>A task that completes when the identifier is ready.</returns>
+		Task InitializeDeviceIdAsync() => Task.CompletedTask;
+
+		/// <summary>
+		/// Gets the ID of the device after platform initialization.
+		/// </summary>
+		/// <returns>The platform's device identifier.</returns>
+		/// <exception cref="InvalidOperationException">Android identifier initialization has not succeeded.</exception>
 		string? GetDeviceId();
 
 		/// <summary>

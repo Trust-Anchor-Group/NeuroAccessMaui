@@ -34,7 +34,7 @@ namespace NeuroAccessMaui.Services.Crypto
 			{
 				this.deviceId = ServiceRef.PlatformSpecific.GetDeviceId() + "_";
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (!OperatingSystem.IsAndroid())
 			{
 				ServiceRef.LogService.LogException(ex);
 				this.deviceId = "UNKNOWN_";

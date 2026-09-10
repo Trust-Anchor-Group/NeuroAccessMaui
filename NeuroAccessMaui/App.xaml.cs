@@ -349,7 +349,14 @@ namespace NeuroAccessMaui
         /// <summary>
         /// Invoked when the MAUI window is being destroyed.
         /// </summary>
-        internal Task HandleWindowDestroyingAsync() => this.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
+        internal Task HandleWindowDestroyingAsync()
+        {
+#if ANDROID
+            return Task.CompletedTask;
+#else
+            return this.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
+#endif
+        }
 
         #endregion
 
@@ -368,6 +375,7 @@ namespace NeuroAccessMaui
                 try
                 {
                     this.InitializeInstances();
+                    await ServiceRef.PlatformSpecific.InitializeDeviceIdAsync();
                     await ServiceRef.CryptoService.InitializeJwtFactory();
                     await this.PerformStartupAsync(isResuming: false, backgroundStart);
 
@@ -382,10 +390,23 @@ namespace NeuroAccessMaui
                 }
                 catch (Exception Ex)
                 {
+#if ANDROID
+                    try
+                    {
+                        Ex = Log.UnnestException(Ex);
+                        this.HandleStartupException(Ex);
+                    }
+                    finally
+                    {
+                        servicesSetup.TrySetResult(false);
+                        initCompletedTcs.TrySetResult(false);
+                    }
+#else
                     Ex = Log.UnnestException(Ex);
                     this.HandleStartupException(Ex);
                     servicesSetup.TrySetResult(false);
                     initCompletedTcs.TrySetResult(false);
+#endif
                 }
             });
         }
@@ -462,6 +483,7 @@ namespace NeuroAccessMaui
 #endif
         }
 
+        /// <inheritdoc/>
         protected override async void OnStart()
         {
             if (this.onStartResumesApplication)
@@ -472,11 +494,24 @@ namespace NeuroAccessMaui
             }
 
             if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
+#if ANDROID
+                return;
+#else
                 throw new Exception("Initialization did not complete in time.");
+#endif
         }
 
+        /// <summary>
+        /// Resumes application services after successful initial startup on Android.
+        /// </summary>
+        /// <param name="isBackground">Whether services are resuming in the background.</param>
+        /// <returns>A task representing the resume operation.</returns>
         public async Task ResumeAsync(bool isBackground)
         {
+#if ANDROID
+            if (!await this.InitCompleted)
+                return;
+#endif
             appInstance = this;
             this.startupCancellation = new CancellationTokenSource();
             await this.PerformStartupAsync(isResuming: true, backgroundStart: isBackground);

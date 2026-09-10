@@ -86,7 +86,14 @@ namespace NeuroAccessMaui.Services.Intents
 						{
 							// Process a url.
 							if (App.Current is not null)
+							{
+#if ANDROID
+								if (!await App.Current.InitCompleted)
+									return;
+#else
 								await App.Current.InitCompleted;
+#endif
+							}
 							App.OpenUrlSync(intent.Data);
 						}
 						break;

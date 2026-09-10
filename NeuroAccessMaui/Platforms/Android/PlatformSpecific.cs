@@ -39,6 +39,8 @@ namespace NeuroAccessMaui.Services
 	public class PlatformSpecific : IPlatformSpecific
 	{
 		private bool isDisposed;
+		private readonly SemaphoreSlim deviceIdSemaphore = new SemaphoreSlim(1, 1);
+		private string? deviceId;
 
 		/// <summary>
 		/// Android implementation of platform-specific features.
@@ -152,49 +154,80 @@ namespace NeuroAccessMaui.Services
 		}
 
 		/// <summary>
-		/// Gets the ID of the device
+		/// Loads or persists the device identifier before cryptographic startup.
 		/// </summary>
-		public string? GetDeviceId()
+		/// <returns>A task that completes when the persisted identifier is available.</returns>
+		/// <exception cref="InvalidOperationException">The identifier is missing while database files exist.</exception>
+		/// <remarks>Storage and filesystem failures propagate without publishing a replacement identifier.</remarks>
+		public async Task InitializeDeviceIdAsync()
 		{
+			await this.deviceIdSemaphore.WaitAsync().ConfigureAwait(false);
 			try
 			{
-				// Try to get the device ID from SecureStorage first
-				string? DeviceId = SecureStorage.GetAsync("DeviceIdentifier").Result;
+				if (this.deviceId is not null)
+					return;
+
+				string? DeviceId = await SecureStorage.GetAsync("DeviceIdentifier").ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(DeviceId))
 				{
-					return DeviceId; // Already stored, return it
+					this.deviceId = DeviceId;
+					return;
 				}
 
-				// Otherwise, generate a new device ID
+				if (HasDatabaseFiles())
+					throw new InvalidOperationException("The device identifier is missing while local database files exist.");
+
 				string? AndroidId = Android.Provider.Settings.Secure.GetString(
 					Android.App.Application.Context.ContentResolver,
 					Android.Provider.Settings.Secure.AndroidId);
 
-				// Optional: In rare cases, AndroidId can be null or unreliable on emulators. Fallback to a GUID if you prefer:
-				if (string.IsNullOrEmpty(AndroidId) || AndroidId == "9774d56d682e549c") // old bug: default bad ID
+				if (string.IsNullOrEmpty(AndroidId) || AndroidId == "9774d56d682e549c")
 				{
 					AndroidId = Guid.NewGuid().ToString();
 				}
-				// Store the device ID in SecureStorage for future use
-				SecureStorage.SetAsync("DeviceIdentifier", AndroidId).Wait();
-				return AndroidId;
+				await SecureStorage.SetAsync("DeviceIdentifier", AndroidId).ConfigureAwait(false);
+				this.deviceId = AndroidId;
 			}
-			catch (Exception ex)
+			finally
 			{
-				// You may want to log ex.Message and ex.StackTrace here
-				try
-				{
-					App.SendAlertAsync($"Unable to get or store device ID: {ex.Message}", "text/plain").Wait();
-					this.CloseApplication().Wait();
-				}
-				catch (Exception)
-				{
-					System.Environment.Exit(0);
-				}
+				this.deviceIdSemaphore.Release();
+			}
+		}
+
+		/// <summary>
+		/// Gets the persisted device identifier after initialization succeeds.
+		/// </summary>
+		/// <returns>The cached device identifier.</returns>
+		/// <exception cref="InvalidOperationException">Initialization has not succeeded.</exception>
+		public string? GetDeviceId() => this.deviceId
+			?? throw new InvalidOperationException("The device identifier has not been initialized.");
+
+		/// <summary>
+		/// Checks for existing database files without treating access failures as an empty installation.
+		/// </summary>
+		/// <returns>Whether the database directory contains any file, including in subdirectories.</returns>
+		private static bool HasDatabaseFiles()
+		{
+			string DataFolder = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Data");
+			FileAttributes Attributes;
+			try
+			{
+				Attributes = File.GetAttributes(DataFolder);
+			}
+			catch (FileNotFoundException)
+			{
+				return false;
+			}
+			catch (DirectoryNotFoundException)
+			{
+				return false;
 			}
 
-			return null;
+			if ((Attributes & FileAttributes.Directory) == 0)
+				throw new IOException("The database path is not a directory.");
+
+			return Directory.EnumerateFiles(DataFolder, "*", SearchOption.AllDirectories).Any();
 		}
 
 

@@ -37,7 +37,14 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 		{
 			App? AppInstance = App.Current;
 			if (AppInstance is not null)
+			{
+#if ANDROID
+				if (!await AppInstance.InitCompleted)
+					return;
+#else
 				await AppInstance.InitCompleted;
+#endif
+			}
 
 			await ServiceRef.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(3));
 
