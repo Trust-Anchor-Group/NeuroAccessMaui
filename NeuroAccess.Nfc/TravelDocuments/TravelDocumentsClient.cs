@@ -2121,6 +2121,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge,
 			out byte[] K_IFD)
 		{
+			if (this.tagInterface is IsoDepReplay Replay)
+			{
+				byte[] RND_IFD = Hashes.StringToBinary(Replay.GetInfo("RND.IFD:", this));
+				K_IFD = Hashes.StringToBinary(Replay.GetInfo("K.IFD:", this));
+
+				return CalcBacChallengeResponse3DES(Challenge, RND_IFD, K_IFD,
+					BAC_KEnc(Info), BAC_KMac(Info), this);
+			}
+
 			return CalcChallengeResponse3DES(Info, Challenge, out K_IFD, this);
 		}
 
