@@ -1487,7 +1487,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 				if (this.kycReference is not null && this.kycReference.MatchesIdentityId(E.Identity.Id))
 				{
-					try { await this.kycService.UpdateSubmissionStateAsync(this.kycReference, E.Identity); } catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
+					KycReference? UpdatedReference = await this.kycService.FindReferenceByIdentityIdAsync(E.Identity.Id);
+					if (UpdatedReference is null ||
+						!string.Equals(UpdatedReference.ObjectId, this.kycReference.ObjectId, StringComparison.Ordinal))
+					{
+						return;
+					}
+
+					this.kycReference = UpdatedReference;
 					if (E.Identity.State == IdentityState.Approved)
 					{
 						await this.ReturnToApplicationsAsync();

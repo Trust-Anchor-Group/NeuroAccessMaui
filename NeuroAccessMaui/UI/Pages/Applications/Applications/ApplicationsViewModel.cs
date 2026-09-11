@@ -601,9 +601,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				LegalIdentity? ApprovedIdentity = ServiceRef.TagProfile.LegalIdentity;
 				if (Latest is not null &&
 					ApprovedIdentity?.State == IdentityState.Approved &&
-					Latest.MatchesIdentityId(ApprovedIdentity.Id) &&
-					!Latest.IsReservedPreviewIdentity(ApprovedIdentity.Id) &&
-					!Latest.IsPreviewIdentity(ApprovedIdentity.Id) &&
+					Latest.MatchesFinalIdentity(ApprovedIdentity) &&
 					(Latest.GetEffectiveApplicationIdentityState() is null or IdentityState.Created))
 				{
 					await ServiceRef.KycService.UpdateSubmissionStateAsync(Latest, ApprovedIdentity);

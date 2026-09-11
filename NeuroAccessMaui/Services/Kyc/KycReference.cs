@@ -419,6 +419,39 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
+		/// Determines whether a final identity belongs to this application, including its preview promotion link.
+		/// </summary>
+		/// <param name="Identity">The final identity to match.</param>
+		/// <returns>True if the identity matches a stored final identifier or the submitted preview link.</returns>
+		public bool MatchesFinalIdentity(LegalIdentity? Identity)
+		{
+			if (Identity is null || string.IsNullOrWhiteSpace(Identity.Id) ||
+				this.IsReservedPreviewIdentity(Identity.Id) || this.IsPreviewIdentity(Identity.Id))
+			{
+				return false;
+			}
+
+			if (!string.IsNullOrWhiteSpace(this.FinalIdentityId))
+				return this.IsFinalIdentity(Identity.Id);
+
+			if (this.MatchesIdentityId(Identity.Id))
+				return true;
+
+			if (string.IsNullOrWhiteSpace(this.PreviewIdentityId))
+				return false;
+
+			string PreviewId = this.PreviewIdentityId.Trim();
+			string PreviewLink = Identity[Constants.XmppProperties.Preview]?.Trim() ?? string.Empty;
+			if (string.Equals(PreviewLink, PreviewId, StringComparison.OrdinalIgnoreCase))
+				return true;
+
+			int DomainSeparator = PreviewId.IndexOf('@');
+			return DomainSeparator > 0 &&
+				Identity.Id.EndsWith(PreviewId[DomainSeparator..], StringComparison.OrdinalIgnoreCase) &&
+				string.Equals(PreviewLink, PreviewId[..DomainSeparator], StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
 		/// Determines whether the specified identity identifier matches the preview identity.
 		/// </summary>
 		/// <param name="IdentityId">Identity identifier to compare.</param>

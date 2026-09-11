@@ -839,6 +839,9 @@ namespace NeuroAccessMaui.Services.Kyc
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				if (!string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
+					return;
+
 				Reference.ReservedPreviewIdentityId = null;
 				Reference.PreviewIdentityId ??= Identity.Id;
 				Reference.PreviewIdentityState = Identity.State;
@@ -900,7 +903,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			if (Reference is null || Identity is null)
 				return;
-			if (!Reference.MatchesIdentityId(Identity.Id))
+			if (!Reference.MatchesIdentityId(Identity.Id) && !Reference.MatchesFinalIdentity(Identity))
 				return;
 
 			bool StateTransition;
@@ -1218,33 +1221,31 @@ namespace NeuroAccessMaui.Services.Kyc
 						new KeyValuePair<string, object?>("Version", Snapshot.Version),
 						new KeyValuePair<string, object?>("IsImmediate", IsImmediate));
 
-					// Stale check
-					if (Snapshot.Version < Reference.Version)
+					KycReference? PersistedReference = string.IsNullOrEmpty(Reference.ObjectId)
+						? Reference
+						: await Database.TryLoadObject<KycReference>(Reference.ObjectId).ConfigureAwait(false);
+					if (PersistedReference is null)
+						return;
+
+					int CurrentVersion = Math.Max(Reference.Version, PersistedReference.Version);
+					if (Snapshot.Version < CurrentVersion)
 					{
 						Interlocked.Increment(ref this.snapshotsSkipped);
 						ServiceRef.LogService.LogDebug("KycSnapshotStaleSkipped",
 							new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
 							new KeyValuePair<string, object?>("SnapshotVersion", Snapshot.Version),
-							new KeyValuePair<string, object?>("CurrentVersion", Reference.Version));
+							new KeyValuePair<string, object?>("CurrentVersion", CurrentVersion));
 						return;
 					}
 
-					if (Reference.Fields != Snapshot.Fields)
-						Reference.Fields = Snapshot.Fields;
-					Reference.CreatedIdentityId = Snapshot.CreatedIdentityId;
-					Reference.CreatedIdentityState = Snapshot.CreatedIdentityState;
-					Reference.ReservedPreviewIdentityId = Snapshot.ReservedPreviewIdentityId;
-					Reference.PreviewIdentityId = Snapshot.PreviewIdentityId;
-					Reference.PreviewIdentityState = Snapshot.PreviewIdentityState;
-					Reference.FinalIdentityId = Snapshot.FinalIdentityId;
-					Reference.FinalIdentityState = Snapshot.FinalIdentityState;
-					Reference.IdentityStage = Snapshot.IdentityStage;
-					Reference.Progress = Snapshot.Progress;
-					Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
-					Reference.LastVisitedMode = Snapshot.LastVisitedMode;
-					Reference.ApplicationReview = CloneReview(Snapshot.ApplicationReview);
-					Reference.UpdatedUtc = Snapshot.UpdatedUtc;
-					await SaveReferenceAsync(Reference).ConfigureAwait(false);
+					// Form snapshots must preserve identity and review updates saved by the service.
+					PersistedReference.Fields = Snapshot.Fields;
+					PersistedReference.Progress = Snapshot.Progress;
+					PersistedReference.LastVisitedPageId = Snapshot.LastVisitedPageId;
+					PersistedReference.LastVisitedMode = Snapshot.LastVisitedMode;
+					PersistedReference.Version = Snapshot.Version;
+					PersistedReference.UpdatedUtc = Snapshot.UpdatedUtc;
+					await SaveReferenceAsync(PersistedReference).ConfigureAwait(false);
 
 					Interlocked.Increment(ref this.snapshotsPersisted);
 					string Hash = ComputeFieldsHash(Snapshot.Fields);

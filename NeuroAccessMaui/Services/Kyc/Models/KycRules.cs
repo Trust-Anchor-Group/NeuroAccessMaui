@@ -276,6 +276,10 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 				{
 					CountryCode = Process.Values.TryGetValue(this.fieldRef, out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
 				}
+				else if (Process.Values.TryGetValue("country", out string? FormCountry) && !string.IsNullOrEmpty(FormCountry))
+				{
+					CountryCode = FormCountry;
+				}
 				else
 				{
 					try
