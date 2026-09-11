@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Xml;
@@ -24,6 +23,7 @@ using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
+using Waher.Security.SHA3;
 
 namespace NeuroAccess.Nfc.TravelDocuments
 {
@@ -2121,7 +2121,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge,
 			out byte[] K_IFD)
 		{
-			return CalcChallengeResponse3DES(Info, Challenge, out K_IFD, this);
+			return CalcChallengeResponse3DES(Info, Challenge, out K_IFD, this.localKeySeed, this);
 		}
 
 		/// <summary>
@@ -2130,10 +2130,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="Info">Document Information</param>
 		/// <param name="Challenge">Challenge</param>
 		/// <param name="K_IFD">Generated K.IFD random number.</param>
+		/// <param name="LocalKeySeed">Optional seed value for generating the local keys.</param>
 		/// <param name="ComLayer">Communication layer</param>
 		/// <returns>Response</returns>
 		public static byte[] CalcChallengeResponse3DES(DocumentInformation Info, byte[] Challenge,
-			out byte[] K_IFD, ICommunicationLayer ComLayer)
+			out byte[] K_IFD, byte[]? LocalKeySeed, ICommunicationLayer ComLayer)
 		{
 			byte[] RND_IFD = new byte[8];  // RND.IFD
 			K_IFD = new byte[16]; // K.IFD
@@ -2141,10 +2142,21 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[] KEnc = BAC_KEnc(Info);
 			byte[] KMac = BAC_KMac(Info);
 
-			using (RandomNumberGenerator Rnd = RandomNumberGenerator.Create())
+			if (LocalKeySeed is null)
 			{
-				Rnd.GetBytes(RND_IFD);
-				Rnd.GetBytes(K_IFD);
+				using (RandomNumberGenerator Rnd = RandomNumberGenerator.Create())
+				{
+					Rnd.GetBytes(RND_IFD);
+					Rnd.GetBytes(K_IFD);
+				}
+			}
+			else
+			{
+				SHAKE256 H = new(24 << 3);
+				byte[] Hash = H.ComputeVariable(LocalKeySeed);
+
+				Buffer.BlockCopy(Hash, 0, RND_IFD, 0, 8);
+				Buffer.BlockCopy(Hash, 8, K_IFD, 0, 16);
 			}
 
 			ComLayer?.Information("RND.IFD: " + Hashes.BinaryToString(RND_IFD));
