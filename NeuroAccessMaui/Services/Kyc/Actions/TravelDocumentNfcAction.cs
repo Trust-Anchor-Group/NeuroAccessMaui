@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.UI.Pages.Kyc;
 
 namespace NeuroAccessMaui.Services.Kyc.Actions
@@ -24,8 +25,8 @@ namespace NeuroAccessMaui.Services.Kyc.Actions
 		/// <inheritdoc/>
 		public Task<KycPageActionState> GetStateAsync(KycPageActionContext Context)
 		{
-			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported
-				|| !string.IsNullOrWhiteSpace(Context.Reference.NfcReadoutXml))
+			if (!this.IsAvailable(Context)
+				|| (!string.IsNullOrWhiteSpace(Context.Reference.NfcReadoutXml) && !Context.Reference.CanRescanLegacyNfcReadout))
 			{
 				return Task.FromResult(new KycPageActionState
 				{
@@ -48,7 +49,7 @@ namespace NeuroAccessMaui.Services.Kyc.Actions
 		public async Task ExecuteAsync(KycPageActionContext Context)
 		{
 			Context.CancellationToken.ThrowIfCancellationRequested();
-			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
+			if (!this.IsAvailable(Context))
 			{
 				return;
 			}
@@ -56,6 +57,13 @@ namespace NeuroAccessMaui.Services.Kyc.Actions
 			await Context.NavigationService.GoToAsync(
 				nameof(KycTravelDocumentPage),
 				new KycProcessNavigationArgs(Context.Reference));
+		}
+
+		private bool IsAvailable(KycPageActionContext Context)
+		{
+			return Context.Process.ApplicationPolicy.Mode == KycApplicationMode.Preview &&
+				Context.Process.EvidencePolicy.TravelDocument.Nfc.Enabled &&
+				ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported;
 		}
 
 		private string ResolveStatusText(KycPageActionContext Context)

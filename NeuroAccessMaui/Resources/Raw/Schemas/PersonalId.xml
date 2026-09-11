@@ -384,6 +384,8 @@
 					<TargetWidth>1200</TargetWidth>
 					<TargetHeight>1600</TargetHeight>
 					<MinDpi>300</MinDpi>
+					<ShouldCrop>false</ShouldCrop>
+					<PreserveOriginalCapture>true</PreserveOriginalCapture>
 				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
@@ -428,6 +430,8 @@
 					<TargetWidth>1000</TargetWidth>
 					<TargetHeight>1500</TargetHeight>
 					<MinDpi>200</MinDpi>
+					<ShouldCrop>false</ShouldCrop>
+					<PreserveOriginalCapture>true</PreserveOriginalCapture>
 				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
@@ -472,6 +476,8 @@
 					<TargetWidth>1000</TargetWidth>
 					<TargetHeight>1500</TargetHeight>
 					<MinDpi>200</MinDpi>
+					<ShouldCrop>false</ShouldCrop>
+					<PreserveOriginalCapture>true</PreserveOriginalCapture>
 				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>

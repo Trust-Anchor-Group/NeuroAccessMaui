@@ -8,60 +8,76 @@
                   xmlns:popups="clr-namespace:NeuroAccessMaui.UI.Popups"
                   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.OnboardingHelp" >
 
-	<Grid RowSpacing="{DynamicResource MediumSpacing}" RowDefinitions="auto, auto, auto, auto, auto">
-		<Label Style="{DynamicResource PageTitleLabel}"
-			   Text="{l:Localize OnboardingContactSupportTitle}"/>
-		<!-- Part 1 -->
-		<Label Text="{l:Localize OnboardingContactSupportDetailsPart1}"
-			   Grid.Row="1"/>
+	<Grid RowDefinitions="Auto,*"
+		  RowSpacing="{DynamicResource MediumSpacing}">
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="*,Auto"
+			  ColumnSpacing="{DynamicResource MediumSpacing}">
+			<Label Style="{DynamicResource PageTitleLabel}"
+				   Text="{l:Localize OnboardingContactSupportTitle}"
+				   VerticalOptions="Center" />
+			<controls:SvgButton Grid.Column="1"
+							Command="{Binding CloseCommand}"
+							SvgSource="close.svg"
+							Style="{DynamicResource IconButton}"
+							SemanticProperties.Description="{l:Localize Close}"
+							WidthRequest="44"
+							HeightRequest="44"
+							HorizontalOptions="End"
+							VerticalOptions="Center" />
+		</Grid>
 
-		<!-- Bullet Points -->
-		<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Grid.Row="2">
-			<Label>
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="• " />
-						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet1}" />
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<Label>
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="• " />
-						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet2}" />
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<Label>
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="• " />
-						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet3}" />
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<Label>
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="• " />
-						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet4}" />
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-		</VerticalStackLayout>
-		
-		<Label Text="{l:Localize OnboardingContactSupportDetailsPart2}"
-			   Grid.Row="3"/>
+		<ScrollView Grid.Row="1"
+					VerticalOptions="Fill">
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+				<Label Text="{l:Localize OnboardingContactSupportDetailsPart1}" />
 
-		<Label Text="{Binding SupportEmail}"
-			   TextColor="Blue"
-			   TextDecorations="Underline"
-			   Grid.Row="4"
-			   IsVisible="False">
-			<Label.GestureRecognizers>
-				<TapGestureRecognizer Command="{Binding ContactSupportCommand}"/>
-			</Label.GestureRecognizers>
-		</Label>
+				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="• " />
+								<Span Text="{l:Localize OnboardingContactSupportDetailsBullet1}" />
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="• " />
+								<Span Text="{l:Localize OnboardingContactSupportDetailsBullet2}" />
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="• " />
+								<Span Text="{l:Localize OnboardingContactSupportDetailsBullet3}" />
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="• " />
+								<Span Text="{l:Localize OnboardingContactSupportDetailsBullet4}" />
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+				</VerticalStackLayout>
+
+				<Label Text="{l:Localize OnboardingContactSupportDetailsPart2}" />
+
+				<Label Text="{Binding SupportEmail}"
+					   TextColor="Blue"
+					   TextDecorations="Underline"
+					   IsVisible="False">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ContactSupportCommand}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</VerticalStackLayout>
+		</ScrollView>
 	</Grid>
 </popups:BasePopup>

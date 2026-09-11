@@ -47,6 +47,12 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
+		private static async Task CloseAsync()
+		{
+			await ServiceRef.PopupService.PopAsync();
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		public async Task SelectLanguageAsync(string languageName)
 		{
 			// Find the language that matches the selection.

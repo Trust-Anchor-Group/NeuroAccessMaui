@@ -142,7 +142,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the summary should offer the document-chip flow.
 		/// </summary>
-		public bool CanOpenTravelDocumentFromSummary => !this.HasNfcReadout && !this.HasManualDocumentEvidence;
+		public bool CanOpenTravelDocumentFromSummary =>
+			this.process is not null &&
+			this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview &&
+			this.process.EvidencePolicy.TravelDocument.Nfc.Enabled &&
+			ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported &&
+			((!this.HasNfcReadout && !this.HasManualDocumentEvidence) ||
+				this.kycReference?.CanRescanLegacyNfcReadout == true);
 
 		/// <summary>
 		/// Gets a value indicating whether the summary should show document-chip status or actions.
@@ -359,6 +365,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			this.process.Initialize();
 			this.RefreshDerivedEvidenceState();
+			this.OnPropertyChanged(nameof(this.CanOpenTravelDocumentFromSummary));
+			this.OnPropertyChanged(nameof(this.ShowTravelDocumentSummary));
 			bool ForceFormResume = this.navigationArguments?.ForceFormResume == true;
 			if (this.navigationArguments?.AbandonTravelDocumentAttempt == true)
 				await this.AbandonTravelDocumentAttemptAsync();
@@ -524,12 +532,20 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			string ReservedPreviewIdentityId = this.kycReference.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
 			if (!string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+			{
+				bool ClearMatchingProfileApplication = this.kycReference.IsUnsubmittedReservedPreviewIdentity(ReservedPreviewIdentityId) &&
+					string.Equals(ServiceRef.TagProfile.IdentityApplication?.Id, ReservedPreviewIdentityId, StringComparison.OrdinalIgnoreCase);
+				if (ClearMatchingProfileApplication)
+					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+
 				await this.kycService.ForgetReservedPreviewIdentityAsync(this.kycReference, ReservedPreviewIdentityId);
+			}
 
 			this.kycReference.TravelDocumentMrz = null;
 			this.kycReference.TravelDocumentMrzUpdatedUtc = null;
 			this.kycReference.NfcReadoutXml = null;
 			this.kycReference.NfcReadoutUpdatedUtc = null;
+			this.kycReference.NfcVerifiedFieldIds = null;
 			this.kycReference.LastVisitedMode = "Form";
 			this.kycReference.LastVisitedPageId = null;
 			this.kycReference.Version++;
@@ -565,6 +581,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (string.IsNullOrWhiteSpace(mapping)) return;
 			if (this.process is null) return;
 			if (this.ApplicationSentPublic) return; // Cannot edit after application sent
+			if (!this.process.IsMappingEditable(mapping)) return;
 
 			int TargetIndex = this.FindPageIndexByMapping(mapping);
 			if (TargetIndex < 0) return;
@@ -783,6 +800,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				.Concat(this.process.Pages.SelectMany(p => p.AllSections).SelectMany(s => s.AllFields));
 			foreach (ObservableKycField Field in AllFields)
 			{
+				if (!Field.IsEditable) continue;
+				if (Field.FieldType == FieldType.Image || Field.FieldType == FieldType.File) continue;
 				if (!string.IsNullOrWhiteSpace(Field.StringValue)) continue;
 				if (Field.Mappings.Count == 0) continue;
 				foreach (KycMapping Map in Field.Mappings)
@@ -1213,10 +1232,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand]
 		private async Task OpenTravelDocumentAsync()
 		{
-			if (this.kycReference is null)
+			if (this.kycReference is null ||
+				this.process is null ||
+				this.process.ApplicationPolicy.Mode != KycApplicationMode.Preview ||
+				!this.process.EvidencePolicy.TravelDocument.Nfc.Enabled)
+			{
 				return;
+			}
 
-			if (this.HasNfcReadout || !string.IsNullOrWhiteSpace(this.kycReference.NfcReadoutXml))
+			if ((this.HasNfcReadout || !string.IsNullOrWhiteSpace(this.kycReference.NfcReadoutXml)) &&
+				!this.kycReference.CanRescanLegacyNfcReadout)
 				return;
 
 			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
@@ -1263,6 +1288,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.process.ApplicationPolicy,
 					this.mappedValues,
 					this.attachments);
+				bool UsedNfc = this.HasNfcReadout;
 				(bool CanSubmitWithKeys, bool GenerateNewKeys) = await this.ResolveSubmissionKeyGenerationAsync(this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview);
 				if (!CanSubmitWithKeys)
 				{
@@ -1292,9 +1318,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						try
 						{
 							if (this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview)
-								await this.kycService.ApplyPreviewSubmissionAsync(this.kycReference, Added);
+								await this.kycService.ApplyPreviewSubmissionAsync(this.kycReference, Added, UsedNfc);
 							else
-								await this.kycService.ApplySubmissionAsync(this.kycReference, Added);
+								await this.kycService.ApplySubmissionAsync(this.kycReference, Added, UsedNfc);
 						}
 						catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 					}

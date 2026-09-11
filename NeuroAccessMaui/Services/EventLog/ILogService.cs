@@ -60,6 +60,14 @@ namespace NeuroAccessMaui.Services.EventLog
 			params KeyValuePair<string, object?>[] Tags);
 
 		/// <summary>
+		/// Adds a privacy-reduced informational telemetry event with a stable event identifier.
+		/// </summary>
+		/// <param name="EventId">Stable event identifier.</param>
+		/// <param name="Message">Informational event message.</param>
+		/// <param name="Tags">Allowlisted event-specific tags.</param>
+		void LogTelemetryEvent(string EventId, string Message, params KeyValuePair<string, object?>[] Tags);
+
+		/// <summary>
 		/// Invoke this method to add a warning statement to the log.
 		/// </summary>
 		/// <param name="Message">Warning message.</param>

@@ -3199,7 +3199,7 @@
     <value>Inconnu, veuillez actualiser</value>
   </data>
   <data name="SelectForMe" xml:space="preserve">
-    <value>Sélectionnez pour moi</value>
+    <value>Continuer quand même</value>
   </data>
   <data name="ShareDescription" xml:space="preserve">
     <value>Vous trouverez ci-dessous des options supplémentaires pour partager le code QR.</value>

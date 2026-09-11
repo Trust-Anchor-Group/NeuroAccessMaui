@@ -198,6 +198,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
+				this.Loader.Reload();
 			});
 
 			return Task.CompletedTask;
@@ -209,6 +210,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			{
 				this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity is not null &&
 					ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved;
+				this.Loader.Reload();
 			});
 
 			return Task.CompletedTask;
@@ -225,6 +227,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 			this.Loader.Run();
 			this.AvailableLoader.Run();
+			this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity?.State == IdentityState.Approved;
 
 			// Page is not correctly updated if changes happened when viewing a sub-view. Fix by resending notification.
 			bool IdApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
@@ -516,7 +519,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			}
 
 			KycProcess? Process = await Reference.GetProcess(Language);
-			bool HasNfcPolicy = Process?.EvidencePolicy?.TravelDocument?.Nfc?.Enabled == true;
+			bool HasNfcPolicy = Process is not null &&
+				Process.ApplicationPolicy.Mode == KycApplicationMode.Preview &&
+				Process.EvidencePolicy.TravelDocument.Nfc.Enabled;
 			if (!HasNfcPolicy)
 				return false;
 
@@ -593,11 +598,26 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				Ct.ThrowIfCancellationRequested();
 
 				KycReference? Latest = Refs.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+				LegalIdentity? ApprovedIdentity = ServiceRef.TagProfile.LegalIdentity;
+				if (Latest is not null &&
+					ApprovedIdentity?.State == IdentityState.Approved &&
+					Latest.MatchesIdentityId(ApprovedIdentity.Id) &&
+					!Latest.IsReservedPreviewIdentity(ApprovedIdentity.Id) &&
+					!Latest.IsPreviewIdentity(ApprovedIdentity.Id) &&
+					(Latest.GetEffectiveApplicationIdentityState() is null or IdentityState.Created))
+				{
+					await ServiceRef.KycService.UpdateSubmissionStateAsync(Latest, ApprovedIdentity);
+				}
+
+				Ct.ThrowIfCancellationRequested();
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
 					this.Applications.Clear();
 					this.CurrentApplication = Latest;
+					// KycReference does not notify bindings when its identity state changes in place.
+					this.OnPropertyChanged(nameof(this.CurrentApplication));
+					this.OnPropertyChanged(nameof(this.ShowProgressBar));
 					if (Latest is not null)
 						this.Applications.Add(Latest);
 				});

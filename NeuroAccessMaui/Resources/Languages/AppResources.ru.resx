@@ -3199,7 +3199,7 @@
     <value>Неизвестно, пожалуйста, обновите</value>
   </data>
   <data name="SelectForMe" xml:space="preserve">
-    <value>Выберите для меня</value>
+    <value>Всё равно продолжить</value>
   </data>
   <data name="ShareDescription" xml:space="preserve">
     <value>Ниже вы можете ознакомиться с дополнительными опциями для обмена QR-кодом.</value>

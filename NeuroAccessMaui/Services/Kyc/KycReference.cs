@@ -191,6 +191,45 @@ namespace NeuroAccessMaui.Services.Kyc
 		public DateTime? NfcReadoutUpdatedUtc { get; set; }
 
 		/// <summary>
+		/// Gets or sets the field identifiers populated from a successfully verified NFC readout.
+		/// </summary>
+		/// <remarks>
+		/// Null indicates missing verification metadata; an empty array records a readout with no matching fields.
+		/// </remarks>
+		[DefaultValueNull]
+		public string[]? NfcVerifiedFieldIds { get; set; }
+
+		/// <summary>
+		/// Gets whether an unsubmitted NFC draft can be rescanned to recover missing field-verification metadata.
+		/// </summary>
+		[IgnoreMember]
+		public bool CanRescanLegacyNfcReadout =>
+			!string.IsNullOrWhiteSpace(this.NfcReadoutXml) &&
+			this.NfcVerifiedFieldIds is null &&
+			(this.IdentityStage is KycIdentityApplicationStage.None or KycIdentityApplicationStage.ReservedPreview) &&
+			string.IsNullOrWhiteSpace(this.PreviewIdentityId) &&
+			string.IsNullOrWhiteSpace(this.FinalIdentityId) &&
+			(string.IsNullOrWhiteSpace(this.CreatedIdentityId) || this.IsReservedPreviewIdentity(this.CreatedIdentityId));
+
+		/// <summary>
+		/// Gets or sets the server template identifier for the active KYC process.
+		/// </summary>
+		[DefaultValueNull]
+		public string? KycTemplateId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the template identifier captured when the current application was submitted.
+		/// </summary>
+		[DefaultValueNull]
+		public string? SubmittedKycTemplateId { get; set; }
+
+		/// <summary>
+		/// Gets or sets the verification method captured when the current application was submitted.
+		/// </summary>
+		[DefaultValueNull]
+		public string? SubmittedVerificationMethod { get; set; }
+
+		/// <summary>
 		/// Progress of the KYC process (0.0–1.0), persisted for UI display.
 		/// </summary>
 		[DefaultValue(0.0)]
@@ -561,8 +600,23 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (Process is null)
 				return;
 
-			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] =
-				string.IsNullOrWhiteSpace(this.NfcReadoutXml) ? "false" : "true";
+			bool HasNfcReadout = !string.IsNullOrWhiteSpace(this.NfcReadoutXml);
+			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] = HasNfcReadout ? "true" : "false";
+			HashSet<string> VerifiedFieldIds = HasNfcReadout
+				? new HashSet<string>(this.NfcVerifiedFieldIds ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase)
+				: new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+			foreach (KycPage Page in Process.Pages)
+			{
+				foreach (ObservableKycField Field in Page.AllFields)
+					Field.IsReadOnly = VerifiedFieldIds.Contains(Field.Id);
+
+				foreach (KycSection Section in Page.AllSections)
+				{
+					foreach (ObservableKycField Field in Section.AllFields)
+						Field.IsReadOnly = VerifiedFieldIds.Contains(Field.Id);
+				}
+			}
 		}
 
 		/// <summary>

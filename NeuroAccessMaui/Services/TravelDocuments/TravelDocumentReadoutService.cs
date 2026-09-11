@@ -466,7 +466,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 					await TravelDocumentReadoutService.CompleteReadoutXmlAsync(InMemoryXmlWriterSniffer, XmlOutput, XmlBuilder),
 					AuthenticationResult,
 					ReadResult,
-					TravelDocumentReadoutService.CreateDocumentData(Client, Request.DocumentInformation),
+					TravelDocumentReadoutService.CreateDocumentData(Client, null),
 					TravelDocumentReadoutService.CreateCertificateData(Client, ReadResult, true),
 					null);
 			}
@@ -493,9 +493,12 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			}
 		}
 
-		private static TravelDocumentData CreateDocumentData(TravelDocumentsClient? Client, DocumentInformation FallbackDocumentInformation)
+		private static TravelDocumentData? CreateDocumentData(TravelDocumentsClient? Client, DocumentInformation? FallbackDocumentInformation)
 		{
-			DocumentInformation DocumentInformation = Client?.Mrz?.DocumentInformation ?? FallbackDocumentInformation;
+			DocumentInformation? DocumentInformation = Client?.Mrz?.DocumentInformation ?? FallbackDocumentInformation;
+			if (DocumentInformation is null)
+				return null;
+
 			return new TravelDocumentData(DocumentInformation, Client?.PersonalInformation);
 		}
 

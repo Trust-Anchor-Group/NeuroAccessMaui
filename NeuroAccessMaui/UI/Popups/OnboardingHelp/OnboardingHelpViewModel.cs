@@ -15,8 +15,14 @@ namespace NeuroAccessMaui.UI.Popups.OnboardingHelp
 		[ObservableProperty]
 		private string supportEmail;
 
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private static async Task CloseAsync()
+		{
+			await ServiceRef.PopupService.PopAsync();
+		}
+
 		[RelayCommand]
-		private async Task ContactSupport()
+		private async Task ContactSupportAsync()
 		{
 			string Email = this.SupportEmail;
 			string Subject = ServiceRef.Localizer[nameof(AppResources.SupportEmailSubject)];

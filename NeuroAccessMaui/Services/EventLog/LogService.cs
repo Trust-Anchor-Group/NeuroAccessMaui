@@ -94,6 +94,33 @@ namespace NeuroAccessMaui.Services.EventLog
 			Log.Informational(Message, string.Empty, this.bareJid, [.. this.GetParameters(Tags)]);
 		}
 
+		/// <inheritdoc/>
+		public void LogTelemetryEvent(string EventId, string Message, params KeyValuePair<string, object?>[] Tags)
+		{
+			List<KeyValuePair<string, object?>> Parameters =
+			[
+				new KeyValuePair<string, object?>("EventSchemaVersion", "1"),
+				new KeyValuePair<string, object?>("AppVersion", AppInfo.VersionString),
+				new KeyValuePair<string, object?>("Platform", DeviceInfo.Platform.ToString()),
+				new KeyValuePair<string, object?>("OSVersion", DeviceInfo.VersionString)
+			];
+			if (Tags is not null)
+				Parameters.AddRange(Tags);
+
+			Event Event = new Event(
+				EventType.Informational,
+				Message,
+				string.Empty,
+				string.Empty,
+				EventId,
+				EventLevel.Minor,
+				string.Empty,
+				string.Empty,
+				string.Empty,
+				Parameters.ToArray());
+			Log.Event(Event);
+		}
+
 		/// <summary>
 		/// Invoke this method to add a warning statement to the log.
 		/// </summary>
