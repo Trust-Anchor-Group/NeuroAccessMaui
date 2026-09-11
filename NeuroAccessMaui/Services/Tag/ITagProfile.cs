@@ -364,6 +364,9 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		void ResetIsDirty();
 
+		/// <summary>Retains unsaved changes after a failed persistence attempt.</summary>
+		void RestoreIsDirty();
+
 		/// <summary>
 		/// Sets the phone number used for contacting the user.
 		/// </summary>

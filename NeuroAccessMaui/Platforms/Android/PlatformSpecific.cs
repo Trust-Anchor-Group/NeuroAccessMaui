@@ -175,7 +175,7 @@ namespace NeuroAccessMaui.Services
 					return;
 				}
 
-				if (HasDatabaseFiles())
+				if (ServiceRef.StorageService.HasExistingData())
 					throw new InvalidOperationException("The device identifier is missing while local database files exist.");
 
 				string? AndroidId = Android.Provider.Settings.Secure.GetString(
@@ -202,34 +202,6 @@ namespace NeuroAccessMaui.Services
 		/// <exception cref="InvalidOperationException">Initialization has not succeeded.</exception>
 		public string? GetDeviceId() => this.deviceId
 			?? throw new InvalidOperationException("The device identifier has not been initialized.");
-
-		/// <summary>
-		/// Checks for existing database files without treating access failures as an empty installation.
-		/// </summary>
-		/// <returns>Whether the database directory contains any file, including in subdirectories.</returns>
-		private static bool HasDatabaseFiles()
-		{
-			string DataFolder = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Data");
-			FileAttributes Attributes;
-			try
-			{
-				Attributes = File.GetAttributes(DataFolder);
-			}
-			catch (FileNotFoundException)
-			{
-				return false;
-			}
-			catch (DirectoryNotFoundException)
-			{
-				return false;
-			}
-
-			if ((Attributes & FileAttributes.Directory) == 0)
-				throw new IOException("The database path is not a directory.");
-
-			return Directory.EnumerateFiles(DataFolder, "*", SearchOption.AllDirectories).Any();
-		}
-
 
 		/// <summary>
 		/// Closes the application

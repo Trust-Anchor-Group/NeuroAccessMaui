@@ -22,6 +22,8 @@ namespace NeuroAccessMaui.Services.Push
 		private readonly Dictionary<PushMessagingService, string> tokens = [];
 		private DateTime lastTokenCheck = DateTime.MinValue;
 		private bool isInitialized;
+		private readonly SemaphoreSlim initializationSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim verificationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly object tokenVerificationSync = new();
 		private Task? pendingTokenVerificationTask;
 
@@ -30,6 +32,7 @@ namespace NeuroAccessMaui.Services.Push
 		/// </summary>
 		/// <param name="PushTransport">Transport adapter.</param>
 		/// <param name="TokenRegistrar">Token registrar handling broker updates.</param>
+		/// <param name="XmppService">The process XMPP service used for optional token registration.</param>
 		public PushNotificationService(IPushTransport PushTransport, IPushTokenRegistrar TokenRegistrar, IXmppService XmppService)
 		{
 			this.pushTransport = PushTransport;
@@ -44,24 +47,55 @@ namespace NeuroAccessMaui.Services.Push
 		/// <param name="CancellationToken">Cancellation token.</param>
 		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			if (!this.isInitialized)
+			await this.initializationSemaphore.WaitAsync(CancellationToken);
+			try
 			{
-				this.isInitialized = true;
+				if (this.isInitialized)
+					return;
 				App.AppActivated += this.App_AppActivated;
 				this.pushTransport.TokenChanged += this.PushTransport_TokenChanged;
-				try
-				{
-					await this.pushTransport.InitializeAsync(CancellationToken);
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-
+				await this.pushTransport.InitializeAsync(CancellationToken);
+				lock (this.tokenVerificationSync)
+					this.isInitialized = true;
+				this.IsLoaded = true;
 				this.ScheduleTokenVerification();
 			}
+			catch (Exception Ex)
+			{
+				App.AppActivated -= this.App_AppActivated;
+				this.pushTransport.TokenChanged -= this.PushTransport_TokenChanged;
+				try { await this.pushTransport.UnloadAsync(); }
+				catch (Exception CleanupError) { Ex.Data["PushCleanupFailure"] = CleanupError; }
+				throw;
+			}
+			finally { this.initializationSemaphore.Release(); }
+		}
 
-			await base.Load(IsResuming, CancellationToken);
+		/// <inheritdoc/>
+		public override async Task Unload()
+		{
+			await this.initializationSemaphore.WaitAsync();
+			try
+			{
+				Task? Pending;
+				lock (this.tokenVerificationSync)
+				{
+					this.isInitialized = false;
+					Pending = this.pendingTokenVerificationTask;
+				}
+				App.AppActivated -= this.App_AppActivated;
+				this.pushTransport.TokenChanged -= this.PushTransport_TokenChanged;
+				if (Pending is not null)
+				{
+					try { await Pending; }
+					catch (Exception) { } // Scheduled verification already observes remote failures.
+				}
+				await this.verificationSemaphore.WaitAsync();
+				this.verificationSemaphore.Release();
+				await this.pushTransport.UnloadAsync();
+				this.IsLoaded = false;
+			}
+			finally { this.initializationSemaphore.Release(); }
 		}
 
 		/// <summary>
@@ -105,7 +139,7 @@ namespace NeuroAccessMaui.Services.Push
 
 			lock (this.tokenVerificationSync)
 			{
-				if (this.pendingTokenVerificationTask is not null && !this.pendingTokenVerificationTask.IsCompleted)
+				if (!this.isInitialized || (this.pendingTokenVerificationTask is not null && !this.pendingTokenVerificationTask.IsCompleted))
 					return;
 
 				VerificationTask = MainThread.InvokeOnMainThreadAsync(async () =>
@@ -150,8 +184,14 @@ namespace NeuroAccessMaui.Services.Push
 		/// <param name="CancellationToken">Cancellation token.</param>
 		public async Task CheckPushNotificationToken(TokenInformation? TokenInformation, CancellationToken CancellationToken = default)
 		{
+			await this.verificationSemaphore.WaitAsync(CancellationToken);
 			try
 			{
+				lock (this.tokenVerificationSync)
+				{
+					if (!this.isInitialized)
+						return;
+				}
 				await this.xmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 
 				DateTime Now = DateTime.Now;
@@ -203,6 +243,7 @@ namespace NeuroAccessMaui.Services.Push
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+			finally { this.verificationSemaphore.Release(); }
 		}
 	}
 }

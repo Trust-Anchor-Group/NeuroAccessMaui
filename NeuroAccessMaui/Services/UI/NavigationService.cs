@@ -74,10 +74,13 @@ namespace NeuroAccessMaui.Services.UI
                         {
                             await initializationTask;
                             await Task.Yield();
+                            await App.WaitForServicesAsync();
                             await page.OnAppearingAsync();
+                            navArgs.NavigationCompletionSource.TrySetResult(true);
                         }
+                        catch (Exception ex) when (App.IsLifecycleException(ex)) { }
                         catch (Exception ex) { ServiceRef.LogService.LogException(Waher.Events.Log.UnnestException(ex)); }
-                        finally { navArgs.NavigationCompletionSource.TrySetResult(true); }
+                        finally { navArgs.NavigationCompletionSource.TrySetResult(false); }
                     });
                 }
                 catch (Exception ex)
@@ -110,8 +113,10 @@ namespace NeuroAccessMaui.Services.UI
                         {
                             await initializationTask;
                             await Task.Yield();
-                            await Page.OnAppearingAsync();
+                            await App.WaitForServicesAsync();
+                        await Page.OnAppearingAsync();
                         }
+                        catch (Exception ex) when (App.IsLifecycleException(ex)) { }
                         catch (Exception ex) { ServiceRef.LogService.LogException(Waher.Events.Log.UnnestException(ex)); }
                     });
                 }
@@ -171,10 +176,12 @@ namespace NeuroAccessMaui.Services.UI
                 transitionCompleted = true;
                 _ = root.Dispatcher.Dispatch(async () =>
                 {
-                    try { await Task.Yield(); await root.OnAppearingAsync(); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                    try { await Task.Yield(); await App.WaitForServicesAsync(); await root.OnAppearingAsync(); } catch (Exception ex) when (App.IsLifecycleException(ex)) { }
+                    catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
                 });
                 this.Presenter.UpdateBars(root);
             }
+            catch (Exception ex) when (App.IsLifecycleException(ex)) { }
             catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             finally { this.isNavigating = false; }
 
@@ -193,6 +200,7 @@ namespace NeuroAccessMaui.Services.UI
                     else if (removed is IDisposable disposable)
                         disposable.Dispose();
                 }
+                catch (Exception ex) when (App.IsLifecycleException(ex)) { }
                 catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             }
         });
@@ -249,11 +257,13 @@ namespace NeuroAccessMaui.Services.UI
                     BaseContentPage? page = this.screenStack.Count > 0 ? this.screenStack.Peek() : null;
                     if (page is IBackButtonHandler pageHandler)
                     {
-                        try { if (await pageHandler.OnBackButtonPressedAsync()) { tcs.TrySetResult(true); return; } } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                        try { if (await pageHandler.OnBackButtonPressedAsync()) { tcs.TrySetResult(true); return; } } catch (Exception ex) when (App.IsLifecycleException(ex)) { }
+                        catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
                     }
                     if (page?.BindingContext is IBackButtonHandler vmHandler)
                     {
-                        try { if (await vmHandler.OnBackButtonPressedAsync()) { tcs.TrySetResult(true); return; } } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                        try { if (await vmHandler.OnBackButtonPressedAsync()) { tcs.TrySetResult(true); return; } } catch (Exception ex) when (App.IsLifecycleException(ex)) { }
+                        catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
                     }
                     if (this.screenStack.Count > 1)
                     {
@@ -300,10 +310,12 @@ namespace NeuroAccessMaui.Services.UI
                 transitionCompleted = true;
                 _ = target.Dispatcher.Dispatch(async () =>
                 {
-                    try { await Task.Yield(); await target.OnAppearingAsync(); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                    try { await Task.Yield(); await App.WaitForServicesAsync(); await target.OnAppearingAsync(); } catch (Exception ex) when (App.IsLifecycleException(ex)) { }
+                    catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
                 });
                 this.Presenter.UpdateBars(target);
             }
+            catch (Exception ex) when (App.IsLifecycleException(ex)) { }
             catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             finally { this.isNavigating = false; }
 
@@ -322,6 +334,7 @@ namespace NeuroAccessMaui.Services.UI
                     else if (removed is IDisposable disposable)
                         disposable.Dispose();
                 }
+                catch (Exception ex) when (App.IsLifecycleException(ex)) { }
                 catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             }
         }
@@ -353,6 +366,7 @@ namespace NeuroAccessMaui.Services.UI
                 while (this.taskQueue.TryDequeue(out Func<Task>? action))
                     await action();
             }
+            catch (Exception ex) when (App.IsLifecycleException(ex)) { }
             catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             finally { this.isExecuting = false; }
         }
@@ -367,6 +381,7 @@ namespace NeuroAccessMaui.Services.UI
                     isInit = (bool)(prop.GetValue(obj) ?? false);
                 if (!isInit)
                 {
+                    await App.WaitForServicesAsync();
                     await lcv.OnInitializeAsync();
                     if (prop?.CanWrite == true)
                         prop.SetValue(obj, true);
@@ -464,10 +479,13 @@ namespace NeuroAccessMaui.Services.UI
                     {
                         await initializationTask;
                         await Task.Yield();
+                        await App.WaitForServicesAsync();
                         await Page.OnAppearingAsync();
+                        Args?.NavigationCompletionSource.TrySetResult(true);
                     }
+                    catch (Exception ex) when (App.IsLifecycleException(ex)) { }
                     catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
-                    finally { Args?.NavigationCompletionSource.TrySetResult(true); }
+                    finally { Args?.NavigationCompletionSource.TrySetResult(false); }
                 });
             }
             catch (Exception ex)
@@ -492,6 +510,7 @@ namespace NeuroAccessMaui.Services.UI
                     else if (removed is IDisposable disposable)
                         disposable.Dispose();
                 }
+                catch (Exception ex) when (App.IsLifecycleException(ex)) { }
                 catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             }
         }

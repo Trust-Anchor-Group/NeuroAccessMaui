@@ -31,17 +31,22 @@ namespace NeuroAccessMaui.Services.Push
 			if (this.isInitialized)
 				return Task.CompletedTask;
 
+#if ANDROID || IOS
+			CrossFirebaseCloudMessaging.Current.TokenChanged += this.OnTokenChanged;
+#endif
 			this.isInitialized = true;
 
-			try
-			{
-				CrossFirebaseCloudMessaging.Current.TokenChanged += this.OnTokenChanged;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
+			return Task.CompletedTask;
+		}
 
+		/// <inheritdoc/>
+		public Task UnloadAsync()
+		{
+#if ANDROID || IOS
+			if (this.isInitialized)
+				CrossFirebaseCloudMessaging.Current.TokenChanged -= this.OnTokenChanged;
+#endif
+			this.isInitialized = false;
 			return Task.CompletedTask;
 		}
 

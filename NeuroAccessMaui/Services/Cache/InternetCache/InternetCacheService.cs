@@ -24,20 +24,13 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 			this.cacheManager = new FileCacheManager("InternetCache", defaultExpiry);
 		}
 
-		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
+		/// <inheritdoc/>
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
+			CancellationToken.ThrowIfCancellationRequested();
 			if (this.BeginLoad(IsResuming, CancellationToken))
-			{
-				try
-				{
-					this.EndLoad(true);
-				}
-				catch
-				{
-					this.EndLoad(false);
-					throw;
-				}
-			}
+				this.EndLoad(true);
+			return Task.CompletedTask;
 		}
 
 		public Task<(byte[]? Data, string ContentType)> TryGet(Uri Uri)

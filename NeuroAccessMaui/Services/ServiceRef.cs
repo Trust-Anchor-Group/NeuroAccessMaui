@@ -80,51 +80,13 @@ namespace NeuroAccessMaui.Services
 
 		private static IAuthenticationService? authenticationService;
 
-		/// <summary>
-		/// Initializes the service reference cache with a fresh provider instance.
-		/// This method must be called whenever the MAUI host builds a new DI container (e.g., Android process rehydration).
-		/// </summary>
-		/// <param name="provider">The service provider to use for subsequent resolutions.</param>
+		/// <summary>Retains the process service provider across application UI recreation.</summary>
+		/// <param name="provider">The process service provider.</param>
 		public static void Initialize(IServiceProvider provider)
 		{
-			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
-
-			xmppService = null;
-			uiService = null;
-			navigationService = null;
-			tagProfile = null;
-			logService = null;
-			networkService = null;
-			contractOrchestratorService = null;
-			thingRegistryOrchestratorService = null;
-			neuroWalletOrchestratorService = null;
-			identityApplicationGateService = null;
-			attachmentCacheService = null;
-			cryptoService = null;
-			settingsService = null;
-			storageService = null;
-			nfcService = null;
-			notificationService = null;
-			pushNotificationService = null;
-			localizer = null;
-			platformSpecific = null;
-			barcodeReader = null;
-			permissionService = null;
-			intentService = null;
-			internetCacheService = null;
-			themeService = null;
-			kycService = null;
-			xmlSchemaValidationService = null;
-			popupService = null;
-			toastService = null;
-			keyboardInsetsService = null;
-			authenticationService = null;
+			ArgumentNullException.ThrowIfNull(provider);
+			Provider ??= provider;
 		}
-
-		/// <summary>
-		/// Gets a task that completes when all core services are initialized.
-		/// </summary>
-		public static Task ServicesReadyTask => App.ServicesReady;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.

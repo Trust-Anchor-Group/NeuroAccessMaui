@@ -358,10 +358,10 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <summary>
 		/// Waits for initialization of the storage service to be completed.
 		/// </summary>
-		/// <returns>If storage service is OK, or failed to initialize.</returns>
-		public Task<bool> WaitInitDone()
+		/// <returns>Successful completion, or the original initialization failure.</returns>
+		public Task WaitForInitializationAsync()
 		{
-			return ServiceRef.StorageService.WaitInitDone();
+			return ServiceRef.StorageService.WaitForInitializationAsync();
 		}
 	}
 }

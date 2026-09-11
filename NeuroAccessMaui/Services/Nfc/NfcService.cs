@@ -194,7 +194,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		/// <returns>If process was successful or not.</returns>
 		public static async Task<bool> ProgramNfc(WriteItems Callback)
 		{
-			INavigationService Nav = App.Instantiate<INavigationService>();
+			INavigationService Nav = ServiceRef.NavigationService;
 			if (Nav.CurrentPage is BaseContentPage ContentPage &&
 				ContentPage.ViewModel<BaseViewModel>() is ILinkableView LinkableView &&
 				LinkableView.IsLinkable)

@@ -26,6 +26,7 @@ namespace NeuroAccessMaui.Services.Wallet
 		{
 		}
 
+		/// <inheritdoc/>
 		public override Task Load(bool isResuming, CancellationToken CancellationToken)
 		{
 			if (this.BeginLoad(isResuming, CancellationToken))
@@ -42,9 +43,10 @@ namespace NeuroAccessMaui.Services.Wallet
 			return Task.CompletedTask;
 		}
 
+		/// <inheritdoc/>
 		public override Task Unload()
 		{
-			if (this.BeginUnload())
+			if (this.IsLoading || this.BeginUnload())
 			{
 				ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
 				ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
@@ -52,6 +54,7 @@ namespace NeuroAccessMaui.Services.Wallet
 				ServiceRef.XmppService.NeuroFeatureStateUpdated -= Wallet_StateUpdated;
 				ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_VariablesUpdated;
 
+				this.IsLoading = false;
 				this.EndUnload();
 			}
 

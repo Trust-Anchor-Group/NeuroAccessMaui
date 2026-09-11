@@ -12,6 +12,10 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Resources.Styles;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Storage;
+using NeuroAccessMaui.Services.Crypto;
+using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
@@ -126,39 +130,31 @@ namespace NeuroAccessMaui
     {
         #region Fields
 
-        private readonly SemaphoreSlim autoSaveSemaphore = new(1, 1);
-        private Timer? autoSaveTimer;
-        // Initialization completion source (shared across potential recreated App instances)
-        private static readonly TaskCompletionSource<bool> initCompletedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        private readonly SemaphoreSlim startupWorker = new(1, 1);
-        private CancellationTokenSource startupCancellation;
-        private bool isDisposed;
+        /// <summary>Describes the currently admitted application transition.</summary>
+        private enum LifecycleState { Stopped, Starting, Active, Stopping, Failed, Terminated }
 
+        private static readonly SemaphoreSlim lifecycleSemaphore = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim autoSaveSemaphore = new SemaphoreSlim(1, 1);
+        private static Task? initialization;
+        private static Task transition = Task.CompletedTask;
+        private static Task? previousRunReport;
+        private static TaskCompletionSource<bool> servicesReady = CreateServicesReadySignal();
+        private static CancellationTokenSource? activationCancellation;
+        private static LifecycleState lifecycleState;
+        private static Timer? autoSaveTimer;
         private static App? appInstance;
-        private static bool configLoaded;
-        private static bool defaultInstantiated;
-        private static int startupCounter;
-
-        private static readonly TaskCompletionSource<bool> servicesSetup = new();
-        private static readonly TaskCompletionSource<bool> defaultInstantiatedSource = new();
-        private static TaskCompletionSource<bool> servicesReadyTcs = CreateServicesReadySignal();
+        private static Exception? startupFailure;
+        private static Exception? cleanupFailure;
+        private static IStorageService? storage;
+        private static ICryptoService? crypto;
+        private static ILogService? logging;
+        private static ITagProfile? profile;
+        private static ILoadableService? attachments, internetCache, notifications, push;
+        private static ILoadableService? network, contracts, thingRegistry, wallet;
+        private static IXmppService? xmpp;
 
         private static TaskCompletionSource<bool> CreateServicesReadySignal() =>
-            new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-        private static void ResetServicesReadySignal() =>
-            servicesReadyTcs = CreateServicesReadySignal();
-
-        /// <summary>
-        /// Flag indicating if this instance is “resuming” an already-started app.
-        /// 
-        /// The App class is not actually a singleton. Each time Android MainActivity is destroyed and then created again, a new instance
-        /// of the App class will be created, its OnStart method will be called and its OnResume method will not be called. This happens,
-        /// for example, on Android when the user presses the back button and then navigates to the app again. However, the App class
-        /// doesn't seem to work properly (should it?) when this happens (some chaos happens here and there), so we pretend that
-        /// there is only one instance (see the references to onStartResumesApplication).
-        /// </summary>
-        private bool onStartResumesApplication;
+            new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         #endregion
 
@@ -170,9 +166,10 @@ namespace NeuroAccessMaui
         public static new App? Current => appInstance;
 
         /// <summary>
-        /// Task that completes once all core services have finished loading.
+        /// Gets the retained process initialization outcome, independent of foreground activation.
         /// </summary>
-        public static Task ServicesReady => servicesReadyTcs.Task;
+        public static Task Initialization => initialization
+            ?? Task.FromException(new InvalidOperationException("Application initialization has not started."));
 
         /// <summary>
         /// Supported languages.
@@ -257,46 +254,33 @@ namespace NeuroAccessMaui
         /// </summary>
         public static event EventHandler? AppActivated;
 
-        public Task<bool> InitCompleted => initCompletedTcs.Task;
 
 
         #endregion
 
         #region Constructor
 
+        /// <summary>Creates the foreground application UI and joins process startup.</summary>
         public App() : this(false) { }
 
+        /// <summary>Creates an application instance and requests its initial activation.</summary>
+        /// <param name="backgroundStart">Whether activation was requested without foreground UI.</param>
         public App(bool backgroundStart)
         {
-            // Manage single-instance behavior.
-            App? PreviousInstance = appInstance;
             appInstance = this;
-            this.onStartResumesApplication = PreviousInstance is not null;
-
-            if (PreviousInstance is null)
+            try { InitializeRuntimeTypes(); }
+            catch (Exception Ex)
             {
-                InitLocalizationResource();
-
-                AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
-                TaskScheduler.UnobservedTaskException += this.TaskScheduler_UnobservedTaskException;
-
-                this.startupCancellation = new CancellationTokenSource();
-                this.StartInitialization(backgroundStart);
+                initialization ??= Task.FromException(Ex);
+                _ = initialization.Exception;
+                servicesReady.TrySetException(Ex);
+                _ = servicesReady.Task.Exception;
+                lifecycleState = LifecycleState.Failed;
+                ReportLifecycleFailure(Ex);
+                return;
             }
-            else
-            {
-                // Reuse state from the previous instance.
-                this.autoSaveTimer = PreviousInstance.autoSaveTimer;
-                this.startupCancellation = PreviousInstance.startupCancellation;
-            }
-
-            if (!backgroundStart)
-            {
-                this.InitializeComponent();
-
-                // Show CustomShell directly as MainPage
-                // this.MainPage = ServiceHelper.GetService<CustomShell>();
-            }
+            this.InitializeComponent();
+            _ = ObserveLifecycleAsync(() => this.ResumeAsync(backgroundStart));
         }
 
         void SetTheme(AppTheme Theme)
@@ -323,28 +307,26 @@ namespace NeuroAccessMaui
         {
             if (this.Windows.Any())
                 return this.Windows[0];
-            CustomShell Shell = ServiceHelper.GetService<CustomShell>();
-            return new AppWindow(this, Shell, activationState);
+            Page Root = startupFailure is null
+                ? ServiceRef.Provider.GetRequiredService<CustomShell>()
+                : new BootstrapErrorPage(startupFailure.Message, startupFailure.StackTrace ?? string.Empty);
+            if (Root.Window is Window PreviousWindow)
+                PreviousWindow.Page = null;
+            return new AppWindow(this, Root);
         }
         #endregion
 
         #region Window lifecycle bridge
 
         /// <summary>
-        /// Captures activation state when the MAUI window is created.
-        /// </summary>
-        /// <param name="activationState">Activation state provided by MAUI.</param>
-        internal void HandleWindowCreated(IActivationState? activationState) => _ = activationState;
-
-        /// <summary>
         /// Invoked when the MAUI window enters the stopped state.
         /// </summary>
-        internal Task HandleWindowStoppedAsync() => this.OnBackgroundSleep();
+        internal Task HandleWindowStoppedAsync() => ReferenceEquals(this, Current) ? this.OnBackgroundSleep() : Task.CompletedTask;
 
         /// <summary>
         /// Invoked when the MAUI window resumes after being stopped.
         /// </summary>
-        internal Task HandleWindowResumedAsync() => this.ResumeAsync(isBackground: false);
+        internal Task HandleWindowResumedAsync() => ReferenceEquals(this, Current) ? this.ResumeAsync(isBackground: false) : Task.CompletedTask;
 
         /// <summary>
         /// Invoked when the MAUI window is being destroyed.
@@ -354,7 +336,7 @@ namespace NeuroAccessMaui
 #if ANDROID
             return Task.CompletedTask;
 #else
-            return this.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
+            return ReferenceEquals(this, Current) ? RequestStopAsync(true, false) : Task.CompletedTask;
 #endif
         }
 
@@ -362,232 +344,65 @@ namespace NeuroAccessMaui
 
         #region Initialization
 
-        private static void InitLocalizationResource()
+        private static void InitializeRuntimeTypes()
         {
-            //	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
-            LocalizationManager.Current.CurrentCulture = SelectedLanguage;
-        }
-
-        private void StartInitialization(bool backgroundStart)
-        {
-            Task.Run(async () =>
+            if (!Types.IsInitialized)
             {
-                try
-                {
-                    this.InitializeInstances();
-                    await ServiceRef.PlatformSpecific.InitializeDeviceIdAsync();
-                    await ServiceRef.CryptoService.InitializeJwtFactory();
-                    await this.PerformStartupAsync(isResuming: false, backgroundStart);
-
-					if (!backgroundStart)
-					{
-						AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
-						this.SetTheme(CurrentTheme ?? AppTheme.Unspecified);
-						ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Unspecified);
-					}
-
-                    initCompletedTcs.TrySetResult(true);
-                }
-                catch (Exception Ex)
-                {
-#if ANDROID
-                    try
-                    {
-                        Ex = Log.UnnestException(Ex);
-                        this.HandleStartupException(Ex);
-                    }
-                    finally
-                    {
-                        servicesSetup.TrySetResult(false);
-                        initCompletedTcs.TrySetResult(false);
-                    }
-#else
-                    Ex = Log.UnnestException(Ex);
-                    this.HandleStartupException(Ex);
-                    servicesSetup.TrySetResult(false);
-                    initCompletedTcs.TrySetResult(false);
-#endif
-                }
-            });
+                Types.Initialize(
+                    typeof(App).Assembly,
+                    typeof(Database).Assembly,
+                    typeof(ObjectSerializer).Assembly,
+                    typeof(FilesProvider).Assembly,
+                    typeof(Setting).Assembly,
+                    typeof(RuntimeSettings).Assembly,
+                    typeof(PersistedEvent).Assembly,
+                    typeof(InternetContent).Assembly,
+                    typeof(ImageCodec).Assembly,
+                    typeof(MarkdownDocument).Assembly,
+                    typeof(XML).Assembly,
+                    typeof(DnsResolver).Assembly,
+                    typeof(XmppClient).Assembly,
+                    typeof(ContractsClient).Assembly,
+                    typeof(NeuroFeaturesClient).Assembly,
+                    typeof(EDalerClient).Assembly,
+                    typeof(SensorClient).Assembly,
+                    typeof(ControlClient).Assembly,
+                    typeof(ConcentratorClient).Assembly,
+                    typeof(ProvisioningClient).Assembly,
+                    typeof(PubSubClient).Assembly,
+                    typeof(PepClient).Assembly,
+                    typeof(AvatarClient).Assembly,
+                    typeof(PushNotificationClient).Assembly,
+                    typeof(MailClient).Assembly,
+                    typeof(GeoClient).Assembly,
+                    typeof(GeoPosition).Assembly,
+                    typeof(ThingReference).Assembly,
+                    typeof(JwtFactory).Assembly,
+                    typeof(JwsAlgorithm).Assembly,
+                    typeof(Expression).Assembly,
+                    typeof(Graph).Assembly,
+                    typeof(GraphEncoder).Assembly,
+                    typeof(XmppServerlessMessaging).Assembly,
+                    typeof(HttpxClient).Assembly,
+                    typeof(Waher.Script.Persistence.SQL.Select).Assembly,
+                    typeof(Waher.Layout.Layout2D.Layout2DDocument).Assembly,
+                    typeof(IPaceProtocol).Assembly,
+                    typeof(ISignatureAlgorithm).Assembly,
+                    typeof(EllipticCurve).Assembly);
+            }
         }
 
-        private void HandleStartupException(Exception Ex)
+        private static async Task InitializeProcessAsync()
         {
-            Ex = Log.UnnestException(Ex);
-            ServiceRef.LogService.SaveExceptionDump("StartPage", Ex.ToString());
-            this.DisplayBootstrapErrorPage(Ex.Message, Ex.StackTrace ?? string.Empty);
-            return;
-        }
-
-        /// <summary>
-        /// Initializes required types and registers services.
-        /// </summary>
-        private void InitializeInstances()
-        {
-
-            defaultInstantiatedSource.TrySetResult(true);
-
-
-            // Set dependency resolver.
-			/*
-            DependencyResolver.ResolveUsing(type =>
-            {
-                if (Types.GetType(type.FullName) is null)
-                    return null;
-
-                try
-                {
-                    return Types.Instantiate(true, type);
-                }
-                catch (Exception Ex)
-                {
-                    ServiceRef.LogService.LogException(Ex);
-                    return null;
-                }
-            });
-			*/
-            // Register XML schemas on the DI-managed validator instance.
+            await lifecycleSemaphore.WaitAsync();
             try
             {
-                IXmlSchemaValidationService Xml = ServiceRef.Provider.GetRequiredService<IXmlSchemaValidationService>();
-                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
-                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2Url, Constants.Schemes.BrandingDescriptorV2File);
-                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
-                Xml.RegisterSchema(Constants.Schemes.NeuroAccessKycProcessUrl, Constants.Schemes.NeuroAccessKycProcessFile);
-                Xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.NeuroAccessKycProcessFile);
-            }
-            catch (Exception Ex)
-            {
-                ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "SchemaRegistrationStartup"));
-            }
-
-            servicesSetup.TrySetResult(true);
-        }
-
-        #endregion
-
-        #region Startup / Resume
-
-        public async Task OnBackgroundStart()
-        {
-            if (this.onStartResumesApplication)
-            {
-                this.onStartResumesApplication = false;
-                await this.ResumeAsync(isBackground: true);
-                return;
-            }
-#if !DEBUG
-            // Asynchronously wait up to 60 seconds.
-            if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
-                throw new Exception("Initialization did not complete in time.");
-#endif
-        }
-
-        /// <inheritdoc/>
-        protected override async void OnStart()
-        {
-            if (this.onStartResumesApplication)
-            {
-                this.onStartResumesApplication = false;
-                this.OnResume();
-                return;
-            }
-
-            if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
-#if ANDROID
-                return;
-#else
-                throw new Exception("Initialization did not complete in time.");
-#endif
-        }
-
-        /// <summary>
-        /// Resumes application services after successful initial startup on Android.
-        /// </summary>
-        /// <param name="isBackground">Whether services are resuming in the background.</param>
-        /// <returns>A task representing the resume operation.</returns>
-        public async Task ResumeAsync(bool isBackground)
-        {
-#if ANDROID
-            if (!await this.InitCompleted)
-                return;
-#endif
-            appInstance = this;
-            this.startupCancellation = new CancellationTokenSource();
-            await this.PerformStartupAsync(isResuming: true, backgroundStart: isBackground);
-        }
-
-        protected override async void OnResume()
-        {
-            await this.ResumeAsync(isBackground: false);
-        }
-
-        private async Task PerformStartupAsync(bool isResuming, bool backgroundStart)
-        {
-            TaskCompletionSource<bool>? ReadySignal = null;
-            await this.startupWorker.WaitAsync();
-            try
-            {
-                if (++startupCounter > 1)
-                    return;
-
-                ReadySignal = servicesReadyTcs;
-
-                CancellationToken Token = this.startupCancellation.Token;
-                Token.ThrowIfCancellationRequested();
-
-                if (!backgroundStart)
+                await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    await SendErrorReportFromPreviousRunAsync();
-                    Token.ThrowIfCancellationRequested();
-                }
-
-
-                if (!Types.IsInitialized)
-                {
-                    Types.Initialize(
-                        typeof(App).Assembly,
-                        typeof(Database).Assembly,
-                        typeof(ObjectSerializer).Assembly,
-                        typeof(FilesProvider).Assembly,
-                        typeof(Setting).Assembly,
-                        typeof(RuntimeSettings).Assembly,
-                        typeof(PersistedEvent).Assembly,
-                        typeof(InternetContent).Assembly,
-                        typeof(ImageCodec).Assembly,
-                        typeof(MarkdownDocument).Assembly,
-                        typeof(XML).Assembly,
-                        typeof(DnsResolver).Assembly,
-                        typeof(XmppClient).Assembly,
-                        typeof(ContractsClient).Assembly,
-                        typeof(NeuroFeaturesClient).Assembly,
-                        typeof(EDalerClient).Assembly,
-                        typeof(SensorClient).Assembly,
-                        typeof(ControlClient).Assembly,
-                        typeof(ConcentratorClient).Assembly,
-                        typeof(ProvisioningClient).Assembly,
-                        typeof(PubSubClient).Assembly,
-                        typeof(PepClient).Assembly,
-                        typeof(AvatarClient).Assembly,
-                        typeof(PushNotificationClient).Assembly,
-                        typeof(MailClient).Assembly,
-                        typeof(GeoClient).Assembly,
-                        typeof(GeoPosition).Assembly,
-                        typeof(ThingReference).Assembly,
-                        typeof(JwtFactory).Assembly,
-                        typeof(JwsAlgorithm).Assembly,
-                        typeof(Expression).Assembly,
-                        typeof(Graph).Assembly,
-                        typeof(GraphEncoder).Assembly,
-                        typeof(XmppServerlessMessaging).Assembly,
-                        typeof(HttpxClient).Assembly,
-						typeof(Waher.Script.Persistence.SQL.Select).Assembly,
-						typeof(Waher.Layout.Layout2D.Layout2DDocument).Assembly,
-						typeof(IPaceProtocol).Assembly,
-						typeof(ISignatureAlgorithm).Assembly,
-						typeof(EllipticCurve).Assembly);
-                }
-
+                    LocalizationManager.Current.CurrentCulture = SelectedLanguage;
+                    AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+                    TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+                });
                 // Register exceptions as alerts.
                 Log.RegisterAlertExceptionType(true,
                     typeof(OutOfMemoryException),
@@ -597,51 +412,241 @@ namespace NeuroAccessMaui
 
                 EndpointSecurity.SetCiphers([typeof(Edwards448Endpoint)], false);
 
-                await ServiceRef.LogService.Load(isResuming, Token);
-
-                await ServiceRef.StorageService.Init(Token);
-                if (!configLoaded)
-                {
-                    await this.CreateOrRestoreConfigurationAsync();
-                    configLoaded = true;
-                }
-
-                Token.ThrowIfCancellationRequested();
-                await ServiceRef.NetworkService.Load(isResuming, Token);
-                Token.ThrowIfCancellationRequested();
-                await ServiceRef.XmppService.Load(isResuming, Token);
-                Token.ThrowIfCancellationRequested();
-
-                TimeSpan InitialAutoSaveDelay = Constants.Intervals.AutoSave.Multiply(4);
-                this.autoSaveTimer = new Timer(async _ => await this.AutoSaveAsync(), null, InitialAutoSaveDelay, Constants.Intervals.AutoSave);
-
-                await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
-                await ServiceRef.InternetCacheService.Load(isResuming, Token);
-                await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
-                await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
-                await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
-                await ServiceRef.NotificationService.Load(isResuming, Token);
-				await ServiceRef.PushNotificationService.Load(isResuming, Token);
-
-				RegisterRoutes();
-                ReadySignal?.TrySetResult(true);
-                //	AppShell.AppLoaded();
-            }
-            catch (OperationCanceledException)
-            {
-                ReadySignal?.TrySetCanceled();
-                Log.Notice($"{(isResuming ? "OnResume" : "Initial app")} startup was canceled.");
+                IXmlSchemaValidationService Xml = ServiceRef.Provider.GetRequiredService<IXmlSchemaValidationService>();
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2Url, Constants.Schemes.BrandingDescriptorV2File);
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessKycProcessUrl, Constants.Schemes.NeuroAccessKycProcessFile);
+                Xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.NeuroAccessKycProcessFile);
+                await MainThread.InvokeOnMainThreadAsync(RegisterRoutes);
+                await ServiceRef.PlatformSpecific.InitializeDeviceIdAsync();
+                crypto = ServiceRef.CryptoService;
+                await crypto.InitializeJwtFactory();
+                logging = ServiceRef.LogService;
+                await logging.Load(false, CancellationToken.None);
+                storage = ServiceRef.StorageService;
+                await storage.Init(CancellationToken.None);
+                await CreateOrRestoreConfigurationAsync();
+                attachments = ServiceRef.AttachmentCacheService;
+                await attachments.Load(false, CancellationToken.None);
+                internetCache = ServiceRef.InternetCacheService;
+                await internetCache.Load(false, CancellationToken.None);
+                notifications = ServiceRef.NotificationService;
+                await notifications.Load(false, CancellationToken.None);
+                push = ServiceRef.PushNotificationService;
+                await push.Load(false, CancellationToken.None);
             }
             catch (Exception Ex)
             {
-                ReadySignal?.TrySetException(Ex);
-                Ex = Log.UnnestException(Ex);
-                ServiceRef.LogService.SaveExceptionDump(Ex.Message, Ex.StackTrace ?? string.Empty);
-                this.DisplayBootstrapErrorPage(Ex.Message, Ex.StackTrace ?? string.Empty);
+                try { await CleanupProcessAsync(); }
+                catch (Exception CleanupError) { Ex.Data["ProcessCleanupFailure"] = CleanupError; }
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (lifecycleState is not LifecycleState.Terminated and not LifecycleState.Stopping)
+                        lifecycleState = LifecycleState.Failed;
+                    servicesReady.TrySetException(Ex);
+                    _ = servicesReady.Task.Exception;
+                    ReportLifecycleFailure(Ex);
+                });
+                throw;
+            }
+            finally { lifecycleSemaphore.Release(); }
+        }
+
+        /// <summary>Waits for the activation current when this call is admitted on the UI thread.</summary>
+        /// <param name="CancellationToken">Cancels only this wait, never shared initialization or activation.</param>
+        /// <returns>Completion when that same activation is ready; failure or cancellation otherwise.</returns>
+        public static Task WaitForServicesAsync(CancellationToken CancellationToken = default) =>
+            MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                Task Attempt = servicesReady.Task;
+                await Attempt.WaitAsync(CancellationToken);
+                CancellationToken.ThrowIfCancellationRequested();
+                if (!ReferenceEquals(Attempt, servicesReady.Task) || lifecycleState != LifecycleState.Active)
+                    throw new OperationCanceledException("The requested activation is no longer active.");
+            });
+
+        /// <summary>Observes an asynchronous platform callback without allowing its exception to escape.</summary>
+        /// <param name="Callback">Lifecycle callback to invoke immediately.</param>
+        /// <returns>Completion after observing the callback outcome.</returns>
+        internal static async Task ObserveLifecycleAsync(Func<Task> Callback)
+        {
+            try { await Callback(); }
+            catch (OperationCanceledException) { }
+            catch (Exception Ex)
+            {
+                try { await MainThread.InvokeOnMainThreadAsync(() => ReportLifecycleFailure(Ex)); }
+                catch (Exception ReportingError) { System.Diagnostics.Debug.WriteLine(ReportingError); }
+            }
+        }
+
+        /// <summary>Identifies cancellation or failure already reported by the lifecycle owner.</summary>
+        /// <param name="Error">The consumer's observed failure.</param>
+        /// <returns>Whether duplicate diagnostics should be suppressed.</returns>
+        internal static bool IsLifecycleException(Exception Error) =>
+            Error is OperationCanceledException || Error.Data.Contains("ApplicationLifecycleFailure");
+
+        private static void ReportLifecycleFailure(Exception Ex)
+        {
+            if (Ex.Data.Contains("ApplicationLifecycleFailure"))
+                return;
+            Ex.Data["ApplicationLifecycleFailure"] = true;
+            startupFailure = Ex;
+            try
+            {
+                ServiceRef.LogService.SaveExceptionDump("Startup", Ex.ToString());
+                Current?.DisplayBootstrapErrorPage(Ex.Message, Ex.StackTrace ?? string.Empty);
+            }
+            catch (Exception ReportingError) { System.Diagnostics.Debug.WriteLine(ReportingError); }
+        }
+
+        #endregion
+
+        #region Startup / Resume
+
+        /// <summary>Starts or joins an activation requested by background processing.</summary>
+        /// <returns>The shared activation outcome.</returns>
+        public Task OnBackgroundStart() => this.ResumeAsync(true);
+
+        /// <inheritdoc/>
+        protected override async void OnStart() => await ObserveLifecycleAsync(() => this.ResumeAsync(false));
+
+        /// <inheritdoc/>
+        protected override async void OnResume() => await ObserveLifecycleAsync(() => this.ResumeAsync(false));
+
+        /// <summary>Starts or joins the current activation, applying foreground UI when requested.</summary>
+        /// <param name="isBackground">Whether foreground presentation should be deferred.</param>
+        /// <returns>The activation outcome, including required foreground setup.</returns>
+        public Task ResumeAsync(bool isBackground) => MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            if (!ReferenceEquals(this, Current))
+                return;
+            Task Activation = AdmitActivation();
+            Task Attempt = servicesReady.Task;
+            await Activation;
+            if (!ReferenceEquals(Attempt, servicesReady.Task) || lifecycleState != LifecycleState.Active)
+                throw new OperationCanceledException();
+            if (!isBackground)
+            {
+                Current?.SetTheme(ServiceRef.TagProfile.Theme);
+                ServiceRef.ThemeService.SetTheme(ServiceRef.TagProfile.Theme);
+                Window? Window = Current?.Windows.FirstOrDefault();
+                if (Window?.Page is BootstrapErrorPage)
+                    Window.Page = ServiceRef.Provider.GetRequiredService<CustomShell>();
+                if (Window?.Page is CustomShell Shell)
+                    _ = Shell.InitializeLoadingPageAsync();
+                previousRunReport ??= Task.Run(() => ObserveOptionalAsync(SendErrorReportFromPreviousRunAsync));
+            }
+        });
+
+        private static Task AdmitActivation()
+        {
+            if (lifecycleState == LifecycleState.Terminated)
+                return Task.FromException(new ObjectDisposedException(nameof(App)));
+            if (cleanupFailure is not null)
+                return Task.FromException(cleanupFailure);
+            if (initialization?.IsFaulted == true || initialization?.IsCanceled == true)
+                return initialization;
+            if (lifecycleState is LifecycleState.Starting or LifecycleState.Active)
+                return transition;
+            bool IsResuming = initialization is not null;
+            if (IsResuming)
+            {
+                servicesReady.TrySetCanceled();
+                servicesReady = CreateServicesReadySignal();
+            }
+            initialization ??= Task.Run(InitializeProcessAsync);
+            activationCancellation = new CancellationTokenSource();
+            lifecycleState = LifecycleState.Starting;
+            TaskCompletionSource<bool> Signal = servicesReady;
+            CancellationTokenSource Cancellation = activationCancellation;
+            return transition = Task.Run(() => ActivateAsync(Signal, Cancellation, IsResuming));
+        }
+
+        private static async Task ActivateAsync(TaskCompletionSource<bool> Signal, CancellationTokenSource Cancellation, bool IsResuming)
+        {
+            CancellationToken Token = Cancellation.Token;
+            try
+            {
+                await Initialization.WaitAsync(Token);
+                await lifecycleSemaphore.WaitAsync(Token);
+                try
+                {
+                    Token.ThrowIfCancellationRequested();
+                    await CleanupActivationAsync(false);
+                    if (cleanupFailure is not null)
+                        throw cleanupFailure;
+                    try
+                    {
+                        network = ServiceRef.NetworkService;
+                        await network.Load(IsResuming, Token);
+                        xmpp = ServiceRef.XmppService;
+                        await xmpp.Load(IsResuming, Token);
+                        contracts = ServiceRef.ContractOrchestratorService;
+                        await contracts.Load(IsResuming, Token);
+                        thingRegistry = ServiceRef.ThingRegistryOrchestratorService;
+                        await thingRegistry.Load(IsResuming, Token);
+                        wallet = ServiceRef.NeuroWalletOrchestratorService;
+                        await wallet.Load(IsResuming, Token);
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            Token.ThrowIfCancellationRequested();
+                            if (!ReferenceEquals(Signal, servicesReady))
+                                throw new OperationCanceledException();
+                            lifecycleState = LifecycleState.Active;
+                            startupFailure = null;
+                            autoSaveTimer = new Timer(SaveFromTimer, Signal.Task,
+                                Constants.Intervals.AutoSave.Multiply(4), Constants.Intervals.AutoSave);
+                            Signal.TrySetResult(true);
+                        });
+                    }
+                    catch (Exception Ex)
+                    {
+                        try { await CleanupActivationAsync(false); }
+                        catch (Exception CleanupError)
+                        {
+                            Ex.Data["ActivationCleanupFailure"] = CleanupError;
+                            if (Ex is OperationCanceledException)
+                                throw;
+                        }
+                        throw;
+                    }
+                }
+                finally { lifecycleSemaphore.Release(); }
+            }
+            catch (OperationCanceledException) when (Token.IsCancellationRequested) { Signal.TrySetCanceled(); throw; }
+            catch (Exception Ex)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    Signal.TrySetException(Ex);
+                    _ = Signal.Task.Exception;
+                    if (ReferenceEquals(Signal, servicesReady) && lifecycleState != LifecycleState.Terminated)
+                        lifecycleState = LifecycleState.Failed;
+                    ReportLifecycleFailure(Ex);
+                });
+                throw;
             }
             finally
             {
-                this.startupWorker.Release();
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (ReferenceEquals(activationCancellation, Cancellation) && lifecycleState == LifecycleState.Active)
+                        return;
+                    if (ReferenceEquals(activationCancellation, Cancellation))
+                        activationCancellation = null;
+                    Cancellation.Dispose();
+                });
+            }
+        }
+
+        private static async Task ObserveOptionalAsync(Func<Task> Callback)
+        {
+            try { await Callback(); }
+            catch (Exception Ex)
+            {
+                try { Log.Exception(Ex); }
+                catch (Exception ReportingError) { System.Diagnostics.Debug.WriteLine(ReportingError); }
             }
         }
 
@@ -735,252 +740,272 @@ namespace NeuroAccessMaui
 
 		#endregion
 
-		#region Sleep / Shutdown
+        #region Sleep / Shutdown
 
-		public async Task OnBackgroundSleep() => await this.ShutdownAsync(inPanic: false, isTerminatingProcess: false);
+        /// <summary>Stops active services while retaining durable process initialization.</summary>
+        /// <returns>The shared stop outcome.</returns>
+        public Task OnBackgroundSleep() => RequestStopAsync(false, false);
 
-        protected override async void OnSleep()
-        {
-            await this.ShutdownAsync(inPanic: false, isTerminatingProcess: false);
-        }
+        /// <inheritdoc/>
+        protected override async void OnSleep() => await ObserveLifecycleAsync(() =>
+            ReferenceEquals(this, Current) ? this.OnBackgroundSleep() : Task.CompletedTask);
 
+        /// <summary>Terminates owned resources and then closes the application.</summary>
+        /// <returns>Completion of process shutdown.</returns>
         internal static async Task StopAsync()
         {
-            if (appInstance is not null)
-            {
-                await appInstance.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
-                appInstance = null;
-            }
-
-            try
-            {
-                await ServiceRef.PlatformSpecific.CloseApplication();
-            }
-            catch (Exception)
-            {
-                Environment.Exit(0);
-            }
+            await RequestStopAsync(true, false);
+            await MainThread.InvokeOnMainThreadAsync(() => ServiceRef.PlatformSpecific.CloseApplication());
         }
 
-        private async Task ShutdownAsync(bool inPanic, bool isTerminatingProcess, bool forceTermination = false)
+        private static Task RequestStopAsync(bool Terminate, bool InPanic) => MainThread.InvokeOnMainThreadAsync(() =>
         {
-            this.startupCancellation.Cancel();
-            await this.startupWorker.WaitAsync();
+            if (lifecycleState == LifecycleState.Terminated ||
+                (!Terminate && lifecycleState is LifecycleState.Stopped or LifecycleState.Stopping))
+                return transition;
+            if (!Terminate && cleanupFailure is not null)
+                return Task.FromException(cleanupFailure);
+            activationCancellation?.Cancel();
+            if (transition.IsCompleted)
+            {
+                activationCancellation?.Dispose();
+                activationCancellation = null;
+            }
+            servicesReady.TrySetCanceled();
+            servicesReady = CreateServicesReadySignal();
+            servicesReady.TrySetCanceled();
+            lifecycleState = Terminate ? LifecycleState.Terminated : LifecycleState.Stopping;
+            TaskCompletionSource<bool> Signal = servicesReady;
+            return transition = Task.Run(() => StopResourcesAsync(Signal, Terminate, InPanic));
+        });
 
+        private static async Task StopResourcesAsync(TaskCompletionSource<bool> Signal, bool Terminate, bool InPanic)
+        {
+            if (initialization is not null)
+            {
+                try { await initialization; }
+                catch (Exception) { } // Durable initialization reports its own failure, even after cancellation.
+            }
+            await lifecycleSemaphore.WaitAsync();
             try
             {
-                if (!forceTermination)
-                {
-                    if ((startupCounter < 1) || (--startupCounter > 0))
-                        return;
-                }
+                if (!await MainThread.InvokeOnMainThreadAsync(() => ReferenceEquals(Signal, servicesReady)))
+                    return;
+                List<Exception> Errors = new List<Exception>();
+                await TryCleanupAsync(() => CleanupActivationAsync(InPanic), Errors);
+                if (Terminate)
+                    await TryCleanupAsync(CleanupProcessAsync, Errors);
                 else
+                    await TryCleanupAsync(() => SaveConfigurationAsync(null, false), Errors);
+                await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    startupCounter = 0;
-                }
-
-                this.StopAutoSaveTimer();
-
-                if (inPanic)
-                {
-                    if (ServiceRef.XmppService is not null)
-                        await ServiceRef.XmppService.UnloadFast();
-                }
-                else
-                {
-                    List<Task> UnloadTasks = [];
-
-                    await ServiceRef.ContractOrchestratorService.Unload();
-                    await ServiceRef.XmppService.Unload();
-
-                    if (ServiceRef.NetworkService is not null)
-                        UnloadTasks.Add(ServiceRef.NetworkService.Unload());
-
-                    if (ServiceRef.AttachmentCacheService is not null)
-                        UnloadTasks.Add(ServiceRef.AttachmentCacheService.Unload());
-
-                    await Task.WhenAll(UnloadTasks);
-
-
-
-                    if (isTerminatingProcess)
+                    if (Errors.Count > 0)
                     {
-                        foreach (IEventSink Sink in Log.Sinks)
-                            Log.Unregister(Sink);
-
-                        if (ServiceRef.StorageService is not null)
-                            await ServiceRef.StorageService.Shutdown();
+                        cleanupFailure = new AggregateException("Application cleanup failed.", Errors);
+                        ReportLifecycleFailure(cleanupFailure);
                     }
-                }
-
-                if (isTerminatingProcess)
-                {
-                    // Causes list of singleton instances to be cleared.
-                    await Log.TerminateAsync();
-                }
-                else
-                {
-                    ResetServicesReadySignal();
-                }
+                    if (ReferenceEquals(Signal, servicesReady) && !Terminate)
+                        lifecycleState = cleanupFailure is null && initialization?.IsCompletedSuccessfully == true
+                            ? LifecycleState.Stopped : LifecycleState.Failed;
+                });
+                if (Errors.Count > 0)
+                    throw cleanupFailure!;
             }
-            finally
+            finally { lifecycleSemaphore.Release(); }
+        }
+
+        private static async Task CleanupActivationAsync(bool InPanic)
+        {
+            List<Exception> Errors = new List<Exception>();
+            if (autoSaveTimer is not null)
             {
-                this.startupWorker.Release();
+                await autoSaveTimer.DisposeAsync();
+                autoSaveTimer = null;
+            }
+            await autoSaveSemaphore.WaitAsync();
+            autoSaveSemaphore.Release();
+            if (wallet is not null) await TryCleanupAsync(wallet.Unload, Errors);
+            wallet = null;
+            if (thingRegistry is not null) await TryCleanupAsync(thingRegistry.Unload, Errors);
+            thingRegistry = null;
+            if (contracts is not null) await TryCleanupAsync(contracts.Unload, Errors);
+            contracts = null;
+            if (xmpp is not null) await TryCleanupAsync(InPanic ? xmpp.UnloadFast : xmpp.Unload, Errors);
+            xmpp = null;
+            if (network is not null) await TryCleanupAsync(network.Unload, Errors);
+            network = null;
+            if (Errors.Count > 0)
+            {
+                Exception Failure = new AggregateException("Activation cleanup failed.", Errors);
+                await MainThread.InvokeOnMainThreadAsync(() => cleanupFailure = Failure);
+                throw Failure;
             }
         }
 
-        private void StopAutoSaveTimer()
+        private static async Task CleanupProcessAsync()
         {
-            if (this.autoSaveTimer is not null)
-            {
-                this.autoSaveTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                this.autoSaveTimer.Dispose();
-                this.autoSaveTimer = null;
-            }
+            List<Exception> Errors = new List<Exception>();
+            if (previousRunReport is not null) await TryCleanupAsync(() => previousRunReport, Errors);
+            if (push is not null) await TryCleanupAsync(push.Unload, Errors);
+            push = null;
+            if (notifications is not null) await TryCleanupAsync(notifications.Unload, Errors);
+            notifications = null;
+            if (internetCache is not null) await TryCleanupAsync(internetCache.Unload, Errors);
+            internetCache = null;
+            if (attachments is not null) await TryCleanupAsync(attachments.Unload, Errors);
+            attachments = null;
+            if (initialization?.IsCompletedSuccessfully == true)
+                await TryCleanupAsync(() => SaveConfigurationAsync(null, true), Errors);
+            if (storage is not null) await TryCleanupAsync(storage.Shutdown, Errors);
+            storage = null;
+            if (crypto is not null)
+                await TryCleanupAsync(() => { crypto.Dispose(); return Task.CompletedTask; }, Errors);
+            crypto = null;
+            if (logging is not null)
+                await TryCleanupAsync(logging.EndDebugLogSessionAsync, Errors);
+            logging = null;
+            await TryCleanupAsync(() => Log.TerminateAsync(), Errors);
+            if (Errors.Count > 0)
+                throw new AggregateException("Process cleanup failed.", Errors);
+        }
+
+        private static async Task TryCleanupAsync(Func<Task> Cleanup, List<Exception> Errors)
+        {
+            try { await Cleanup(); }
+            catch (Exception Ex) { Errors.Add(Ex); }
         }
 
         #endregion
 
         #region AutoSave
 
-        private async Task AutoSaveAsync()
+        private static async void SaveFromTimer(object? State) =>
+            await ObserveOptionalAsync(() => SaveConfigurationAsync(State as Task, false));
+
+        private static async Task SaveConfigurationAsync(Task? Attempt, bool FinalSave)
         {
-            await this.autoSaveSemaphore.WaitAsync();
+            await autoSaveSemaphore.WaitAsync();
             try
             {
-                if (ServiceRef.TagProfile.IsDirty)
+                bool CanSave = await MainThread.InvokeOnMainThreadAsync(() => FinalSave ||
+                    (lifecycleState != LifecycleState.Terminated &&
+                    (Attempt is null || (ReferenceEquals(Attempt, servicesReady.Task) && lifecycleState == LifecycleState.Active))));
+                if (!CanSave && Attempt is null)
+                    throw new ObjectDisposedException(nameof(App));
+                if (!CanSave || initialization?.IsCompletedSuccessfully != true || profile is null || storage is null)
+                    return;
+                TagConfiguration? Configuration = await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    ServiceRef.TagProfile.ResetIsDirty();
-                    try
-                    {
-                        TagConfiguration Configuration = ServiceRef.TagProfile.ToConfiguration();
-                        try
-                        {
-                            if (string.IsNullOrEmpty(Configuration.ObjectId))
-                                await ServiceRef.StorageService.Insert(Configuration);
-                            else
-                                await ServiceRef.StorageService.Update(Configuration);
-                        }
-                        catch (KeyNotFoundException)
-                        {
-                            await ServiceRef.StorageService.Insert(Configuration);
-                        }
-                    }
-                    catch (Exception Ex)
-                    {
-                        ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-                    }
+                    if (!profile.IsDirty)
+                        return null;
+                    profile.ResetIsDirty();
+                    try { return profile.ToConfiguration(); }
+                    catch { profile.RestoreIsDirty(); throw; }
+                });
+                if (Configuration is null)
+                    return;
+                try
+                {
+                    if (string.IsNullOrEmpty(Configuration.ObjectId))
+                        await storage.Insert(Configuration);
+                    else
+                        await storage.Update(Configuration);
+                }
+                catch
+                {
+                    await MainThread.InvokeOnMainThreadAsync(profile.RestoreIsDirty);
+                    throw;
                 }
             }
-            finally
-            {
-                this.autoSaveSemaphore.Release();
-            }
+            finally { autoSaveSemaphore.Release(); }
         }
 
-        public async Task ForceSaveAsync() => await this.AutoSaveAsync();
+        /// <summary>Persists a successfully loaded profile and propagates write failures.</summary>
+        /// <returns>Completion of the serialized save.</returns>
+        public Task ForceSaveAsync() => SaveConfigurationAsync(null, false);
 
         #endregion
 
         #region Configuration
 
-        private async Task CreateOrRestoreConfigurationAsync()
+        private static async Task CreateOrRestoreConfigurationAsync()
         {
-            TagConfiguration? Configuration;
-            try
-            {
-                Configuration = await ServiceRef.StorageService.FindFirstDeleteRest<TagConfiguration>();
-            }
-            catch (Exception FindEx)
-            {
-                ServiceRef.LogService.LogException(FindEx, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-                Configuration = null;
-            }
-
+            IEnumerable<TagConfiguration> Configurations = await Database.Find<TagConfiguration>(0, 2);
+            using IEnumerator<TagConfiguration> Records = Configurations.GetEnumerator();
+            TagConfiguration? Configuration = Records.MoveNext()
+                ? Records.Current ?? throw new InvalidDataException("A configuration record could not be read.")
+                : null;
+            if (Records.MoveNext())
+                Log.Warning("Multiple configuration records exist; additional records were retained.");
             if (Configuration is null)
             {
                 Configuration = new TagConfiguration();
-                try
-                {
-                    await ServiceRef.StorageService.Insert(Configuration);
-                }
-                catch (Exception Ex)
-                {
-                    ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-                }
+                await ServiceRef.StorageService.Insert(Configuration);
             }
 
-            ServiceRef.TagProfile.FromConfiguration(Configuration);
+            await MainThread.InvokeOnMainThreadAsync(() => ServiceRef.TagProfile.FromConfiguration(Configuration));
+            profile = ServiceRef.TagProfile;
         }
 
         #endregion
 
         #region Error Handling
 
-        private async void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        private static async void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
             try
             {
                 Exception Ex = Log.UnnestException(e.Exception);
                 e.SetObserved();
-                await this.HandleUnhandledExceptionAsync(Ex, nameof(TaskScheduler_UnobservedTaskException), shutdown: false);
+                if (IsLifecycleException(Ex))
+                    return;
+                await HandleUnhandledExceptionAsync(Ex, nameof(TaskScheduler_UnobservedTaskException), shutdown: false);
             }
             catch (Exception Ex)
             {
-                ServiceRef.LogService.LogException(Ex);
+                System.Diagnostics.Debug.WriteLine(Ex);
             }
         }
 
-        private async void CurrentDomain_UnhandledException(object? sender, UnhandledExceptionEventArgs e)
+        private static async void CurrentDomain_UnhandledException(object? sender, UnhandledExceptionEventArgs e)
         {
             try
             {
-                await this.HandleUnhandledExceptionAsync(e.ExceptionObject as Exception, nameof(CurrentDomain_UnhandledException), shutdown: true);
+                await HandleUnhandledExceptionAsync(e.ExceptionObject as Exception, nameof(CurrentDomain_UnhandledException), shutdown: true);
             }
             catch (Exception Ex)
             {
-                ServiceRef.LogService.LogException(Ex);
+                System.Diagnostics.Debug.WriteLine(Ex);
             }
         }
 
-        private async Task HandleUnhandledExceptionAsync(Exception? ex, string title, bool shutdown)
+        private static async Task HandleUnhandledExceptionAsync(Exception? ex, string title, bool shutdown)
         {
             if (ex is not null)
             {
                 ServiceRef.LogService.SaveExceptionDump(title, ex.ToString());
-                ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod(), title));
+                ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>("Operation", title));
             }
 
             if (shutdown)
-                await this.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
+                await RequestStopAsync(true, true);
 
 #if DEBUG
-            Page? alertPage = this.Windows.FirstOrDefault()?.Page;
-            if (!shutdown && alertPage is not null)
-            {
-                if (this.Dispatcher.IsDispatchRequired)
+            if (!shutdown)
+                await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    this.Dispatcher.Dispatch(async () =>
-                    {
-                        await alertPage.DisplayAlert(title, ex?.ToString(), ServiceRef.Localizer[nameof(AppResources.Ok)]);
-                    });
-                }
-                else
-                {
-                    await alertPage.DisplayAlert(title, ex?.ToString(), ServiceRef.Localizer[nameof(AppResources.Ok)]);
-                }
-            }
+                    Page? AlertPage = Current?.Windows.FirstOrDefault()?.Page;
+                    if (AlertPage is not null)
+                        await AlertPage.DisplayAlert(title, ex?.ToString(), ServiceRef.Localizer[nameof(AppResources.Ok)]);
+                });
 #endif
         }
 
-        private void DisplayBootstrapErrorPage(string title, string stackTrace)
+        private void DisplayBootstrapErrorPage(string Title, string StackTrace)
         {
-            this.Dispatcher.Dispatch(() =>
-            {
-                Window? win = this.Windows.FirstOrDefault();
-                if (win is not null)
-                    win.Page = new BootstrapErrorPage(title, stackTrace);
-            });
+            Window? Window = Current?.Windows.FirstOrDefault();
+            if (Window is not null && Window.Page is not BootstrapErrorPage)
+                Window.Page = new BootstrapErrorPage(Title, StackTrace);
         }
 
         private static async Task SendErrorReportFromPreviousRunAsync()
@@ -1120,52 +1145,36 @@ namespace NeuroAccessMaui
 
         #region IDisposable Implementation
 
+        /// <summary>Releases this UI instance without terminating process-owned services.</summary>
         public void Dispose()
         {
-            this.Dispose(disposing: true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// <see cref="IDisposableAsync.Dispose"/>
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
+        /// <summary>Provides an extension point for releasing resources owned by this UI instance.</summary>
+        /// <param name="Disposing">Whether disposal was explicitly requested.</param>
+        protected virtual void Dispose(bool Disposing)
         {
-            if (disposing)
-                this.DisposeAsync().Wait();
+            // Process-owned resources are released by lifecycle termination, not UI disposal.
         }
 
-        /// <summary>
-        /// <see cref="IDisposableAsync.Dispose"/>
-        /// </summary>
-        public virtual async Task DisposeAsync()
+        /// <summary>Releases this UI instance without disposing shared lifecycle resources.</summary>
+        /// <returns>A completed task.</returns>
+        public virtual Task DisposeAsync()
         {
-            if (this.isDisposed)
-                return;
-
-            this.autoSaveTimer?.Dispose();
-            this.startupWorker.Dispose();
-            this.startupCancellation.Dispose();
-
-            await Task.CompletedTask; // keep method truly async if extended later
-            this.isDisposed = true;
+            this.Dispose();
+            return Task.CompletedTask;
         }
 
         #endregion
 
         #region Helpers
 
-        public static T Instantiate<T>()
-        {
-            if (!defaultInstantiated)
-                defaultInstantiated = defaultInstantiatedSource.Task.Result;
-
-            return Types.Instantiate<T>(false);
-        }
-
+        /// <summary>Notifies subscribers that a platform foreground event occurred.</summary>
         public static void RaiseAppActivated()
         {
-            AppActivated?.Invoke(Current, EventArgs.Empty);
+            _ = ObserveLifecycleAsync(() => MainThread.InvokeOnMainThreadAsync(() => AppActivated?.Invoke(Current, EventArgs.Empty)));
         }
 
         /// <summary>

@@ -21,6 +21,12 @@ namespace NeuroAccessMaui.Services.Crypto
 		/// <returns>A cryptographic key.</returns>
 		Task<KeyValuePair<byte[], byte[]>> GetCustomKey(string fileName);
 
+        /// <summary>Reads persisted encryption material, optionally creating a missing entry.</summary>
+        /// <param name="FileName">Filename used by the existing key namespace.</param>
+        /// <param name="AllowCreation">Whether genuinely absent material may be created.</param>
+        /// <returns>Persisted key and IV; malformed, inaccessible, or failed writes propagate.</returns>
+        Task<KeyValuePair<byte[], byte[]>> GetCustomKeyAsync(string FileName, bool AllowCreation);
+
 		/// <summary>
 		/// Generates a random password to use.
 		/// </summary>

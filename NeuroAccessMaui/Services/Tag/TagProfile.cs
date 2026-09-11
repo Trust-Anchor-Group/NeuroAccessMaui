@@ -1198,6 +1198,9 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		public bool IsDirty { get; private set; }
 
+		/// <inheritdoc/>
+		public void RestoreIsDirty() => this.IsDirty = true;
+
 		private void FlagAsDirty(string PropertyName)
 		{
 			if (!this.loadingProperties)

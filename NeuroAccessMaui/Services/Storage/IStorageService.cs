@@ -15,19 +15,23 @@ namespace NeuroAccessMaui.Services.Storage
 		/// </summary>
 		string DataFolder { get; }
 
+        /// <summary>Checks whether the actual data directory contains existing files.</summary>
+        /// <returns>Whether any files exist; access and enumeration errors propagate.</returns>
+        bool HasExistingData();
+
 		#region LifeCycle management
 
 		/// <summary>
-		/// Initializes the persistent storage on a background task. This call is asynchronous.
+		/// Starts or joins the retained persistent-storage initialization attempt.
 		/// </summary>
-		/// <param name="cancellationToken">Will stop the service load if the token is set.</param>
+		/// <param name="cancellationToken">Cancels only this caller's wait; shared initialization continues.</param>
 		Task Init(CancellationToken? cancellationToken);
 
 		/// <summary>
 		/// Waits for initialization of the storage service to be completed.
 		/// </summary>
-		/// <returns>If storage service is OK, or failed to initialize.</returns>
-		Task<bool> WaitInitDone();
+		/// <returns>Successful completion, or the original initialization failure.</returns>
+		Task WaitForInitializationAsync();
 
 		/// <summary>
 		/// Shuts down this persistent storage instance.

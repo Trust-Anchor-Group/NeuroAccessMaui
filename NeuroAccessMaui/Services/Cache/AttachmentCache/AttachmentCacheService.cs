@@ -23,23 +23,12 @@ namespace NeuroAccessMaui.Services.Cache.AttachmentCache
 		}
 
 		/// <inheritdoc/>
-		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
+			CancellationToken.ThrowIfCancellationRequested();
 			if (this.BeginLoad(IsResuming, CancellationToken))
-			{
-				try
-				{
-					if (!IsResuming)
-						await this.cacheManager.EvictOldEntries();
-
-					this.EndLoad(true);
-				}
-				catch (Exception)
-				{
-					this.EndLoad(false);
-					throw;
-				}
-			}
+				this.EndLoad(true);
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>

@@ -21,6 +21,8 @@ namespace NeuroAccessMaui.Services
 	{
 		private LAContext? localAuthenticationContext;
 		private bool isDisposed;
+		private readonly SemaphoreSlim deviceIdSemaphore = new SemaphoreSlim(1, 1);
+		private string? deviceId;
 
 		/// <summary>
 		/// iOS implementation of platform-specific features.
@@ -71,85 +73,53 @@ namespace NeuroAccessMaui.Services
 			set => _ = value; // ignore the value
 		}
 
-		/// <summary>
-		/// Gets A persistent ID of the device
-		/// Fetches the device ID from the keychain, or creates a new one if it doesn't exist.
-		/// Errors results in an alert and the application closing.
-		/// </summary>
-		public string? GetDeviceId()
+		/// <inheritdoc/>
+		public string? GetDeviceId() => this.deviceId
+			?? throw new InvalidOperationException("The device identifier has not been initialized.");
+
+		/// <inheritdoc/>
+		public async Task InitializeDeviceIdAsync()
 		{
+			await this.deviceIdSemaphore.WaitAsync();
 			try
 			{
-				string ServiceName = AppInfo.PackageName;
-				const string AccountName = "DeviceIdentifier"; //Basically the key
-
-				// Define the search criteria for the SecRecord
-				SecRecord searchRecord = new(SecKind.GenericPassword)
+				if (this.deviceId is not null)
+					return;
+				using SecRecord SearchRecord = new SecRecord(SecKind.GenericPassword)
 				{
-					Service = ServiceName,
-					Account = AccountName
+					Service = AppInfo.PackageName,
+					Account = "DeviceIdentifier"
 				};
-
-				// Try to retrieve the existing device identifier from the Keychain
-				SecRecord? existingRecord = SecKeyChain.QueryAsRecord(searchRecord, out SecStatusCode resultCode);
-				if (resultCode == SecStatusCode.Success && existingRecord is not null && existingRecord?.ValueData is not null)
+				using SecRecord? ExistingRecord = SecKeyChain.QueryAsRecord(SearchRecord, out SecStatusCode ResultCode);
+				if (ResultCode == SecStatusCode.Success)
 				{
-					// If the record exists, return the identifier
-					return existingRecord.ValueData.ToString(NSStringEncoding.UTF8);
+					string? DeviceId = ExistingRecord?.ValueData?.ToString(NSStringEncoding.UTF8);
+					if (string.IsNullOrEmpty(DeviceId))
+						throw new InvalidOperationException("The persisted device identifier is empty.");
+					this.deviceId = DeviceId;
+					return;
 				}
-				else if (resultCode == SecStatusCode.ItemNotFound)
+				if (ResultCode != SecStatusCode.ItemNotFound)
+					throw new InvalidOperationException($"Unable to retrieve the device identifier: {ResultCode}.");
+				if (ServiceRef.StorageService.HasExistingData())
+					throw new InvalidOperationException("The device identifier is missing while local database files exist.");
+				string Identifier = UIDevice.CurrentDevice.IdentifierForVendor?.ToString()
+					?? throw new InvalidOperationException("The vendor identifier is unavailable.");
+				using SecRecord NewRecord = new SecRecord(SecKind.GenericPassword)
 				{
-					// No existing record found, create a new device identifier
-					string identifier = UIDevice.CurrentDevice.IdentifierForVendor.ToString();
-
-					// Define the SecRecord for storing the new identifier
-					SecRecord newRecord = new(SecKind.GenericPassword)
-					{
-						Service = ServiceName,
-						Account = AccountName,
-						Label = "Persistent Device Identifier for Vendor",
-						ValueData = NSData.FromString(identifier),
-						Accessible = SecAccessible.WhenUnlockedThisDeviceOnly,
-						Synchronizable = false
-					};
-
-					// Sanity check: Remove any existing record, which should not exist
-					SecKeyChain.Remove(newRecord);
-
-					// Add the new item to the Keychain
-					SecStatusCode addResult = SecKeyChain.Add(newRecord);
-					if (addResult == SecStatusCode.Success)
-						return identifier; // Return the newly stored identifier
-
-					throw new Exception($"Unable to store device identifier in Keychain - Code: {addResult} - Description: {SecStatusCodeExtensions.GetStatusDescription(addResult)}");
-				}
-				else
-					throw new Exception($"Unable to retrieve device identifier from Keychain - Code: {resultCode} - Description: {SecStatusCodeExtensions.GetStatusDescription(resultCode)}");
+					Service = AppInfo.PackageName,
+					Account = "DeviceIdentifier",
+					Label = "Persistent Device Identifier for Vendor",
+					ValueData = NSData.FromString(Identifier),
+					Accessible = SecAccessible.WhenUnlockedThisDeviceOnly,
+					Synchronizable = false
+				};
+				SecStatusCode AddResult = SecKeyChain.Add(NewRecord);
+				if (AddResult != SecStatusCode.Success)
+					throw new InvalidOperationException($"Unable to persist the device identifier: {AddResult}.");
+				this.deviceId = Identifier;
 			}
-			catch (Exception ex)
-			{
-				try
-				{
-					///TODO: Show a message to the user
-					///TODO: The problem is that the app has not loaded the UI yet, so we can't show an alert.
-
-					StringBuilder msg = new();
-
-					msg.Append(ex.Message);
-					msg.AppendLine("\n\n");
-					msg.AppendLine("```");
-					msg.AppendLine(ex.StackTrace);
-					msg.AppendLine("```");
-
-					App.SendAlertAsync(msg.ToString(), "text/plain").Wait();
-					this.CloseApplication().Wait();
-				}
-				catch (Exception)
-				{
-					Environment.Exit(0);
-				}
-			}
-			return null;
+			finally { this.deviceIdSemaphore.Release(); }
 		}
 
 		/// <summary>

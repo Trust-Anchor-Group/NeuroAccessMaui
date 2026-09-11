@@ -9,15 +9,18 @@ using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Storage
 {
+	/// <summary>Owns application database initialization and shutdown.</summary>
 	[Singleton]
 	internal sealed class StorageService : IStorageService, IDisposableAsync
 	{
-		private readonly LinkedList<TaskCompletionSource<bool>> tasksWaiting = new();
-		private readonly string dataFolder;
-		private FilesProvider? databaseProvider;
-		private PersistedEventLog? persistedEventLog;
-		private bool? initialized = null;
-		private bool started = false;
+        private readonly SemaphoreSlim lifecycleSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim keySemaphore = new SemaphoreSlim(1, 1);
+        private readonly string dataFolder;
+        private FilesProvider? databaseProvider;
+        private PersistedEventLog? persistedEventLog;
+        private Task? initialization;
+        private Task? shutdown;
+        private bool ownsProvider;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="StorageService"/> class.
@@ -38,205 +41,181 @@ namespace NeuroAccessMaui.Services.Storage
 		/// </summary>
 		public string DataFolder => this.dataFolder;
 
-		#region LifeCycle management
+        /// <inheritdoc />
+        public bool HasExistingData() => this.GetExistingDataFiles().Count > 0;
 
-		/// <inheritdoc />
-		public async Task Init(CancellationToken? cancellationToken)
-		{
-			lock (this.tasksWaiting)
-			{
-				if (this.started)
-					return;
+        private HashSet<string> GetExistingDataFiles()
+        {
+            HashSet<string> Files = new HashSet<string>(OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            try { _ = File.GetAttributes(this.dataFolder); }
+            catch (DirectoryNotFoundException) { return Files; }
+            catch (FileNotFoundException) { return Files; }
+            foreach (string FileName in Directory.EnumerateFiles(this.dataFolder, "*", SearchOption.AllDirectories))
+                Files.Add(Path.GetFullPath(FileName));
+            return Files;
+        }
 
-				this.started = true;
-			}
+        /// <inheritdoc />
+        public async Task Init(CancellationToken? cancellationToken)
+        {
+            Task Initialization;
+            await this.lifecycleSemaphore.WaitAsync(cancellationToken ?? CancellationToken.None);
+            try
+            {
+                if (this.shutdown is not null)
+                    throw new ObjectDisposedException(nameof(StorageService));
+                Initialization = this.initialization ??= this.InitializeAsync();
+            }
+            finally { this.lifecycleSemaphore.Release(); }
+            await Initialization.WaitAsync(cancellationToken ?? CancellationToken.None);
+        }
 
-			try
-			{
-				if (Database.HasProvider)
-					this.databaseProvider = Database.Provider as FilesProvider;
+        private async Task InitializeAsync()
+        {
+            try
+            {
+                if (Database.HasProvider)
+                {
+                    this.databaseProvider = Database.Provider as FilesProvider
+                        ?? throw new InvalidOperationException("An incompatible database provider is already registered.");
+                }
+                else
+                {
+                    HashSet<string> ExistingFiles = this.GetExistingDataFiles();
+                    FilesProvider.AsyncFileIo = true;
+                    this.databaseProvider = await FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192,
+                        Encoding.UTF8, (int)Constants.Timeouts.Database.TotalMilliseconds,
+                        FileName => this.GetDatabaseKeyAsync(FileName, ExistingFiles));
+                    this.ownsProvider = true;
+                    await this.databaseProvider.Start();
+                    if (Database.HasProvider)
+                        throw new InvalidOperationException("Another database provider was registered during initialization.");
+                    Database.Register(this.databaseProvider, false);
+                }
+                this.persistedEventLog = new PersistedEventLog(90);
+                Log.Register(this.persistedEventLog);
+            }
+            catch (Exception Ex)
+            {
+                try { await this.ReleaseAsync(false); }
+                catch (Exception CleanupError) { Ex.Data["StorageCleanupFailure"] = CleanupError; }
+                throw;
+            }
+        }
 
-				if (this.databaseProvider is null)
-				{
-					this.databaseProvider = await this.CreateDatabaseFile();
+        private async Task<KeyValuePair<byte[], byte[]>> GetDatabaseKeyAsync(string FileName, HashSet<string> ExistingFiles)
+        {
+            await this.keySemaphore.WaitAsync();
+            try
+            {
+                string FullPath = Path.GetFullPath(FileName);
+                string Root = Path.GetFullPath(this.dataFolder).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+                StringComparison Comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                if (!FullPath.StartsWith(Root, Comparison))
+                    throw new IOException("Database key path is outside the data directory.");
+                // The provider allocates before this callback; only the pre-open snapshot is useful here.
+                KeyValuePair<byte[], byte[]> Keys = await ServiceRef.CryptoService.GetCustomKeyAsync(FileName, !ExistingFiles.Contains(FullPath));
+                ExistingFiles.Add(FullPath);
+                return Keys;
+            }
+            finally { this.keySemaphore.Release(); }
+        }
 
-					await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
-					await this.databaseProvider.Start();
-				}
+        /// <inheritdoc />
+        public Task WaitForInitializationAsync() => this.initialization
+            ?? Task.FromException(new InvalidOperationException("Storage initialization has not started."));
 
-				if (this.databaseProvider is not null)
-				{
-					Database.Register(this.databaseProvider, false);
-					Log.Register(this.persistedEventLog = new PersistedEventLog(90));
-					this.InitDone(true);
-					return;
-				}
-			}
-			catch (Exception e1)
-			{
-				e1 = Log.UnnestException(e1);
-				ServiceRef.LogService.LogException(e1);
-			}
+        /// <inheritdoc />
+        public async Task Shutdown()
+        {
+            Task Shutdown;
+            await this.lifecycleSemaphore.WaitAsync();
+            try { Shutdown = this.shutdown ??= this.ShutdownAsync(); }
+            finally { this.lifecycleSemaphore.Release(); }
+            await Shutdown;
+        }
 
-			//!!! test to uncomment it
-			/* On iOS the UI is not initialized at this point, need to find another solution
-			if (await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.DatabaseIssue"], ServiceRef.Localizer[nameof(AppResources.DatabaseCorruptInfoText"], ServiceRef.Localizer[nameof(AppResources.RepairAndContinue"], ServiceRef.Localizer[nameof(AppResources.ContinueAnyway"]))
-			*/
-			//TODO: when UI is ready, show an alert that the database was reset due to unrecoverable error
-			//TODO: say to close the application in a controlled manner
-			{
-				try
-				{
-					Directory.Delete(this.dataFolder, true);
+        private async Task ShutdownAsync()
+        {
+            if (this.initialization is not null)
+            {
+                try { await this.initialization; }
+                catch (Exception) { } // The initialization caller retains the original failure.
+            }
+            await this.ReleaseAsync(this.initialization?.IsCompletedSuccessfully == true);
+        }
 
-					this.databaseProvider = await this.CreateDatabaseFile();
+        private async Task ReleaseAsync(bool Flush)
+        {
+            List<Exception> Errors = new List<Exception>();
+            if (this.persistedEventLog is not null)
+            {
+                PersistedEventLog EventLog = this.persistedEventLog;
+                this.persistedEventLog = null;
+                try { Log.Unregister(EventLog); }
+                catch (Exception Ex) { Errors.Add(Ex); }
+                try { await EventLog.DisposeAsync(); }
+                catch (Exception Ex) { Errors.Add(Ex); }
+            }
+            if (this.databaseProvider is not null && this.ownsProvider)
+            {
+                FilesProvider Provider = this.databaseProvider;
+                if (Flush)
+                {
+                    try { await Provider.Flush(); }
+                    catch (Exception Ex) { Errors.Add(Ex); }
+                }
+                try
+                {
+                    if (Database.HasProvider && ReferenceEquals(Database.Provider, Provider))
+                        Database.Register(new NullDatabaseProvider(), false);
+                }
+                catch (Exception Ex) { Errors.Add(Ex); }
+                try { await Provider.DisposeAsync(); }
+                catch (Exception Ex) { Errors.Add(Ex); }
+            }
+            this.databaseProvider = null;
+            this.ownsProvider = false;
+            if (Errors.Count > 0)
+                throw new AggregateException("Storage cleanup failed.", Errors);
+        }
 
-					await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
+        /// <summary>Synchronously releases owned storage resources.</summary>
+        [Obsolete("Use DisposeAsync() instead.")]
+        public void Dispose() => this.DisposeAsync().GetAwaiter().GetResult();
 
-					await this.databaseProvider.Start();
+        /// <summary>Completes shutdown of owned storage resources.</summary>
+        /// <returns>The retained shutdown outcome.</returns>
+        public Task DisposeAsync() => this.Shutdown();
 
-					if (!Database.HasProvider)
-					{
-						Database.Register(this.databaseProvider, false);
-						Log.Register(this.persistedEventLog = new PersistedEventLog(90));
-						this.InitDone(true);
-						return;
-					}
-				}
-				catch (Exception e3)
-				{
-					e3 = Log.UnnestException(e3);
-					ServiceRef.LogService.LogException(e3);
 
-					await App.StopAsync();
-					/*
-					Thread?.NewState("UI");
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.DatabaseIssue"], ServiceRef.Localizer[nameof(AppResources.DatabaseRepairFailedInfoText"], ServiceRef.Localizer[nameof(AppResources.Ok"]);
-					*/
-				}
-			}
-
-			this.InitDone(false);
-		}
-
-		private void InitDone(bool Result)
-		{
-			lock (this.tasksWaiting)
-			{
-				this.initialized = Result;
-
-				foreach (TaskCompletionSource<bool> Wait in this.tasksWaiting)
-					Wait.TrySetResult(Result);
-
-				this.tasksWaiting.Clear();
-			}
-		}
-
-		/// <inheritdoc />
-		public Task<bool> WaitInitDone()
-		{
-			lock (this.tasksWaiting)
-			{
-				if (this.initialized.HasValue)
-					return Task.FromResult<bool>(this.initialized.Value);
-
-				TaskCompletionSource<bool> Wait = new();
-				this.tasksWaiting.AddLast(Wait);
-
-				return Wait.Task;
-			}
-		}
-
-		/// <inheritdoc />
-		public async Task Shutdown()
-		{
-			lock (this.tasksWaiting)
-			{
-				this.initialized = null;
-				this.started = false;
-			}
-
-			try
-			{
-				if (this.persistedEventLog is not null)
-				{
-					Log.Unregister(this.persistedEventLog);
-					await this.persistedEventLog.DisposeAsync();
-					this.persistedEventLog = null;
-				}
-
-				if (this.databaseProvider is not null)
-				{
-					Database.Register(new NullDatabaseProvider(), false);
-					await this.databaseProvider.Flush();
-					await this.databaseProvider.Stop();
-					this.databaseProvider = null;
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		private Task<FilesProvider> CreateDatabaseFile()
-		{
-			FilesProvider.AsyncFileIo = true;  // Asynchronous file I/O induces a long delay during startup on mobile platforms. Why??
-			return FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192, Encoding.UTF8,
-				(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey);
-		}
-
-		/// <summary>
-		/// <see cref="IDisposable.Dispose"/>
-		/// </summary>
-		[Obsolete("Use DisposeAsync() instead.")]
-		public void Dispose()
-		{
-			this.DisposeAsync().Wait();
-		}
-
-		/// <summary>
-		/// <see cref="IDisposableAsync.DisposeAsync"/>
-		/// </summary>
-		public async Task DisposeAsync()
-		{
-			if (this.persistedEventLog is not null)
-			{
-				await this.persistedEventLog.DisposeAsync();
-				this.persistedEventLog = null;
-			}
-
-			if (this.databaseProvider is not null)
-			{
-				await this.databaseProvider.DisposeAsync();
-				this.databaseProvider = null;
-			}
-		}
-
-		#endregion
-
+		/// <inheritdoc/>
 		public async Task Insert(object obj)
 		{
 			await Database.Insert(obj);
 			await Database.Provider.Flush();
 		}
 
+		/// <inheritdoc/>
 		public async Task Update(object obj)
 		{
 			await Database.Update(obj);
 			await Database.Provider.Flush();
 		}
 
+		/// <inheritdoc/>
 		public Task<T> FindFirstDeleteRest<T>() where T : class
 		{
 			return Database.FindFirstDeleteRest<T>();
 		}
 
+		/// <inheritdoc/>
 		public Task<T> FindFirstIgnoreRest<T>() where T : class
 		{
 			return Database.FindFirstIgnoreRest<T>();
 		}
 
+		/// <inheritdoc/>
 		public Task Export(IDatabaseExport exportOutput)
 		{
 			return Database.Export(exportOutput);

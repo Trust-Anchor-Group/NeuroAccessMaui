@@ -35,16 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 
 		public override async Task OnAppearingAsync()
 		{
-			App? AppInstance = App.Current;
-			if (AppInstance is not null)
-			{
-#if ANDROID
-				if (!await AppInstance.InitCompleted)
-					return;
-#else
-				await AppInstance.InitCompleted;
-#endif
-			}
+			await App.WaitForServicesAsync();
 
 			await ServiceRef.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(3));
 

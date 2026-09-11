@@ -122,7 +122,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private bool xmppConnected = false;
 		private DateTime xmppLastStateChange = DateTime.MinValue;
 		private readonly InMemorySniffer? sniffer = new(250, "Connection In-memory sniffer.");
-		private bool isCreatingClient;
+		private readonly SemaphoreSlim clientSemaphore = new SemaphoreSlim(1, 1);
+		private CancellationTokenSource? activationCancellation;
+		private Task connectionTask = Task.CompletedTask;
 		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
@@ -143,229 +145,222 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 		}
 
-		private async Task CreateXmppClient()
+		private async Task CreateXmppClient(bool WaitForConnection = true)
 		{
-			if (this.isCreatingClient)
-				return;
-
-			try
+			if (!this.XmppParametersCurrent() || this.XmppStale())
 			{
-				this.isCreatingClient = true;
-
-				if (!this.XmppParametersCurrent() || this.XmppStale())
+				if (this.xmppClient is not null)
 				{
-					if (this.xmppClient is not null)
-						await this.DestroyXmppClient();
+					try { await this.connectionTask; }
+					catch (Exception) { } // Remote connection failures were already observed.
+					await this.DestroyXmppClient();
+				}
 
-					this.domainName = ServiceRef.TagProfile.Domain;
-					this.accountName = ServiceRef.TagProfile.Account;
-					this.passwordHash = ServiceRef.TagProfile.XmppPasswordHash;
-					this.passwordHashMethod = ServiceRef.TagProfile.XmppPasswordHashMethod;
+				this.domainName = ServiceRef.TagProfile.Domain;
+				this.accountName = ServiceRef.TagProfile.Account;
+				this.passwordHash = ServiceRef.TagProfile.XmppPasswordHash;
+				this.passwordHashMethod = ServiceRef.TagProfile.XmppPasswordHashMethod;
 
-					string? HostName;
-					int PortNumber;
-					bool IsIpAddress;
+				string? HostName;
+				int PortNumber;
+				bool IsIpAddress;
 
-					if (ServiceRef.TagProfile.DefaultXmppConnectivity)
+				if (ServiceRef.TagProfile.DefaultXmppConnectivity)
+				{
+					HostName = this.domainName;
+					PortNumber = XmppCredentials.DefaultPort;
+					IsIpAddress = false;
+				}
+				else
+				{
+					(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName!);
+
+					if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
 					{
-						HostName = this.domainName;
-						PortNumber = XmppCredentials.DefaultPort;
-						IsIpAddress = false;
-					}
-					else
-					{
-						(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName!);
-
-						if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
-						{
-							ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey ?? string.Empty,
-								ServiceRef.TagProfile.ApiSecret ?? string.Empty);
-						}
-					}
-
-					this.xmppLastStateChange = DateTime.Now;
-					this.xmppConnected = false;
-
-					Assembly AppAssembly = App.Current!.GetType().Assembly;
-
-					if (string.IsNullOrEmpty(this.passwordHashMethod))
-					{
-						this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash,
-							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
-					}
-					else
-					{
-						this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod,
-							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
-					}
-#if DEBUG_XMPP_LOCAL
-					DebugSniffer LocalSniffer = new(BinaryPresentationMethod.Hexadecimal);
-					this.xmppClient.Add(LocalSniffer);
-#endif
-
-#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
-					if (!string.IsNullOrEmpty(debugRecipient))
-					{
-#endif
-#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
-						this.debugSniffer = new RemoteSniffer(debugRecipient, DateTime.MaxValue, this.xmppClient, this.xmppClient,
-							ConcentratorServer.NamespaceConcentratorCurrent);
-						this.debugSniffer.DisableMask();
-#endif
-#if DEBUG_XMPP_REMOTE
-						this.xmppClient.Add(this.debugSniffer);
-#endif
-#if DEBUG_LOG_REMOTE
-						if (this.debugEventSink is not null)
-						{
-							Log.Unregister(this.debugEventSink);
-							this.debugEventSink?.Dispose();
-							this.debugEventSink = null;
-						}
-
-						this.debugEventSink = new EventFilter("Debug Event Filter",
-							new XmppEventSink("Debug Event Sink", this.xmppClient, debugRecipient, false),
-							EventType.Informational, (Event) =>
-							{
-								if (this.xmppClient is null || this.xmppClient.State != XmppState.Connected)
-									return false;
-
-								return string.IsNullOrEmpty(Event.StackTrace) || !Event.StackTrace.Contains("XmppEventSink");
-							});
-
-						Log.Register(this.debugEventSink);
-#endif
-#if DEBUG_DB_REMOTE
-						if (!Ledger.HasProvider)
-						{
-							XmlFileLedger XmlFileLedger = new(new RemoteLedgerWriter());
-							Ledger.Register(XmlFileLedger);
-
-							await XmlFileLedger.Start();
-
-							Ledger.StartListeningToDatabaseEvents();
-						}
-#endif
-#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
-					}
-#endif
-					this.xmppClient.DefaultRetryTimeout = 30000;
-					this.xmppClient.DefaultNrRetries = 0;
-					this.xmppClient.RequestRosterOnStartup = false;
-#if DEBUG
-					this.xmppClient.TrustServer = IsIpAddress;
-#else
-					this.xmppClient.TrustServer = false;
-#endif
-					this.xmppClient.AllowCramMD5 = false;
-					this.xmppClient.AllowDigestMD5 = false;
-					this.xmppClient.AllowPlain = false;
-					this.xmppClient.AllowEncryption = true;
-					this.xmppClient.AllowScramSHA1 = true;
-					this.xmppClient.AllowScramSHA256 = true;
-					this.xmppClient.AllowQuickLogin = true;
-
-					this.xmppClient.RequestRosterOnStartup = true;
-					this.xmppClient.OnStateChanged += this.XmppClient_StateChanged;
-					this.xmppClient.OnConnectionError += this.XmppClient_ConnectionError;
-					this.xmppClient.OnError += this.XmppClient_Error;
-					this.xmppClient.OnChatMessage += this.XmppClient_OnChatMessage;
-					this.xmppClient.OnNormalMessage += this.XmppClient_OnNormalMessage;
-					this.xmppClient.OnPresenceSubscribe += this.XmppClient_OnPresenceSubscribe;
-					this.xmppClient.OnPresenceUnsubscribed += this.XmppClient_OnPresenceUnsubscribed;
-					this.xmppClient.OnRosterItemAdded += this.XmppClient_OnRosterItemAdded;
-					this.xmppClient.OnRosterItemUpdated += this.XmppClient_OnRosterItemUpdated;
-					this.xmppClient.OnRosterItemRemoved += this.XmppClient_OnRosterItemRemoved;
-					this.xmppClient.OnPresence += this.XmppClient_OnPresence;
-
-					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
-
-					this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
-						new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
-						EventType.Error);
-
-					// Add extensions before connecting
-
-					this.abuseClient = new AbuseClient(this.xmppClient);
-
-					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
-					{
-						this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
-						this.RegisterContractsEventHandlers();
-
-						await this.contractsClient.LoadKeys(false);
-					}
-
-					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
-						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
-
-					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
-						this.thingRegistryClient = new ThingRegistryClient(this.xmppClient, ServiceRef.TagProfile.RegistryJid);
-
-					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.ProvisioningJid))
-					{
-						this.provisioningClient = new ProvisioningClient(this.xmppClient, ServiceRef.TagProfile.ProvisioningJid)
-						{
-							ManagePresenceSubscriptionRequests = false
-						};
-
-						this.provisioningClient.CanControlQuestion += this.ProvisioningClient_CanControlQuestion;
-						this.provisioningClient.CanReadQuestion += this.ProvisioningClient_CanReadQuestion;
-						this.provisioningClient.IsFriendQuestion += this.ProvisioningClient_IsFriendQuestion;
-					}
-
-					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.EDalerJid))
-					{
-						this.eDalerClient = new EDalerClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.EDalerJid);
-						this.RegisterEDalerEventHandlers(this.eDalerClient);
-					}
-
-					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
-					{
-						this.neuroFeaturesClient = new NeuroFeaturesClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.NeuroFeaturesJid);
-						this.RegisterNeuroFeatureEventHandlers(this.neuroFeaturesClient);
-					}
-
-					if (ServiceRef.TagProfile.SupportsPushNotification)
-						this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
-
-					this.sensorClient = new SensorClient(this.xmppClient);
-					this.controlClient = new ControlClient(this.xmppClient);
-					this.concentratorClient = new ConcentratorClient(this.xmppClient);
-
-					if (string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
-						this.pepClient = new PepClient(this.xmppClient);
-					else
-						this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
-					this.ReregisterPepEventHandlers(this.pepClient);
-
-					this.httpxClient = new HttpxClient(this.xmppClient, 8192);
-					Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
-
-					//if(this.pubSubClient is null && !string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
-					//	this.pubSubClient = new PubSubClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
-
-					this.IsLoggedOut = false;
-					await this.xmppClient.Connect(IsIpAddress ? string.Empty : this.domainName);
-					this.RecreateReconnectTimer();
-
-					// Await connected state during registration or user initiated log in, but not otherwise.
-					if (!ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-					{
-						if (!await this.WaitForConnectedState(Constants.Timeouts.XmppConnect))
-						{
-							ServiceRef.LogService.LogWarning("Connection to XMPP server failed.",
-								new KeyValuePair<string, object?>("Domain", this.domainName ?? string.Empty),
-								new KeyValuePair<string, object?>("Account", this.accountName ?? string.Empty),
-								new KeyValuePair<string, object?>("Timeout", Constants.Timeouts.XmppConnect));
-						}
+						ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey ?? string.Empty,
+							ServiceRef.TagProfile.ApiSecret ?? string.Empty);
 					}
 				}
+
+				this.activationCancellation?.Token.ThrowIfCancellationRequested();
+				this.xmppLastStateChange = DateTime.Now;
+				this.xmppConnected = false;
+
+				Assembly AppAssembly = App.Current!.GetType().Assembly;
+
+				if (string.IsNullOrEmpty(this.passwordHashMethod))
+				{
+					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash,
+						Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
+				}
+				else
+				{
+					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod,
+						Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
+				}
+#if DEBUG_XMPP_LOCAL
+				DebugSniffer LocalSniffer = new(BinaryPresentationMethod.Hexadecimal);
+				this.xmppClient.Add(LocalSniffer);
+#endif
+
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
+				if (!string.IsNullOrEmpty(debugRecipient))
+				{
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
+					this.debugSniffer = new RemoteSniffer(debugRecipient, DateTime.MaxValue, this.xmppClient, this.xmppClient,
+						ConcentratorServer.NamespaceConcentratorCurrent);
+					this.debugSniffer.DisableMask();
+#endif
+#if DEBUG_XMPP_REMOTE
+					this.xmppClient.Add(this.debugSniffer);
+#endif
+#if DEBUG_LOG_REMOTE
+					if (this.debugEventSink is not null)
+					{
+						Log.Unregister(this.debugEventSink);
+						this.debugEventSink?.Dispose();
+						this.debugEventSink = null;
+					}
+
+					this.debugEventSink = new EventFilter("Debug Event Filter",
+						new XmppEventSink("Debug Event Sink", this.xmppClient, debugRecipient, false),
+						EventType.Informational, (Event) =>
+						{
+							if (this.xmppClient is null || this.xmppClient.State != XmppState.Connected)
+								return false;
+
+							return string.IsNullOrEmpty(Event.StackTrace) || !Event.StackTrace.Contains("XmppEventSink");
+						});
+
+					Log.Register(this.debugEventSink);
+#endif
+#if DEBUG_DB_REMOTE
+					if (!Ledger.HasProvider)
+					{
+						XmlFileLedger XmlFileLedger = new(new RemoteLedgerWriter());
+						Ledger.Register(XmlFileLedger);
+
+						await XmlFileLedger.Start();
+
+						Ledger.StartListeningToDatabaseEvents();
+					}
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
+				}
+#endif
+				this.xmppClient.DefaultRetryTimeout = 30000;
+				this.xmppClient.DefaultNrRetries = 0;
+				this.xmppClient.RequestRosterOnStartup = false;
+#if DEBUG
+				this.xmppClient.TrustServer = IsIpAddress;
+#else
+				this.xmppClient.TrustServer = false;
+#endif
+				this.xmppClient.AllowCramMD5 = false;
+				this.xmppClient.AllowDigestMD5 = false;
+				this.xmppClient.AllowPlain = false;
+				this.xmppClient.AllowEncryption = true;
+				this.xmppClient.AllowScramSHA1 = true;
+				this.xmppClient.AllowScramSHA256 = true;
+				this.xmppClient.AllowQuickLogin = true;
+
+				this.xmppClient.RequestRosterOnStartup = true;
+				this.xmppClient.OnStateChanged += this.XmppClient_StateChanged;
+				this.xmppClient.OnConnectionError += this.XmppClient_ConnectionError;
+				this.xmppClient.OnError += this.XmppClient_Error;
+				this.xmppClient.OnChatMessage += this.XmppClient_OnChatMessage;
+				this.xmppClient.OnNormalMessage += this.XmppClient_OnNormalMessage;
+				this.xmppClient.OnPresenceSubscribe += this.XmppClient_OnPresenceSubscribe;
+				this.xmppClient.OnPresenceUnsubscribed += this.XmppClient_OnPresenceUnsubscribed;
+				this.xmppClient.OnRosterItemAdded += this.XmppClient_OnRosterItemAdded;
+				this.xmppClient.OnRosterItemUpdated += this.XmppClient_OnRosterItemUpdated;
+				this.xmppClient.OnRosterItemRemoved += this.XmppClient_OnRosterItemRemoved;
+				this.xmppClient.OnPresence += this.XmppClient_OnPresence;
+
+				this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
+
+				this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
+					new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
+					EventType.Error);
+
+				// Add extensions before connecting
+
+				this.abuseClient = new AbuseClient(this.xmppClient);
+
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
+				{
+					this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
+					this.RegisterContractsEventHandlers();
+
+					await this.contractsClient.LoadKeys(false);
+				}
+
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
+					this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
+
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
+					this.thingRegistryClient = new ThingRegistryClient(this.xmppClient, ServiceRef.TagProfile.RegistryJid);
+
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.ProvisioningJid))
+				{
+					this.provisioningClient = new ProvisioningClient(this.xmppClient, ServiceRef.TagProfile.ProvisioningJid)
+					{
+						ManagePresenceSubscriptionRequests = false
+					};
+
+					this.provisioningClient.CanControlQuestion += this.ProvisioningClient_CanControlQuestion;
+					this.provisioningClient.CanReadQuestion += this.ProvisioningClient_CanReadQuestion;
+					this.provisioningClient.IsFriendQuestion += this.ProvisioningClient_IsFriendQuestion;
+				}
+
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.EDalerJid))
+				{
+					this.eDalerClient = new EDalerClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.EDalerJid);
+					this.RegisterEDalerEventHandlers(this.eDalerClient);
+				}
+
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
+				{
+					this.neuroFeaturesClient = new NeuroFeaturesClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.NeuroFeaturesJid);
+					this.RegisterNeuroFeatureEventHandlers(this.neuroFeaturesClient);
+				}
+
+				if (ServiceRef.TagProfile.SupportsPushNotification)
+					this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
+
+				this.sensorClient = new SensorClient(this.xmppClient);
+				this.controlClient = new ControlClient(this.xmppClient);
+				this.concentratorClient = new ConcentratorClient(this.xmppClient);
+
+				if (string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+					this.pepClient = new PepClient(this.xmppClient);
+				else
+					this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
+				this.ReregisterPepEventHandlers(this.pepClient);
+
+				this.httpxClient = new HttpxClient(this.xmppClient, 8192);
+				Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
+
+				//if(this.pubSubClient is null && !string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+				//	this.pubSubClient = new PubSubClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
+
+				this.IsLoggedOut = false;
+				this.connectionTask = this.ConnectClientAsync(this.xmppClient, IsIpAddress, WaitForConnection);
+				SafeFireAndForget(this.connectionTask);
+				if (WaitForConnection)
+					await this.connectionTask;
 			}
-			finally
-			{
-				this.isCreatingClient = false;
-			}
+		}
+
+		private async Task ConnectClientAsync(XmppClient Client, bool IsIpAddress, bool WaitForConnection)
+		{
+			await Client.Connect(IsIpAddress ? string.Empty : this.domainName);
+			if (this.activationCancellation?.IsCancellationRequested != false)
+				return;
+			this.RecreateReconnectTimer();
+			if (WaitForConnection && !ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
+				await this.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 		}
 
 #if DEBUG_DB_REMOTE
@@ -489,53 +484,60 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task DestroyXmppClient()
 		{
-			this.reconnectTimer?.Dispose();
+			List<Exception> Errors = new List<Exception>();
+			try { this.updatePasswordTimer?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
+			this.updatePasswordTimer = null;
+			try { this.reconnectTimer?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.reconnectTimer = null;
 
-			await this.OnConnectionStateChanged(XmppState.Offline);
+			try { await this.OnConnectionStateChanged(XmppState.Offline); } catch (Exception Ex) { Errors.Add(Ex); }
 
 			if (this.xmppFilteredEventSink is not null)
 			{
-				ServiceRef.LogService.RemoveListener(this.xmppFilteredEventSink);
-				await this.xmppFilteredEventSink.SecondarySink.DisposeAsync();
-				await this.xmppFilteredEventSink.DisposeAsync();
+				try { ServiceRef.LogService.RemoveListener(this.xmppFilteredEventSink); } catch (Exception Ex) { Errors.Add(Ex); }
+				try { await this.xmppFilteredEventSink.SecondarySink.DisposeAsync(); } catch (Exception Ex) { Errors.Add(Ex); }
+				try { await this.xmppFilteredEventSink.DisposeAsync(); } catch (Exception Ex) { Errors.Add(Ex); }
 				this.xmppFilteredEventSink = null;
 			}
 
-			this.contractsClient?.Dispose();
+			try { this.contractsClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.contractsClient = null;
 
-			this.fileUploadClient?.Dispose();
+			try { this.fileUploadClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.fileUploadClient = null;
 
-			this.thingRegistryClient?.Dispose();
+			try { this.thingRegistryClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.thingRegistryClient = null;
 
-			this.provisioningClient?.Dispose();
+			try { this.provisioningClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.provisioningClient = null;
 
-			this.eDalerClient?.Dispose();
+			try { this.eDalerClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.eDalerClient = null;
 
-			this.neuroFeaturesClient?.Dispose();
+			try { this.neuroFeaturesClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.neuroFeaturesClient = null;
 
-			this.pushNotificationClient?.Dispose();
+			try { this.pushNotificationClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.pushNotificationClient = null;
 
-			this.sensorClient?.Dispose();
+			try { this.sensorClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.sensorClient = null;
 
-			this.controlClient?.Dispose();
+			try { this.controlClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.controlClient = null;
 
-			this.concentratorClient?.Dispose();
+			try { this.concentratorClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.concentratorClient = null;
 
-			this.pepClient?.Dispose();
+			try { this.pepClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.pepClient = null;
 
-			this.abuseClient?.Dispose();
+			try { this.httpxClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
+			this.httpxClient = null;
+			try { this.pubSubClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
+			this.pubSubClient = null;
+			try { this.abuseClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.abuseClient = null;
 
 #if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
@@ -544,16 +546,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 #if DEBUG_LOG_REMOTE
 			if (this.debugEventSink is not null)
 			{
-				Log.Unregister(this.debugEventSink);
-				this.debugEventSink?.Dispose();
+				try { Log.Unregister(this.debugEventSink); } catch (Exception Ex) { Errors.Add(Ex); }
+				try { this.debugEventSink?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 				this.debugEventSink = null;
 			}
 #endif
 			if (this.xmppClient is not null)
 			{
-				await this.xmppClient.DisposeAsync();
+				try { await this.xmppClient.DisposeAsync(); } catch (Exception Ex) { Errors.Add(Ex); }
 				this.xmppClient = null;
 			}
+			if (Errors.Count > 0)
+				throw new AggregateException("XMPP cleanup failed.", Errors);
 		}
 
 		private bool XmppStale()
@@ -624,7 +628,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private void RecreateReconnectTimer()
 		{
 			this.reconnectTimer?.Dispose();
-			this.reconnectTimer = new Timer(this.ReconnectTimer_Tick, null, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
+			if (this.activationCancellation?.IsCancellationRequested != false)
+				return;
+			this.reconnectTimer = new Timer(this.ReconnectTimer_Tick, this.activationCancellation.Token, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
 		}
 
 		/// <summary>
@@ -639,94 +645,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// <see cref="IDisposableAsync.DisposeAsync"/>
 		/// </summary>
-		public async Task DisposeAsync()
-		{
-			this.reconnectTimer?.Dispose();
-			this.reconnectTimer = null;
+		public Task DisposeAsync() => this.UnloadAsync(true);
 
-			if (this.xmppFilteredEventSink is not null)
-			{
-				ServiceRef.LogService.RemoveListener(this.xmppFilteredEventSink);
-				await this.xmppFilteredEventSink.SecondarySink.DisposeAsync();
-				await this.xmppFilteredEventSink.DisposeAsync();
-				this.xmppFilteredEventSink = null;
-			}
-
-			this.contractsClient?.Dispose();
-			this.contractsClient = null;
-
-			this.fileUploadClient?.Dispose();
-			this.fileUploadClient = null;
-
-			this.thingRegistryClient?.Dispose();
-			this.thingRegistryClient = null;
-
-			this.provisioningClient?.Dispose();
-			this.provisioningClient = null;
-
-			this.eDalerClient?.Dispose();
-			this.eDalerClient = null;
-
-			this.neuroFeaturesClient?.Dispose();
-			this.neuroFeaturesClient = null;
-
-			this.pushNotificationClient?.Dispose();
-			this.pushNotificationClient = null;
-
-			this.sensorClient?.Dispose();
-			this.sensorClient = null;
-
-			this.controlClient?.Dispose();
-			this.controlClient = null;
-
-			this.concentratorClient?.Dispose();
-			this.concentratorClient = null;
-
-			this.pepClient?.Dispose();
-			this.pepClient = null;
-
-			this.abuseClient?.Dispose();
-			this.abuseClient = null;
-
-			if (this.xmppClient is not null)
-			{
-				await this.xmppClient.DisposeAsync();
-				this.xmppClient = null;
-			}
-
-			/*
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
-			*/
-		}
-
-		/*
-		/// <summary>
-		/// <see cref="IDisposable.Dispose"/>
-		/// </summary>
-		protected virtual void Dispose(bool disposing)
-		{
-			if (this.isDisposed)
-			{
-				return;
-			}
-
-			if (disposing)
-			{
-				this.abuseClient.Dispose();
-				this.contractsClient.Dispose();
-				this.fileUploadClient.Dispose();
-				this.httpxClient.Dispose();
-				this.reconnectTimer.Dispose();
-				this.sniffer.Dispose();
-				this.xmppClient.Dispose();
-				this.xmppFilteredEventSink.SecondarySink.Dispose();
-				this.xmppFilteredEventSink.Dispose();
-			}
-
-			this.isDisposed = true;
-		}
-		*/
 #endregion
 
 		#region Lifecycle
@@ -756,126 +676,86 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return i >= 0;
 		}
 
-		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
+		/// <inheritdoc/>
+		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			if (this.BeginLoad(IsResuming, CancellationToken))
-			{
-				try
-				{
-					ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
-					ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
-
-					_ = this.CreateClientAsync();
-
-					this.EndLoad(true);
-				}
-				catch (Exception Ex)
-				{
-					Ex = Log.UnnestException(Ex);
-					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-					this.EndLoad(false);
-				}
-			}
-			return Task.CompletedTask;
-		}
-
-		private async Task CreateClientAsync()
-		{
+			await this.clientSemaphore.WaitAsync(CancellationToken);
 			try
 			{
-				if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
-					await this.CreateXmppClient();
-
-				if ((this.xmppClient is not null) &&
-					this.xmppClient.State == XmppState.Connected &&
-					ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-				{
-					// Don't await this one, just fire and forget, to improve startup time.
-					_ = this.xmppClient.SetPresenceAsync(Availability.Online);
-				}
+				if (!this.BeginLoad(IsResuming, CancellationToken))
+					return;
+				this.activationCancellation = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken);
+				ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
+				ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
+				if (ServiceRef.TagProfile.ShouldCreateClient())
+					await this.CreateXmppClient(false);
+				CancellationToken.ThrowIfCancellationRequested();
+				this.EndLoad(true);
 			}
-			catch (Exception ex)
+			finally { this.clientSemaphore.Release(); }
+		}
+
+		/// <inheritdoc/>
+		public override Task Unload() => this.UnloadAsync(false);
+
+		/// <inheritdoc/>
+		public Task UnloadFast() => this.UnloadAsync(true);
+
+		private async Task UnloadAsync(bool Fast)
+		{
+			this.activationCancellation?.Cancel();
+			await this.clientSemaphore.WaitAsync();
+			try
 			{
-				ex = Log.UnnestException(ex);
-				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-			}
-		}
-
-		public override Task Unload()
-		{
-			return this.Unload(false);
-		}
-
-		public Task UnloadFast()
-		{
-			return this.Unload(true);
-		}
-
-		private async Task Unload(bool fast)
-		{
-			if (this.BeginUnload())
-			{
+				ServiceRef.TagProfile.StepChanged -= this.TagProfile_StepChanged;
+				ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
+				try { await this.connectionTask; }
+				catch (Exception) { } // Optional remote connection errors are observed at creation.
 				try
 				{
-					ServiceRef.TagProfile.StepChanged -= this.TagProfile_StepChanged;
-					ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
-
-					this.reconnectTimer?.Dispose();
-					this.reconnectTimer = null;
-
 					if (this.xmppClient is not null)
 					{
 						this.xmppClient.CheckConnection = false;
-
-						if (!fast)
+						if (!Fast && this.xmppClient.State == XmppState.Connected)
 						{
-							try
-							{
-								await Task.WhenAny(
-									this.xmppClient.SetPresenceAsync(Availability.Offline),
-									Task.Delay(1000)    // Wait at most 1000 ms.
-								);
-							}
-							catch (Exception)
-							{
-								// Ignore
-							}
+							Task Presence = this.xmppClient.SetPresenceAsync(Availability.Offline);
+							SafeFireAndForget(Presence);
+							await Task.WhenAny(Presence, Task.Delay(1000));
 						}
 					}
-
-					await this.DestroyXmppClient();
 				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				}
+				catch (Exception Ex) { Log.Exception(Ex); }
 
-				this.EndUnload();
+				await this.DestroyXmppClient();
+			}
+			finally
+			{
+				this.activationCancellation?.Dispose();
+				this.activationCancellation = null;
+				this.IsLoading = false;
+				try { this.EndUnload(); }
+				finally { this.clientSemaphore.Release(); }
 			}
 		}
 
 		private void TagProfile_StepChanged(object? Sender, EventArgs e)
 		{
-			if (!this.IsLoaded)
-				return;
-
-			Task ExecutionTask = Task.Run(async () =>
+			try
 			{
-				try
-				{
-					bool CreateXmppClient = ServiceRef.TagProfile.ShouldCreateClient();
-
-					if (CreateXmppClient && !this.XmppParametersCurrent())
-						await this.CreateXmppClient();
-					else if (!CreateXmppClient)
-						await this.DestroyXmppClient();
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			});
+				if (this.IsLoaded && this.activationCancellation is not null)
+					SafeFireAndForget(this.RefreshClientAsync(this.activationCancellation.Token));
+			}
+			catch (ObjectDisposedException) { } // Unload has closed this activation.
 		}
+
+		private Task RefreshClientAsync(CancellationToken CancellationToken) =>
+			this.RunClientCallbackAsync(CancellationToken, async () =>
+			{
+				if (ServiceRef.TagProfile.ShouldCreateClient())
+					await this.CreateXmppClient();
+				else
+					await this.DestroyXmppClient();
+			});
 
 		private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
@@ -1295,22 +1175,31 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
-		private void ReconnectTimer_Tick(object? _)
+		private void ReconnectTimer_Tick(object? State)
 		{
-			if (this.xmppClient is null)
-				return;
-
-			if (!ServiceRef.NetworkService.IsOnline)
-				return;
-
-			if (this.XmppStale())
-			{
-				this.xmppLastStateChange = DateTime.Now;
-
-				if (!this.xmppClient.Disposed)
-					SafeFireAndForget(this.xmppClient.Reconnect());
-			}
+			if (State is CancellationToken Token)
+				SafeFireAndForget(this.RunClientCallbackAsync(Token, async () =>
+				{
+					XmppClient? Client = this.xmppClient;
+					if (Client is not null && ServiceRef.NetworkService.IsOnline && this.XmppStale() && !Client.Disposed)
+					{
+						this.xmppLastStateChange = DateTime.Now;
+						await Client.Reconnect();
+					}
+				}));
 		}
+
+		private async Task RunClientCallbackAsync(CancellationToken Token, Func<Task> Callback)
+		{
+			await this.clientSemaphore.WaitAsync(Token);
+			try
+			{
+				Token.ThrowIfCancellationRequested();
+				await Callback();
+			}
+			finally { this.clientSemaphore.Release(); }
+		}
+
 		/// <summary>
 		/// Executes a task in a fire-and-forget manner, logging any exceptions.
 		/// </summary>
@@ -1388,21 +1277,22 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 
-		private async void UpdatePasswordTimer_Tick(object? _)
+		private void UpdatePasswordTimer_Tick(object? State)
 		{
-			if (this.xmppClient is null)
-				return;
-
-			if (!ServiceRef.NetworkService.IsOnline)
-				return;
-
-			await this.TryGenerateAndChangePassword();
+			if (State is CancellationToken Token)
+				SafeFireAndForget(this.RunClientCallbackAsync(Token, async () =>
+				{
+					if (this.xmppClient is not null && ServiceRef.NetworkService.IsOnline)
+						await this.TryGenerateAndChangePassword();
+				}));
 		}
 
 		private void RecreateUpdatePasswordTimer()
 		{
 			this.updatePasswordTimer?.Dispose();
-			this.updatePasswordTimer = new Timer(this.UpdatePasswordTimer_Tick, null, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
+			if (this.activationCancellation?.IsCancellationRequested != false)
+				return;
+			this.updatePasswordTimer = new Timer(this.UpdatePasswordTimer_Tick, this.activationCancellation.Token, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
 		}
 
 		#endregion

@@ -42,11 +42,12 @@ namespace NeuroAccessMaui.Services.Network
 		/// <inheritdoc/>
 		public override Task Unload()
 		{
-			if (this.BeginUnload())
+			if (this.IsLoading || this.BeginUnload())
 			{
 				if (DeviceInfo.Platform != DevicePlatform.Unknown && !DesignMode.IsDesignModeEnabled)
 					Connectivity.ConnectivityChanged -= this.Connectivity_ConnectivityChanged;
 
+				this.IsLoading = false;
 				this.EndUnload();
 			}
 

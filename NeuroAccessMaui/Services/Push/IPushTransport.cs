@@ -21,5 +21,9 @@ namespace NeuroAccessMaui.Services.Push
 		/// <param name="CancellationToken">Cancellation token.</param>
 		/// <returns>Task representing the asynchronous operation.</returns>
 		Task InitializeAsync(CancellationToken CancellationToken);
+
+		/// <summary>Unsubscribes the platform callbacks owned by this transport.</summary>
+		/// <returns>Completion of local callback cleanup.</returns>
+		Task UnloadAsync();
 	}
 }

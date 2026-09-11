@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		public virtual async Task OnInitializeAsync()
 		{
-			await App.ServicesReady;
+			await App.WaitForServicesAsync();
 			// Forward to ViewModel if it implements ILifeCycleView
 			if (BindingContext is ILifeCycleView vm)
 				await vm.OnInitializeAsync();
@@ -83,19 +83,20 @@ namespace NeuroAccessMaui.UI.Pages
 		{
 				try
 				{
-					await App.ServicesReady;
+					await App.WaitForServicesAsync();
 
 					if (BindingContext is BaseViewModel vm)
 					{
 						await vm.OnAppearingAsync();
-						if (await ServiceRef.SettingsService.WaitInitDone())
-							await vm.RestoreState();
+						await ServiceRef.SettingsService.WaitForInitializationAsync();
+						await vm.RestoreState();
 					}
 
 					// Events (optional)
 					if (OnBeforeAppearing is not null)
 						await OnBeforeAppearing(this, EventArgs.Empty);
 				}
+				catch (Exception Ex) when (App.IsLifecycleException(Ex)) { throw; }
 				catch (Exception ex)
 				{
 					ServiceRef.LogService.LogException(ex);
@@ -112,8 +113,8 @@ namespace NeuroAccessMaui.UI.Pages
 				{
 					if (BindingContext is BaseViewModel vm)
 					{
-						if (await ServiceRef.SettingsService.WaitInitDone())
-							await vm.SaveState();
+						await ServiceRef.SettingsService.WaitForInitializationAsync();
+						await vm.SaveState();
 
 						await vm.OnDisappearingAsync();
 					}

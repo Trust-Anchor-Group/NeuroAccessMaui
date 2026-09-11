@@ -10,6 +10,8 @@ namespace NeuroAccessMaui.Services
 	public class PlatformSpecific : IPlatformSpecific
 	{
 		private bool isDisposed;
+		private readonly SemaphoreSlim deviceIdSemaphore = new SemaphoreSlim(1, 1);
+		private string? deviceId;
 
 		/// <summary>
 		/// Windows implementation of platform-specific features.
@@ -48,33 +50,28 @@ namespace NeuroAccessMaui.Services
 		}
 
 		/// <inheritdoc/>
-		public string? GetDeviceId()
+		public string? GetDeviceId() => this.deviceId
+			?? throw new InvalidOperationException("The device identifier has not been initialized.");
+
+		/// <inheritdoc/>
+		public async Task InitializeDeviceIdAsync()
 		{
+			await this.deviceIdSemaphore.WaitAsync();
 			try
 			{
-				// Use SecureStorage if available (works on Windows). Persist generated GUID.
-				string? DeviceId = SecureStorage.GetAsync("DeviceIdentifier").Result;
-				if (!string.IsNullOrEmpty(DeviceId))
-					return DeviceId;
-
-				string NewId = Guid.NewGuid().ToString();
-				SecureStorage.SetAsync("DeviceIdentifier", NewId).Wait();
-				return NewId;
-			}
-			catch (Exception ex)
-			{
-				try
+				if (this.deviceId is not null)
+					return;
+				string? DeviceId = await SecureStorage.GetAsync("DeviceIdentifier");
+				if (string.IsNullOrEmpty(DeviceId))
 				{
-					App.SendAlertAsync("Unable to get or store device ID: " + ex.Message, "text/plain").Wait();
-					this.CloseApplication().Wait();
+					if (ServiceRef.StorageService.HasExistingData())
+						throw new InvalidOperationException("The device identifier is missing while local database files exist.");
+					DeviceId = Guid.NewGuid().ToString();
+					await SecureStorage.SetAsync("DeviceIdentifier", DeviceId);
 				}
-				catch (Exception)
-				{
-					Environment.Exit(0);
-				}
+				this.deviceId = DeviceId;
 			}
-
-			return null;
+			finally { this.deviceIdSemaphore.Release(); }
 		}
 
 		/// <inheritdoc/>

@@ -13,6 +13,7 @@ namespace NeuroAccessMaui.Services.Notification
 	public class NotificationService : LoadableService, INotificationService
 	{
 		private const int nrTypes = 4;
+		private readonly SemaphoreSlim initializationSemaphore = new SemaphoreSlim(1, 1);
 
 		private readonly SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>[] events;
 		private readonly LinkedList<ExpectedEvent> expected;
@@ -38,66 +39,41 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <param name="cancellationToken">Will stop the service load if the token is set.</param>
 		public override async Task Load(bool isResuming, CancellationToken cancellationToken)
 		{
-			SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>? ByCategory = null;
-			List<NotificationEvent>? Events = null;
-			string? PrevCategory = null;
-			int PrevType = -1;
-			int Type;
-
-			IEnumerable<NotificationEvent> LoadedEvents;
-
+			await this.initializationSemaphore.WaitAsync(cancellationToken);
 			try
 			{
-				LoadedEvents = await Database.Find<NotificationEvent>("Type", "Category");
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-
-				await Database.Clear("Notifications");
-				LoadedEvents = [];
-			}
-
-			foreach (NotificationEvent Event in LoadedEvents)
-			{
-				if (Event.Type is null || Event.Category is null)
-					continue;
-
-				Type = (int)Event.Type;
-				if (Type < 0 || Type >= nrTypes)
-					continue;
-
-				if (CaseInsensitiveString.IsNullOrEmpty(Event.Category))
+				if (this.IsLoaded)
+					return;
+				SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>[] Projection =
+					new SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>[nrTypes];
+				for (int i = 0; i < nrTypes; i++)
+					Projection[i] = new SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>();
+				IEnumerable<NotificationEvent> LoadedEvents = await Database.Find<NotificationEvent>("Type", "Category");
+				bool SkippedRecords = false;
+				foreach (NotificationEvent Event in LoadedEvents)
 				{
-					Log.Debug("Notification event of type " + Event.GetType().FullName + " lacked Category.");
-					await Database.Delete(Event);
-					continue;
-				}
-
-				lock (this.events)
-				{
-					if (ByCategory is null || Type != PrevType)
+					cancellationToken.ThrowIfCancellationRequested();
+					if (Event.Type is null || CaseInsensitiveString.IsNullOrEmpty(Event.Category) ||
+						(int)Event.Type < 0 || (int)Event.Type >= nrTypes)
 					{
-						ByCategory = this.events[Type];
-						PrevType = Type;
+						SkippedRecords = true;
+						continue;
 					}
-
-					if (Events is null || Event.Category != PrevCategory)
-					{
-						if (!ByCategory.TryGetValue(Event.Category, out Events))
-						{
-							Events = [];
-							ByCategory[Event.Category] = Events;
-						}
-
-						PrevCategory = Event.Category;
-					}
-
+					SortedDictionary<CaseInsensitiveString, List<NotificationEvent>> ByCategory = Projection[(int)Event.Type];
+					if (!ByCategory.TryGetValue(Event.Category, out List<NotificationEvent>? Events))
+						ByCategory[Event.Category] = Events = new List<NotificationEvent>();
 					Events.Add(Event);
 				}
+				if (SkippedRecords)
+					Log.Warning("Unsupported notification records were retained and excluded from display.");
+				lock (this.events)
+				{
+					for (int i = 0; i < nrTypes; i++)
+						this.events[i] = Projection[i];
+					this.IsLoaded = true;
+				}
 			}
-
-			await base.Load(isResuming, cancellationToken);
+			finally { this.initializationSemaphore.Release(); }
 		}
 
 		/// <summary>

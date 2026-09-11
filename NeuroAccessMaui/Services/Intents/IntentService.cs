@@ -44,6 +44,7 @@ namespace NeuroAccessMaui.Services.Intents
 			{
 				this.intentQueue.Enqueue(intent);
 			}
+			catch (Exception Ex) when (App.IsLifecycleException(Ex)) { }
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
@@ -64,6 +65,7 @@ namespace NeuroAccessMaui.Services.Intents
 					await this.ProcessIntentAsync(Intent);
 				}
 			}
+			catch (Exception Ex) when (App.IsLifecycleException(Ex)) { }
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
@@ -85,15 +87,7 @@ namespace NeuroAccessMaui.Services.Intents
 						if (!string.IsNullOrEmpty(intent.Data))
 						{
 							// Process a url.
-							if (App.Current is not null)
-							{
-#if ANDROID
-								if (!await App.Current.InitCompleted)
-									return;
-#else
-								await App.Current.InitCompleted;
-#endif
-							}
+							await App.WaitForServicesAsync();
 							App.OpenUrlSync(intent.Data);
 						}
 						break;
@@ -102,7 +96,8 @@ namespace NeuroAccessMaui.Services.Intents
 						if (intent.Payload is NfcTag NfcTag)
 						{
 							// Resolve your shared NFC service and pass the NFC tag.
-							INfcService NfcService = App.Instantiate<INfcService>();
+							INfcService NfcService = ServiceRef.NfcService;
+							await App.WaitForServicesAsync();
 							await NfcService.TagDetected(NfcTag);
 						}
 						break;
@@ -112,6 +107,7 @@ namespace NeuroAccessMaui.Services.Intents
 						break;
 				}
 			}
+			catch (Exception Ex) when (App.IsLifecycleException(Ex)) { }
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);

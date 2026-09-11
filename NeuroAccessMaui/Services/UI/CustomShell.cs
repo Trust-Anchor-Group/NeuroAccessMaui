@@ -105,18 +105,14 @@ namespace NeuroAccessMaui.Services.UI
             this.Padding = 0;
             this.SetDynamicResource(BackgroundColorProperty, "SurfaceBackgroundWL");
             
-            LoadingPage loadingPageInstance = ServiceHelper.GetService<LoadingPage>();
+            LoadingPage loadingPageInstance = loadingPage;
             this.contentHostA.Content = loadingPageInstance;
             this.contentHostB.Content = null;
             this.currentScreen = loadingPageInstance;
 	            Thickness initialSafeArea = this.ApplyInsetsToHost(this.contentHostA, loadingPageInstance, false, false);
 	            this.UpdateOverlayInsets(initialSafeArea, false);
 
-            this.Dispatcher.Dispatch(async () =>
-            {
-                await loadingPage.OnInitializeAsync();
-                await loadingPage.OnAppearingAsync();
-            });
+            this.Dispatcher.Dispatch(async () => await this.InitializeLoadingPageAsync());
 
 #if !WINDOWS
 			AppTheme CurrentTheme = Microsoft.Maui.Controls.Application.Current?.RequestedTheme ?? AppTheme.Light;
@@ -134,6 +130,31 @@ namespace NeuroAccessMaui.Services.UI
 			}
 #endif
 			this.SizeChanged += this.OnShellSizeChanged;
+        }
+
+        private Task? loadingTask;
+
+        /// <summary>Starts or rejoins loading-page work after a successful foreground activation.</summary>
+        /// <returns>The observed loading-page operation.</returns>
+        internal Task InitializeLoadingPageAsync()
+        {
+            if (this.currentScreen is not LoadingPage Page)
+                return Task.CompletedTask;
+            if (this.loadingTask?.IsCompleted != false)
+                this.loadingTask = this.InitializeLoadingPageAsync(Page);
+            return this.loadingTask;
+        }
+
+        private async Task InitializeLoadingPageAsync(LoadingPage Page)
+        {
+            try
+            {
+                await App.WaitForServicesAsync();
+                await Page.OnInitializeAsync();
+                await Page.OnAppearingAsync();
+            }
+            catch (Exception Ex) when (App.IsLifecycleException(Ex)) { }
+            catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
         }
 
         private void OnPopupBackgroundTapped(object? sender, EventArgs e)

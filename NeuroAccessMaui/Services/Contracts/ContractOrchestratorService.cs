@@ -41,6 +41,7 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 		}
 
+		/// <inheritdoc/>
 		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
 			if (this.BeginLoad(IsResuming, CancellationToken))
@@ -60,9 +61,10 @@ namespace NeuroAccessMaui.Services.Contracts
 			return Task.CompletedTask;
 		}
 
+		/// <inheritdoc/>
 		public override Task Unload()
 		{
-			if (this.BeginUnload())
+			if (this.IsLoading || this.BeginUnload())
 			{
 				ServiceRef.XmppService.ConnectionStateChanged -= this.Contracts_ConnectionStateChanged;
 				ServiceRef.XmppService.PetitionForPeerReviewIdReceived -= this.Contracts_PetitionForPeerReviewIdReceived;
@@ -74,6 +76,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				ServiceRef.XmppService.SignaturePetitionResponseReceived -= this.Contracts_SignaturePetitionResponseReceived;
 				ServiceRef.XmppService.ContractProposalReceived -= this.Contracts_ContractProposalRecieved;
 
+				this.IsLoading = false;
 				this.EndUnload();
 			}
 

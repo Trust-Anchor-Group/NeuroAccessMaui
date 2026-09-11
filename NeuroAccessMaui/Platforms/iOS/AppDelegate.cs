@@ -72,7 +72,7 @@ namespace NeuroAccessMaui
 				};
 
 				// Retrieve the shared intent service and queue the intent.
-				IIntentService IntentService = App.Instantiate<IIntentService>();
+				IIntentService IntentService = ServiceRef.IntentService;
 				if (ServiceRef.TagProfile.Step == RegistrationStep.GetStarted)
 					IntentService.ProcessIntentAsync(AppIntent).ConfigureAwait(false);
 				else

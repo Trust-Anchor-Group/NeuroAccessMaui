@@ -21,13 +21,13 @@ namespace NeuroAccessMaui.Services
 		/// Initializes the device identifier before cryptographic services are resolved.
 		/// </summary>
 		/// <returns>A task that completes when the identifier is ready.</returns>
-		Task InitializeDeviceIdAsync() => Task.CompletedTask;
+		Task InitializeDeviceIdAsync();
 
 		/// <summary>
 		/// Gets the ID of the device after platform initialization.
 		/// </summary>
 		/// <returns>The platform's device identifier.</returns>
-		/// <exception cref="InvalidOperationException">Android identifier initialization has not succeeded.</exception>
+		/// <exception cref="InvalidOperationException">Identifier initialization has not succeeded.</exception>
 		string? GetDeviceId();
 
 		/// <summary>

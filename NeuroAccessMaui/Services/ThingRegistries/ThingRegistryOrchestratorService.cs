@@ -18,6 +18,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 		{
 		}
 
+		/// <inheritdoc/>
 		public override Task Load(bool isResuming, CancellationToken cancellationToken)
 		{
 			if (this.BeginLoad(isResuming, cancellationToken))
@@ -26,10 +27,14 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 			return Task.CompletedTask;
 		}
 
+		/// <inheritdoc/>
 		public override Task Unload()
 		{
-			if (this.BeginUnload())
+			if (this.IsLoading || this.BeginUnload())
+			{
+				this.IsLoading = false;
 				this.EndUnload();
+			}
 
 			return Task.CompletedTask;
 		}

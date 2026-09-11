@@ -247,7 +247,7 @@ namespace NeuroAccessMaui.UI.Pages
 
 		public virtual async Task OnInitializeAsync()
 		{
-			await App.ServicesReady;
+			await App.WaitForServicesAsync();
 
 			foreach (BaseViewModel ChildViewModel in this.childViewModels)
 				await ChildViewModel.OnInitializeAsync();
@@ -261,7 +261,7 @@ namespace NeuroAccessMaui.UI.Pages
 
 		public virtual async Task OnAppearingAsync()
 		{
-			await App.ServicesReady;
+			await App.WaitForServicesAsync();
 
 			foreach (BaseViewModel ChildViewModel in this.childViewModels)
 				await ChildViewModel.OnAppearingAsync();

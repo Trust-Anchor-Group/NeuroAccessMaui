@@ -28,80 +28,40 @@ namespace NeuroAccessMaui.Services.Crypto
 		public CryptoService()
 		{
 			this.basePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+			string? DeviceId = ServiceRef.PlatformSpecific.GetDeviceId();
+			if (string.IsNullOrEmpty(DeviceId))
+				throw new InvalidOperationException("The device identifier has not been initialized.");
+			this.deviceId = DeviceId + "_";
 			this.rnd = RandomNumberGenerator.Create();
-
-			try
-			{
-				this.deviceId = ServiceRef.PlatformSpecific.GetDeviceId() + "_";
-			}
-			catch (Exception ex) when (!OperatingSystem.IsAndroid())
-			{
-				ServiceRef.LogService.LogException(ex);
-				this.deviceId = "UNKNOWN_";
-			}
 		}
 
-		/// <summary>
-		/// Returns a cryptographic authorization key for the given filename.
-		/// </summary>
-		/// <param name="fileName">The filename to get a key for.</param>
-		/// <returns>A cryptographic key.</returns>
-		public async Task<KeyValuePair<byte[], byte[]>> GetCustomKey(string fileName)
-		{
-			byte[] key;
-			byte[] iv;
-			string? s;
-			int i;
+        /// <inheritdoc />
+        public Task<KeyValuePair<byte[], byte[]>> GetCustomKey(string FileName) => this.GetCustomKeyAsync(FileName, true);
 
-			string FileNameHash = this.deviceId + Path.GetRelativePath(this.basePath, fileName);
-
-			try
-			{
-				s = await SecureStorage.GetAsync(FileNameHash);
-			}
-			catch (TypeInitializationException ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				// No secure storage available.
-
-				key = Hashes.ComputeSHA256Hash(Encoding.UTF8.GetBytes(fileName + ".Key"));
-				iv = Hashes.ComputeSHA256Hash(Encoding.UTF8.GetBytes(fileName + ".IV"));
-				Array.Resize<byte>(ref iv, 16);
-
-				return new KeyValuePair<byte[], byte[]>(key, iv);
-			}
-
-			if (!string.IsNullOrWhiteSpace(s) && (i = s.IndexOf(',')) > 0)
-			{
-				key = Hashes.StringToBinary(s[..i]);
-				iv = Hashes.StringToBinary(s[(i + 1)..]);
-			}
-			else
-			{
-				key = new byte[32];
-				iv = new byte[16];
-
-				lock (this.rnd)
-				{
-					this.rnd.GetBytes(key);
-					this.rnd.GetBytes(iv);
-				}
-
-				s = Hashes.BinaryToString(key) + "," + Hashes.BinaryToString(iv);
-
-				try
-				{
-					await SecureStorage.SetAsync(FileNameHash, s);
-				}
-				catch(Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-					await ServiceRef.UiService.DisplayException(ex);
-				}
-			}
-
-			return new KeyValuePair<byte[], byte[]>(key, iv);
-		}
+        /// <inheritdoc />
+        public async Task<KeyValuePair<byte[], byte[]>> GetCustomKeyAsync(string FileName, bool AllowCreation)
+        {
+            string KeyName = this.deviceId + Path.GetRelativePath(this.basePath, FileName);
+            string? Stored = await SecureStorage.GetAsync(KeyName);
+            if (Stored is not null)
+            {
+                string[] Parts = Stored.Split(',');
+                if (Parts.Length != 2)
+                    throw new CryptographicException("Invalid persisted encryption material.");
+                byte[] Key = Hashes.StringToBinary(Parts[0]);
+                byte[] IV = Hashes.StringToBinary(Parts[1]);
+                if (Key.Length != 32 || IV.Length != 16)
+                    throw new CryptographicException("Invalid persisted encryption material.");
+                return new KeyValuePair<byte[], byte[]>(Key, IV);
+            }
+            if (!AllowCreation)
+                throw new CryptographicException("Encryption material for existing data is missing.");
+            byte[] NewKey = this.GetBytes(32);
+            byte[] NewIV = this.GetBytes(16);
+            await SecureStorage.SetAsync(KeyName, Hashes.BinaryToString(NewKey) + "," + Hashes.BinaryToString(NewIV));
+            return new KeyValuePair<byte[], byte[]>(NewKey, NewIV);
+        }
 
 		/// <summary>
 		/// Generates a random password to use.
@@ -178,6 +138,7 @@ namespace NeuroAccessMaui.Services.Crypto
 		{
 			this.jwtFactory?.Dispose();
 			this.jwtFactory = null;
+			this.rnd.Dispose();
 		}
 	}
 }
