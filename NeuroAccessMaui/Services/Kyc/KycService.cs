@@ -836,9 +836,15 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (Reference is null || Identity is null)
 				return;
 
+			KycReference CallerReference = Reference;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				KycReference? PersistedReference = await LoadSubmissionReferenceAsync(CallerReference).ConfigureAwait(false);
+				if (PersistedReference is null || !PersistedReference.IsPreviewIdentity(Identity.Id))
+					return;
+				Reference = PersistedReference;
+
 				if (!string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
 					return;
 
@@ -851,6 +857,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
+				CopySubmissionState(Reference, CallerReference);
 			}
 		}
 
@@ -864,10 +871,22 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (Reference is null || Identity is null)
 				return;
 
+			KycReference CallerReference = Reference;
 			bool StateTransition;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				KycReference? PersistedReference = await LoadSubmissionReferenceAsync(CallerReference).ConfigureAwait(false);
+				if (PersistedReference is null)
+					return;
+				Reference = PersistedReference;
+				if (!string.IsNullOrWhiteSpace(Reference.FinalIdentityId) &&
+					(!Reference.IsFinalIdentity(Identity.Id) ||
+						(Identity.State == IdentityState.Created && Reference.FinalIdentityState is not (null or IdentityState.Created))))
+				{
+					return;
+				}
+
 				StateTransition = Reference.FinalIdentityState != Identity.State ||
 					!string.Equals(Reference.FinalIdentityId, Identity.Id, StringComparison.OrdinalIgnoreCase);
 				Reference.ReservedPreviewIdentityId = null;
@@ -888,6 +907,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
+				CopySubmissionState(Reference, CallerReference);
 			}
 
 			if (StateTransition)
@@ -903,14 +923,20 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			if (Reference is null || Identity is null)
 				return;
-			if (!Reference.MatchesIdentityId(Identity.Id) && !Reference.MatchesFinalIdentity(Identity))
-				return;
-
+			KycReference CallerReference = Reference;
 			bool StateTransition;
 			bool AllowApproval;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				KycReference? PersistedReference = await LoadSubmissionReferenceAsync(CallerReference).ConfigureAwait(false);
+				if (PersistedReference is null ||
+					(!PersistedReference.MatchesIdentityId(Identity.Id) && !PersistedReference.MatchesFinalIdentity(Identity)))
+				{
+					return;
+				}
+				Reference = PersistedReference;
+
 				bool WasReservedPreview = Reference.IsReservedPreviewIdentity(Identity.Id) && !Reference.IsPreviewIdentity(Identity.Id);
 				bool WasPreview = Reference.IsPreviewIdentity(Identity.Id);
 				IdentityState? PreviousState = WasReservedPreview
@@ -918,10 +944,16 @@ namespace NeuroAccessMaui.Services.Kyc
 					: WasPreview
 						? Reference.PreviewIdentityState
 						: Reference.FinalIdentityState ?? Reference.CreatedIdentityState;
+				if (Identity.State == IdentityState.Created && PreviousState is not (null or IdentityState.Created))
+					return;
+
 				StateTransition = !WasReservedPreview && PreviousState != Identity.State;
 				AllowApproval = !WasPreview;
-				Reference.CreatedIdentityId = Identity.Id;
-				Reference.CreatedIdentityState = Identity.State;
+				if (!WasPreview || string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
+				{
+					Reference.CreatedIdentityId = Identity.Id;
+					Reference.CreatedIdentityState = Identity.State;
+				}
 				if (Reference.IsReservedPreviewIdentity(Identity.Id) && !Reference.IsPreviewIdentity(Identity.Id))
 				{
 					Reference.IdentityStage = KycIdentityApplicationStage.ReservedPreview;
@@ -948,6 +980,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
+				CopySubmissionState(Reference, CallerReference);
 			}
 
 			if (StateTransition)
@@ -995,10 +1028,16 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (Reference is null || Review is null)
 				return;
 
+			KycReference CallerReference = Reference;
 			ApplicationReview Clone = CloneReview(Review)!;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
+				KycReference? PersistedReference = await LoadSubmissionReferenceAsync(CallerReference).ConfigureAwait(false);
+				if (PersistedReference is null)
+					return;
+				Reference = PersistedReference;
+
 				Reference.ApplicationReview = Clone;
 				Reference.RejectionMessage = null;
 				Reference.RejectionCode = null;
@@ -1009,6 +1048,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference).ConfigureAwait(false);
+				CopySubmissionState(Reference, CallerReference);
 			}
 
 			this.RaiseApplicationReviewUpdated(Reference, Clone);
@@ -1149,6 +1189,38 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			string Key = Reference.ObjectId ?? string.Empty;
 			return this.referenceLocks.GetOrAdd(Key, _ => new AsyncLock());
+		}
+
+		// Call while holding the reference lock so approval and review writes use the latest saved state.
+		private static async Task<KycReference?> LoadSubmissionReferenceAsync(KycReference Reference)
+		{
+			KycReference? PersistedReference = string.IsNullOrEmpty(Reference.ObjectId)
+				? Reference
+				: await Database.TryLoadObject<KycReference>(Reference.ObjectId).ConfigureAwait(false);
+			if (PersistedReference is not null)
+				CopySubmissionState(PersistedReference, Reference);
+			return PersistedReference;
+		}
+
+		private static void CopySubmissionState(KycReference Source, KycReference Target)
+		{
+			Target.CreatedIdentityId = Source.CreatedIdentityId;
+			Target.CreatedIdentityState = Source.CreatedIdentityState;
+			Target.ReservedPreviewIdentityId = Source.ReservedPreviewIdentityId;
+			Target.PreviewIdentityId = Source.PreviewIdentityId;
+			Target.PreviewIdentityState = Source.PreviewIdentityState;
+			Target.FinalIdentityId = Source.FinalIdentityId;
+			Target.FinalIdentityState = Source.FinalIdentityState;
+			Target.IdentityStage = Source.IdentityStage;
+			Target.ApplicationReview = CloneReview(Source.ApplicationReview);
+			Target.RejectionMessage = Source.RejectionMessage;
+			Target.RejectionCode = Source.RejectionCode;
+			Target.InvalidClaims = Source.InvalidClaims;
+			Target.InvalidPhotos = Source.InvalidPhotos;
+			Target.InvalidClaimDetails = Source.InvalidClaimDetails;
+			Target.InvalidPhotoDetails = Source.InvalidPhotoDetails;
+			Target.Version = Source.Version;
+			Target.UpdatedUtc = Source.UpdatedUtc;
 		}
 
 		private static void SetSubmittedTelemetry(KycReference Reference, bool UsedNfc)

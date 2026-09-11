@@ -431,8 +431,15 @@ namespace NeuroAccessMaui.Services.Kyc
 				return false;
 			}
 
-			if (!string.IsNullOrWhiteSpace(this.FinalIdentityId))
-				return this.IsFinalIdentity(Identity.Id);
+			if (this.IsFinalIdentity(Identity.Id))
+				return true;
+
+			if (!string.IsNullOrWhiteSpace(this.FinalIdentityId) &&
+				(Identity.State != IdentityState.Approved ||
+					this.FinalIdentityState is not (null or IdentityState.Created)))
+			{
+				return false;
+			}
 
 			if (this.MatchesIdentityId(Identity.Id))
 				return true;

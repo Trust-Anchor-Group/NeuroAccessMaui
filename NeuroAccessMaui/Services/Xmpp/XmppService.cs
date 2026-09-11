@@ -23,6 +23,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -3113,7 +3114,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (GenerateNewKeys)
 				await this.GenerateNewKeys();
 
-			return await this.ContractsClient.ApplyAsync(Props, true);
+			return await this.ContractsClient.ApplyAsync(NormalizeCountryProperties(Props), true);
 		}
 
 		/// <summary>
@@ -3176,13 +3177,29 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return await this.AddLegalIdentityInternalAsync(Props, GenerateNewKeys, false, Attachments);
 		}
 
+		private static Property[] NormalizeCountryProperties(Property[] Properties)
+		{
+			return Properties.Select(Property =>
+			{
+				if (!string.Equals(Property.Name, Constants.XmppProperties.Country, StringComparison.OrdinalIgnoreCase))
+					return Property;
+
+				string Value = Property.Value?.Trim() ?? string.Empty;
+				ISO_3166_Country? Country = ISO_3166_1.Countries.FirstOrDefault(Candidate =>
+					string.Equals(Candidate.Alpha2, Value, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(Candidate.Alpha3, Value, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(Candidate.Name, Value, StringComparison.OrdinalIgnoreCase));
+				return Country is null ? Property : new Property(Property.Name, Country.Alpha2);
+			}).ToArray();
+		}
+
 		private async Task<LegalIdentity> AddLegalIdentityInternalAsync(Property[] Props, bool GenerateNewKeys, bool Preview,
 			params LegalIdentityAttachment[] Attachments)
 		{
 			if (GenerateNewKeys)
 				await this.GenerateNewKeys();
 
-			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props, Preview);
+			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(NormalizeCountryProperties(Props), Preview);
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{

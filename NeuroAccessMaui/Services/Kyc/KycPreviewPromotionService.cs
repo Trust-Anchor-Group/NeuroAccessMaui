@@ -134,8 +134,20 @@ namespace NeuroAccessMaui.Services.Kyc
 			await this.promotionLock.WaitAsync(CancellationToken).ConfigureAwait(false);
 			try
 			{
+				KycReference? PersistedReference = await this.kycService.FindReferenceByIdentityIdAsync(PreviewIdentityId).ConfigureAwait(false);
+				if (PersistedReference is null || PersistedReference.ObjectId != Reference.ObjectId)
+					return KycPreviewPromotionResult.NoChange("ReferenceNoLongerAvailable");
+				Reference = PersistedReference;
+
 				if (!Reference.IsPreviewIdentity(PreviewIdentityId))
 					return KycPreviewPromotionResult.NoChange("PreviewIdentityMismatch");
+
+				LegalIdentity? ApprovedIdentity = ServiceRef.TagProfile.LegalIdentity;
+				if (ApprovedIdentity?.State == IdentityState.Approved && Reference.MatchesFinalIdentity(ApprovedIdentity))
+				{
+					await this.kycService.UpdateSubmissionStateAsync(Reference, ApprovedIdentity).ConfigureAwait(false);
+					return KycPreviewPromotionResult.Changed(ApprovedIdentity);
+				}
 
 				if (!string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
 					return KycPreviewPromotionResult.NoChange("FinalIdentityAlreadySubmitted");
@@ -172,8 +184,9 @@ namespace NeuroAccessMaui.Services.Kyc
 					false,
 					FinalContent.Attachments.ToArray()).ConfigureAwait(false);
 
-				await this.ApplyFinalIdentityToProfileAsync(FinalIdentity).ConfigureAwait(false);
 				await this.kycService.ApplyFinalSubmissionAsync(Reference, FinalIdentity).ConfigureAwait(false);
+				if (Reference.IsFinalIdentity(FinalIdentity.Id) && Reference.FinalIdentityState == FinalIdentity.State)
+					await this.ApplyFinalIdentityToProfileAsync(FinalIdentity).ConfigureAwait(false);
 				return KycPreviewPromotionResult.Changed(FinalIdentity);
 			}
 			finally
