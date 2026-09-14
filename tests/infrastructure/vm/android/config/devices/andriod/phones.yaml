@@ -1,0 +1,12 @@
+devices:
+  small_phone:
+    runner: emulator
+    hardware_profile: pixel_4
+
+  normal_phone:
+    runner: emulator
+    hardware_profile: pixel_6
+
+  large_phone:
+    runner: emulator
+    hardware_profile: pixel_8_pro
