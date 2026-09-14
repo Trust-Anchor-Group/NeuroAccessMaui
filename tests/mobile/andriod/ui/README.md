@@ -4,6 +4,95 @@ Shared guide to running this project's tests, including PowerShell commands,
 prerequisites, logs, and reports. Open two terminals side by side: **Terminal 1 runs
 the tests**, and **Terminal 2 displays the logs**. Start the logs first.
 
+## Mutual contacts on two Android devices
+
+Use two connected Android devices: physical phones, emulators, or one of each.
+Both must appear as `device` in `adb devices -l`, with the updated debug app installed, English selected,
+camera permission granted and biometrics disabled. Each must open on Home with a
+different registered account and an approved identity. Neither account may already
+have the other as a contact. The runner preserves account storage and leaves the
+new contacts and chat messages in place; remove both contacts manually before repeating this creation test.
+
+Rebuild and deploy the MAUI debug app to both devices after updating these sources:
+the Contacts and Chat screens now expose AutomationIds required by this test.
+The Gradle task builds only the instrumentation APK, not the MAUI app.
+
+Set both current PINs in the local, ignored `.env` file (never commit actual PINs):
+
+```dotenv
+NEUROACCESS_TEST_PIN_A="<six-digit PIN for A>"
+NEUROACCESS_TEST_PIN_B="<six-digit PIN for B>"
+```
+
+Optional device defaults and a remote ADB server also belong in `.env`:
+
+```dotenv
+NEUROACCESS_TEST_DEVICE_SERIAL_A="<device A serial>"
+NEUROACCESS_TEST_DEVICE_SERIAL_B="<device B serial>"
+NEUROACCESS_TEST_ADB_SERVER_HOST="<ADB server host>"
+NEUROACCESS_TEST_ADB_SERVER_PORT="5037"
+```
+
+Omit the host and port settings to use the local ADB server. Explicit Gradle
+properties (`deviceSerialA`, `deviceSerialB`, `adbServerHost`, `adbServerPort`)
+override environment variables and `.env`. Keep actual addresses and device
+serials in local configuration, not in source files or committed examples.
+
+In a terminal opened in `tests/mobile/andriod/ui`, replace the example serials with
+the two serials listed by `adb devices -l`:
+
+```powershell
+.\gradlew.bat :app:mutualContactsTest "-PdeviceSerialA=emulator-5554" "-PdeviceSerialB=emulator-5556"
+```
+
+For a physical phone and an emulator, use the phone's actual serial for A:
+
+```powershell
+.\gradlew.bat :app:mutualContactsTest "-PdeviceSerialA=<PHONE_SERIAL>" "-PdeviceSerialB=emulator-5556"
+```
+
+The task builds the instrumentation APK and installs it on A and B. It reads both
+Neuro-IDs from Show ID, rejects identical identities, then clicks A's QR image and
+reads the actual clipboard link. B opens that link through Scan QR → Enter QR
+manually → Open. A automatically opens the resulting identity petition from
+Notifications and accepts it with A's PIN while B waits for the response. The test
+compares B's displayed Neuro-ID with the ID read on A, clicks Add contact and waits
+for Remove contact. It repeats the flow from B to A with a fresh QR link. It then
+restarts each app, navigates through Apps → Contacts,
+finds the saved row by LegalId, opens that contact's ID and compares its visible
+Neuro-ID with the other device's identity.
+
+Finally, two concurrent chat phases open the verified contact's chat through
+Apps → Contacts. A sends `NeuroAccess <run-id> A to B`; B must receive that exact
+text before sending `NeuroAccess <run-id> B to A`. A must receive B's exact reply.
+The run ID is a new GUID each time. Each message is therefore unique to both the
+run and the sending device. Assertions require incoming message bubbles in the
+correct peer chat; composer text, local sent bubbles and earlier messages cannot
+satisfy receipt. Both apps remain open during the exchange; B is released only
+after A confirms receipt of its reply. Receipt waits have a
+120-second limit, with a 330-second overall chat-worker limit.
+
+An existing contact fails the creation check. A later failure can leave contacts
+and messages already created; inspect both accounts before retrying. Clipboard
+links and PINs are not written to the runner's reports.
+
+Start one log terminal per device alongside the test terminal. Use the same serials
+as the test command; replace `emulator-5554` below with the phone's serial when A is physical:
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" -s emulator-5554 logcat -v time MutualContactsTest:I TestRunner:I AndroidRuntime:E '*:S'
+```
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" -s emulator-5556 logcat -v time MutualContactsTest:I TestRunner:I AndroidRuntime:E '*:S'
+```
+
+Look for `CONTACT VERIFIED`, `SENT`, `RECEIVED` and `CHAT PASS` on both devices.
+The direction and run ID appear in message logs. Look for `Mutual contacts PASSED` in the
+runner terminal. The report is `app/build/reports/androidTests/mutual-contacts/index.html`.
+This coordinated test has its own task and is excluded from the single-device
+full suite. Do not run its device phases individually with connectedDebugAndroidTest.
+
 ## 1. Prepare the device and test project
 
 - Install Android Studio/Android SDK and configure the project's Java/Gradle environment.

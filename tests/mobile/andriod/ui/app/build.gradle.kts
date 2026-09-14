@@ -290,6 +290,51 @@ tasks.register<Exec>("fullAndroidTestSuite") {
     }
 }
 
+tasks.register<Exec>("mutualContactsTest") {
+    group = "verification"
+    description = "Adds contacts on two Android devices, verifies the saved identities and exchanges unique chat messages."
+    dependsOn("assembleDebugAndroidTest")
+    val runnerScript = rootProject.file("scripts/run-mutual-contacts-test.ps1")
+    val testApk = layout.buildDirectory.file("outputs/apk/androidTest/debug/app-debug-androidTest.apk")
+    val reportDirectory = layout.buildDirectory.dir("reports/androidTests/mutual-contacts")
+    outputs.upToDateWhen { false }
+    doFirst {
+        fun localSetting(propertyName: String, environmentName: String): String? =
+            (providers.gradleProperty(propertyName).orNull
+                ?: providers.environmentVariable(environmentName).orNull
+                ?: dotenvProperties.getProperty(environmentName))
+                ?.trim()?.removeSurrounding("\"")?.removeSurrounding("'")
+                ?.takeIf { it.isNotBlank() }
+
+        val serialA = localSetting("deviceSerialA", "NEUROACCESS_TEST_DEVICE_SERIAL_A")
+        val serialB = localSetting("deviceSerialB", "NEUROACCESS_TEST_DEVICE_SERIAL_B")
+        require(!serialA.isNullOrBlank() && !serialB.isNullOrBlank() && serialA != serialB) {
+            "Specify two different Android devices with -PdeviceSerialA/-PdeviceSerialB or the corresponding .env settings."
+        }
+        val adbHost = localSetting("adbServerHost", "NEUROACCESS_TEST_ADB_SERVER_HOST") ?: "127.0.0.1"
+        val adbPort = localSetting("adbServerPort", "NEUROACCESS_TEST_ADB_SERVER_PORT") ?: "5037"
+        require(adbHost.matches(Regex("[A-Za-z0-9_.-]+"))) { "Invalid adbServerHost." }
+        require(adbPort.toIntOrNull()?.let { it in 1..65535 } == true) { "Invalid adbServerPort." }
+        // Includes the PowerShell runner and its parallel Start-Job workers.
+        setEnvironment(environment.filterKeys { !it.equals("ANDROID_SERIAL", ignoreCase = true) })
+        environment("ADB_SERVER_SOCKET", "tcp:$adbHost:$adbPort")
+        environment("ANDROID_ADB_SERVER_ADDRESS", adbHost)
+        environment("ANDROID_ADB_SERVER_PORT", adbPort)
+        logger.lifecycle("Mutual contacts: using configured ADB server; A=$serialA; B=$serialB")
+        listOf("NEUROACCESS_TEST_PIN_A", "NEUROACCESS_TEST_PIN_B").forEach { name ->
+            val value = (providers.environmentVariable(name).orNull ?: dotenvProperties.getProperty(name))
+                ?.trim()?.removeSurrounding("\"")?.removeSurrounding("'")
+            require(value != null && value.matches(Regex("[0-9]{6}"))) { "Set $name in .env to the current six-digit PIN." }
+            environment(name, value)
+        }
+        commandLine("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", runnerScript.absolutePath,
+            "-AdbPath", File(androidSdkDirectory, "platform-tools/adb.exe").absolutePath,
+            "-TestApkPath", testApk.get().asFile.absolutePath,
+            "-ReportDirectory", reportDirectory.get().asFile.absolutePath,
+            "-DeviceSerialA", serialA, "-DeviceSerialB", serialB)
+    }
+}
+
 tasks.register<Exec>("changePinTest") {
     group = "options"
     description = "Runs only the Change PIN flow while preserving the existing account and identity state."

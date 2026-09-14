@@ -109,6 +109,19 @@ object ScreenWaiter {
         this.waitForMatcher("Displayed text: $expectedText", allOf(withText(expectedText), espressoIsDisplayed()))
     }
 
+    fun waitForText(expectedText: Matcher<String>, timeoutMilliseconds: Long) {
+        val deadline = android.os.SystemClock.uptimeMillis() + timeoutMilliseconds
+        do {
+            try {
+                onView(allOf(withText(expectedText), espressoIsDisplayed())).check(matches(espressoIsDisplayed()))
+                return
+            } catch (_: Throwable) {
+                android.os.SystemClock.sleep(100L)
+            }
+        } while (android.os.SystemClock.uptimeMillis() < deadline)
+        error("Timed out waiting for displayed text $expectedText.")
+    }
+
     fun waitForText(automationId: String, expectedText: Matcher<String>) {
         this.waitForMatcher("Text on automation ID: $automationId", allOf(
             AutomationIdMatcher.withAutomationId(automationId),
