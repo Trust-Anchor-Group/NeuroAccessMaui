@@ -57,6 +57,7 @@
 			<Grid Grid.Column="2"
 				  HorizontalOptions="End">
 				<controls:SvgButton Command="{Binding OpenNotificationsCommand}"
+									AutomationId="button_home_notifications"
 									SvgSource="notifications.svg"
 									Style="{DynamicResource IconButton}" />
 				<controls:Badge Text="{Binding UnreadNotificationCount}"

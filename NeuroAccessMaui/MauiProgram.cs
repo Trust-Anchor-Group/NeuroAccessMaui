@@ -213,6 +213,12 @@ namespace NeuroAccessMaui
 				handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
 			});
 #elif ANDROID
+			ViewHandler.ViewMapper.AppendToMapping(nameof(Microsoft.Maui.IView.AutomationId), (Handler, View) =>
+			{
+				if (!string.IsNullOrWhiteSpace(View.AutomationId))
+					ViewHandler.MapSemantics(Handler, View);
+			});
+
 //Todo remove in the future
 			PageHandler.Mapper.AppendToMapping("SafeArea", (handler, view) =>
 			{
