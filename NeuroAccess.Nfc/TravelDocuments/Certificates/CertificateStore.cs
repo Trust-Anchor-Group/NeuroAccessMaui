@@ -94,7 +94,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		{
 			Client?.Information("Loading CRL from " + Url);
 
-			ContentResponse? Response = await TryCachedGet(Url, Client);
+			ContentResponse? Response = await TryCachedGet(Url, Client, Response => Response.Decoded is CertificateList);
 
 			if (Response is null || Response.Decoded is not CertificateList Crl)
 				return null;
