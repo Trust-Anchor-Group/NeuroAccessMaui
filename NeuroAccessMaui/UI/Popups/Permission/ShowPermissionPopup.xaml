@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Permission.ShowPermissionPopup"
                 x:DataType="viewmodel:ShowPermissionViewModel"
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -6,7 +6,7 @@
                 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission">
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission" AutomationId="popup_notification_permission">
     <ScrollView VerticalOptions="Center">
         <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
@@ -40,7 +40,7 @@
                 <controls:TextButton Command="{Binding GoToSettingsCommand}"
                                      LabelData="{l:Localize GoToSettings}"
                                      Style="{DynamicResource PrimaryButton}" />
-                <controls:TextButton Command="{Binding CloseCommand}"
+                <controls:TextButton AutomationId="button_notification_permission_skip" Command="{Binding CloseCommand}"
                                      LabelData="{l:Localize Skip}"
                                      Style="{DynamicResource SecondaryButton}" />
             </VerticalStackLayout>

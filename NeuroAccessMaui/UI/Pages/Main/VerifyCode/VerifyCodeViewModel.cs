@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.UI.Pages.Onboarding.ViewModels;
 
 namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 {
@@ -115,6 +116,22 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 					return ServiceRef.Localizer[nameof(AppResources.ResendCodeSeconds), this.CodeVerification.CountDownSeconds];
 
 				return ServiceRef.Localizer[nameof(AppResources.ResendCode)];
+			}
+		}
+
+		/// <summary>
+		/// Returns the verification context for AutomationId binding ("phone" or "email").
+		/// </summary>
+		public string VerificationContext
+		{
+			get
+			{
+				if (this.CodeVerification is ValidatePhoneOnboardingStepViewModel)
+					return "phone";
+				else if (this.CodeVerification is ValidateEmailOnboardingStepViewModel)
+					return "email";
+				else
+					return string.Empty;
 			}
 		}
 

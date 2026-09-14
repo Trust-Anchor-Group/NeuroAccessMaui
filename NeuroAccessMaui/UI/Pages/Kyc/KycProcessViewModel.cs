@@ -1141,7 +1141,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.mappedValues.Add(new Property(Constants.XmppProperties.DeviceId, ServiceRef.PlatformSpecific.GetDeviceId()));
 				if (!this.process.HasMapping(Constants.XmppProperties.Jid)) this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, Jid));
 				if (!this.process.HasMapping(Constants.XmppProperties.Phone)) this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, Phone));
-				if (!this.process.HasMapping(Constants.XmppProperties.EMail)) this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, Email));
+				if (!this.process.HasMapping(Constants.XmppProperties.EMail)&& !string.IsNullOrEmpty(Email)) this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, Email));
 				if (!this.process.HasMapping(Constants.XmppProperties.Country) && !string.IsNullOrEmpty(ServiceRef.TagProfile.SelectedCountry))
 					this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ServiceRef.TagProfile.SelectedCountry));
 				ISet<string> Invalid = KycSummary.BuildInvalidMappingSet(this.kycReference);

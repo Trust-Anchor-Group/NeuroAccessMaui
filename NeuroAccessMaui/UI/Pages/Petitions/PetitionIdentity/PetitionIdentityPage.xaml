@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
+	<base:BaseContentPage x:Name="ThisPage" AutomationId="screen_petition_identity"
 							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity.PetitionIdentityPage"
 							 x:DataType="viewmodel:PetitionIdentityViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -255,7 +255,7 @@
 					<Label HorizontalOptions="Center" VerticalOptions="Center" Text="{l:Localize Options}"
 							 FontSize="Large" Style="{DynamicResource SectionTitleLabel}"/>
 
-					<controls:TextButton x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
+					<controls:TextButton x:Name="AcceptButton" AutomationId="button_petition_accept" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
 												Style="{DynamicResource FilledTextButton}" />
 
 					<controls:TextButton x:Name="DeclineButton" LabelData="{l:Localize Decline}" Command="{Binding DeclineCommand}"

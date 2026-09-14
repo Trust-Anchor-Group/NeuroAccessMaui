@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Settings.SelectLanguagePopup"
+				AutomationId="popup_select_language"
 				x:Name="thisPopup"
 				x:DataType="vm:SelectLanguagePopupViewModel"
 				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -14,6 +15,7 @@
 					  x:DataType="vm:ObservableLanguage">
 
 			<Border x:Name="ItemBorder"
+					AutomationId="{Binding AutomationId}"
 					BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
 					Stroke="{DynamicResource SurfaceBackgroundWL}"
 					Style="{DynamicResource ItemOuterBorder}">

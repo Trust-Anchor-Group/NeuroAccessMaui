@@ -18,6 +18,11 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 			this.Language = language;
 			this.SelectCommand = new AsyncRelayCommand(() => select(this.Language.Name));
 		}
+
+		/// <summary>
+		/// Gets the stable identifier used to select this language in UI automation.
+		/// </summary>
+		public string AutomationId => $"option_language_{this.Language.TwoLetterISOLanguageName}";
 	}
 
 }

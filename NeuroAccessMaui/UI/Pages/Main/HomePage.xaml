@@ -35,6 +35,7 @@
 		</Grid>
 	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
+		  AutomationId="screen_home"
 		  RowDefinitions="auto, *, auto, auto"
 		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
@@ -48,12 +49,15 @@
 			  ColumnDefinitions="auto, *,auto">
 
 			<controls:SvgButton Command="{Binding ShowSettingsCommand}"
+								AutomationId="button_home_settings"
+								SemanticProperties.Description="{l:Localize Settings}"
 								SvgSource="cog.svg"
 								Style="{DynamicResource IconButton}" />
 
 			<Grid Grid.Column="2"
 				  HorizontalOptions="End">
 				<controls:SvgButton Command="{Binding OpenNotificationsCommand}"
+									AutomationId="button_home_notifications"
 									SvgSource="notifications.svg"
 									Style="{DynamicResource IconButton}" />
 				<controls:Badge Text="{Binding UnreadNotificationCount}"
@@ -99,7 +103,8 @@
 			<controls:ConditionView Condition="{Binding ThemeLoaded}"
 									VerticalOptions="End">
 				<controls:ConditionView.True>
-					<controls:UriImage Source="{Binding BannerUri}"
+					<controls:UriImage AutomationId="image_home_banner"
+                                       Source="{Binding BannerUri}"
 									   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
 									   Grid.Row="0"
 									   HeightRequest="230"
@@ -115,6 +120,7 @@
 
 			<Grid Grid.Row="1" RowDefinitions="auto" VerticalOptions="Center">
 				<controls:TemplatedButton Command="{Binding GoToApplyIdentityCommand}"
+										  AutomationId="button_apply_for_personal_id"
 										  IsVisible="{Binding ShowInfoBubble}">
 					<!-- Missing Neuro ID Box-->
 					<Grid RowDefinitions="auto, auto"
@@ -208,6 +214,8 @@
 
 			<!-- Show ID Button -->
 			<controls:TemplatedButton Grid.Column="1"
+									  AutomationId="button_home_show_id"
+									  SemanticProperties.Description="{l:Localize ShowIDShort}"
 									  Command="{x:Binding ViewIdCommand}">
 				<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 						InputTransparent="True"

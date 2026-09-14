@@ -260,6 +260,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);
 			}
 
+#if !DEBUG
 			if (ServiceRef.TagProfile.TestOtpTimestamp is not null)
 			{
 				await ServiceRef.UiService.DisplayAlert(
@@ -267,6 +268,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					ServiceRef.Localizer[nameof(AppResources.TestOtpUsed)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
+#endif
 		}
 	}
 }

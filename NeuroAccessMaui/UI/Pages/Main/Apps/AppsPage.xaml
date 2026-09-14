@@ -12,7 +12,7 @@
 						xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 	<!-- Main Grid-->
-	<Grid RowDefinitions="auto, *, auto">
+	<Grid AutomationId="screen_apps" RowDefinitions="auto, *, auto">
 		<Grid Margin="16,8,16,16" ColumnDefinitions="*, auto, *">
 			<!--
 			<controls:SvgButton
@@ -43,6 +43,7 @@
 							   Grid.ColumnSpan="3"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+												AutomationId="button_apps_contacts"
 												SvgSource="contacts.svg"
 												Command="{Binding ShowContactsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Contacts}" HorizontalOptions="Center"/>

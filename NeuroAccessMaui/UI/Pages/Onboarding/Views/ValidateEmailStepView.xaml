@@ -8,7 +8,8 @@
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                                x:DataType="viewmodels:ValidateEmailOnboardingStepViewModel">
-    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}"
+                         AutomationId="screen_email_verification">
         <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
             <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
             <Label Text="{Binding Description}" FontSize="16" TextColor="{DynamicResource ContentSecondaryWL}" />
@@ -22,7 +23,8 @@
                     <Entry IsSpellCheckEnabled="False"
                            Placeholder="{l:Localize EmailSectionTitle}"
                            Keyboard="Email"
-                           Text="{Binding EmailText}" />
+                           Text="{Binding EmailText}"
+                           AutomationId="input_email" />
                 </Border>
                 <Grid RowDefinitions="auto"
                       ColumnDefinitions="auto,*"
@@ -46,7 +48,8 @@
 
         <controls:TextButton Style="{DynamicResource FilledTextButton}"
                              LabelData="{Binding LocalizedSendCodeText}"
-                             Command="{Binding SendCodeCommand}" />
+                             Command="{Binding SendCodeCommand}"
+                             AutomationId="button_send_email_code" />
         <controls:TextButton Style="{DynamicResource OutlinedTextButton}"
                              LabelData="{l:Localize ResendCode}"
                              Command="{Binding ResendCodeCommand}"

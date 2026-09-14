@@ -20,7 +20,7 @@
 					<BindableLayout.ItemTemplate>
 						<DataTemplate x:DataType="viewmodel:ContactInfoModel">
 							<Border Style="{DynamicResource BorderSet}">
-								<Grid ColumnDefinitions="auto, *, auto, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
+								<Grid AutomationId="{Binding LegalId, StringFormat='contact_row_{0}'}" ColumnDefinitions="auto, *, auto, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
 									<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24">
 										<Border.Triggers>
 											<DataTrigger TargetType="Border" Binding="{Binding IsFriend}" Value="True">
@@ -61,13 +61,13 @@
 										<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
 									</Border>
 
-									<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
+									<controls:SvgButton AutomationId="{Binding LegalId, StringFormat='button_contact_chat_{0}'}" SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
 														VerticalOptions="Center"
 														Grid.Column="3"
 														Command="{Binding ViewChatCommand}"
 														IsVisible="{Binding IsViewMode, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"/>
 
-									<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
+									<controls:SvgButton AutomationId="{Binding LegalId, StringFormat='button_contact_details_{0}'}" SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
 														VerticalOptions="Center"
 														Grid.Column="4"
 														Command="{Binding ViewContactCommand}"
@@ -85,7 +85,7 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid AutomationId="screen_contacts" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -135,7 +135,7 @@
 								Color="{DynamicResource ContentPrimaryWL}"
 								Grid.Row="3"/>
 			
-			<ScrollView Grid.Row="3">
+			<ScrollView AutomationId="scroll_contacts" Grid.Row="3">
 				<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
 								ItemsSource="{Binding Path=FilteredContacts}"
 								ItemTemplate="{StaticResource ContactTemplate}"

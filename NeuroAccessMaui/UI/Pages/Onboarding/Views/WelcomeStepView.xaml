@@ -23,7 +23,8 @@
 							   VerticalOptions="Center" />
 		</controls:ConditionView.True>
 		<controls:ConditionView.False>
-			<Grid RowDefinitions="*, auto">
+			<Grid RowDefinitions="*, auto"
+				  AutomationId="screen_onboarding_id_provider">
 				<VerticalStackLayout Grid.Row="0" VerticalOptions="End" Spacing="16">
 					<VerticalStackLayout>
 						<Label Style="{DynamicResource PageTitleLabel}"
@@ -37,10 +38,12 @@
 											 LabelStyle="{DynamicResource GetStartedCompositeEntryLabel}"
 											 BorderPadding="0"
 											 EntryData="{Binding InviteCode}"
-											 IsValid="{Binding InviteCodeIsValid, Mode=OneWay}">
+									 IsValid="{Binding InviteCodeIsValid, Mode=OneWay}"
+									 AutomationId="input_id_provider_paste_invite">
 						<controls:CompositeEntry.RightView>
 							<Grid>
-								<controls:TemplatedButton Command="{Binding PasteInviteCodeCommand}">
+								<controls:TemplatedButton Command="{Binding PasteInviteCodeCommand}"
+														  AutomationId="button_id_provider_paste_invite">
 									<Border Style="{DynamicResource SecondaryButtonActiveBorder}" StrokeShape="RoundRectangle 0" Scale="1.05">
 										<Label Style="{DynamicResource SecondaryButtonActiveLabel}" FontSize="14"
 										   Text="{l:Localize Paste}" />
@@ -56,21 +59,22 @@
 										LabelText="{l:Localize QrScanCode}"
 										SvgSource="scan_qr.svg"
 										LabelPosition="Right"
-										/>
+									AutomationId="button_id_provider_scan_qr"
+									/>
 
-					<Grid ColumnDefinitions="*, auto, *"
-						  ColumnSpacing="16">
-						<BoxView Grid.Column="0"
-								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
-								 HeightRequest="1"
-								 VerticalOptions="Center" />
-						<Label Grid.Column="1"
-							   Text="{l:Localize Or}"
-							   HorizontalOptions="Center"
-							   VerticalOptions="Center"
-							   FontFamily="SpaceGroteskRegular"
-							   FontSize="16"
-							   TextColor="{DynamicResource ContentSecondaryWL}" />
+				<Grid ColumnDefinitions="*, auto, *"
+					  ColumnSpacing="16">
+					<BoxView Grid.Column="0"
+							 BackgroundColor="{DynamicResource SurfaceDividerWL}"
+							 HeightRequest="1"
+							 VerticalOptions="Center" />
+					<Label Grid.Column="1"
+						   Text="{l:Localize Or}"
+					   HorizontalOptions="Center"
+					   VerticalOptions="Center"
+					   FontFamily="SpaceGroteskRegular"
+					   FontSize="16"
+					   TextColor="{DynamicResource ContentSecondaryWL}" />
 						<BoxView Grid.Column="2"
 								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
 								 HeightRequest="1"
@@ -79,7 +83,8 @@
 
 					<controls:TextButton Style="{DynamicResource PrimaryButton}"
 										 LabelData="{l:Localize SelectForMe}"
-										 Command="{Binding SelectForMeCommand}" />
+									 Command="{Binding SelectForMeCommand}"
+									 AutomationId="button_id_provider_select_for_me" />
 				</VerticalStackLayout>
 
 			</Grid>
