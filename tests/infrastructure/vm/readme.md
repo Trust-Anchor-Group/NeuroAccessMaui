@@ -105,6 +105,22 @@ The VM uses a separate runtime structure, for example:
 
 Generated APK files, emulator data, logs, and test results must not be committed to Git.
 
+## Submit and activate a run remotely
+
+The Windows client uploads APKs into a temporary directory. It only moves that directory into the incoming queue after all files have arrived, then activates the Linux queue worker over SSH. The worker holds a `flock` lock while processing the queue, so scenarios remain sequential when several runs are submitted.
+
+```powershell
+./android/client/run-remote-tests.ps1 `
+    -HostName android-test-host `
+    -AppApk ./com.tag.NeuroAccess-Signed.apk `
+    -TestApk ./app-debug-androidTest.apk `
+    -Serial emulator-5554
+```
+
+The checkout is expected at `/opt/neuro-test/repo` and runtime data below `/opt/neuro-test`. Use `-RemoteRoot` when the VM uses another location. The SSH user needs write access to `incoming`, `queue`, and `runs`.
+
+All Android operations use an explicit adb serial. `runner/run-tests.sh` executes a single-device scenario. `runner/run-android-pair.sh` accepts two distinct serials and exposes them to a host-side coordinator as `NEURO_DEVICE_A` and `NEURO_DEVICE_B`. This permits two active emulators within one scenario while the scenario queue itself stays sequential.
+
 ## Test Results
 
 Each test execution gets its own run ID and can collect:
