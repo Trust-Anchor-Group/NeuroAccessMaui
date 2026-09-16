@@ -1,5 +1,6 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading.Tasks;
 using Waher.Content;
@@ -10,6 +11,15 @@ using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 {
+	/// <summary>
+	/// Binary parser.
+	/// </summary>
+	/// <typeparam name="T">Type to parse to.</typeparam>
+	/// <param name="Binary">Binary data to parse.</param>
+	/// <param name="Parsed">Parsed result.</param>
+	/// <returns>True if parsing was successful, false otherwise.</returns>
+	public delegate bool BinaryParser<T>(byte[] Binary, [NotNullWhen(true)] out T? Parsed);
+
 	/// <summary>
 	/// Internal store of ICAO certificates
 	/// </summary>
@@ -50,28 +60,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 			Client?.Information("Loading certificate from " + Uri);
 
-			Certificate? Result = null;
-			await TryCachedGet(Uri, Client, Response =>
-			{
-				try
-				{
-					if (Certificate.TryParse(Response.Encoded, out Result))
-						return true;
-
-					Client?.Error("Unable to parse certificate.");
-				}
-				catch (Exception ex)
-				{
-					if (Client is null)
-						Log.Exception(ex);
-					else
-						Client.Error(ex.Message);
-				}
-
-				return false;
-			});
-
-			return Result;
+			return await TryCachedGet<Certificate>(Uri, Client, Certificate.TryParse);
 		}
 
 		/// <summary>
@@ -93,40 +82,39 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		public static async Task<CertificateList?> TryLoadCrl(string Url, ICommunicationLayer? Client)
 		{
 			Client?.Information("Loading CRL from " + Url);
-
-			ContentResponse? Response = await TryCachedGet(Url, Client, Response => Response.Decoded is CertificateList);
-
-			if (Response is null || Response.Decoded is not CertificateList Crl)
-				return null;
-
-			return Crl;
+			return await TryCachedGet<CertificateList>(Url, Client, CertificateList.TryParse);
 		}
 
 		/// <summary>
 		/// Tries to GET content from an URI. If content is cached, it is returned directly.
 		/// Otherwise, content is retrieved from the URI and stored in cache for future use.
 		/// </summary>
+		/// <typeparam name="T">Type of parsed content.</typeparam>
 		/// <param name="Uri">URI</param>
-		/// <returns>Content, if successulf, null otherwise.</returns>
-		public static Task<ContentResponse?> TryCachedGet(string Uri)
+		/// <returns>Parsed Content, if successulf, null otherwise.</returns>
+		public static Task<T?> TryCachedGet<T>(string Uri)
+			where T : class
 		{
-			return TryCachedGet(Uri, null);
+			return TryCachedGet<T>(Uri, null);
 		}
 
 		/// <summary>
 		/// Tries to GET content from an URI. If content is cached, it is returned directly.
 		/// Otherwise, content is retrieved from the URI and stored in cache for future use.
 		/// </summary>
+		/// <typeparam name="T">Type of parsed content.</typeparam>
 		/// <param name="Url">URI</param>
 		/// <param name="Client">Optional client reference.</param>
-		/// <returns>Content, if successulf, null otherwise.</returns>
-		public static Task<ContentResponse?> TryCachedGet(string Url, ICommunicationLayer? Client)
+		/// <returns>Parsed Content, if successulf, null otherwise.</returns>
+		public static Task<T?> TryCachedGet<T>(string Url, ICommunicationLayer? Client)
+			where T : class
 		{
-			return TryCachedGet(Url, Client, null);
+			return TryCachedGet<T>(Url, Client, null);
 		}
 
-		private static async Task<ContentResponse?> TryCachedGet(string Url, ICommunicationLayer? Client,
-			Func<ContentResponse, bool>? ValidateResponse)
+		private static async Task<T?> TryCachedGet<T>(string Url, ICommunicationLayer? Client,
+			BinaryParser<T>? ParseBinary)
+			where T : class
 		{
 			string UriKey = "Cache.Uri." + Url;
 			string TimestampKey = "Cache.Timestamp." + Url;
@@ -134,6 +122,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			DateTime Now = DateTime.UtcNow;
 			Uri Uri = new(Url);
 			ContentResponse Response;
+			T? Result;
 
 			try
 			{
@@ -148,21 +137,34 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 					byte[] Bin = Convert.FromBase64String(Base64);
 					Response = await InternetContent.DecodeAsync(ContentType, Bin, Uri);
 
-					if (!Response.HasError && (ValidateResponse is null || ValidateResponse(Response)))
+					if (!Response.HasError)
 					{
-						Client?.Information("Using cached result for " + Url);
+						Result = Response.Decoded as T;
 
-						return Response;
+						if (Result is not null ||
+							(ParseBinary is not null && ParseBinary(Response.Encoded, out Result)))
+						{
+							Client?.Information("Using cached result for " + Url);
+							return Result;
+						}
+
+						Client?.Error("Cached content could not be parsed.");
+					}
+
+					if (ParseBinary is not null)
+					{
+						Client?.Information("Removing incorrect cache item.");
+						await RuntimeSettings.SetAsync(UriKey, string.Empty);
 					}
 				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				// Ignore
+				if (Client is null)
+					Log.Exception(ex);
+				else
+					Client?.Error(ex.Message);
 			}
-
-			if (ValidateResponse is not null)
-				await RuntimeSettings.SetAsync(UriKey, string.Empty);
 
 			Client?.Information("Retrieving " + Url);
 
@@ -175,11 +177,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 				else
 					Client?.Error(Response.Error.Message);
 
-				return null;
+				return default;
 			}
 
-			if (ValidateResponse is not null && !ValidateResponse(Response))
-				return null;
+			if (Response.Decoded is T Parsed3)
+				Result = Parsed3;
+			else if (ParseBinary is not null && !ParseBinary(Response.Encoded, out T? Parsed4))
+				Result = Parsed4;
+			else
+				return default;
 
 			Client?.Information("Storing content in cache.");
 
@@ -187,7 +193,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			await RuntimeSettings.SetAsync(TimestampKey, Now);
 			await RuntimeSettings.SetAsync(ContentTypeKey, Response.ContentType);
 
-			return Response;
+			return Result;
 		}
 	}
 }
