@@ -1,5 +1,4 @@
-﻿using System;
-using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
+﻿using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
