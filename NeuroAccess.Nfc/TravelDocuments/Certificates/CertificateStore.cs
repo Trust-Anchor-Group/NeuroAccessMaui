@@ -50,30 +50,28 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 			Client?.Information("Loading certificate from " + Uri);
 
-			ContentResponse? Response = await TryCachedGet(Uri, Client);
-
-			if (Response is null)
-				return null;
-
-			try
+			Certificate? Result = null;
+			await TryCachedGet(Uri, Client, Response =>
 			{
-				if (Certificate.TryParse(Response.Encoded, out Certificate? Result))
-					return Result;
-				else
+				try
 				{
-					Client?.Error("Unable to parse certificate.");
-					return null;
-				}
-			}
-			catch (Exception ex)
-			{
-				if (Client is null)
-					Log.Exception(ex);
-				else
-					Client?.Error(ex.Message);
+					if (Certificate.TryParse(Response.Encoded, out Result))
+						return true;
 
-				return null;
-			}
+					Client?.Error("Unable to parse certificate.");
+				}
+				catch (Exception ex)
+				{
+					if (Client is null)
+						Log.Exception(ex);
+					else
+						Client.Error(ex.Message);
+				}
+
+				return false;
+			});
+
+			return Result;
 		}
 
 		/// <summary>
@@ -96,7 +94,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		{
 			Client?.Information("Loading CRL from " + Url);
 
-			ContentResponse? Response = await TryCachedGet(Url, Client);
+			ContentResponse? Response = await TryCachedGet(Url, Client, Response => Response.Decoded is CertificateList);
 
 			if (Response is null || Response.Decoded is not CertificateList Crl)
 				return null;
@@ -122,7 +120,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		/// <param name="Url">URI</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>Content, if successulf, null otherwise.</returns>
-		public static async Task<ContentResponse?> TryCachedGet(string Url, ICommunicationLayer? Client)
+		public static Task<ContentResponse?> TryCachedGet(string Url, ICommunicationLayer? Client)
+		{
+			return TryCachedGet(Url, Client, null);
+		}
+
+		private static async Task<ContentResponse?> TryCachedGet(string Url, ICommunicationLayer? Client,
+			Func<ContentResponse, bool>? ValidateResponse)
 		{
 			string UriKey = "Cache.Uri." + Url;
 			string TimestampKey = "Cache.Timestamp." + Url;
@@ -144,7 +148,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 					byte[] Bin = Convert.FromBase64String(Base64);
 					Response = await InternetContent.DecodeAsync(ContentType, Bin, Uri);
 
-					if (!Response.HasError)
+					if (!Response.HasError && (ValidateResponse is null || ValidateResponse(Response)))
 					{
 						Client?.Information("Using cached result for " + Url);
 
@@ -156,6 +160,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			{
 				// Ignore
 			}
+
+			if (ValidateResponse is not null)
+				await RuntimeSettings.SetAsync(UriKey, string.Empty);
 
 			Client?.Information("Retrieving " + Url);
 
@@ -170,6 +177,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 				return null;
 			}
+
+			if (ValidateResponse is not null && !ValidateResponse(Response))
+				return null;
 
 			Client?.Information("Storing content in cache.");
 
