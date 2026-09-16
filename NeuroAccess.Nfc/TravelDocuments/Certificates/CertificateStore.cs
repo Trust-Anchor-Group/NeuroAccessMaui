@@ -1,4 +1,4 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
+using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -180,12 +180,24 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 				return default;
 			}
 
-			if (Response.Decoded is T Parsed3)
-				Result = Parsed3;
-			else if (ParseBinary is not null && !ParseBinary(Response.Encoded, out T? Parsed4))
-				Result = Parsed4;
-			else
+			try
+			{
+				if (Response.Decoded is T Parsed3)
+					Result = Parsed3;
+				else if (ParseBinary is not null && ParseBinary(Response.Encoded, out T? Parsed4))
+					Result = Parsed4;
+				else
+					return default;
+			}
+			catch (Exception ex)
+			{
+				if (Client is null)
+					Log.Exception(ex);
+				else
+					Client?.Error(ex.Message);
+
 				return default;
+			}
 
 			Client?.Information("Storing content in cache.");
 
