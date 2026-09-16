@@ -42,13 +42,21 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		{
 			Parsed = null;
 
-			if (!ASN1.TryDecodeDer(RawCertificateList, out object? Content))
-				return false;
+			try
+			{
+				if (!ASN1.TryDecodeDer(RawCertificateList, out object? Content))
+					return false;
 
-			if (Content is not Vector CertificateListVector)
-				return false;
+				if (Content is not Vector CertificateListVector)
+					return false;
 
-			return TryParse(CertificateListVector, out Parsed);
+				return TryParse(CertificateListVector, out Parsed);
+			}
+			catch (Exception)
+			{
+				Parsed = null;
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -62,33 +70,41 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		{
 			Parsed = null;
 
-			if (CertificateListVector.Length != 3)
+			try
+			{
+				if (CertificateListVector.Length != 3)
+					return false;
+
+				if (CertificateListVector.FirstElement is not Vector TbsCertList)
+					return false;
+
+				ISignatureAlgorithm? SignatureAlgorithm;
+
+				if (CertificateListVector[1] is ISignatureAlgorithm Algorithm)
+					SignatureAlgorithm = Algorithm;
+				else if (CertificateListVector[1] is Vector AlgorithmIdentifier)
+					SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+				else
+					return false;
+
+				if (SignatureAlgorithm is null)
+					return false;
+
+				if (CertificateListVector[2] is not byte[] Signature)
+					return false;
+
+				if (!ToBeSignedCertificateList.TryParse(TbsCertList, out ToBeSignedCertificateList? ToBeSigned))
+					return false;
+
+				Parsed = new CertificateList(CertificateListVector, ToBeSigned, SignatureAlgorithm, Signature);
+
+				return true;
+			}
+			catch (Exception)
+			{
+				Parsed = null;
 				return false;
-
-			if (CertificateListVector.FirstElement is not Vector TbsCertList)
-				return false;
-
-			ISignatureAlgorithm? SignatureAlgorithm;
-
-			if (CertificateListVector[1] is ISignatureAlgorithm Algorithm)
-				SignatureAlgorithm = Algorithm;
-			else if (CertificateListVector[1] is Vector AlgorithmIdentifier)
-				SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
-			else
-				return false;
-
-			if (SignatureAlgorithm is null)
-				return false;
-
-			if (CertificateListVector[2] is not byte[] Signature)
-				return false;
-
-			if (!ToBeSignedCertificateList.TryParse(TbsCertList, out ToBeSignedCertificateList? ToBeSigned))
-				return false;
-
-			Parsed = new CertificateList(CertificateListVector, ToBeSigned, SignatureAlgorithm, Signature);
-
-			return true;
+			}
 		}
 
 		/// <summary>

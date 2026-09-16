@@ -37,13 +37,21 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		{
 			Parsed = null;
 
-			if (!ASN1.TryDecodeDer(RawCertificate, out object? Content))
-				return false;
+			try
+			{
+				if (!ASN1.TryDecodeDer(RawCertificate, out object? Content))
+					return false;
 
-			if (Content is not Vector CertificateVector)
-				return false;
+				if (Content is not Vector CertificateVector)
+					return false;
 
-			return TryParse(CertificateVector, out Parsed);
+				return TryParse(CertificateVector, out Parsed);
+			}
+			catch (Exception)
+			{
+				Parsed = null;
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -56,33 +64,41 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		{
 			Parsed = null;
 
-			if (CertificateVector.Length != 3)
-				return false;
-
-			if (CertificateVector.FirstElement is not Vector TbsCert)
-				return false;
-
-			if (CertificateVector[1] is not ISignatureAlgorithm IssuerSignatureAlgorithm)
+			try
 			{
-				if (CertificateVector[1] is not Vector AlgorithmIdentifier)
+				if (CertificateVector.Length != 3)
 					return false;
 
-				ISignatureAlgorithm? IssuerSignatureAlgorithm2 = SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
-				if (IssuerSignatureAlgorithm2 is null)
+				if (CertificateVector.FirstElement is not Vector TbsCert)
 					return false;
 
-				IssuerSignatureAlgorithm = IssuerSignatureAlgorithm2;
+				if (CertificateVector[1] is not ISignatureAlgorithm IssuerSignatureAlgorithm)
+				{
+					if (CertificateVector[1] is not Vector AlgorithmIdentifier)
+						return false;
+
+					ISignatureAlgorithm? IssuerSignatureAlgorithm2 = SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+					if (IssuerSignatureAlgorithm2 is null)
+						return false;
+
+					IssuerSignatureAlgorithm = IssuerSignatureAlgorithm2;
+				}
+
+				if (CertificateVector[2] is not byte[] Signature)
+					return false;
+
+				if (!ToBeSignedCertificate.TryParse(TbsCert, out ToBeSignedCertificate? ToBeSigned))
+					return false;
+
+				Parsed = new Certificate(CertificateVector, ToBeSigned, IssuerSignatureAlgorithm, Signature);
+
+				return true;
 			}
-
-			if (CertificateVector[2] is not byte[] Signature)
+			catch (Exception)
+			{
+				Parsed = null;
 				return false;
-
-			if (!ToBeSignedCertificate.TryParse(TbsCert, out ToBeSignedCertificate? ToBeSigned))
-				return false;
-
-			Parsed = new Certificate(CertificateVector, ToBeSigned, IssuerSignatureAlgorithm, Signature);
-
-			return true;
+			}
 		}
 
 		/// <summary>

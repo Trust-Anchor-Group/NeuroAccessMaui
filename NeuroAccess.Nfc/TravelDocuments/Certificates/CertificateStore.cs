@@ -180,24 +180,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 				return default;
 			}
 
-			try
-			{
-				if (Response.Decoded is T Parsed3)
-					Result = Parsed3;
-				else if (ParseBinary is not null && ParseBinary(Response.Encoded, out T? Parsed4))
-					Result = Parsed4;
-				else
-					return default;
-			}
-			catch (Exception ex)
-			{
-				if (Client is null)
-					Log.Exception(ex);
-				else
-					Client?.Error(ex.Message);
-
+			if (Response.Decoded is T Parsed3)
+				Result = Parsed3;
+			else if (ParseBinary is not null && ParseBinary(Response.Encoded, out T? Parsed4))
+				Result = Parsed4;
+			else
 				return default;
-			}
 
 			Client?.Information("Storing content in cache.");
 
