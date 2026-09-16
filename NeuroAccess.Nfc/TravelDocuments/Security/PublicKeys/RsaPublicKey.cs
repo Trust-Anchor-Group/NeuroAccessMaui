@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
+using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 {
@@ -8,7 +10,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 	/// OID of rsaEncryption (1.2.840.113549.1.1.1), which is later instantiated and configured
 	/// when parsing the certificate. (See RFCs 8017 and 5280).
 	/// </summary>
-	public class RsaPublicKey : PublicKey, IPublicKey
+	public class RsaPublicKey : PublicKey, ISignatureAlgorithm
 	{
 		private BigInteger? modulus;
 		private BigInteger? exponent;
@@ -91,5 +93,28 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 			Parameters["Modulus"] = this.modulus;
 			Parameters["Exponent"] = this.exponent;
 		}
+
+		/// <summary>
+		/// Verifies a digital signature.
+		/// </summary>
+		/// <param name="Data">Data being signed.</param>
+		/// <param name="Signature">Digital signature.</param>
+		/// <param name="PublicKey">Public Key of the signing body.</param>
+		/// <param name="Client">Optional client reference.</param>
+		/// <returns>If the digital signature is correct.</returns>
+		public bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
+			ICommunicationLayer? Client)
+		{
+			// Hash algorithm not known at this stage, so testing different algorithms to
+			// see if one works.
+
+			return
+				new RsaSha1().VerifySignature(Data, Signature, PublicKey, Client) ||
+				new RsaSha256().VerifySignature(Data, Signature, PublicKey, Client) ||
+				new RsaSha384().VerifySignature(Data, Signature, PublicKey, Client) ||
+				new RsaSha512().VerifySignature(Data, Signature, PublicKey, Client) ||
+				new RsaPss().VerifySignature(Data, Signature, PublicKey, Client);
+		}
+
 	}
 }
