@@ -1,4 +1,4 @@
-using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
+﻿using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -150,12 +150,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 						Client?.Error("Cached content could not be parsed.");
 					}
-
-					if (ParseBinary is not null)
-					{
-						Client?.Information("Removing incorrect cache item.");
-						await RuntimeSettings.SetAsync(UriKey, string.Empty);
-					}
 				}
 			}
 			catch (Exception ex)
@@ -164,6 +158,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 					Log.Exception(ex);
 				else
 					Client?.Error(ex.Message);
+			}
+
+			if (ParseBinary is not null)
+			{
+				Client?.Information("Clearing cache before fetching replacement.");
+				await RuntimeSettings.SetAsync(UriKey, string.Empty);
 			}
 
 			Client?.Information("Retrieving " + Url);
