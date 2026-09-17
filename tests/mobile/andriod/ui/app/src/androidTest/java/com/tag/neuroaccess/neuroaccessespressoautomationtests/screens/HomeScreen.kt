@@ -1,5 +1,6 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.screens
 
+import android.view.KeyEvent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -19,6 +20,18 @@ object HomeScreen {
             .check(matches(isDisplayed()))
     }
 
+    /** Returns from a persisted child page to the home screen without clearing account state. */
+    fun returnToHome() {
+        val instrumentation = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+        repeat(8) {
+            if (ScreenWaiter.isDisplayed(SCREEN)) {
+                return
+            }
+            instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+            android.os.SystemClock.sleep(300L)
+        }
+        ScreenWaiter.waitForAnyLive(SCREEN)
+    }
     fun openPersonalIdApplications() {
         ScreenWaiter.performActionAndWaitFor(ApplicationsScreen.SCREEN) {
             onView(withAutomationId(APPLY_FOR_PERSONAL_ID))

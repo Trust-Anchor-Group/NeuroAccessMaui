@@ -16,7 +16,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.AutomationIdMatcher
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
 
 /** Interacts with the animated ID card without waiting for Espresso animation idleness. */
 object ContactIdentityScreen {
@@ -33,6 +32,20 @@ object ContactIdentityScreen {
         tap(bounds)
     }
 
+    /** Taps the first visible label whose text starts with the supplied prefix. */
+    fun tapTextStartingWith(prefix: String) {
+        val bounds = awaitValue("visible label starting with '$prefix'") {
+            nodes(instrumentation.uiAutomation.rootInActiveWindow)
+                .firstOrNull {
+                    it.isVisibleToUser && it.text?.toString()?.startsWith(prefix) == true &&
+                        !nodeBounds(it).isEmpty
+                }
+                ?.let(::nodeBounds)
+        }
+        tap(bounds)
+    }
+    /** Reports whether an exact visible label is present in the active window. */
+    fun isTextVisible(text: String): Boolean = textNode(text) != null
     /** Copies the actual card QR payload and reads the foreground app's clipboard. */
     fun copyQrLink(): String {
         val clipboard = instrumentation.targetContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -80,35 +93,51 @@ object ContactIdentityScreen {
         return link
     }
 
-    /** Requires a new contact, clicks Add contact and waits for the persisted-state UI. */
+    /** Ensures that the displayed identity is saved as a contact. */
     fun addContact() {
         repeat(15) {
-            check(textNode("Remove contact") == null) {
-                "Contact already exists. Use two accounts that have not added each other."
+            if (textNode("Remove Contact") != null) {
+                return
             }
-            if (textNode("Add contact") != null) {
-                tapText("Add contact")
-                awaitValue("Remove contact after saving") { textNode("Remove contact") }
-                check(textNode("Add contact") == null) { "Add contact is still visible after saving." }
+            if (textNode("Add Contact") != null) {
+                tapText("Add Contact")
+                awaitValue("Remove contact after saving") { textNode("Remove Contact") }
+                check(textNode("Add Contact") == null) { "Add contact is still visible after saving." }
                 return
             }
             val scroll = nodes(instrumentation.uiAutomation.rootInActiveWindow)
                 .filter { it.isScrollable && it.isVisibleToUser }
                 .maxByOrNull { nodeBounds(it).let { bounds -> bounds.width().toLong() * bounds.height() } }
             check(scroll != null) { "Contact actions are not visible and details cannot scroll." }
-            scroll.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)
+            scroll.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
             Thread.sleep(250)
         }
         error("Add contact did not become visible in identity details.")
     }
 
-    fun dismissPetitionSentDialogIfNeeded() {
-        try {
-            ScreenWaiter.waitForText("Petition sent", 60_000L)
-            tapText("OK")
-        } catch (_: Throwable) {
-            // The owner may accept quickly, in which case the identity view is shown directly.
+    fun dismissPetitionSentDialogIfNeeded(): Boolean {
+        val petitionDialogIsVisible = awaitValue("petition confirmation or identity details") {
+            when {
+                textNode("Petition sent") != null -> true
+                identityDetailsAreVisible() -> false
+                else -> null
+            }
         }
+        if (petitionDialogIsVisible) {
+            tapText("OK")
+        }
+        return petitionDialogIsVisible
+    }
+
+    private fun identityDetailsAreVisible(): Boolean {
+        var isVisible = false
+        instrumentation.runOnMainSync {
+            isVisible = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+                .asSequence()
+                .flatMap { views(it.window.decorView) }
+                .any { AutomationIdMatcher.matches(it, ViewIdentityScreen.SCREEN) && it.isShown }
+        }
+        return isVisible
     }
 
     private fun textNode(text: String): AccessibilityNodeInfo? =

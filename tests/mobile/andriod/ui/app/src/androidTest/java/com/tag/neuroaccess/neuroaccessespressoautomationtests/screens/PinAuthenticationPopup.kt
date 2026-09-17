@@ -40,14 +40,8 @@ object PinAuthenticationPopup {
     /** Submits [pin] and waits for successful navigation to [nextScreen]. */
     fun enterPinAndWaitFor(pin: String, nextScreen: String) {
         this.enterPin(pin)
-        if (nextScreen == ViewIdentityScreen.SCREEN) {
-            ScreenWaiter.clickToLiveScreen(CONFIRM)
-            ViewIdentityScreen.assertDisplayed()
-        } else {
-            ScreenWaiter.performActionAndWaitFor(nextScreen) {
-                onView(withAutomationId(CONFIRM)).perform(click())
-            }
-        }
+        ScreenWaiter.clickToLiveScreen(CONFIRM)
+        ScreenWaiter.waitForAnyLive(nextScreen)
     }
 
     /** Submits [pin] once and verifies the rejection dialog in the English account flow. */
@@ -81,7 +75,6 @@ object PinAuthenticationPopup {
                 withAutomationIdOrAncestor(PIN)
             )
         ).perform(click(), replaceText(pin), closeSoftKeyboard())
-        ScreenWaiter.waitUntilReady(CONFIRM)
     }
 
     private fun waitForRejectionDialog() {
