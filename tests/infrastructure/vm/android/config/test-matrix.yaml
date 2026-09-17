@@ -1,0 +1,45 @@
+scenarios:
+  - name: small-phone-android-11
+    enabled: true
+    api_level: 30
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: normal-phone-android-13
+    enabled: true
+    api_level: 33
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: modern-phone-android-14
+    enabled: true
+    api_level: 34
+    device_profile: pixel_7
+    system_image: google_apis
+    abi: x86_64
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: large-phone-android-15
+    enabled: true
+    api_level: 35
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: android-16-preview
+    enabled: false
+    api_level: 36
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    show_emulator: false
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
