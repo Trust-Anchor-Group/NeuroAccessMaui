@@ -44,7 +44,7 @@ class MutualContactsFlowTest : BaseTest() {
     fun runDevicePhase() {
         val arguments = InstrumentationRegistry.getArguments()
         assumeTrue("Use the mutualContactsTest task.", arguments.getString("contactsCoordinator") == "true")
-        HomeScreen.assertDisplayed()
+        HomeScreen.returnToHome()
         when (arguments.getString("contactsPhase")) {
             "identify" -> {
                 HomeScreen.openPersonalId(TestData.pin())
@@ -60,18 +60,18 @@ class MutualContactsFlowTest : BaseTest() {
                 result("contactLink", ContactIdentityScreen.copyQrLink())
                 Log.i("MutualContactsTest", "EXPORT: fresh QR clipboard link captured")
             }
-            "add" -> {
+            "sendPetition" -> {
                 val expected = required("peerIdentity")
                 check(expected != required("ownIdentity")) { "Both devices use the same identity." }
-                ContactIdentityScreen.tapText("Scan QR")
-                ContactIdentityScreen.tapText("Enter QR manually")
-                ScreenWaiter.waitForText("Open")
-                val link = String(Base64.decode(required("peerLink"), Base64.NO_WRAP), Charsets.UTF_8)
-                onView(allOf(isAssignableFrom(EditText::class.java), isDisplayed()))
-                    .perform(replaceText(link), closeSoftKeyboard())
-
-                ContactIdentityScreen.tapText("Open")
-                ContactIdentityScreen.dismissPetitionSentDialogIfNeeded()
+                openPeerLink()
+                val petitionWasSent = ContactIdentityScreen.dismissPetitionSentDialogIfNeeded()
+                result("petitionState", if (petitionWasSent) "sent" else "approved")
+                Log.i("MutualContactsTest", "PETITION SENT: identity request delivered to the other device")
+            }
+            "addAccepted" -> {
+                val expected = required("peerIdentity")
+                check(expected != required("ownIdentity")) { "Both devices use the same identity." }
+                openPeerLink()
                 ViewIdentityScreen.assertDisplayed()
                 ScreenWaiter.waitForLiveText("displayed_identity_$expected", equalTo("Approved"))
 
@@ -94,6 +94,15 @@ class MutualContactsFlowTest : BaseTest() {
         }
     }
 
+    private fun openPeerLink() {
+        ContactIdentityScreen.tapText("Scan QR")
+        ContactIdentityScreen.tapText("Enter QR manually")
+        ScreenWaiter.waitForText("Open")
+        val link = String(Base64.decode(required("peerLink"), Base64.NO_WRAP), Charsets.UTF_8)
+        onView(allOf(isAssignableFrom(EditText::class.java), isDisplayed()))
+            .perform(replaceText(link), closeSoftKeyboard())
+        ContactIdentityScreen.tapText("Open")
+    }
     private fun exchangeMessages(initiator: Boolean) {
         val peer = required("peerIdentity")
         check(peer != required("ownIdentity")) { "Cannot message the same identity." }
