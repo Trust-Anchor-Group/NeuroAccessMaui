@@ -30,7 +30,8 @@ while true; do
                 if [[ "${DEVICE_MODE:-existing}" == "managed" ]]; then
                     [[ "${API_LEVEL:-}" =~ ^[0-9]{2}$ ]] || die "API_LEVEL is required for a managed emulator"
                     managed_args=(--api "$API_LEVEL" --device "${DEVICE_PROFILE:-pixel_6}"
-                        --image "${SYSTEM_IMAGE:-google_apis}" --abi "${SYSTEM_IMAGE_ABI:-x86_64}")
+                        --image "${SYSTEM_IMAGE:-google_apis}" --abi "${SYSTEM_IMAGE_ABI:-x86_64}"
+                        --storage-policy "${STORAGE_POLICY:-cache}")
                     [[ -z "${AVD_NAME:-}" ]] || managed_args+=(--name "$AVD_NAME")
                     [[ "${SHOW_EMULATOR:-false}" == "true" ]] && managed_args+=(--show-window)
                     bash "$SCRIPT_DIR/run-managed-tests.sh" "${managed_args[@]}" "${common_args[@]}"
@@ -38,6 +39,19 @@ while true; do
                     [[ -n "${SERIAL:-}" ]] || die "SERIAL is required for an existing device"
                     bash "$SCRIPT_DIR/run-tests.sh" --serial "$SERIAL" "${common_args[@]}"
                 fi
+                ;;
+            matrix)
+                require_file "$run_dir/matrix.tsv"
+                matrix_args=(--matrix "$run_dir/matrix.tsv" --tests "$run_dir/tests.apk" --results "$run_dir/results")
+                [[ ! -f "$run_dir/app.apk" ]] || matrix_args+=(--app "$run_dir/app.apk")
+                [[ ! -f "$run_dir/app-x86.apk" ]] || matrix_args+=(--app-x86 "$run_dir/app-x86.apk")
+                [[ ! -f "$run_dir/app-x86_64.apk" ]] || matrix_args+=(--app-x86-64 "$run_dir/app-x86_64.apk")
+                [[ "${STOP_ON_FAILURE:-false}" == "true" ]] && matrix_args+=(--stop-on-failure)
+                [[ -z "${TEST_PHONE_NUMBER:-}" ]] || matrix_args+=(--arg "testPhoneNumber=$TEST_PHONE_NUMBER")
+                [[ -z "${TEST_PIN:-}" ]] || matrix_args+=(--arg "testPin=$TEST_PIN")
+                [[ -z "${TEST_OTP_ENDPOINT:-}" ]] || matrix_args+=(--arg "testOtpEndpoint=$TEST_OTP_ENDPOINT")
+                [[ -z "${REGISTRATION_USERNAME_TIMESTAMP:-}" ]] || matrix_args+=(--arg "registrationUsernameTimestamp=$REGISTRATION_USERNAME_TIMESTAMP")
+                bash "$SCRIPT_DIR/run-device-matrix.sh" "${matrix_args[@]}"
                 ;;
             mutual-contacts)
                 [[ -n "${SERIAL_A:-}" && -n "${SERIAL_B:-}" ]] || die "SERIAL_A and SERIAL_B are required"
