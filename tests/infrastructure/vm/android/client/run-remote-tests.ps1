@@ -3,7 +3,13 @@ param(
     [Parameter(Mandatory = $true)] [string] $HostName,
     [Parameter(Mandatory = $true)] [string] $AppApk,
     [Parameter(Mandatory = $true)] [string] $TestApk,
-    [Parameter(Mandatory = $true)] [string] $Serial,
+    [string] $Serial,
+    [int] $ApiLevel,
+    [string] $DeviceProfile = "pixel_6",
+    [string] $SystemImage = "google_apis",
+    [string] $SystemImageAbi = "x86_64",
+    [string] $AvdName,
+    [switch] $ShowEmulator,
     [string] $UserName = "neuro-test",
     [string] $TestClass,
     [string] $TestPhoneNumber,
@@ -15,7 +21,18 @@ param(
 $ErrorActionPreference = "Stop"
 if ($HostName -notmatch '^[A-Za-z0-9.-]+$') { throw "HostName contains unsupported characters." }
 if ($UserName -notmatch '^[A-Za-z0-9._-]+$') { throw "UserName contains unsupported characters." }
-if ($Serial -notmatch '^[A-Za-z0-9._:-]+$') { throw "Serial contains unsupported characters." }
+if ([string]::IsNullOrWhiteSpace($Serial) -eq ($ApiLevel -eq 0)) {
+    throw "Specify either Serial for an existing device or ApiLevel for a managed emulator."
+}
+if (-not [string]::IsNullOrWhiteSpace($Serial) -and $Serial -notmatch '^[A-Za-z0-9._:-]+$') {
+    throw "Serial contains unsupported characters."
+}
+if ($ApiLevel -ne 0 -and ($ApiLevel -lt 21 -or $ApiLevel -gt 99)) { throw "ApiLevel is outside the supported range." }
+foreach ($Value in @($DeviceProfile, $SystemImage, $SystemImageAbi, $AvdName)) {
+    if (-not [string]::IsNullOrWhiteSpace($Value) -and $Value -notmatch '^[A-Za-z0-9._-]+$') {
+        throw "Managed emulator values may only contain letters, digits, dots, underscores, and hyphens."
+    }
+}
 if ($RemoteRoot -notmatch '^/[A-Za-z0-9._/-]+$') { throw "RemoteRoot must be an absolute Linux path without spaces." }
 if (-not [string]::IsNullOrWhiteSpace($TestClass) -and $TestClass -notmatch '^[A-Za-z0-9_.$#,-]+$') {
     throw "TestClass contains unsupported characters."
@@ -52,7 +69,19 @@ $RemoteStaging = "$RemoteRoot/incoming/$RunId.uploading"
 $RemoteReady = "$RemoteRoot/incoming/$RunId"
 $EnvironmentLines = [System.Collections.Generic.List[string]]::new()
 $EnvironmentLines.Add("MODE=single")
-$EnvironmentLines.Add("SERIAL='$Serial'")
+if ($ApiLevel -ne 0) {
+    $EnvironmentLines.Add("DEVICE_MODE=managed")
+    $EnvironmentLines.Add("API_LEVEL='$ApiLevel'")
+    $EnvironmentLines.Add("DEVICE_PROFILE='$DeviceProfile'")
+    $EnvironmentLines.Add("SYSTEM_IMAGE='$SystemImage'")
+    $EnvironmentLines.Add("SYSTEM_IMAGE_ABI='$SystemImageAbi'")
+    if (-not [string]::IsNullOrWhiteSpace($AvdName)) { $EnvironmentLines.Add("AVD_NAME='$AvdName'") }
+    $EnvironmentLines.Add("SHOW_EMULATOR=$($ShowEmulator.IsPresent.ToString().ToLowerInvariant())")
+}
+else {
+    $EnvironmentLines.Add("DEVICE_MODE=existing")
+    $EnvironmentLines.Add("SERIAL='$Serial'")
+}
 if (-not [string]::IsNullOrWhiteSpace($TestClass)) { $EnvironmentLines.Add("TEST_CLASS='$TestClass'") }
 if (-not [string]::IsNullOrWhiteSpace($TestPhoneNumber)) { $EnvironmentLines.Add("TEST_PHONE_NUMBER='$TestPhoneNumber'") }
 if (-not [string]::IsNullOrWhiteSpace($TestPin)) { $EnvironmentLines.Add("TEST_PIN='$TestPin'") }
@@ -62,7 +91,7 @@ $TemporaryEnvironment = Join-Path ([System.IO.Path]::GetTempPath()) "$RunId-job.
 $EnvironmentContents = ($EnvironmentLines -join "`n") + "`n"
 [System.IO.File]::WriteAllText($TemporaryEnvironment, $EnvironmentContents, [System.Text.UTF8Encoding]::new($false))
 try {
-    & ssh $Remote "mkdir -p '$RemoteStaging'"
+    & ssh $Remote "umask 077 && mkdir -p '$RemoteStaging'"
     if ($LASTEXITCODE -ne 0) { throw "Could not create remote staging directory." }
     & scp -- $ResolvedAppApk "${Remote}:${RemoteStaging}/app.apk"
     if ($LASTEXITCODE -ne 0) { throw "Could not upload the app APK." }
