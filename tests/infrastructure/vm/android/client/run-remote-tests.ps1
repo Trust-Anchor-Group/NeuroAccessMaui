@@ -10,6 +10,7 @@ param(
     [string] $SystemImageAbi = "x86_64",
     [string] $AvdName,
     [switch] $ShowEmulator,
+    [ValidateSet("cache", "delete")] [string] $StoragePolicy = "cache",
     [string] $UserName = "neuro-test",
     [string] $TestClass,
     [string] $TestPhoneNumber,
@@ -77,6 +78,7 @@ if ($ApiLevel -ne 0) {
     $EnvironmentLines.Add("SYSTEM_IMAGE_ABI='$SystemImageAbi'")
     if (-not [string]::IsNullOrWhiteSpace($AvdName)) { $EnvironmentLines.Add("AVD_NAME='$AvdName'") }
     $EnvironmentLines.Add("SHOW_EMULATOR=$($ShowEmulator.IsPresent.ToString().ToLowerInvariant())")
+    $EnvironmentLines.Add("STORAGE_POLICY='$StoragePolicy'")
 }
 else {
     $EnvironmentLines.Add("DEVICE_MODE=existing")
