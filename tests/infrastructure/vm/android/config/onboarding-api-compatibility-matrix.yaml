@@ -1,0 +1,211 @@
+scenarios:
+  - name: pixel-6-api23-x86-onboarding
+    enabled: true
+    api_level: 23
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api23-x64-onboarding
+    enabled: true
+    api_level: 23
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api24-x86-onboarding
+    enabled: true
+    api_level: 24
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api24-x64-onboarding
+    enabled: true
+    api_level: 24
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api25-x86-onboarding
+    enabled: true
+    api_level: 25
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api25-x64-onboarding
+    enabled: true
+    api_level: 25
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api26-x86-onboarding
+    enabled: true
+    api_level: 26
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api26-x64-onboarding
+    enabled: true
+    api_level: 26
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api27-x86-onboarding
+    enabled: true
+    api_level: 27
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api27-x64-onboarding
+    enabled: true
+    api_level: 27
+    device_profile: pixel_6
+    system_image: default
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api28-x86-onboarding
+    enabled: true
+    api_level: 28
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api28-x64-onboarding
+    enabled: true
+    api_level: 28
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api29-x86-onboarding
+    enabled: true
+    api_level: 29
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api29-x64-onboarding
+    enabled: true
+    api_level: 29
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api30-x86-onboarding
+    enabled: true
+    api_level: 30
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api30-x64-onboarding
+    enabled: true
+    api_level: 30
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api31-x64-onboarding
+    enabled: true
+    api_level: 31
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api32-x64-onboarding
+    enabled: true
+    api_level: 32
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api33-x64-onboarding
+    enabled: true
+    api_level: 33
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api34-x64-onboarding
+    enabled: true
+    api_level: 34
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api35-x64-onboarding
+    enabled: true
+    api_level: 35
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
