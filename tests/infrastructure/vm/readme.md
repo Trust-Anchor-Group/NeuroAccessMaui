@@ -174,6 +174,22 @@ Run the matrix from Windows:
     -TestApk ./app-debug-androidTest.apk
 ```
 
-The client submits one scenario, waits for its final status and cleanup, downloads its results, and only then submits the next scenario. A CSV summary is written below `matrix-results/<timestamp>/summary.csv`. Use `-StopOnFailure` to stop after the first failed scenario or `-ShowEmulator` to override the matrix and show every emulator on the Linux desktop.
+The client uploads both APKs and the enabled matrix once as a single remote job. Linux then runs each scenario sequentially, completes cleanup, and only then starts the next device. Use `-StopOnFailure` to stop after the first failed scenario or `-ShowEmulator` to override the matrix and show every emulator on the Linux desktop.
 
 Disabled scenarios remain in the YAML file as opt-in coverage. Set `enabled: true` when the required API image and application support are ready.
+### Passwordless matrix access
+
+Run `android/client/initialize-remote-access.ps1` once from Windows. It creates or reuses the user's default Ed25519 SSH key and adds only the public key to the Linux account. The remote password is requested during this one-time setup; subsequent SSH and SCP operations authenticate with the key.
+
+```powershell
+./android/client/initialize-remote-access.ps1 `
+    -HostName android-test-host `
+    -UserName neuro-test
+```
+
+### Emulator storage policy
+
+Managed runs accept `-StoragePolicy cache` or `-StoragePolicy delete`. `cache` keeps the downloaded system image and reusable AVD for faster later runs. `delete` stops the emulator, deletes its AVD, and uninstalls the scenario's system image after results have been collected. Matrix scenarios can select the policy with `storage_policy`; the matrix command can override every scenario with `-StoragePolicy cache` or `-StoragePolicy delete`.
+
+Each matrix execution stores a timestamped `matrix.log`, a concise `summary.txt`, a machine-readable `summary.csv`, and the complete remote run directory for every scenario. The remote directory includes the run log, final status, exit code, emulator setup log, emulator console output, and test artifacts.
+The default smoke matrix contains 90 unique combinations: 15 hardware profiles across Android API 30 through 35. Scenarios are ordered by API level. The system image is cached while that API group runs and deleted after the fifteenth profile, keeping download duplication and disk usage bounded. The separate onboarding matrix uses the same 90 combinations and requires 90 consecutive test phone numbers for full registration coverage.
