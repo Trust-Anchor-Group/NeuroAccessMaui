@@ -32,7 +32,7 @@ finish() {
 }
 trap finish EXIT
 
-adb_for "$serial" logcat -c
+adb_for "$serial" logcat -c >/dev/null 2>&1 || true
 adb_for "$serial" logcat -v threadtime >"$results_dir/logcat.txt" 2>&1 & logcat_pid=$!
 adb_for "$serial" install -r -t "$app_apk" | tee "$results_dir/install-app.txt"
 adb_for "$serial" install -r -t "$test_apk" | tee "$results_dir/install-tests.txt"

@@ -36,7 +36,7 @@ finish() {
 }
 trap finish EXIT
 
-for serial in "$serial_a" "$serial_b"; do adb_for "$serial" install -r -t "$app_apk"; adb_for "$serial" install -r -t "$test_apk"; adb_for "$serial" logcat -c; done
+for serial in "$serial_a" "$serial_b"; do adb_for "$serial" install -r -t "$app_apk"; adb_for "$serial" install -r -t "$test_apk"; adb_for "$serial" logcat -c >/dev/null 2>&1 || true; done
 adb_for "$serial_a" logcat -v threadtime >"$results_dir/device-a/logcat.txt" 2>&1 & logcat_a_pid=$!
 adb_for "$serial_b" logcat -v threadtime >"$results_dir/device-b/logcat.txt" 2>&1 & logcat_b_pid=$!
 NEURO_DEVICE_A="$serial_a" NEURO_DEVICE_B="$serial_b" NEURO_RESULTS_DIR="$results_dir" bash "$coordinator" "${coordinator_args[@]}" | tee "$results_dir/coordinator.txt"
