@@ -7,13 +7,10 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.Services;
 using ZXing.Net.Maui;
 #if ANDROID
-using Android.Graphics;
 using AndroidX.Camera.Core;
-using AndroidX.Camera.Core.Impl;
-using Java.Nio;
+using AndroidX.Camera.Lifecycle;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using ZXing.Net.Maui.Controls;
-using ZXing.Net.Maui.Readers;
 #endif
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR
@@ -23,6 +20,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 	/// </summary>
 	public partial class ScanQrCodePage
 	{
+		private bool pageVisible;
+#if ANDROID
+		private bool cameraNeedsRebinding;
+#endif
+
 		public ScanQrCodePage()
 		{
 			// Create VM (it will PopLatestArgs internally)
@@ -57,6 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		{
 			// Base Appearing executes ViewModel lifecycle
 			await base.OnAppearingAsync();
+			this.pageVisible = true;
 
 			// Sync initial states from VM
 			if (this.BindingContext is ScanQrCodeViewModel vm)
@@ -71,15 +74,22 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <inheritdoc/>
 		public override async Task OnDisappearingAsync()
 		{
+			this.pageVisible = false;
 			if (this.BindingContext is ScanQrCodeViewModel vm)
 				vm.PropertyChanged -= this.VmOnPropertyChanged;
-			await MainThread.InvokeOnMainThreadAsync(this.CloseCamera);
-			await base.OnDisappearingAsync();
+			try
+			{
+				await this.CloseCameraAsync();
+			}
+			finally
+			{
+				await base.OnDisappearingAsync();
+			}
 		}
 
 		private async void VmOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if (sender is not ScanQrCodeViewModel vm)
+			if (!this.pageVisible || sender is not ScanQrCodeViewModel vm)
 				return;
 
 			switch (e.PropertyName)
@@ -103,6 +113,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		{
 			try
 			{
+				if (!this.pageVisible)
+					return;
+
 				string current = StateContainer.GetCurrentState(this.GridWithAnimation);
 				bool currentlyAutomatic = string.Equals(current, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
 				if (currentlyAutomatic == isAutomatic && !initial)
@@ -118,6 +131,16 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 						this.LinkEntry.Unfocus();
 						// slight delay to allow native camera initialization before enabling detection
 						await Task.Delay(250);
+						if (!this.pageVisible)
+							return;
+#if ANDROID
+						if (this.cameraNeedsRebinding && this.CameraBarcodeReaderView.Handler is CameraBarcodeReaderViewHandler Handler)
+						{
+							Handler.UpdateValue(nameof(this.CameraBarcodeReaderView.CameraLocation));
+							Handler.UpdateValue(nameof(this.CameraBarcodeReaderView.IsTorchOn));
+							this.cameraNeedsRebinding = false;
+						}
+#endif
 						this.CameraBarcodeReaderView.IsDetecting = true;
 					}
 					else
@@ -136,6 +159,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 					this.CameraBarcodeReaderView.IsTorchOn = false;
 					this.CameraBarcodeReaderView.IsDetecting = false;
 					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, "ManualScan", CancellationToken.None);
+					if (!this.pageVisible)
+						return;
 					this.LinkEntry.Focus();
 				}
 				else
@@ -153,6 +178,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
 					}
 					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, "AutomaticScan", CancellationToken.None);
+					if (!this.pageVisible)
+						return;
 					this.CameraBarcodeReaderView.IsDetecting = true;
 				}
 			}
@@ -163,56 +190,62 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		}
 
 		/// <summary>
-		/// As the camera is not closed properly by the 3rd party framework, we need to close it manually using reflection.
-		/// This is a problem on certain android phones where facial recognition is used.
-		/// https://github.com/Redth/ZXing.Net.Maui/issues/38
+		/// Stops detection and releases the scanner's Android camera use cases before navigation completes.
 		/// </summary>
-		/// TODO: Check if the camera is closed properly by the 3rd party framework and remove this method if it is.
-		private
-#if ANDROID
-			async
-#endif
-			Task CloseCamera()
+		/// <returns>A task representing camera cleanup on the main thread.</returns>
+		private Task CloseCameraAsync()
 		{
-			try
+			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.CameraBarcodeReaderView.IsDetecting = false;
+				this.CameraBarcodeReaderView.IsTorchOn = false;
 #if ANDROID
-				ICameraInternal? preview = await GetCameraPreview(this.CameraBarcodeReaderView);
-				preview?.Close();
+				this.UnbindAndroidCamera();
 #endif
-			}
-			catch (Exception e)
-			{
-				ServiceRef.LogService.LogException(e);
-			}
-#if !ANDROID
-			return Task.CompletedTask;
-#endif
+			});
 		}
 #if ANDROID
 		/// <summary>
-		/// Android specific method to get the camera preview from the 3rd party framework using reflection.
-		/// https://github.com/Redth/ZXing.Net.Maui/issues/164   
+		/// Unbinds ZXing's preview and analysis while retaining them for reuse when the page returns.
 		/// </summary>
-		/// <param name="cameraBarcodeReaderView">The camera view in use</param>
-		/// <returns>The Camera preview</returns>
-		private static async Task<ICameraInternal?> GetCameraPreview(CameraBarcodeReaderView cameraBarcodeReaderView)
+		[DynamicDependency("cameraManager", typeof(CameraBarcodeReaderViewHandler))]
+		[DynamicDependency("_cameraProvider", "ZXing.Net.Maui.CameraManager", "ZXing.Net.MAUI")]
+		[DynamicDependency("_cameraPreview", "ZXing.Net.Maui.CameraManager", "ZXing.Net.MAUI")]
+		[DynamicDependency("_imageAnalyzer", "ZXing.Net.Maui.CameraManager", "ZXing.Net.MAUI")]
+		private void UnbindAndroidCamera()
 		{
+			if (this.CameraBarcodeReaderView.Handler is not CameraBarcodeReaderViewHandler Handler)
+				return;
 
-			PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-			if (status == PermissionStatus.Denied)
-				return null;
+			BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance;
+			FieldInfo ManagerField = typeof(CameraBarcodeReaderViewHandler).GetField("cameraManager", Flags)
+				?? throw new MissingFieldException(typeof(CameraBarcodeReaderViewHandler).FullName, "cameraManager");
+			object? Manager = ManagerField.GetValue(Handler);
+			if (Manager is null)
+				return;
 
-			BindingFlags BindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
-			PropertyInfo? StrongHandlerProperty = typeof(CameraBarcodeReaderView).GetProperty("StrongHandler", BindingFlags);
-			CameraBarcodeReaderViewHandler? CameraBarcodeReaderViewHandler = StrongHandlerProperty?.GetValue(cameraBarcodeReaderView) as CameraBarcodeReaderViewHandler;
-			FieldInfo? ManageField = typeof(CameraBarcodeReaderViewHandler).GetField("cameraManager", BindingFlags);
-			object? CameraManager = ManageField?.GetValue(CameraBarcodeReaderViewHandler);
-			FieldInfo? CameraPreviewField = typeof(CameraBarcodeReaderViewHandler).Assembly.GetType("ZXing.Net.Maui.CameraManager")?.GetField("cameraPreview", BindingFlags);
-			Preview? Preview = CameraPreviewField?.GetValue(CameraManager) as Preview;
+			// ZXing exposes no public stop-preview operation. Closing the native camera alone
+			// leaves its use cases bound to the activity and competing with the next camera page.
+			Type ManagerType = Manager.GetType();
+			FieldInfo ProviderField = ManagerType.GetField("_cameraProvider", Flags)
+				?? throw new MissingFieldException(ManagerType.FullName, "_cameraProvider");
+			FieldInfo PreviewField = ManagerType.GetField("_cameraPreview", Flags)
+				?? throw new MissingFieldException(ManagerType.FullName, "_cameraPreview");
+			FieldInfo AnalysisField = ManagerType.GetField("_imageAnalyzer", Flags)
+				?? throw new MissingFieldException(ManagerType.FullName, "_imageAnalyzer");
+			if (ProviderField.GetValue(Manager) is not ProcessCameraProvider Provider)
+				return;
 
-			return Preview?.Camera;
+			List<UseCase> UseCases = new List<UseCase>();
+			if (PreviewField.GetValue(Manager) is Preview Preview)
+				UseCases.Add(Preview);
+			if (AnalysisField.GetValue(Manager) is ImageAnalysis Analysis)
+				UseCases.Add(Analysis);
+			if (UseCases.Count == 0)
+				return;
+
+			Provider.Unbind(UseCases.ToArray());
+			this.cameraNeedsRebinding = true;
 		}
 #endif
 

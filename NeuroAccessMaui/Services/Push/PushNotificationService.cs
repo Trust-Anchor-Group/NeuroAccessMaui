@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.Services.Push
 	/// <summary>
 	/// Push notification service
 	/// </summary>
-	public class PushNotificationService : LoadableService, IPushNotificationService
+	public class PushNotificationService : LoadableService, IPushNotificationService, IDisposable
 	{
 		private readonly IPushTransport pushTransport;
 		private readonly IPushTokenRegistrar tokenRegistrar;
@@ -26,6 +26,7 @@ namespace NeuroAccessMaui.Services.Push
 		private readonly SemaphoreSlim verificationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly object tokenVerificationSync = new();
 		private Task? pendingTokenVerificationTask;
+		private bool disposed;
 
 		/// <summary>
 		/// Push notification service
@@ -38,6 +39,38 @@ namespace NeuroAccessMaui.Services.Push
 			this.pushTransport = PushTransport;
 			this.tokenRegistrar = TokenRegistrar;
 			this.xmppService = XmppService;
+		}
+
+		/// <summary>
+		/// Releases the synchronization resources owned by the service.
+		/// </summary>
+		/// <remarks>
+		/// Unload the service and complete all outstanding operations before disposal.
+		/// </remarks>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Releases resources owned by the service.
+		/// </summary>
+		/// <param name="Disposing">Whether managed resources should be released.</param>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.disposed)
+				return;
+
+			if (Disposing)
+			{
+				App.AppActivated -= this.App_AppActivated;
+				this.pushTransport.TokenChanged -= this.PushTransport_TokenChanged;
+				this.initializationSemaphore.Dispose();
+				this.verificationSemaphore.Dispose();
+			}
+
+			this.disposed = true;
 		}
 
 		/// <summary>

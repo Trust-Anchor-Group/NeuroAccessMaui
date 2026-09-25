@@ -10,10 +10,11 @@ namespace NeuroAccessMaui.Services.Notification
 	/// Notification service
 	/// </summary>
 	[Singleton]
-	public class NotificationService : LoadableService, INotificationService
+	public class NotificationService : LoadableService, INotificationService, IDisposable
 	{
 		private const int nrTypes = 4;
 		private readonly SemaphoreSlim initializationSemaphore = new SemaphoreSlim(1, 1);
+		private bool disposed;
 
 		private readonly SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>[] events;
 		private readonly LinkedList<ExpectedEvent> expected;
@@ -30,6 +31,33 @@ namespace NeuroAccessMaui.Services.Notification
 
 			for (i = 0; i < nrTypes; i++)
 				this.events[i] = [];
+		}
+
+		/// <summary>
+		/// Releases the synchronization resources owned by the service.
+		/// </summary>
+		/// <remarks>
+		/// Complete all outstanding operations before disposal.
+		/// </remarks>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Releases resources owned by the service.
+		/// </summary>
+		/// <param name="Disposing">Whether managed resources should be released.</param>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.disposed)
+				return;
+
+			if (Disposing)
+				this.initializationSemaphore.Dispose();
+
+			this.disposed = true;
 		}
 
 		/// <summary>
