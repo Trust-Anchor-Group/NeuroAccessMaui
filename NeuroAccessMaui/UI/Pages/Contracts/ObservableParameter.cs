@@ -24,10 +24,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		protected ObservableParameter(Parameter parameter)
 		{
 			this.Parameter = parameter;
+			this.value = parameter.ObjectValue;
 		}
 		#endregion
 
 		#region Initialization
+		/// <summary>
+		/// Applies a non-null initial editor value while preserving protected parameter data.
+		/// </summary>
+		/// <param name="Value">The initial value or editor default.</param>
+		protected void InitializeValue(object? Value)
+		{
+			if (Value is not null && this.Parameter.ProtectedValue is null)
+				this.Value = Value;
+		}
+
 		/// <summary>
 		/// Initializes the parameter in regards to a contract.
 		/// </summary>
@@ -161,28 +172,72 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 		private string validationText = string.Empty;
 
-		/// <summary>
-		/// The value of the parameter
-		/// </summary>
 		private object? value;
+
+		/// <summary>
+		/// Gets or sets the parameter value, retaining its converted type after a successful assignment.
+		/// </summary>
 		public object? Value
 		{
 			get => this.value;
 			set
 			{
-				if (value is null)
-					return;
 				try
 				{
-					this.Parameter.SetValue(value);
+					if (value is null)
+						this.ClearValue();
+					else if (value is string Text && this.Parameter is
+						DateParameter or DateTimeParameter or TimeParameter or DurationParameter or GeoParameter)
+						this.Parameter.StringValue = Text;
+					else
+						this.Parameter.SetValue(value);
+
+					value = this.Parameter.ObjectValue;
 				}
 				catch (Exception E)
 				{
 					ServiceRef.LogService.LogException(E);
+					return;
 				}
-				this.value = value;
-				this.OnPropertyChanged(nameof(this.Value));
+				this.SetProperty(ref this.value, value);
 				this.OnPropertyChanged(nameof(this.CanReadValue));
+			}
+		}
+
+		/// <summary>
+		/// Clears values through nullable properties for parameter types whose SetValue rejects null.
+		/// </summary>
+		private void ClearValue()
+		{
+			switch (this.Parameter)
+			{
+				case BooleanParameter BooleanParameter:
+					BooleanParameter.Value = null;
+					break;
+				case DateParameter DateParameter:
+					DateParameter.Value = null;
+					break;
+				case DateTimeParameter DateTimeParameter:
+					DateTimeParameter.Value = null;
+					break;
+				case NumericalParameter NumericalParameter:
+					NumericalParameter.Value = null;
+					break;
+				case TimeParameter TimeParameter:
+					TimeParameter.Value = null;
+					break;
+				case DurationParameter DurationParameter:
+					DurationParameter.Value = null;
+					break;
+				case GeoParameter GeoParameter:
+					GeoParameter.Value = null;
+					break;
+				case ContractReferenceParameter ContractReferenceParameter:
+					ContractReferenceParameter.Value = null;
+					break;
+				default:
+					this.Parameter.SetValue(null);
+					break;
 			}
 		}
 
@@ -233,9 +288,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	#region ObservableParameter Subclasses
 	public partial class ObservableBooleanParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+				this.OnPropertyChanged(nameof(this.BooleanValue));
+		}
+
 		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is true;
+			this.InitializeValue(parameter.ObjectValue is true);
 		}
 
 		public bool BooleanValue
@@ -250,16 +317,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.BooleanValue = !this.BooleanValue;
-				this.OnPropertyChanged(nameof(this.BooleanValue));
 			});
 		}
 	}
 
 	public class ObservableDateParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+				this.OnPropertyChanged(nameof(this.DateValue));
+		}
+
 		public ObservableDateParameter(DateParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue as DateTime?;
+			this.InitializeValue(parameter.ObjectValue as DateTime?);
 		}
 
 		public DateTime? DateValue
@@ -269,25 +347,59 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 	}
 
+	/// <summary>
+	/// Exposes a numerical contract parameter for binding to a numeric editor.
+	/// </summary>
 	public class ObservableNumericalParameter : ObservableParameter
 	{
-		public ObservableNumericalParameter(NumericalParameter parameter) : base(parameter)
+		/// <summary>
+		/// Initializes the observable value from a numerical contract parameter.
+		/// </summary>
+		/// <param name="Parameter">The numerical parameter to wrap.</param>
+		public ObservableNumericalParameter(NumericalParameter Parameter) : base(Parameter)
 		{
-			this.Value = parameter.ObjectValue is decimal DecimalValue ? DecimalValue : null;
+			this.InitializeValue(Parameter.ObjectValue is decimal DecimalValue ? DecimalValue : null);
 		}
 
+		/// <summary>
+		/// Gets or sets the decimal value displayed by the numeric editor.
+		/// </summary>
 		public decimal? DecimalValue
 		{
 			get => this.Value as decimal?;
 			set => this.Value = value;
 		}
+
+		/// <summary>
+		/// Notifies the numeric editor when the underlying observable value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+				this.OnPropertyChanged(nameof(this.DecimalValue));
+		}
 	}
 
 	public class ObservableStringParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+				this.OnPropertyChanged(nameof(this.StringValue));
+		}
+
 		public ObservableStringParameter(StringParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue as string ?? string.Empty;
+			this.InitializeValue(parameter.ObjectValue as string ?? string.Empty);
 		}
 
 		public string StringValue
@@ -299,9 +411,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 	public class ObservableTimeParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+				this.OnPropertyChanged(nameof(this.TimeSpanValue));
+		}
+
 		public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is TimeSpan TimeSpan ? TimeSpan : TimeSpan.Zero;
+			this.InitializeValue(parameter.ObjectValue is TimeSpan TimeSpan ? TimeSpan : TimeSpan.Zero);
 		}
 
 		public TimeSpan TimeSpanValue
@@ -313,9 +437,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 	public class ObservableDurationParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+			{
+				this.OnPropertyChanged(nameof(this.DurationValue));
+				this.OnPropertyChanged(nameof(this.StringValue));
+			}
+		}
+
 		public ObservableDurationParameter(DurationParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is Duration Duration ? Duration : Duration.Zero;
+			this.InitializeValue(parameter.ObjectValue is Duration Duration ? Duration : Duration.Zero);
 		}
 
 		public string StringValue
@@ -346,9 +485,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 	public class ObservableRoleParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+				this.OnPropertyChanged(nameof(this.RoleValue));
+		}
+
 		public ObservableRoleParameter(RoleParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue as string ?? string.Empty;
+			this.InitializeValue(parameter.ObjectValue as string ?? string.Empty);
 		}
 
 		public string RoleValue
@@ -360,9 +511,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 	public class ObservableCalcParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+			{
+				this.OnPropertyChanged(nameof(this.CalcValue));
+				this.OnPropertyChanged(nameof(this.CalcString));
+			}
+		}
+
 		public ObservableCalcParameter(CalcParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue;
+			this.InitializeValue(parameter.ObjectValue);
 		}
 
 		public object? CalcValue
@@ -375,20 +541,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			get
 			{
-				if (this.Value is null)
-					this.Value = this.Parameter.StringValue;
-
+				object? Value = this.Value ?? this.Parameter.StringValue;
 				CultureInfo Culture = CultureInfo.CurrentCulture;
 
-				Console.WriteLine(this.Value.GetType().Name);
-
-				return this.Value switch
+				return Value switch
 				{
 					decimal DecimalValue => DecimalValue.ToString("N", Culture), // Number format with localization
 					DateTime DateTimeValue => DateTimeValue.ToString("G", Culture), // Localized date format
 					TimeSpan TimeSpanValue => TimeSpanValue.ToString(@"hh\:mm\:ss", Culture), // Time format
 					string StringValue => string.IsNullOrEmpty(StringValue) ? "-" : StringValue,
-					_ => this.Value.ToString() ?? string.Empty // Fallback for unknown types
+					_ => Value?.ToString() ?? string.Empty // Fallback for unknown types
 				};
 			}
 		}
@@ -396,13 +558,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 	public class ObservableDateTimeParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+			{
+				this.OnPropertyChanged(nameof(this.DateTimeValue));
+				this.OnPropertyChanged(nameof(this.SelectedDate));
+				this.OnPropertyChanged(nameof(this.SelectedTime));
+			}
+		}
+
 		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
 		{
 			// Extract initial value from parameter
 			if (parameter.ObjectValue is DateTime Dt)
-				this.Value = Dt;
+				this.InitializeValue(Dt);
 			else
-				this.Value = parameter.Min;  // or DateTime.MinValue as a fallback
+				this.InitializeValue(parameter.Min);
 		}
 
 		/// <summary>
@@ -423,6 +601,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.DateTimeValue?.Date;
 			set
 			{
+				if (value == this.SelectedDate)
+					return;
+
 				if (value.HasValue)
 				{
 					DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
@@ -443,6 +624,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.DateTimeValue?.TimeOfDay ?? TimeSpan.Zero;
 			set
 			{
+				// A cleared date displays midnight; binding feedback must not recreate a date.
+				if (value == this.SelectedTime)
+					return;
+
 				DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
 				this.DateTimeValue = Current.Date + value;
 			}
@@ -451,11 +636,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 	public partial class ObservableContractReferenceParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+				this.OnPropertyChanged(nameof(this.ContractReferenceValue));
+		}
+
 		public ObservableContractReferenceParameter(ContractReferenceParameter parameter) : base(parameter)
 		{
-			ServiceRef.LogService.LogDebug($"{this.Value} - {this.Parameter.ObjectValue}");
-			this.Value = this.Parameter.ObjectValue;
-			//this.Value = parameter.ObjectValue as string ?? string.Empty;
+			this.InitializeValue(parameter.ObjectValue);
 		}
 
 		public string ContractReferenceValue
@@ -496,7 +691,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					if (Contract is null)
 						return;
 					this.ContractReferenceValue = Contract?.ContractId ?? string.Empty;
-					this.OnPropertyChanged(nameof(this.ContractReferenceValue));
 				});
 			}
 			catch (Exception E)
@@ -509,9 +703,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	// Class for ObservableGeoParameter
 	public partial class ObservableGeoParameter : ObservableParameter
 	{
+		/// <summary>
+		/// Notifies editor bindings when the underlying parameter value changes.
+		/// </summary>
+		/// <param name="Args">The property change notification.</param>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs Args)
+		{
+			base.OnPropertyChanged(Args);
+
+			if (Args.PropertyName == nameof(this.Value))
+			{
+				this.OnPropertyChanged(nameof(this.GeoValue));
+				this.OnPropertyChanged(nameof(this.GeoString));
+			}
+		}
+
 		public ObservableGeoParameter(GeoParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue;
+			this.InitializeValue(parameter.ObjectValue);
 		}
 
 		public GeoPosition? GeoValue
@@ -550,7 +759,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					MainThread.BeginInvokeOnMainThread(() =>
 					{
 						this.GeoValue = new GeoPosition(Location.Latitude, Location.Longitude);
-						this.OnPropertyChanged(nameof(this.GeoString));
 					});
 				}
 			}
