@@ -191,9 +191,10 @@ namespace NeuroAccessMaui.Services.Nfc
 		/// Stops the active ISO-DEP session for the supplied identifier.
 		/// </summary>
 		/// <param name="SessionId">The logical session identifier.</param>
+		/// <param name="ErrorMessage">The native error message, or null for successful completion.</param>
 		/// <param name="CancellationToken">The cancellation token.</param>
 		/// <returns>A task representing the asynchronous operation.</returns>
-		Task StopSessionAsync(Guid SessionId, CancellationToken CancellationToken);
+		Task StopSessionAsync(Guid SessionId, string? ErrorMessage, CancellationToken CancellationToken);
 
 		/// <summary>
 		/// Tries to consume a detected shared NFC tag for the active ISO-DEP session.
@@ -258,7 +259,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		}
 
 		/// <inheritdoc/>
-		public Task StopSessionAsync(Guid SessionId, CancellationToken CancellationToken)
+		public Task StopSessionAsync(Guid SessionId, string? ErrorMessage, CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
 			return Task.CompletedTask;

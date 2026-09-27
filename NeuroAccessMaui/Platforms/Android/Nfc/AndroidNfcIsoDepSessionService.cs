@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		}
 
 		/// <inheritdoc/>
-		public Task StopSessionAsync(Guid SessionId, CancellationToken CancellationToken)
+		public Task StopSessionAsync(Guid SessionId, string? ErrorMessage, CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
 

@@ -3407,6 +3407,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Checks if locally persisted contract signing keys are available for reuse.
+		/// </summary>
+		/// <returns>If a local signing key set is available.</returns>
+		public Task<bool> HasSigningKeysAsync()
+		{
+			return this.ContractsClient.LoadKeys(false);
+		}
+
+		/// <summary>
 		/// Marks the legal identity as obsolete.
 		/// </summary>
 		/// <param name="legalIdentityId">The id to mark as obsolete.</param>

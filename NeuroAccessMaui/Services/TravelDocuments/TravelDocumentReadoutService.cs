@@ -4,7 +4,9 @@ using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.DataObjects;
+using NeuroAccessMaui.Services.Nfc;
 using Waher.Content.Xml;
+using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Networking.Sniffers.Model;
 using Waher.Runtime.Inventory;
@@ -34,7 +36,13 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 		/// <summary>
 		/// An unexpected exception interrupted the readout.
 		/// </summary>
-		UnexpectedError = 3
+		UnexpectedError = 3,
+
+		/// <summary>The document moved out of range during readout.</summary>
+		ConnectionLost = 4,
+
+		/// <summary>An NFC command timed out during readout.</summary>
+		TimedOut = 5
 	}
 
 	/// <summary>
@@ -150,6 +158,11 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 		/// Gets the application identity identifier used for readout key seeding, if available.
 		/// </summary>
 		public string? ApplicationIdentityId { get; }
+
+		/// <summary>
+		/// Gets the optional asynchronous callback for chip-readout progress.
+		/// </summary>
+		public Func<TravelDocumentsState, Task>? ProgressCallback { get; init; }
 	}
 
 	/// <summary>
@@ -425,9 +438,10 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 				byte[]? LocalKeySeed = TravelDocumentReadoutService.CreateLocalKeySeed(Request.ApplicationIdentityId);
 
 				Client = new TravelDocumentsClient(IsoDepInterface, Request.DocumentInformation, LocalKeySeed, Sniffers);
-				TravelDocumentReadoutService.RegisterReadoutEvents(Client);
+				TravelDocumentReadoutService.RegisterReadoutEvents(Client, Request.ProgressCallback);
 				HttpProxyScope = await ServiceRef.NetworkService.EnableNeuronHttpProxyAsync(600, Client, CancellationToken);
 
+				await TravelDocumentReadoutService.ResetIosSelectionToMasterFileAsync(IsoDepInterface);
 				Client.Information("Starting readout.");
 				CancellationToken.ThrowIfCancellationRequested();
 
@@ -476,8 +490,14 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			}
 			catch (Exception Ex)
 			{
+				Client?.Exception(Ex);
 				return new TravelDocumentReadoutResult(
-					TravelDocumentReadoutStatus.UnexpectedError,
+					Ex switch
+					{
+						NfcConnectionLostException => TravelDocumentReadoutStatus.ConnectionLost,
+						TimeoutException => TravelDocumentReadoutStatus.TimedOut,
+						_ => TravelDocumentReadoutStatus.UnexpectedError
+					},
 					await TravelDocumentReadoutService.CompleteReadoutXmlAsync(InMemoryXmlWriterSniffer, XmlOutput, XmlBuilder),
 					null,
 					null,
@@ -491,6 +511,22 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 				Client?.Dispose();
 				IsoDepInterface.CloseIfOpen();
 			}
+		}
+
+		private static async Task ResetIosSelectionToMasterFileAsync(IIsoDepInterface IsoDepInterface)
+		{
+			if (!OperatingSystem.IsIOS())
+				return;
+
+			// Match w-id's preparation without adding it to the replayable NFC readout.
+			CommunicationLayer SilentCommunicationLayer = new CommunicationLayer(false, Array.Empty<ISniffer>());
+			await IsoDepInterface.ExecuteCommand(
+			[
+				0x00,
+				0xA4,
+				0x00,
+				0x0C
+			], SilentCommunicationLayer);
 		}
 
 		private static TravelDocumentData? CreateDocumentData(TravelDocumentsClient? Client, DocumentInformation? FallbackDocumentInformation)
@@ -631,9 +667,9 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			return Encoding.UTF8.GetBytes(LocalKeySeedSource);
 		}
 
-		private static void RegisterReadoutEvents(TravelDocumentsClient Client)
+		private static void RegisterReadoutEvents(TravelDocumentsClient Client, Func<TravelDocumentsState, Task>? ProgressCallback)
 		{
-			Client.StateChanged += (_, _) => Task.CompletedTask;
+			Client.StateChanged += (_, Event) => ProgressCallback?.Invoke(Event.State) ?? Task.CompletedTask;
 			Client.AppInfoUpdated += (_, _) => Task.CompletedTask;
 			Client.SecurityInfoUpdated += (_, _) => Task.CompletedTask;
 			Client.MrzUpdated += (_, _) => Task.CompletedTask;

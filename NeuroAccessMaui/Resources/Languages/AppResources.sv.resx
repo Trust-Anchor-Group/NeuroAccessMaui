@@ -3202,7 +3202,7 @@
     <value>Okänt, vänligen uppdatera</value>
   </data>
   <data name="SelectForMe" xml:space="preserve">
-    <value>Fortsätt ändå</value>
+    <value>Fortsätt</value>
   </data>
   <data name="ShareDescription" xml:space="preserve">
     <value>Nedan hittar du ytterligare alternativ för att dela QR-koden.</value>
@@ -3745,12 +3745,55 @@
     <value>NFC-anslutningen bröts. Håll dokumentet stilla och försök igen.</value>
   </data>
   <data name="KycTravelDocumentNfcAuthenticationFailed" xml:space="preserve">
-    <value>Chippet kunde inte autentiseras med sparad MRZ. Kontrollera skanningen och försök igen.</value>
+    <value>Chippet kunde inte autentiseras. Försök igen. Om problemet kvarstår, skanna dokumentet igen eller kontakta supporten.</value>
   </data>
   <data name="KycTravelDocumentNfcReadFailed" xml:space="preserve">
     <value>Chippet autentiserades, men dokumentdata kunde inte läsas. Försök igen.</value>
   </data>
   <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
     <value>Chipavläsningen misslyckades. Kontrollera skanningen och försök igen.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcIntroPassport" xml:space="preserve">
+    <value>⚪ ⚪ ⚪
+Håll ovansidan av din iPhone mot passets omslag.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcIntroIdCard" xml:space="preserve">
+    <value>⚪ ⚪ ⚪
+Håll ovansidan av din iPhone mot id-kortet.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcDetected" xml:space="preserve">
+    <value>🔵 ⚪ ⚪
+Chippet hittades. Fortsätt hålla stilla.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcReading" xml:space="preserve">
+    <value>🔵 🔵 ⚪
+Läser ditt dokument. Fortsätt hålla stilla.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcCheckingSecurity" xml:space="preserve">
+    <value>🔵 🔵 ⚪
+Kontrollerar dokumentets säkerhet. Fortsätt hålla stilla.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcCheckingDocument" xml:space="preserve">
+    <value>🔵 🔵 ⚪
+Kontrollerar ditt dokument. Fortsätt hålla stilla.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcSuccess" xml:space="preserve">
+    <value>🔵 🔵 🔵
+Dokumentet har lästs. Du kan flytta din iPhone.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcCancelled" xml:space="preserve">
+    <value>Skanningen avbröts.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcConnectionLost" xml:space="preserve">
+    <value>Anslutningen bröts. Håll din iPhone mot dokumentet och försök igen.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcTimedOut" xml:space="preserve">
+    <value>Tiden för skanningen gick ut. Håll din iPhone mot dokumentet och försök igen.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcFailed" xml:space="preserve">
+    <value>Det gick inte att läsa ditt dokument. Försök igen.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcRetrying" xml:space="preserve">
+    <value>Försöker med en annan skanningsmetod. Ha dokumentet redo.</value>
   </data>
 </root>

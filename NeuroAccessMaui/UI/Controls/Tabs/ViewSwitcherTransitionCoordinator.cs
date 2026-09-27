@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Controls
 		private readonly IAnimationCoordinator? animationCoordinator;
 		private readonly SemaphoreSlim transitionLock = new SemaphoreSlim(1, 1);
 		private CancellationTokenSource? transitionSource;
-		private bool disposed;
+		private volatile bool disposed;
 
 		public ViewSwitcherTransitionCoordinator(Grid presenter, IAnimationCoordinator? animationCoordinator)
 		{
@@ -35,12 +35,21 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public View? CurrentView { get; private set; }
 
+		/// <summary>
+		/// Presents the next view, cancelling any superseded transition.
+		/// </summary>
+		/// <param name="owner">The view switcher requesting the transition.</param>
+		/// <param name="nextView">The view to present.</param>
+		/// <param name="isInitial">Whether this is the initial presentation.</param>
+		/// <param name="cancellationToken">Token used to cancel the transition.</param>
+		/// <returns>A task representing the transition and its cleanup.</returns>
 		public async Task SwitchAsync(ViewSwitcher owner, View? nextView, bool isInitial, CancellationToken cancellationToken)
 		{
 			if (this.disposed)
 				throw new ObjectDisposedException(nameof(ViewSwitcherTransitionCoordinator));
 
-			CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+			using CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+			CancellationToken TransitionToken = linkedSource.Token;
 			CancellationTokenSource? previous = Interlocked.Exchange(ref this.transitionSource, linkedSource);
 			if (previous is not null)
 			{
@@ -51,21 +60,24 @@ namespace NeuroAccessMaui.UI.Controls
 				catch (ObjectDisposedException)
 				{
 				}
-				finally
-				{
-					previous.Dispose();
-				}
 			}
 
-			await this.transitionLock.WaitAsync(linkedSource.Token).ConfigureAwait(false);
+			bool LockAcquired = false;
 			try
 			{
+				if (this.disposed)
+					linkedSource.Cancel();
+
+				await this.transitionLock.WaitAsync(TransitionToken).ConfigureAwait(false);
+				LockAcquired = true;
+				TransitionToken.ThrowIfCancellationRequested();
 				View? currentView = this.CurrentView;
 				if (ReferenceEquals(currentView, nextView))
 					return;
 
 				await owner.Dispatcher.DispatchAsync(async () =>
 				{
+					TransitionToken.ThrowIfCancellationRequested();
 					if (nextView is not null)
 					{
 						this.DetachFromParent(nextView);
@@ -102,12 +114,12 @@ namespace NeuroAccessMaui.UI.Controls
 								};
 							}
 							AnimationContextOptions ContextOptions = this.CreateContextOptions();
-							await this.animationCoordinator!.PlayTransitionAsync(AnimationKeys.ViewSwitcher.CrossFade, nextView as VisualElement, currentView as VisualElement, Options, ContextOptions, linkedSource.Token);
+							await this.animationCoordinator!.PlayTransitionAsync(AnimationKeys.ViewSwitcher.CrossFade, nextView as VisualElement, currentView as VisualElement, Options, ContextOptions, TransitionToken);
 							transitionCompleted = true;
 						}
 						else
 						{
-							await this.Transition.RunAsync(request, linkedSource.Token);
+							await this.Transition.RunAsync(request, TransitionToken);
 							transitionCompleted = true;
 						}
 					}
@@ -138,16 +150,10 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 			finally
 			{
-				this.transitionLock.Release();
+				if (LockAcquired)
+					this.transitionLock.Release();
 
-				if (Interlocked.CompareExchange(ref this.transitionSource, null, linkedSource) == linkedSource)
-				{
-					linkedSource.Dispose();
-				}
-				else
-				{
-					linkedSource.Dispose();
-				}
+				Interlocked.CompareExchange(ref this.transitionSource, null, linkedSource);
 			}
 		}
 
@@ -251,18 +257,28 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		/// <summary>
+		/// Cancels the active transition and prevents further transitions.
+		/// </summary>
 		public void Dispose()
 		{
 			if (!this.disposed)
 			{
-				this.transitionLock.Dispose();
-				CancellationTokenSource? source = this.transitionSource;
+				this.disposed = true;
+				CancellationTokenSource? source = Interlocked.Exchange(ref this.transitionSource, null);
 				if (source is not null)
 				{
-					source.Cancel();
-					source.Dispose();
+					try
+					{
+						source.Cancel();
+					}
+					catch (ObjectDisposedException)
+					{
+					}
 				}
-				this.disposed = true;
+
+				// Each transition disposes its own source after unwinding. Pending transitions
+				// still need the semaphore; its managed resources can be garbage collected.
 			}
 		}
 	}

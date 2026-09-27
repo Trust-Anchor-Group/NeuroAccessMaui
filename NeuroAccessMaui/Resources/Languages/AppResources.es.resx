@@ -3760,12 +3760,55 @@
     <value>Se perdió la conexión NFC. Mantén el documento quieto e inténtalo de nuevo.</value>
   </data>
   <data name="KycTravelDocumentNfcAuthenticationFailed" xml:space="preserve">
-    <value>No se pudo autenticar el chip con los datos guardados. Revisa el escaneo e inténtalo de nuevo.</value>
+    <value>No se pudo autenticar el chip. Inténtalo de nuevo. Si el problema persiste, vuelve a escanear el documento o contacta con soporte.</value>
   </data>
   <data name="KycTravelDocumentNfcReadFailed" xml:space="preserve">
     <value>El chip se autenticó, pero no se pudieron leer los datos del documento. Inténtalo de nuevo.</value>
   </data>
   <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
     <value>No se pudo leer el chip. Revisa el escaneo e inténtalo de nuevo.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcIntroPassport" xml:space="preserve">
+    <value>⚪ ⚪ ⚪
+Mantén la parte superior de tu iPhone contra la cubierta del pasaporte.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcIntroIdCard" xml:space="preserve">
+    <value>⚪ ⚪ ⚪
+Mantén la parte superior de tu iPhone contra el documento de identidad.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcDetected" xml:space="preserve">
+    <value>🔵 ⚪ ⚪
+Chip detectado. Sigue manteniendo el iPhone quieto.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcReading" xml:space="preserve">
+    <value>🔵 🔵 ⚪
+Leyendo tu documento. Sigue manteniendo el iPhone quieto.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcCheckingSecurity" xml:space="preserve">
+    <value>🔵 🔵 ⚪
+Comprobando la seguridad del documento. Sigue manteniendo el iPhone quieto.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcCheckingDocument" xml:space="preserve">
+    <value>🔵 🔵 ⚪
+Comprobando tu documento. Sigue manteniendo el iPhone quieto.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcSuccess" xml:space="preserve">
+    <value>🔵 🔵 🔵
+Documento leído. Ya puedes mover tu iPhone.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcCancelled" xml:space="preserve">
+    <value>Escaneo cancelado.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcConnectionLost" xml:space="preserve">
+    <value>Se perdió la conexión. Mantén tu iPhone contra el documento e inténtalo de nuevo.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcTimedOut" xml:space="preserve">
+    <value>El escaneo agotó el tiempo de espera. Mantén tu iPhone contra el documento e inténtalo de nuevo.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcFailed" xml:space="preserve">
+    <value>No se pudo leer tu documento. Inténtalo de nuevo.</value>
+  </data>
+  <data name="TravelDocumentScan_IosNfcRetrying" xml:space="preserve">
+    <value>Intentando otro método de escaneo. Ten el documento preparado.</value>
   </data>
 </root>

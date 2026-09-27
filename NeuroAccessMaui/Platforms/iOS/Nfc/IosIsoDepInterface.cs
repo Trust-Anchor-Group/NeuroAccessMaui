@@ -138,15 +138,18 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 						if (Error is not null)
 						{
 							NFCReaderError ReaderError = (NFCReaderError)(long)Error.Code;
+							string ErrorDetails = FormatReaderError(Error, ReaderError);
+							CommunicationLayer?.Error(ErrorDetails);
+
 							if (ReaderError is NFCReaderError.ReaderTransceiveErrorTagConnectionLost or
 								NFCReaderError.ReaderTransceiveErrorTagNotConnected or
 								NFCReaderError.ReaderTransceiveErrorRetryExceeded)
 							{
-								ResultSource.TrySetException(new NfcConnectionLostException(Error.LocalizedDescription));
+								ResultSource.TrySetException(new NfcConnectionLostException(ErrorDetails));
 								return;
 							}
 
-							ResultSource.TrySetException(new InvalidOperationException(Error.LocalizedDescription));
+							ResultSource.TrySetException(new InvalidOperationException(ErrorDetails));
 							return;
 						}
 
@@ -164,6 +167,14 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 				Cleanup();
 				throw;
 			}
+		}
+
+		private static string FormatReaderError(NSError Error, NFCReaderError ReaderError)
+		{
+			return "iOS NFC command failed. Domain=" + Error.Domain +
+				", Code=" + ((long)Error.Code).ToString(System.Globalization.CultureInfo.InvariantCulture) +
+				", ReaderError=" + ReaderError +
+				", Description=" + Error.LocalizedDescription;
 		}
 
 		private static NFCIso7816Apdu CreateCommandApdu(byte[] Command)

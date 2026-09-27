@@ -1373,8 +1373,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
-			bool HasCurrentIdentityKey = await this.HasCurrentIdentityPrivateKeyAsync();
-			return (true, !HasCurrentIdentityKey);
+			try
+			{
+				bool HasExistingSigningKey = await this.HasExistingSigningKeyAsync();
+				return (true, !HasExistingSigningKey);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex,
+					new KeyValuePair<string, object?>("Operation", "KYC.SubmissionSigningKeyCheck"));
+				return (false, false);
+			}
 		}
 
 		private async Task<(bool Succeeded, LegalIdentity? Identity)> SubmitApplicationContentAsync(
@@ -1421,13 +1430,18 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return string.Equals(Identity.Id, ReservedPreviewIdentityId, StringComparison.OrdinalIgnoreCase);
 		}
 
-		private async Task<bool> HasCurrentIdentityPrivateKeyAsync()
+		private async Task<bool> HasExistingSigningKeyAsync()
 		{
-			string IdentityId = ServiceRef.TagProfile.LegalIdentity?.Id?.Trim() ?? string.Empty;
-			if (string.IsNullOrWhiteSpace(IdentityId))
-				return false;
+			if (await ServiceRef.XmppService.HasSigningKeysAsync())
+				return true;
 
-			return await this.HasPrivateKeyAsync(IdentityId);
+			string IdentityId = ServiceRef.TagProfile.LegalIdentity?.Id?.Trim() ?? string.Empty;
+			if (!string.IsNullOrWhiteSpace(IdentityId) && await ServiceRef.XmppService.HasPrivateKey(IdentityId))
+				return true;
+
+			string? ApplicationIdentityId = this.kycReference?.GetActiveApplicationIdentityId();
+			return !string.IsNullOrWhiteSpace(ApplicationIdentityId) &&
+				await ServiceRef.XmppService.HasPrivateKey(ApplicationIdentityId);
 		}
 
 		private async Task<bool> HasPrivateKeyAsync(string IdentityId)
@@ -1441,7 +1455,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogWarning("Error checking identity private key, generating new keys if possible: " + Ex.Message);
+				ServiceRef.LogService.LogException(Ex,
+					new KeyValuePair<string, object?>("Operation", "KYC.SubmissionPrivateKeyCheck"));
 				return false;
 			}
 		}

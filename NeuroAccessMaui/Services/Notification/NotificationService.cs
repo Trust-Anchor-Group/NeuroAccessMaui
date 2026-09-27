@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Waher.Events;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;

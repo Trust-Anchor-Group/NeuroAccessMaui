@@ -83,6 +83,10 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
+				CancellationToken.ThrowIfCancellationRequested();
+				if (this.GetActiveContext(SessionId) != Context)
+					return;
+
 				Context.ReaderSession = new NFCTagReaderSession(
 					this.ResolvePollingOption(PollingPreference),
 					Context.Delegate,
@@ -104,12 +108,13 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				Context.ReaderSession.AlertMessage = AlertMessage;
+				if (this.GetActiveContext(SessionId, Context.ReaderSession) == Context)
+					Context.ReaderSession.AlertMessage = AlertMessage;
 			});
 		}
 
 		/// <inheritdoc/>
-		public async Task StopSessionAsync(Guid SessionId, CancellationToken CancellationToken)
+		public async Task StopSessionAsync(Guid SessionId, string? ErrorMessage, CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
 
@@ -118,7 +123,7 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 				return;
 
 			this.ActiveSessionChanged?.Invoke(this, EventArgs.Empty);
-			await this.InvalidateSessionAsync(Context, CancellationToken);
+			await this.InvalidateSessionAsync(Context, ErrorMessage, CancellationToken);
 		}
 
 		/// <inheritdoc/>
@@ -139,7 +144,7 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 			ArgumentNullException.ThrowIfNull(ReaderSession);
 			ArgumentNullException.ThrowIfNull(Tags);
 
-			SessionContext? Context = this.GetActiveContext(SessionId);
+			SessionContext? Context = this.GetActiveContext(SessionId, ReaderSession);
 			if (Context is null)
 				return;
 
@@ -163,7 +168,7 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 				}
 
 				await ReaderSession.ConnectToAsync(Tag);
-				if (this.GetActiveContext(SessionId) is null)
+				if (this.GetActiveContext(SessionId, ReaderSession) is null)
 					return;
 
 				IosIsoDepInterface IsoDepInterface = new IosIsoDepInterface(Tag, Iso7816Tag, Context.CancellationTokenSource.Token);
@@ -171,13 +176,22 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 			}
 			catch (OperationCanceledException)
 			{
+				if (this.GetActiveContext(SessionId, ReaderSession) is not null)
+					await this.CompleteWithFailureAsync(SessionId, ReaderSession, new NfcIsoDepSessionFailure(NfcIsoDepSessionFailureCode.Cancelled));
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 
-				if (this.GetActiveContext(SessionId) is not null)
-					await this.CompleteWithFailureAsync(SessionId, ReaderSession, new NfcIsoDepSessionFailure(NfcIsoDepSessionFailureCode.SessionFailed));
+				if (this.GetActiveContext(SessionId, ReaderSession) is not null)
+				{
+					NfcIsoDepSessionFailure Failure = Ex is NSErrorException NativeException
+						? this.MapReaderError(NativeException.Error)
+						: new NfcIsoDepSessionFailure(Ex is NfcConnectionLostException
+							? NfcIsoDepSessionFailureCode.ConnectionLost
+							: NfcIsoDepSessionFailureCode.SessionFailed);
+					await this.CompleteWithFailureAsync(SessionId, ReaderSession, Failure);
+				}
 			}
 			finally
 			{
@@ -185,29 +199,32 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 			}
 		}
 
-		internal async Task HandleInvalidationAsync(Guid SessionId, NSError Error)
+		internal async Task HandleInvalidationAsync(Guid SessionId, NFCTagReaderSession ReaderSession, NSError Error)
 		{
+			ArgumentNullException.ThrowIfNull(ReaderSession);
 			ArgumentNullException.ThrowIfNull(Error);
 
-			SessionContext? Context = this.DetachActiveContext(SessionId);
+			SessionContext? Context = this.DetachActiveContext(SessionId, ReaderSession);
 			if (Context is null)
 				return;
 
 			this.ActiveSessionChanged?.Invoke(this, EventArgs.Empty);
-			this.CancelContext(Context);
-			this.DisposeContext(Context);
 
-			NfcIsoDepSessionFailure? Failure = this.MapReaderError(Error);
-			if (Failure is null)
-				return;
+			NfcIsoDepSessionFailure Failure = this.MapReaderError(Error);
 
 			try
 			{
+				// Publish the native failure before cancellation can finish the readout with a generic error.
 				await Context.FailureHandler(Failure, CancellationToken.None);
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+			finally
+			{
+				this.CancelContext(Context);
+				this.DisposeContext(Context);
 			}
 		}
 
@@ -221,25 +238,35 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 			}
 
 			if (PreviousContext is not null)
-				await this.InvalidateSessionAsync(PreviousContext, CancellationToken);
+				await this.InvalidateSessionAsync(PreviousContext, ServiceRef.Localizer["TravelDocumentScan_IosNfcCancelled"], CancellationToken);
 
 			this.ActiveSessionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		private SessionContext? GetActiveContext(Guid SessionId)
+		private SessionContext? GetActiveContext(Guid SessionId, NFCTagReaderSession? ReaderSession = null)
 		{
 			lock (this.syncObject)
 			{
-				return this.activeSessionContext?.SessionId == SessionId ? this.activeSessionContext : null;
+				if (this.activeSessionContext?.SessionId != SessionId ||
+					(ReaderSession is not null && this.activeSessionContext.ReaderSession?.Handle != ReaderSession.Handle))
+				{
+					return null;
+				}
+
+				return this.activeSessionContext;
 			}
 		}
 
-		private SessionContext? DetachActiveContext(Guid SessionId)
+		private SessionContext? DetachActiveContext(Guid SessionId, NFCTagReaderSession? ReaderSession = null)
 		{
 			lock (this.syncObject)
 			{
-				if (this.activeSessionContext?.SessionId != SessionId)
+				// Late callbacks must match the native session as well as its logical identifier.
+				if (this.activeSessionContext?.SessionId != SessionId ||
+					(ReaderSession is not null && this.activeSessionContext.ReaderSession?.Handle != ReaderSession.Handle))
+				{
 					return null;
+				}
 
 				SessionContext Context = this.activeSessionContext;
 				this.activeSessionContext = null;
@@ -249,16 +276,11 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 
 		private async Task CompleteWithFailureAsync(Guid SessionId, NFCTagReaderSession ReaderSession, NfcIsoDepSessionFailure Failure)
 		{
-			SessionContext? Context = this.DetachActiveContext(SessionId);
+			SessionContext? Context = this.DetachActiveContext(SessionId, ReaderSession);
 			if (Context is null)
 				return;
 
 			this.ActiveSessionChanged?.Invoke(this, EventArgs.Empty);
-			this.CancelContext(Context);
-
-			await MainThread.InvokeOnMainThreadAsync(ReaderSession.InvalidateSession);
-			this.DisposeContext(Context);
-
 			try
 			{
 				await Context.FailureHandler(Failure, CancellationToken.None);
@@ -267,9 +289,20 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+			finally
+			{
+				string ResourceKey = Failure.FailureCode switch
+				{
+					NfcIsoDepSessionFailureCode.ConnectionLost => "TravelDocumentScan_IosNfcConnectionLost",
+					NfcIsoDepSessionFailureCode.TimedOut => "TravelDocumentScan_IosNfcTimedOut",
+					NfcIsoDepSessionFailureCode.Cancelled => "TravelDocumentScan_IosNfcCancelled",
+					_ => "TravelDocumentScan_IosNfcFailed"
+				};
+				await this.InvalidateSessionAsync(Context, ServiceRef.Localizer[ResourceKey], CancellationToken.None);
+			}
 		}
 
-		private async Task InvalidateSessionAsync(SessionContext Context, CancellationToken CancellationToken)
+		private async Task InvalidateSessionAsync(SessionContext Context, string? ErrorMessage, CancellationToken CancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(Context);
 			CancellationToken.ThrowIfCancellationRequested();
@@ -281,7 +314,13 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 				NFCTagReaderSession ReaderSession = Context.ReaderSession;
 				try
 				{
-					await MainThread.InvokeOnMainThreadAsync(ReaderSession.InvalidateSession);
+					await MainThread.InvokeOnMainThreadAsync(() =>
+					{
+						if (ErrorMessage is null)
+							ReaderSession.InvalidateSession();
+						else
+							ReaderSession.InvalidateSession(ErrorMessage);
+					});
 				}
 				catch (Exception Ex)
 				{
@@ -411,7 +450,7 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 
 			public override async void DidInvalidate(NFCTagReaderSession Session, NSError Error)
 			{
-				await this.owner.HandleInvalidationAsync(this.sessionId, Error);
+				await this.owner.HandleInvalidationAsync(this.sessionId, Session, Error);
 			}
 		}
 	}

@@ -276,24 +276,39 @@ namespace NeuroAccessMaui.UI.Pages.Main.NfcTester
 				: CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, ActiveCancellation.Token);
 			CancellationToken ReadCancellationToken = LinkedCancellation.Token;
 
-			await this.nfcIsoDepSessionService.UpdateSessionAlertAsync(SessionId, ServiceRef.Localizer["NfcTesterReading"], ReadCancellationToken);
-			await MainThread.InvokeOnMainThreadAsync(() =>
-			{
-				this.StatusText = ServiceRef.Localizer["NfcTesterReading"];
-				this.FlowState = NfcTesterFlowState.NfcReading;
-			});
-
 			try
 			{
+				await this.nfcIsoDepSessionService.UpdateSessionAlertAsync(SessionId, ServiceRef.Localizer["NfcTesterReading"], ReadCancellationToken);
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					if (!this.IsActiveSession(SessionId))
+						return;
+
+					this.StatusText = ServiceRef.Localizer["NfcTesterReading"];
+					this.FlowState = NfcTesterFlowState.NfcReading;
+				});
+
 				TravelDocumentReadoutRequest Request = new TravelDocumentReadoutRequest(this.documentInformation, this.mrzText, null);
 				TravelDocumentReadoutResult Result = await this.readoutService.ReadAsync(IsoDepInterface, Request, ReadCancellationToken);
 				if (!this.IsActiveSession(SessionId))
 					return;
 
-				await MainThread.InvokeOnMainThreadAsync(() => this.ApplyReadoutResult(Result));
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					if (this.IsActiveSession(SessionId))
+						this.ApplyReadoutResult(Result);
+				});
 			}
 			catch (OperationCanceledException) when (ReadCancellationToken.IsCancellationRequested)
 			{
+				if (this.IsActiveSession(SessionId))
+					await this.ApplyFailureAsync(SessionId, ServiceRef.Localizer["KycTravelDocumentNfcCancelled"]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				if (this.IsActiveSession(SessionId))
+					await this.ApplyFailureAsync(SessionId, ServiceRef.Localizer["KycTravelDocumentNfcFailed"]);
 			}
 			finally
 			{
@@ -325,6 +340,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.NfcTester
 		{
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
+				if (!this.IsActiveSession(SessionId))
+					return;
+
 				this.StatusText = Message;
 				this.FlowState = NfcTesterFlowState.Error;
 			});
@@ -416,23 +434,50 @@ namespace NeuroAccessMaui.UI.Pages.Main.NfcTester
 
 		private async Task CompleteNfcSessionAsync(Guid SessionId)
 		{
-			if (this.activeSessionId == SessionId)
-				this.activeSessionId = null;
+			if (this.activeSessionId != SessionId)
+				return;
 
-			this.CancelAndDisposeActiveSessionCancellation();
-			await this.nfcIsoDepSessionService.StopSessionAsync(SessionId, CancellationToken.None);
-			await MainThread.InvokeOnMainThreadAsync(() => this.IsNfcBusy = false);
+			this.activeSessionId = null;
+			string? ErrorMessage = this.FlowState == NfcTesterFlowState.Result ? null : this.StatusText;
+			await this.CloseNativeNfcSessionAsync(SessionId, ErrorMessage);
 		}
 
 		private async Task StopActiveNfcSessionAsync()
 		{
 			Guid? SessionId = this.activeSessionId;
 			this.activeSessionId = null;
-			this.CancelAndDisposeActiveSessionCancellation();
 			if (SessionId.HasValue)
-				await this.nfcIsoDepSessionService.StopSessionAsync(SessionId.Value, CancellationToken.None);
+				await this.CloseNativeNfcSessionAsync(SessionId.Value, ServiceRef.Localizer["TravelDocumentScan_IosNfcCancelled"]);
+		}
 
-			this.IsNfcBusy = false;
+		private async Task CloseNativeNfcSessionAsync(Guid SessionId, string? ErrorMessage)
+		{
+			try
+			{
+				this.CancelAndDisposeActiveSessionCancellation();
+				await this.nfcIsoDepSessionService.UpdateSessionAlertAsync(SessionId, this.StatusText, CancellationToken.None);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			try
+			{
+				await this.nfcIsoDepSessionService.StopSessionAsync(SessionId, ErrorMessage, CancellationToken.None);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					if (this.activeSessionId is null)
+						this.IsNfcBusy = false;
+				});
+			}
 		}
 
 		private async Task ResetAttemptAsync()
@@ -523,6 +568,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.NfcTester
 			{
 				TravelDocumentReadoutStatus.AuthenticationFailed => ServiceRef.Localizer[nameof(AppResources.KycTravelDocumentNfcAuthenticationFailed)],
 				TravelDocumentReadoutStatus.ReadFailed => ServiceRef.Localizer[nameof(AppResources.KycTravelDocumentNfcReadFailed)],
+				TravelDocumentReadoutStatus.ConnectionLost => ServiceRef.Localizer["KycTravelDocumentNfcConnectionLost"],
+				TravelDocumentReadoutStatus.TimedOut => ServiceRef.Localizer["KycTravelDocumentNfcTimedOut"],
 				_ => ServiceRef.Localizer["NfcTesterPartialResult"]
 			};
 		}
