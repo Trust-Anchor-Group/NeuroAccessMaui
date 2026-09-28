@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.Camera
 			_ = this.SetCameraConnectionAsync(true);
 		}
 
-		private partial void Cleanup()
+		private partial void Cleanup(PreviewView? PlatformView)
 		{
 			_ = this.SetCameraConnectionAsync(false);
 		}

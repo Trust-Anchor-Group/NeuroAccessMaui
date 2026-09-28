@@ -56,10 +56,10 @@ namespace NeuroAccessMaui.Camera
 			this.selectedCamera = this.VirtualView?.SelectedCamera;
 		}
 
-		private partial void Cleanup()
+		private partial void Cleanup(UIView? PlatformView)
 		{
-			CameraPreviewContainerView? ContainerView = this.PlatformView as CameraPreviewContainerView;
-			CameraView? VirtualView = this.VirtualView;
+			CameraPreviewContainerView? ContainerView = PlatformView as CameraPreviewContainerView;
+			CameraView? VirtualView = ((IElementHandler)this).VirtualView as CameraView;
 
 			this.ResetLifecycleStateForTeardown();
 			if (!this.TryAcquireLifecycleLockForCleanup())
@@ -491,11 +491,11 @@ namespace NeuroAccessMaui.Camera
 			});
 		}
 
-		private Task ClearPreviewLayerSessionAsync(CameraPreviewContainerView? PreviewContainerView = null)
+		private Task ClearPreviewLayerSessionAsync(CameraPreviewContainerView? PreviewContainerView)
 		{
 			return this.RunOnMainQueueAsync(() =>
 			{
-				CameraPreviewContainerView? ContainerView = PreviewContainerView ?? this.PlatformView as CameraPreviewContainerView;
+				CameraPreviewContainerView? ContainerView = PreviewContainerView;
 				if (ContainerView is null)
 					return;
 
@@ -504,11 +504,11 @@ namespace NeuroAccessMaui.Camera
 			});
 		}
 
-		private Task DetachPreviewLayerAsync(CameraPreviewContainerView? PreviewContainerView = null)
+		private Task DetachPreviewLayerAsync(CameraPreviewContainerView? PreviewContainerView)
 		{
 			return this.RunOnMainQueueAsync(() =>
 			{
-				CameraPreviewContainerView? ContainerView = PreviewContainerView ?? this.PlatformView as CameraPreviewContainerView;
+				CameraPreviewContainerView? ContainerView = PreviewContainerView;
 				if (ContainerView is null)
 					return;
 
@@ -523,21 +523,21 @@ namespace NeuroAccessMaui.Camera
 			});
 		}
 
-		private Task SetPreviewRunningStateAsync(bool IsRunning, CameraView? TargetView = null)
+		private Task SetPreviewRunningStateAsync(bool IsRunning, CameraView? TargetView)
 		{
 			return this.RunOnMainQueueAsync(() =>
 			{
-				CameraView? ResolvedView = TargetView ?? this.VirtualView;
+				CameraView? ResolvedView = TargetView;
 				if (ResolvedView is not null)
 					ResolvedView.IsPreviewRunning = IsRunning;
 			});
 		}
 
-		private void ClearPreviewLayerSession(CameraPreviewContainerView? PreviewContainerView = null)
+		private void ClearPreviewLayerSession(CameraPreviewContainerView? PreviewContainerView)
 		{
 			this.RunOnMainQueueSynchronously(() =>
 			{
-				CameraPreviewContainerView? ContainerView = PreviewContainerView ?? this.PlatformView as CameraPreviewContainerView;
+				CameraPreviewContainerView? ContainerView = PreviewContainerView;
 				if (ContainerView is null)
 					return;
 
@@ -546,11 +546,11 @@ namespace NeuroAccessMaui.Camera
 			});
 		}
 
-		private void DetachPreviewLayer(CameraPreviewContainerView? PreviewContainerView = null)
+		private void DetachPreviewLayer(CameraPreviewContainerView? PreviewContainerView)
 		{
 			this.RunOnMainQueueSynchronously(() =>
 			{
-				CameraPreviewContainerView? ContainerView = PreviewContainerView ?? this.PlatformView as CameraPreviewContainerView;
+				CameraPreviewContainerView? ContainerView = PreviewContainerView;
 				if (ContainerView is null)
 					return;
 
@@ -565,11 +565,11 @@ namespace NeuroAccessMaui.Camera
 			});
 		}
 
-		private void SetPreviewRunningState(bool IsRunning, CameraView? TargetView = null)
+		private void SetPreviewRunningState(bool IsRunning, CameraView? TargetView)
 		{
 			this.RunOnMainQueueSynchronously(() =>
 			{
-				CameraView? ResolvedView = TargetView ?? this.VirtualView;
+				CameraView? ResolvedView = TargetView;
 				if (ResolvedView is not null)
 					ResolvedView.IsPreviewRunning = IsRunning;
 			});
@@ -1223,7 +1223,7 @@ namespace NeuroAccessMaui.Camera
 					}, CancellationToken).ConfigureAwait(false);
 
 					this.isSessionInterrupted = false;
-					await this.SetPreviewRunningStateAsync(true).ConfigureAwait(false);
+					await this.SetPreviewRunningStateAsync(true, this.VirtualView).ConfigureAwait(false);
 					string SessionPreset = Session.SessionPreset?.ToString() ?? string.Empty;
 					string CameraId = this.selectedCamera?.Id ?? this.deviceInput?.Device?.UniqueID ?? string.Empty;
 					string CameraPositionName = this.selectedCamera?.Position.ToString() ?? NeuroAccessMaui.Camera.CameraPosition.Unknown.ToString();

@@ -20,6 +20,8 @@ namespace NeuroAccessMaui.Services
 	public class PlatformSpecific : IPlatformSpecific
 	{
 		private LAContext? localAuthenticationContext;
+		private NSObject? keyboardWillShowObserver;
+		private NSObject? keyboardWillHideObserver;
 		private bool isDisposed;
 		private readonly SemaphoreSlim deviceIdSemaphore = new SemaphoreSlim(1, 1);
 		private string? deviceId;
@@ -29,8 +31,8 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public PlatformSpecific()
 		{
-			NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillShowNotification, this.OnKeyboardWillShow);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillHideNotification, this.OnKeyboardWillHide);
+			this.keyboardWillShowObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillShowNotification, this.OnKeyboardWillShow);
+			this.keyboardWillHideObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillHideNotification, this.OnKeyboardWillHide);
 		}
 
 		/// <summary>
@@ -50,11 +52,14 @@ namespace NeuroAccessMaui.Services
 			if (this.isDisposed)
 				return;
 
-			NSNotificationCenter.DefaultCenter.RemoveObserver(UIKeyboard.WillShowNotification);
-			NSNotificationCenter.DefaultCenter.RemoveObserver(UIKeyboard.WillHideNotification);
-
 			if (Disposing)
+			{
+				this.keyboardWillShowObserver?.Dispose();
+				this.keyboardWillShowObserver = null;
+				this.keyboardWillHideObserver?.Dispose();
+				this.keyboardWillHideObserver = null;
 				this.DisposeLocalAuthenticationContext();
+			}
 
 			this.isDisposed = true;
 		}

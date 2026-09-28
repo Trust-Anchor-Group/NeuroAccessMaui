@@ -933,18 +933,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			bool GenerateNewKeys = !await this.HasExistingSigningKeyAsync().ConfigureAwait(false);
 			(bool Succeeded, LegalIdentity? ReservedIdentity) = await ServiceRef.NetworkService.TryRequest(
 				() => ServiceRef.XmppService.ApplyPreviewLegalIdentity(ReservationProperties.ToArray(), GenerateNewKeys));
-			bool HasReservedPrivateKey = Succeeded && ReservedIdentity is not null &&
-				await this.HasPrivateKeyAsync(ReservedIdentity.Id).ConfigureAwait(false);
 
 			this.LogFlowEvent(
 				"PreviewReservationCreated",
 				new KeyValuePair<string, object?>("Succeeded", Succeeded),
 				new KeyValuePair<string, object?>("HasReservedIdentity", ReservedIdentity is not null),
 				new KeyValuePair<string, object?>("GeneratedNewKeys", GenerateNewKeys),
-				new KeyValuePair<string, object?>("HasPrivateKey", HasReservedPrivateKey),
 				new KeyValuePair<string, object?>("PropertyCount", ReservationProperties.Count));
 
-			if (!Succeeded || ReservedIdentity is null || string.IsNullOrWhiteSpace(ReservedIdentity.Id) || !HasReservedPrivateKey)
+			if (!Succeeded || ReservedIdentity is null || string.IsNullOrWhiteSpace(ReservedIdentity.Id))
 				return null;
 
 			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(this.reference, ReservedIdentity).ConfigureAwait(false);

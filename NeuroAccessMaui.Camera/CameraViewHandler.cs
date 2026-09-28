@@ -143,15 +143,16 @@ namespace NeuroAccessMaui.Camera
 		}
 
 		/// <inheritdoc/>
-		protected override void DisconnectHandler(PlatformView platformView)
+		protected override void DisconnectHandler(PlatformView PlatformView)
 		{
-			this.Cleanup();
-			if (this.VirtualView is not null)
+			CameraView? View = ((IElementHandler)this).VirtualView as CameraView;
+			this.Cleanup(PlatformView);
+			if (View is not null)
 			{
-				this.VirtualView.SetFrameSubscriptionChangedCallback(null);
-				this.VirtualView.SetController(null);
+				View.SetFrameSubscriptionChangedCallback(null);
+				View.SetController(null);
 			}
-			base.DisconnectHandler(platformView);
+			base.DisconnectHandler(PlatformView);
 		}
 
 		/// <summary>
@@ -174,11 +175,13 @@ namespace NeuroAccessMaui.Camera
 
 			if (disposing)
 			{
-				this.Cleanup();
-				if (this.VirtualView is not null)
+				IElementHandler Handler = this;
+				CameraView? View = Handler.VirtualView as CameraView;
+				this.Cleanup(Handler.PlatformView as PlatformView);
+				if (View is not null)
 				{
-					this.VirtualView.SetFrameSubscriptionChangedCallback(null);
-					this.VirtualView.SetController(null);
+					View.SetFrameSubscriptionChangedCallback(null);
+					View.SetController(null);
 				}
 			}
 
@@ -204,7 +207,7 @@ namespace NeuroAccessMaui.Camera
 		}
 
 		private partial void Initialize();
-		private partial void Cleanup();
+		private partial void Cleanup(PlatformView? PlatformView);
 		private partial Task StartPreviewInternalAsync(CancellationToken CancellationToken);
 		private partial Task StopPreviewInternalAsync();
 		private partial Task ReleaseInternalAsync();
