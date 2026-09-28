@@ -9,8 +9,7 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.VerifyCode"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls">
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<VisualElement.Resources>
 		<ResourceDictionary>

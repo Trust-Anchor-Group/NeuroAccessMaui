@@ -3796,4 +3796,19 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="TravelDocumentScan_IosNfcRetrying" xml:space="preserve">
     <value>Försöker med en annan skanningsmetod. Ha dokumentet redo.</value>
   </data>
+  <data name="QrScannerTorchOn" xml:space="preserve">
+    <value>Slå på ficklampan</value>
+  </data>
+  <data name="QrScannerTorchOff" xml:space="preserve">
+    <value>Stäng av ficklampan</value>
+  </data>
+  <data name="QrScannerCameraUnavailable" xml:space="preserve">
+    <value>Kameran är inte tillgänglig. Försök igen, öppna inställningarna eller ange koden manuellt.</value>
+  </data>
+  <data name="QrScannerSwitchCamera" xml:space="preserve">
+    <value>Byt kamera</value>
+  </data>
+  <data name="QrScannerRetry" xml:space="preserve">
+    <value>Försök igen</value>
+  </data>
 </root>

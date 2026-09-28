@@ -4,18 +4,17 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
-using ZXing.Net.Maui;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR
 {
 	/// <summary>
 	/// The view model to bind to when scanning a QR code.
 	/// </summary>
-	public partial class ScanQrCodeViewModel : BaseViewModel
+	public partial class ScanQrCodeViewModel : BaseViewModel, IAsyncDisposable
 	{
 		private readonly ScanQrCodeNavigationArgs? navigationArgs;
-		private IDispatcherTimer? countDownTimer;
-		private bool suppressModeHandler;
+		private bool disposed;
+		private Task? disposalTask;
 
 		/// <summary>
 		/// The view model to bind to when scanning a QR code.
@@ -79,23 +78,21 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		}
 
 
-		[RelayCommand]
-		private async Task SwitchMode()
+		[RelayCommand(CanExecute = nameof(CanSwitchMode))]
+		private void SwitchMode()
 		{
-			// Toggle IsAutomaticScan; page listens for change to animate & adjust camera
-			this.suppressModeHandler = true;
 			this.IsAutomaticScan = !this.IsAutomaticScan;
-			this.suppressModeHandler = false;
-			await Task.CompletedTask;
 		}
 
-		[RelayCommand]
+		[RelayCommand(CanExecute = nameof(CanSwitchCamera))]
 		private void SwitchCamera()
 		{
-			this.CameraLocation = this.CameraLocation == CameraLocation.Rear ? CameraLocation.Front : CameraLocation.Rear;
+			int Index = this.cameras.FindIndex(Camera => Camera.Id == this.SelectedCamera?.Id);
+			this.ResetScannerSession();
+			this.SelectedCamera = this.cameras[(Index + 1) % this.cameras.Count];
 		}
 
-		[RelayCommand]
+		[RelayCommand(CanExecute = nameof(CanUseTorch))]
 		private void SwitchTorch()
 		{
 			this.IsTorchOn = !this.IsTorchOn;
@@ -119,39 +116,36 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
+			if (this.disposed)
+				return;
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 
-			if (App.Current is not null)
-			{
-				this.countDownTimer = App.Current.Dispatcher.CreateTimer();
-				this.countDownTimer.Interval = TimeSpan.FromMilliseconds(500);
-				this.countDownTimer.Tick += this.CountDownEventHandler;
-			}
 		}
 
 		/// <inheritdoc/>
-		public override async Task OnDisposeAsync()
+		public override Task OnDisposeAsync() => MainThread.InvokeOnMainThreadAsync(() => this.disposalTask ??= this.DisposeCoreAsync());
+
+		/// <summary>Cancels scanner work and releases subscriptions through the view-model lifecycle.</summary>
+		/// <returns>A task representing completion of view-model cleanup.</returns>
+		public virtual async ValueTask DisposeAsync()
 		{
+			await this.OnDisposeAsync().ConfigureAwait(false);
+			GC.SuppressFinalize(this);
+		}
+
+		private async Task DisposeCoreAsync()
+		{
+			this.disposed = true;
 			LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
-			if (this.countDownTimer is not null)
-			{
-				this.countDownTimer.Stop();
-				this.countDownTimer.Tick -= this.CountDownEventHandler;
-				this.countDownTimer = null;
-			}
+			this.EndScannerSession();
+			this.AttachCamera(null);
 
 			if (this.navigationArgs?.QrCodeScanned is TaskCompletionSource<string> TaskSource)
 				TaskSource.TrySetResult(string.Empty);
 
 			await base.OnDisposeAsync();
-		}
-
-		private void CountDownEventHandler(object? sender, EventArgs e)
-		{
-			this.countDownTimer?.Stop();
-			this.OnBackgroundColorChanged();
 		}
 
 		private void OnBackgroundColorChanged()
@@ -162,43 +156,43 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				Icon.BackgroundColorChanged();
 		}
 
-		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
+		private void LocalizationManagerEventHandler(object? Sender, PropertyChangedEventArgs e)
 		{
-			this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
+				this.OnPropertyChanged(nameof(this.FeedbackDescription));
+				this.OnPropertyChanged(nameof(this.TorchDescription));
+			});
 		}
 
+		/// <summary>Changes between camera scanning and manual entry.</summary>
+		/// <param name="IsAutomaticScan">Whether to use the camera.</param>
+		/// <returns>A completed task after updating the mode.</returns>
 		public Task DoSwitchMode(bool IsAutomaticScan)
 		{
 			this.IsAutomaticScan = IsAutomaticScan;
 			return Task.CompletedTask;
 		}
 
-		public Task SetScannedText(string? ScannedText)
-		{
-			this.ScannedText = ScannedText ?? string.Empty;
-			this.countDownTimer?.Stop();
-			this.OnBackgroundColorChanged();
-
-			if (this.CanOpen(ScannedText))
-			{
-				return this.TrySetResultAndClosePage(ScannedText!.Trim());
-			}
-			this.countDownTimer?.Start();
-			this.OnBackgroundColorChanged();
-
-			return Task.CompletedTask;
-		}
+		/// <summary>Applies the existing acceptance rules and presents scan feedback.</summary>
+		/// <param name="ScannedText">The decoded value.</param>
+		/// <returns>A task representing feedback and result delivery.</returns>
+		public Task SetScannedText(string? ScannedText) => this.ProcessCandidateAsync(ScannedText);
 
 		/// <summary>
 		/// Tries to set the Scan QR Code result and close the scan page.
 		/// </summary>
 		/// <param name="Url">The URL to set.</param>
-		private async Task TrySetResultAndClosePage(string? Url)
+		/// <returns>A task representing navigation and result delivery.</returns>
+		private async Task TrySetResultAndClosePageAsync(string? Url)
 		{
 			if (this.navigationArgs?.QrCodeScanned is not null)
 			{
 				TaskCompletionSource<string?> TaskSource = this.navigationArgs.QrCodeScanned;
 				this.navigationArgs.QrCodeScanned = null;
+				this.State = QrScannerState.Closing;
+				this.EndScannerSession();
 
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
@@ -238,11 +232,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 		partial void OnIsAutomaticScanChanged(bool value)
 		{
-			if (!this.suppressModeHandler)
-			{
-				// When entering automatic mode, enable detecting; when leaving, disable
-				this.IsDetecting = value;
-			}
+			this.ResetScannerSession();
 		}
 
 		/// <summary>
@@ -255,13 +245,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// Torch state
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(TorchDescription))]
 		private bool isTorchOn;
-
-		/// <summary>
-		/// Camera location (front/rear)
-		/// </summary>
-		[ObservableProperty]
-		private CameraLocation cameraLocation = CameraLocation.Rear;
 
 		/// <summary>
 		/// If scanning of codes is restricted to a set of allowed schemas.
@@ -298,7 +283,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 				string Url = this.ScannedText.Trim();
 
-				if ((this.countDownTimer?.IsRunning ?? false) &&
+				if (this.State == QrScannerState.Rejected &&
 					(this.navigationArgs?.AllowedSchemas is not null) &&
 					this.navigationArgs.AllowedSchemas.Length > 0)
 				{
@@ -358,20 +343,20 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <summary>
 		/// If the manual code can be opened
 		/// </summary>
-		public bool CanOpenManual => this.CanOpen(this.ManualText);
+		public bool CanOpenManual => this.CanSwitchMode && this.CanOpen(this.ManualText);
 
 		#endregion
 
 		[RelayCommand(CanExecute = nameof(CanOpenManual))]
-		private Task OpenUrl()
+		private Task OpenUrlAsync()
 		{
-			return this.TrySetResultAndClosePage(this.ManualText!.Trim());
+			return this.ProcessCandidateAsync(this.ManualText);
 		}
 
 		/// <inheritdoc/>
 		public override Task GoBack()
 		{
-			return this.TrySetResultAndClosePage(null);
+			return this.TrySetResultAndClosePageAsync(null);
 		}
 	}
 }

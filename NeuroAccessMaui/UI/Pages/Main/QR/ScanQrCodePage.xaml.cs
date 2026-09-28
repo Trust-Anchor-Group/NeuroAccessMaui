@@ -1,264 +1,283 @@
-﻿
+using System.ComponentModel;
 using CommunityToolkit.Maui.Layouts;
-// using CommunityToolkit.Mvvm.Input; // Removed page-level commands; commands now reside in ViewModel
-using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using Microsoft.Extensions.DependencyInjection;
+using NeuroAccessMaui.Animations;
+using NeuroAccessMaui.Camera;
 using NeuroAccessMaui.Services;
-using ZXing.Net.Maui;
-#if ANDROID
-using AndroidX.Camera.Core;
-using AndroidX.Camera.Lifecycle;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-#endif
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR
 {
-	/// <summary>
-	/// A page to display for scanning of a QR code, either automatically via the camera, or by entering the code manually.
-	/// </summary>
-	public partial class ScanQrCodePage
+	/// <summary>Hosts the application camera and presents automatic and manual QR input.</summary>
+	public partial class ScanQrCodePage : IAsyncDisposable
 	{
+		private readonly SemaphoreSlim cameraGate = new SemaphoreSlim(1, 1);
+		private CameraView? cameraView;
 		private bool pageVisible;
-#if ANDROID
-		private bool cameraNeedsRebinding;
-#endif
+		private bool disposed;
+		private Task? disposalTask;
+		private int feedbackVersion;
+		private int cameraGateUsers;
+		private TaskCompletionSource<bool>? cameraGateIdle;
 
+		/// <summary>Initializes the scanner presentation and its view model.</summary>
 		public ScanQrCodePage()
 		{
-			// Create VM (it will PopLatestArgs internally)
-			ScanQrCodeViewModel vm = new();
-			this.BindingContext = vm; // set before InitializeComponent for compiled bindings
-
+			this.BindingContext = new ScanQrCodeViewModel();
 			this.InitializeComponent();
-
-			// Post-XAML control configuration
 			this.LinkEntry.Keyboard = Keyboard.Url;
 			this.LinkEntry.IsSpellCheckEnabled = false;
 			this.LinkEntry.IsTextPredictionEnabled = false;
-
+			this.ScanFrameHost.SizeChanged += this.ScanFrameHostSizeChanged;
 			StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
-
-			this.CameraBarcodeReaderView.IsDetecting = false;
-			this.CameraBarcodeReaderView.Options = new BarcodeReaderOptions
-			{
-				Formats = BarcodeFormats.TwoDimensional,
-				AutoRotate = true,
-				TryHarder = true,
-				TryInverted = true,
-				Multiple = false,
-			};
-
-			vm.DoSwitchMode(true);
 		}
-
 
 		/// <inheritdoc/>
 		public override async Task OnAppearingAsync()
 		{
-			// Base Appearing executes ViewModel lifecycle
 			await base.OnAppearingAsync();
-			this.pageVisible = true;
-
-			// Sync initial states from VM
-			if (this.BindingContext is ScanQrCodeViewModel vm)
+			await this.Dispatcher.DispatchAsync(async () =>
 			{
-				this.ApplyState(vm.IsAutomaticScan, initial: true);
-				this.CameraBarcodeReaderView.IsTorchOn = vm.IsTorchOn;
-				this.CameraBarcodeReaderView.CameraLocation = vm.CameraLocation;
-				vm.PropertyChanged += this.VmOnPropertyChanged;
-			}
+				if (this.disposed)
+					return;
+				this.pageVisible = true;
+				ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+				ViewModel.BeginScannerSession();
+				ViewModel.PropertyChanged -= this.ViewModelPropertyChanged;
+				ViewModel.PropertyChanged += this.ViewModelPropertyChanged;
+				await this.SynchronizePresentationAsync();
+			});
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnDisappearingAsync()
 		{
-			this.pageVisible = false;
-			if (this.BindingContext is ScanQrCodeViewModel vm)
-				vm.PropertyChanged -= this.VmOnPropertyChanged;
 			try
 			{
-				await this.CloseCameraAsync();
+				await this.Dispatcher.DispatchAsync(async () =>
+				{
+					this.HideScanner();
+					if (!await this.EnterCameraGateAsync())
+						return;
+					try { await this.StopCameraAsync(); }
+					finally { this.ExitCameraGate(); }
+				});
+			}
+			finally { await base.OnDisappearingAsync(); }
+		}
+
+		/// <inheritdoc/>
+		public override Task OnDisposeAsync() => this.Dispatcher.DispatchAsync(() => this.disposalTask ??= this.DisposeCoreAsync());
+
+		/// <summary>Releases camera resources through the page's asynchronous lifecycle.</summary>
+		/// <returns>A task representing completion of page cleanup.</returns>
+		public virtual async ValueTask DisposeAsync()
+		{
+			await this.OnDisposeAsync().ConfigureAwait(false);
+			GC.SuppressFinalize(this);
+		}
+
+		private async Task DisposeCoreAsync()
+		{
+			this.disposed = true;
+			this.ScanFrameHost.SizeChanged -= this.ScanFrameHostSizeChanged;
+			this.HideScanner();
+			await this.EnterCameraGateAsync(AllowDisposing: true);
+			try
+			{
+				if (this.cameraView is not null)
+				{
+					this.cameraView.Loaded -= this.CameraLoaded;
+					try
+					{
+						try { await this.StopCameraAsync(); }
+						finally
+						{
+							this.ViewModel<ScanQrCodeViewModel>().AttachCamera(null);
+							await this.cameraView.ReleaseAsync();
+						}
+					}
+					finally
+					{
+						this.cameraView.Handler?.DisconnectHandler();
+						this.CameraHost.Children.Clear();
+						this.cameraView = null;
+					}
+				}
 			}
 			finally
 			{
-				await base.OnDisappearingAsync();
+				this.ExitCameraGate();
+				try
+				{
+					if (this.cameraGateIdle is not null)
+						await this.cameraGateIdle.Task;
+					this.cameraGate.Dispose();
+				}
+				finally { await base.OnDisposeAsync(); }
 			}
 		}
 
-		private async void VmOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		private void ScanFrameHostSizeChanged(object? Sender, EventArgs e)
 		{
-			if (!this.pageVisible || sender is not ScanQrCodeViewModel vm)
-				return;
-
-			switch (e.PropertyName)
-			{
-				case nameof(ScanQrCodeViewModel.IsAutomaticScan):
-					await this.Dispatcher.DispatchAsync(() => this.ApplyState(vm.IsAutomaticScan));
-					break;
-				case nameof(ScanQrCodeViewModel.IsTorchOn):
-					this.CameraBarcodeReaderView.IsTorchOn = vm.IsTorchOn;
-					break;
-				case nameof(ScanQrCodeViewModel.IsDetecting):
-					this.CameraBarcodeReaderView.IsDetecting = vm.IsDetecting;
-					break;
-				case nameof(ScanQrCodeViewModel.CameraLocation):
-					this.CameraBarcodeReaderView.CameraLocation = vm.CameraLocation;
-					break;
-			}
+			double Size = Math.Max(0, Math.Min(240, Math.Min(this.ScanFrameHost.Width, this.ScanFrameHost.Height)));
+			this.ScanFeedback.WidthRequest = Size;
+			this.ScanFeedback.HeightRequest = Size;
 		}
 
-		private async void ApplyState(bool isAutomatic, bool initial = false)
+		private void HideScanner()
+		{
+			this.feedbackVersion++;
+			this.pageVisible = false;
+			this.ScanFeedback.CancelAnimations();
+			this.ManualFeedback.CancelAnimations();
+			ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+			ViewModel.PropertyChanged -= this.ViewModelPropertyChanged;
+			ViewModel.EndScannerSession();
+		}
+
+		private async void ViewModelPropertyChanged(object? Sender, PropertyChangedEventArgs e)
 		{
 			try
 			{
-				if (!this.pageVisible)
-					return;
-
-				string current = StateContainer.GetCurrentState(this.GridWithAnimation);
-				bool currentlyAutomatic = string.Equals(current, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
-				if (currentlyAutomatic == isAutomatic && !initial)
-					return;
-
-				if (initial)
+				// Apply the completed view-model change, including its dependent properties.
+				await Task.Yield();
+				await this.Dispatcher.DispatchAsync(async () =>
 				{
-					// Initial setup: avoid animation & camera flip hack to prevent black screen
-					if (isAutomatic)
-					{
-						if (!currentlyAutomatic)
-							StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
-						this.LinkEntry.Unfocus();
-						// slight delay to allow native camera initialization before enabling detection
-						await Task.Delay(250);
-						if (!this.pageVisible)
-							return;
-#if ANDROID
-						if (this.cameraNeedsRebinding && this.CameraBarcodeReaderView.Handler is CameraBarcodeReaderViewHandler Handler)
-						{
-							Handler.UpdateValue(nameof(this.CameraBarcodeReaderView.CameraLocation));
-							Handler.UpdateValue(nameof(this.CameraBarcodeReaderView.IsTorchOn));
-							this.cameraNeedsRebinding = false;
-						}
-#endif
-						this.CameraBarcodeReaderView.IsDetecting = true;
-					}
-					else
-					{
-						StateContainer.SetCurrentState(this.GridWithAnimation, "ManualScan");
-						this.CameraBarcodeReaderView.IsTorchOn = false;
-						this.CameraBarcodeReaderView.IsDetecting = false;
-						this.LinkEntry.Focus();
-					}
-					return;
-				}
-
-				if (!isAutomatic)
-				{
-					// Enter manual: stop camera
-					this.CameraBarcodeReaderView.IsTorchOn = false;
-					this.CameraBarcodeReaderView.IsDetecting = false;
-					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, "ManualScan", CancellationToken.None);
-					if (!this.pageVisible)
+					if (!this.pageVisible || this.disposed)
 						return;
-					this.LinkEntry.Focus();
-				}
-				else
-				{
-					this.LinkEntry.Unfocus();
-					// Re-init camera by flipping (runtime toggle only)
-					if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
+					ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+					if (e.PropertyName == nameof(ScanQrCodeViewModel.State))
 					{
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+						if (ViewModel.State is QrScannerState.Starting or QrScannerState.CameraUnavailable or QrScannerState.Closing)
+							await this.SynchronizePresentationAsync();
+						await this.AnimateFeedbackAsync();
 					}
-					else
-					{
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
-					}
-					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, "AutomaticScan", CancellationToken.None);
-					if (!this.pageVisible)
-						return;
-					this.CameraBarcodeReaderView.IsDetecting = true;
-				}
+					else if (e.PropertyName is nameof(ScanQrCodeViewModel.IsAutomaticScan) or
+						nameof(ScanQrCodeViewModel.IsTorchOn) or nameof(ScanQrCodeViewModel.SelectedCamera))
+						await this.SynchronizePresentationAsync();
+				});
 			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
+			catch (OperationCanceledException) { }
+			catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 		}
 
-		/// <summary>
-		/// Stops detection and releases the scanner's Android camera use cases before navigation completes.
-		/// </summary>
-		/// <returns>A task representing camera cleanup on the main thread.</returns>
-		private Task CloseCameraAsync()
+		private async Task AnimateFeedbackAsync()
 		{
-			return MainThread.InvokeOnMainThreadAsync(() =>
-			{
-				this.CameraBarcodeReaderView.IsDetecting = false;
-				this.CameraBarcodeReaderView.IsTorchOn = false;
-#if ANDROID
-				this.UnbindAndroidCamera();
-#endif
-			});
+			int Version = ++this.feedbackVersion;
+			this.ScanFeedback.CancelAnimations();
+			this.ManualFeedback.CancelAnimations();
+			this.ScanFeedback.Scale = 1;
+			this.ManualFeedback.Scale = 1;
+			if (!this.pageVisible || ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true)
+				return;
+			ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+			VisualElement Feedback = ViewModel.IsAutomaticScan ? this.ScanFeedback : this.ManualFeedback;
+			QrScannerState State = ViewModel.State;
+			await Feedback.ScaleToAsync(State is QrScannerState.Accepted or QrScannerState.Rejected ? 0.94 : 1, 140, Easing.CubicOut);
+			if (State == QrScannerState.Rejected && Version == this.feedbackVersion && this.pageVisible)
+				await Feedback.ScaleToAsync(1, 140, Easing.CubicOut);
 		}
-#if ANDROID
-		/// <summary>
-		/// Unbinds ZXing's preview and analysis while retaining them for reuse when the page returns.
-		/// </summary>
-		[DynamicDependency("cameraManager", typeof(CameraBarcodeReaderViewHandler))]
-		[DynamicDependency("_cameraProvider", "ZXing.Net.Maui.CameraManager", "ZXing.Net.MAUI")]
-		[DynamicDependency("_cameraPreview", "ZXing.Net.Maui.CameraManager", "ZXing.Net.MAUI")]
-		[DynamicDependency("_imageAnalyzer", "ZXing.Net.Maui.CameraManager", "ZXing.Net.MAUI")]
-		private void UnbindAndroidCamera()
+
+		private async void CameraLoaded(object? Sender, EventArgs e)
 		{
-			if (this.CameraBarcodeReaderView.Handler is not CameraBarcodeReaderViewHandler Handler)
-				return;
-
-			BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance;
-			FieldInfo ManagerField = typeof(CameraBarcodeReaderViewHandler).GetField("cameraManager", Flags)
-				?? throw new MissingFieldException(typeof(CameraBarcodeReaderViewHandler).FullName, "cameraManager");
-			object? Manager = ManagerField.GetValue(Handler);
-			if (Manager is null)
-				return;
-
-			// ZXing exposes no public stop-preview operation. Closing the native camera alone
-			// leaves its use cases bound to the activity and competing with the next camera page.
-			Type ManagerType = Manager.GetType();
-			FieldInfo ProviderField = ManagerType.GetField("_cameraProvider", Flags)
-				?? throw new MissingFieldException(ManagerType.FullName, "_cameraProvider");
-			FieldInfo PreviewField = ManagerType.GetField("_cameraPreview", Flags)
-				?? throw new MissingFieldException(ManagerType.FullName, "_cameraPreview");
-			FieldInfo AnalysisField = ManagerType.GetField("_imageAnalyzer", Flags)
-				?? throw new MissingFieldException(ManagerType.FullName, "_imageAnalyzer");
-			if (ProviderField.GetValue(Manager) is not ProcessCameraProvider Provider)
-				return;
-
-			List<UseCase> UseCases = new List<UseCase>();
-			if (PreviewField.GetValue(Manager) is Preview Preview)
-				UseCases.Add(Preview);
-			if (AnalysisField.GetValue(Manager) is ImageAnalysis Analysis)
-				UseCases.Add(Analysis);
-			if (UseCases.Count == 0)
-				return;
-
-			Provider.Unbind(UseCases.ToArray());
-			this.cameraNeedsRebinding = true;
+			try { await this.Dispatcher.DispatchAsync(this.SynchronizePresentationAsync); }
+			catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 		}
-#endif
 
-
-		private async void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+		private async Task SynchronizePresentationAsync()
 		{
-			string? Result = (e.Results.Length > 0) ? e.Results[0].Value : null;
-
-			await this.Dispatcher.DispatchAsync(async () =>
+			if (!await this.EnterCameraGateAsync())
+				return;
+			try
 			{
+				if (!this.pageVisible || this.disposed)
+					return;
 				ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
-				await ViewModel.SetScannedText(Result);
-			});
+				string DesiredState = ViewModel.IsAutomaticScan ? "AutomaticScan" : "ManualScan";
+				if (StateContainer.GetCurrentState(this.GridWithAnimation) != DesiredState)
+				{
+					await this.StopCameraAsync();
+					this.LinkEntry.Unfocus();
+					if (ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true)
+						StateContainer.SetCurrentState(this.GridWithAnimation, DesiredState);
+					else
+						await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, DesiredState, CancellationToken.None);
+					if (!this.pageVisible || this.disposed || ViewModel.IsAutomaticScan != (DesiredState == "AutomaticScan"))
+						return;
+					if (!ViewModel.IsAutomaticScan)
+						this.LinkEntry.Focus();
+				}
+				if (!ViewModel.IsAutomaticScan || ViewModel.State is QrScannerState.CameraUnavailable or QrScannerState.Closing)
+				{
+					await this.StopCameraAsync();
+					return;
+				}
+				if (this.cameraView is null)
+				{
+					this.cameraView = new CameraView
+					{
+						HorizontalOptions = LayoutOptions.Fill,
+						VerticalOptions = LayoutOptions.Fill,
+						Options = new CameraOptions
+						{
+							PreferRearCamera = true,
+							ContinuousAutoFocus = true,
+							TargetResolution = new Size(1280, 720),
+							FrameDeliveryInterval = TimeSpan.FromMilliseconds(200)
+						}
+					};
+					this.cameraView.Loaded += this.CameraLoaded;
+					ViewModel.AttachCamera(this.cameraView);
+					this.CameraHost.Children.Add(this.cameraView);
+				}
+				await ViewModel.StartCameraAsync();
+				if (!this.pageVisible || !ViewModel.IsAutomaticScan || ViewModel.State is QrScannerState.CameraUnavailable or QrScannerState.Closing)
+					await this.StopCameraAsync();
+				else if (this.cameraView.Controller is ICameraController Controller)
+					await Controller.SetTorchAsync(ViewModel.IsTorchOn, CancellationToken.None);
+			}
+			catch (OperationCanceledException) { }
+			catch (Exception)
+			{
+				this.ViewModel<ScanQrCodeViewModel>().HandleCameraFailure();
+				await this.StopCameraAsync();
+			}
+			finally { this.ExitCameraGate(); }
+		}
+
+		/// <summary>Tracks admitted camera operations so disposal can wait for all of them.</summary>
+		/// <param name="AllowDisposing">Whether this operation performs final camera cleanup.</param>
+		/// <returns>Whether the operation entered the camera gate.</returns>
+		private async Task<bool> EnterCameraGateAsync(bool AllowDisposing = false)
+		{
+			// Admission and user counts are confined to the page dispatcher.
+			if (this.disposed && !AllowDisposing)
+				return false;
+
+			if (this.cameraGateUsers++ == 0)
+				this.cameraGateIdle = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+			await this.cameraGate.WaitAsync();
+			return true;
+		}
+
+		/// <summary>Releases the camera gate and signals when all admitted operations have exited.</summary>
+		private void ExitCameraGate()
+		{
+			this.cameraGate.Release();
+			if (--this.cameraGateUsers == 0)
+				this.cameraGateIdle?.TrySetResult(true);
+		}
+
+		private async Task StopCameraAsync()
+		{
+			if (this.cameraView is null)
+				return;
+			try
+			{
+				if (this.cameraView.Controller is ICameraController Controller)
+					await Controller.SetTorchAsync(false, CancellationToken.None);
+			}
+			finally { await this.cameraView.StopPreviewAsync(); }
 		}
 	}
 }

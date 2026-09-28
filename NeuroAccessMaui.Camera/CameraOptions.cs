@@ -34,6 +34,11 @@ namespace NeuroAccessMaui.Camera
 		public int? TargetFps { get; set; }
 
 		/// <summary>
+		/// Gets or sets whether supported cameras should continuously refocus during preview.
+		/// </summary>
+		public bool ContinuousAutoFocus { get; set; }
+
+		/// <summary>
 		/// Gets or sets the minimum interval between delivered frames.
 		/// </summary>
 		public TimeSpan FrameDeliveryInterval { get; set; }

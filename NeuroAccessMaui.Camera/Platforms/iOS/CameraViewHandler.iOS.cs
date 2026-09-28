@@ -386,6 +386,19 @@ namespace NeuroAccessMaui.Camera
 				this.session.AddInput(Input);
 				this.deviceInput = Input;
 
+				if (this.options.ContinuousAutoFocus && Device.IsFocusModeSupported(AVCaptureFocusMode.ContinuousAutoFocus)
+					&& Device.LockForConfiguration(out _))
+				{
+					try
+					{
+						Device.FocusMode = AVCaptureFocusMode.ContinuousAutoFocus;
+					}
+					finally
+					{
+						Device.UnlockForConfiguration();
+					}
+				}
+
 				bool ShouldEnableFrameOutput = this.ShouldEnableFrameOutput();
 				if (ShouldEnableFrameOutput)
 				{

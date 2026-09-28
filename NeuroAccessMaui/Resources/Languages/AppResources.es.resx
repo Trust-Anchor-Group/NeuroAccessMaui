@@ -3811,4 +3811,19 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="TravelDocumentScan_IosNfcRetrying" xml:space="preserve">
     <value>Intentando otro método de escaneo. Ten el documento preparado.</value>
   </data>
+  <data name="QrScannerTorchOn" xml:space="preserve">
+    <value>Encender la linterna</value>
+  </data>
+  <data name="QrScannerTorchOff" xml:space="preserve">
+    <value>Apagar la linterna</value>
+  </data>
+  <data name="QrScannerCameraUnavailable" xml:space="preserve">
+    <value>La cámara no está disponible. Inténtalo de nuevo, abre la configuración o introduce el código manualmente.</value>
+  </data>
+  <data name="QrScannerSwitchCamera" xml:space="preserve">
+    <value>Cambiar de cámara</value>
+  </data>
+  <data name="QrScannerRetry" xml:space="preserve">
+    <value>Reintentar</value>
+  </data>
 </root>

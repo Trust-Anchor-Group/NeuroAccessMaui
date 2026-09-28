@@ -11894,5 +11894,20 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("ZipCode", resourceCulture);
             }
         }
+
+        /// <summary>Looks up the localized action to turn the flashlight on.</summary>
+        public static string QrScannerTorchOn => ResourceManager.GetString("QrScannerTorchOn", resourceCulture);
+
+        /// <summary>Looks up the localized action to turn the flashlight off.</summary>
+        public static string QrScannerTorchOff => ResourceManager.GetString("QrScannerTorchOff", resourceCulture);
+
+        /// <summary>Looks up localized camera recovery guidance.</summary>
+        public static string QrScannerCameraUnavailable => ResourceManager.GetString("QrScannerCameraUnavailable", resourceCulture);
+
+        /// <summary>Looks up the localized camera-switch action.</summary>
+        public static string QrScannerSwitchCamera => ResourceManager.GetString("QrScannerSwitchCamera", resourceCulture);
+
+        /// <summary>Looks up the localized camera retry action.</summary>
+        public static string QrScannerRetry => ResourceManager.GetString("QrScannerRetry", resourceCulture);
     }
 }

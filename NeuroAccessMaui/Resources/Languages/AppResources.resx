@@ -4009,4 +4009,19 @@ Document read. You can move your iPhone.</value>
   <data name="TravelDocumentScan_IosNfcRetrying" xml:space="preserve">
     <value>Trying another scan method. Keep your document ready.</value>
   </data>
+  <data name="QrScannerTorchOn" xml:space="preserve">
+    <value>Turn flashlight on</value>
+  </data>
+  <data name="QrScannerTorchOff" xml:space="preserve">
+    <value>Turn flashlight off</value>
+  </data>
+  <data name="QrScannerCameraUnavailable" xml:space="preserve">
+    <value>Camera unavailable. Retry, open settings, or enter the code manually.</value>
+  </data>
+  <data name="QrScannerSwitchCamera" xml:space="preserve">
+    <value>Switch camera</value>
+  </data>
+  <data name="QrScannerRetry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
 </root>

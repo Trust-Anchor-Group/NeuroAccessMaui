@@ -1,136 +1,128 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Main.QR.ScanQrCodePage"
-							 x:DataType="viewmodel:ScanQrCodeViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-							 Shell.FlyoutBehavior="Disabled">
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage
+	x:Name="ThisPage"
+	x:Class="NeuroAccessMaui.UI.Pages.Main.QR.ScanQrCodePage"
+	x:DataType="viewmodel:ScanQrCodeViewModel"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	BackgroundColor="Black"
+	ui:SafeArea.Mode="All"
+	Shell.FlyoutBehavior="Disabled">
 	<Grid x:Name="GridWithAnimation">
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
-				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill"
-														 BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
+				<Grid x:Name="CameraHost" BackgroundColor="Black" />
+				<Grid Padding="{DynamicResource LargeMargins}" RowDefinitions="Auto,*,Auto"
+					  RowSpacing="{DynamicResource MediumSpacing}" InputTransparent="True" CascadeInputTransparent="False">
+					<Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+						<controls:ImageButton Command="{Binding GoBackCommand}" Style="{DynamicResource FilledImageButton}"
+							PathData="{x:Static ui:Geometries.BackButtonPath}" SemanticProperties.Description="{l:Localize Back}" />
+						<Label Grid.Column="1" Text="{Binding LocalizedQrPageTitle}" TextColor="White"
+							Style="{DynamicResource PageTitleLabel}" VerticalOptions="Center"
+							MaxLines="2" LineBreakMode="TailTruncation" />
+					</Grid>
 
-				<Grid Padding="{DynamicResource LargeMargins}">
-					<VerticalStackLayout VerticalOptions="Start" Spacing="{DynamicResource LargeSpacing}">
-						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource FilledImageButton}"
-													 PathData="{x:Static ui:Geometries.BackButtonPath}" />
-						<Grid ColumnDefinitions="auto" HorizontalOptions="Center">
-							<Border Style="{DynamicResource RoundedBorder}"
-									BackgroundColor="Black"
-									Opacity="0.2"
-									/>
-							<Label HorizontalOptions="Center"
-								   HorizontalTextAlignment="Center"
-								   Style="{DynamicResource PageTitleLabel}"
-								   Text="{Binding LocalizedQrPageTitle}"
-								   Margin="8,0,8,0"
-								   TextColor="{DynamicResource ContentWhitefixed}"
-								   />
+					<Grid x:Name="ScanFrameHost" Grid.Row="1" InputTransparent="True">
+						<Grid x:Name="ScanFeedback" WidthRequest="240" HeightRequest="240"
+							  HorizontalOptions="Center" VerticalOptions="Center"
+							  SemanticProperties.Description="{Binding FeedbackDescription}">
+							<Path Data="M 2,40 L 2,2 L 40,2 M 200,2 L 238,2 L 238,40 M 238,200 L 238,238 L 200,238 M 40,238 L 2,238 L 2,200"
+								Aspect="Uniform" Stroke="{Binding FeedbackColor}" StrokeThickness="3" />
+							<Path Data="{x:Static ui:Geometries.SuccessCheckmarkPath}" IsVisible="{Binding ShowSuccess}"
+								Fill="{Binding FeedbackColor}" WidthRequest="56" HeightRequest="56" Aspect="Uniform"
+								HorizontalOptions="Center" VerticalOptions="Center" />
+							<ActivityIndicator WidthRequest="40" HeightRequest="40" Color="White"
+								IsVisible="{Binding IsStarting}" IsRunning="{Binding IsStarting}"
+								HorizontalOptions="Center" VerticalOptions="Center" />
 						</Grid>
-					</VerticalStackLayout>
+					</Grid>
 
-					<VerticalStackLayout VerticalOptions="End" Spacing="{DynamicResource LargeSpacing}">
+					<VerticalStackLayout Grid.Row="2" Spacing="{DynamicResource MediumSpacing}">
+						<Label Text="{Binding FeedbackDescription}" IsVisible="{Binding ShowFeedbackMessage}"
+							TextColor="{Binding FeedbackColor}" HorizontalTextAlignment="Center" />
+						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{DynamicResource MediumSpacing}"
+											   IsVisible="{Binding ShowCameraRecovery}">
+							<controls:TextButton Command="{Binding RetryCameraCommand}"
+								Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize QrScannerRetry}" />
+							<controls:ImageButton Command="{Binding OpenSettingsCommand}" Style="{DynamicResource FilledImageButton}"
+								PathData="{x:Static ui:Geometries.CogIconPath}" SemanticProperties.Description="{l:Localize GoToSettings}" />
+						</HorizontalStackLayout>
+
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" IsVisible="{Binding HasAllowedSchemas}">
-							<FlexLayout x:Name="IconsLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Path=Icons}"
-											Direction="Row" JustifyContent="Center" Margin="{DynamicResource SmallMargins}">
+							<FlexLayout x:Name="IconsLayout" Direction="Row" Wrap="Wrap" AlignContent="Center"
+								AlignItems="Center" JustifyContent="Center" BindableLayout.ItemsSource="{Binding Icons}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="viewmodel:UriSchemaIcon">
-										<Border HeightRequest="48" WidthRequest="48" BackgroundColor="{Binding BackgroundColor}"
-												  Stroke="{Binding ForegroundColor}" StrokeShape="RoundRectangle 33" StrokeThickness="3">
-											<Path VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="40" WidthRequest="40" Aspect="Uniform"
-													Data="{Binding Geometry}" Fill="{Binding ForegroundColor}" />
+										<Border HeightRequest="48" WidthRequest="48" Margin="2"
+											BackgroundColor="{Binding BackgroundColor}" Stroke="{Binding ForegroundColor}"
+											StrokeShape="RoundRectangle 33" StrokeThickness="3">
+											<Path HeightRequest="40" WidthRequest="40" Aspect="Uniform"
+												HorizontalOptions="Center" VerticalOptions="Center"
+												Data="{Binding Geometry}" Fill="{Binding ForegroundColor}" />
 										</Border>
 									</DataTemplate>
 								</BindableLayout.ItemTemplate>
 							</FlexLayout>
-
-
-							<Grid 
-								  HorizontalOptions="Center">
-								<Border Style="{DynamicResource RoundedBorder}"
-										BackgroundColor="Black"
-										Opacity="0.2" />
-								<Label HorizontalOptions="Center"
-									   HorizontalTextAlignment="Center"
-									   Style="{DynamicResource SectionTitleLabel}"
-									   Text="{l:Localize QrSectionTitleSingular}"
-									   IsVisible="{Binding SingleIcon}"
-									   TextColor="{DynamicResource ContentWhitefixed}"
-									   Margin="8,0,8,0" />
-
-								<Label HorizontalOptions="Center"
-									   HorizontalTextAlignment="Center"
-									   Style="{DynamicResource SectionTitleLabel}"
-									   Text="{l:Localize QrSectionTitlePlural}"
-									   IsVisible="{Binding MultipleIcons}"
-									   TextColor="{DynamicResource ContentWhitefixed}"
-									   Margin="8,0,8,0" />
-							</Grid>
+							<Border Style="{DynamicResource RoundedBorder}" BackgroundColor="#66000000"
+									HorizontalOptions="Center" Padding="8,0">
+								<Grid>
+									<Label Text="{l:Localize QrSectionTitleSingular}" IsVisible="{Binding SingleIcon}"
+										Style="{DynamicResource SectionTitleLabel}" TextColor="White" HorizontalTextAlignment="Center" />
+									<Label Text="{l:Localize QrSectionTitlePlural}" IsVisible="{Binding MultipleIcons}"
+										Style="{DynamicResource SectionTitleLabel}" TextColor="White" HorizontalTextAlignment="Center" />
+								</Grid>
+							</Border>
 						</VerticalStackLayout>
 
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{DynamicResource LargeSpacing}">
-							<controls:ImageButton
-								Command="{Binding PickPhotoCommand}"
-								Style="{DynamicResource FilledImageButton}"
-								PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
-
-							<controls:ImageButton
-								Command="{Binding SwitchTorchCommand}"
-								Style="{DynamicResource FilledImageButton}"
-								PathData="{x:Static ui:Geometries.CameraTorchButtonPath}" />
-
-							<controls:ImageButton
-								Command="{Binding SwitchCameraCommand}"
-								Style="{DynamicResource FilledImageButton}"
-								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
+							<controls:ImageButton Command="{Binding SwitchTorchCommand}" IsEnabled="{Binding CanUseTorch}"
+								Style="{DynamicResource FilledImageButton}" PathData="{x:Static ui:Geometries.CameraTorchButtonPath}"
+								SemanticProperties.Description="{Binding TorchDescription}" />
+							<controls:ImageButton Command="{Binding SwitchCameraCommand}" IsEnabled="{Binding CanSwitchCamera}"
+								Style="{DynamicResource FilledImageButton}" PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}"
+								SemanticProperties.Description="{l:Localize QrScannerSwitchCamera}" />
+							<controls:ImageButton Command="{Binding SwitchModeCommand}" IsEnabled="{Binding CanSwitchMode}"
+								Style="{DynamicResource FilledImageButton}" PathData="{x:Static ui:Geometries.ContractEditPath}"
+								SemanticProperties.Description="{l:Localize QrEnterManually}" />
 						</HorizontalStackLayout>
-
-						<controls:TextButton Command="{Binding SwitchModeCommand}" Style="{DynamicResource FilledTextButton}"
-													LabelData="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
 
-			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan" RowDefinitions="auto,*">
+			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan" RowDefinitions="Auto,*">
 				<controls:Background Grid.RowSpan="2" />
-				<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*">
-					<Grid.Padding>
-						<Thickness Left="{StaticResource LargeSpacing}"
-								   Top="{StaticResource LargeSpacing}"
-								   Right="{StaticResource LargeSpacing}" />
-					</Grid.Padding>
-					<controls:ImageButton HorizontalOptions="Start" Command="{Binding SwitchModeCommand}"
-													Style="{DynamicResource ImageOnlyButton}"
-													PathData="{x:Static ui:Geometries.BackButtonPath}" />
-				</Grid>
-
+				<controls:ImageButton Margin="{DynamicResource LargeMargins}" HorizontalOptions="Start"
+					Command="{Binding SwitchModeCommand}" IsEnabled="{Binding CanSwitchMode}"
+					Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}"
+					SemanticProperties.Description="{l:Localize QrScanCode}" />
 				<ScrollView Grid.Row="1">
-					<Grid RowDefinitions="auto,auto" Padding="{DynamicResource LargeMargins}" RowSpacing="{DynamicResource LargeSpacing}">
-
-						<VerticalStackLayout Grid.Row="0" Spacing="{DynamicResource SmallSpacing}">
-							<Label HorizontalOptions="Fill" Text="{l:Localize QrScanUri}" />
-							<controls:CompositeEntry x:Name="LinkEntry" Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=ManualText}" />
+					<VerticalStackLayout Padding="{DynamicResource LargeMargins}" Spacing="{DynamicResource LargeSpacing}">
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+							<Label Text="{l:Localize QrScanUri}" />
+							<controls:CompositeEntry x:Name="LinkEntry" Style="{DynamicResource RegularCompositeEntry}"
+								EntryData="{Binding ManualText}" IsEnabled="{Binding CanSwitchMode}" />
 						</VerticalStackLayout>
-
-						<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
-							<controls:TextButton Command="{Binding OpenUrlCommand}" Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize Open}" />
-							<controls:TextButton Grid.Row="1" Command="{Binding Path=SwitchModeCommand}"
-														Style="{DynamicResource OutlinedTextButton}" LabelData="{l:Localize QrScanCode}" />
+						<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+							<controls:TextButton Command="{Binding OpenUrlCommand}" Style="{DynamicResource FilledTextButton}"
+								LabelData="{l:Localize Open}" />
+							<controls:TextButton Command="{Binding SwitchModeCommand}" IsEnabled="{Binding CanSwitchMode}"
+								Style="{DynamicResource OutlinedTextButton}" LabelData="{l:Localize QrScanCode}" />
 						</VerticalStackLayout>
-					</Grid>
+						<Grid x:Name="ManualFeedback" HeightRequest="56" IsVisible="{Binding ShowSuccess}"
+							  SemanticProperties.Description="{Binding FeedbackDescription}">
+							<Path Data="{x:Static ui:Geometries.SuccessCheckmarkPath}" Fill="{Binding FeedbackColor}"
+								WidthRequest="56" HeightRequest="56" Aspect="Uniform" HorizontalOptions="Center" />
+						</Grid>
+					</VerticalStackLayout>
 				</ScrollView>
 			</Grid>
 		</mct:StateContainer.StateViews>
-
-		<!-- default state, should not occur -->
-		<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="Something went wrong!" />
+		<ActivityIndicator HorizontalOptions="Center" VerticalOptions="Center" IsRunning="True" />
 	</Grid>
 </base:BaseContentPage>
