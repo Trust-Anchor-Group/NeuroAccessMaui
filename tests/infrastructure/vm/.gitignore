@@ -1,0 +1,10 @@
+*.env
+.env
+results/
+runs/
+incoming/
+tmp/
+*.log
+*.apk
+*.aab
+matrix-results/

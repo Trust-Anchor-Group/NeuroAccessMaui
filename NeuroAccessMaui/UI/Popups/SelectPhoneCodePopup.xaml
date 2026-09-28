@@ -7,20 +7,24 @@
                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups"
 					 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data">
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="*"
-          Style="{DynamicResource PopupGrid}">
+          Style="{DynamicResource PopupGrid}"
+          AutomationId="popup_select_phone_country">
         <SearchBar x:Name="InnerSearchBar"
                    Margin="{DynamicResource MediumSpacing}"
                    TextChanged="SearchBar_TextChanged"
-                   Placeholder="{l:Localize Search}" />
+                   Placeholder="{l:Localize Search}"
+                   AutomationId="input_search_phone_country" />
         <CollectionView x:Name="InnerListView"
                         Grid.Row="1"
                         Margin="{DynamicResource MediumSpacing}"
                         ItemsSource="{x:Static viewmodel:SelectPhoneCodePopup.Countries}"
                         SelectionMode="Single"
-                        SelectionChanged="InnerListView_SelectionChanged">
+                        SelectionChanged="InnerListView_SelectionChanged"
+                        AutomationId="list_phone_countries">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="data:ISO_3166_Country">
-                    <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}" ColumnSpacing="8">
+                    <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}" ColumnSpacing="8"
+                          AutomationId="{Binding Alpha2, StringFormat='option_phone_country_{0}'}">
                         <Label Text="{Binding DialCode}"
                                VerticalOptions="Center" />
                         <Label Grid.Column="1"

@@ -11,6 +11,7 @@
 		public SendFrame()
 			: base()
 		{
+			this.AutomationId = "chat_messages_sent";
 			this.Style = AppStyles.SendFrame;
 		}
 

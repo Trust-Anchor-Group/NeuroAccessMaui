@@ -11,6 +11,7 @@
 		public ReceiveFrame()
 			: base()
 		{
+			this.AutomationId = "chat_messages_received";
 			this.Style = AppStyles.ReceiveFrame;
 		}
 

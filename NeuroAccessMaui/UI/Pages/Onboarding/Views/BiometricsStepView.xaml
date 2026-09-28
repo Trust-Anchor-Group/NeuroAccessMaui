@@ -7,7 +7,7 @@
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                               x:DataType="viewmodels:BiometricsOnboardingStepViewModel">
+                               x:DataType="viewmodels:BiometricsOnboardingStepViewModel" AutomationId="screen_biometrics">
     <Grid RowSpacing="{DynamicResource LargeSpacing}" RowDefinitions="*, auto">
         <VerticalStackLayout Grid.Row="0"
                              VerticalOptions="Center"
@@ -93,6 +93,7 @@
 
             <controls:TemplatedButton Grid.Row="1"
                                       Grid.Column="0"
+                                      AutomationId="button_biometrics_later"
                                       Command="{Binding LaterCommand}"
                                       VerticalOptions="End">
                 <Border Style="{DynamicResource TransparentTemplateButtonBorder}"

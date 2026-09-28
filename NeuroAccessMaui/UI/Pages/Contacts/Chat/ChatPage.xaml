@@ -12,7 +12,7 @@
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid AutomationId="screen_chat" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -20,9 +20,9 @@
 			<controls:ImageButton Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
 											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-			<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource PageTitleLabel}" FontSize="24" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
+			<Label AutomationId="{Binding LegalId, StringFormat='chat_peer_{0}'}" Grid.Column="1" Grid.Row="0" Style="{DynamicResource PageTitleLabel}" FontSize="24" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
 
-			<ScrollView Grid.ColumnSpan="2" Grid.Row="1" x:Name="ScrollView" x:FieldModifier="public" Orientation="Vertical">
+			<ScrollView AutomationId="scroll_chat_messages" Grid.ColumnSpan="2" Grid.Row="1" x:Name="ScrollView" x:FieldModifier="public" Orientation="Vertical">
 				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}" HorizontalOptions="Fill">
 					
 					<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasMessages}">
@@ -45,7 +45,7 @@
 					<Grid ColumnDefinitions="*" RowDefinitions="auto">
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
-							<Editor x:Name="EditorControl" HorizontalOptions="Fill" MinimumHeightRequest="40"
+							<Editor AutomationId="input_chat_message" x:Name="EditorControl" HorizontalOptions="Fill" MinimumHeightRequest="40"
 									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
 									BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
 									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{DynamicResource InputFieldsContentPrimary}"/>
@@ -104,7 +104,7 @@
 
 					<!-- Second View: Send Button -->
 					<ContentView IsVisible="{Binding Path=IsWriting}">
-						<controls:ImageButton PathData="{x:Static ui:Geometries.SendPath}"
+						<controls:ImageButton AutomationId="button_chat_send" PathData="{x:Static ui:Geometries.SendPath}"
                               Command="{Binding SendCommand}"
                               Style="{DynamicResource ImageOnlyButton}">
 							<controls:ImageButton.Behaviors>

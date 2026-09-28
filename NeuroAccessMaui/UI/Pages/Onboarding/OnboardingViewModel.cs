@@ -42,6 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsSummaryStep))]
 		[NotifyPropertyChangedFor(nameof(IsOnWelcomeStep))]
+		[NotifyPropertyChangedFor(nameof(BackButtonAutomationId))]
 		private OnboardingStep currentStep;
 
 		[ObservableProperty]
@@ -79,6 +80,19 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		public bool IsSummaryStep => this.CurrentStep == OnboardingStep.Finalize;
 
 		public bool IsOnWelcomeStep => this.CurrentStep == OnboardingStep.Welcome;
+
+		public string BackButtonAutomationId
+		{
+			get
+			{
+				return this.CurrentStep switch
+				{
+					OnboardingStep.ValidateEmail => "button_back_phone_verification",
+					OnboardingStep.NameEntry => "button_back_username",
+					_ => "button_back_onboarding"
+				};
+			}
+		}
 
 		public OnboardingScenario Scenario => this.scenario;
 
@@ -735,20 +749,23 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			this.BuildActiveSequence();
 
 			OnboardingStep TargetStep = this.ResolveStepWithSkipping(Step, Direction);
-			this.CurrentStep = TargetStep;
-
-			try
+			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				this.isUpdatingSelection = true;
-				this.SelectedStateKey = TargetStep.ToStateKey();
-			}
-			finally
-			{
-				this.isUpdatingSelection = false;
-			}
+				this.CurrentStep = TargetStep;
 
-			this.HeaderTitle = this.GetStepTitle(TargetStep);
-			this.CanGoBack = !IsBackRestrictedStep(TargetStep) && this.FindStepInDirection(TargetStep, NavigationDirection.Backward).HasValue;
+				try
+				{
+					this.isUpdatingSelection = true;
+					this.SelectedStateKey = TargetStep.ToStateKey();
+				}
+				finally
+				{
+					this.isUpdatingSelection = false;
+				}
+
+				this.HeaderTitle = this.GetStepTitle(TargetStep);
+				this.CanGoBack = !IsBackRestrictedStep(TargetStep) && this.FindStepInDirection(TargetStep, NavigationDirection.Backward).HasValue;
+			});
 
 			if (this.stepViewModels.TryGetValue(TargetStep, out BaseOnboardingStepViewModel? StepViewModel))
 			{

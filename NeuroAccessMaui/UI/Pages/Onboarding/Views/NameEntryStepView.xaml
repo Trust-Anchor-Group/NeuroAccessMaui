@@ -15,7 +15,8 @@
     </onboarding:BaseOnboardingView.Resources>
 
     <Grid RowDefinitions="*,auto"
-          RowSpacing="{DynamicResource LargeSpacing}">
+          RowSpacing="{DynamicResource LargeSpacing}"
+          AutomationId="screen_username">
         <VerticalStackLayout Grid.Row="0"
                              Spacing="{DynamicResource LargeSpacing}"
                              VerticalOptions="Center">
@@ -27,7 +28,8 @@
                                          Style="{DynamicResource RegularCompositeEntry}"
                                          EntryData="{Binding Username}"
                                          Placeholder="{l:Localize Username}"
-                                         IsValid="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowEmpty}}" />
+                                         IsValid="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowEmpty}}"
+                                         AutomationId="input_username" />
 
                 <Grid RowDefinitions="auto,auto"
                       ColumnDefinitions="auto,*"
@@ -94,7 +96,8 @@
             <controls:TextButton Command="{Binding CreateAccountCommand}"
                                  Style="{DynamicResource FilledTextButton}"
                                  LabelData="{Binding LocalizedContinueText}"
-                                 IsEnabled="{Binding CanCreateAccount}" />
+                                 IsEnabled="{Binding CanCreateAccount}"
+                                 AutomationId="button_continue_username" />
         </VerticalStackLayout>
     </Grid>
 </onboarding:BaseOnboardingView>

@@ -1,0 +1,8 @@
+# Downloaded Android test results
+/matrix-results-*/
+/results/
+
+# Local Android UI debugging captures
+/mobile/andriod/ui/fail*.png
+/mobile/andriod/ui/fail*.webm
+/mobile/andriod/ui/rightway.png

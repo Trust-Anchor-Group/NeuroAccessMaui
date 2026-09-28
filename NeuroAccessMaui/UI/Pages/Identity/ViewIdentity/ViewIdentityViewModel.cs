@@ -31,6 +31,11 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		private LegalIdentity? identity = null;
 
+		/// <summary>
+		/// Gets the identifier of the identity currently displayed on this page.
+		/// </summary>
+		public string DisplayedIdentityId => this.identity?.Id ?? string.Empty;
+
 		private bool hasAppeared;
 
 		/// <summary>
@@ -254,6 +259,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			// Determine identity source
 			LegalIdentity Identity = this.args?.Identity ?? ServiceRef.TagProfile.LegalIdentity!;
 			this.identity = Identity;
+			this.OnPropertyChanged(nameof(this.DisplayedIdentityId));
 
 			if (IsRefresh)
 			{

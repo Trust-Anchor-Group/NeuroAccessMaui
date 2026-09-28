@@ -459,8 +459,10 @@ namespace NeuroAccessMaui
                 return;
             }
 
+#if !DEBUG
             if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
                 throw new Exception("Initialization did not complete in time.");
+#endif
         }
 
         public async Task ResumeAsync(bool isBackground)
