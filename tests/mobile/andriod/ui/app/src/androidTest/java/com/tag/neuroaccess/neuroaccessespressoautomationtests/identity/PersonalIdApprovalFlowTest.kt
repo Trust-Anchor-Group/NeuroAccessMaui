@@ -1,9 +1,11 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.identity
 
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.flows.identity.PersonalIdApplicationFlow
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.identity.IdentityApprovalScreen
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.BaseTest
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.IdentityApprovalScreen
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith

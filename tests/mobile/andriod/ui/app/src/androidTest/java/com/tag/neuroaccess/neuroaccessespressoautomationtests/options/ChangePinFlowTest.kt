@@ -1,15 +1,16 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.options
 
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.identity.ViewIdentityScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.onboarding.BiometricsScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.onboarding.PinCreationScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.options.SettingsScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.shared.HomeScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.shared.PinAuthenticationPopup
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.shared.SuccessScreen
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.BaseTest
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.TestData
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.BiometricsScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.HomeScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.PinAuthenticationPopup
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.PinCreationScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.SettingsScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.SuccessScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.ViewIdentityScreen
 import org.junit.Test
 import org.junit.runner.RunWith
 

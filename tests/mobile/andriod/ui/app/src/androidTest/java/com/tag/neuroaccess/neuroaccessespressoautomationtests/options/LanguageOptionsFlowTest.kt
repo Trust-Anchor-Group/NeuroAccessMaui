@@ -1,11 +1,12 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.options
 
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.onboarding.IdProviderScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.options.LanguageSelectionPopup
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.BaseTest
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.SupportedLanguage
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.IdProviderScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.LanguageSelectionPopup
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -1,5 +1,7 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.identity
 
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.flows.identity.PersonalIdApplicationFlow
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.BaseTest
 import org.junit.Test

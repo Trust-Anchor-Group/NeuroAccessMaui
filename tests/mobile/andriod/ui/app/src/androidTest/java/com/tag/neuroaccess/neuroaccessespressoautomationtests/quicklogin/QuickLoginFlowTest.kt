@@ -1,5 +1,10 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.quicklogin
 
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.identity.IdentityDetailsScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.identity.ViewIdentityScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.shared.HomeScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.shared.PinAuthenticationPopup
+
 import android.widget.EditText
 import android.util.Log
 import androidx.test.espresso.Espresso.onView
@@ -13,10 +18,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.BaseTest
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.TestData
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.framework.ScreenWaiter
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.HomeScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.IdentityDetailsScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.PinAuthenticationPopup
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.ViewIdentityScreen
 import org.hamcrest.Matchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,5 +61,3 @@ class QuickLoginFlowTest : BaseTest() {
         }
     }
 }
-
-

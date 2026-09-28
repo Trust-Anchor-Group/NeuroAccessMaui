@@ -1,9 +1,10 @@
 package com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding
 
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.onboarding.IdProviderScreen
+import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.onboarding.PhoneVerificationScreen
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tag.neuroaccess.neuroaccessespressoautomationtests.common.BaseTest
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.IdProviderScreen
-import com.tag.neuroaccess.neuroaccessespressoautomationtests.screens.PhoneVerificationScreen
 import org.junit.Test
 import org.junit.runner.RunWith
 
