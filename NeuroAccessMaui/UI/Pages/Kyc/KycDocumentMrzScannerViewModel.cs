@@ -326,6 +326,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.CameraView.Options = new CameraOptions
 			{
 				PreferRearCamera = true,
+				ContinuousAutoFocus = true,
 				FrameDeliveryInterval = TimeSpan.FromMilliseconds(150),
 				PreviewScaling = CameraPreviewScaling.Fit,
 				TargetFps = 15,
