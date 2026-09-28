@@ -3649,16 +3649,16 @@
     <value>Acércalo al teléfono</value>
   </data>
   <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
-    <value>Mueve el documento lentamente hasta que se encuentre el chip.</value>
+    <value>Mueve el documento lentamente hasta que se detecte el chip.</value>
   </data>
   <data name="KycTravelDocumentNfcReadingTitle" xml:space="preserve">
     <value>Manténlo quieto</value>
   </data>
   <data name="KycTravelDocumentNfcReadingDescription" xml:space="preserve">
-    <value>Leyendo y verificando el chip del documento.</value>
+    <value>Mantén el teléfono y el documento inmóviles.</value>
   </data>
   <data name="KycTravelDocumentProgressTitle" xml:space="preserve">
-    <value>Leyendo documento</value>
+    <value>Leyendo el documento</value>
   </data>
   <data name="KycTravelDocumentProgressDetectChip" xml:space="preserve">
     <value>Detectar chip</value>
@@ -3685,10 +3685,10 @@
     <value>Requiere atención</value>
   </data>
   <data name="KycTravelDocumentRetryNfcButton" xml:space="preserve">
-    <value>Leer chip</value>
+    <value>Intentar de nuevo</value>
   </data>
   <data name="KycTravelDocumentRescanButton" xml:space="preserve">
-    <value>Escanear documento de nuevo</value>
+    <value>Volver a escanear los datos del documento</value>
   </data>
   <data name="KycTravelDocumentContinueButton" xml:space="preserve">
     <value>Continuar</value>
@@ -3697,10 +3697,10 @@
     <value>Chip del documento leído</value>
   </data>
   <data name="KycTravelDocumentSuccessDescription" xml:space="preserve">
-    <value>La lectura del chip se guardó para esta solicitud. Continúa para revisar los datos antes de enviarla.</value>
+    <value>Documento leído correctamente. Ya puedes mover el teléfono.</value>
   </data>
   <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
-    <value>Usar otro método</value>
+    <value>Continuar manualmente</value>
   </data>
   <data name="KycTravelDocumentMrzLabel" xml:space="preserve">
     <value>MRZ</value>
@@ -3730,43 +3730,43 @@
     <value>Listo para leer. Mantén el documento de viaje cerca del teléfono y sin moverlo.</value>
   </data>
   <data name="KycTravelDocumentNfcPreparing" xml:space="preserve">
-    <value>Preparando la verificación segura. Mantén esta pantalla abierta.</value>
+    <value>Preparando la verificación segura…</value>
   </data>
   <data name="KycTravelDocumentNfcReading" xml:space="preserve">
-    <value>Leyendo el chip del documento. Mantén el documento quieto.</value>
+    <value>Leyendo el documento…</value>
   </data>
   <data name="KycTravelDocumentNfcSuccess" xml:space="preserve">
-    <value>Lectura del chip guardada y lista para adjuntarse a esta solicitud.</value>
+    <value>Documento leído correctamente. Ya puedes mover el teléfono.</value>
   </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
-    <value>La lectura del chip no está disponible en este dispositivo o configuración de la app. Puedes continuar manualmente.</value>
+    <value>La lectura del chip no está disponible. Puedes continuar manualmente.</value>
   </data>
   <data name="KycTravelDocumentNfcReservationFailed" xml:space="preserve">
-    <value>No se pudo preparar la verificación segura. Inténtalo de nuevo, vuelve a escanear el documento o continúa manualmente.</value>
+    <value>No se pudo preparar la verificación segura. Inténtalo de nuevo o continúa manualmente.</value>
   </data>
   <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
-    <value>Se canceló la lectura del chip.</value>
+    <value>Lectura cancelada.</value>
   </data>
   <data name="KycTravelDocumentNfcTimedOut" xml:space="preserve">
-    <value>La lectura del chip agotó el tiempo. Inténtalo de nuevo y mantén el documento cerca del teléfono.</value>
+    <value>Se agotó el tiempo de lectura. Cambia la posición del teléfono sobre el documento e inténtalo de nuevo.</value>
   </data>
   <data name="KycTravelDocumentNfcMultipleTags" xml:space="preserve">
-    <value>Se detectó más de una etiqueta NFC. Aleja otras tarjetas e inténtalo de nuevo.</value>
+    <value>Se detectó más de un chip. Aleja las otras tarjetas e inténtalo de nuevo.</value>
   </data>
   <data name="KycTravelDocumentNfcUnsupportedTag" xml:space="preserve">
-    <value>La etiqueta NFC detectada no es un chip de documento de viaje compatible.</value>
+    <value>Este chip no corresponde a un pasaporte o documento de identidad compatible.</value>
   </data>
   <data name="KycTravelDocumentNfcConnectionLost" xml:space="preserve">
-    <value>Se perdió la conexión NFC. Mantén el documento quieto e inténtalo de nuevo.</value>
+    <value>Se perdió la conexión. Coloca el documento contra el teléfono e inténtalo de nuevo.</value>
   </data>
   <data name="KycTravelDocumentNfcAuthenticationFailed" xml:space="preserve">
-    <value>No se pudo autenticar el chip. Inténtalo de nuevo. Si el problema persiste, vuelve a escanear el documento o contacta con soporte.</value>
+    <value>No se pudo acceder al chip del documento. Inténtalo de nuevo. Si el problema persiste, prueba otro método</value>
   </data>
   <data name="KycTravelDocumentNfcReadFailed" xml:space="preserve">
-    <value>El chip se autenticó, pero no se pudieron leer los datos del documento. Inténtalo de nuevo.</value>
+    <value>No se pudieron leer los datos del documento. Mantén el teléfono y el documento inmóviles e inténtalo de nuevo.</value>
   </data>
   <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
-    <value>No se pudo leer el chip. Revisa el escaneo e inténtalo de nuevo.</value>
+    <value>No se pudo leer el documento. Inténtalo de nuevo o vuelve a escanear los datos del documento.</value>
   </data>
   <data name="TravelDocumentScan_IosNfcIntroPassport" xml:space="preserve">
     <value>⚪ ⚪ ⚪
@@ -3825,5 +3825,20 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   </data>
   <data name="QrScannerRetry" xml:space="preserve">
     <value>Reintentar</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadyPassport" xml:space="preserve">
+    <value>Coloca el pasaporte contra la parte trasera del teléfono.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadyIdCard" xml:space="preserve">
+    <value>Coloca el documento de identidad contra la parte trasera del teléfono.</value>
+  </data>
+  <data name="KycTravelDocumentNfcDetected" xml:space="preserve">
+    <value>Chip detectado</value>
+  </data>
+  <data name="KycTravelDocumentNfcCheckingSecurity" xml:space="preserve">
+    <value>Comprobando la seguridad del documento…</value>
+  </data>
+  <data name="KycTravelDocumentNfcCheckingDocument" xml:space="preserve">
+    <value>Comprobando el documento…</value>
   </data>
 </root>

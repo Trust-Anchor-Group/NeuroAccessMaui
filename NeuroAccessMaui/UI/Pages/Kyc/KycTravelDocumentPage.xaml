@@ -11,6 +11,18 @@
 					  ui:KeyboardInsets.Mode="Automatic"
 					  ui:SafeArea.Mode="TopAndBottom">
 	<VisualElement.Resources>
+		<Style x:Key="NfcProgressDot" TargetType="Ellipse">
+			<Setter Property="WidthRequest" Value="14" />
+			<Setter Property="HeightRequest" Value="14" />
+			<Setter Property="Fill" Value="{DynamicResource TnPNeutralv300bgWL}" />
+			<Setter Property="Stroke" Value="{DynamicResource ContentSecondaryWL}" />
+			<Setter Property="StrokeThickness" Value="1" />
+			<Setter Property="AutomationProperties.IsInAccessibleTree" Value="False" />
+		</Style>
+		<Style x:Key="NfcCompletedDot" TargetType="Ellipse" BasedOn="{StaticResource NfcProgressDot}">
+			<Setter Property="Fill" Value="{DynamicResource ContentAccessWL}" />
+			<Setter Property="Stroke" Value="{DynamicResource ContentAccessWL}" />
+		</Style>
 		<Style x:Key="GuidePanel"
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSet}">
@@ -55,7 +67,7 @@
 					VerticalScrollBarVisibility="Never">
 			<Grid Padding="18,10,18,12"
 				  MaximumWidthRequest="620"
-				  HorizontalOptions="Center"
+				  HorizontalOptions="Fill"
 				  VerticalOptions="Center">
 				<VerticalStackLayout Spacing="18">
 					<VerticalStackLayout Spacing="16"
@@ -121,7 +133,13 @@
 
 					<VerticalStackLayout Spacing="16"
 										 IsVisible="{Binding ShowNfcStep}">
-						<Grid HeightRequest="208">
+						<controls:SvgView Source="icao_chip.svg"
+										 WidthRequest="72"
+										 HeightRequest="72"
+										 TintColor="{DynamicResource ContentAccessWL}"
+										 HorizontalOptions="Center"
+										 IsVisible="{Binding ShowCompactNfcIllustration}" />
+						<Grid HeightRequest="208" IsVisible="{Binding ShowFullNfcIllustration}">
 							<Border WidthRequest="188"
 									HeightRequest="128"
 									StrokeShape="RoundRectangle 8"
@@ -163,6 +181,7 @@
 								   HorizontalTextAlignment="Center"
 								   LineBreakMode="WordWrap" />
 							<Label Text="{Binding NfcStepDescription}"
+								   IsVisible="{Binding ShowFullNfcIllustration}"
 								   Style="{DynamicResource InfoLabel}"
 								   HorizontalTextAlignment="Center"
 								   LineBreakMode="WordWrap" />
@@ -171,6 +190,12 @@
 
 					<VerticalStackLayout Spacing="16"
 										 IsVisible="{Binding ShowSuccess}">
+						<HorizontalStackLayout HorizontalOptions="Center" Spacing="12"
+											   IsVisible="{OnPlatform Default=False, Android=True}">
+							<Ellipse Style="{StaticResource NfcCompletedDot}" />
+							<Ellipse Style="{StaticResource NfcCompletedDot}" />
+							<Ellipse Style="{StaticResource NfcCompletedDot}" />
+						</HorizontalStackLayout>
 						<Border WidthRequest="104"
 								HeightRequest="104"
 								StrokeShape="RoundRectangle 52"
@@ -201,24 +226,62 @@
 
 					<Border Style="{StaticResource GuidePanel}"
 							IsVisible="{Binding ShowNfcProgress}">
-						<Grid ColumnDefinitions="Auto,*"
-							  ColumnSpacing="14">
-							<ActivityIndicator IsRunning="{Binding IsNfcBusy}"
-											   IsVisible="{Binding IsNfcBusy}"
-											   WidthRequest="30"
-											   HeightRequest="30"
-											   Color="{DynamicResource ContentAccessWL}"
-											   VerticalOptions="Center" />
-							<VerticalStackLayout Grid.Column="1"
-												 Spacing="4">
-								<Label Text="{l:Localize KycTravelDocumentProgressTitle}"
-									   Style="{DynamicResource SectionTitleLabel}"
-									   LineBreakMode="WordWrap" />
+						<Grid>
+							<VerticalStackLayout Spacing="16" IsVisible="{OnPlatform Default=False, Android=True}">
+								<HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+									<Ellipse Style="{StaticResource NfcProgressDot}">
+										<Ellipse.Triggers>
+											<DataTrigger TargetType="Ellipse" Binding="{Binding IsNfcChipDetected}" Value="True">
+												<Setter Property="Fill" Value="{DynamicResource ContentAccessWL}" />
+												<Setter Property="Stroke" Value="{DynamicResource ContentAccessWL}" />
+											</DataTrigger>
+										</Ellipse.Triggers>
+									</Ellipse>
+									<Ellipse Style="{StaticResource NfcProgressDot}">
+										<Ellipse.Triggers>
+											<DataTrigger TargetType="Ellipse" Binding="{Binding IsNfcReadingStarted}" Value="True">
+												<Setter Property="Fill" Value="{DynamicResource ContentAccessWL}" />
+												<Setter Property="Stroke" Value="{DynamicResource ContentAccessWL}" />
+											</DataTrigger>
+										</Ellipse.Triggers>
+									</Ellipse>
+									<Ellipse Style="{StaticResource NfcProgressDot}" />
+								</HorizontalStackLayout>
 								<Label Text="{Binding StatusText}"
-									   Style="{DynamicResource InfoLabel}"
-									   MaxLines="2"
+									   Style="{DynamicResource SectionTitleLabel}"
+									   HorizontalTextAlignment="Center"
 									   LineBreakMode="WordWrap" />
+								<Label Text="{l:Localize KycTravelDocumentNfcReadingDescription}"
+									   Style="{DynamicResource InfoLabel}"
+									   HorizontalTextAlignment="Center"
+									   LineBreakMode="WordWrap"
+									   IsVisible="{Binding ShowNfcReadingIndicator}" />
+								<ActivityIndicator IsRunning="{Binding IsNfcBusy}"
+												   IsVisible="{Binding IsNfcBusy}"
+												   WidthRequest="24"
+												   HeightRequest="24"
+												   HorizontalOptions="Center"
+												   Color="{DynamicResource ContentAccessWL}" />
 							</VerticalStackLayout>
+							<Grid ColumnDefinitions="Auto,*"
+								  ColumnSpacing="14"
+								  IsVisible="{OnPlatform Default=True, Android=False}">
+								<ActivityIndicator IsRunning="{Binding IsNfcBusy}"
+												   IsVisible="{Binding IsNfcBusy}"
+												   WidthRequest="30"
+												   HeightRequest="30"
+												   Color="{DynamicResource ContentAccessWL}"
+												   VerticalOptions="Center" />
+								<VerticalStackLayout Grid.Column="1"
+													 Spacing="4">
+									<Label Text="{l:Localize KycTravelDocumentProgressTitle}"
+										   Style="{DynamicResource SectionTitleLabel}"
+										   LineBreakMode="WordWrap" />
+									<Label Text="{Binding StatusText}"
+										   Style="{DynamicResource InfoLabel}"
+										   LineBreakMode="WordWrap" />
+								</VerticalStackLayout>
+							</Grid>
 						</Grid>
 					</Border>
 
@@ -267,7 +330,7 @@
 				BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 			<VerticalStackLayout Spacing="8"
 								 MaximumWidthRequest="620"
-								 HorizontalOptions="Center">
+								 HorizontalOptions="Fill">
 				<controls:TextButton Style="{DynamicResource FilledTextButton}"
 									 LabelData="{l:Localize KycTravelDocumentPrimaryScanButton}"
 									 Command="{Binding ScanMrzCommand}"

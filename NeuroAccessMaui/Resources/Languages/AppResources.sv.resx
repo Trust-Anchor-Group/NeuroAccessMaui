@@ -3649,16 +3649,16 @@
     <value>Håll det mot telefonen</value>
   </data>
   <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
-    <value>Flytta dokumentet långsamt tills chippet hittas.</value>
+    <value>Flytta dokumentet långsamt tills chipet hittas.</value>
   </data>
   <data name="KycTravelDocumentNfcReadingTitle" xml:space="preserve">
     <value>Håll stilla</value>
   </data>
   <data name="KycTravelDocumentNfcReadingDescription" xml:space="preserve">
-    <value>Läser och verifierar dokumentets chip.</value>
+    <value>Håll telefonen och dokumentet stilla.</value>
   </data>
   <data name="KycTravelDocumentProgressTitle" xml:space="preserve">
-    <value>Läser dokument</value>
+    <value>Läser dokumentet</value>
   </data>
   <data name="KycTravelDocumentProgressDetectChip" xml:space="preserve">
     <value>Hitta chip</value>
@@ -3685,22 +3685,22 @@
     <value>Kräver åtgärd</value>
   </data>
   <data name="KycTravelDocumentRetryNfcButton" xml:space="preserve">
-    <value>Läs chip</value>
+    <value>Försök igen</value>
   </data>
   <data name="KycTravelDocumentRescanButton" xml:space="preserve">
-    <value>Skanna dokument igen</value>
+    <value>Skanna dokumentets uppgifter igen</value>
   </data>
   <data name="KycTravelDocumentContinueButton" xml:space="preserve">
     <value>Fortsätt</value>
   </data>
   <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
-    <value>Använd annan metod</value>
+    <value>Fortsätt manuellt</value>
   </data>
   <data name="KycTravelDocumentSuccessTitle" xml:space="preserve">
     <value>Dokumentchip läst</value>
   </data>
   <data name="KycTravelDocumentSuccessDescription" xml:space="preserve">
-    <value>Chipavläsningen är sparad för den här ansökan. Fortsätt för att granska uppgifterna innan du ansöker.</value>
+    <value>Dokumentet har lästs in. Du kan flytta telefonen.</value>
   </data>
   <data name="KycTravelDocumentSaved" xml:space="preserve">
     <value>Dokumentuppgifter sparade. Håll nu dokumentets chip mot telefonen.</value>
@@ -3715,43 +3715,43 @@
     <value>Redo att läsa. Håll resehandlingen nära telefonen och håll den stilla.</value>
   </data>
   <data name="KycTravelDocumentNfcPreparing" xml:space="preserve">
-    <value>Förbereder säker verifiering. Håll den här skärmen öppen.</value>
+    <value>Förbereder säker verifiering…</value>
   </data>
   <data name="KycTravelDocumentNfcReading" xml:space="preserve">
-    <value>Läser dokumentets chip. Håll dokumentet stilla.</value>
+    <value>Läser dokumentet…</value>
   </data>
   <data name="KycTravelDocumentNfcSuccess" xml:space="preserve">
-    <value>Chipavläsningen är sparad och redo att bifogas till ansökan.</value>
+    <value>Dokumentet har lästs in. Du kan flytta telefonen.</value>
   </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
-    <value>Chipavläsning är inte tillgänglig på den här enheten eller i appens konfiguration. Du kan fortsätta manuellt i stället.</value>
+    <value>Chipavläsning är inte tillgänglig. Du kan fortsätta manuellt.</value>
   </data>
   <data name="KycTravelDocumentNfcReservationFailed" xml:space="preserve">
-    <value>Säker verifiering kunde inte förberedas. Försök igen, skanna dokumentet på nytt eller fortsätt manuellt.</value>
+    <value>Det gick inte att förbereda säker verifiering. Försök igen eller fortsätt manuellt.</value>
   </data>
   <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
-    <value>Chipavläsningen avbröts.</value>
+    <value>Skanningen avbröts.</value>
   </data>
   <data name="KycTravelDocumentNfcTimedOut" xml:space="preserve">
-    <value>Chipavläsningen tog för lång tid. Starta igen och håll dokumentet nära telefonen.</value>
+    <value>Skanningens tidsgräns överskreds. Flytta telefonen till en annan position mot dokumentet och försök igen.</value>
   </data>
   <data name="KycTravelDocumentNfcMultipleTags" xml:space="preserve">
-    <value>Flera NFC-taggar hittades. Flytta bort andra kort och försök igen.</value>
+    <value>Flera chip upptäcktes. Flytta bort andra kort och försök igen.</value>
   </data>
   <data name="KycTravelDocumentNfcUnsupportedTag" xml:space="preserve">
-    <value>Den NFC-tagg som hittades är inte ett resehandlingschip som stöds.</value>
+    <value>Chipet tillhör inte ett pass eller id-kort som stöds.</value>
   </data>
   <data name="KycTravelDocumentNfcConnectionLost" xml:space="preserve">
-    <value>NFC-anslutningen bröts. Håll dokumentet stilla och försök igen.</value>
+    <value>Anslutningen bröts. Håll dokumentet mot telefonen och försök igen.</value>
   </data>
   <data name="KycTravelDocumentNfcAuthenticationFailed" xml:space="preserve">
-    <value>Chippet kunde inte autentiseras. Försök igen. Om problemet kvarstår, skanna dokumentet igen eller kontakta supporten.</value>
+    <value>Det gick inte att komma åt dokumentets chip. Försök igen. Om problemet kvarstår, prova en annan metod</value>
   </data>
   <data name="KycTravelDocumentNfcReadFailed" xml:space="preserve">
-    <value>Chippet autentiserades, men dokumentdata kunde inte läsas. Försök igen.</value>
+    <value>Det gick inte att läsa dokumentets uppgifter. Håll telefonen och dokumentet stilla och försök igen.</value>
   </data>
   <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
-    <value>Chipavläsningen misslyckades. Kontrollera skanningen och försök igen.</value>
+    <value>Det gick inte att läsa dokumentet. Försök igen eller skanna dokumentets uppgifter igen.</value>
   </data>
   <data name="TravelDocumentScan_IosNfcIntroPassport" xml:space="preserve">
     <value>⚪ ⚪ ⚪
@@ -3810,5 +3810,20 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="QrScannerRetry" xml:space="preserve">
     <value>Försök igen</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadyPassport" xml:space="preserve">
+    <value>Håll passet mot baksidan av telefonen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadyIdCard" xml:space="preserve">
+    <value>Håll id-kortet mot baksidan av telefonen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcDetected" xml:space="preserve">
+    <value>Chipet hittades</value>
+  </data>
+  <data name="KycTravelDocumentNfcCheckingSecurity" xml:space="preserve">
+    <value>Kontrollerar dokumentets säkerhet…</value>
+  </data>
+  <data name="KycTravelDocumentNfcCheckingDocument" xml:space="preserve">
+    <value>Kontrollerar dokumentet…</value>
   </data>
 </root>
