@@ -6,7 +6,7 @@ param(
     [string] $AppApkX64,
     [Parameter(Mandatory = $true)] [string] $TestApk,
     [string] $UserName = "neuro-test",
-    [string] $MatrixPath = (Join-Path $PSScriptRoot "..\config\test-matrix.yaml"),
+    [string] $MatrixPath = (Join-Path $PSScriptRoot "..\config\matrices\smoke\64-bit\device-profiles-x86_64.yaml"),
     [string] $TestClass,
     [string] $TestPhoneNumber,
     [string] $TestPin,
@@ -14,10 +14,15 @@ param(
     [string] $RemoteRoot = "/opt/neuro-test",
     [switch] $ShowEmulator,
     [switch] $StopOnFailure,
-    [ValidateSet("matrix", "cache", "delete")] [string] $StoragePolicy = "matrix"
+    [ValidateSet("matrix", "cache", "delete")] [string] $StoragePolicy = "matrix",
+    [ValidateRange(1, 65535)] [int] $SshPort = 22,
+    [string] $IdentityFile,
+    [switch] $Wait,
+    [string] $ResultsDirectory
 )
 
 $ErrorActionPreference = "Stop"
+. "$PSScriptRoot\RemoteClient.Common.ps1"
 function Read-TestMatrix {
     param([Parameter(Mandatory = $true)] [string] $Path)
     $Scenarios = [System.Collections.Generic.List[object]]::new()
@@ -44,8 +49,6 @@ function Read-BooleanValue {
     if ([string]$Value -eq "false") { return $false }
     throw "Expected true or false, received '$Value'."
 }
-if ($HostName -notmatch '^[A-Za-z0-9.-]+$' -or $UserName -notmatch '^[A-Za-z0-9._-]+$') { throw "Invalid SSH destination." }
-if ($RemoteRoot -notmatch '^/[A-Za-z0-9._/-]+$') { throw "RemoteRoot must be an absolute Linux path without spaces." }
 if (-not [string]::IsNullOrWhiteSpace($TestPhoneNumber) -and $TestPhoneNumber -notmatch '^\d+$') {
     throw "TestPhoneNumber must contain digits only, without a country code."
 }
@@ -55,11 +58,14 @@ if (-not [string]::IsNullOrWhiteSpace($TestPin) -and $TestPin -notmatch '^\d{6}$
 if (-not [string]::IsNullOrWhiteSpace($TestOtpEndpoint)) {
     $OtpUri = $null
     if (-not [Uri]::TryCreate($TestOtpEndpoint, [UriKind]::Absolute, [ref]$OtpUri) -or
-        $OtpUri.Scheme -notin @("http", "https") -or $TestOtpEndpoint.Contains("'") -or
+        $OtpUri.Scheme -notin @("http", "https") -or $TestOtpEndpoint -match '[\[\]\(\)]' -or
+        $TestOtpEndpoint.Contains("'") -or
         $TestOtpEndpoint.Contains("`r") -or $TestOtpEndpoint.Contains("`n")) {
         throw "TestOtpEndpoint must be a valid HTTP or HTTPS URL."
     }
 }
+$Context = New-RemoteClientContext -HostName $HostName -UserName $UserName -RemoteRoot $RemoteRoot `
+    -SshPort $SshPort -IdentityFile $IdentityFile
 $ResolvedAppApk = if ([string]::IsNullOrWhiteSpace($AppApk)) { $null } else { (Resolve-Path -LiteralPath $AppApk).Path }
 $ResolvedAppApkX86 = if ([string]::IsNullOrWhiteSpace($AppApkX86)) { $ResolvedAppApk } else { (Resolve-Path -LiteralPath $AppApkX86).Path }
 $ResolvedAppApkX64 = if ([string]::IsNullOrWhiteSpace($AppApkX64)) { $ResolvedAppApk } else { (Resolve-Path -LiteralPath $AppApkX64).Path }
@@ -79,7 +85,7 @@ if (($Scenarios | Where-Object { $TestClass -like '*.RegistrationFlowTest' -or $
     }
 }
 
-$RunId = "{0}-{1}" -f (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ"), ([Guid]::NewGuid().ToString("N").Substring(0, 8))
+$RunId = New-RemoteRunId
 $TemporaryRoot = Join-Path ([System.IO.Path]::GetTempPath()) $RunId
 [void](New-Item -ItemType Directory -Path $TemporaryRoot)
 $TemporaryEnvironment = Join-Path $TemporaryRoot "job.env"
@@ -106,21 +112,17 @@ if (-not [string]::IsNullOrWhiteSpace($TestOtpEndpoint)) { $Environment.Add("TES
 $Environment.Add("REGISTRATION_USERNAME_TIMESTAMP='$((Get-Date).ToUniversalTime().ToString("yyyyMMddHHmmss"))'")
 [System.IO.File]::WriteAllText($TemporaryEnvironment, ($Environment -join "`n") + "`n", [System.Text.UTF8Encoding]::new($false))
 
-$Remote = "$UserName@$HostName"; $RemoteStaging = "$RemoteRoot/incoming/$RunId.uploading"; $RemoteReady = "$RemoteRoot/incoming/$RunId"
 try {
-    & ssh $Remote "umask 077 && mkdir -p '$RemoteStaging'"; if ($LASTEXITCODE -ne 0) { throw "Could not create remote staging directory." }
-    if (-not [string]::IsNullOrWhiteSpace($ResolvedAppApk)) { & scp -- $ResolvedAppApk "${Remote}:${RemoteStaging}/app.apk"; if ($LASTEXITCODE -ne 0) { throw "Could not upload the app APK." } }
-    if (-not [string]::IsNullOrWhiteSpace($ResolvedAppApkX86)) { & scp -- $ResolvedAppApkX86 "${Remote}:${RemoteStaging}/app-x86.apk"; if ($LASTEXITCODE -ne 0) { throw "Could not upload the x86 app APK." } }
-    if (-not [string]::IsNullOrWhiteSpace($ResolvedAppApkX64)) { & scp -- $ResolvedAppApkX64 "${Remote}:${RemoteStaging}/app-x86_64.apk"; if ($LASTEXITCODE -ne 0) { throw "Could not upload the x86_64 app APK." } }
-    & scp -- $ResolvedTestApk "${Remote}:${RemoteStaging}/tests.apk"; if ($LASTEXITCODE -ne 0) { throw "Could not upload the test APK." }
-    & scp -- $TemporaryEnvironment "${Remote}:${RemoteStaging}/job.env"; if ($LASTEXITCODE -ne 0) { throw "Could not upload job.env." }
-    & scp -- $TemporaryMatrix "${Remote}:${RemoteStaging}/matrix.tsv"; if ($LASTEXITCODE -ne 0) { throw "Could not upload matrix.tsv." }
-    & ssh $Remote "mv '$RemoteStaging' '$RemoteReady' && NEURO_TEST_ROOT='$RemoteRoot' bash '$RemoteRoot/repo/tests/infrastructure/vm/android/runner/enqueue-run.sh' '$RunId'"
-    if ($LASTEXITCODE -ne 0) { throw "Could not activate the remote matrix job." }
+    $Files = [ordered]@{}
+    if (-not [string]::IsNullOrWhiteSpace($ResolvedAppApk)) { $Files['app.apk'] = $ResolvedAppApk }
+    if (-not [string]::IsNullOrWhiteSpace($ResolvedAppApkX86)) { $Files['app-x86.apk'] = $ResolvedAppApkX86 }
+    if (-not [string]::IsNullOrWhiteSpace($ResolvedAppApkX64)) { $Files['app-x86_64.apk'] = $ResolvedAppApkX64 }
+    $Files['tests.apk'] = $ResolvedTestApk
+    $Files['job.env'] = $TemporaryEnvironment
+    $Files['matrix.tsv'] = $TemporaryMatrix
+    $Paths = Publish-RemoteTestJob -Context $Context -RunId $RunId -Files $Files
 }
-finally { Remove-Item -LiteralPath $TemporaryRoot -Recurse -Force -ErrorAction SilentlyContinue }
-Write-Output "Run ID: $RunId"
-Write-Output "Status: ssh $Remote cat '$RemoteRoot/runs/$RunId/status'"
-Write-Output "Detailed log: ssh $Remote tail -f '$RemoteRoot/runs/$RunId/run.log'"
-Write-Output "Quick summary: ssh $Remote cat '$RemoteRoot/runs/$RunId/results/summary.txt'"
-Write-Output "Results: scp -r ${Remote}:$RemoteRoot/runs/$RunId/results ."
+finally {
+    Remove-Item -LiteralPath $TemporaryRoot -Recurse -Force -ErrorAction SilentlyContinue
+}
+Complete-RemoteTestSubmission -Context $Context -RunId $RunId -Paths $Paths -Wait:$Wait -ResultsDirectory $ResultsDirectory

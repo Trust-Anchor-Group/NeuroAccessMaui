@@ -9,28 +9,27 @@ param(
     [Parameter(Mandatory = $true)] [string] $PinB,
     [ValidateSet("mutual-contacts")] [string] $Scenario = "mutual-contacts",
     [string] $UserName = "neuro-test",
-    [string] $RemoteRoot = "/opt/neuro-test"
+    [string] $RemoteRoot = "/opt/neuro-test",
+    [ValidateRange(1, 65535)] [int] $SshPort = 22,
+    [string] $IdentityFile,
+    [switch] $Wait,
+    [string] $ResultsDirectory
 )
 
 $ErrorActionPreference = "Stop"
-if ($HostName -notmatch '^[A-Za-z0-9.-]+$') { throw "HostName contains unsupported characters." }
-if ($UserName -notmatch '^[A-Za-z0-9._-]+$') { throw "UserName contains unsupported characters." }
+. "$PSScriptRoot\RemoteClient.Common.ps1"
+
 if ($SerialA -notmatch '^[A-Za-z0-9._:-]+$' -or $SerialB -notmatch '^[A-Za-z0-9._:-]+$') {
     throw "Device serials contain unsupported characters."
 }
 if ($SerialA -eq $SerialB) { throw "SerialA and SerialB must identify different devices." }
 if ($PinA -notmatch '^\d{6}$' -or $PinB -notmatch '^\d{6}$') { throw "PinA and PinB must contain exactly six digits." }
-if ($RemoteRoot -notmatch '^/[A-Za-z0-9._/-]+$') { throw "RemoteRoot must be an absolute Linux path without spaces." }
-foreach ($CommandName in @("ssh", "scp")) {
-    if ($null -eq (Get-Command $CommandName -ErrorAction SilentlyContinue)) { throw "Required command is missing: $CommandName" }
-}
 
+$Context = New-RemoteClientContext -HostName $HostName -UserName $UserName -RemoteRoot $RemoteRoot `
+    -SshPort $SshPort -IdentityFile $IdentityFile
 $ResolvedAppApk = (Resolve-Path -LiteralPath $AppApk).Path
 $ResolvedTestApk = (Resolve-Path -LiteralPath $TestApk).Path
-$RunId = "{0}-{1}" -f (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ"), ([Guid]::NewGuid().ToString("N").Substring(0, 8))
-$Remote = "$UserName@$HostName"
-$RemoteStaging = "$RemoteRoot/incoming/$RunId.uploading"
-$RemoteReady = "$RemoteRoot/incoming/$RunId"
+$RunId = New-RemoteRunId
 $EnvironmentLines = @(
     "MODE='$Scenario'"
     "SERIAL_A='$SerialA'"
@@ -39,22 +38,16 @@ $EnvironmentLines = @(
     "TEST_PIN_B='$PinB'"
 )
 $TemporaryEnvironment = Join-Path ([System.IO.Path]::GetTempPath()) "$RunId-job.env"
-$EnvironmentContents = ($EnvironmentLines -join "`n") + "`n"
-[System.IO.File]::WriteAllText($TemporaryEnvironment, $EnvironmentContents, [System.Text.UTF8Encoding]::new($false))
+[System.IO.File]::WriteAllText($TemporaryEnvironment, ($EnvironmentLines -join "`n") + "`n", [System.Text.UTF8Encoding]::new($false))
 try {
-    & ssh $Remote "umask 077 && mkdir -p '$RemoteStaging'"
-    if ($LASTEXITCODE -ne 0) { throw "Could not create remote staging directory." }
-    & scp -- $ResolvedAppApk "${Remote}:${RemoteStaging}/app.apk"
-    if ($LASTEXITCODE -ne 0) { throw "Could not upload the app APK." }
-    & scp -- $ResolvedTestApk "${Remote}:${RemoteStaging}/tests.apk"
-    if ($LASTEXITCODE -ne 0) { throw "Could not upload the test APK." }
-    & scp -- $TemporaryEnvironment "${Remote}:${RemoteStaging}/job.env"
-    if ($LASTEXITCODE -ne 0) { throw "Could not upload the pair configuration." }
-    & ssh $Remote "mv '$RemoteStaging' '$RemoteReady' && NEURO_TEST_ROOT='$RemoteRoot' bash '$RemoteRoot/repo/tests/infrastructure/vm/android/runner/enqueue-run.sh' '$RunId'"
-    if ($LASTEXITCODE -ne 0) { throw "Could not activate the remote pair job." }
+    $Files = [ordered]@{
+        'app.apk' = $ResolvedAppApk
+        'tests.apk' = $ResolvedTestApk
+        'job.env' = $TemporaryEnvironment
+    }
+    $Paths = Publish-RemoteTestJob -Context $Context -RunId $RunId -Files $Files
 }
-finally { Remove-Item -LiteralPath $TemporaryEnvironment -Force -ErrorAction SilentlyContinue }
-
-Write-Output "Run ID: $RunId"
-Write-Output "Status: ssh $Remote cat '$RemoteRoot/runs/$RunId/status'"
-Write-Output "Results: scp -r ${Remote}:$RemoteRoot/runs/$RunId/results ."
+finally {
+    Remove-Item -LiteralPath $TemporaryEnvironment -Force -ErrorAction SilentlyContinue
+}
+Complete-RemoteTestSubmission -Context $Context -RunId $RunId -Paths $Paths -Wait:$Wait -ResultsDirectory $ResultsDirectory

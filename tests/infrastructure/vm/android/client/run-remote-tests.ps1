@@ -16,12 +16,16 @@ param(
     [string] $TestPhoneNumber,
     [string] $TestPin,
     [string] $TestOtpEndpoint,
-    [string] $RemoteRoot = "/opt/neuro-test"
+    [string] $RemoteRoot = "/opt/neuro-test",
+    [ValidateRange(1, 65535)] [int] $SshPort = 22,
+    [string] $IdentityFile,
+    [switch] $Wait,
+    [string] $ResultsDirectory
 )
 
 $ErrorActionPreference = "Stop"
-if ($HostName -notmatch '^[A-Za-z0-9.-]+$') { throw "HostName contains unsupported characters." }
-if ($UserName -notmatch '^[A-Za-z0-9._-]+$') { throw "UserName contains unsupported characters." }
+. "$PSScriptRoot\RemoteClient.Common.ps1"
+
 if ([string]::IsNullOrWhiteSpace($Serial) -eq ($ApiLevel -eq 0)) {
     throw "Specify either Serial for an existing device or ApiLevel for a managed emulator."
 }
@@ -34,7 +38,6 @@ foreach ($Value in @($DeviceProfile, $SystemImage, $SystemImageAbi, $AvdName)) {
         throw "Managed emulator values may only contain letters, digits, dots, underscores, and hyphens."
     }
 }
-if ($RemoteRoot -notmatch '^/[A-Za-z0-9._/-]+$') { throw "RemoteRoot must be an absolute Linux path without spaces." }
 if (-not [string]::IsNullOrWhiteSpace($TestClass) -and $TestClass -notmatch '^[A-Za-z0-9_.$#,-]+$') {
     throw "TestClass contains unsupported characters."
 }
@@ -47,8 +50,8 @@ if (-not [string]::IsNullOrWhiteSpace($TestPin) -and $TestPin -notmatch '^\d{6}$
 if (-not [string]::IsNullOrWhiteSpace($TestOtpEndpoint)) {
     $OtpUri = $null
     if (-not [Uri]::TryCreate($TestOtpEndpoint, [UriKind]::Absolute, [ref] $OtpUri) -or
-        $OtpUri.Scheme -notin @("http", "https") -or $TestOtpEndpoint.Contains("'") -or
-        $TestOtpEndpoint.Contains("`r") -or $TestOtpEndpoint.Contains("`n")) {
+        $OtpUri.Scheme -notin @("http", "https") -or $TestOtpEndpoint -match '[\[\]\(\)]' -or
+        $TestOtpEndpoint.Contains("'") -or $TestOtpEndpoint.Contains("`r") -or $TestOtpEndpoint.Contains("`n")) {
         throw "TestOtpEndpoint must be a valid HTTP or HTTPS URL."
     }
 }
@@ -59,15 +62,12 @@ if ($TestClass -like '*.onboarding.RegistrationFlowTest') {
         throw "RegistrationFlowTest requires TestPhoneNumber, TestPin, and TestOtpEndpoint."
     }
 }
-foreach ($CommandName in @("ssh", "scp")) {
-    if ($null -eq (Get-Command $CommandName -ErrorAction SilentlyContinue)) { throw "Required command is missing: $CommandName" }
-}
+
+$Context = New-RemoteClientContext -HostName $HostName -UserName $UserName -RemoteRoot $RemoteRoot `
+    -SshPort $SshPort -IdentityFile $IdentityFile
 $ResolvedAppApk = (Resolve-Path -LiteralPath $AppApk).Path
 $ResolvedTestApk = (Resolve-Path -LiteralPath $TestApk).Path
-$RunId = "{0}-{1}" -f (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ"), ([Guid]::NewGuid().ToString("N").Substring(0, 8))
-$Remote = "$UserName@$HostName"
-$RemoteStaging = "$RemoteRoot/incoming/$RunId.uploading"
-$RemoteReady = "$RemoteRoot/incoming/$RunId"
+$RunId = New-RemoteRunId
 $EnvironmentLines = [System.Collections.Generic.List[string]]::new()
 $EnvironmentLines.Add("MODE=single")
 if ($ApiLevel -ne 0) {
@@ -90,21 +90,16 @@ if (-not [string]::IsNullOrWhiteSpace($TestPin)) { $EnvironmentLines.Add("TEST_P
 if (-not [string]::IsNullOrWhiteSpace($TestOtpEndpoint)) { $EnvironmentLines.Add("TEST_OTP_ENDPOINT='$TestOtpEndpoint'") }
 $EnvironmentLines.Add("REGISTRATION_USERNAME_TIMESTAMP='$((Get-Date).ToUniversalTime().ToString("yyyyMMddHHmmss"))'")
 $TemporaryEnvironment = Join-Path ([System.IO.Path]::GetTempPath()) "$RunId-job.env"
-$EnvironmentContents = ($EnvironmentLines -join "`n") + "`n"
-[System.IO.File]::WriteAllText($TemporaryEnvironment, $EnvironmentContents, [System.Text.UTF8Encoding]::new($false))
+[System.IO.File]::WriteAllText($TemporaryEnvironment, ($EnvironmentLines -join "`n") + "`n", [System.Text.UTF8Encoding]::new($false))
 try {
-    & ssh $Remote "umask 077 && mkdir -p '$RemoteStaging'"
-    if ($LASTEXITCODE -ne 0) { throw "Could not create remote staging directory." }
-    & scp -- $ResolvedAppApk "${Remote}:${RemoteStaging}/app.apk"
-    if ($LASTEXITCODE -ne 0) { throw "Could not upload the app APK." }
-    & scp -- $ResolvedTestApk "${Remote}:${RemoteStaging}/tests.apk"
-    if ($LASTEXITCODE -ne 0) { throw "Could not upload the test APK." }
-    & scp -- $TemporaryEnvironment "${Remote}:${RemoteStaging}/job.env"
-    if ($LASTEXITCODE -ne 0) { throw "Could not upload the job configuration." }
-    & ssh $Remote "mv '$RemoteStaging' '$RemoteReady' && NEURO_TEST_ROOT='$RemoteRoot' bash '$RemoteRoot/repo/tests/infrastructure/vm/android/runner/enqueue-run.sh' '$RunId'"
-    if ($LASTEXITCODE -ne 0) { throw "Could not activate the remote test job." }
+    $Files = [ordered]@{
+        'app.apk' = $ResolvedAppApk
+        'tests.apk' = $ResolvedTestApk
+        'job.env' = $TemporaryEnvironment
+    }
+    $Paths = Publish-RemoteTestJob -Context $Context -RunId $RunId -Files $Files
 }
-finally { Remove-Item -LiteralPath $TemporaryEnvironment -Force -ErrorAction SilentlyContinue }
-Write-Output "Run ID: $RunId"
-Write-Output "Status: ssh $Remote cat '$RemoteRoot/runs/$RunId/status'"
-Write-Output "Results: scp -r ${Remote}:$RemoteRoot/runs/$RunId/results ."
+finally {
+    Remove-Item -LiteralPath $TemporaryEnvironment -Force -ErrorAction SilentlyContinue
+}
+Complete-RemoteTestSubmission -Context $Context -RunId $RunId -Paths $Paths -Wait:$Wait -ResultsDirectory $ResultsDirectory

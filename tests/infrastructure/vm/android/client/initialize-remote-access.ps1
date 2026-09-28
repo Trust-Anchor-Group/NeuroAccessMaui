@@ -2,6 +2,7 @@
 param(
     [Parameter(Mandatory = $true)] [string] $HostName,
     [string] $UserName = "neuro-test",
+    [ValidateRange(1, 65535)] [int] $SshPort = 22,
     [string] $KeyPath = (Join-Path $HOME ".ssh\id_ed25519")
 )
 
@@ -30,10 +31,10 @@ if ($PublicKey -notmatch '^ssh-ed25519\s+[A-Za-z0-9+/=]+(?:\s+.*)?$') { throw "T
 $Remote = "$UserName@$HostName"
 Write-Host "Enter the remote password once to authorize this computer."
 $InstallCommand = 'umask 077; mkdir -p .ssh; cat >> .ssh/authorized_keys; sed -i "s/\r$//" .ssh/authorized_keys; sort -u .ssh/authorized_keys -o .ssh/authorized_keys; chmod 700 .ssh; chmod 600 .ssh/authorized_keys'
-($PublicKey + "`n") | & ssh $Remote $InstallCommand
+($PublicKey + "`n") | & ssh -p $SshPort $Remote $InstallCommand
 if ($LASTEXITCODE -ne 0) { throw "Could not install the SSH public key." }
 
-& ssh -o BatchMode=yes -i $KeyPath $Remote "true"
+& ssh -p $SshPort -o BatchMode=yes -i $KeyPath $Remote "true"
 if ($LASTEXITCODE -ne 0) { throw "Key authentication verification failed." }
 Write-Output "SSH key authentication is ready for $Remote."
 Write-Output "Private key: $KeyPath"
