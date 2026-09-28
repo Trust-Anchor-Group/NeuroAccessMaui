@@ -312,7 +312,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			if (string.IsNullOrEmpty(Code))
 				return;
 
-			string LegalId = Constants.UriSchemes.RemoveScheme(Code) ?? string.Empty;
+			string LegalId = Uri.UnescapeDataString(Constants.UriSchemes.RemoveScheme(Code) ?? string.Empty);
 
 			await this.AddPart(LegalId);
 		}

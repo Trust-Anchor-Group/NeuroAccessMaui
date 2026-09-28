@@ -1574,7 +1574,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanPeerId), [Constants.UriSchemes.IotId]);
 			if (string.IsNullOrEmpty(Url) || !Constants.UriSchemes.StartsWithIdScheme(Url)) return;
-			await this.SendPeerReviewRequest(Constants.UriSchemes.RemoveScheme(Url));
+			await this.SendPeerReviewRequest(Uri.UnescapeDataString(Constants.UriSchemes.RemoveScheme(Url) ?? string.Empty));
 		}
 
 		private async Task SendPeerReviewRequest(string? reviewerId)

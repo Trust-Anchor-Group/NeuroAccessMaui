@@ -980,7 +980,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (Url.StartsWith(Constants.UriSchemes.IotId + ":", StringComparison.OrdinalIgnoreCase))
 				{
 					int i = Url.IndexOf(':');
-					NeuroId = Url[(i + 1)..].Trim();
+					NeuroId = System.Uri.UnescapeDataString(Url[(i + 1)..].Trim());
 				}
 				else
 					NeuroId = Url.Trim();

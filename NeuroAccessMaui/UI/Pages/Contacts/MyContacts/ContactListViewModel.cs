@@ -554,7 +554,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			{
 				this.SelectedContact = new ContactInfoModel(new ContactInfo()
 				{
-					LegalId = Constants.UriSchemes.RemoveScheme(Code)
+					LegalId = Uri.UnescapeDataString(Constants.UriSchemes.RemoveScheme(Code) ?? string.Empty)
 				});
 			}
 			else if (!string.IsNullOrEmpty(Code))
