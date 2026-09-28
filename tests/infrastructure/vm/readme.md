@@ -1,0 +1,197 @@
+# VM Test Infrastructure
+
+This directory contains the infrastructure used to run Android regression tests on a dedicated VM.
+
+## Overview
+
+The basic flow is:
+
+```text
+Developer machine
+    ↓
+Build MAUI APK
+    ↓
+Build Espresso tests
+    ↓
+Upload via SSH/SCP
+    ↓
+Test VM
+    ↓
+Start Android emulators
+    ↓
+Install app + test APK
+    ↓
+Run Espresso tests
+    ↓
+Collect logs + test results
+    ↓
+Download results
+```
+
+The VM acts as a permanent Android test runner and hosts the Android SDK, emulators, and AVD profiles.
+
+## Structure
+
+```text
+vm/
+├── android/
+│   ├── config/matrices/
+│   │   ├── smoke/64-bit/
+│   │   │   └── device-profiles-x86_64.yaml
+│   │   └── onboarding/
+│   │       ├── 32-bit/
+│   │       │   └── api-compatibility-x86.yaml
+│   │       └── 64-bit/
+│   │           ├── device-profiles-x86_64.yaml
+│   │           ├── api-compatibility-x86_64.yaml
+│   │           └── demo-x86_64.yaml
+│   ├── client/
+│   └── runner/
+├── config/devices/
+│   ├── android/
+│   ├── samsung/
+│   ├── huawei/
+│   └── xiaomi/
+└── setup/
+```
+
+## Configuration
+
+`config/devices/` defines the Android versions and device types that can be used by the test infrastructure.
+
+Generic Android emulator definitions live under:
+
+```text
+config/devices/android/
+```
+
+Vendor-specific devices can later be added under directories such as:
+
+```text
+config/devices/samsung/
+config/devices/huawei/
+config/devices/xiaomi/
+```
+
+Android versions, API levels, system images, and device profiles should be defined in configuration files and must not be hardcoded in the runner scripts.
+
+Android matrices live below `android/config/matrices/`. They are grouped by test flow and ABI so a run selects the matching application APK explicitly. The smoke and full onboarding device-profile matrices use `x86_64`. API compatibility is split into separate `32-bit` and `64-bit` directories; the files retain the exact `x86` and `x86_64` ABI names.
+
+## VM Runtime
+
+The VM uses a separate runtime structure, for example:
+
+```text
+/opt/neuro-test/
+├── repo/
+├── android-sdk/
+├── avds/
+├── incoming/
+├── runs/
+└── tmp/
+```
+
+Generated APK files, emulator data, logs, and test results must not be committed to Git.
+
+## Submit and activate a run remotely
+
+The Windows client uploads APKs into a temporary directory. It only moves that directory into the incoming queue after all files have arrived, then activates the Linux queue worker over SSH. The worker holds a `flock` lock while processing the queue, so scenarios remain sequential when several runs are submitted.
+
+```powershell
+./android/client/run-remote-tests.ps1 `
+    -HostName android-test-host `
+    -AppApk ./com.tag.NeuroAccess-Signed.apk `
+    -TestApk ./app-debug-androidTest.apk `
+    -Serial emulator-5554
+```
+
+The checkout is expected at `/opt/neuro-test/repo` and runtime data below `/opt/neuro-test`. Use `-RemoteRoot` when the VM uses another location. The SSH user needs write access to `incoming`, `queue`, and `runs`.
+
+The client entry points share `android/client/RemoteClient.Common.ps1` for connection validation, SSH execution, SCP upload/download, run-specific remote paths, atomic queue activation, failed-upload cleanup, status polling, and result retrieval. `-SshPort` selects a non-default SSH port and `-IdentityFile` selects an explicit private key. Existing calls remain asynchronous. Add `-Wait` to return a failing exit status when the remote test fails, and optionally add `-ResultsDirectory` to wait and download the completed result directory:
+
+```powershell
+./android/client/run-remote-tests.ps1 `
+    -HostName android-test-host `
+    -AppApk ./com.tag.NeuroAccess-Signed.apk `
+    -TestApk ./app-debug-androidTest.apk `
+    -Serial emulator-5554 `
+    -Wait `
+    -ResultsDirectory ./results/single-device
+```
+
+All Android operations use an explicit adb serial. `runner/run-tests.sh` executes a single-device scenario. `runner/run-android-pair.sh` accepts two distinct serials and exposes them to a host-side coordinator as `NEURO_DEVICE_A` and `NEURO_DEVICE_B`. This permits two active emulators within one scenario while the scenario queue itself stays sequential.
+
+### Mutual contacts on two devices
+
+Both devices must already contain different registered and approved Neuro Access accounts. Submit the scenario with `android/client/run-remote-pair.ps1`, two explicit adb serials, and the current six-digit PIN for each account. The Linux coordinator exchanges QR links through the runner process, verifies the saved contact on both devices, and then verifies a message in each direction while both app instances are active.
+
+Pair jobs use the same filesystem queue as single-device jobs. A pair occupies one queue slot and runs its two device phases concurrently only where the scenario requires it.
+
+## Test Results
+
+Each test execution gets its own run ID and can collect:
+
+```text
+JUnit results
+HTML reports
+Gradle output
+Device A logcat
+Device B logcat
+Emulator logs
+Screenshots when needed
+```
+
+The goal is to allow the same regression test suite to run against multiple Android versions, screen sizes, and later vendor-specific devices without changing the test code.
+
+### Managed single-device emulator
+
+Omit `-Serial` and provide `-ApiLevel` to let the Linux runner provision an emulator for the job:
+
+```powershell
+./android/client/run-remote-tests.ps1 `
+    -HostName android-test-host `
+    -AppApk ./com.tag.NeuroAccess-Signed.apk `
+    -TestApk ./app-debug-androidTest.apk `
+    -ApiLevel 35 `
+    -DeviceProfile pixel_6 `
+    -TestClass com.example.MyTest
+```
+
+The runner installs `system-images;android-<API>;google_apis;x86_64` when it is missing, creates a reusable AVD, selects an unused emulator port, waits for Android to finish booting, runs the requested test with an explicit adb serial, collects emulator and test logs, and shuts the emulator down. Use `-SystemImage`, `-SystemImageAbi`, or `-AvdName` to override the defaults.
+
+The first run for an API level can take several minutes while the SDK downloads the system image. Later jobs reuse the installed image and AVD. The queue still runs one scenario at a time.
+### Sequential device matrix
+
+`android/config/matrices/smoke/64-bit/device-profiles-x86_64.yaml` is the default managed-emulator matrix. Each enabled scenario selects an API level, Android hardware profile, system image, ABI, test class, and whether the emulator window should be visible.
+
+Run the matrix from Windows:
+
+```powershell
+./android/client/run-test-matrix.ps1 `
+    -HostName android-test-host `
+    -UserName neuro-test `
+    -AppApk ./com.tag.NeuroAccess-Signed.apk `
+    -TestApk ./app-debug-androidTest.apk
+```
+
+The client uploads both APKs and the enabled matrix once as a single remote job. Linux then runs each scenario sequentially, completes cleanup, and only then starts the next device. Use `-StopOnFailure` to stop after the first failed scenario or `-ShowEmulator` to override the matrix and show every emulator on the Linux desktop.
+
+Select another matrix with `-MatrixPath`. Use `-AppApkX64` with an `x86_64` matrix and `-AppApkX86` with an `x86` matrix. For example, the short onboarding demonstration is `android/config/matrices/onboarding/64-bit/demo-x86_64.yaml`; API coverage is split between `onboarding/32-bit/api-compatibility-x86.yaml` and `onboarding/64-bit/api-compatibility-x86_64.yaml`.
+
+Disabled scenarios remain in the YAML file as opt-in coverage. Set `enabled: true` when the required API image and application support are ready.
+### Passwordless matrix access
+
+Run `android/client/initialize-remote-access.ps1` once from Windows. It creates or reuses the user's default Ed25519 SSH key and adds only the public key to the Linux account. The remote password is requested during this one-time setup; subsequent SSH and SCP operations authenticate with the key.
+
+```powershell
+./android/client/initialize-remote-access.ps1 `
+    -HostName android-test-host `
+    -UserName neuro-test
+```
+
+### Emulator storage policy
+
+Managed runs accept `-StoragePolicy cache` or `-StoragePolicy delete`. `cache` keeps the downloaded system image and reusable AVD for faster later runs. `delete` stops the emulator, deletes its AVD, and uninstalls the scenario's system image after results have been collected. Matrix scenarios can select the policy with `storage_policy`; the matrix command can override every scenario with `-StoragePolicy cache` or `-StoragePolicy delete`.
+
+Each matrix execution stores a timestamped `matrix.log`, a concise `summary.txt`, a machine-readable `summary.tsv`, and the complete remote run directory for every scenario. The remote directory includes the run log, final status, exit code, emulator setup log, emulator console output, and test artifacts.
+The default smoke matrix contains 90 unique combinations: 15 hardware profiles across Android API 30 through 35. Scenarios are ordered by API level. The system image is cached while that API group runs and deleted after the fifteenth profile, keeping download duplication and disk usage bounded. The separate onboarding matrix uses the same 90 combinations and requires 90 consecutive test phone numbers for full registration coverage.
