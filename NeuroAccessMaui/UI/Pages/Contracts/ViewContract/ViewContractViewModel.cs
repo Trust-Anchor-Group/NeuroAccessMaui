@@ -339,18 +339,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		#region Proposals
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
-		private async Task SendProposalToPartAsync(ObservablePart? part)
+		private async Task SendProposalToPartAsync(ObservablePart? Part)
 		{
-			if (part is null || this.Contract is null)
+			if (Part is null || this.Contract is null)
 				return;
 
-			if (!part.CanSendProposal)
+			if (!Part.CanSendProposal)
 				return;
 
 			try
 			{
-				ContactInfo? info = await ContactInfo.FindByLegalId(part.LegalId);
-				if (info is null || string.IsNullOrEmpty(info.BareJid))
+				ContactInfo? Info = await ContactInfo.FindByLegalId(Part.LegalId);
+				string? BareJid = Info?.BareJid;
+				if (string.IsNullOrWhiteSpace(BareJid))
+					BareJid = Part.GetJid();
+
+				if (string.IsNullOrWhiteSpace(BareJid))
 				{
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -361,29 +365,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(
 					this.Contract.ContractId,
-					info.BareJid,
+					BareJid,
 					true);
 
-				string? friendlyTarget = info.FriendlyName;
-				if (string.IsNullOrEmpty(friendlyTarget))
-					friendlyTarget = part.FriendlyName ?? info.BareJid ?? part.LegalId;
+				string? FriendlyTarget = Info?.FriendlyName;
+				if (string.IsNullOrEmpty(FriendlyTarget))
+					FriendlyTarget = Part.FriendlyName ?? BareJid;
 
-				string? proposal = await ServiceRef.UiService.DisplayPrompt(
+				string? Proposal = await ServiceRef.UiService.DisplayPrompt(
 					ServiceRef.Localizer[nameof(AppResources.Proposal)] ?? string.Empty,
-					ServiceRef.Localizer[nameof(AppResources.EnterProposal), friendlyTarget] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.EnterProposal), FriendlyTarget] ?? string.Empty,
 					ServiceRef.Localizer[nameof(AppResources.Send)] ?? string.Empty,
 					ServiceRef.Localizer[nameof(AppResources.Cancel)] ?? string.Empty);
 
-				if(proposal is null) // Dont send if cancelled
+				if (Proposal is null) // Dont send if cancelled
 					return;
-				if (string.IsNullOrEmpty(proposal)) // Use default if empty
-					proposal = ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)];
+				if (string.IsNullOrEmpty(Proposal)) // Use default if empty
+					Proposal = ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)];
 
 				await ServiceRef.XmppService.SendContractProposal(
 					this.Contract.Contract,
-					part.Part.Role,
-					info.BareJid,
-					proposal);
+					Part.Part.Role,
+					BareJid,
+					Proposal);
 			}
 			catch (Exception Ex)
 			{

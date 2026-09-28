@@ -231,6 +231,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		#endregion
 
+		/// <summary>
+		/// Gets the messaging address from the participant's loaded legal identity.
+		/// </summary>
+		/// <returns>The identity's JID, or an empty string if it is unavailable.</returns>
+		public string GetJid()
+		{
+			return this.identity?.GetJid() ?? string.Empty;
+		}
+
 
 		#region Commands
 		[RelayCommand(AllowConcurrentExecutions = false)]
