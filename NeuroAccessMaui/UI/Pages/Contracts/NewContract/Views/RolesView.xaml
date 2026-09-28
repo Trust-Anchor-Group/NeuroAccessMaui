@@ -57,9 +57,8 @@
 								</HorizontalStackLayout>
 							</Grid>
 							<Label Text="{Binding Description}" Style="{DynamicResource RoleDescriptionLabel}" />
-							<!-- Part Collection (refactored to CollectionView) -->
-							<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
-								<CollectionView.ItemTemplate>
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}" Spacing="0">
+								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="objectModel:ObservablePart">
 										<Border Style="{DynamicResource BorderSet}" Stroke="{DynamicResource InputFieldsSurfaceStroke}">
 											<Grid ColumnDefinitions="*, auto" RowDefinitions="auto,auto">
@@ -109,8 +108,8 @@
 												</Grid>
 										</Border>
 									</DataTemplate>
-								</CollectionView.ItemTemplate>
-							</CollectionView>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
 
 							<Border Style="{DynamicResource BorderSet}"
 									IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}"
