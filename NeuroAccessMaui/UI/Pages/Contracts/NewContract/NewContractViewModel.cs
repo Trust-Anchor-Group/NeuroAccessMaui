@@ -904,19 +904,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						continue;
 
 					ContactInfo? Info = await ContactInfo.FindByLegalId(Part.LegalId);
-					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
+					ObservablePart? Participant = this.Contract.Roles
+						.SelectMany(Role => Role.Parts)
+						.FirstOrDefault(Candidate => Candidate.LegalId == Part.LegalId && Candidate.Role == Part.Role);
+					string? BareJid = Info?.BareJid;
+					if (string.IsNullOrWhiteSpace(BareJid))
+						BareJid = Participant?.GetJid();
+
+					if (string.IsNullOrWhiteSpace(BareJid))
 						continue;
-					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, Info.BareJid, true);
+					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, BareJid, true);
+
+					string? FriendlyTarget = Info?.FriendlyName;
+					if (string.IsNullOrWhiteSpace(FriendlyTarget))
+						FriendlyTarget = Participant?.FriendlyName;
+					if (string.IsNullOrWhiteSpace(FriendlyTarget))
+						FriendlyTarget = BareJid;
 
 					string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
-						ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
+						ServiceRef.Localizer[nameof(AppResources.EnterProposal), FriendlyTarget],
 						ServiceRef.Localizer[nameof(AppResources.Send)],
 						ServiceRef.Localizer[nameof(AppResources.Cancel)]);
 
 					if (!string.IsNullOrEmpty(Proposal))
-						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
+						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, BareJid, Proposal);
 					else
-						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
+						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, BareJid, ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
 				}
 			}
 			catch (Waher.Networking.XMPP.XmppException Ex)
