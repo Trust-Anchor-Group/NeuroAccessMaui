@@ -3826,4 +3826,34 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="KycTravelDocumentNfcCheckingDocument" xml:space="preserve">
     <value>Kontrollerar dokumentet…</value>
   </data>
+  <data name="KycTravelDocumentStepScan" xml:space="preserve">
+    <value>Skanna uppgifter</value>
+  </data>
+  <data name="KycTravelDocumentStepChip" xml:space="preserve">
+    <value>Läs chip</value>
+  </data>
+  <data name="KycTravelDocumentReadChipButton" xml:space="preserve">
+    <value>Läs chipet</value>
+  </data>
+  <data name="KycTravelDocumentNfcPreparingTitle" xml:space="preserve">
+    <value>Förbereder</value>
+  </data>
+  <data name="KycTravelDocumentNfcSecuring" xml:space="preserve">
+    <value>Upprättar en säker anslutning…</value>
+  </data>
+  <data name="KycTravelDocumentNfcErrorTitle" xml:space="preserve">
+    <value>Chipet kunde inte läsas</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledTitle" xml:space="preserve">
+    <value>Skanningen avbröts</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledDescription" xml:space="preserve">
+    <value>Inget lästes. Försök igen när du är redo.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpPassport" xml:space="preserve">
+    <value>Hittar du inte chipet? Ta av eventuellt telefonskal och prova framsidan, baksidan eller sidan med fotot.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpIdCard" xml:space="preserve">
+    <value>Hittar du inte chipet? Ta av eventuellt telefonskal och för kortet långsamt över telefonens baksida.</value>
+  </data>
 </root>

@@ -4039,4 +4039,34 @@ Document read. You can move your iPhone.</value>
   <data name="KycTravelDocumentNfcCheckingDocument" xml:space="preserve">
     <value>Checking your document…</value>
   </data>
+  <data name="KycTravelDocumentStepScan" xml:space="preserve">
+    <value>Scan details</value>
+  </data>
+  <data name="KycTravelDocumentStepChip" xml:space="preserve">
+    <value>Read chip</value>
+  </data>
+  <data name="KycTravelDocumentReadChipButton" xml:space="preserve">
+    <value>Read chip</value>
+  </data>
+  <data name="KycTravelDocumentNfcPreparingTitle" xml:space="preserve">
+    <value>Getting ready</value>
+  </data>
+  <data name="KycTravelDocumentNfcSecuring" xml:space="preserve">
+    <value>Opening a secure connection…</value>
+  </data>
+  <data name="KycTravelDocumentNfcErrorTitle" xml:space="preserve">
+    <value>Couldn't read the chip</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledTitle" xml:space="preserve">
+    <value>Scan cancelled</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledDescription" xml:space="preserve">
+    <value>Nothing was read. Try again when you're ready.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpPassport" xml:space="preserve">
+    <value>Can't find the chip? Remove any phone case and try the front cover, back cover, or photo page.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpIdCard" xml:space="preserve">
+    <value>Can't find the chip? Remove any phone case and slide the card slowly across the back of your phone.</value>
+  </data>
 </root>

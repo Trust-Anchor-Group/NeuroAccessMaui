@@ -3841,4 +3841,34 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="KycTravelDocumentNfcCheckingDocument" xml:space="preserve">
     <value>Verificando o documento…</value>
   </data>
+  <data name="KycTravelDocumentStepScan" xml:space="preserve">
+    <value>Digitalizar dados</value>
+  </data>
+  <data name="KycTravelDocumentStepChip" xml:space="preserve">
+    <value>Ler chip</value>
+  </data>
+  <data name="KycTravelDocumentReadChipButton" xml:space="preserve">
+    <value>Ler chip</value>
+  </data>
+  <data name="KycTravelDocumentNfcPreparingTitle" xml:space="preserve">
+    <value>Preparando</value>
+  </data>
+  <data name="KycTravelDocumentNfcSecuring" xml:space="preserve">
+    <value>Estabelecendo uma conexão segura…</value>
+  </data>
+  <data name="KycTravelDocumentNfcErrorTitle" xml:space="preserve">
+    <value>Não foi possível ler o chip</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledTitle" xml:space="preserve">
+    <value>Leitura cancelada</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledDescription" xml:space="preserve">
+    <value>Nada foi lido. Tente novamente quando estiver pronto.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpPassport" xml:space="preserve">
+    <value>Não encontrou o chip? Retire a capa protetora do telefone e tente a capa da frente, a contracapa ou a página da foto.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpIdCard" xml:space="preserve">
+    <value>Não encontrou o chip? Retire a capa protetora do telefone e deslize o cartão devagar pela parte de trás do telefone.</value>
+  </data>
 </root>

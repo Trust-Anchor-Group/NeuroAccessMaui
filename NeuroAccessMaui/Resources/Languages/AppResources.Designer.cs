@@ -4831,6 +4831,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read chip.
+        /// </summary>
+        public static string KycTravelDocumentReadChipButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentReadChipButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NFC readout is already ready for this application..
         /// </summary>
         public static string KycTravelDocumentReadoutReady {
@@ -4890,6 +4899,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string KycTravelDocumentStartNfcButton {
             get {
                 return ResourceManager.GetString("KycTravelDocumentStartNfcButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read chip.
+        /// </summary>
+        public static string KycTravelDocumentStepChip {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentStepChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan details.
+        /// </summary>
+        public static string KycTravelDocumentStepScan {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentStepScan", resourceCulture);
             }
         }
         

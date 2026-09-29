@@ -14,6 +14,7 @@ using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.TravelDocuments;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Controls;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
@@ -66,9 +67,33 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// </summary>
 	public partial class KycTravelDocumentViewModel : BaseViewModel, IDisposable
 	{
+		private const string nfcCancelledResourceKey = "KycTravelDocumentNfcCancelled";
+		private static readonly TimeSpan placementHelpDelay = TimeSpan.FromSeconds(12);
+		private static readonly TimeSpan failureHapticInterval = TimeSpan.FromMilliseconds(140);
+		private static readonly string[] presentationPropertyNames =
+		[
+			nameof(HasMrz),
+			nameof(CanStartNfc),
+			nameof(ShowIntro),
+			nameof(ShowSuccess),
+			nameof(ShowNfcMessage),
+			nameof(ShowIntroError),
+			nameof(ShowStartNfcAction),
+			nameof(ShowNfcRetryAction),
+			nameof(ShowRescanAction),
+			nameof(ShowManualFallback),
+			nameof(ScanVisualState),
+			nameof(IsPassportDocument),
+			nameof(CurrentGuideStep),
+			nameof(NfcHeadlineText),
+			nameof(ShowPlacementTip),
+			nameof(PlacementTipText)
+		];
+
 		private readonly ITravelDocumentEvidenceService evidenceService = ServiceRef.Provider.GetRequiredService<ITravelDocumentEvidenceService>();
 		private readonly INfcIsoDepSessionService nfcIsoDepSessionService = ServiceRef.Provider.GetRequiredService<INfcIsoDepSessionService>();
 		private readonly ITravelDocumentReadoutService readoutService = ServiceRef.Provider.GetRequiredService<ITravelDocumentReadoutService>();
+		private readonly TravelDocumentReadProgress readProgress = new TravelDocumentReadProgress();
 		private readonly KycProcessNavigationArgs? navigationArguments;
 		private KycReference? reference;
 		private Guid? activeSessionId;
@@ -76,47 +101,18 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private Guid? reportedTelemetrySessionId;
 		private DateTime? activeSessionStartedUtc;
 		private CancellationTokenSource? activeSessionCancellationTokenSource;
+		private string? lastNativeAlertResourceKey;
 		private bool disposedValue;
 
 		/// <summary>
 		/// Gets or sets the current guided travel-document flow state.
 		/// </summary>
-		[NotifyPropertyChangedFor(nameof(CanStartNfc))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcPlacementPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowIntro))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcStep))]
-		[NotifyPropertyChangedFor(nameof(ShowSuccess))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
-		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
-		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcProgress))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcWaitingIndicator))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcReadingIndicator))]
-		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
-		[NotifyPropertyChangedFor(nameof(NfcStepTitle))]
-		[NotifyPropertyChangedFor(nameof(NfcStepDescription))]
-		[NotifyPropertyChangedFor(nameof(ShowCompactNfcIllustration))]
-		[NotifyPropertyChangedFor(nameof(ShowFullNfcIllustration))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressDetectChipState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressSecureConnectionState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressReadDataState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressVerifyDocumentState))]
 		[ObservableProperty]
 		private KycTravelDocumentFlowState flowState = KycTravelDocumentFlowState.Intro;
 
 		/// <summary>
 		/// Gets or sets the MRZ text entered for the current KYC application.
 		/// </summary>
-		[NotifyPropertyChangedFor(nameof(HasMrz))]
-		[NotifyPropertyChangedFor(nameof(CanStartNfc))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcPlacementPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowIntro))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcStep))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
-		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
-		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
-		[NotifyPropertyChangedFor(nameof(MrzStepDescription))]
 		[ObservableProperty]
 		private string mrzText = string.Empty;
 
@@ -127,90 +123,46 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private string statusText = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the current in-page NFC progress stage, from waiting to reading.
+		/// Gets or sets the chip read progress for the current attempt, from 0 (waiting) to 1 (saved).
 		/// </summary>
-		[NotifyPropertyChangedFor(nameof(IsNfcChipDetected))]
-		[NotifyPropertyChangedFor(nameof(IsNfcReadingStarted))]
 		[ObservableProperty]
-		private int nfcProgressStage;
-
-		/// <summary>
-		/// Gets whether the chip has been detected during the current attempt.
-		/// </summary>
-		public bool IsNfcChipDetected => this.NfcProgressStage >= 1;
-
-		/// <summary>
-		/// Gets whether reading has started during the current attempt.
-		/// </summary>
-		public bool IsNfcReadingStarted => this.NfcProgressStage >= 2;
-
-		/// <summary>
-		/// Gets whether Android should display the compact illustration while reading.
-		/// </summary>
-		public bool ShowCompactNfcIllustration => DeviceInfo.Platform == DevicePlatform.Android && this.ShowNfcReadingIndicator;
-
-		/// <summary>
-		/// Gets whether the full placement illustration and description should be displayed.
-		/// </summary>
-		public bool ShowFullNfcIllustration => !this.ShowCompactNfcIllustration;
+		private double chipReadProgress;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether a status message should be displayed.
 		/// </summary>
-		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
 		[ObservableProperty]
 		private bool hasStatusText;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether an NFC readout is in progress.
 		/// </summary>
-		[NotifyPropertyChangedFor(nameof(ShowCompactNfcIllustration))]
-		[NotifyPropertyChangedFor(nameof(ShowFullNfcIllustration))]
-		[NotifyPropertyChangedFor(nameof(CanStartNfc))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcPlacementPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowIntro))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcStep))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
-		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
-		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcWaitingIndicator))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcReadingIndicator))]
-		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
 		[ObservableProperty]
 		private bool isNfcBusy;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether NFC readout XML is available.
 		/// </summary>
-		[NotifyPropertyChangedFor(nameof(CanStartNfc))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcPlacementPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowIntro))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcStep))]
-		[NotifyPropertyChangedFor(nameof(ShowSuccess))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
-		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
-		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcProgress))]
-		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressDetectChipState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressSecureConnectionState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressReadDataState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressVerifyDocumentState))]
 		[ObservableProperty]
 		private bool hasReadout;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the current status represents a recoverable error.
 		/// </summary>
-		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
-		[NotifyPropertyChangedFor(nameof(ShowNfcProgress))]
-		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressDetectChipState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressSecureConnectionState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressReadDataState))]
-		[NotifyPropertyChangedFor(nameof(NfcProgressVerifyDocumentState))]
 		[ObservableProperty]
 		private bool hasErrorState;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the last attempt ended because the scan was cancelled.
+		/// </summary>
+		[ObservableProperty]
+		private bool isScanCancelled;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether extended placement help is shown after searching for a while.
+		/// </summary>
+		[ObservableProperty]
+		private bool isPlacementHelpExpanded;
 
 		/// <summary>
 		/// Gets a value indicating whether MRZ evidence has been captured.
@@ -223,30 +175,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public bool CanStartNfc => this.HasMrz && !this.IsNfcBusy && !this.HasReadout;
 
 		/// <summary>
-		/// Gets a value indicating whether the NFC placement illustration should be shown.
-		/// </summary>
-		public bool ShowNfcPlacementPanel =>
-			this.FlowState == KycTravelDocumentFlowState.MrzCaptured ||
-			this.FlowState == KycTravelDocumentFlowState.NfcReady ||
-			this.FlowState == KycTravelDocumentFlowState.NfcReading ||
-			this.ShowSuccess;
-
-		/// <summary>
-		/// Gets a value indicating whether the introductory chip-first guide should be shown.
+		/// Gets a value indicating whether the introductory chip-symbol check should be shown.
 		/// </summary>
 		public bool ShowIntro =>
-			this.FlowState == KycTravelDocumentFlowState.Intro ||
+			!this.ShowSuccess &&
+			(this.FlowState == KycTravelDocumentFlowState.Intro ||
 			this.FlowState == KycTravelDocumentFlowState.MrzCapture ||
-			(this.FlowState == KycTravelDocumentFlowState.Error && !this.HasMrz);
-
-		/// <summary>
-		/// Gets a value indicating whether the NFC placement step should be shown.
-		/// </summary>
-		public bool ShowNfcStep =>
-			this.FlowState == KycTravelDocumentFlowState.MrzCaptured ||
-			this.FlowState == KycTravelDocumentFlowState.NfcReady ||
-			this.FlowState == KycTravelDocumentFlowState.NfcReading ||
-			(this.FlowState == KycTravelDocumentFlowState.Error && this.HasMrz);
+			(this.FlowState == KycTravelDocumentFlowState.Error && !this.HasMrz));
 
 		/// <summary>
 		/// Gets a value indicating whether the readout success state should be shown.
@@ -256,19 +191,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasReadout;
 
 		/// <summary>
-		/// Gets a value indicating whether NFC progress should be shown.
+		/// Gets a value indicating whether the chip-reading headline and status should be shown.
 		/// </summary>
-		public bool ShowNfcProgress => this.ShowNfcStep && !this.HasErrorState;
+		public bool ShowNfcMessage => !this.ShowIntro;
 
 		/// <summary>
-		/// Gets a value indicating whether the status panel should be visible.
+		/// Gets a value indicating whether an error should be shown on the introduction, such as an unreadable MRZ.
 		/// </summary>
-		public bool ShowStatusPanel => this.HasStatusText && this.HasErrorState && !this.ShowSuccess;
+		public bool ShowIntroError => this.ShowIntro && this.HasErrorState && this.HasStatusText;
+
+		/// <summary>
+		/// Gets a value indicating whether the action that starts a first chip read should be shown.
+		/// </summary>
+		public bool ShowStartNfcAction => this.CanStartNfc && !this.ShowIntro && !this.HasErrorState;
 
 		/// <summary>
 		/// Gets a value indicating whether a retry action for NFC should be shown.
 		/// </summary>
-		public bool ShowNfcRetryAction => this.CanStartNfc && !this.ShowIntro;
+		public bool ShowNfcRetryAction => this.CanStartNfc && !this.ShowIntro && this.HasErrorState;
 
 		/// <summary>
 		/// Gets a value indicating whether the manual fallback action should be shown.
@@ -279,59 +219,120 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Gets whether the document can be rescanned after an NFC error or to recover a legacy draft.
 		/// </summary>
 		public bool ShowRescanAction => !this.IsNfcBusy &&
-			((this.HasMrz && this.HasErrorState && !this.HasReadout) || this.reference?.CanRescanLegacyNfcReadout == true);
+			((this.HasMrz && this.HasErrorState && !this.HasReadout && !this.IsScanCancelled) ||
+			this.reference?.CanRescanLegacyNfcReadout == true);
 
 		/// <summary>
-		/// Gets a value indicating whether the NFC session is waiting for chip placement.
+		/// Gets the scene shown by the NFC hero visual.
 		/// </summary>
-		public bool ShowNfcWaitingIndicator => this.FlowState == KycTravelDocumentFlowState.NfcReady && this.IsNfcBusy;
+		public NfcScanVisualState ScanVisualState
+		{
+			get
+			{
+				if (this.ShowSuccess)
+					return NfcScanVisualState.Success;
+
+				if (this.ShowIntro)
+					return NfcScanVisualState.Intro;
+
+				if (this.HasErrorState)
+					return this.IsScanCancelled ? NfcScanVisualState.Paused : NfcScanVisualState.Failure;
+
+				if (this.FlowState == KycTravelDocumentFlowState.NfcReading)
+					return NfcScanVisualState.Reading;
+
+				if (this.IsNfcBusy)
+				{
+					return this.FlowState == KycTravelDocumentFlowState.NfcReady
+						? NfcScanVisualState.Searching
+						: NfcScanVisualState.Preparing;
+				}
+
+				return NfcScanVisualState.Paused;
+			}
+		}
 
 		/// <summary>
-		/// Gets a value indicating whether the NFC chip is actively being read.
+		/// Gets a value indicating whether the document is a passport, based on the MRZ document code.
 		/// </summary>
-		public bool ShowNfcReadingIndicator => this.FlowState == KycTravelDocumentFlowState.NfcReading && this.IsNfcBusy;
+		/// <remarks>
+		/// Passports (TD3) have MRZ document codes starting with "P". Without an MRZ, a passport is assumed.
+		/// </remarks>
+		public bool IsPassportDocument
+		{
+			get
+			{
+				string Mrz = this.MrzText?.TrimStart() ?? string.Empty;
+				return Mrz.Length == 0 || char.ToUpperInvariant(Mrz[0]) == 'P';
+			}
+		}
 
 		/// <summary>
-		/// Gets the current MRZ step description.
+		/// Gets the zero-based active step of the guide: scan details, read chip, and done.
 		/// </summary>
-		public string MrzStepDescription => this.HasMrz
-			? ServiceRef.Localizer["KycTravelDocumentMrzStepReadyDescription"]
-			: ServiceRef.Localizer["KycTravelDocumentMrzStepDescription"];
+		/// <remarks>
+		/// A value of 3 marks every step as complete.
+		/// </remarks>
+		public int CurrentGuideStep
+		{
+			get
+			{
+				if (this.ShowSuccess)
+					return 3;
+
+				return this.ShowIntro ? 0 : 1;
+			}
+		}
 
 		/// <summary>
-		/// Gets the current NFC step title.
+		/// Gets the headline for the current chip-reading state.
 		/// </summary>
-		public string NfcStepTitle => this.FlowState == KycTravelDocumentFlowState.NfcReading
-			? ServiceRef.Localizer[DeviceInfo.Platform == DevicePlatform.Android
-				? "KycTravelDocumentProgressTitle" : "KycTravelDocumentNfcReadingTitle"]
-			: ServiceRef.Localizer["KycTravelDocumentNfcStepTitle"];
+		public string NfcHeadlineText => ServiceRef.Localizer[this.ScanVisualState switch
+		{
+			NfcScanVisualState.Preparing => "KycTravelDocumentNfcPreparingTitle",
+			NfcScanVisualState.Reading => "KycTravelDocumentNfcReadingTitle",
+			NfcScanVisualState.Success => "KycTravelDocumentSuccessTitle",
+			NfcScanVisualState.Failure => "KycTravelDocumentNfcErrorTitle",
+			NfcScanVisualState.Paused when this.IsScanCancelled => "KycTravelDocumentNfcCancelledTitle",
+			_ => "KycTravelDocumentNfcStepTitle"
+		}];
 
 		/// <summary>
-		/// Gets the current NFC step description.
+		/// Gets a value indicating whether a placement tip should be shown while searching for the chip.
 		/// </summary>
-		public string NfcStepDescription => this.FlowState == KycTravelDocumentFlowState.NfcReading
-			? ServiceRef.Localizer["KycTravelDocumentNfcReadingDescription"]
-			: ServiceRef.Localizer["KycTravelDocumentNfcStepDescription"];
+		public bool ShowPlacementTip => this.ScanVisualState == NfcScanVisualState.Searching;
 
 		/// <summary>
-		/// Gets the progress state for detecting the chip.
+		/// Gets the placement tip, which expands with document-specific help after searching for a while.
 		/// </summary>
-		public string NfcProgressDetectChipState => this.ResolveProgressStateText(0);
+		public string PlacementTipText => ServiceRef.Localizer[!this.IsPlacementHelpExpanded
+			? "KycTravelDocumentNfcStepDescription"
+			: this.IsPassportDocument ? "KycTravelDocumentNfcHelpPassport" : "KycTravelDocumentNfcHelpIdCard"];
+
+		partial void OnFlowStateChanged(KycTravelDocumentFlowState value) => this.NotifyPresentationChanged();
+
+		partial void OnMrzTextChanged(string value) => this.NotifyPresentationChanged();
+
+		partial void OnHasStatusTextChanged(bool value) => this.NotifyPresentationChanged();
+
+		partial void OnIsNfcBusyChanged(bool value) => this.NotifyPresentationChanged();
+
+		partial void OnHasReadoutChanged(bool value) => this.NotifyPresentationChanged();
+
+		partial void OnHasErrorStateChanged(bool value) => this.NotifyPresentationChanged();
+
+		partial void OnIsScanCancelledChanged(bool value) => this.NotifyPresentationChanged();
+
+		partial void OnIsPlacementHelpExpandedChanged(bool value) => this.NotifyPresentationChanged();
 
 		/// <summary>
-		/// Gets the progress state for securing the chip connection.
+		/// Raises change notifications for every property derived from the flow state.
 		/// </summary>
-		public string NfcProgressSecureConnectionState => this.ResolveProgressStateText(1);
-
-		/// <summary>
-		/// Gets the progress state for reading document data.
-		/// </summary>
-		public string NfcProgressReadDataState => this.ResolveProgressStateText(2);
-
-		/// <summary>
-		/// Gets the progress state for verifying the readout.
-		/// </summary>
-		public string NfcProgressVerifyDocumentState => this.ResolveProgressStateText(3);
+		private void NotifyPresentationChanged()
+		{
+			foreach (string PropertyName in presentationPropertyNames)
+				this.OnPropertyChanged(PropertyName);
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KycTravelDocumentViewModel"/> class.
@@ -361,6 +362,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				!KycReference.IsFullTravelDocumentMrz(SavedMrz);
 			this.MrzText = HasInsufficientSavedMrz ? string.Empty : SavedMrz;
 			this.HasReadout = !string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml);
+			if (this.HasReadout)
+			{
+				this.readProgress.Complete();
+				this.ChipReadProgress = this.readProgress.Progress;
+			}
+
 			this.FlowState = this.ResolveInitialFlowState(HasInsufficientSavedMrz);
 			this.StatusText = this.ResolveInitialStatusText(HasInsufficientSavedMrz);
 			this.HasStatusText = !string.IsNullOrWhiteSpace(this.StatusText);
@@ -542,6 +549,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					? "KycTravelDocumentNfcReadyPassport" : "KycTravelDocumentNfcReadyIdCard";
 				await this.SetStatusAsync(PlacementResourceKey, true, false, false, KycTravelDocumentFlowState.NfcReady, SessionId);
 				FlowCancellationToken.ThrowIfCancellationRequested();
+				_ = this.ExpandPlacementHelpAfterDelayAsync(SessionId, FlowCancellationToken);
 				await this.nfcIsoDepSessionService.StartSessionAsync(
 					SessionId,
 					(IsoDepInterface, CancellationToken) => this.ReadTravelDocumentAsync(SessionId, Evidence, IsoDepInterface, PollingPreference, CancellationToken),
@@ -663,6 +671,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.TrackTerminalNfcSession(SessionId, "Succeeded", string.Empty);
 					await this.UpdateNativeNfcAlertAsync(SessionId, "TravelDocumentScan_IosNfcSuccess");
 					await this.SetStatusAsync("KycTravelDocumentNfcSuccess", true, false, true, KycTravelDocumentFlowState.Success, SessionId);
+					await this.ProvideOutcomeFeedbackAsync(true);
 					await this.CompleteNfcSessionAsync(SessionId, null);
 				}
 				else if (!await this.TryRetryWithPacePollingAsync(SessionId, Evidence, PollingPreference, Result, FlowCancellationToken))
@@ -699,13 +708,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task UpdateChipProgressAsync(Guid SessionId, TravelDocumentMrzEvidence Evidence, TravelDocumentsState State)
 		{
-			string ResourceKey = State switch
-			{
-				TravelDocumentsState.Detected => "KycTravelDocumentNfcDetected",
-				TravelDocumentsState.ValidatingCertificate => "KycTravelDocumentNfcCheckingSecurity",
-				TravelDocumentsState.Idle => "KycTravelDocumentNfcCheckingDocument",
-				_ => "KycTravelDocumentNfcReading"
-			};
 			string NativeResourceKey = State switch
 			{
 				TravelDocumentsState.Detected => "TravelDocumentScan_IosNfcDetected",
@@ -718,12 +720,118 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (!this.IsActiveSession(SessionId, Evidence.ApplicationIdentityId) || this.finalizingSessionId == SessionId)
 					return;
 
-				this.StatusText = ServiceRef.Localizer[ResourceKey];
+				bool IsFirstDetection = this.readProgress.Apply(State);
+				this.StatusText = ServiceRef.Localizer[ResolveChipProgressResourceKey(State, this.readProgress.Stage)];
 				this.HasStatusText = true;
-				this.NfcProgressStage = Math.Max(this.NfcProgressStage, State == TravelDocumentsState.Detected ? 1 : 2);
+				this.ChipReadProgress = this.readProgress.Progress;
 				this.FlowState = KycTravelDocumentFlowState.NfcReading;
-				await this.UpdateNativeNfcAlertAsync(SessionId, NativeResourceKey);
+				if (IsFirstDetection)
+				{
+					PerformHaptic(HapticFeedbackType.Click);
+					Announce(ServiceRef.Localizer["KycTravelDocumentNfcDetected"]);
+				}
+
+				// Chip events arrive for every data chunk; only push the native sheet when its message changes.
+				if (!string.Equals(this.lastNativeAlertResourceKey, NativeResourceKey, StringComparison.Ordinal))
+				{
+					this.lastNativeAlertResourceKey = NativeResourceKey;
+					await this.UpdateNativeNfcAlertAsync(SessionId, NativeResourceKey);
+				}
 			});
+		}
+
+		private static string ResolveChipProgressResourceKey(TravelDocumentsState State, TravelDocumentReadStage Stage)
+		{
+			if (State == TravelDocumentsState.ValidatingCertificate)
+				return "KycTravelDocumentNfcCheckingSecurity";
+
+			return Stage switch
+			{
+				TravelDocumentReadStage.Detect or TravelDocumentReadStage.Secure => "KycTravelDocumentNfcSecuring",
+				TravelDocumentReadStage.Verify => "KycTravelDocumentNfcCheckingDocument",
+				_ => "KycTravelDocumentNfcReading"
+			};
+		}
+
+		private async Task ExpandPlacementHelpAfterDelayAsync(Guid SessionId, CancellationToken CancellationToken)
+		{
+			try
+			{
+				await Task.Delay(placementHelpDelay, CancellationToken);
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					if (this.activeSessionId == SessionId &&
+						this.FlowState == KycTravelDocumentFlowState.NfcReady &&
+						this.IsNfcBusy)
+					{
+						this.IsPlacementHelpExpanded = true;
+					}
+				});
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private Task ProvideOutcomeFeedbackAsync(bool Succeeded)
+		{
+			return MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				if (Succeeded ? !this.HasReadout : !this.HasErrorState)
+					return;
+
+				Announce(Succeeded ? this.NfcHeadlineText : this.NfcHeadlineText + ". " + this.StatusText);
+				if (Succeeded)
+					PerformHaptic(HapticFeedbackType.LongPress);
+				else
+				{
+					// Two short taps set failure apart from the single long success pulse.
+					PerformHaptic(HapticFeedbackType.Click);
+					await Task.Delay(failureHapticInterval);
+					PerformHaptic(HapticFeedbackType.Click);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Gives tactile feedback on Android, where the page is the only NFC feedback while the phone is held against the document.
+		/// </summary>
+		/// <remarks>
+		/// iOS already gives feedback through its native NFC sheet, so haptics are not repeated there.
+		/// </remarks>
+		/// <param name="Type">The kind of haptic feedback.</param>
+		private static void PerformHaptic(HapticFeedbackType Type)
+		{
+			if (DeviceInfo.Platform != DevicePlatform.Android)
+				return;
+
+			try
+			{
+				HapticFeedback.Default.Perform(Type);
+			}
+			catch (Exception)
+			{
+				// Devices without haptics still complete the flow.
+			}
+		}
+
+		private static void Announce(string Text)
+		{
+			if (string.IsNullOrWhiteSpace(Text))
+				return;
+
+			try
+			{
+				SemanticScreenReader.Default.Announce(Text);
+			}
+			catch (Exception)
+			{
+				// Announcements are best effort; visual feedback remains.
+			}
 		}
 
 		private async Task UpdateNativeNfcAlertAsync(Guid SessionId, string ResourceKey)
@@ -743,7 +851,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.activeSessionId != SessionId)
 				return;
 
-			this.TrackTerminalNfcSession(SessionId, ResourceKey == "KycTravelDocumentNfcCancelled" ? "Cancelled" : "Failed", ResourceKey);
+			this.TrackTerminalNfcSession(SessionId, ResourceKey == nfcCancelledResourceKey ? "Cancelled" : "Failed", ResourceKey);
 			string NativeResourceKey = ResourceKey switch
 			{
 				"KycTravelDocumentNfcCancelled" => "TravelDocumentScan_IosNfcCancelled",
@@ -756,6 +864,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				await this.StopNativeNfcSessionAsync(SessionId, NativeMessage);
 				await this.SetStatusAsync(ResourceKey, true, true, false, KycTravelDocumentFlowState.Error, SessionId);
+				if (ResourceKey != nfcCancelledResourceKey)
+					await this.ProvideOutcomeFeedbackAsync(false);
+
 				if (this.activeSessionId == SessionId)
 					await this.ForgetReservedPreviewIdentityAsync("FailedPreviewReadoutReservationForgotten");
 			}
@@ -1293,18 +1404,35 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			KycTravelDocumentFlowState? FlowState = null,
 			Guid? SessionId = null)
 		{
-			string Message = ServiceRef.Localizer[ResourceKey];
+			bool IsCancelled = IsError && ResourceKey == nfcCancelledResourceKey;
+			string Message = ServiceRef.Localizer[IsCancelled ? "KycTravelDocumentNfcCancelledDescription" : ResourceKey];
 			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				if (SessionId.HasValue && this.activeSessionId != SessionId)
 					return;
 
+				// A new attempt starts from an empty ring; failures keep the progress reached so far.
+				if (FlowState == KycTravelDocumentFlowState.MrzCaptured || FlowState == KycTravelDocumentFlowState.NfcReady)
+				{
+					this.readProgress.Reset();
+					this.lastNativeAlertResourceKey = null;
+					this.ChipReadProgress = this.readProgress.Progress;
+				}
+
+				if (ReadoutAvailable)
+				{
+					this.readProgress.Complete();
+					this.ChipReadProgress = this.readProgress.Progress;
+				}
+
 				this.StatusText = Message;
 				this.HasStatusText = !string.IsNullOrWhiteSpace(Message);
+				this.IsPlacementHelpExpanded = false;
 				this.IsNfcBusy = IsBusy;
+
+				// Set before the error flag so a cancelled scan never briefly presents as a failure.
+				this.IsScanCancelled = IsCancelled;
 				this.HasErrorState = IsError;
-				if (IsError || FlowState == KycTravelDocumentFlowState.MrzCaptured || FlowState == KycTravelDocumentFlowState.NfcReady)
-					this.NfcProgressStage = 0;
 				if (ReadoutAvailable)
 					this.HasReadout = true;
 
@@ -1432,22 +1560,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			GC.SuppressFinalize(this);
 		}
 
-		private string ResolveProgressStateText(int StepIndex)
-		{
-			if (this.FlowState == KycTravelDocumentFlowState.Success || this.HasReadout)
-				return ServiceRef.Localizer["KycTravelDocumentProgressDone"];
-
-			if (this.FlowState == KycTravelDocumentFlowState.Error || this.HasErrorState)
-				return ServiceRef.Localizer["KycTravelDocumentProgressNeedsAttention"];
-
-			if (this.FlowState == KycTravelDocumentFlowState.NfcReading)
-				return StepIndex == 0
-					? ServiceRef.Localizer["KycTravelDocumentProgressDone"]
-					: ServiceRef.Localizer["KycTravelDocumentProgressInProgress"];
-
-			return ServiceRef.Localizer["KycTravelDocumentProgressWaiting"];
-		}
-
 		private string ResolveReadoutFailureResourceKey(TravelDocumentReadoutStatus Status)
 		{
 			return Status switch
@@ -1485,7 +1597,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return ServiceRef.Localizer["KycTravelDocumentInvalidMrz"];
 
 			if (this.reference?.HasFullTravelDocumentMrz == true)
-				return ServiceRef.Localizer["KycTravelDocumentSummaryMrzReady"];
+				return ServiceRef.Localizer["KycTravelDocumentSaved"];
 
 			return string.Empty;
 		}
