@@ -5,110 +5,157 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:camera="clr-namespace:NeuroAccessMaui.Camera;assembly=NeuroAccessMaui.Camera"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 	x:DataType="viewmodel:KycProfilePhotoCameraViewModel"
 	BackgroundColor="Black"
 	ui:SafeArea.Mode="Ignore">
-	<Grid RowDefinitions="Auto,*,Auto"
-		  BackgroundColor="Black">
+	<Grid BackgroundColor="Black">
 		<camera:CameraView x:Name="CameraView"
-						   Grid.RowSpan="3"
 						   IsVisible="{Binding ShowCameraPreview}"
 						   HorizontalOptions="Fill"
 						   VerticalOptions="Fill" />
 
-		<Image Grid.RowSpan="3"
-			   Source="{Binding CapturedPhotoSource}"
+		<Image Source="{Binding CapturedPhotoSource}"
 			   IsVisible="{Binding HasCapturedPhoto}"
 			   Aspect="AspectFill"
 			   HorizontalOptions="Fill"
 			   VerticalOptions="Fill" />
 
-		<Grid Grid.Row="0"
-			  Margin="{ext:SafeInsets Type=Top}"
-			  Padding="16,12,16,0"
-			  ColumnDefinitions="96,*,96"
-			  ColumnSpacing="8"
-			  MinimumHeightRequest="44">
-			<Border Grid.Column="0"
-					Padding="14,8"
-					BackgroundColor="#66000000"
-					Stroke="#55FFFFFF"
-					StrokeThickness="1"
-					StrokeShape="RoundRectangle 18"
-					MinimumHeightRequest="40"
-					MinimumWidthRequest="72"
-					HorizontalOptions="Start"
-					VerticalOptions="Center">
-				<Border.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding CancelCommand}" />
-				</Border.GestureRecognizers>
-				<Label Text="{Binding CancelText}"
-					   FontFamily="SpaceGroteskBold"
-					   FontSize="14"
-					   TextColor="White"
-					   MaxLines="1"
-					   LineBreakMode="TailTruncation"
-					   VerticalTextAlignment="Center" />
-			</Border>
+		<GraphicsView x:Name="FaceGuide"
+					  InputTransparent="True"
+					  IsVisible="{Binding ShowCameraPreview}"
+					  HorizontalOptions="Fill"
+					  VerticalOptions="Fill"
+					  AutomationProperties.IsInAccessibleTree="False" />
 
+		<BoxView x:Name="Flash"
+				 Color="White"
+				 Opacity="0"
+				 InputTransparent="True"
+				 HorizontalOptions="Fill"
+				 VerticalOptions="Fill" />
+
+		<!-- Keeps the white header readable over bright photos -->
+		<BoxView HeightRequest="150"
+				 VerticalOptions="Start"
+				 InputTransparent="True">
+			<BoxView.Background>
+				<LinearGradientBrush StartPoint="0,0"
+									 EndPoint="0,1">
+					<GradientStop Color="#99000000"
+								  Offset="0" />
+					<GradientStop Color="#00000000"
+								  Offset="1" />
+				</LinearGradientBrush>
+			</BoxView.Background>
+		</BoxView>
+
+		<!-- Header -->
+		<Grid Margin="{ext:SafeInsets Type=Top}"
+			  Padding="16,12,16,0"
+			  ColumnDefinitions="Auto,*"
+			  ColumnSpacing="12"
+			  VerticalOptions="Start">
+			<controls:ImageButton Command="{Binding CancelCommand}"
+								  Style="{DynamicResource FilledImageButton}"
+								  PathData="{x:Static ui:Geometries.BackButtonPath}"
+								  SemanticProperties.Description="{Binding CancelText}" />
 			<Label Grid.Column="1"
 				   Text="{Binding TitleText}"
-				   HorizontalTextAlignment="Center"
-				   VerticalTextAlignment="Center"
-				   FontSize="20"
-				   FontFamily="SpaceGroteskBold"
+				   Style="{DynamicResource PageTitleLabel}"
+				   FontSize="22"
 				   TextColor="White"
-				   MaxLines="1"
-				   LineBreakMode="TailTruncation" />
+				   VerticalOptions="Center"
+				   MaxLines="2"
+				   LineBreakMode="WordWrap"
+				   SemanticProperties.HeadingLevel="Level1" />
 		</Grid>
 
-		<Border Grid.Row="2"
-				Margin="16,0,16,64"
-				Padding="18,16"
-				BackgroundColor="#CC1E1712"
-				Stroke="#55FFFFFF"
-				StrokeThickness="1"
-				StrokeShape="RoundRectangle 18">
-			<VerticalStackLayout Spacing="14">
-				<Label Text="{Binding GuidanceText}"
-					   FontSize="15"
-					   TextColor="#FFF7ED"
+		<!-- Capture -->
+		<VerticalStackLayout Margin="{ext:SafeInsets Type=Bottom}"
+							 Padding="16,0,16,28"
+							 Spacing="22"
+							 VerticalOptions="End"
+							 IsVisible="{Binding ShowCameraPreview}">
+			<Border Padding="16,12"
+					MaximumWidthRequest="560"
+					BackgroundColor="{x:Static ui:ScannerColors.CardBackground}"
+					StrokeThickness="0"
+					StrokeShape="RoundRectangle 16">
+				<VerticalStackLayout Spacing="4">
+					<Label Text="{Binding GuidanceText}"
+						   FontFamily="SpaceGroteskBold"
+						   FontSize="17"
+						   TextColor="White"
+						   HorizontalTextAlignment="Center"
+						   LineBreakMode="WordWrap" />
+					<Label Text="{Binding TipText}"
+						   FontSize="14"
+						   TextColor="#D9FFFFFF"
+						   HorizontalTextAlignment="Center"
+						   LineBreakMode="WordWrap" />
+				</VerticalStackLayout>
+			</Border>
+
+			<Grid WidthRequest="78"
+				  HeightRequest="78"
+				  HorizontalOptions="Center">
+				<controls:TemplatedButton Command="{Binding CaptureCommand}"
+										  SemanticProperties.Description="{Binding CaptureText}">
+					<Grid WidthRequest="78"
+						  HeightRequest="78">
+						<Ellipse Stroke="White"
+								 StrokeThickness="4"
+								 WidthRequest="78"
+								 HeightRequest="78" />
+						<Ellipse Fill="White"
+								 WidthRequest="60"
+								 HeightRequest="60"
+								 HorizontalOptions="Center"
+								 VerticalOptions="Center"
+								 IsVisible="{Binding IsCapturing, Converter={mct:InvertedBoolConverter}}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<ActivityIndicator IsRunning="{Binding IsCapturing}"
+								   IsVisible="{Binding IsCapturing}"
+								   Color="White"
+								   WidthRequest="32"
+								   HeightRequest="32"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center"
+								   InputTransparent="True" />
+			</Grid>
+		</VerticalStackLayout>
+
+		<!-- Review -->
+		<Border x:Name="ReviewSheet"
+				VerticalOptions="End"
+				Padding="24,22,24,0"
+				BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+				StrokeThickness="0"
+				StrokeShape="RoundRectangle 24,24,0,0"
+				IsVisible="{Binding HasCapturedPhoto}">
+			<VerticalStackLayout Spacing="16"
+								 MaximumWidthRequest="560"
+								 Margin="{ext:SafeInsets Type=Bottom}"
+								 Padding="0,0,0,20">
+				<Label Text="{Binding ReviewHintText}"
+					   Style="{DynamicResource InfoLabel}"
 					   HorizontalTextAlignment="Center"
-					   LineBreakMode="WordWrap"
-					   IsVisible="{Binding ShowCameraPreview}" />
-
-				<Button Text="{Binding CaptureText}"
-						Command="{Binding CaptureCommand}"
-						IsVisible="{Binding ShowCameraPreview}"
-						BackgroundColor="#0F806A"
-						TextColor="White"
-						FontFamily="SpaceGroteskBold"
-						CornerRadius="24"
-						HeightRequest="56" />
-
+					   LineBreakMode="WordWrap" />
 				<Grid ColumnDefinitions="*,*"
-					  ColumnSpacing="10"
-					  IsVisible="{Binding HasCapturedPhoto}">
-					<Button Text="{Binding RetakeText}"
-							Command="{Binding RetakeCommand}"
-							BackgroundColor="Transparent"
-							BorderColor="#99FFFFFF"
-							BorderWidth="1"
-							TextColor="White"
-							FontFamily="SpaceGroteskBold"
-							CornerRadius="18"
-							HeightRequest="52" />
-					<Button Grid.Column="1"
-							Text="{Binding UsePhotoText}"
-							Command="{Binding UsePhotoCommand}"
-							BackgroundColor="#0F806A"
-							TextColor="White"
-							FontFamily="SpaceGroteskBold"
-							CornerRadius="18"
-							HeightRequest="52" />
+					  ColumnSpacing="10">
+					<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+										 LabelData="{Binding RetakeText}"
+										 Command="{Binding RetakeCommand}" />
+					<controls:TextButton Grid.Column="1"
+										 Style="{DynamicResource FilledTextButton}"
+										 LabelData="{Binding UsePhotoText}"
+										 Command="{Binding UsePhotoCommand}" />
 				</Grid>
 			</VerticalStackLayout>
 		</Border>

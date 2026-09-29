@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="112" viewBox="0 0 160 112" fill="none">
+  <rect x="5" y="9" width="150" height="96" rx="10" fill="#181F25" fill-opacity="0.1"/>
+  <rect x="5" y="9" width="150" height="96" rx="10" stroke="#181F25" stroke-opacity="0.55" stroke-width="3"/>
+  <rect x="17" y="19" width="56" height="6" rx="3" fill="#181F25" fill-opacity="0.45"/>
+  <rect x="17" y="32" width="38" height="46" rx="5" fill="#181F25" fill-opacity="0.22"/>
+  <circle cx="36" cy="49" r="8.5" fill="#181F25" fill-opacity="0.7"/>
+  <path d="M22 78C22 69.5 28.3 64 36 64C43.7 64 50 69.5 50 78Z" fill="#181F25" fill-opacity="0.7"/>
+  <rect x="65" y="34" width="54" height="5" rx="2.5" fill="#181F25" fill-opacity="0.5"/>
+  <rect x="65" y="46" width="72" height="5" rx="2.5" fill="#181F25" fill-opacity="0.3"/>
+  <rect x="65" y="58" width="42" height="5" rx="2.5" fill="#181F25" fill-opacity="0.3"/>
+  <rect x="65" y="70" width="60" height="5" rx="2.5" fill="#181F25" fill-opacity="0.3"/>
+  <path d="M17 88H143" stroke="#181F25" stroke-opacity="0.6" stroke-width="4" stroke-dasharray="7 3"/>
+  <path d="M17 97H143" stroke="#181F25" stroke-opacity="0.6" stroke-width="4" stroke-dasharray="7 3"/>
+</svg>

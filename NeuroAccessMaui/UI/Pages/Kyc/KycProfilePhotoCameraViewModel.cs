@@ -33,34 +33,46 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public CameraView? CameraView { get; set; }
 
 		/// <summary>
-		/// Gets the localized cancel action text.
+		/// Gets the localized back action text, used as the back button description.
 		/// </summary>
-		public string CancelText => ServiceRef.Localizer[nameof(AppResources.Cancel)];
+		public string CancelText => ServiceRef.Localizer[nameof(AppResources.Back)];
 
 		/// <summary>
-		/// Gets the localized capture action text.
+		/// Gets the localized capture action text, used as the shutter button description.
 		/// </summary>
 		public string CaptureText => ServiceRef.Localizer[nameof(AppResources.TakePhoto)];
 
 		/// <summary>
-		/// Gets the localized retry action text.
+		/// Gets the localized retake action text.
 		/// </summary>
-		public string RetakeText => ServiceRef.Localizer["KycDocumentMrzScannerTryAgainStatus"];
+		public string RetakeText => ServiceRef.Localizer[nameof(AppResources.KycImageRetakeButton)];
 
 		/// <summary>
 		/// Gets the localized accept action text.
 		/// </summary>
-		public string UsePhotoText => ServiceRef.Localizer["KycTravelDocumentContinueButton"];
+		public string UsePhotoText => ServiceRef.Localizer[nameof(AppResources.KycSelfieUsePhotoButton)];
 
 		/// <summary>
-		/// Gets the localized page title.
+		/// Gets the localized header title for the current step: taking the photo or checking it.
 		/// </summary>
-		public string TitleText => ServiceRef.Localizer[nameof(AppResources.TakePhotoOfYourself)];
+		public string TitleText => this.HasCapturedPhoto
+			? ServiceRef.Localizer[nameof(AppResources.KycSelfieReviewTitle)]
+			: ServiceRef.Localizer[nameof(AppResources.KycSelfieTitle)];
 
 		/// <summary>
 		/// Gets the localized camera guidance text.
 		/// </summary>
-		public string GuidanceText => ServiceRef.Localizer["KycProfilePhotoCameraGuidance"];
+		public string GuidanceText => ServiceRef.Localizer[nameof(AppResources.KycProfilePhotoCameraGuidance)];
+
+		/// <summary>
+		/// Gets a short localized tip for a good photo.
+		/// </summary>
+		public string TipText => ServiceRef.Localizer[nameof(AppResources.KycSelfieTip)];
+
+		/// <summary>
+		/// Gets the localized hint shown while the user checks the captured photo.
+		/// </summary>
+		public string ReviewHintText => ServiceRef.Localizer[nameof(AppResources.KycSelfieReviewHint)];
 
 		/// <summary>
 		/// Gets a value indicating whether a photo has been captured.
@@ -75,6 +87,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasCapturedPhoto))]
 		[NotifyPropertyChangedFor(nameof(ShowCameraPreview))]
+		[NotifyPropertyChangedFor(nameof(TitleText))]
 		private ImageSource? capturedPhotoSource;
 
 		[ObservableProperty]
@@ -196,6 +209,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				this.capturedPhotoBytes = PhotoBytes;
 				this.CapturedPhotoSource = ImageSource.FromStream(() => new MemoryStream(PhotoBytes));
+				PerformHaptic();
 			}
 			catch (Exception Ex)
 			{
@@ -233,6 +247,18 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			this.resultReturned = true;
 			this.navigationArgs?.CompletionSource?.TrySetResult(PhotoBytes);
+		}
+
+		private static void PerformHaptic()
+		{
+			try
+			{
+				HapticFeedback.Default.Perform(HapticFeedbackType.Click);
+			}
+			catch (Exception)
+			{
+				// Devices without haptics still show the captured photo.
+			}
 		}
 
 		private void DisposePreviewCancellation()

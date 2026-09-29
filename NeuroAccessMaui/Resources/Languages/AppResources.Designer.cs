@@ -4084,6 +4084,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All applications.
+        /// </summary>
+        public static string KycAllApplicationsButton {
+            get {
+                return ResourceManager.GetString("KycAllApplicationsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified with your ID chip.
+        /// </summary>
+        public static string KycChipVerifiedTitle {
+            get {
+                return ResourceManager.GetString("KycChipVerifiedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove pending details.
         /// </summary>
         public static string KycClearUnvalidatedButton {
@@ -4098,6 +4116,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string KycConfirmRemovePending {
             get {
                 return ResourceManager.GetString("KycConfirmRemovePending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue application.
+        /// </summary>
+        public static string KycContinueApplicationButton {
+            get {
+                return ResourceManager.GetString("KycContinueApplicationButton", resourceCulture);
             }
         }
         
@@ -4291,11 +4318,65 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string KycDoneButton {
+            get {
+                return ResourceManager.GetString("KycDoneButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix issues and edit form.
         /// </summary>
         public static string KycFixInvalidClaimsButton {
             get {
                 return ResourceManager.GetString("KycFixInvalidClaimsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photo added.
+        /// </summary>
+        public static string KycImageAddedDescription {
+            get {
+                return ResourceManager.GetString("KycImageAddedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to take a photo.
+        /// </summary>
+        public static string KycImageEmptyCameraHint {
+            get {
+                return ResourceManager.GetString("KycImageEmptyCameraHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take a photo or upload one.
+        /// </summary>
+        public static string KycImageEmptyHint {
+            get {
+                return ResourceManager.GetString("KycImageEmptyHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        public static string KycImageReplaceButton {
+            get {
+                return ResourceManager.GetString("KycImageReplaceButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retake.
+        /// </summary>
+        public static string KycImageRetakeButton {
+            get {
+                return ResourceManager.GetString("KycImageRetakeButton", resourceCulture);
             }
         }
         
@@ -4327,11 +4408,47 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading your application….
+        /// </summary>
+        public static string KycLoadingApplication {
+            get {
+                return ResourceManager.GetString("KycLoadingApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your application is undergoing manual review. You can wait for the result or adjust the items below to try automatic processing..
         /// </summary>
         public static string KycManualReviewInfo {
             get {
                 return ResourceManager.GetString("KycManualReviewInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open my ID.
+        /// </summary>
+        public static string KycOpenIdButton {
+            get {
+                return ResourceManager.GetString("KycOpenIdButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} reviews received.
+        /// </summary>
+        public static string KycPeerReviewProgressFormat {
+            get {
+                return ResourceManager.GetString("KycPeerReviewProgressFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ask someone to review.
+        /// </summary>
+        public static string KycPeerReviewTitle {
+            get {
+                return ResourceManager.GetString("KycPeerReviewTitle", resourceCulture);
             }
         }
         
@@ -4408,6 +4525,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Review.
+        /// </summary>
+        public static string KycReviewButton {
+            get {
+                return ResourceManager.GetString("KycReviewButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code:.
         /// </summary>
         public static string KycReviewCodeLabel {
@@ -4422,6 +4548,258 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string KycReviewTitle {
             get {
                 return ResourceManager.GetString("KycReviewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revoke application.
+        /// </summary>
+        public static string KycRevokeApplicationButton {
+            get {
+                return ResourceManager.GetString("KycRevokeApplicationButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure your whole face is visible, sharp, and well lit..
+        /// </summary>
+        public static string KycSelfieReviewHint {
+            get {
+                return ResourceManager.GetString("KycSelfieReviewHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check your photo.
+        /// </summary>
+        public static string KycSelfieReviewTitle {
+            get {
+                return ResourceManager.GetString("KycSelfieReviewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use even light and remove sunglasses or hats..
+        /// </summary>
+        public static string KycSelfieTip {
+            get {
+                return ResourceManager.GetString("KycSelfieTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take your photo.
+        /// </summary>
+        public static string KycSelfieTitle {
+            get {
+                return ResourceManager.GetString("KycSelfieTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use photo.
+        /// </summary>
+        public static string KycSelfieUsePhotoButton {
+            get {
+                return ResourceManager.GetString("KycSelfieUsePhotoButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send application.
+        /// </summary>
+        public static string KycSendApplicationButton {
+            get {
+                return ResourceManager.GetString("KycSendApplicationButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sending your application….
+        /// </summary>
+        public static string KycSendingApplication {
+            get {
+                return ResourceManager.GetString("KycSendingApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We'll notify you as soon as it has been reviewed. You can close this page in the meantime..
+        /// </summary>
+        public static string KycSentDescription {
+            get {
+                return ResourceManager.GetString("KycSentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application sent.
+        /// </summary>
+        public static string KycSentTitle {
+            get {
+                return ResourceManager.GetString("KycSentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your digital ID has been approved and is ready to use..
+        /// </summary>
+        public static string KycStatusApprovedDescription {
+            get {
+                return ResourceManager.GetString("KycStatusApprovedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your ID is ready.
+        /// </summary>
+        public static string KycStatusApprovedTitle {
+            get {
+                return ResourceManager.GetString("KycStatusApprovedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What needs attention.
+        /// </summary>
+        public static string KycStatusAttentionTitle {
+            get {
+                return ResourceManager.GetString("KycStatusAttentionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your details are saved. Continue where you left off..
+        /// </summary>
+        public static string KycStatusDraftDescription {
+            get {
+                return ResourceManager.GetString("KycStatusDraftDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finish your application.
+        /// </summary>
+        public static string KycStatusDraftTitle {
+            get {
+                return ResourceManager.GetString("KycStatusDraftTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is no longer valid. Start a new application to get a new ID..
+        /// </summary>
+        public static string KycStatusExpiredDescription {
+            get {
+                return ResourceManager.GetString("KycStatusExpiredDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expired.
+        /// </summary>
+        public static string KycStatusExpiredStage {
+            get {
+                return ResourceManager.GetString("KycStatusExpiredStage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your ID has expired.
+        /// </summary>
+        public static string KycStatusExpiredTitle {
+            get {
+                return ResourceManager.GetString("KycStatusExpiredTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your details have been approved. Your digital ID is being created..
+        /// </summary>
+        public static string KycStatusFinalizingDescription {
+            get {
+                return ResourceManager.GetString("KycStatusFinalizingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Almost done.
+        /// </summary>
+        public static string KycStatusFinalizingTitle {
+            get {
+                return ResourceManager.GetString("KycStatusFinalizingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This can take a little while. We'll notify you as soon as there is an update..
+        /// </summary>
+        public static string KycStatusPendingDescription {
+            get {
+                return ResourceManager.GetString("KycStatusPendingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your application is being reviewed.
+        /// </summary>
+        public static string KycStatusPendingTitle {
+            get {
+                return ResourceManager.GetString("KycStatusPendingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step {0} of {1}.
+        /// </summary>
+        public static string KycStepCaptionFormat {
+            get {
+                return ResourceManager.GetString("KycStepCaptionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Details.
+        /// </summary>
+        public static string KycStepDetails {
+            get {
+                return ResourceManager.GetString("KycStepDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID ready.
+        /// </summary>
+        public static string KycStepIdReady {
+            get {
+                return ResourceManager.GetString("KycStepIdReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review.
+        /// </summary>
+        public static string KycStepReview {
+            get {
+                return ResourceManager.GetString("KycStepReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check that everything is correct before you send it. Tap a detail to change it..
+        /// </summary>
+        public static string KycSummaryDescription {
+            get {
+                return ResourceManager.GetString("KycSummaryDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review your application.
+        /// </summary>
+        public static string KycSummaryTitle {
+            get {
+                return ResourceManager.GetString("KycSummaryTitle", resourceCulture);
             }
         }
         
@@ -5034,6 +5412,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string KycUnvalidatedWarningTitle {
             get {
                 return ResourceManager.GetString("KycUnvalidatedWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View application.
+        /// </summary>
+        public static string KycViewApplicationButton {
+            get {
+                return ResourceManager.GetString("KycViewApplicationButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your details.
+        /// </summary>
+        public static string KycYourDetailsTitle {
+            get {
+                return ResourceManager.GetString("KycYourDetailsTitle", resourceCulture);
             }
         }
         

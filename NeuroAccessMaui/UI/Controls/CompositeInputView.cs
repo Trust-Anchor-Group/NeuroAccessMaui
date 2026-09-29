@@ -20,6 +20,7 @@ namespace NeuroAccessMaui.UI.Controls
 		protected ContentView rightContentView;
 		protected Grid validationGrid;
 		protected Border border;
+		private readonly Label hintLabel;
 
 		public bool CanShowValidation => !this.IsValid && !string.IsNullOrEmpty(this.ValidationText);
 		public bool CanShowLabel => !string.IsNullOrEmpty(this.LabelText);
@@ -72,7 +73,23 @@ namespace NeuroAccessMaui.UI.Controls
 			this.label.SetBinding(Label.StyleProperty, new Binding(nameof(this.LabelStyle), source: this));
 			this.label.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.CanShowLabel), source: this));
 
-			MainGrid.Add(this.label, 0, 0);
+			// Optional hint under the label. It shares row 0 with the label so controls without a hint keep their layout.
+			this.hintLabel = new Label
+			{
+				FontSize = 14,
+				LineBreakMode = LineBreakMode.WordWrap,
+				IsVisible = false
+			};
+			this.hintLabel.SetDynamicResource(Label.TextColorProperty, "ContentSecondaryWL");
+			this.hintLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.HintText), source: this));
+
+			VerticalStackLayout LabelStack = new VerticalStackLayout
+			{
+				Spacing = 2,
+				Children = { this.label, this.hintLabel }
+			};
+
+			MainGrid.Add(LabelStack, 0, 0);
 
 			// Row 2: LeftView, CenterView, RightView
 			Grid ContentGrid = new Grid
@@ -174,6 +191,21 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			get => (string)this.GetValue(LabelTextProperty);
 			set => this.SetValue(LabelTextProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the optional hint shown under the label.
+		/// </summary>
+		public static readonly BindableProperty HintTextProperty =
+			 BindableProperty.Create(nameof(HintText), typeof(string), typeof(CompositeInputView), string.Empty, propertyChanged: OnHintChanged);
+
+		/// <summary>
+		/// Gets or sets an optional hint shown under the label in secondary text, such as the expected format.
+		/// </summary>
+		public string HintText
+		{
+			get => (string)this.GetValue(HintTextProperty);
+			set => this.SetValue(HintTextProperty, value);
 		}
 
 		// LeftView Property
@@ -401,6 +433,12 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			CompositeInputView Control = (CompositeInputView)Bindable;
 			Control.OnPropertyChanged(nameof(CanShowLabel));
+		}
+
+		private static void OnHintChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			CompositeInputView Control = (CompositeInputView)Bindable;
+			Control.hintLabel.IsVisible = !string.IsNullOrWhiteSpace(NewValue as string);
 		}
 
 		private static void OnLeftViewChanged(BindableObject Bindable, object OldValue, object NewValue)

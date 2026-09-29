@@ -6,220 +6,307 @@
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 					  xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
+					  xmlns:kycviews="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc.Views"
 					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
 					  xmlns:fields="clr-namespace:NeuroAccessMaui.Services.Kyc.ViewModels"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					  x:DataType="viewmodel:KycProcessViewModel"
 					  xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity"
+					  x:DataType="viewmodel:KycProcessViewModel"
 					  ui:KeyboardInsets.Mode="Automatic">
 
 	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
-			<Style TargetType="Label"
-				   x:Key="SectionHeaderLabel">
-				<Setter Property="FontSize"
-						Value="24" />
-				<Setter Property="LineHeight"
-						Value="1.1"/>
-			</Style>
+			<mct:BoolToObjectConverter x:Key="RequiredMarkerConverter"
+									   TrueObject=" *"
+									   FalseObject="" />
 
-			<!--  Field Styles  -->
-			<Style x:Key="FieldKeyLabel"
+			<!-- Typography -->
+			<Style x:Key="KycPageTitle"
+				   TargetType="Label">
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskBold" />
+				<Setter Property="FontSize"
+						Value="28" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentPrimaryWL}" />
+				<Setter Property="SemanticProperties.HeadingLevel"
+						Value="Level1" />
+			</Style>
+			<Style x:Key="KycPageDescription"
+				   TargetType="Label">
+				<Setter Property="FontSize"
+						Value="16" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+			<Style x:Key="KycSectionTitle"
+				   TargetType="Label">
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskBold" />
+				<Setter Property="FontSize"
+						Value="18" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentPrimaryWL}" />
+				<Setter Property="SemanticProperties.HeadingLevel"
+						Value="Level2" />
+			</Style>
+			<Style x:Key="KycCardTitle"
+				   TargetType="Label">
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskBold" />
+				<Setter Property="FontSize"
+						Value="17" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="VerticalOptions"
+						Value="Center" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentPrimaryWL}" />
+			</Style>
+			<Style x:Key="KycBodySmall"
 				   TargetType="Label">
 				<Setter Property="FontSize"
 						Value="14" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+			<Style x:Key="KycSummaryKey"
+				   TargetType="Label">
+				<Setter Property="FontSize"
+						Value="13" />
 				<Setter Property="FontFamily"
 						Value="SpaceGroteskRegular" />
 				<Setter Property="TextColor"
 						Value="{DynamicResource ContentSecondaryWL}" />
 			</Style>
-			<Style x:Key="FieldValueLabel"
+			<Style x:Key="KycSummaryValue"
 				   TargetType="Label">
 				<Setter Property="FontSize"
 						Value="16" />
 				<Setter Property="FontFamily"
-						Value="SpaceGroteskRegular" />
-				<Setter Property="TextColor"
-						Value="{DynamicResource ContentPrimaryWL}" />
-			</Style>
-			<Style x:Key="FieldTitleLabel"
-				   TargetType="Label">
-				<Setter Property="FontSize"
-						Value="18" />
-				<Setter Property="FontFamily"
-						Value="SpaceGroteskBold" />
-				<Setter Property="TextColor"
-						Value="{DynamicResource ContentPrimaryWL}" />
-			</Style>
-			<Style x:Key="PageTitleLabel"
-				   TargetType="Label">
-				<Setter Property="FontSize"
-						Value="26" />
-				<Setter Property="FontFamily"
-						Value="SpaceGroteskBold" />
+						Value="SpaceGroteskSemiBold" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
 				<Setter Property="TextColor"
 						Value="{DynamicResource ContentPrimaryWL}" />
 			</Style>
 
-			<Style x:Key="FileIconBorder"
+			<!-- Surfaces -->
+			<Style x:Key="KycCard"
 				   TargetType="Border">
-				<Setter Property="Background"
-						Value="{DynamicResource BrandColorsNeuroAccessv500WL}" />
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource SurfaceElevation1WL}" />
+				<Setter Property="StrokeThickness"
+						Value="0" />
 				<Setter Property="StrokeShape"
-						Value="RoundRectangle 8" />
-				<Setter Property="Stroke"
-						Value="Transparent" />
+						Value="RoundRectangle 16" />
+				<Setter Property="Padding"
+						Value="16" />
+				<Setter Property="Shadow">
+					<Setter.Value>
+						<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
+								Offset="0,4"
+								Radius="12" />
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="KycCallout"
+				   TargetType="Border">
+				<Setter Property="StrokeThickness"
+						Value="0" />
+				<Setter Property="StrokeShape"
+						Value="RoundRectangle 14" />
+				<Setter Property="Padding"
+						Value="16,14" />
+			</Style>
+			<Style x:Key="KycIconBubble"
+				   TargetType="Border">
 				<Setter Property="WidthRequest"
 						Value="40" />
 				<Setter Property="HeightRequest"
 						Value="40" />
+				<Setter Property="Padding"
+						Value="9" />
+				<Setter Property="StrokeThickness"
+						Value="0" />
+				<Setter Property="StrokeShape"
+						Value="Ellipse" />
+				<Setter Property="VerticalOptions"
+						Value="Center" />
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource BrandColorsNeuroAccessa20WL}" />
+				<Setter Property="AutomationProperties.IsInAccessibleTree"
+						Value="False" />
+			</Style>
+			<Style x:Key="KycIcon"
+				   TargetType="controls:SvgView">
+				<Setter Property="Aspect"
+						Value="AspectFit" />
+				<Setter Property="TintColor"
+						Value="{DynamicResource ContentAccessWL}" />
+			</Style>
+			<Style x:Key="KycHintLabel"
+				   TargetType="Label">
+				<Setter Property="FontSize"
+						Value="14" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentSecondaryWL}" />
 			</Style>
 
 			<!-- Text field template -->
 			<DataTemplate x:Key="TextFieldTemplate"
 						  x:DataType="fields:ObservableGenericField">
-				<VerticalStackLayout Spacing="2"
-								 IsEnabled="{Binding IsEditable}">
-					<controls:CompositeEntry EntryData="{Binding StringValue, Mode=TwoWay}"
-											 LabelText="{Binding Label.Text}"
-											 Placeholder="{Binding Placeholder.Text}"
-											 Style="{DynamicResource RegularCompositeEntry}"
-											 Required="{Binding Required}"
-											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}" />
-				</VerticalStackLayout>
+				<controls:CompositeEntry EntryData="{Binding StringValue, Mode=TwoWay}"
+										 IsEnabled="{Binding IsEditable}"
+										 LabelText="{Binding Label.Text}"
+										 HintText="{Binding Hint.Text}"
+										 Placeholder="{Binding Placeholder.Text}"
+										 Style="{DynamicResource RegularCompositeEntry}"
+										 Required="{Binding Required}"
+										 IsValid="{Binding IsValid}"
+										 ValidationText="{Binding ValidationText}" />
 			</DataTemplate>
 			<!-- Date field template -->
 			<DataTemplate x:Key="DateFieldTemplate"
 						  x:DataType="fields:ObservableDateField">
-				<VerticalStackLayout Spacing="2"
-								 IsEnabled="{Binding IsEditable}">
-					<controls:CompositeDatePicker LabelText="{Binding Label.Text}"
-												  NullableDate="{Binding DateValue, Mode=TwoWay}"
-												  Placeholder="{Binding Placeholder.Text}"
-												  Style="{DynamicResource RegularCompositeDatePicker}"
-												  Required="{Binding Required}"
-												  IsValid="{Binding IsValid}"
-												  ValidationText="{Binding ValidationText}">
-						<controls:CompositeDatePicker.RightView>
-							<Path Data="{x:Static ui:Geometries.DropDownArrowPath}"
-								  Fill="{DynamicResource InputFieldsContentSecondary}"
-								  VerticalOptions="Center" />
-						</controls:CompositeDatePicker.RightView>
-					</controls:CompositeDatePicker>
-				</VerticalStackLayout>
+				<controls:CompositeDatePicker IsEnabled="{Binding IsEditable}"
+											  LabelText="{Binding Label.Text}"
+											  HintText="{Binding Hint.Text}"
+											  NullableDate="{Binding DateValue, Mode=TwoWay}"
+											  Placeholder="{Binding Placeholder.Text}"
+											  Style="{DynamicResource RegularCompositeDatePicker}"
+											  Required="{Binding Required}"
+											  IsValid="{Binding IsValid}"
+											  ValidationText="{Binding ValidationText}">
+					<controls:CompositeDatePicker.RightView>
+						<Path Data="{x:Static ui:Geometries.DropDownArrowPath}"
+							  Fill="{DynamicResource InputFieldsContentSecondary}"
+							  VerticalOptions="Center" />
+					</controls:CompositeDatePicker.RightView>
+				</controls:CompositeDatePicker>
 			</DataTemplate>
 			<!-- Integer field template -->
 			<DataTemplate x:Key="IntegerFieldTemplate"
 						  x:DataType="fields:ObservableIntegerField">
-				<VerticalStackLayout Spacing="2"
-								 IsEnabled="{Binding IsEditable}">
-					<controls:CompositeEntry EntryData="{Binding IntValue, Mode=TwoWay}"
-											 LabelText="{Binding Label.Text}"
-											 Placeholder="{Binding Placeholder.Text}"
-											 Keyboard="Numeric"
-											 Style="{DynamicResource RegularCompositeEntry}"
-											 Required="{Binding Required}"
-											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}" />
-				</VerticalStackLayout>
+				<controls:CompositeEntry EntryData="{Binding IntValue, Mode=TwoWay}"
+										 IsEnabled="{Binding IsEditable}"
+										 LabelText="{Binding Label.Text}"
+										 HintText="{Binding Hint.Text}"
+										 Placeholder="{Binding Placeholder.Text}"
+										 Keyboard="Numeric"
+										 Style="{DynamicResource RegularCompositeEntry}"
+										 Required="{Binding Required}"
+										 IsValid="{Binding IsValid}"
+										 ValidationText="{Binding ValidationText}" />
 			</DataTemplate>
 			<!-- Decimal field template -->
 			<DataTemplate x:Key="DecimalFieldTemplate"
 						  x:DataType="fields:ObservableDecimalField">
-				<VerticalStackLayout Spacing="2"
-								 IsEnabled="{Binding IsEditable}">
-					<controls:CompositeEntry EntryData="{Binding DecimalValue, Mode=TwoWay}"
-											 LabelText="{Binding Label.Text}"
-											 Placeholder="{Binding Placeholder.Text}"
-											 Keyboard="Numeric"
-											 Style="{DynamicResource RegularCompositeEntry}"
-											 Required="{Binding Required}"
-											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}" />
-				</VerticalStackLayout>
+				<controls:CompositeEntry EntryData="{Binding DecimalValue, Mode=TwoWay}"
+										 IsEnabled="{Binding IsEditable}"
+										 LabelText="{Binding Label.Text}"
+										 HintText="{Binding Hint.Text}"
+										 Placeholder="{Binding Placeholder.Text}"
+										 Keyboard="Numeric"
+										 Style="{DynamicResource RegularCompositeEntry}"
+										 Required="{Binding Required}"
+										 IsValid="{Binding IsValid}"
+										 ValidationText="{Binding ValidationText}" />
 			</DataTemplate>
 			<!-- Picker field template -->
 			<DataTemplate x:Key="PickerFieldTemplate"
 						  x:DataType="fields:ObservablePickerField">
-				<VerticalStackLayout Spacing="2"
-								 IsEnabled="{Binding IsEditable}">
-					<controls:CompositePicker ItemsSource="{Binding Options}"
-											  LabelText="{Binding Label.Text}"
-											  Placeholder="{Binding Placeholder.Text}"
-											  SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
-											  Style="{DynamicResource RegularCompositePicker}"
-											  Required="{Binding Required}"
-											  IsValid="{Binding IsValid}"
-											  ValidationText="{Binding ValidationText}">
-						<controls:CompositePicker.RightView>
-							<Path Data="{x:Static ui:Geometries.DropDownArrowPath}"
-								  Fill="{DynamicResource InputFieldsContentSecondary}"
-								  VerticalOptions="Center" />
-						</controls:CompositePicker.RightView>
-						<controls:CompositePicker.ItemDisplayBinding>
-							<Binding Path="Label.Text"
-									 x:DataType="models:KycOption" />
-						</controls:CompositePicker.ItemDisplayBinding>
-					</controls:CompositePicker>
-				</VerticalStackLayout>
+				<controls:CompositePicker IsEnabled="{Binding IsEditable}"
+										  ItemsSource="{Binding Options}"
+										  LabelText="{Binding Label.Text}"
+										  HintText="{Binding Hint.Text}"
+										  Placeholder="{Binding Placeholder.Text}"
+										  SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+										  Style="{DynamicResource RegularCompositePicker}"
+										  Required="{Binding Required}"
+										  IsValid="{Binding IsValid}"
+										  ValidationText="{Binding ValidationText}">
+					<controls:CompositePicker.RightView>
+						<Path Data="{x:Static ui:Geometries.DropDownArrowPath}"
+							  Fill="{DynamicResource InputFieldsContentSecondary}"
+							  VerticalOptions="Center" />
+					</controls:CompositePicker.RightView>
+					<controls:CompositePicker.ItemDisplayBinding>
+						<Binding Path="Label.Text"
+								 x:DataType="models:KycOption" />
+					</controls:CompositePicker.ItemDisplayBinding>
+				</controls:CompositePicker>
 			</DataTemplate>
 			<!-- Radio field template -->
 			<DataTemplate x:Key="RadioFieldTemplate"
 						  x:DataType="fields:ObservableRadioField">
-				<VerticalStackLayout Spacing="2"
-								 IsEnabled="{Binding IsEditable}">
-					<controls:CompositePicker ItemsSource="{Binding Options}"
-											  LabelText="{Binding Label.Text}"
-											  Placeholder="{Binding Placeholder.Text}"
-											  SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
-											  Style="{DynamicResource RegularCompositePicker}"
-											  Required="{Binding Required}"
-											  IsValid="{Binding IsValid}"
-											  ValidationText="{Binding ValidationText}">
-						<controls:CompositePicker.ItemDisplayBinding>
-							<Binding Path="Label.Text" />
-						</controls:CompositePicker.ItemDisplayBinding>
-					</controls:CompositePicker>
-				</VerticalStackLayout>
+				<controls:CompositePicker IsEnabled="{Binding IsEditable}"
+										  ItemsSource="{Binding Options}"
+										  LabelText="{Binding Label.Text}"
+										  HintText="{Binding Hint.Text}"
+										  Placeholder="{Binding Placeholder.Text}"
+										  SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+										  Style="{DynamicResource RegularCompositePicker}"
+										  Required="{Binding Required}"
+										  IsValid="{Binding IsValid}"
+										  ValidationText="{Binding ValidationText}">
+					<controls:CompositePicker.RightView>
+						<Path Data="{x:Static ui:Geometries.DropDownArrowPath}"
+							  Fill="{DynamicResource InputFieldsContentSecondary}"
+							  VerticalOptions="Center" />
+					</controls:CompositePicker.RightView>
+					<controls:CompositePicker.ItemDisplayBinding>
+						<Binding Path="Label.Text" />
+					</controls:CompositePicker.ItemDisplayBinding>
+				</controls:CompositePicker>
 			</DataTemplate>
 			<!-- Country field template -->
 			<DataTemplate x:Key="CountryFieldTemplate"
 						  x:DataType="fields:ObservableCountryField">
-				<VerticalStackLayout Spacing="2"
-								 IsEnabled="{Binding IsEditable}">
-					<controls:CompositePicker ItemsSource="{Binding Options}"
-											  LabelText="{Binding Label.Text}"
-											  Placeholder="{Binding Placeholder.Text}"
-											  SelectedItem="{Binding CountryCode, Mode=TwoWay}"
-											  Style="{DynamicResource RegularCompositePicker}"
-											  Required="{Binding Required}"
-											  IsValid="{Binding IsValid}"
-											  ValidationText="{Binding ValidationText}">
-						<controls:CompositePicker.RightView>
-							<Path Data="{x:Static ui:Geometries.DropDownArrowPath}"
-								  Fill="{DynamicResource InputFieldsContentSecondary}"
-								  VerticalOptions="Center" />
-						</controls:CompositePicker.RightView>
-						<controls:CompositePicker.ItemDisplayBinding>
-							<Binding Path="Label.Text" />
-						</controls:CompositePicker.ItemDisplayBinding>
-					</controls:CompositePicker>
-				</VerticalStackLayout>
+				<controls:CompositePicker IsEnabled="{Binding IsEditable}"
+										  ItemsSource="{Binding Options}"
+										  LabelText="{Binding Label.Text}"
+										  HintText="{Binding Hint.Text}"
+										  Placeholder="{Binding Placeholder.Text}"
+										  SelectedItem="{Binding CountryCode, Mode=TwoWay}"
+										  Style="{DynamicResource RegularCompositePicker}"
+										  Required="{Binding Required}"
+										  IsValid="{Binding IsValid}"
+										  ValidationText="{Binding ValidationText}">
+					<controls:CompositePicker.RightView>
+						<Path Data="{x:Static ui:Geometries.DropDownArrowPath}"
+							  Fill="{DynamicResource InputFieldsContentSecondary}"
+							  VerticalOptions="Center" />
+					</controls:CompositePicker.RightView>
+					<controls:CompositePicker.ItemDisplayBinding>
+						<Binding Path="Label.Text" />
+					</controls:CompositePicker.ItemDisplayBinding>
+				</controls:CompositePicker>
 			</DataTemplate>
-			<!-- Checkbox field template using TemplatedSelector -->
+			<!-- Checkbox field template -->
 			<DataTemplate x:Key="CheckboxFieldTemplate"
 						  x:DataType="fields:ObservableCheckboxField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
+											 HintText="{Binding Hint.Text}"
 											 IsEnabled="{Binding IsEditable}"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
 											 ValidationText="{Binding ValidationText}"
-											 BorderBackground="Transparent">
+											 BorderPadding="4">
 					<controls:CompositeInputView.CenterView>
 						<controls:TemplatedSelector ItemsSource="{Binding Options}"
 													SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
@@ -227,15 +314,18 @@
 							<controls:TemplatedSelector.ItemTemplate>
 								<DataTemplate x:DataType="controls:SelectableKycOption">
 									<Grid ColumnDefinitions="auto,*"
-										  ColumnSpacing="8"
-										  Padding="8">
+										  ColumnSpacing="12"
+										  Padding="10,12">
 										<controls:AnimatedCheckbox Grid.Column="0"
 																   StrokeColor="{DynamicResource ContentAccessWL}"
 																   FillColor="Transparent"
 																   StrokeWidth="2"
+																   VerticalOptions="Center"
 																   IsChecked="{Binding IsSelected, Mode=TwoWay}" />
 										<Label Text="{Binding Item.Label.Text}"
 											   Grid.Column="1"
+											   FontSize="16"
+											   LineBreakMode="WordWrap"
 											   VerticalTextAlignment="Center" />
 									</Grid>
 								</DataTemplate>
@@ -247,22 +337,34 @@
 			<!-- Boolean (switch) field template -->
 			<DataTemplate x:Key="BooleanFieldTemplate"
 						  x:DataType="fields:ObservableBooleanField">
-				<controls:CompositeInputView LabelText="{Binding Label.Text}"
-											 IsEnabled="{Binding IsEditable}"
+				<controls:CompositeInputView IsEnabled="{Binding IsEditable}"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}">
+											 ValidationText="{Binding ValidationText}"
+											 BorderPadding="16,12">
 					<controls:CompositeInputView.CenterView>
-						<Grid ColumnDefinitions="auto,*"
-							  Margin="8">
-							<Switch IsToggled="{Binding BoolValue, Mode=TwoWay}"
-									Grid.Column="0" />
-							<Label Grid.Column="1"
-								   FontSize="Small"
-								   Text="{Binding Hint.Text}"
-								   VerticalOptions="Center"
-								   TextColor="Gray" />
+						<Grid ColumnDefinitions="*,Auto"
+							  ColumnSpacing="12">
+							<VerticalStackLayout Spacing="2"
+												 VerticalOptions="Center">
+								<Label Style="{DynamicResource RegularCompositeInputViewLabel}"
+									   LineBreakMode="WordWrap">
+									<Label.FormattedText>
+										<FormattedString>
+											<Span Text="{Binding Label.Text}" />
+											<Span Text="{Binding Required, Converter={StaticResource RequiredMarkerConverter}}"
+												  TextColor="{DynamicResource TnPDangerContentWL}" />
+										</FormattedString>
+									</Label.FormattedText>
+								</Label>
+								<Label Text="{Binding Hint.Text}"
+									   Style="{StaticResource KycHintLabel}"
+									   IsVisible="{Binding Hint.Text, Converter={mct:IsStringNotNullOrEmptyConverter}}" />
+							</VerticalStackLayout>
+							<Switch Grid.Column="1"
+									VerticalOptions="Center"
+									IsToggled="{Binding BoolValue, Mode=TwoWay}" />
 						</Grid>
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
@@ -303,128 +405,45 @@
 										  Style="{DynamicResource OutlinedImageButton}" />
 				</Grid>
 			</DataTemplate>
-			<!-- Image upload field template -->
+			<!-- Image field template -->
 			<DataTemplate x:Key="ImageUploadTemplate"
 						  x:DataType="fields:ObservableImageField">
-				<Grid RowDefinitions="auto, auto"
-					  IsEnabled="{Binding IsEditable}"
-					  ColumnDefinitions="*, auto"
-					  ColumnSpacing="16"
-					  RowSpacing="8">
-
-					<VerticalStackLayout Spacing="16"
-										 Grid.Column="1">
-						<controls:TemplatedButton Command="{Binding PickPhotoCommand}"
-												  IsVisible="{Binding AllowUpload}">
-							<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
-								<Grid ColumnDefinitions="auto,*"
-									  ColumnSpacing="8"
-									  HorizontalOptions="Center">
-									<controls:SvgView Grid.Column="0"
-													  Source="image.svg"
-													  Aspect="AspectFit"
-													  WidthRequest="18"
-													  HeightRequest="18"
-													  VerticalOptions="Center"
-													  TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-									<Label Grid.Column="1"
-										   Text="{l:Localize Upload}"
-										   VerticalOptions="Center"
-										   FontFamily="SpaceGroteskBold"
-										   FontSize="16"
-										   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-								</Grid>
-							</Border>
-						</controls:TemplatedButton>
-						<controls:TemplatedButton Grid.Row="1"
-												  Command="{Binding TakePhotoCommand}">
-							<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
-								<Grid ColumnDefinitions="auto,*"
-									  ColumnSpacing="8"
-									  HorizontalOptions="Center">
-									<controls:SvgView Grid.Column="0"
-													  Source="camera_alt.svg"
-													  Aspect="AspectFit"
-													  WidthRequest="18"
-													  HeightRequest="18"
-													  VerticalOptions="Center"
-													  TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-									<Label Grid.Column="1"
-										   Text="{l:Localize TakePhoto}"
-										   VerticalOptions="Center"
-										   FontFamily="SpaceGroteskBold"
-										   FontSize="16"
-										   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-								</Grid>
-							</Border>
-						</controls:TemplatedButton>
-					</VerticalStackLayout>
-
-					<Border StrokeShape="RoundRectangle 8"
-							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
-							StrokeDashArray="1,1"
-							IsEnabled="{Binding IsValid}">
-						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio, FallbackValue=1.0}">
-							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
-								<controls:ConditionView.True>
-									<!-- Here we can have a image and label, you can create a converter to pick image/svg/label based on the specialType -->
-									<Label VerticalOptions="Center"
-										   HorizontalOptions="Center"
-										   Text="{Binding Placeholder.Text}" />
-								</controls:ConditionView.True>
-								<controls:ConditionView.False>
-									<Image Source="{Binding ImageSource}"
-										   Aspect="AspectFit"
-										   BackgroundColor="{DynamicResource SurfaceBackgroundWL}" />
-								</controls:ConditionView.False>
-							</controls:ConditionView>
-						</controls:AspectRatioLayout>
-						<Border.Triggers>
-							<Trigger TargetType="Border"
-									 Property="IsEnabled"
-									 Value="True">
-								<Setter Property="Stroke"
-										Value="{DynamicResource BrandColorsGreyScalesGreyv250}" />
-							</Trigger>
-							<Trigger TargetType="Border"
-									 Property="IsEnabled"
-									 Value="False">
-								<Setter Property="Stroke"
-										Value="{DynamicResource InputFieldsContentDangerv500}" />
-							</Trigger>
-						</Border.Triggers>
-					</Border>
-					<Label Grid.Row="1"
-						   Grid.ColumnSpan="2"
-						   HorizontalOptions="Center"
-						   Style="{DynamicResource RegularCompositeInputViewValidationLabel}"
-						   Text="{Binding ValidationText}"
-						   TextColor="Red"
-						   IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}" />
-				</Grid>
+				<kycviews:KycImageFieldView />
 			</DataTemplate>
-
 			<!-- Label field template -->
 			<DataTemplate x:Key="LabelFieldTemplate"
 						  x:DataType="fields:ObservableLabelField">
-				<Grid>
-					<Label Text="{Binding Label.Text}"
-						   FontAttributes="Bold"
-						   FontSize="Medium" />
-				</Grid>
+				<Label Text="{Binding Label.Text}"
+					   Style="{StaticResource KycSectionTitle}"
+					   FontSize="17" />
 			</DataTemplate>
-
 			<!-- Info field template -->
 			<DataTemplate x:Key="InfoFieldTemplate"
 						  x:DataType="fields:ObservableInfoField">
-				<Border Style="{DynamicResource BorderSet}"
-						Margin="0">
-					<VerticalStackLayout>
-						<Label Text="{Binding Label.Text}"
-							   Style="{DynamicResource FieldTitleLabel}" />
-						<Label Text="{Binding Description.Text}"
-							   Style="{DynamicResource FieldValueLabel}" />
-					</VerticalStackLayout>
+				<Border Style="{StaticResource KycCallout}"
+						BackgroundColor="{DynamicResource TnPInfobgWL}">
+					<Grid ColumnDefinitions="Auto,*"
+						  ColumnSpacing="12">
+						<Path Data="{x:Static ui:Geometries.InfoCirclePath}"
+							  Fill="{DynamicResource TnPInfoContentWL}"
+							  VerticalOptions="Start"
+							  Margin="0,2,0,0"
+							  AutomationProperties.IsInAccessibleTree="False" />
+						<VerticalStackLayout Grid.Column="1"
+											 Spacing="4">
+							<Label Text="{Binding Label.Text}"
+								   FontFamily="SpaceGroteskBold"
+								   FontSize="15"
+								   LineBreakMode="WordWrap"
+								   TextColor="{DynamicResource TnPInfoContentWL}"
+								   IsVisible="{Binding Label.Text, Converter={mct:IsStringNotNullOrEmptyConverter}}" />
+							<Label Text="{Binding Description.Text}"
+								   FontSize="15"
+								   LineBreakMode="WordWrap"
+								   TextColor="{DynamicResource ContentPrimaryWL}"
+								   IsVisible="{Binding Description.Text, Converter={mct:IsStringNotNullOrEmptyConverter}}" />
+						</VerticalStackLayout>
+					</Grid>
 				</Border>
 			</DataTemplate>
 
@@ -443,7 +462,26 @@
 											LabelFieldTemplate="{StaticResource LabelFieldTemplate}"
 											InfoFieldTemplate="{StaticResource InfoFieldTemplate}" />
 
-			<DataTemplate x:Key="SummaryDisplayTemplate"
+			<!-- Form section -->
+			<DataTemplate x:Key="SectionTemplate"
+						  x:DataType="models:KycSection">
+				<VerticalStackLayout Spacing="16">
+					<VerticalStackLayout Spacing="4">
+						<Label Text="{Binding Label.Text}"
+							   Style="{StaticResource KycSectionTitle}"
+							   IsVisible="{Binding Label.Text, Converter={mct:IsStringNotNullOrEmptyConverter}}" />
+						<Label Text="{Binding Description.Text}"
+							   Style="{StaticResource KycBodySmall}"
+							   IsVisible="{Binding Description.Text, Converter={mct:IsStringNotNullOrEmptyConverter}}" />
+					</VerticalStackLayout>
+					<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
+										 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
+										 Spacing="20" />
+				</VerticalStackLayout>
+			</DataTemplate>
+
+			<!-- Summary detail row: label, value, and an edit affordance -->
+			<DataTemplate x:Key="SummaryRowTemplate"
 						  x:DataType="IDSF:DisplayQuad">
 				<controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}"
 										  CommandParameter="{Binding Mapping}"
@@ -458,30 +496,39 @@
 									Value="True" />
 						</DataTrigger>
 					</controls:TemplatedButton.Triggers>
-					<Grid ColumnDefinitions="*, auto"
-						  RowDefinitions="auto, auto">
-						<Label Text="{Binding Label}"
-							   Style="{DynamicResource FieldKeyLabel}" />
-						<Label Text="{Binding Value}"
-							   Style="{DynamicResource FieldValueLabel}"
-							   Grid.Row="1">
-							<Label.Triggers>
-								<DataTrigger TargetType="Label"
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="12"
+						  Padding="0,9">
+						<VerticalStackLayout Spacing="2">
+							<Label Text="{Binding Label}"
+								   Style="{StaticResource KycSummaryKey}" />
+							<Label Text="{Binding Value}"
+								   Style="{StaticResource KycSummaryValue}">
+								<Label.Triggers>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding IsInvalid}"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource TnPDangerContentWL}" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+						</VerticalStackLayout>
+						<controls:SvgView Grid.Column="1"
+										  Source="kyc_edit.svg"
+										  WidthRequest="18"
+										  HeightRequest="18"
+										  VerticalOptions="Center"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  IsVisible="{Binding CanEdit}"
+										  AutomationProperties.IsInAccessibleTree="False">
+							<controls:SvgView.Triggers>
+								<DataTrigger TargetType="controls:SvgView"
 											 Binding="{Binding IsInvalid}"
 											 Value="True">
-									<Setter Property="TextColor"
+									<Setter Property="TintColor"
 											Value="{DynamicResource TnPDangerContentWL}" />
 								</DataTrigger>
-							</Label.Triggers>
-						</Label>
-						<controls:SvgView Grid.Column="1"
-										  Grid.RowSpan="2"
-										  Source="sign.svg"
-										  HeightRequest="20"
-										  WidthRequest="20"
-										  IsVisible="{Binding CanEdit}"
-										  TintColor="{DynamicResource ContentSecondaryWL}">
-							<controls:SvgView.Triggers>
 								<DataTrigger TargetType="controls:SvgView"
 											 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}"
 											 Value="True">
@@ -494,501 +541,665 @@
 				</controls:TemplatedButton>
 			</DataTemplate>
 
+			<!-- Summary document row: document name with an added check or edit affordance -->
+			<DataTemplate x:Key="SummaryDocumentTemplate"
+						  x:DataType="IDSF:DisplayQuad">
+				<controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}"
+										  CommandParameter="{Binding Mapping}"
+										  IsEnabled="{Binding CanEdit}">
+					<controls:TemplatedButton.Triggers>
+						<DataTrigger TargetType="controls:TemplatedButton"
+									 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}"
+									 Value="True">
+							<Setter Property="IsEnabled"
+									Value="False" />
+							<Setter Property="InputTransparent"
+									Value="True" />
+						</DataTrigger>
+					</controls:TemplatedButton.Triggers>
+					<Grid ColumnDefinitions="Auto,*,Auto"
+						  ColumnSpacing="12"
+						  Padding="0,10">
+						<controls:SvgView Source="kyc_documents.svg"
+										  WidthRequest="20"
+										  HeightRequest="20"
+										  VerticalOptions="Center"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+						<Label Grid.Column="1"
+							   Text="{Binding Value}"
+							   Style="{StaticResource KycSummaryValue}"
+							   VerticalOptions="Center">
+							<Label.Triggers>
+								<DataTrigger TargetType="Label"
+											 Binding="{Binding IsInvalid}"
+											 Value="True">
+									<Setter Property="TextColor"
+											Value="{DynamicResource TnPDangerContentWL}" />
+								</DataTrigger>
+							</Label.Triggers>
+						</Label>
+						<Grid Grid.Column="2"
+							  VerticalOptions="Center"
+							  AutomationProperties.IsInAccessibleTree="False">
+							<controls:SvgView Source="kyc_check_circle.svg"
+											  WidthRequest="20"
+											  HeightRequest="20"
+											  TintColor="{DynamicResource ContentAccessWL}"
+											  IsVisible="{Binding CanEdit, Converter={mct:InvertedBoolConverter}}">
+								<controls:SvgView.Triggers>
+									<DataTrigger TargetType="controls:SvgView"
+												 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}"
+												 Value="True">
+										<Setter Property="IsVisible"
+												Value="True" />
+									</DataTrigger>
+								</controls:SvgView.Triggers>
+							</controls:SvgView>
+							<controls:SvgView Source="kyc_edit.svg"
+											  WidthRequest="18"
+											  HeightRequest="18"
+											  TintColor="{DynamicResource ContentSecondaryWL}"
+											  IsVisible="{Binding CanEdit}">
+								<controls:SvgView.Triggers>
+									<DataTrigger TargetType="controls:SvgView"
+												 Binding="{Binding IsInvalid}"
+												 Value="True">
+										<Setter Property="TintColor"
+												Value="{DynamicResource TnPDangerContentWL}" />
+									</DataTrigger>
+									<DataTrigger TargetType="controls:SvgView"
+												 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}"
+												 Value="True">
+										<Setter Property="IsVisible"
+												Value="False" />
+									</DataTrigger>
+								</controls:SvgView.Triggers>
+							</controls:SvgView>
+						</Grid>
+					</Grid>
+				</controls:TemplatedButton>
+			</DataTemplate>
+
+			<!-- Bullet item used by callouts -->
+			<DataTemplate x:Key="DangerBulletTemplate"
+						  x:DataType="x:String">
+				<Grid ColumnDefinitions="Auto,*"
+					  ColumnSpacing="10">
+					<Ellipse WidthRequest="6"
+							 HeightRequest="6"
+							 Margin="0,8,0,0"
+							 VerticalOptions="Start"
+							 Fill="{DynamicResource TnPDangerContentWL}" />
+					<Label Grid.Column="1"
+						   Text="{Binding}"
+						   FontSize="15"
+						   FontFamily="SpaceGroteskSemiBold"
+						   LineBreakMode="WordWrap"
+						   TextColor="{DynamicResource ContentPrimaryWL}" />
+				</Grid>
+			</DataTemplate>
+			<DataTemplate x:Key="WarningBulletTemplate"
+						  x:DataType="x:String">
+				<Grid ColumnDefinitions="Auto,*"
+					  ColumnSpacing="10">
+					<Ellipse WidthRequest="6"
+							 HeightRequest="6"
+							 Margin="0,8,0,0"
+							 VerticalOptions="Start"
+							 Fill="{DynamicResource TnPWarningContentWL}" />
+					<Label Grid.Column="1"
+						   Text="{Binding}"
+						   FontSize="15"
+						   LineBreakMode="WordWrap"
+						   TextColor="{DynamicResource ContentPrimaryWL}" />
+				</Grid>
+			</DataTemplate>
 		</ResourceDictionary>
 	</base:BaseContentPage.Resources>
 
 	<controls:ConditionView Condition="{Binding IsLoading}">
 		<controls:ConditionView.True>
-			<Grid Grid.Row="0"
-				  Margin="16,16,16,8"
-				  ColumnDefinitions="*,auto,*"
-				  RowDefinitions="auto, *">
-				<controls:SvgButton Grid.Row="0"
-									Grid.Column="0"
-									Command="{Binding ExitCommand}"
-									Style="{DynamicResource IconButton}"
-									SvgSource="close.svg"
-									HeightRequest="48"
-									WidthRequest="48"
-									HorizontalOptions="Start" />
-
-				<controls:UriImage Grid.Row="0"
-								   Grid.Column="1"
-								   Aspect="AspectFit"
-								   ErrorPlaceholder="neuro_b"
-								   HorizontalOptions="Center"
-								   Source="{Binding BannerUri}"
-								   WidthRequest="100"
-								   HeightRequest="24" />
-
-				<ActivityIndicator IsRunning="True"
-								   VerticalOptions="Center"
-								   HorizontalOptions="Center"
-								   Grid.Row="1"
-								   Grid.ColumnSpan="3"
-								   Color="{DynamicResource BrandColorsNeuroAccessv500WL}" />
-			</Grid>
-		</controls:ConditionView.True>
-		<controls:ConditionView.False>
-
-			<Grid Padding="0"
-				  Margin="0"
-				  RowDefinitions="Auto,*,Auto"
-				  Background="{DynamicResource SurfaceBackgroundWL}">
-
-				<Grid Grid.Row="0"
-					  Margin="16,8,16,8"
-					  ColumnDefinitions="*,auto,*"
-					  RowDefinitions="*">
-					<controls:SvgButton Grid.Row="0"
-										Grid.Column="0"
-										Command="{Binding ExitCommand}"
+			<Grid RowDefinitions="Auto,*"
+				  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+				<Grid Padding="16,8,16,0"
+					  ColumnDefinitions="48,*,48">
+					<controls:SvgButton Command="{Binding ExitCommand}"
 										Style="{DynamicResource IconButton}"
 										SvgSource="close.svg"
 										HeightRequest="48"
 										WidthRequest="48"
-										HorizontalOptions="Start" />
-
-					<controls:UriImage Grid.Row="0"
-									   Grid.Column="1"
+										HorizontalOptions="Start"
+										SemanticProperties.Description="{l:Localize Close}" />
+					<controls:UriImage Grid.Column="1"
 									   Aspect="AspectFit"
 									   ErrorPlaceholder="neuro_b"
 									   HorizontalOptions="Center"
+									   VerticalOptions="Center"
+									   Source="{Binding BannerUri}"
+									   WidthRequest="100"
+									   HeightRequest="24" />
+				</Grid>
+				<VerticalStackLayout Grid.Row="1"
+									 Spacing="14"
+									 HorizontalOptions="Center"
+									 VerticalOptions="Center">
+					<ActivityIndicator IsRunning="True"
+									   HorizontalOptions="Center"
+									   Color="{DynamicResource ContentAccessWL}" />
+					<Label Text="{l:Localize KycLoadingApplication}"
+						   Style="{StaticResource KycBodySmall}"
+						   HorizontalTextAlignment="Center" />
+				</VerticalStackLayout>
+			</Grid>
+		</controls:ConditionView.True>
+		<controls:ConditionView.False>
+
+			<Grid RowDefinitions="Auto,Auto,*,Auto"
+				  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+				<!-- Header -->
+				<Grid Padding="16,8,16,0"
+					  ColumnDefinitions="48,*,48">
+					<controls:SvgButton Command="{Binding ExitCommand}"
+										Style="{DynamicResource IconButton}"
+										SvgSource="close.svg"
+										HeightRequest="48"
+										WidthRequest="48"
+										HorizontalOptions="Start"
+										SemanticProperties.Description="{l:Localize Close}" />
+					<controls:UriImage Grid.Column="1"
+									   Aspect="AspectFit"
+									   ErrorPlaceholder="neuro_b"
+									   HorizontalOptions="Center"
+									   VerticalOptions="Center"
 									   Source="{Binding BannerUri}"
 									   WidthRequest="100"
 									   HeightRequest="24" />
 				</Grid>
 
-				<controls:ConditionView Grid.Row="1"
-										HorizontalOptions="Fill"
-										VerticalOptions="Fill"
-										Padding="{DynamicResource SmallMargins}"
-										Condition="{Binding IsInSummary}">
-					<controls:ConditionView.True>
-						<CollectionView SelectionMode="None"
-										HorizontalOptions="Fill"
-										VerticalOptions="Fill">
-							<CollectionView.ItemsLayout>
-								<LinearItemsLayout Orientation="Vertical"
-												   ItemSpacing="0" />
-							</CollectionView.ItemsLayout>
-							<CollectionView.Header>
-								<VerticalStackLayout>
-									<Label Style="{DynamicResource PageTitleLabel}"
-										   Text="{l:Localize Summary}"
-										   Margin="{DynamicResource MediumLeftRightMargins}" />
+				<!-- Step progress -->
+				<VerticalStackLayout Grid.Row="1"
+									 Padding="20,14,20,6"
+									 Spacing="8"
+									 IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}">
+					<Label Text="{Binding StepCaption}"
+						   FontFamily="SpaceGroteskBold"
+						   FontSize="13"
+						   TextColor="{DynamicResource ContentSecondaryWL}"
+						   AutomationProperties.IsInAccessibleTree="False" />
+					<controls:StepProgressBar HeightRequest="6"
+											  SegmentCount="{Binding StepCount}"
+											  Value="{Binding StepValue}"
+											  TrackColor="{DynamicResource TnPNeutralv300bgWL}"
+											  FillColor="{DynamicResource ContentAccessWL}"
+											  SemanticProperties.Description="{Binding StepCaption}" />
+				</VerticalStackLayout>
 
-									<!-- Post-submission panel: application sent + peer review actions -->
-									<Border IsVisible="{Binding ApplicationSentPublic}"
-											Style="{DynamicResource BorderSet}">
-										<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-											<Label Style="{DynamicResource SectionTitleLabel}"
-												   Text="{l:Localize Application}" />
-											<Label Style="{DynamicResource InfoLabel}"
-												   Text="{l:Localize IdApplicationSentDescription}" />
+				<Grid Grid.Row="2">
+					<!-- Form -->
+					<ScrollView x:Name="FormScroll"
+								IsVisible="{Binding IsInSummary, Converter={mct:InvertedBoolConverter}}">
+						<VerticalStackLayout x:Name="FormContent"
+											 Padding="20,16,20,32"
+											 Spacing="24"
+											 MaximumWidthRequest="640">
+							<VerticalStackLayout Spacing="8">
+								<Label Style="{StaticResource KycPageTitle}"
+									   Text="{Binding CurrentPageTitle}" />
+								<Label Style="{StaticResource KycPageDescription}"
+									   Text="{Binding CurrentPageDescription}"
+									   IsVisible="{Binding HasCurrentPageDescription}" />
+							</VerticalStackLayout>
 
-											<!-- Peer review supported -->
-											<controls:ConditionView Condition="{Binding PeerReview}">
-												<controls:ConditionView.True>
-													<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-														<Label Style="{DynamicResource InfoLabel}"
-															   Text="{l:Localize PeerReviewDescription}" />
-														<Label Style="{DynamicResource InfoLabel}">
-															<Label.FormattedText>
-																<FormattedString>
-																	<Span Text="{l:Localize NrPeerReviews}" />
-																	<Span Text=" " />
-																	<Span FontAttributes="Bold"
-																		  Text="{Binding NrReviews}" />
-																	<Span Text=" / " />
-																	<Span Text="{Binding NrReviewers}" />
-																</FormattedString>
-															</Label.FormattedText>
-														</Label>
-
-														<Grid RowSpacing="8"
-															  RowDefinitions="auto,auto">
-															<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-																				 LabelData="{l:Localize QrScanCode}"
-																				 Command="{Binding ScanQrCodeCommand}"
-																				 Grid.Row="0" />
-															<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-																				 LabelData="{l:Localize FeaturedReviewers}"
-																				 Command="{Binding RequestReviewCommand}"
-																				 IsVisible="{Binding FeaturedPeerReviewers}"
-																				 Grid.Row="1" />
-														</Grid>
-													</VerticalStackLayout>
-												</controls:ConditionView.True>
-											</controls:ConditionView>
-
-											<controls:TextButton Style="{DynamicResource FilledTextButton}"
-																 LabelData="{l:Localize RevokeApplication}"
-																 Command="{Binding RevokeApplicationCommand}" />
-										</VerticalStackLayout>
-									</Border>
-
-									<!-- Rejection/Error banner shown when server reported an error for this application -->
-									<controls:ConditionView Condition="{Binding ShouldShowRejectionBanner}">
-										<controls:ConditionView.True>
-											<Border Grid.Row="0"
-													BackgroundColor="{DynamicResource TnPDangerbgWL}"
-													Padding="{DynamicResource MediumMargins}"
-													Margin="{DynamicResource SmallMargins}"
-													StrokeShape="RoundRectangle 16,16,0,16">
-												<Border.Shadow>
-													<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
-															Offset="0,4" />
-												</Border.Shadow>
-												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-													<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-														  ColumnDefinitions="auto, *">
-														<Path Grid.Column="0"
-															  Data="{x:Static ui:Geometries.InfoCirclePath}"
-															  Fill="{DynamicResource TnPDangerContentWL}" />
-														<Label Grid.Column="1"
-															   Text="{l:Localize KycRejectedHeader}"
-															   Style="{DynamicResource FieldTitleLabel}"
-															   TextColor="{DynamicResource TnPDangerContentWL}" />
-													</Grid>
-													<Label Text="{l:Localize KycRejectedInvalidationHint}"
-														   Style="{DynamicResource InfoLabel}"
-														   TextColor="{DynamicResource TnPDangerContentWL}"
-														   IsVisible="{Binding HasInvalidatedItems}" />
-													<VerticalStackLayout BindableLayout.ItemsSource="{Binding InvalidatedItems}"
-																		 Spacing="4">
-														<BindableLayout.ItemTemplate>
-															<DataTemplate x:DataType="x:String">
-																<Label Text="{Binding}"
-																	   Style="{DynamicResource InfoLabel}"
-																	   TextColor="{DynamicResource TnPDangerContentWL}" FontAttributes="Bold" />
-															</DataTemplate>
-														</BindableLayout.ItemTemplate>
-													</VerticalStackLayout>
-												</VerticalStackLayout>
-											</Border>
-										</controls:ConditionView.True>
-									</controls:ConditionView>
-
-									<!-- Warning banner for pending/unvalidated details -->
-									<controls:ConditionView Condition="{Binding ShouldShowUnvalidatedBanner}">
-										<controls:ConditionView.True>
-											<Border Grid.Row="0"
-													BackgroundColor="{DynamicResource TnPWarningbgWL}"
-													Padding="{DynamicResource MediumMargins}"
-													Margin="{DynamicResource SmallMargins}"
-													StrokeShape="RoundRectangle 16,16,0,16">
-												<Border.Shadow>
-													<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
-															Offset="0,4" />
-												</Border.Shadow>
-												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-													<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-														  ColumnDefinitions="auto, *">
-														<Path Grid.Column="0"
-															  Data="{x:Static ui:Geometries.InfoCirclePath}"
-															  Fill="{DynamicResource TnPWarningContentWL}" />
-														<Label Grid.Column="1"
-															   Text="{l:Localize KycUnvalidatedWarningTitle}"
-															   Style="{DynamicResource FieldTitleLabel}"
-															   TextColor="{DynamicResource TnPWarningContentWL}" />
-													</Grid>
-													<mct:Expander IsExpanded="False">
-														<mct:Expander.Header>
-															<Label Text="{Binding UnvalidatedSummaryText}"
-																	   Style="{DynamicResource InfoLabel}"
-																	   TextColor="{DynamicResource TnPWarningContentWL}" />
-														</mct:Expander.Header>
-														<VerticalStackLayout>
-															<CollectionView ItemsSource="{Binding UnvalidatedItems}"
-																			ItemSizingStrategy="MeasureAllItems"
-																			SelectionMode="None"
-																			Margin="8">
-																<CollectionView.ItemsLayout>
-																	<LinearItemsLayout Orientation="Vertical"
-																				   ItemSpacing="{DynamicResource SmallSpacing}" />
-																</CollectionView.ItemsLayout>
-																<CollectionView.ItemTemplate>
-																	<DataTemplate x:DataType="x:String">
-																		<Label Text="{Binding}"
-																					   TextColor="{DynamicResource TnPWarningContentWL}"
-																					   Style="{DynamicResource InfoLabel}" />
-																	</DataTemplate>
-																</CollectionView.ItemTemplate>
-															</CollectionView>
-															<controls:TextButton Style="{DynamicResource RedButton}"
-																				 LabelData="{l:Localize KycRemovePendingAndReapplyButton}"
-																				 Command="{Binding RemovePendingAndResubmitCommand}"/>
-														</VerticalStackLayout>
-														</mct:Expander>
-												</VerticalStackLayout>
-											</Border>
-										</controls:ConditionView.True>
-									</controls:ConditionView>
-
-
-									<Border Style="{DynamicResource BorderSet}">
-										<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-											<Label Style="{DynamicResource FieldTitleLabel}"
-												   Text="{l:Localize ApplicationInformation}" />
-
-											<!-- Personal Details -->
-											<Border Style="{DynamicResource BorderSubSet}">
-												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-																	 Padding="{DynamicResource SmallMargins}">
-													<Label Text="{l:Localize PersonalDetails}"
-														   Style="{DynamicResource FieldTitleLabel}" />
-													<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}"
-																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																		 Spacing="8"/>
-												</VerticalStackLayout>
-											</Border>
-
-											<!-- Address Details -->
-											<Border Style="{DynamicResource BorderSubSet}">
-												<VerticalStackLayout Spacing="8"
-																	 Padding="8">
-													<Label Text="{l:Localize AddressDetails}"
-														   Style="{DynamicResource FieldTitleLabel}" />
-
-													<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}"
-																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																		 Spacing="8"/>
-												</VerticalStackLayout>
-											</Border>
-
-											<!-- Company Information -->
-											<Border Style="{DynamicResource BorderSubSet}"
-													IsVisible="{Binding HasCompanyInformation}">
-												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-																	 Padding="{DynamicResource SmallMargins}">
-													<Label Text="{l:Localize CompanyInformation}"
-														   Style="{DynamicResource FieldTitleLabel}" />
-													<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}"
-																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																		 Spacing="8"/>
-												</VerticalStackLayout>
-											</Border>
-
-											<!-- Company Address Information -->
-											<Border Style="{DynamicResource BorderSubSet}"
-													IsVisible="{Binding HasCompanyAddress}">
-												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-																	 Padding="{DynamicResource SmallMargins}">
-													<Label Text="{l:Localize CompanyAddress}"
-														   Style="{DynamicResource FieldTitleLabel}" />
-													<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}"
-																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																		 Spacing="8"/>
-												</VerticalStackLayout>
-											</Border>
-
-											<!-- Company Representative -->
-											<Border Style="{DynamicResource BorderSubSet}"
-													IsVisible="{Binding HasCompanyRepresentative}">
-												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-																	 Padding="{DynamicResource SmallMargins}">
-													<Label Text="{l:Localize CompanyRepresentative}"
-														   Style="{DynamicResource FieldTitleLabel}" />
-													<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}"
-																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																		 Spacing="8"/>
-
-												</VerticalStackLayout>
-											</Border>
-
-											<!-- Attachments -->
-											<Border Style="{DynamicResource BorderSubSet}">
-												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-																	 Padding="{DynamicResource SmallMargins}">
-													<Label Text="{l:Localize DocumentDetails}"
-														   Style="{DynamicResource FieldTitleLabel}" />
-													<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}"
-															             BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																		 Spacing="8"/>
-													<Border Background="{DynamicResource TnPInfobgWL}"
-															Stroke="Transparent"
-															StrokeShape="RoundRectangle 12"
-															Padding="{DynamicResource SmallMargins}"
-															IsVisible="{Binding ShowTravelDocumentSummary}">
-														<Border.Triggers>
-															<DataTrigger TargetType="Border"
-																		 Binding="{Binding HasNfcReadout}"
-																		 Value="True">
-																<Setter Property="Background"
-																		Value="{DynamicResource TnPSuccessbgWL}" />
-															</DataTrigger>
-														</Border.Triggers>
-														<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-															<Label Text="{l:Localize KycTravelDocumentSummaryTitle}"
-																   Style="{DynamicResource FieldTitleLabel}" />
-															<Label Text="{Binding NfcEvidenceStatusText}"
-																   Style="{DynamicResource InfoLabel}"
-																   LineBreakMode="WordWrap" />
-															<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-																				 LabelData="{l:Localize KycTravelDocumentOpenButton}"
-																				 Command="{Binding OpenTravelDocumentCommand}"
-																				 IsVisible="{Binding CanOpenTravelDocumentFromSummary}" />
-														</VerticalStackLayout>
-													</Border>
-												</VerticalStackLayout>
-											</Border>
-										</VerticalStackLayout>
-									</Border>
-								</VerticalStackLayout>
-							</CollectionView.Header>
-						</CollectionView>
-					</controls:ConditionView.True>
-
-					<controls:ConditionView.False>
-						<CollectionView x:Name="FormCollectionView"
-										ItemsSource="{Binding CurrentPage.VisibleSections}"
-										ItemSizingStrategy="MeasureAllItems"
-										SelectionMode="None"
-										HorizontalOptions="Fill"
-										VerticalOptions="Fill">
-							<CollectionView.ItemsLayout>
-								<LinearItemsLayout Orientation="Vertical"
-												   ItemSpacing="24" />
-							</CollectionView.ItemsLayout>
-							<CollectionView.Header>
-								<VerticalStackLayout Spacing="4"
-													 Margin="{DynamicResource SmallMargins}">
-									<Label Style="{DynamicResource PageTitleLabel}"
-										   Text="{Binding CurrentPageTitle}" />
-									<Label IsVisible="{Binding HasCurrentPageDescription}"
-										   Text="{Binding CurrentPageDescription}"
-										   Margin="0,0,0,16" />
-
-									<Border Style="{DynamicResource BorderSet}"
-											Margin="0,8,0,16"
-											IsVisible="{Binding HasCurrentPageAction}">
-										<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+							<!-- Built-in page action, such as reading the document chip -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding HasCurrentPageAction}">
+								<VerticalStackLayout Spacing="12">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="14">
+										<Border Style="{StaticResource KycIconBubble}"
+												WidthRequest="48"
+												HeightRequest="48"
+												Padding="10">
+											<controls:SvgView Source="kyc_chip.svg"
+															  Style="{StaticResource KycIcon}" />
+										</Border>
+										<VerticalStackLayout Grid.Column="1"
+															 Spacing="4"
+															 VerticalOptions="Center">
 											<Label Text="{Binding CurrentPageActionTitle}"
-												   Style="{DynamicResource FieldTitleLabel}"
+												   Style="{StaticResource KycCardTitle}"
 												   IsVisible="{Binding HasCurrentPageActionTitle}" />
 											<Label Text="{Binding CurrentPageActionDescription}"
-												   Style="{DynamicResource InfoLabel}"
-												   LineBreakMode="WordWrap"
+												   Style="{StaticResource KycBodySmall}"
 												   IsVisible="{Binding HasCurrentPageActionDescription}" />
-											<Label Text="{Binding CurrentPageActionStatusText}"
-												   Style="{DynamicResource InfoLabel}"
-												   LineBreakMode="WordWrap"
-												   IsVisible="{Binding HasCurrentPageActionStatusText}" />
-											<Label Text="{Binding CurrentPageActionWarningText}"
-												   Style="{DynamicResource InfoLabel}"
-												   TextColor="{DynamicResource TnPWarningContentWL}"
-												   LineBreakMode="WordWrap"
-												   IsVisible="{Binding HasCurrentPageActionWarningText}" />
-											<Label Text="{Binding CurrentPageActionErrorText}"
-												   Style="{DynamicResource InfoLabel}"
-												   TextColor="{DynamicResource TnPDangerContentWL}"
-												   LineBreakMode="WordWrap"
-												   IsVisible="{Binding HasCurrentPageActionErrorText}" />
-											<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-																 LabelData="{Binding CurrentPageActionPrimaryText}"
-																 Command="{Binding ExecuteCurrentPageActionCommand}"
-																 IsEnabled="{Binding CurrentPageActionIsEnabled}"
-																 IsVisible="{Binding HasCurrentPageActionPrimaryText}" />
 										</VerticalStackLayout>
+									</Grid>
+									<Border Style="{StaticResource KycCallout}"
+											Padding="12,8"
+											HorizontalOptions="Start"
+											BackgroundColor="{DynamicResource TnPInfobgWL}"
+											IsVisible="{Binding HasCurrentPageActionStatusText}">
+										<Label Text="{Binding CurrentPageActionStatusText}"
+											   FontSize="14"
+											   FontFamily="SpaceGroteskSemiBold"
+											   LineBreakMode="WordWrap"
+											   TextColor="{DynamicResource TnPInfoContentWL}" />
 									</Border>
-
-									<!-- Direct fields -->
-									<VerticalStackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
-														 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
-														 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
-														 Spacing="8"/>
+									<Label Text="{Binding CurrentPageActionWarningText}"
+										   Style="{StaticResource KycBodySmall}"
+										   TextColor="{DynamicResource TnPWarningContentWL}"
+										   IsVisible="{Binding HasCurrentPageActionWarningText}" />
+									<Label Text="{Binding CurrentPageActionErrorText}"
+										   Style="{StaticResource KycBodySmall}"
+										   TextColor="{DynamicResource TnPDangerContentWL}"
+										   IsVisible="{Binding HasCurrentPageActionErrorText}" />
+									<controls:TextButton Style="{DynamicResource FilledTextButton}"
+														 LabelData="{Binding CurrentPageActionPrimaryText}"
+														 Command="{Binding ExecuteCurrentPageActionCommand}"
+														 IsEnabled="{Binding CurrentPageActionIsEnabled}"
+														 IsVisible="{Binding HasCurrentPageActionPrimaryText}" />
 								</VerticalStackLayout>
-							</CollectionView.Header>
-							<CollectionView.ItemTemplate >
-								<DataTemplate x:DataType="models:KycSection">
-									<VerticalStackLayout Spacing="8"
-														 Margin="{DynamicResource SmallMargins}">
-										<Label FontAttributes="Bold"
-											   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
-											   Style="{DynamicResource SectionHeaderLabel}"
-											   Text="{Binding Label.Text}"/>
-										<Label FontAttributes="Bold"
-											   FontSize="Medium"
-											   IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
-											   Text="{Binding Description }" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
-															 Spacing="16"/>
+							</Border>
+
+							<!-- Fields placed directly on the page -->
+							<VerticalStackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
+												 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
+												 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
+												 Spacing="20" />
+
+							<!-- Sections -->
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding CurrentPage.VisibleSections}"
+												 BindableLayout.ItemTemplate="{StaticResource SectionTemplate}"
+												 Spacing="32" />
+						</VerticalStackLayout>
+					</ScrollView>
+
+					<!-- Summary -->
+					<ScrollView x:Name="SummaryScroll"
+								IsVisible="{Binding IsInSummary}">
+						<VerticalStackLayout x:Name="SummaryContent"
+											 Padding="20,16,20,32"
+											 Spacing="16"
+											 MaximumWidthRequest="640">
+
+							<!-- Sent -->
+							<VerticalStackLayout x:Name="SentPanel"
+												 Spacing="14"
+												 IsVisible="{Binding ApplicationSentPublic}">
+								<controls:StatusVisual x:Name="SentVisual"
+													   Kind="Success"
+													   HeightRequest="150"
+													   HorizontalOptions="Fill"
+													   AccentColor="{DynamicResource ContentAccessWL}"
+													   OnAccentColor="{DynamicResource ContentPrimaryInverted}"
+													   WarningColor="{DynamicResource TnPWarningContentWL}" />
+								<Label Text="{l:Localize KycSentTitle}"
+									   Style="{StaticResource KycPageTitle}"
+									   HorizontalTextAlignment="Center" />
+								<Label Text="{l:Localize KycSentDescription}"
+									   Style="{StaticResource KycPageDescription}"
+									   HorizontalTextAlignment="Center" />
+								<controls:GuideStepper CurrentStep="1"
+													   Margin="8,6,8,4"
+													   MaximumWidthRequest="420"
+													   HorizontalOptions="Fill">
+									<controls:GuideStepper.Steps>
+										<controls:GuideStep Text="{l:Localize KycStepDetails}" />
+										<controls:GuideStep Text="{l:Localize KycStepReview}" />
+										<controls:GuideStep Text="{l:Localize KycStepIdReady}" />
+									</controls:GuideStepper.Steps>
+								</controls:GuideStepper>
+
+								<!-- Peer review -->
+								<Border Style="{StaticResource KycCard}"
+										Margin="0,6,0,0"
+										IsVisible="{Binding PeerReview}">
+									<VerticalStackLayout Spacing="12">
+										<Grid ColumnDefinitions="Auto,*"
+											  ColumnSpacing="12">
+											<Border Style="{StaticResource KycIconBubble}">
+												<controls:SvgView Source="kyc_peers.svg"
+																  Style="{StaticResource KycIcon}" />
+											</Border>
+											<Label Grid.Column="1"
+												   Text="{l:Localize KycPeerReviewTitle}"
+												   Style="{StaticResource KycCardTitle}" />
+										</Grid>
+										<Label Text="{l:Localize PeerReviewDescription}"
+											   Style="{StaticResource KycBodySmall}" />
+										<VerticalStackLayout Spacing="8"
+															 IsVisible="{Binding HasPeerReviewTarget}">
+											<Label Text="{Binding PeerReviewProgressText}"
+												   FontFamily="SpaceGroteskBold"
+												   FontSize="14"
+												   TextColor="{DynamicResource ContentPrimaryWL}" />
+											<controls:StepProgressBar HeightRequest="6"
+																	  SegmentCount="{Binding NrReviewers}"
+																	  Value="{Binding NrReviews}"
+																	  TrackColor="{DynamicResource TnPNeutralv300bgWL}"
+																	  FillColor="{DynamicResource ContentAccessWL}"
+																	  AutomationProperties.IsInAccessibleTree="False" />
+										</VerticalStackLayout>
+										<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+															 LabelData="{l:Localize QrScanCode}"
+															 Command="{Binding ScanQrCodeCommand}" />
+										<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+															 LabelData="{l:Localize FeaturedReviewers}"
+															 Command="{Binding RequestReviewCommand}"
+															 IsVisible="{Binding FeaturedPeerReviewers}" />
 									</VerticalStackLayout>
-								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
-					</controls:ConditionView.False>
+								</Border>
 
-				</controls:ConditionView>
+								<controls:TextButton Style="{DynamicResource FilledTextButton}"
+													 LabelData="{l:Localize KycDoneButton}"
+													 Command="{Binding ExitCommand}"
+													 Margin="0,6,0,0" />
+								<controls:TemplatedButton Command="{Binding RevokeApplicationCommand}"
+														  HorizontalOptions="Center"
+														  SemanticProperties.Description="{l:Localize KycRevokeApplicationButton}">
+									<Label Text="{l:Localize KycRevokeApplicationButton}"
+										   Padding="16,10"
+										   FontFamily="SpaceGroteskBold"
+										   FontSize="15"
+										   TextColor="{DynamicResource TnPDangerContentWL}" />
+								</controls:TemplatedButton>
 
-				<!-- Navigation bar (hidden once application is sent) -->
-				<Border Style="{DynamicResource BottomBarBorder2}"
-					IsVisible="{Binding ShowBottomBar}"
-						Grid.Row="2"
-						Padding="16">
-					<VerticalStackLayout Spacing="8">
-						<!-- Info bubble only when not already sent -->
-						<Border Grid.Row="0"
-								IsVisible="{Binding IsInSummary}"
-								BackgroundColor="{DynamicResource TnPInfobgWL}"
-								Padding="{DynamicResource MediumMargins}"
-								StrokeShape="RoundRectangle 16,16,0,16">
-							<Border.Shadow>
-								<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
-										Offset="0,4" />
-							</Border.Shadow>
-							<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-								  ColumnDefinitions="auto, *">
-								<Path Grid.Column="0"
-									  Data="{x:Static ui:Geometries.InfoCirclePath}"
-									  Fill="{DynamicResource TnPInfoContentWL}" />
-								<Label Grid.Column="1" FontSize="14"
-									   Text="{l:Localize BeforeFinalizingSummary}"
-									   Style="{DynamicResource InfoLabel}"
-									   TextColor="{DynamicResource TnPInfoContentWL}" />
-							</Grid>
-						</Border>
-						<Grid ColumnDefinitions="*, *">
-							<Label Grid.Column="0"
-								   Text="{l:Localize Progress}"
-								   Style="{DynamicResource FieldKeyLabel}"
-								   TextColor="{DynamicResource TnPAccent2ContentWL}" />
-							<Label Grid.Column="1"
-								   Text="{Binding ProgressPercent}"
-								   HorizontalOptions="End"
-								   Style="{DynamicResource FieldKeyLabel}"
-								   TextColor="{DynamicResource TnPAccent2ContentWL}" />
-						</Grid>
-						<controls:ProgressBar Progress="{Binding Progress}"
-											  HeightRequest="16"
-											  CornerRadius="32"
-											  TrackBrush="{DynamicResource TnPAccent2bgWL}"
-											  BarBrush="{DynamicResource TnPAccent2FigureWL}"
-											  Margin="{DynamicResource SmallBottomMargins}">
-						</controls:ProgressBar>
+								<Label Text="{l:Localize KycYourDetailsTitle}"
+									   Style="{StaticResource KycSectionTitle}"
+									   Margin="0,12,0,0" />
+							</VerticalStackLayout>
 
-						<controls:ConditionView Condition="{Binding IsEditingFromSummary}">
-							<controls:ConditionView.True>
-								<controls:TextButton LabelData="{l:Localize Kyc_Return}"
-													 Style="{DynamicResource FilledTextButton}"
-													 Command="{Binding GoToSummaryCommand}" />
-							</controls:ConditionView.True>
-							<controls:ConditionView.False>
-								<Grid ColumnDefinitions="*, *"
-									  ColumnSpacing="{DynamicResource SmallSpacing}">
-									<controls:TextButton LabelData="{l:Localize Back}"
-														 Style="{DynamicResource SecondaryButton}"
-														 Command="{Binding GoBackCommand}" />
-									<controls:TextButton LabelData="{Binding NextButtonText}"
-														 Style="{DynamicResource PrimaryButton}"
-														 Command="{Binding NextCommand}"
-														 Grid.Column="1" />
+							<!-- Review intro -->
+							<VerticalStackLayout Spacing="8"
+												 IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}">
+								<Label Text="{l:Localize KycSummaryTitle}"
+									   Style="{StaticResource KycPageTitle}" />
+								<Label Text="{l:Localize KycSummaryDescription}"
+									   Style="{StaticResource KycPageDescription}" />
+							</VerticalStackLayout>
+
+							<!-- Rejected -->
+							<Border Style="{StaticResource KycCallout}"
+									BackgroundColor="{DynamicResource TnPDangerbgWL}"
+									IsVisible="{Binding ShouldShowRejectionBanner}">
+								<Grid ColumnDefinitions="Auto,*"
+									  ColumnSpacing="12">
+									<Path Data="{x:Static ui:Geometries.ErrorPath}"
+										  Fill="{DynamicResource TnPDangerContentWL}"
+										  VerticalOptions="Start"
+										  Margin="0,2,0,0"
+										  AutomationProperties.IsInAccessibleTree="False" />
+									<VerticalStackLayout Grid.Column="1"
+														 Spacing="8">
+										<Label Text="{l:Localize KycRejectedHeader}"
+											   FontFamily="SpaceGroteskBold"
+											   FontSize="17"
+											   TextColor="{DynamicResource TnPDangerContentWL}"
+											   SemanticProperties.HeadingLevel="Level2" />
+										<Label Text="{Binding ErrorDescription}"
+											   FontSize="15"
+											   LineBreakMode="WordWrap"
+											   TextColor="{DynamicResource ContentPrimaryWL}"
+											   IsVisible="{Binding HasErrorDescription}" />
+										<Label Text="{l:Localize KycRejectedInvalidationHint}"
+											   Style="{StaticResource KycBodySmall}"
+											   IsVisible="{Binding HasInvalidatedItems}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding InvalidatedItems}"
+															 BindableLayout.ItemTemplate="{StaticResource DangerBulletTemplate}"
+															 Spacing="6" />
+									</VerticalStackLayout>
 								</Grid>
-							</controls:ConditionView.False>
-						</controls:ConditionView>
-					</VerticalStackLayout>
+							</Border>
+
+							<!-- Details that need manual review -->
+							<Border Style="{StaticResource KycCallout}"
+									BackgroundColor="{DynamicResource TnPWarningbgWL}"
+									IsVisible="{Binding ShouldShowUnvalidatedBanner}">
+								<Grid ColumnDefinitions="Auto,*"
+									  ColumnSpacing="12">
+									<Path Data="{x:Static ui:Geometries.InfoCirclePath}"
+										  Fill="{DynamicResource TnPWarningContentWL}"
+										  VerticalOptions="Start"
+										  Margin="0,2,0,0"
+										  AutomationProperties.IsInAccessibleTree="False" />
+									<VerticalStackLayout Grid.Column="1"
+														 Spacing="8">
+										<Label Text="{l:Localize KycUnvalidatedWarningTitle}"
+											   FontFamily="SpaceGroteskBold"
+											   FontSize="17"
+											   LineBreakMode="WordWrap"
+											   TextColor="{DynamicResource TnPWarningContentWL}"
+											   SemanticProperties.HeadingLevel="Level2" />
+										<mct:Expander IsExpanded="False">
+											<mct:Expander.Header>
+												<Label Text="{Binding UnvalidatedSummaryText}"
+													   FontSize="15"
+													   LineBreakMode="WordWrap"
+													   TextColor="{DynamicResource ContentPrimaryWL}" />
+											</mct:Expander.Header>
+											<VerticalStackLayout Spacing="12"
+																 Padding="0,12,0,0">
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedItems}"
+																	 BindableLayout.ItemTemplate="{StaticResource WarningBulletTemplate}"
+																	 Spacing="6" />
+												<Label Text="{l:Localize KycUnvalidatedActionHint}"
+													   Style="{StaticResource KycBodySmall}" />
+												<controls:TextButton Style="{DynamicResource RedButton}"
+																	 LabelData="{l:Localize KycRemovePendingAndReapplyButton}"
+																	 Command="{Binding RemovePendingAndResubmitCommand}" />
+											</VerticalStackLayout>
+										</mct:Expander>
+									</VerticalStackLayout>
+								</Grid>
+							</Border>
+
+							<!-- Document chip -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding ShowTravelDocumentSummary}">
+								<VerticalStackLayout Spacing="12">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Style="{StaticResource KycIconBubble}">
+											<controls:SvgView Source="kyc_chip.svg"
+															  Style="{StaticResource KycIcon}">
+												<controls:SvgView.Triggers>
+													<DataTrigger TargetType="controls:SvgView"
+																 Binding="{Binding HasNfcReadout}"
+																 Value="True">
+														<Setter Property="Source"
+																Value="kyc_verified.svg" />
+													</DataTrigger>
+												</controls:SvgView.Triggers>
+											</controls:SvgView>
+										</Border>
+										<VerticalStackLayout Grid.Column="1"
+															 Spacing="2"
+															 VerticalOptions="Center">
+											<Label Text="{l:Localize KycTravelDocumentSummaryTitle}"
+												   Style="{StaticResource KycCardTitle}">
+												<Label.Triggers>
+													<DataTrigger TargetType="Label"
+																 Binding="{Binding HasNfcReadout}"
+																 Value="True">
+														<Setter Property="Text"
+																Value="{l:Localize KycChipVerifiedTitle}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
+											<Label Text="{Binding NfcEvidenceStatusText}"
+												   Style="{StaticResource KycBodySmall}" />
+										</VerticalStackLayout>
+									</Grid>
+									<controls:TextButton Style="{DynamicResource FilledTextButton}"
+														 LabelData="{l:Localize KycTravelDocumentOpenButton}"
+														 Command="{Binding OpenTravelDocumentCommand}"
+														 IsVisible="{Binding CanOpenTravelDocumentFromSummary}" />
+								</VerticalStackLayout>
+							</Border>
+
+							<!-- Personal details -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding HasPersonalInformation}">
+								<VerticalStackLayout Spacing="6">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Style="{StaticResource KycIconBubble}">
+											<controls:SvgView Source="person.svg"
+															  Style="{StaticResource KycIcon}" />
+										</Border>
+										<Label Grid.Column="1"
+											   Text="{l:Localize PersonalDetails}"
+											   Style="{StaticResource KycCardTitle}"
+											   SemanticProperties.HeadingLevel="Level2" />
+									</Grid>
+									<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}"
+														 BindableLayout.ItemTemplate="{StaticResource SummaryRowTemplate}" />
+								</VerticalStackLayout>
+							</Border>
+
+							<!-- Address -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding HasAddressInformation}">
+								<VerticalStackLayout Spacing="6">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Style="{StaticResource KycIconBubble}">
+											<controls:SvgView Source="kyc_location.svg"
+															  Style="{StaticResource KycIcon}" />
+										</Border>
+										<Label Grid.Column="1"
+											   Text="{l:Localize AddressDetails}"
+											   Style="{StaticResource KycCardTitle}"
+											   SemanticProperties.HeadingLevel="Level2" />
+									</Grid>
+									<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}"
+														 BindableLayout.ItemTemplate="{StaticResource SummaryRowTemplate}" />
+								</VerticalStackLayout>
+							</Border>
+
+							<!-- Company -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding HasCompanyInformation}">
+								<VerticalStackLayout Spacing="6">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Style="{StaticResource KycIconBubble}">
+											<controls:SvgView Source="kyc_business.svg"
+															  Style="{StaticResource KycIcon}" />
+										</Border>
+										<Label Grid.Column="1"
+											   Text="{l:Localize CompanyInformation}"
+											   Style="{StaticResource KycCardTitle}"
+											   SemanticProperties.HeadingLevel="Level2" />
+									</Grid>
+									<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}"
+														 BindableLayout.ItemTemplate="{StaticResource SummaryRowTemplate}" />
+								</VerticalStackLayout>
+							</Border>
+
+							<!-- Company address -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding HasCompanyAddress}">
+								<VerticalStackLayout Spacing="6">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Style="{StaticResource KycIconBubble}">
+											<controls:SvgView Source="kyc_location.svg"
+															  Style="{StaticResource KycIcon}" />
+										</Border>
+										<Label Grid.Column="1"
+											   Text="{l:Localize CompanyAddress}"
+											   Style="{StaticResource KycCardTitle}"
+											   SemanticProperties.HeadingLevel="Level2" />
+									</Grid>
+									<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}"
+														 BindableLayout.ItemTemplate="{StaticResource SummaryRowTemplate}" />
+								</VerticalStackLayout>
+							</Border>
+
+							<!-- Company representative -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding HasCompanyRepresentative}">
+								<VerticalStackLayout Spacing="6">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Style="{StaticResource KycIconBubble}">
+											<controls:SvgView Source="kyc_representative.svg"
+															  Style="{StaticResource KycIcon}" />
+										</Border>
+										<Label Grid.Column="1"
+											   Text="{l:Localize CompanyRepresentative}"
+											   Style="{StaticResource KycCardTitle}"
+											   SemanticProperties.HeadingLevel="Level2" />
+									</Grid>
+									<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}"
+														 BindableLayout.ItemTemplate="{StaticResource SummaryRowTemplate}" />
+								</VerticalStackLayout>
+							</Border>
+
+							<!-- Documents -->
+							<Border Style="{StaticResource KycCard}"
+									IsVisible="{Binding HasAttachments}">
+								<VerticalStackLayout Spacing="6">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Style="{StaticResource KycIconBubble}">
+											<controls:SvgView Source="kyc_documents.svg"
+															  Style="{StaticResource KycIcon}" />
+										</Border>
+										<Label Grid.Column="1"
+											   Text="{l:Localize DocumentDetails}"
+											   Style="{StaticResource KycCardTitle}"
+											   SemanticProperties.HeadingLevel="Level2" />
+									</Grid>
+									<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}"
+														 BindableLayout.ItemTemplate="{StaticResource SummaryDocumentTemplate}" />
+								</VerticalStackLayout>
+							</Border>
+						</VerticalStackLayout>
+					</ScrollView>
+				</Grid>
+
+				<!-- Bottom bar (hidden once the application is sent or while typing) -->
+				<Border Grid.Row="3"
+						Style="{DynamicResource BottomBarBorder2}"
+						IsVisible="{Binding ShowBottomBar}"
+						Padding="16,12,16,16">
+					<Grid MaximumWidthRequest="640">
+						<controls:TextButton LabelData="{l:Localize Kyc_Return}"
+											 Style="{DynamicResource FilledTextButton}"
+											 Command="{Binding GoToSummaryCommand}"
+											 IsVisible="{Binding IsEditingFromSummary}" />
+						<Grid IsVisible="{Binding IsEditingFromSummary, Converter={mct:InvertedBoolConverter}}">
+							<Grid ColumnDefinitions="*,2*"
+								  ColumnSpacing="8"
+								  IsVisible="{Binding IsSubmitting, Converter={mct:InvertedBoolConverter}}">
+								<controls:TextButton LabelData="{l:Localize Back}"
+													 Style="{DynamicResource SecondaryButton}"
+													 Command="{Binding GoBackCommand}" />
+								<controls:TextButton Grid.Column="1"
+													 LabelData="{Binding NextButtonText}"
+													 Style="{DynamicResource PrimaryButton}"
+													 Command="{Binding NextCommand}" />
+							</Grid>
+							<Border Style="{DynamicResource FilledTextButtonBorder}"
+									IsVisible="{Binding IsSubmitting}">
+								<HorizontalStackLayout Spacing="10"
+													   HorizontalOptions="Center">
+									<ActivityIndicator IsRunning="{Binding IsSubmitting}"
+													   WidthRequest="20"
+													   HeightRequest="20"
+													   VerticalOptions="Center"
+													   Color="{DynamicResource ButtonAccessPrimaryContentWL}" />
+									<Label Text="{l:Localize KycSendingApplication}"
+										   Style="{DynamicResource FilledTextButtonLabel}"
+										   VerticalOptions="Center" />
+								</HorizontalStackLayout>
+							</Border>
+						</Grid>
+					</Grid>
 				</Border>
 			</Grid>
 		</controls:ConditionView.False>

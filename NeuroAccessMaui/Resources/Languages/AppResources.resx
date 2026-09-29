@@ -1024,7 +1024,7 @@
     <value>Take a Photo of yourself</value>
   </data>
   <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
-    <value>Center your face in the frame</value>
+    <value>Fit your face in the oval and look at the camera</value>
   </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>Photo is too large</value>
@@ -4086,5 +4086,137 @@ Document read. You can move your iPhone.</value>
   </data>
   <data name="KycDocumentMrzScannerAnotherDocumentAction" xml:space="preserve">
     <value>Scan another document</value>
+  </data>
+  <data name="KycStepCaptionFormat" xml:space="preserve">
+    <value>Step {0} of {1}</value>
+  </data>
+  <data name="KycReviewButton" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="KycSendApplicationButton" xml:space="preserve">
+    <value>Send application</value>
+  </data>
+  <data name="KycSendingApplication" xml:space="preserve">
+    <value>Sending your application…</value>
+  </data>
+  <data name="KycLoadingApplication" xml:space="preserve">
+    <value>Loading your application…</value>
+  </data>
+  <data name="KycSummaryTitle" xml:space="preserve">
+    <value>Review your application</value>
+  </data>
+  <data name="KycSummaryDescription" xml:space="preserve">
+    <value>Check that everything is correct before you send it. Tap a detail to change it.</value>
+  </data>
+  <data name="KycChipVerifiedTitle" xml:space="preserve">
+    <value>Verified with your ID chip</value>
+  </data>
+  <data name="KycSentTitle" xml:space="preserve">
+    <value>Application sent</value>
+  </data>
+  <data name="KycSentDescription" xml:space="preserve">
+    <value>We'll notify you as soon as it has been reviewed. You can close this page in the meantime.</value>
+  </data>
+  <data name="KycStepDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="KycStepReview" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="KycStepIdReady" xml:space="preserve">
+    <value>ID ready</value>
+  </data>
+  <data name="KycPeerReviewTitle" xml:space="preserve">
+    <value>Ask someone to review</value>
+  </data>
+  <data name="KycPeerReviewProgressFormat" xml:space="preserve">
+    <value>{0} of {1} reviews received</value>
+  </data>
+  <data name="KycDoneButton" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="KycRevokeApplicationButton" xml:space="preserve">
+    <value>Revoke application</value>
+  </data>
+  <data name="KycYourDetailsTitle" xml:space="preserve">
+    <value>Your details</value>
+  </data>
+  <data name="KycImageEmptyHint" xml:space="preserve">
+    <value>Take a photo or upload one</value>
+  </data>
+  <data name="KycImageEmptyCameraHint" xml:space="preserve">
+    <value>Tap to take a photo</value>
+  </data>
+  <data name="KycImageRetakeButton" xml:space="preserve">
+    <value>Retake</value>
+  </data>
+  <data name="KycImageReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="KycImageAddedDescription" xml:space="preserve">
+    <value>Photo added</value>
+  </data>
+  <data name="KycSelfieTitle" xml:space="preserve">
+    <value>Take your photo</value>
+  </data>
+  <data name="KycSelfieTip" xml:space="preserve">
+    <value>Use even light and remove sunglasses or hats.</value>
+  </data>
+  <data name="KycSelfieReviewTitle" xml:space="preserve">
+    <value>Check your photo</value>
+  </data>
+  <data name="KycSelfieReviewHint" xml:space="preserve">
+    <value>Make sure your whole face is visible, sharp, and well lit.</value>
+  </data>
+  <data name="KycSelfieUsePhotoButton" xml:space="preserve">
+    <value>Use photo</value>
+  </data>
+  <data name="KycStatusPendingTitle" xml:space="preserve">
+    <value>Your application is being reviewed</value>
+  </data>
+  <data name="KycStatusPendingDescription" xml:space="preserve">
+    <value>This can take a little while. We'll notify you as soon as there is an update.</value>
+  </data>
+  <data name="KycStatusFinalizingTitle" xml:space="preserve">
+    <value>Almost done</value>
+  </data>
+  <data name="KycStatusFinalizingDescription" xml:space="preserve">
+    <value>Your details have been approved. Your digital ID is being created.</value>
+  </data>
+  <data name="KycStatusApprovedTitle" xml:space="preserve">
+    <value>Your ID is ready</value>
+  </data>
+  <data name="KycStatusApprovedDescription" xml:space="preserve">
+    <value>Your digital ID has been approved and is ready to use.</value>
+  </data>
+  <data name="KycStatusDraftTitle" xml:space="preserve">
+    <value>Finish your application</value>
+  </data>
+  <data name="KycStatusDraftDescription" xml:space="preserve">
+    <value>Your details are saved. Continue where you left off.</value>
+  </data>
+  <data name="KycStatusExpiredTitle" xml:space="preserve">
+    <value>Your ID has expired</value>
+  </data>
+  <data name="KycStatusExpiredDescription" xml:space="preserve">
+    <value>It is no longer valid. Start a new application to get a new ID.</value>
+  </data>
+  <data name="KycStatusExpiredStage" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="KycStatusAttentionTitle" xml:space="preserve">
+    <value>What needs attention</value>
+  </data>
+  <data name="KycViewApplicationButton" xml:space="preserve">
+    <value>View application</value>
+  </data>
+  <data name="KycContinueApplicationButton" xml:space="preserve">
+    <value>Continue application</value>
+  </data>
+  <data name="KycOpenIdButton" xml:space="preserve">
+    <value>Open my ID</value>
+  </data>
+  <data name="KycAllApplicationsButton" xml:space="preserve">
+    <value>All applications</value>
   </data>
 </root>

@@ -10,112 +10,194 @@
 					  x:DataType="viewmodel:KycApplicationStatusViewModel"
 					  ui:SafeArea.Mode="TopAndBottom">
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-		  Margin="16,8,16,0"
-		  RowDefinitions="Auto,*">
-		<controls:Background Grid.RowSpan="2" />
+		  RowDefinitions="Auto,*,Auto">
+		<controls:Background Grid.RowSpan="3" />
 
-		<Grid ColumnDefinitions="Auto,*,Auto">
+		<!-- Header -->
+		<Grid Padding="16,8"
+			  ColumnDefinitions="44,*"
+			  ColumnSpacing="12">
 			<controls:SvgButton Command="{Binding GoBackCommand}"
 								SvgSource="close.svg"
 								Style="{DynamicResource IconButton}"
-								HeightRequest="48"
-								WidthRequest="48"
+								WidthRequest="44"
+								HeightRequest="44"
 								HorizontalOptions="Start"
-								VerticalOptions="Start"
-								Grid.Column="0" />
-
-			<Label Grid.Column="2"
+								VerticalOptions="Center"
+								SemanticProperties.Description="{l:Localize Close}" />
+			<Label Grid.Column="1"
 				   Style="{DynamicResource PageTitleLabel}"
 				   Text="{l:Localize IdentityApplication}"
-				   HorizontalOptions="End" />
+				   FontSize="21"
+				   HorizontalOptions="End"
+				   VerticalOptions="Center"
+				   LineBreakMode="TailTruncation" />
 		</Grid>
 
-		<ScrollView Grid.Row="1">
-			<VerticalStackLayout Spacing="16"
-								 Padding="0,16,0,16">
-				<Border Style="{DynamicResource BorderSet}"
-						Padding="16"
-						Margin="0">
-					<VerticalStackLayout Spacing="14">
-						<Border Background="{DynamicResource TnPInfobgWL}"
-								Stroke="Transparent"
-								StrokeShape="RoundRectangle 12"
-								Padding="10,6"
-								HorizontalOptions="Start">
-							<Border.Triggers>
-								<DataTrigger TargetType="Border"
-											 Binding="{Binding IsRejected}"
-											 Value="True">
-									<Setter Property="Background"
-											Value="{DynamicResource TnPDangerbgWL}" />
-								</DataTrigger>
-								<DataTrigger TargetType="Border"
+		<RefreshView Grid.Row="1"
+					 Command="{Binding RefreshCommand}"
+					 IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+					 RefreshColor="{DynamicResource ContentAccessWL}">
+			<ScrollView VerticalScrollBarVisibility="Never">
+				<VerticalStackLayout Padding="24,8,24,24"
+									 Spacing="14"
+									 MaximumWidthRequest="560"
+									 HorizontalOptions="Fill">
+					<controls:StatusVisual x:Name="Visual"
+										   Kind="{Binding VisualKind}"
+										   HeightRequest="168"
+										   HorizontalOptions="Fill"
+										   AccentColor="{DynamicResource ContentAccessWL}"
+										   OnAccentColor="{DynamicResource ContentPrimaryInverted}"
+										   WarningColor="{DynamicResource TnPWarningContentWL}" />
+
+					<!-- Status pill -->
+					<Border Padding="12,6"
+							HorizontalOptions="Center"
+							StrokeThickness="0"
+							StrokeShape="RoundRectangle 14"
+							BackgroundColor="{DynamicResource TnPInfobgWL}">
+						<Border.Triggers>
+							<DataTrigger TargetType="Border"
+										 Binding="{Binding IsFinalizing}"
+										 Value="True">
+								<Setter Property="BackgroundColor"
+										Value="{DynamicResource TnPSuccessbgWL}" />
+							</DataTrigger>
+							<DataTrigger TargetType="Border"
+										 Binding="{Binding IsApproved}"
+										 Value="True">
+								<Setter Property="BackgroundColor"
+										Value="{DynamicResource TnPSuccessbgWL}" />
+							</DataTrigger>
+							<DataTrigger TargetType="Border"
+										 Binding="{Binding IsRejected}"
+										 Value="True">
+								<Setter Property="BackgroundColor"
+										Value="{DynamicResource TnPDangerbgWL}" />
+							</DataTrigger>
+						</Border.Triggers>
+						<Label Text="{Binding StageText}"
+							   FontSize="14"
+							   FontFamily="SpaceGroteskBold"
+							   TextColor="{DynamicResource TnPInfoContentWL}">
+							<Label.Triggers>
+								<DataTrigger TargetType="Label"
 											 Binding="{Binding IsFinalizing}"
 											 Value="True">
-									<Setter Property="Background"
-											Value="{DynamicResource TnPWarningbgWL}" />
+									<Setter Property="TextColor"
+											Value="{DynamicResource TnPSuccessContentWL}" />
 								</DataTrigger>
-							</Border.Triggers>
-							<Label Text="{Binding StageText}"
-								   FontSize="14"
-								   FontFamily="SpaceGroteskBold"
-								   TextColor="{DynamicResource TnPInfoContentWL}">
-								<Label.Triggers>
-									<DataTrigger TargetType="Label"
-												 Binding="{Binding IsRejected}"
-												 Value="True">
-										<Setter Property="TextColor"
-												Value="{DynamicResource TnPDangerContentWL}" />
-									</DataTrigger>
-									<DataTrigger TargetType="Label"
-												 Binding="{Binding IsFinalizing}"
-												 Value="True">
-										<Setter Property="TextColor"
-												Value="{DynamicResource TnPWarningContentWL}" />
-									</DataTrigger>
-								</Label.Triggers>
-							</Label>
-						</Border>
+								<DataTrigger TargetType="Label"
+											 Binding="{Binding IsApproved}"
+											 Value="True">
+									<Setter Property="TextColor"
+											Value="{DynamicResource TnPSuccessContentWL}" />
+								</DataTrigger>
+								<DataTrigger TargetType="Label"
+											 Binding="{Binding IsRejected}"
+											 Value="True">
+									<Setter Property="TextColor"
+											Value="{DynamicResource TnPDangerContentWL}" />
+								</DataTrigger>
+							</Label.Triggers>
+						</Label>
+					</Border>
 
+					<VerticalStackLayout Spacing="8">
 						<Label Text="{Binding TitleText}"
-							   Style="{DynamicResource PageTitleLabel}"
+							   FontFamily="SpaceGroteskBold"
 							   FontSize="28"
-							   LineBreakMode="WordWrap" />
-
+							   HorizontalTextAlignment="Center"
+							   LineBreakMode="WordWrap"
+							   TextColor="{DynamicResource ContentPrimaryWL}"
+							   SemanticProperties.HeadingLevel="Level1" />
 						<Label Text="{Binding DescriptionText}"
 							   Style="{DynamicResource InfoLabel}"
-							   LineBreakMode="WordWrap" />
-
+							   HorizontalTextAlignment="Center"
+							   LineBreakMode="WordWrap"
+							   TextColor="{DynamicResource ContentSecondaryWL}" />
 						<Label Text="{Binding UpdatedText}"
-							   Style="{DynamicResource InfoLabel}"
+							   FontSize="13"
+							   HorizontalTextAlignment="Center"
 							   TextColor="{DynamicResource ContentSecondaryWL}"
-							   LineBreakMode="WordWrap" />
+							   IsVisible="{Binding HasUpdatedText}" />
 					</VerticalStackLayout>
-				</Border>
 
-				<Border Style="{DynamicResource BorderSet}"
-						Padding="16"
-						Margin="0">
-					<VerticalStackLayout Spacing="10">
-						<Label Text="{l:Localize CurrentApplication}"
-							   Style="{DynamicResource InfoLabel}"
-							   FontFamily="SpaceGroteskBold"
-							   LineBreakMode="WordWrap" />
-						<Label Text="{Binding DetailText}"
-							   Style="{DynamicResource InfoLabel}"
-							   LineBreakMode="WordWrap" />
-					</VerticalStackLayout>
-				</Border>
+					<controls:GuideStepper CurrentStep="{Binding TimelineStep}"
+										   IsVisible="{Binding ShowTimeline}"
+										   Margin="8,10,8,0"
+										   MaximumWidthRequest="420"
+										   HorizontalOptions="Fill">
+						<controls:GuideStepper.Steps>
+							<controls:GuideStep Text="{l:Localize KycStepDetails}" />
+							<controls:GuideStep Text="{l:Localize KycStepReview}" />
+							<controls:GuideStep Text="{l:Localize KycStepIdReady}" />
+						</controls:GuideStepper.Steps>
+					</controls:GuideStepper>
 
-				<VerticalStackLayout Spacing="8">
-					<controls:TextButton Style="{DynamicResource FilledTextButton}"
-										 LabelData="{Binding PrimaryActionText}"
-										 Command="{Binding PrimaryActionCommand}" />
-					<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
-										 LabelData="{Binding SecondaryActionText}"
-										 Command="{Binding SecondaryActionCommand}" />
+					<!-- What the reviewer asked the user to fix -->
+					<Border Margin="0,10,0,0"
+							Padding="16"
+							StrokeThickness="0"
+							StrokeShape="RoundRectangle 16"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							IsVisible="{Binding HasAttentionDetails}">
+						<Border.Shadow>
+							<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
+									Offset="0,4"
+									Radius="12" />
+						</Border.Shadow>
+						<VerticalStackLayout Spacing="10">
+							<Label Text="{l:Localize KycStatusAttentionTitle}"
+								   FontFamily="SpaceGroteskBold"
+								   FontSize="17"
+								   TextColor="{DynamicResource ContentPrimaryWL}"
+								   SemanticProperties.HeadingLevel="Level2" />
+							<Label Text="{Binding ReviewMessage}"
+								   FontSize="15"
+								   LineBreakMode="WordWrap"
+								   TextColor="{DynamicResource ContentPrimaryWL}"
+								   IsVisible="{Binding HasReviewMessage}" />
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttentionItems}"
+												 Spacing="8"
+												 IsVisible="{Binding HasAttentionItems}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="x:String">
+										<Grid ColumnDefinitions="Auto,*"
+											  ColumnSpacing="10">
+											<Ellipse WidthRequest="6"
+													 HeightRequest="6"
+													 Margin="0,8,0,0"
+													 VerticalOptions="Start"
+													 Fill="{DynamicResource TnPDangerContentWL}" />
+											<Label Grid.Column="1"
+												   Text="{Binding}"
+												   FontSize="15"
+												   FontFamily="SpaceGroteskSemiBold"
+												   LineBreakMode="WordWrap"
+												   TextColor="{DynamicResource ContentPrimaryWL}" />
+										</Grid>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+					</Border>
 				</VerticalStackLayout>
-			</VerticalStackLayout>
-		</ScrollView>
+			</ScrollView>
+		</RefreshView>
+
+		<VerticalStackLayout Grid.Row="2"
+							 Padding="24,8,24,16"
+							 Spacing="8"
+							 MaximumWidthRequest="560"
+							 HorizontalOptions="Fill">
+			<controls:TextButton Style="{DynamicResource FilledTextButton}"
+								 LabelData="{Binding PrimaryActionText}"
+								 Command="{Binding PrimaryActionCommand}" />
+			<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+								 LabelData="{Binding SecondaryActionText}"
+								 Command="{Binding SecondaryActionCommand}" />
+		</VerticalStackLayout>
 	</Grid>
 </base:BaseContentPage>

@@ -20,7 +20,9 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
             get => this.RawValue as string;
             set {
 				this.RawValue = value;
-				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+				this.ImageSource = string.IsNullOrEmpty(value)
+					? null
+					: ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
 			}
         }
 
@@ -73,10 +75,22 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 		public bool ShouldUseCropper => !this.CameraOnly && !this.PreserveOriginalCapture && this.ShouldCrop != false;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasImage))]
         private ImageSource? imageSource;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanUpload))]
 		private bool allowUpload = true;
+
+		/// <summary>
+		/// Gets a value indicating whether the field currently holds a photo.
+		/// </summary>
+		public bool HasImage => this.ImageSource is not null;
+
+		/// <summary>
+		/// Gets a value indicating whether the user may pick an existing photo instead of taking a new one.
+		/// </summary>
+		public bool CanUpload => this.AllowUpload && !this.CameraOnly;
 
 		[RelayCommand]
         private async Task PickPhoto()

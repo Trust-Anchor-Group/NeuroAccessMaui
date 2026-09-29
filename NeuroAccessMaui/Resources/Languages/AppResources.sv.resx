@@ -1015,7 +1015,7 @@
     <value>Ta ett foto av dig själv</value>
   </data>
   <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
-    <value>Centrera ansiktet i bilden. Ta fotot utan att redigera det.</value>
+    <value>Placera ansiktet i ovalen och titta in i kameran</value>
   </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>Bilden är för stor</value>
@@ -3936,5 +3936,137 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="KycDocumentScanCameraPermissionDescription" xml:space="preserve">
     <value>Tillåt kameraåtkomst för att skanna ditt dokument. Du kan försöka igen när du har aktiverat den.</value>
+  </data>
+  <data name="KycStepCaptionFormat" xml:space="preserve">
+    <value>Steg {0} av {1}</value>
+  </data>
+  <data name="KycReviewButton" xml:space="preserve">
+    <value>Granska</value>
+  </data>
+  <data name="KycSendApplicationButton" xml:space="preserve">
+    <value>Skicka ansökan</value>
+  </data>
+  <data name="KycSendingApplication" xml:space="preserve">
+    <value>Skickar din ansökan…</value>
+  </data>
+  <data name="KycLoadingApplication" xml:space="preserve">
+    <value>Laddar din ansökan…</value>
+  </data>
+  <data name="KycSummaryTitle" xml:space="preserve">
+    <value>Granska din ansökan</value>
+  </data>
+  <data name="KycSummaryDescription" xml:space="preserve">
+    <value>Kontrollera att allt stämmer innan du skickar. Tryck på en uppgift för att ändra den.</value>
+  </data>
+  <data name="KycChipVerifiedTitle" xml:space="preserve">
+    <value>Verifierad med ditt ID-chip</value>
+  </data>
+  <data name="KycSentTitle" xml:space="preserve">
+    <value>Ansökan skickad</value>
+  </data>
+  <data name="KycSentDescription" xml:space="preserve">
+    <value>Vi meddelar dig så snart den har granskats. Du kan stänga den här sidan så länge.</value>
+  </data>
+  <data name="KycStepDetails" xml:space="preserve">
+    <value>Uppgifter</value>
+  </data>
+  <data name="KycStepReview" xml:space="preserve">
+    <value>Granskning</value>
+  </data>
+  <data name="KycStepIdReady" xml:space="preserve">
+    <value>ID klart</value>
+  </data>
+  <data name="KycPeerReviewTitle" xml:space="preserve">
+    <value>Be någon att granska</value>
+  </data>
+  <data name="KycPeerReviewProgressFormat" xml:space="preserve">
+    <value>{0} av {1} granskningar mottagna</value>
+  </data>
+  <data name="KycDoneButton" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+  <data name="KycRevokeApplicationButton" xml:space="preserve">
+    <value>Återkalla ansökan</value>
+  </data>
+  <data name="KycYourDetailsTitle" xml:space="preserve">
+    <value>Dina uppgifter</value>
+  </data>
+  <data name="KycImageEmptyHint" xml:space="preserve">
+    <value>Ta ett foto eller ladda upp ett</value>
+  </data>
+  <data name="KycImageEmptyCameraHint" xml:space="preserve">
+    <value>Tryck för att ta ett foto</value>
+  </data>
+  <data name="KycImageRetakeButton" xml:space="preserve">
+    <value>Ta om</value>
+  </data>
+  <data name="KycImageReplaceButton" xml:space="preserve">
+    <value>Byt ut</value>
+  </data>
+  <data name="KycImageAddedDescription" xml:space="preserve">
+    <value>Foto tillagt</value>
+  </data>
+  <data name="KycSelfieTitle" xml:space="preserve">
+    <value>Ta ditt foto</value>
+  </data>
+  <data name="KycSelfieTip" xml:space="preserve">
+    <value>Använd jämnt ljus och ta av solglasögon och huvudbonad.</value>
+  </data>
+  <data name="KycSelfieReviewTitle" xml:space="preserve">
+    <value>Kontrollera ditt foto</value>
+  </data>
+  <data name="KycSelfieReviewHint" xml:space="preserve">
+    <value>Se till att hela ansiktet syns och att bilden är skarp och väl upplyst.</value>
+  </data>
+  <data name="KycSelfieUsePhotoButton" xml:space="preserve">
+    <value>Använd foto</value>
+  </data>
+  <data name="KycStatusPendingTitle" xml:space="preserve">
+    <value>Din ansökan granskas</value>
+  </data>
+  <data name="KycStatusPendingDescription" xml:space="preserve">
+    <value>Det kan ta en stund. Vi meddelar dig så snart det finns en uppdatering.</value>
+  </data>
+  <data name="KycStatusFinalizingTitle" xml:space="preserve">
+    <value>Nästan klart</value>
+  </data>
+  <data name="KycStatusFinalizingDescription" xml:space="preserve">
+    <value>Dina uppgifter har godkänts. Ditt digitala ID skapas nu.</value>
+  </data>
+  <data name="KycStatusApprovedTitle" xml:space="preserve">
+    <value>Ditt ID är klart</value>
+  </data>
+  <data name="KycStatusApprovedDescription" xml:space="preserve">
+    <value>Ditt digitala ID har godkänts och är redo att användas.</value>
+  </data>
+  <data name="KycStatusDraftTitle" xml:space="preserve">
+    <value>Slutför din ansökan</value>
+  </data>
+  <data name="KycStatusDraftDescription" xml:space="preserve">
+    <value>Dina uppgifter är sparade. Fortsätt där du slutade.</value>
+  </data>
+  <data name="KycStatusExpiredTitle" xml:space="preserve">
+    <value>Ditt ID har gått ut</value>
+  </data>
+  <data name="KycStatusExpiredDescription" xml:space="preserve">
+    <value>Det är inte längre giltigt. Starta en ny ansökan för att få ett nytt ID.</value>
+  </data>
+  <data name="KycStatusExpiredStage" xml:space="preserve">
+    <value>Utgånget</value>
+  </data>
+  <data name="KycStatusAttentionTitle" xml:space="preserve">
+    <value>Det här behöver åtgärdas</value>
+  </data>
+  <data name="KycViewApplicationButton" xml:space="preserve">
+    <value>Visa ansökan</value>
+  </data>
+  <data name="KycContinueApplicationButton" xml:space="preserve">
+    <value>Fortsätt ansökan</value>
+  </data>
+  <data name="KycOpenIdButton" xml:space="preserve">
+    <value>Öppna mitt ID</value>
+  </data>
+  <data name="KycAllApplicationsButton" xml:space="preserve">
+    <value>Alla ansökningar</value>
   </data>
 </root>
