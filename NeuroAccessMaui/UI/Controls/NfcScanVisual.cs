@@ -18,7 +18,7 @@ namespace NeuroAccessMaui.UI.Controls
 	/// </remarks>
 	public class NfcScanVisual : SKCanvasView
 	{
-		private const double frameIntervalMs = 16;
+		private const double frameIntervalMs = 33;
 		private const double crossfadeInMs = 320;
 		private const double crossfadeOutMs = 220;
 		private const double progressSmoothingMs = 150;
@@ -47,6 +47,7 @@ namespace NeuroAccessMaui.UI.Controls
 		private double lastFrameAt;
 		private double lastPulseAt = double.NegativeInfinity;
 		private bool isLoaded;
+		private NfcScanVisualPainter? painter;
 
 		/// <summary>
 		/// Identifies the <see cref="State"/> bindable property.
@@ -361,6 +362,10 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			this.isLoaded = false;
 			this.frameTimer?.Stop();
+
+			// The painter owns native paints; a later paint recreates it if the view is shown again.
+			this.painter?.Dispose();
+			this.painter = null;
 		}
 
 		private void RequestFrames()
@@ -463,6 +468,7 @@ namespace NeuroAccessMaui.UI.Controls
 			float PixelScale = (float)(E.Info.Width / ViewWidth);
 			float DesignScale = (float)(Math.Min(ViewWidth, ViewHeight) / NfcScanVisualPainter.DesignSize);
 			NfcScanVisualPainter.ScenePalette Palette = this.CreatePalette();
+			NfcScanVisualPainter Painter = this.painter ??= new NfcScanVisualPainter();
 
 			int SaveCount = Canvas.Save();
 			Canvas.Scale(PixelScale);
@@ -475,7 +481,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				float OutOpacity = 1 - (float)(Age / crossfadeOutMs);
 				NfcScanVisualPainter.SceneFrame PreviousFrame = this.CreateFrame(this.previousSceneTimeAtChange + Age, Animate, CurrentTime);
-				DrawScene(Canvas, this.previousState.Value, PreviousFrame, Palette, OutOpacity);
+				Painter.Draw(Canvas, this.previousState.Value, PreviousFrame, Palette, OutOpacity);
 			}
 
 			float InOpacity = 1;
@@ -486,31 +492,9 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 
 			NfcScanVisualPainter.SceneFrame Frame = this.CreateFrame(this.GetSceneTime(CurrentTime), Animate, CurrentTime);
-			DrawScene(Canvas, this.State, Frame, Palette, InOpacity);
+			Painter.Draw(Canvas, this.State, Frame, Palette, InOpacity);
 
 			Canvas.RestoreToCount(SaveCount);
-		}
-
-		private static void DrawScene(
-			SKCanvas Canvas,
-			NfcScanVisualState State,
-			NfcScanVisualPainter.SceneFrame Frame,
-			NfcScanVisualPainter.ScenePalette Palette,
-			float Opacity)
-		{
-			if (Opacity <= 0.001f)
-				return;
-
-			if (Opacity >= 0.999f)
-			{
-				NfcScanVisualPainter.Draw(Canvas, State, Frame, Palette);
-				return;
-			}
-
-			using SKPaint Layer = new SKPaint { Color = SKColors.Black.WithAlpha((byte)(Opacity * 255)) };
-			Canvas.SaveLayer(Layer);
-			NfcScanVisualPainter.Draw(Canvas, State, Frame, Palette);
-			Canvas.Restore();
 		}
 
 		private NfcScanVisualPainter.SceneFrame CreateFrame(double SceneTime, bool Animate, double CurrentTime)

@@ -7,10 +7,12 @@ namespace NeuroAccessMaui.UI.Controls
 	/// </summary>
 	/// <remarks>
 	/// All coordinates are design units inside a <see cref="DesignSize"/> square centered on (0, 0).
-	/// The caller scales the canvas to the view and handles crossfades between scenes, so each scene
-	/// only depends on its own elapsed time and the values in <see cref="SceneFrame"/>.
+	/// The caller scales the canvas to the view and chooses the scene opacity, so each scene only depends
+	/// on its own elapsed time and the values in <see cref="SceneFrame"/>.
+	/// The painter reuses a small set of paints for every frame instead of allocating new Skia objects per
+	/// draw call, so an instance must only be used from one thread at a time and disposed when no longer needed.
 	/// </remarks>
-	internal static class NfcScanVisualPainter
+	internal sealed class NfcScanVisualPainter : IDisposable
 	{
 		/// <summary>
 		/// The width and height of the square design space, in design units.
@@ -53,6 +55,23 @@ namespace NeuroAccessMaui.UI.Controls
 		private static readonly SKMaskFilter glowBlur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 5f);
 		private static readonly SKMaskFilter bloomBlur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 4f);
 
+		private readonly SKPaint fillPaint = new SKPaint
+		{
+			IsAntialias = true,
+			Style = SKPaintStyle.Fill
+		};
+
+		private readonly SKPaint strokePaint = new SKPaint
+		{
+			IsAntialias = true,
+			Style = SKPaintStyle.Stroke,
+			StrokeCap = SKStrokeCap.Round,
+			StrokeJoin = SKStrokeJoin.Round
+		};
+
+		private readonly SKPaint layerPaint = new SKPaint();
+		private bool disposed;
+
 		/// <summary>
 		/// Colors used to draw a scene, resolved from the control's theme-bound properties.
 		/// </summary>
@@ -92,47 +111,81 @@ namespace NeuroAccessMaui.UI.Controls
 			double[] SegmentFlashAges);
 
 		/// <summary>
-		/// Draws the requested scene.
+		/// Draws the requested scene at the given opacity.
 		/// </summary>
 		/// <param name="Canvas">Canvas already transformed into design space.</param>
 		/// <param name="State">The scene to draw.</param>
 		/// <param name="Frame">Per-frame inputs.</param>
 		/// <param name="Palette">Colors to draw with.</param>
-		public static void Draw(SKCanvas Canvas, NfcScanVisualState State, SceneFrame Frame, ScenePalette Palette)
+		/// <param name="Opacity">Opacity of the whole scene, from 0 to 1, used for crossfades.</param>
+		public void Draw(SKCanvas Canvas, NfcScanVisualState State, SceneFrame Frame, ScenePalette Palette, float Opacity = 1)
+		{
+			ObjectDisposedException.ThrowIf(this.disposed, this);
+			if (Opacity <= 0.001f)
+				return;
+
+			if (Opacity >= 0.999f)
+			{
+				this.DrawScene(Canvas, State, Frame, Palette);
+				return;
+			}
+
+			// A layer fades the scene as a whole, so overlapping shapes do not show through each other.
+			this.layerPaint.Color = SKColors.Black.WithAlpha((byte)(Opacity * 255));
+			Canvas.SaveLayer(this.layerPaint);
+			this.DrawScene(Canvas, State, Frame, Palette);
+			Canvas.Restore();
+		}
+
+		/// <summary>
+		/// Releases the reusable native paints.
+		/// </summary>
+		public void Dispose()
+		{
+			if (this.disposed)
+				return;
+
+			this.disposed = true;
+			this.fillPaint.Dispose();
+			this.strokePaint.Dispose();
+			this.layerPaint.Dispose();
+		}
+
+		private void DrawScene(SKCanvas Canvas, NfcScanVisualState State, SceneFrame Frame, ScenePalette Palette)
 		{
 			switch (State)
 			{
 				case NfcScanVisualState.Intro:
-					DrawIntro(Canvas, Frame, Palette);
+					this.DrawIntro(Canvas, Frame, Palette);
 					break;
 
 				case NfcScanVisualState.Preparing:
-					DrawPreparing(Canvas, Frame, Palette);
+					this.DrawPreparing(Canvas, Frame, Palette);
 					break;
 
 				case NfcScanVisualState.Searching:
-					DrawPlacement(Canvas, Frame, Palette, true);
+					this.DrawPlacement(Canvas, Frame, Palette, true);
 					break;
 
 				case NfcScanVisualState.Paused:
-					DrawPlacement(Canvas, Frame, Palette, false);
+					this.DrawPlacement(Canvas, Frame, Palette, false);
 					break;
 
 				case NfcScanVisualState.Reading:
-					DrawReading(Canvas, Frame, Palette);
+					this.DrawReading(Canvas, Frame, Palette);
 					break;
 
 				case NfcScanVisualState.Success:
-					DrawSuccess(Canvas, Frame, Palette);
+					this.DrawSuccess(Canvas, Frame, Palette);
 					break;
 
 				case NfcScanVisualState.Failure:
-					DrawFailure(Canvas, Frame, Palette);
+					this.DrawFailure(Canvas, Frame, Palette);
 					break;
 			}
 		}
 
-		private static void DrawIntro(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
+		private void DrawIntro(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
 		{
 			float Entrance = Frame.Animate ? CubicOut(Phase(Frame.Time, 0, 520)) : 1;
 			float Bob = Frame.Animate ? 3f * Wave(Frame.Time, 3200) : 0;
@@ -141,40 +194,38 @@ namespace NeuroAccessMaui.UI.Controls
 			Canvas.Translate(0, Bob);
 			Canvas.Scale(0.94f + 0.06f * Entrance);
 
-			SKPoint Symbol = DrawPassport(Canvas, SKRect.Create(-64, -92, 128, 184), Palette, 0.4f);
+			SKPoint Symbol = this.DrawPassport(Canvas, SKRect.Create(-64, -92, 128, 184), Palette, 0.4f);
 			const float HighlightRadius = 36f;
 
-			using (SKPaint Highlight = StrokePaint(Fade(Palette.Accent, 0.9f), 2.5f))
-				Canvas.DrawCircle(Symbol, HighlightRadius, Highlight);
+			Canvas.DrawCircle(Symbol, HighlightRadius, this.Stroke(Fade(Palette.Accent, 0.9f), 2.5f));
 
 			double PulseTime = Frame.Time - 450;
 			if (Frame.Animate && PulseTime > 0)
 			{
 				float Q = (float)(PulseTime % 2200 / 2200);
-				using SKPaint Pulse = StrokePaint(Fade(Palette.Accent, 0.55f * (1 - Q)), 0.5f + 3f * (1 - Q));
-				Canvas.DrawCircle(Symbol, HighlightRadius + 22 * CubicOut(Q), Pulse);
+				Canvas.DrawCircle(
+					Symbol,
+					HighlightRadius + 22 * CubicOut(Q),
+					this.Stroke(Fade(Palette.Accent, 0.55f * (1 - Q)), 0.5f + 3f * (1 - Q)));
 			}
 
 			Canvas.Restore();
 		}
 
-		private static void DrawPreparing(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
+		private void DrawPreparing(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
 		{
-			DrawChipCore(Canvas, Palette, 1, 1);
-
-			using (SKPaint Track = StrokePaint(Palette.Track, 6))
-				Canvas.DrawCircle(0, 0, ringRadius, Track);
+			this.DrawChipCore(Canvas, Palette, 1, 1);
+			Canvas.DrawCircle(0, 0, ringRadius, this.Stroke(Palette.Track, 6));
 
 			float Rotation = Frame.Animate ? (float)(Frame.Time * 0.3 % 360) : 0;
 			float Sweep = Frame.Animate
 				? 40 + 200 * (0.5f - 0.5f * (float)Math.Cos(2 * Math.PI * Frame.Time / 1500))
 				: 90;
 
-			using SKPaint Arc = StrokePaint(Palette.Accent, 6);
-			Canvas.DrawArc(RingRect(ringRadius), Rotation - 90, Sweep, false, Arc);
+			Canvas.DrawArc(RingRect(ringRadius), Rotation - 90, Sweep, false, this.Stroke(Palette.Accent, 6));
 		}
 
-		private static void DrawPlacement(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette, bool IsSearching)
+		private void DrawPlacement(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette, bool IsSearching)
 		{
 			bool IsMoving = IsSearching && Frame.Animate;
 			SKSize DocumentSize = Frame.IsPassport ? new SKSize(124, 172) : new SKSize(170, 108);
@@ -194,9 +245,9 @@ namespace NeuroAccessMaui.UI.Controls
 			Canvas.Translate(-Bounds.MidX, -Bounds.MidY);
 
 			if (Frame.IsPassport)
-				DrawPassport(Canvas, DocumentRect, Palette, 0.36f);
+				this.DrawPassport(Canvas, DocumentRect, Palette, 0.36f);
 			else
-				DrawIdCard(Canvas, DocumentRect, Palette);
+				this.DrawIdCard(Canvas, DocumentRect, Palette);
 
 			double T = Frame.Time;
 			float Entrance = IsMoving ? CubicOut(Phase(T, 100, 850)) : 1;
@@ -218,17 +269,17 @@ namespace NeuroAccessMaui.UI.Controls
 			SKPoint AntennaPoint = new SKPoint(PhoneCenter.X + RotatedAntenna.X, PhoneCenter.Y + RotatedAntenna.Y);
 
 			if (IsMoving)
-				DrawRipples(Canvas, AntennaPoint, T - 700, Palette);
+				this.DrawRipples(Canvas, AntennaPoint, T - 700, Palette);
 			else if (IsSearching)
-				DrawStaticRipples(Canvas, AntennaPoint, Palette);
+				this.DrawStaticRipples(Canvas, AntennaPoint, Palette);
 
 			float AntennaGlow = IsMoving ? 0.5f + 0.5f * Wave(T, 1800) : 0;
-			DrawPhone(Canvas, PhoneCenter, Rotation, PhoneOpacity, AntennaGlow, Frame.Placement, Palette);
+			this.DrawPhone(Canvas, PhoneCenter, Rotation, PhoneOpacity, AntennaGlow, Frame.Placement, Palette);
 
 			Canvas.Restore();
 		}
 
-		private static void DrawReading(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
+		private void DrawReading(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
 		{
 			float Entrance = Frame.Animate ? CubicOut(Phase(Frame.Time, 0, 420)) : 1;
 			float Breath = Frame.Animate ? 1 + 0.025f * Wave(Frame.Time, 1700) : 1;
@@ -236,17 +287,16 @@ namespace NeuroAccessMaui.UI.Controls
 			Canvas.Save();
 			Canvas.Scale(0.86f + 0.14f * Entrance);
 
-			DrawChipCore(Canvas, Palette, Breath, 1);
+			this.DrawChipCore(Canvas, Palette, Breath, 1);
 
 			// A faint ring expands from the chip each time data arrives, so stalls are visible.
 			if (Frame.Animate && Frame.PulseAge < 650)
 			{
 				float Q = (float)(Frame.PulseAge / 650);
-				using SKPaint Pulse = StrokePaint(Fade(Palette.Accent, 0.4f * (1 - Q)), 2.5f);
-				Canvas.DrawCircle(0, 0, coreRadius + 2 + 14 * CubicOut(Q), Pulse);
+				Canvas.DrawCircle(0, 0, coreRadius + 2 + 14 * CubicOut(Q), this.Stroke(Fade(Palette.Accent, 0.4f * (1 - Q)), 2.5f));
 			}
 
-			DrawSegments(Canvas, Frame.Progress, segmentGap, ringStroke, Palette.Track, Palette.Accent);
+			this.DrawSegments(Canvas, Frame.Progress, segmentGap, ringStroke, Palette.Track, Palette.Accent);
 
 			if (Frame.Animate)
 			{
@@ -257,25 +307,24 @@ namespace NeuroAccessMaui.UI.Controls
 						continue;
 
 					float Flash = 1 - (float)(Age / 500);
-					using SKPaint Bloom = StrokePaint(Fade(Palette.Accent, 0.35f * Flash), ringStroke + 10 * Flash);
-					Bloom.MaskFilter = bloomBlur;
+					SKPaint Bloom = this.Stroke(Fade(Palette.Accent, 0.35f * Flash), ringStroke + 10 * Flash, bloomBlur);
 					Canvas.DrawArc(RingRect(ringRadius), SegmentStart(i, segmentGap), segmentSpan - segmentGap, false, Bloom);
 				}
 			}
 
-			DrawProgressHead(Canvas, Frame, Palette);
+			this.DrawProgressHead(Canvas, Frame, Palette);
 			Canvas.Restore();
 		}
 
-		private static void DrawSuccess(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
+		private void DrawSuccess(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
 		{
 			double U = Frame.Animate ? Frame.Time - Frame.SuccessDelay - successLeadInMs : SuccessDurationMs;
 
 			// Until the reveal starts, keep the reading ring so the handover from reading is seamless.
 			if (U < 0)
 			{
-				DrawChipCore(Canvas, Palette, 1, 1);
-				DrawSegments(Canvas, Frame.Progress, segmentGap, ringStroke, Palette.Track, Palette.Accent);
+				this.DrawChipCore(Canvas, Palette, 1, 1);
+				this.DrawSegments(Canvas, Frame.Progress, segmentGap, ringStroke, Palette.Track, Palette.Accent);
 				return;
 			}
 
@@ -283,38 +332,33 @@ namespace NeuroAccessMaui.UI.Controls
 			float Gap = segmentGap * (1 - Close);
 			float RingFade = Phase(U, 320, 320);
 
-			using (SKPaint Ring = StrokePaint(Fade(Palette.Accent, 1 - 0.75f * RingFade), ringStroke - 6 * RingFade))
+			SKPaint Ring = this.Stroke(Fade(Palette.Accent, 1 - 0.75f * RingFade), ringStroke - 6 * RingFade);
+			if (Gap < 0.5f)
+				Canvas.DrawCircle(0, 0, ringRadius, Ring);
+			else
 			{
-				if (Gap < 0.5f)
-					Canvas.DrawCircle(0, 0, ringRadius, Ring);
-				else
-				{
-					for (int i = 0; i < segmentCount; i++)
-						Canvas.DrawArc(RingRect(ringRadius), SegmentStart(i, Gap), segmentSpan - Gap, false, Ring);
-				}
+				for (int i = 0; i < segmentCount; i++)
+					Canvas.DrawArc(RingRect(ringRadius), SegmentStart(i, Gap), segmentSpan - Gap, false, Ring);
 			}
 
 			float ChipOpacity = 1 - Phase(U, 150, 200);
 			if (ChipOpacity > 0)
-				DrawChipCore(Canvas, Palette, 1, ChipOpacity);
+				this.DrawChipCore(Canvas, Palette, 1, ChipOpacity);
 
 			float Disk = BackOut(Phase(U, 180, 420));
 			if (Disk > 0)
-			{
-				using SKPaint Fill = FillPaint(Palette.Accent);
-				Canvas.DrawCircle(0, 0, successDiskRadius * Disk, Fill);
-			}
+				Canvas.DrawCircle(0, 0, successDiskRadius * Disk, this.Fill(Palette.Accent));
 
 			float Check = CubicOut(Phase(U, 430, 380));
 			if (Check > 0)
-				DrawCheck(Canvas, Check, Palette.OnAccent);
+				this.DrawCheck(Canvas, Check, Palette.OnAccent);
 
 			float Burst = Phase(U, 400, 750);
 			if (Frame.Animate && Burst > 0 && Burst < 1)
-				DrawBurst(Canvas, Burst, Palette);
+				this.DrawBurst(Canvas, Burst, Palette);
 		}
 
-		private static void DrawFailure(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
+		private void DrawFailure(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
 		{
 			float Shake = Frame.Animate
 				? 9f * (float)(Math.Sin(2 * Math.PI * Frame.Time / 90) * Math.Exp(-Frame.Time / 170))
@@ -324,102 +368,81 @@ namespace NeuroAccessMaui.UI.Controls
 			Canvas.Save();
 			Canvas.Translate(Shake, 0);
 
-			DrawSegments(Canvas, Frame.Progress, segmentGap, ringStroke, Fade(Palette.Warning, 0.18f), Fade(Palette.Warning, 0.85f));
+			this.DrawSegments(Canvas, Frame.Progress, segmentGap, ringStroke, Fade(Palette.Warning, 0.18f), Fade(Palette.Warning, 0.85f));
 
 			Canvas.Scale(Pop);
-			using (SKPaint Disk = FillPaint(Fade(Palette.Warning, 0.14f)))
-				Canvas.DrawCircle(0, 0, coreRadius, Disk);
-
-			using (SKPaint Mark = StrokePaint(Palette.Warning, 11))
-				Canvas.DrawLine(0, -28, 0, 6, Mark);
-
-			using (SKPaint Dot = FillPaint(Palette.Warning))
-				Canvas.DrawCircle(0, 27, 6.5f, Dot);
+			Canvas.DrawCircle(0, 0, coreRadius, this.Fill(Fade(Palette.Warning, 0.14f)));
+			Canvas.DrawLine(0, -28, 0, 6, this.Stroke(Palette.Warning, 11));
+			Canvas.DrawCircle(0, 27, 6.5f, this.Fill(Palette.Warning));
 
 			Canvas.Restore();
 		}
 
-		private static SKPoint DrawPassport(SKCanvas Canvas, SKRect Rect, ScenePalette Palette, float SymbolWidthRatio)
+		private SKPoint DrawPassport(SKCanvas Canvas, SKRect Rect, ScenePalette Palette, float SymbolWidthRatio)
 		{
 			float W = Rect.Width;
 			float H = Rect.Height;
 			float Corner = W * 0.1f;
 
-			DrawDocumentBase(Canvas, Rect, Corner, Palette);
+			this.DrawDocumentBase(Canvas, Rect, Corner, Palette);
 
 			float SpineX = Rect.Left + W * 0.09f;
-			using (SKPaint Spine = StrokePaint(Fade(Palette.Accent, 0.25f), 2f))
-				Canvas.DrawLine(SpineX, Rect.Top + 10, SpineX, Rect.Bottom - 10, Spine);
+			Canvas.DrawLine(SpineX, Rect.Top + 10, SpineX, Rect.Bottom - 10, this.Stroke(Fade(Palette.Accent, 0.25f), 2f));
 
 			float CenterX = Rect.MidX + W * 0.045f;
-			using (SKPaint Text = StrokePaint(Fade(Palette.Accent, 0.35f), 4f))
-			{
-				float FirstLine = Rect.Top + H * 0.14f;
-				Canvas.DrawLine(CenterX - W * 0.22f, FirstLine, CenterX + W * 0.22f, FirstLine, Text);
-				Canvas.DrawLine(CenterX - W * 0.13f, FirstLine + 10, CenterX + W * 0.13f, FirstLine + 10, Text);
-			}
+			float FirstLine = Rect.Top + H * 0.14f;
+			SKPaint Text = this.Stroke(Fade(Palette.Accent, 0.35f), 4f);
+			Canvas.DrawLine(CenterX - W * 0.22f, FirstLine, CenterX + W * 0.22f, FirstLine, Text);
+			Canvas.DrawLine(CenterX - W * 0.13f, FirstLine + 10, CenterX + W * 0.13f, FirstLine + 10, Text);
 
 			float EmblemY = Rect.Top + H * 0.37f;
-			using (SKPaint Emblem = StrokePaint(Fade(Palette.Accent, 0.35f), 2.5f))
-				Canvas.DrawCircle(CenterX, EmblemY, W * 0.15f, Emblem);
-
-			using (SKPaint EmblemCore = FillPaint(Fade(Palette.Accent, 0.2f)))
-				Canvas.DrawCircle(CenterX, EmblemY, W * 0.07f, EmblemCore);
+			Canvas.DrawCircle(CenterX, EmblemY, W * 0.15f, this.Stroke(Fade(Palette.Accent, 0.35f), 2.5f));
+			Canvas.DrawCircle(CenterX, EmblemY, W * 0.07f, this.Fill(Fade(Palette.Accent, 0.2f)));
 
 			SKPoint Symbol = new SKPoint(CenterX, Rect.Top + H * 0.77f);
-			DrawChipSymbol(Canvas, Symbol, W * SymbolWidthRatio, Palette.Accent);
+			this.DrawChipSymbol(Canvas, Symbol, W * SymbolWidthRatio, Palette.Accent);
 			return Symbol;
 		}
 
-		private static void DrawIdCard(SKCanvas Canvas, SKRect Rect, ScenePalette Palette)
+		private void DrawIdCard(SKCanvas Canvas, SKRect Rect, ScenePalette Palette)
 		{
 			float W = Rect.Width;
 			float H = Rect.Height;
 
-			DrawDocumentBase(Canvas, Rect, H * 0.11f, Palette);
+			this.DrawDocumentBase(Canvas, Rect, H * 0.11f, Palette);
 
 			SKRect Photo = SKRect.Create(Rect.Left + W * 0.07f, Rect.Top + H * 0.2f, W * 0.26f, H * 0.56f);
-			using (SKPaint PhotoFill = FillPaint(Fade(Palette.Accent, 0.14f)))
-				Canvas.DrawRoundRect(Photo, 6, 6, PhotoFill);
+			Canvas.DrawRoundRect(Photo, 6, 6, this.Fill(Fade(Palette.Accent, 0.14f)));
 
-			using (SKPaint Person = FillPaint(Fade(Palette.Accent, 0.4f)))
-			{
-				Canvas.DrawCircle(Photo.MidX, Photo.Top + Photo.Height * 0.42f, Photo.Width * 0.2f, Person);
-				SKRect Shoulders = new SKRect(
-					Photo.MidX - Photo.Width * 0.34f,
-					Photo.Bottom - Photo.Height * 0.3f,
-					Photo.MidX + Photo.Width * 0.34f,
-					Photo.Bottom + Photo.Height * 0.3f);
-				Canvas.DrawArc(Shoulders, 180, 180, true, Person);
-			}
+			SKPaint Person = this.Fill(Fade(Palette.Accent, 0.4f));
+			Canvas.DrawCircle(Photo.MidX, Photo.Top + Photo.Height * 0.42f, Photo.Width * 0.2f, Person);
+			SKRect Shoulders = new SKRect(
+				Photo.MidX - Photo.Width * 0.34f,
+				Photo.Bottom - Photo.Height * 0.3f,
+				Photo.MidX + Photo.Width * 0.34f,
+				Photo.Bottom + Photo.Height * 0.3f);
+			Canvas.DrawArc(Shoulders, 180, 180, true, Person);
 
 			float LineLeft = Photo.Right + W * 0.07f;
 			float LineSpan = Rect.Right - W * 0.08f - LineLeft;
-			using (SKPaint Text = StrokePaint(Fade(Palette.Accent, 0.3f), 4f))
+			SKPaint Text = this.Stroke(Fade(Palette.Accent, 0.3f), 4f);
+			for (int i = 0; i < 3; i++)
 			{
-				for (int i = 0; i < 3; i++)
-				{
-					float Y = Rect.Top + H * (0.42f + 0.16f * i);
-					Canvas.DrawLine(LineLeft, Y, LineLeft + LineSpan * (1 - 0.22f * i), Y, Text);
-				}
+				float Y = Rect.Top + H * (0.42f + 0.16f * i);
+				Canvas.DrawLine(LineLeft, Y, LineLeft + LineSpan * (1 - 0.22f * i), Y, Text);
 			}
 
-			DrawChipSymbol(Canvas, new SKPoint(Rect.Right - W * 0.14f, Rect.Top + H * 0.2f), W * 0.15f, Palette.Accent);
+			this.DrawChipSymbol(Canvas, new SKPoint(Rect.Right - W * 0.14f, Rect.Top + H * 0.2f), W * 0.15f, Palette.Accent);
 		}
 
-		private static void DrawDocumentBase(SKCanvas Canvas, SKRect Rect, float Corner, ScenePalette Palette)
+		private void DrawDocumentBase(SKCanvas Canvas, SKRect Rect, float Corner, ScenePalette Palette)
 		{
-			using (SKPaint Base = FillPaint(Palette.Surface))
-				Canvas.DrawRoundRect(Rect, Corner, Corner, Base);
-
-			using (SKPaint Tint = FillPaint(Fade(Palette.Accent, 0.14f)))
-				Canvas.DrawRoundRect(Rect, Corner, Corner, Tint);
-
-			using (SKPaint Outline = StrokePaint(Fade(Palette.Accent, 0.85f), 2.5f))
-				Canvas.DrawRoundRect(Rect, Corner, Corner, Outline);
+			Canvas.DrawRoundRect(Rect, Corner, Corner, this.Fill(Palette.Surface));
+			Canvas.DrawRoundRect(Rect, Corner, Corner, this.Fill(Fade(Palette.Accent, 0.14f)));
+			Canvas.DrawRoundRect(Rect, Corner, Corner, this.Stroke(Fade(Palette.Accent, 0.85f), 2.5f));
 		}
 
-		private static void DrawPhone(
+		private void DrawPhone(
 			SKCanvas Canvas,
 			SKPoint Center,
 			float Rotation,
@@ -438,35 +461,25 @@ namespace NeuroAccessMaui.UI.Controls
 			SKRect Body = SKRect.Create(-phoneWidth / 2, -phoneHeight / 2, phoneWidth, phoneHeight);
 
 			// A slightly translucent back lets the document show through, hinting at the chip underneath.
-			using (SKPaint Fill = FillPaint(Fade(Palette.Surface, 0.86f * Opacity)))
-				Canvas.DrawRoundRect(Body, phoneCorner, phoneCorner, Fill);
-
-			using (SKPaint Outline = StrokePaint(Fade(Palette.Content, 0.85f * Opacity), 3f))
-				Canvas.DrawRoundRect(Body, phoneCorner, phoneCorner, Outline);
+			Canvas.DrawRoundRect(Body, phoneCorner, phoneCorner, this.Fill(Fade(Palette.Surface, 0.86f * Opacity)));
+			Canvas.DrawRoundRect(Body, phoneCorner, phoneCorner, this.Stroke(Fade(Palette.Content, 0.85f * Opacity), 3f));
 
 			SKRect Module = SKRect.Create(Body.Left + 9, Body.Top + 9, 24, 38);
-			using (SKPaint Lens = StrokePaint(Fade(Palette.Content, 0.5f * Opacity), 2f))
-			{
-				Canvas.DrawRoundRect(Module, 8, 8, Lens);
-				Canvas.DrawCircle(Module.MidX, Module.Top + 11, 5f, Lens);
-				Canvas.DrawCircle(Module.MidX, Module.Bottom - 11, 5f, Lens);
-			}
+			SKPaint Lens = this.Stroke(Fade(Palette.Content, 0.5f * Opacity), 2f);
+			Canvas.DrawRoundRect(Module, 8, 8, Lens);
+			Canvas.DrawCircle(Module.MidX, Module.Top + 11, 5f, Lens);
+			Canvas.DrawCircle(Module.MidX, Module.Bottom - 11, 5f, Lens);
 
 			SKPoint Antenna = AntennaOffset(Placement);
 			if (AntennaGlow > 0)
-			{
-				using SKPaint Glow = FillPaint(Fade(Palette.Accent, 0.4f * AntennaGlow * Opacity));
-				Glow.MaskFilter = glowBlur;
-				Canvas.DrawCircle(Antenna, 11, Glow);
-			}
+				Canvas.DrawCircle(Antenna, 11, this.Fill(Fade(Palette.Accent, 0.4f * AntennaGlow * Opacity), glowBlur));
 
-			using (SKPaint Dot = FillPaint(Fade(Palette.Accent, (0.55f + 0.45f * AntennaGlow) * Opacity)))
-				Canvas.DrawCircle(Antenna, 4.5f, Dot);
+			Canvas.DrawCircle(Antenna, 4.5f, this.Fill(Fade(Palette.Accent, (0.55f + 0.45f * AntennaGlow) * Opacity)));
 
 			Canvas.Restore();
 		}
 
-		private static void DrawRipples(SKCanvas Canvas, SKPoint Center, double LocalTime, ScenePalette Palette)
+		private void DrawRipples(SKCanvas Canvas, SKPoint Center, double LocalTime, ScenePalette Palette)
 		{
 			if (LocalTime < 0)
 				return;
@@ -480,62 +493,53 @@ namespace NeuroAccessMaui.UI.Controls
 
 				float Q = (float)(RingTime % 1800 / 1800);
 				float Opacity = (1 - Q) * (1 - Q) * 0.8f * FadeIn;
-				using SKPaint Ring = StrokePaint(Fade(Palette.Accent, Opacity), 1 + 2.5f * (1 - Q));
-				Canvas.DrawCircle(Center, 14 + 70 * CubicOut(Q), Ring);
+				Canvas.DrawCircle(Center, 14 + 70 * CubicOut(Q), this.Stroke(Fade(Palette.Accent, Opacity), 1 + 2.5f * (1 - Q)));
 			}
 		}
 
-		private static void DrawStaticRipples(SKCanvas Canvas, SKPoint Center, ScenePalette Palette)
+		private void DrawStaticRipples(SKCanvas Canvas, SKPoint Center, ScenePalette Palette)
 		{
-			using (SKPaint Inner = StrokePaint(Fade(Palette.Accent, 0.55f), 2.5f))
-				Canvas.DrawCircle(Center, 50, Inner);
-
-			using (SKPaint Outer = StrokePaint(Fade(Palette.Accent, 0.3f), 2f))
-				Canvas.DrawCircle(Center, 70, Outer);
+			Canvas.DrawCircle(Center, 50, this.Stroke(Fade(Palette.Accent, 0.55f), 2.5f));
+			Canvas.DrawCircle(Center, 70, this.Stroke(Fade(Palette.Accent, 0.3f), 2f));
 		}
 
-		private static void DrawChipCore(SKCanvas Canvas, ScenePalette Palette, float Scale, float Opacity)
+		private void DrawChipCore(SKCanvas Canvas, ScenePalette Palette, float Scale, float Opacity)
 		{
-			using (SKPaint Disk = FillPaint(Fade(Palette.Accent, 0.09f * Opacity)))
-				Canvas.DrawCircle(0, 0, coreRadius * Scale, Disk);
-
-			DrawChipSymbol(Canvas, new SKPoint(0, 0), 78 * Scale, Fade(Palette.Accent, Opacity));
+			Canvas.DrawCircle(0, 0, coreRadius * Scale, this.Fill(Fade(Palette.Accent, 0.09f * Opacity)));
+			this.DrawChipSymbol(Canvas, new SKPoint(0, 0), 78 * Scale, Fade(Palette.Accent, Opacity));
 		}
 
-		private static void DrawChipSymbol(SKCanvas Canvas, SKPoint Center, float Width, SKColor Color)
+		private void DrawChipSymbol(SKCanvas Canvas, SKPoint Center, float Width, SKColor Color)
 		{
 			if (chipSymbolPath is null || Width <= 0)
 				return;
 
-			using SKPaint Paint = FillPaint(Color);
 			Canvas.Save();
 			Canvas.Translate(Center.X, Center.Y);
 			Canvas.Scale(Width / chipSymbolWidth);
 			Canvas.Translate(-chipSymbolCenterX, -chipSymbolCenterY);
-			Canvas.DrawPath(chipSymbolPath, Paint);
+			Canvas.DrawPath(chipSymbolPath, this.Fill(Color));
 			Canvas.Restore();
 		}
 
-		private static void DrawSegments(SKCanvas Canvas, float Progress, float Gap, float StrokeWidth, SKColor TrackColor, SKColor FillColor)
+		private void DrawSegments(SKCanvas Canvas, float Progress, float Gap, float StrokeWidth, SKColor TrackColor, SKColor FillColor)
 		{
 			SKRect Rect = RingRect(ringRadius);
 			float Sweep = segmentSpan - Gap;
 
-			using SKPaint Track = StrokePaint(TrackColor, StrokeWidth);
-			using SKPaint Fill = StrokePaint(FillColor, StrokeWidth);
-
+			// Track and fill share the reusable stroke paint, so it is configured right before each arc.
 			for (int i = 0; i < segmentCount; i++)
 			{
 				float Start = SegmentStart(i, Gap);
-				Canvas.DrawArc(Rect, Start, Sweep, false, Track);
+				Canvas.DrawArc(Rect, Start, Sweep, false, this.Stroke(TrackColor, StrokeWidth));
 
 				float Amount = Clamp01(Progress * segmentCount - i);
 				if (Amount > 0.001f)
-					Canvas.DrawArc(Rect, Start, Math.Max(0.5f, Sweep * Amount), false, Fill);
+					Canvas.DrawArc(Rect, Start, Math.Max(0.5f, Sweep * Amount), false, this.Stroke(FillColor, StrokeWidth));
 			}
 		}
 
-		private static void DrawProgressHead(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
+		private void DrawProgressHead(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
 		{
 			float Units = Frame.Progress * segmentCount;
 			int Active = (int)Math.Floor(Units);
@@ -547,17 +551,11 @@ namespace NeuroAccessMaui.UI.Controls
 			SKPoint Head = PointOnCircle(ringRadius, Angle);
 			float GlowOpacity = Frame.Animate ? 0.55f + 0.25f * Wave(Frame.Time, 900) : 0.6f;
 
-			using (SKPaint Glow = FillPaint(Fade(Palette.Accent, GlowOpacity)))
-			{
-				Glow.MaskFilter = glowBlur;
-				Canvas.DrawCircle(Head, 10, Glow);
-			}
-
-			using (SKPaint Core = FillPaint(Fade(Palette.OnAccent, 0.95f)))
-				Canvas.DrawCircle(Head, 3.2f, Core);
+			Canvas.DrawCircle(Head, 10, this.Fill(Fade(Palette.Accent, GlowOpacity), glowBlur));
+			Canvas.DrawCircle(Head, 3.2f, this.Fill(Fade(Palette.OnAccent, 0.95f)));
 		}
 
-		private static void DrawCheck(SKCanvas Canvas, float Amount, SKColor Color)
+		private void DrawCheck(SKCanvas Canvas, float Amount, SKColor Color)
 		{
 			SKPoint Start = new SKPoint(-30, 2);
 			SKPoint Corner = new SKPoint(-10, 22);
@@ -566,30 +564,28 @@ namespace NeuroAccessMaui.UI.Controls
 			float SecondLength = Distance(Corner, End);
 			float Drawn = Amount * (FirstLength + SecondLength);
 
-			using SKPathBuilder Builder = new SKPathBuilder();
-			Builder.MoveTo(Start);
+			// Two round-capped lines meet in a round joint, so the check mark draws in without building a path.
+			SKPaint Paint = this.Stroke(Color, 10);
 			if (Drawn <= FirstLength)
-				Builder.LineTo(Lerp(Start, Corner, Drawn / FirstLength));
-			else
 			{
-				Builder.LineTo(Corner);
-				Builder.LineTo(Lerp(Corner, End, (Drawn - FirstLength) / SecondLength));
+				SKPoint Tip = Lerp(Start, Corner, Drawn / FirstLength);
+				Canvas.DrawLine(Start.X, Start.Y, Tip.X, Tip.Y, Paint);
+				return;
 			}
 
-			using SKPath Path = Builder.Detach();
-			using SKPaint Paint = StrokePaint(Color, 10);
-			Canvas.DrawPath(Path, Paint);
+			SKPoint SecondTip = Lerp(Corner, End, (Drawn - FirstLength) / SecondLength);
+			Canvas.DrawLine(Start.X, Start.Y, Corner.X, Corner.Y, Paint);
+			Canvas.DrawLine(Corner.X, Corner.Y, SecondTip.X, SecondTip.Y, Paint);
 		}
 
-		private static void DrawBurst(SKCanvas Canvas, float Burst, ScenePalette Palette)
+		private void DrawBurst(SKCanvas Canvas, float Burst, ScenePalette Palette)
 		{
 			float Spread = CubicOut(Burst);
 			float Remaining = 1 - Burst;
 
-			using (SKPaint Ring = StrokePaint(Fade(Palette.Accent, 0.5f * Remaining), 0.5f + 5 * Remaining))
-				Canvas.DrawCircle(0, 0, 84 + 28 * Spread, Ring);
+			Canvas.DrawCircle(0, 0, 84 + 28 * Spread, this.Stroke(Fade(Palette.Accent, 0.5f * Remaining), 0.5f + 5 * Remaining));
 
-			using SKPaint Particle = FillPaint(Fade(Palette.Accent, Remaining));
+			SKPaint Particle = this.Fill(Fade(Palette.Accent, Remaining));
 			for (int i = 0; i < 12; i++)
 			{
 				bool IsLarge = i % 2 == 0;
@@ -597,6 +593,27 @@ namespace NeuroAccessMaui.UI.Controls
 				SKPoint Position = PointOnCircle(Radius, i * 30 + 15);
 				Canvas.DrawCircle(Position, 0.5f + (IsLarge ? 4.5f : 3f) * Remaining, Particle);
 			}
+		}
+
+		/// <summary>
+		/// Configures and returns the shared fill paint. The result is only valid until the next paint request.
+		/// </summary>
+		private SKPaint Fill(SKColor Color, SKMaskFilter? MaskFilter = null)
+		{
+			this.fillPaint.Color = Color;
+			this.fillPaint.MaskFilter = MaskFilter;
+			return this.fillPaint;
+		}
+
+		/// <summary>
+		/// Configures and returns the shared stroke paint. The result is only valid until the next paint request.
+		/// </summary>
+		private SKPaint Stroke(SKColor Color, float Width, SKMaskFilter? MaskFilter = null)
+		{
+			this.strokePaint.Color = Color;
+			this.strokePaint.StrokeWidth = Width;
+			this.strokePaint.MaskFilter = MaskFilter;
+			return this.strokePaint;
 		}
 
 		private static SKPoint AntennaOffset(NfcAntennaPlacement Placement)
@@ -664,22 +681,5 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private static SKColor Fade(SKColor Color, float Opacity) =>
 			Color.WithAlpha((byte)Math.Clamp(Color.Alpha * Opacity, 0, 255));
-
-		private static SKPaint FillPaint(SKColor Color) => new SKPaint
-		{
-			IsAntialias = true,
-			Style = SKPaintStyle.Fill,
-			Color = Color
-		};
-
-		private static SKPaint StrokePaint(SKColor Color, float Width) => new SKPaint
-		{
-			IsAntialias = true,
-			Style = SKPaintStyle.Stroke,
-			StrokeWidth = Width,
-			StrokeCap = SKStrokeCap.Round,
-			StrokeJoin = SKStrokeJoin.Round,
-			Color = Color
-		};
 	}
 }
