@@ -3163,16 +3163,16 @@
     <value>Scan your passport or ID card and hold it to your phone. We fill in your details and add a secure chip check to your application.</value>
   </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
-    <value>Look for this symbol</value>
+    <value>Does your ID have a chip?</value>
   </data>
   <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
-    <value>It may be on the front, back, or inside cover.</value>
+    <value>If it's there, we can fill in your details from the chip and verify them securely.</value>
   </data>
   <data name="KycTravelDocumentEligibilityTitle" xml:space="preserve">
     <value>Do you see it on your document?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>This symbol means the document has a chip.</value>
+    <value>Look for this symbol on your passport cover or ID card.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Use a phone with NFC enabled.</value>

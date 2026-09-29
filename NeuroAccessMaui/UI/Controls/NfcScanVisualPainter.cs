@@ -41,6 +41,12 @@ namespace NeuroAccessMaui.UI.Controls
 		private const float phoneWidth = 76f;
 		private const float phoneHeight = 146f;
 		private const float phoneCorner = 17f;
+		private const float introPassportRotation = -7f;
+		private const float introCardRotation = 8f;
+		private const double introPulseMs = 1500;
+
+		private static readonly SKPoint introPassportCenter = new SKPoint(-36, 10);
+		private static readonly SKPoint introCardCenter = new SKPoint(40, -22);
 
 		// Path data of the ICAO chip symbol from Resources/Raw/Vectors/icao_chip.svg.
 		private const string chipSymbolPathData =
@@ -185,28 +191,80 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		/// <summary>
+		/// Shows where the chip symbol appears: a passport in front and an ID card behind it, fanned out so both
+		/// symbols stay visible. The highlight pulse alternates between the two documents.
+		/// </summary>
 		private void DrawIntro(SKCanvas Canvas, SceneFrame Frame, ScenePalette Palette)
 		{
-			float Entrance = Frame.Animate ? CubicOut(Phase(Frame.Time, 0, 520)) : 1;
+			float Entrance = Frame.Animate ? CubicOut(Phase(Frame.Time, 0, 620)) : 1;
 			float Bob = Frame.Animate ? 3f * Wave(Frame.Time, 3200) : 0;
+			double PulseTime = Frame.Animate ? Frame.Time - 520 : -1;
 
 			Canvas.Save();
 			Canvas.Translate(0, Bob);
 			Canvas.Scale(0.94f + 0.06f * Entrance);
 
-			SKPoint Symbol = this.DrawPassport(Canvas, SKRect.Create(-64, -92, 128, 184), Palette, 0.4f);
-			const float HighlightRadius = 36f;
+			this.DrawIntroDocument(
+				Canvas,
+				new SKPoint(introCardCenter.X * Entrance, introCardCenter.Y * Entrance),
+				introCardRotation * Entrance,
+				false,
+				PulseTime - introPulseMs,
+				Palette);
+
+			this.DrawIntroDocument(
+				Canvas,
+				new SKPoint(introPassportCenter.X * Entrance, introPassportCenter.Y * Entrance),
+				introPassportRotation * Entrance,
+				true,
+				PulseTime,
+				Palette);
+
+			Canvas.Restore();
+		}
+
+		/// <summary>
+		/// Draws one intro document with a ring around its chip symbol and, when due, an expanding pulse.
+		/// </summary>
+		/// <param name="Canvas">Canvas in design space.</param>
+		/// <param name="Center">Center of the document.</param>
+		/// <param name="Rotation">Rotation of the document, in degrees.</param>
+		/// <param name="IsPassport">Whether to draw a passport rather than an ID card.</param>
+		/// <param name="PulseTime">Milliseconds into this document's pulse schedule, or negative when it should not pulse.</param>
+		/// <param name="Palette">Colors to draw with.</param>
+		private void DrawIntroDocument(SKCanvas Canvas, SKPoint Center, float Rotation, bool IsPassport, double PulseTime, ScenePalette Palette)
+		{
+			Canvas.Save();
+			Canvas.Translate(Center.X, Center.Y);
+			Canvas.RotateDegrees(Rotation);
+
+			SKPoint Symbol;
+			float HighlightRadius;
+			if (IsPassport)
+			{
+				Symbol = this.DrawPassport(Canvas, SKRect.Create(-50, -71, 100, 142), Palette, 0.42f);
+				HighlightRadius = 29f;
+			}
+			else
+			{
+				Symbol = this.DrawIdCard(Canvas, SKRect.Create(-68, -44, 136, 88), Palette, 0.22f);
+				HighlightRadius = 22f;
+			}
 
 			Canvas.DrawCircle(Symbol, HighlightRadius, this.Stroke(Fade(Palette.Accent, 0.9f), 2.5f));
 
-			double PulseTime = Frame.Time - 450;
-			if (Frame.Animate && PulseTime > 0)
+			if (PulseTime >= 0)
 			{
-				float Q = (float)(PulseTime % 2200 / 2200);
-				Canvas.DrawCircle(
-					Symbol,
-					HighlightRadius + 22 * CubicOut(Q),
-					this.Stroke(Fade(Palette.Accent, 0.55f * (1 - Q)), 0.5f + 3f * (1 - Q)));
+				// Each document pulses for half of the cycle, so attention moves between the two symbols.
+				float Q = (float)(PulseTime % (2 * introPulseMs) / introPulseMs);
+				if (Q < 1)
+				{
+					Canvas.DrawCircle(
+						Symbol,
+						HighlightRadius + 18 * CubicOut(Q),
+						this.Stroke(Fade(Palette.Accent, 0.55f * (1 - Q)), 0.5f + 3f * (1 - Q)));
+				}
 			}
 
 			Canvas.Restore();
@@ -404,7 +462,7 @@ namespace NeuroAccessMaui.UI.Controls
 			return Symbol;
 		}
 
-		private void DrawIdCard(SKCanvas Canvas, SKRect Rect, ScenePalette Palette)
+		private SKPoint DrawIdCard(SKCanvas Canvas, SKRect Rect, ScenePalette Palette, float SymbolWidthRatio = 0.15f)
 		{
 			float W = Rect.Width;
 			float H = Rect.Height;
@@ -432,7 +490,9 @@ namespace NeuroAccessMaui.UI.Controls
 				Canvas.DrawLine(LineLeft, Y, LineLeft + LineSpan * (1 - 0.22f * i), Y, Text);
 			}
 
-			this.DrawChipSymbol(Canvas, new SKPoint(Rect.Right - W * 0.14f, Rect.Top + H * 0.2f), W * 0.15f, Palette.Accent);
+			SKPoint Symbol = new SKPoint(Rect.Right - W * 0.14f, Rect.Top + H * 0.2f);
+			this.DrawChipSymbol(Canvas, Symbol, W * SymbolWidthRatio, Palette.Accent);
+			return Symbol;
 		}
 
 		private void DrawDocumentBase(SKCanvas Canvas, SKRect Rect, float Corner, ScenePalette Palette)

@@ -3610,16 +3610,16 @@
     <value>Digitalize seu passaporte ou cartão de identidade e encoste-o no telefone. Preenchemos seus dados e adicionamos uma verificação segura do chip à sua solicitação.</value>
   </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
-    <value>Procure este símbolo</value>
+    <value>Seu documento tem chip?</value>
   </data>
   <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
-    <value>Ele pode estar na frente, no verso ou dentro da capa.</value>
+    <value>Se estiver lá, podemos preencher seus dados a partir do chip e verificá-los com segurança.</value>
   </data>
   <data name="KycTravelDocumentEligibilityTitle" xml:space="preserve">
     <value>Você vê esse símbolo no documento?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>Este símbolo significa que o documento tem chip.</value>
+    <value>Procure este símbolo na capa do passaporte ou no seu cartão de identidade.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Use um telefone com NFC ativado.</value>

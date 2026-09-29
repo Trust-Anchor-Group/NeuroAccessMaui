@@ -68,7 +68,9 @@
 				   LineBreakMode="TailTruncation" />
 		</Grid>
 
-		<controls:GuideStepper Grid.Row="1"
+		<controls:GuideStepper x:Name="Stepper"
+							   Grid.Row="1"
+							   IsVisible="{Binding ShowGuideStepper}"
 							   CurrentStep="{Binding CurrentGuideStep}"
 							   Margin="24,4,24,0"
 							   MaximumWidthRequest="420"
@@ -104,6 +106,7 @@
 
 				<VerticalStackLayout x:Name="MessageBlock"
 									 Spacing="14">
+					<!-- Asks the question first, then says how to answer it and why it matters -->
 					<VerticalStackLayout Spacing="8"
 										 IsVisible="{Binding ShowIntro}">
 						<Label Style="{StaticResource MessageTitle}"
@@ -111,6 +114,7 @@
 						<Label Style="{StaticResource MessageBody}"
 							   Text="{l:Localize KycTravelDocumentEligibilityChipSymbol}" />
 						<Label Style="{StaticResource MessageBody}"
+							   FontSize="14"
 							   Text="{l:Localize KycTravelDocumentHeroDescription}"
 							   TextColor="{DynamicResource ContentSecondaryWL}" />
 					</VerticalStackLayout>
@@ -181,12 +185,6 @@
 			<VerticalStackLayout Spacing="8"
 								 MaximumWidthRequest="560"
 								 HorizontalOptions="Fill">
-				<Label Text="{l:Localize KycTravelDocumentEligibilityTitle}"
-					   Style="{DynamicResource SectionTitleLabel}"
-					   HorizontalTextAlignment="Center"
-					   LineBreakMode="WordWrap"
-					   Margin="0,0,0,4"
-					   IsVisible="{Binding ShowIntro}" />
 				<controls:TextButton Style="{DynamicResource FilledTextButton}"
 									 LabelData="{l:Localize KycTravelDocumentPrimaryScanButton}"
 									 Command="{Binding ScanMrzCommand}"

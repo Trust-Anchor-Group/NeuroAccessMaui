@@ -75,6 +75,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			nameof(HasMrz),
 			nameof(CanStartNfc),
 			nameof(ShowIntro),
+			nameof(ShowGuideStepper),
 			nameof(ShowSuccess),
 			nameof(ShowNfcMessage),
 			nameof(ShowIntroError),
@@ -182,6 +183,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			(this.FlowState == KycTravelDocumentFlowState.Intro ||
 			this.FlowState == KycTravelDocumentFlowState.MrzCapture ||
 			(this.FlowState == KycTravelDocumentFlowState.Error && !this.HasMrz));
+
+		/// <summary>
+		/// Gets a value indicating whether the step guide should be shown. It appears once the user has chosen the chip
+		/// path, since the steps mean nothing while the user is still checking whether the document has a chip.
+		/// </summary>
+		public bool ShowGuideStepper => !this.ShowIntro;
 
 		/// <summary>
 		/// Gets a value indicating whether the readout success state should be shown.

@@ -4822,7 +4822,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This symbol means the document has a chip..
+        ///   Looks up a localized string similar to Look for this symbol on your passport cover or ID card.
         /// </summary>
         public static string KycTravelDocumentEligibilityChipSymbol {
             get {
@@ -4858,7 +4858,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It may be on the front, back, or inside cover..
+        ///   Looks up a localized string similar to If it's there, we can fill in your details from the chip and verify them securely.
         /// </summary>
         public static string KycTravelDocumentHeroDescription {
             get {
@@ -4867,7 +4867,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Look for this symbol.
+        ///   Looks up a localized string similar to Does your ID have a chip?.
         /// </summary>
         public static string KycTravelDocumentHeroTitle {
             get {

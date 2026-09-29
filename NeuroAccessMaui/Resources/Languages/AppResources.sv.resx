@@ -3610,16 +3610,16 @@
     <value>Skanna ditt pass eller id-kort och håll det mot telefonen. Vi fyller i dina uppgifter och lägger till en säker chipkontroll i din ansökan.</value>
   </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
-    <value>Leta efter den här symbolen</value>
+    <value>Har ditt ID ett chip?</value>
   </data>
   <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
-    <value>Den kan finnas på framsidan, baksidan eller insidan av omslaget.</value>
+    <value>Om den finns där kan vi fylla i dina uppgifter från chipet och verifiera dem säkert.</value>
   </data>
   <data name="KycTravelDocumentEligibilityTitle" xml:space="preserve">
     <value>Ser du den på ditt dokument?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>Symbolen betyder att dokumentet har ett chip.</value>
+    <value>Leta efter den här symbolen på passets omslag eller på ditt id-kort.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Använd en telefon med NFC aktiverat.</value>

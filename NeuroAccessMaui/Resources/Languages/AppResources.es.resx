@@ -3610,16 +3610,16 @@
     <value>Escanea tu pasaporte o documento de identidad y acércalo al teléfono. Completamos tus datos y añadimos una verificación segura del chip a tu solicitud.</value>
   </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
-    <value>Busca este símbolo</value>
+    <value>¿Tu documento tiene chip?</value>
   </data>
   <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
-    <value>Puede estar en el frente, el reverso o dentro de la tapa.</value>
+    <value>Si está, podemos completar tus datos desde el chip y verificarlos de forma segura.</value>
   </data>
   <data name="KycTravelDocumentEligibilityTitle" xml:space="preserve">
     <value>¿Lo ves en tu documento?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>Este símbolo significa que el documento tiene chip.</value>
+    <value>Busca este símbolo en la portada del pasaporte o en tu documento de identidad.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Usa un teléfono con NFC activado.</value>
