@@ -44,7 +44,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			Reading,
 			TransientFailure,
 			DocumentExpired,
-			UnsupportedDocument
+			UnsupportedDocument,
+			Help,
+			Success
 		}
 
 		private enum ScannerHintPriority
@@ -52,7 +54,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			Guidance = 0,
 			ImportantGuidance = 1,
 			Progress = 2,
-			Error = 3
+			Error = 3,
+			Success = 4
 		}
 
 		private enum ScannerHintTone
@@ -60,7 +63,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			Neutral,
 			Attention,
 			Progress,
-			Error
+			Error,
+			Success
 		}
 
 		private enum ScannerMrzValidationOutcome
@@ -97,6 +101,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static readonly TimeSpan MinimumImportantGuidanceHintDuration = TimeSpan.FromMilliseconds(2600);
 		private static readonly TimeSpan MinimumProgressHintDuration = TimeSpan.FromMilliseconds(900);
 		private static readonly TimeSpan MinimumTransientFailureHintDuration = TimeSpan.FromMilliseconds(2600);
+		private static readonly TimeSpan HelpHintDelay = TimeSpan.FromSeconds(15);
+		private static readonly TimeSpan SuccessConfirmationDuration = TimeSpan.FromMilliseconds(700);
 
 #if OCR_DEBUG_ARTIFACTS_NATIVE_SHARE
 		private static readonly JsonSerializerOptions PreviewDebugJsonOptions = new JsonSerializerOptions
@@ -138,6 +144,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private DateTimeOffset currentHintLockedUntil = DateTimeOffset.MinValue;
 		private OutlineSnapshot? displayedOutlineSnapshot;
 		private DateTimeOffset lastGoodOutlineTimestamp = DateTimeOffset.MinValue;
+		private DateTimeOffset scanStartedAt = DateTimeOffset.UtcNow;
 		private string unsupportedDocumentEvidenceKey = string.Empty;
 		private int unsupportedDocumentEvidenceCount;
 #if OCR_DEBUG_ARTIFACTS_TO_JID
@@ -190,34 +197,52 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private string detailText = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the scanner hint card background color.
+		/// Gets or sets the scanner hint accent color, used for the hint icon and progress indicator.
 		/// </summary>
 		[ObservableProperty]
-		private Color hintBackgroundColor = Color.FromArgb("#DD1E1712");
+		private Color hintAccentColor = ScannerColors.Neutral;
 
 		/// <summary>
-		/// Gets or sets the scanner hint card stroke color.
+		/// Gets or sets the icon shown next to the scanner hint.
 		/// </summary>
 		[ObservableProperty]
-		private Color hintStrokeColor = Color.FromArgb("#33FFFFFF");
+		private Microsoft.Maui.Controls.Shapes.Geometry hintIcon = Geometries.PassportPath;
 
 		/// <summary>
-		/// Gets or sets the scanner hint accent color.
+		/// Gets or sets a value indicating whether the scanner hint should show progress instead of an icon.
 		/// </summary>
 		[ObservableProperty]
-		private Color hintAccentColor = Color.FromArgb("#FFF2E6");
-
-		/// <summary>
-		/// Gets or sets the scanner hint detail text color.
-		/// </summary>
-		[ObservableProperty]
-		private Color hintDetailTextColor = Color.FromArgb("#FFF2E6");
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the scanner hint should show progress.
-		/// </summary>
-		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsHintIconVisible))]
 		private bool isHintProgressVisible;
+
+		/// <summary>
+		/// Gets a value indicating whether the scanner hint icon should be shown.
+		/// </summary>
+		public bool IsHintIconVisible => !this.IsHintProgressVisible;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the document details were captured and the success confirmation is showing.
+		/// </summary>
+		[ObservableProperty]
+		private bool isCaptureSucceeded;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the rear camera supports a torch.
+		/// </summary>
+		[ObservableProperty]
+		private bool canUseTorch;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the torch is on.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(TorchDescription))]
+		private bool isTorchOn;
+
+		/// <summary>
+		/// Gets the accessible description of the torch button.
+		/// </summary>
+		public string TorchDescription => ServiceRef.Localizer[this.IsTorchOn ? "QrScannerTorchOff" : "QrScannerTorchOn"];
 
 		/// <summary>
 		/// Gets or sets a value indicating whether a blocking validation overlay is visible.
@@ -240,7 +265,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets the blocking validation overlay primary action text.
 		/// </summary>
-		public string ValidationOverlayPrimaryActionText => ServiceRef.Localizer["KycDocumentScanRetryAction"];
+		public string ValidationOverlayPrimaryActionText => ServiceRef.Localizer["KycDocumentMrzScannerAnotherDocumentAction"];
 
 		/// <summary>
 		/// Gets the blocking validation overlay secondary action text.
@@ -328,12 +353,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				PreferRearCamera = true,
 				ContinuousAutoFocus = true,
 				FrameDeliveryInterval = TimeSpan.FromMilliseconds(150),
-				PreviewScaling = CameraPreviewScaling.Fit,
+				PreviewScaling = CameraPreviewScaling.Fill,
 				TargetFps = 15,
 				TargetResolution = new Size(1920d, 1080d)
 			};
 			this.CameraView.FrameReady += this.CameraView_FrameReady;
+			this.scanStartedAt = DateTimeOffset.UtcNow;
 			await this.CameraView.StartPreviewAsync(this.previewCancellationTokenSource.Token);
+			await this.ResolveTorchSupportAsync(this.previewCancellationTokenSource.Token);
 		}
 
 		/// <inheritdoc/>
@@ -342,6 +369,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.CameraView is not null)
 			{
 				this.CameraView.FrameReady -= this.CameraView_FrameReady;
+				await this.SetTorchAsync(false);
 				await this.CameraView.StopPreviewAsync();
 			}
 
@@ -371,7 +399,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand]
 		private async Task CancelAsync()
 		{
-			this.navigationArgs?.CompletionSource?.TrySetResult(null);
+			// Leaving during the success confirmation still delivers the captured details.
+			if (this.pendingSuccessfulResult is not null)
+				this.CompletePendingSuccessfulResult();
+			else
+				this.navigationArgs?.CompletionSource?.TrySetResult(null);
+
 			this.resultReturned = true;
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
@@ -386,7 +419,52 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.ResetUnsupportedDocumentEvidence();
 			this.frameStabilityTracker.Reset();
 			this.ResetScannerHintLock();
+			this.scanStartedAt = DateTimeOffset.UtcNow;
 			this.SetInitialScannerHint();
+		}
+
+		[RelayCommand]
+		private async Task ToggleTorchAsync()
+		{
+			if (!this.CanUseTorch)
+				return;
+
+			await this.SetTorchAsync(!this.IsTorchOn);
+		}
+
+		private async Task SetTorchAsync(bool IsEnabled)
+		{
+			if (this.CameraView?.Controller is not ICameraController Controller || (!IsEnabled && !this.IsTorchOn))
+				return;
+
+			try
+			{
+				await Controller.SetTorchAsync(IsEnabled, CancellationToken.None);
+				this.IsTorchOn = IsEnabled;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				this.IsTorchOn = false;
+			}
+		}
+
+		private async Task ResolveTorchSupportAsync(CancellationToken CancellationToken)
+		{
+			try
+			{
+				IReadOnlyList<CameraDescriptor> Cameras = await NeuroAccessMaui.Camera.CameraView.GetAvailableCamerasAsync(CancellationToken);
+				CameraDescriptor? Camera = Cameras.FirstOrDefault(Item => Item.Position == CameraPosition.Rear) ?? Cameras.FirstOrDefault();
+				this.CanUseTorch = Camera?.SupportsTorch == true;
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				this.CanUseTorch = false;
+			}
 		}
 
 		[RelayCommand]
@@ -703,9 +781,54 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("ChipAccessMrzLength", DocumentResult.Document?.MRZ_Information?.Length ?? 0),
 				new KeyValuePair<string, object?>("DocumentType", DocumentResult.Document?.DocumentType ?? string.Empty));
 
+			// Confirm before releasing the result, so the next step never starts behind a still-visible scanner.
+			await this.ShowCaptureSuccessAsync();
+			if (this.pendingSuccessfulResult is null)
+			{
+				this.LogScannerEvent("AcceptedMrzDeliveredDuringConfirmation");
+				return;
+			}
+
 			this.CompletePendingSuccessfulResult();
 			this.LogScannerEvent("NavigateBackAfterAcceptedMrz");
 			await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.NavigationService.GoBackAsync());
+		}
+
+		private async Task ShowCaptureSuccessAsync()
+		{
+			string Status = ServiceRef.Localizer["KycDocumentMrzScannerSuccessStatus"];
+			this.SetScannerHint(
+				ScannerHintKey.Success,
+				Status,
+				ServiceRef.Localizer["KycDocumentMrzScannerSuccessDetail"],
+				ScannerHintPriority.Success,
+				SuccessConfirmationDuration,
+				true);
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.IsCaptureSucceeded = true;
+
+				try
+				{
+					HapticFeedback.Default.Perform(HapticFeedbackType.Click);
+				}
+				catch (Exception)
+				{
+					// Devices without haptics still show the visual confirmation.
+				}
+
+				try
+				{
+					SemanticScreenReader.Default.Announce(Status);
+				}
+				catch (Exception)
+				{
+					// Announcements are best effort.
+				}
+			});
+
+			await Task.Delay(SuccessConfirmationDuration);
 		}
 
 		private void LogScannerEvent(string EventName, params KeyValuePair<string, object?>[] Tags)
@@ -1001,7 +1124,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					: Now + MinimumVisibleDuration;
 			}
 
-			this.SetScannerHintTone(ResolveScannerHintTone(Key, Priority));
+			this.SetScannerHintTone(ResolveScannerHintTone(Key, Priority), ResolveScannerHintIcon(Key));
 			this.SetScannerText(Status, Detail);
 		}
 
@@ -1017,6 +1140,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private static ScannerHintTone ResolveScannerHintTone(ScannerHintKey Key, ScannerHintPriority Priority)
 		{
+			if (Key == ScannerHintKey.Success)
+				return ScannerHintTone.Success;
+
 			if (Priority == ScannerHintPriority.Error)
 				return ScannerHintTone.Error;
 
@@ -1028,44 +1154,30 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				: ScannerHintTone.Neutral;
 		}
 
-		private void SetScannerHintTone(ScannerHintTone Tone)
+		private static Microsoft.Maui.Controls.Shapes.Geometry ResolveScannerHintIcon(ScannerHintKey Key)
+		{
+			return Key switch
+			{
+				ScannerHintKey.MoveCloser => Geometries.ScanQrIconPath,
+				ScannerHintKey.ReduceGlare or ScannerHintKey.Help => Geometries.InfoCirclePath,
+				ScannerHintKey.TransientFailure or ScannerHintKey.DocumentExpired or ScannerHintKey.UnsupportedDocument => Geometries.ErrorPath,
+				ScannerHintKey.Success => Geometries.SuccessCheckmarkPath,
+				_ => Geometries.PassportPath
+			};
+		}
+
+		private void SetScannerHintTone(ScannerHintTone Tone, Microsoft.Maui.Controls.Shapes.Geometry Icon)
 		{
 			Action ApplyTone = () =>
 			{
-				switch (Tone)
+				this.HintIcon = Icon;
+				this.HintAccentColor = Tone switch
 				{
-					case ScannerHintTone.Attention:
-						this.HintBackgroundColor = Color.FromArgb("#E62A2016");
-						this.HintStrokeColor = Color.FromArgb("#99F59E0B");
-						this.HintAccentColor = Color.FromArgb("#FBBF24");
-						this.HintDetailTextColor = Color.FromArgb("#FFF2E6");
-						this.IsHintProgressVisible = false;
-						break;
-
-					case ScannerHintTone.Progress:
-						this.HintBackgroundColor = Color.FromArgb("#E610202A");
-						this.HintStrokeColor = Color.FromArgb("#887DD3FC");
-						this.HintAccentColor = Color.FromArgb("#7DD3FC");
-						this.HintDetailTextColor = Color.FromArgb("#E8F7FF");
-						this.IsHintProgressVisible = true;
-						break;
-
-					case ScannerHintTone.Error:
-						this.HintBackgroundColor = Color.FromArgb("#E6311111");
-						this.HintStrokeColor = Color.FromArgb("#99F87171");
-						this.HintAccentColor = Color.FromArgb("#F87171");
-						this.HintDetailTextColor = Color.FromArgb("#FFE4E6");
-						this.IsHintProgressVisible = false;
-						break;
-
-					default:
-						this.HintBackgroundColor = Color.FromArgb("#DD1E1712");
-						this.HintStrokeColor = Color.FromArgb("#33FFFFFF");
-						this.HintAccentColor = Color.FromArgb("#FFF2E6");
-						this.HintDetailTextColor = Color.FromArgb("#FFF2E6");
-						this.IsHintProgressVisible = false;
-						break;
-				}
+					ScannerHintTone.Attention or ScannerHintTone.Error => ScannerColors.Attention,
+					ScannerHintTone.Progress or ScannerHintTone.Success => ScannerColors.Success,
+					_ => ScannerColors.Neutral
+				};
+				this.IsHintProgressVisible = Tone == ScannerHintTone.Progress;
 			};
 
 			if (MainThread.IsMainThread)
@@ -1121,9 +1233,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				case MrzCaptureGuidanceState.FitAllCorners:
 				case MrzCaptureGuidanceState.FindPage:
-					HintKey = ScannerHintKey.FindMrz;
-					Status = ServiceRef.Localizer["KycDocumentMrzScannerFindMrzStatus"];
-					Detail = ServiceRef.Localizer["KycDocumentMrzScannerFindMrzDetail"];
+				case MrzCaptureGuidanceState.ManualFallback:
+					// Searching for a while, or a signal that automatic capture is struggling, earns extra tips.
+					if (Result.GuidanceState == MrzCaptureGuidanceState.ManualFallback ||
+						DateTimeOffset.UtcNow - this.scanStartedAt >= HelpHintDelay)
+					{
+						HintKey = ScannerHintKey.Help;
+						Status = ServiceRef.Localizer["KycDocumentMrzScannerHelpStatus"];
+						Detail = ServiceRef.Localizer["KycDocumentMrzScannerHelpDetail"];
+						Priority = ScannerHintPriority.ImportantGuidance;
+						MinimumVisibleDuration = MinimumImportantGuidanceHintDuration;
+					}
+					else
+					{
+						HintKey = ScannerHintKey.FindMrz;
+						Status = ServiceRef.Localizer["KycDocumentMrzScannerFindMrzStatus"];
+						Detail = ServiceRef.Localizer["KycDocumentMrzScannerFindMrzDetail"];
+					}
 					break;
 
 				case MrzCaptureGuidanceState.HoldSteady:
@@ -1158,7 +1284,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.SetScannerHint(
 				ScannerHintKey.TransientFailure,
 				ServiceRef.Localizer["KycDocumentMrzScannerTryAgainStatus"],
-				ServiceRef.Localizer["KycDocumentMrzScannerFindMrzDetail"],
+				ServiceRef.Localizer["KycDocumentMrzScannerTryAgainDetail"],
 				ScannerHintPriority.ImportantGuidance,
 				MinimumTransientFailureHintDuration);
 		}
@@ -1183,7 +1309,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				nameof(MrzScanFailureCategory.GlareInMrzArea) => ServiceRef.Localizer["KycDocumentMrzScannerGlareDetail"],
 				nameof(MrzScanFailureCategory.DocumentTooBlurred) => ServiceRef.Localizer["KycDocumentMrzScannerMoveCloserDetail"],
 				nameof(MrzScanFailureCategory.DocumentNotFound) => ServiceRef.Localizer["KycDocumentMrzScannerFindMrzDetail"],
-				_ => ServiceRef.Localizer["KycDocumentMrzScannerFindMrzDetail"]
+				_ => ServiceRef.Localizer["KycDocumentMrzScannerTryAgainDetail"]
 			};
 
 			this.SetScannerHint(
@@ -1590,7 +1716,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			double PreviewContentWidth = ViewportWidth;
 			double PreviewContentHeight = PreviewContentWidth / PreviewAspectRatio;
 
-			if (PreviewContentHeight > ViewportHeight)
+			// The preview fills the view and is center-cropped, so the content may extend past the viewport.
+			if (PreviewContentHeight < ViewportHeight)
 			{
 				PreviewContentHeight = ViewportHeight;
 				PreviewContentWidth = PreviewContentHeight * PreviewAspectRatio;

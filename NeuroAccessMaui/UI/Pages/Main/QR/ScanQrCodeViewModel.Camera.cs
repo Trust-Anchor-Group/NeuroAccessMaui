@@ -56,9 +56,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <summary>Gets the current scan-frame color.</summary>
 		public Color FeedbackColor => this.State switch
 		{
-			QrScannerState.Accepted => Color.FromArgb("#5CE0A0"),
-			QrScannerState.Rejected or QrScannerState.CameraUnavailable => Color.FromArgb("#FFD166"),
-			_ => Colors.White
+			QrScannerState.Accepted => ScannerColors.Success,
+			QrScannerState.Rejected or QrScannerState.CameraUnavailable => ScannerColors.Attention,
+			_ => ScannerColors.Neutral
 		};
 
 		/// <summary>Gets localized feedback for the user and assistive technology.</summary>

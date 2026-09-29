@@ -3589,25 +3589,25 @@
     <value>Visa konto</value>
   </data>
   <data name="KycTravelDocumentTitle" xml:space="preserve">
-    <value>Personligt ID</value>
+    <value>Skanna ditt ID</value>
   </data>
   <data name="KycTravelDocumentSummaryTitle" xml:space="preserve">
-    <value>Dokumentchipavläsning</value>
+    <value>Verifiera med ditt ID</value>
   </data>
   <data name="KycTravelDocumentSummaryMissing" xml:space="preserve">
-    <value>Skanna en kompatibel resehandling för att bifoga en säker chipavläsning till ansökan.</value>
+    <value>Inte skannat ännu.</value>
   </data>
   <data name="KycTravelDocumentSummaryMrzReady" xml:space="preserve">
-    <value>Dokumentuppgifter sparade. Håll dokumentet mot telefonen för att läsa chippet innan du ansöker.</value>
+    <value>Dokumentuppgifterna är sparade. Läs chipet för att slutföra.</value>
   </data>
   <data name="KycTravelDocumentSummaryReadoutReady" xml:space="preserve">
-    <value>Chipavläsningen är klar och bifogas till den här ansökan.</value>
+    <value>Chipet är läst. Det läggs till i din ansökan.</value>
   </data>
   <data name="KycTravelDocumentOpenButton" xml:space="preserve">
-    <value>Använd dokumentchip</value>
+    <value>Skanna ditt ID</value>
   </data>
   <data name="KycTravelDocumentDescription" xml:space="preserve">
-    <value>Skanna de maskinläsbara raderna på resehandlingen och håll sedan dokumentet mot telefonen för att läsa chippet. Den säkra avläsningen bifogas som NFC.xml när du ansöker.</value>
+    <value>Skanna ditt pass eller id-kort och håll det mot telefonen. Vi fyller i dina uppgifter och lägger till en säker chipkontroll i din ansökan.</value>
   </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
     <value>Leta efter den här symbolen</value>
@@ -3634,7 +3634,7 @@
     <value>Ja, skanna dokument</value>
   </data>
   <data name="KycTravelDocumentUnsureButton" xml:space="preserve">
-    <value>Nej</value>
+    <value>Nej, fyll i manuellt</value>
   </data>
   <data name="KycTravelDocumentMrzStepTitle" xml:space="preserve">
     <value>Skanna de maskinläsbara raderna</value>
@@ -3688,13 +3688,13 @@
     <value>Försök igen</value>
   </data>
   <data name="KycTravelDocumentRescanButton" xml:space="preserve">
-    <value>Skanna dokumentets uppgifter igen</value>
+    <value>Skanna uppgifterna igen</value>
   </data>
   <data name="KycTravelDocumentContinueButton" xml:space="preserve">
     <value>Fortsätt</value>
   </data>
   <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
-    <value>Fortsätt manuellt</value>
+    <value>Fortsätt utan chip</value>
   </data>
   <data name="KycTravelDocumentSuccessTitle" xml:space="preserve">
     <value>Dokumentchip läst</value>
@@ -3709,7 +3709,7 @@
     <value>MRZ kunde inte valideras. Kontrollera dokumentnummer, födelsedatum, utgångsdatum och kontrollsiffror.</value>
   </data>
   <data name="KycTravelDocumentReadoutReady" xml:space="preserve">
-    <value>Chipavläsningen är redan klar för den här ansökan.</value>
+    <value>Chipet har redan lästs.</value>
   </data>
   <data name="KycTravelDocumentNfcReady" xml:space="preserve">
     <value>Redo att läsa. Håll resehandlingen nära telefonen och håll den stilla.</value>
@@ -3724,10 +3724,10 @@
     <value>Dokumentet har lästs in. Du kan flytta telefonen.</value>
   </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
-    <value>Chipavläsning är inte tillgänglig. Du kan fortsätta manuellt.</value>
+    <value>Chipavläsning är inte tillgänglig. Du kan fortsätta utan chip.</value>
   </data>
   <data name="KycTravelDocumentNfcReservationFailed" xml:space="preserve">
-    <value>Det gick inte att förbereda säker verifiering. Försök igen eller fortsätt manuellt.</value>
+    <value>Det gick inte att förbereda säker verifiering. Försök igen eller fortsätt utan chip.</value>
   </data>
   <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
     <value>Skanningen avbröts.</value>
@@ -3855,5 +3855,86 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="KycTravelDocumentNfcHelpIdCard" xml:space="preserve">
     <value>Hittar du inte chipet? Ta av eventuellt telefonskal och för kortet långsamt över telefonens baksida.</value>
+  </data>
+  <data name="KycDocumentMrzScannerTitle" xml:space="preserve">
+    <value>Skanna ditt dokument</value>
+  </data>
+  <data name="KycDocumentMrzScannerBackAction" xml:space="preserve">
+    <value>Gå tillbaka</value>
+  </data>
+  <data name="KycDocumentMrzScannerInitialStatus" xml:space="preserve">
+    <value>Placera dokumentet i ramen</value>
+  </data>
+  <data name="KycDocumentMrzScannerInitialDetail" xml:space="preserve">
+    <value>Pass: fotosidan. Id-kort: baksidan.</value>
+  </data>
+  <data name="KycDocumentMrzScannerFindMrzStatus" xml:space="preserve">
+    <value>Placera dokumentet i ramen</value>
+  </data>
+  <data name="KycDocumentMrzScannerFindMrzDetail" xml:space="preserve">
+    <value>Pass: fotosidan. Id-kort: baksidan.</value>
+  </data>
+  <data name="KycDocumentMrzScannerConfirmingStatus" xml:space="preserve">
+    <value>Håll stilla</value>
+  </data>
+  <data name="KycDocumentMrzScannerKeepStillDetail" xml:space="preserve">
+    <value>Läser texten längst ner…</value>
+  </data>
+  <data name="KycDocumentMrzScannerOneMoreDetail" xml:space="preserve">
+    <value>Läser texten längst ner…</value>
+  </data>
+  <data name="KycDocumentMrzScannerExpiredStatus" xml:space="preserve">
+    <value>Dokumentet har gått ut</value>
+  </data>
+  <data name="KycDocumentMrzScannerExpiredDetail" xml:space="preserve">
+    <value>Utgångna dokument kan inte användas. Skanna ett giltigt pass eller id-kort.</value>
+  </data>
+  <data name="KycDocumentMrzScannerUnsupportedStatus" xml:space="preserve">
+    <value>Dokumentet stöds inte</value>
+  </data>
+  <data name="KycDocumentMrzScannerUnsupportedDetail" xml:space="preserve">
+    <value>Skanna ett pass eller nationellt id-kort.</value>
+  </data>
+  <data name="KycDocumentMrzScannerGlareStatus" xml:space="preserve">
+    <value>Minska reflexer</value>
+  </data>
+  <data name="KycDocumentMrzScannerGlareDetail" xml:space="preserve">
+    <value>Luta dokumentet lite eller flytta dig från starkt ljus.</value>
+  </data>
+  <data name="KycDocumentMrzScannerMoveCloserStatus" xml:space="preserve">
+    <value>Gå närmare</value>
+  </data>
+  <data name="KycDocumentMrzScannerMoveCloserDetail" xml:space="preserve">
+    <value>Fyll ramen med dokumentet.</value>
+  </data>
+  <data name="KycDocumentMrzScannerTryAgainStatus" xml:space="preserve">
+    <value>Vi försöker igen</value>
+  </data>
+  <data name="KycDocumentMrzScannerTryAgainDetail" xml:space="preserve">
+    <value>Håll dokumentet plant och se till att raderna längst ner är skarpa.</value>
+  </data>
+  <data name="KycDocumentMrzScannerHelpStatus" xml:space="preserve">
+    <value>Problem att skanna?</value>
+  </data>
+  <data name="KycDocumentMrzScannerHelpDetail" xml:space="preserve">
+    <value>Använd bra ljus, undvik reflexer och håll telefonen parallellt med dokumentet.</value>
+  </data>
+  <data name="KycDocumentMrzScannerSuccessStatus" xml:space="preserve">
+    <value>Klart</value>
+  </data>
+  <data name="KycDocumentMrzScannerSuccessDetail" xml:space="preserve">
+    <value>Dokumentuppgifterna är inlästa.</value>
+  </data>
+  <data name="KycDocumentMrzScannerAnotherDocumentAction" xml:space="preserve">
+    <value>Skanna ett annat dokument</value>
+  </data>
+  <data name="KycDocumentScanRetryAction" xml:space="preserve">
+    <value>Försök igen</value>
+  </data>
+  <data name="KycDocumentScanCameraPermissionTitle" xml:space="preserve">
+    <value>Kameraåtkomst behövs</value>
+  </data>
+  <data name="KycDocumentScanCameraPermissionDescription" xml:space="preserve">
+    <value>Tillåt kameraåtkomst för att skanna ditt dokument. Du kan försöka igen när du har aktiverat den.</value>
   </data>
 </root>
