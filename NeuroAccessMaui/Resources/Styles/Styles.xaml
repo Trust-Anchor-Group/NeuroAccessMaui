@@ -3,7 +3,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					xmlns:s="clr-namespace:System;assembly=mscorlib"
-					xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+					xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					x:Class="NeuroAccessMaui.Resources.Styles.Styles">
 
 	<s:Double x:Key="SmallSpacing">8</s:Double>
 	<s:Double x:Key="MediumSpacing">16</s:Double>
