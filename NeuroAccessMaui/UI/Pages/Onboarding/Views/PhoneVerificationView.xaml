@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pages:BaseContentView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.PhoneVerificationView"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+             xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+             xmlns:pages="clr-namespace:NeuroAccessMaui.UI.Pages"
+             xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+             x:DataType="{x:Null}">
+    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}"
+                         AutomationId="screen_phone_verification">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize OnboardingPhonePageTitle}" />
+
+            <Label Text="{l:Localize OnboardingPhonePageDetails}" />
+
+            <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                <Label Style="{DynamicResource SectionTitleLabel}"
+                       Text="{l:Localize PhoneSectionTitle}" />
+
+                <Border Padding="{DynamicResource EditMediumMargins}"
+                        Style="{DynamicResource ItemOuterBorder}"
+                        BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+                        Stroke="{DynamicResource InputFieldsSurfaceStroke}">
+                    <Grid RowDefinitions="auto"
+                          ColumnDefinitions="auto,*"
+                          ColumnSpacing="{DynamicResource MediumSpacing}">
+                        <controls:PhoneCountryCodePickerView Grid.Column="0"
+                                                             DialCode="{Binding SelectedCountry.DialCode}"
+                                                             SelectCommand="{Binding SelectPhoneCodeCommand}" />
+
+                        <controls:PhoneNumberInputView Grid.Column="1"
+                                                       PhoneNumber="{Binding PhoneNumber, Mode=TwoWay}"
+                                                       TypeIsValid="{Binding TypeIsValid, Mode=TwoWay}"
+                                                       LengthIsValid="{Binding LengthIsValid, Mode=TwoWay}"
+                                                       IsReadOnly="{Binding IsPhoneReadOnly}" />
+                    </Grid>
+                </Border>
+
+                <Grid RowDefinitions="auto"
+                      ColumnDefinitions="auto,*"
+                      HorizontalOptions="Center"
+                      ColumnSpacing="{DynamicResource SmallSpacing}"
+                      IsVisible="{Binding ShowValidationError}">
+                    <Path Grid.Column="0"
+                          VerticalOptions="Center"
+                          HeightRequest="20"
+                          WidthRequest="20"
+                          Aspect="Uniform"
+                          Data="{x:Static ui:Geometries.InfoCirclePath}"
+                          Fill="{DynamicResource TnPDangerFigureWL}" />
+
+                    <Label Grid.Column="1"
+                           VerticalOptions="Center"
+                           Text="{Binding LocalizedValidationError}"
+                           TextColor="{DynamicResource TnPDangerFigureWL}" />
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
+        <controls:TextButton Style="{DynamicResource FilledTextButton}"
+                             Command="{Binding SendCodeCommand}"
+                             LabelData="{Binding LocalizedSendCodeText}"
+                             AutomationId="button_send_phone_code" />
+    </VerticalStackLayout>
+</pages:BaseContentView>
