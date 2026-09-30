@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="DevStorybook.Pages.StoryViewerPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls;assembly=NeuroAccessMaui"
+             xmlns:storybookControls="clr-namespace:DevStorybook.Controls"
+             xmlns:viewmodels="clr-namespace:DevStorybook.ViewModels"
+             x:DataType="viewmodels:StoryViewerViewModel"
+             Title="{Binding Subtitle}">
+    <Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+        <Grid x:Name="StorybookChrome" RowDefinitions="Auto,*">
+            <Grid Padding="16,10" BackgroundColor="{DynamicResource SurfaceElevation1WL}">
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="2">
+                    <Label FontFamily="SpaceGroteskBold" FontSize="17" Text="{Binding Title}" />
+                    <Border Grid.Column="1" Grid.RowSpan="2" Padding="8,3"
+                            BackgroundColor="{DynamicResource TnPInfobgWL}"
+                            Stroke="Transparent" StrokeShape="RoundRectangle 20">
+                        <Label FontFamily="SpaceGroteskSemiBold" FontSize="10"
+                               Text="{Binding StoryTypeLabel}" TextColor="{DynamicResource TnPInfoContentWL}" />
+                    </Border>
+                    <Label Grid.Row="1" FontSize="13" Text="{Binding Subtitle}"
+                           TextColor="{DynamicResource ContentSecondaryWL}" />
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <storybookControls:OnboardingPreviewHost x:Name="OnboardingPreviewHost" IsVisible="False" />
+                <ContentView x:Name="StandaloneStoryHost" IsVisible="False" />
+
+                <ScrollView IsVisible="{Binding IsComponentStory}">
+                    <VerticalStackLayout Padding="24" Spacing="16">
+                        <Border Padding="16,12"
+                                BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+                                Stroke="{DynamicResource InputFieldsSurfaceStroke}"
+                                StrokeShape="RoundRectangle 10">
+                            <Label Text="Isolated production component. Local interaction is enabled; backend and flow navigation are not used."
+                                   TextColor="{DynamicResource ContentSecondaryWL}" />
+                        </Border>
+
+                        <Border IsVisible="{Binding IsCountryPickerStory}"
+                                Padding="16,12"
+                                Style="{DynamicResource ItemOuterBorder}"
+                                BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+                                Stroke="{DynamicResource InputFieldsSurfaceStroke}">
+                            <controls:PhoneCountryCodePickerView DialCode="{Binding SelectedCountry.DialCode}"
+                                                                 SelectCommand="{Binding SelectPhoneCodeCommand}"
+                                                                 IsEnabled="{Binding IsComponentEnabled}" />
+                        </Border>
+
+                        <controls:PhoneCountrySelectionView IsVisible="{Binding IsCountrySelectionVisible}"
+                                                            HeightRequest="520"
+                                                            CountrySelected="PhoneCountrySelectionView_CountrySelected" />
+
+                        <VerticalStackLayout IsVisible="{Binding IsPhoneInputStory}" Spacing="8">
+                            <Border Padding="16,0"
+                                    Style="{DynamicResource ItemOuterBorder}"
+                                    BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+                                    Stroke="{DynamicResource InputFieldsSurfaceStroke}">
+                                <controls:PhoneNumberInputView PhoneNumber="{Binding PhoneNumber, Mode=TwoWay}"
+                                                               TypeIsValid="{Binding TypeIsValid, Mode=TwoWay}"
+                                                               LengthIsValid="{Binding LengthIsValid, Mode=TwoWay}"
+                                                               IsInputEnabled="{Binding IsComponentEnabled}"
+                                                               ShouldFocus="{Binding ShouldFocusInput}" />
+                            </Border>
+                            <Label IsVisible="{Binding ShowValidationError}"
+                                   HorizontalOptions="Center"
+                                   Text="{Binding LocalizedValidationError}"
+                                   TextColor="{DynamicResource TnPDangerFigureWL}" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Border Margin="16" Padding="12"
+                        VerticalOptions="Start"
+                        IsVisible="{Binding HasStatus}"
+                        BackgroundColor="{Binding StatusColor}"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8">
+                    <HorizontalStackLayout Spacing="10">
+                        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                           IsVisible="{Binding IsBusy}"
+                                           Color="{DynamicResource ContentPrimaryWL}" />
+                        <Label VerticalOptions="Center" Text="{Binding StatusMessage}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <storybookControls:FullscreenPreviewHost x:Name="FullscreenPreviewHost"
+                                                 IsVisible="False" />
+    </Grid>
+</ContentPage>
