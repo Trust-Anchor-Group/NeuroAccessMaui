@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView x:Class="NeuroAccessMaui.UI.Controls.PhoneCountrySelectionView"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+             xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data">
+    <Grid RowDefinitions="Auto,*"
+          ColumnDefinitions="*"
+          AutomationId="phone_country_selection">
+        <SearchBar x:Name="InnerSearchBar"
+                   Margin="{DynamicResource MediumSpacing}"
+                   TextChanged="SearchBar_TextChanged"
+                   Placeholder="{l:Localize Search}"
+                   AutomationId="input_search_phone_country" />
+
+        <CollectionView x:Name="InnerListView"
+                        Grid.Row="1"
+                        Margin="{DynamicResource MediumSpacing}"
+                        ItemsSource="{x:Static data:ISO_3166_1.Countries}"
+                        SelectionMode="Single"
+                        SelectionChanged="InnerListView_SelectionChanged"
+                        AutomationId="list_phone_countries">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="data:ISO_3166_Country">
+                    <Grid ColumnDefinitions="Auto,*"
+                          Padding="{DynamicResource SmallSpacing}"
+                          ColumnSpacing="8"
+                          AutomationId="{Binding Alpha2, StringFormat='option_phone_country_{0}'}">
+                        <Label Text="{Binding DialCode}" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Name}" VerticalOptions="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentView>
