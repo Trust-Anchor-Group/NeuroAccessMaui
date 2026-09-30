@@ -20,6 +20,7 @@ using NeuroAccessMaui.Services.Push;
 
 namespace NeuroAccessMaui
 {
+#if !STORYBOOK_REFERENCE
 	[Activity(Exported = true, Theme = "@style/Maui.SplashTheme", MainLauncher = true, Name = "com.tag.NeuroAccess.MainActivity",
 		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density | ConfigChanges.Locale,
 		ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
@@ -37,6 +38,7 @@ namespace NeuroAccessMaui
 			nameof(NotificationAction.OpenSettings)
 		],
 		Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable])]
+#endif
 	public class MainActivity : MauiAppCompatActivity
 	{
 		private static NfcAdapter? nfcAdapter = null;
