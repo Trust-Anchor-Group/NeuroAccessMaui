@@ -7,7 +7,7 @@
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                               x:DataType="viewmodels:FinalizeOnboardingStepViewModel">
+                               x:DataType="{x:Null}">
     <Grid RowSpacing="{DynamicResource LargeSpacing}"
           RowDefinitions="*, auto"
           AutomationId="screen_success">

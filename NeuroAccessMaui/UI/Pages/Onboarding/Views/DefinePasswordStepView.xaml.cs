@@ -4,14 +4,21 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.Views
 {
 	public partial class DefinePasswordStepView : BaseOnboardingView
 	{
+		/// <summary>
+		/// Initializes a new presentation-only instance of the <see cref="DefinePasswordStepView"/> class.
+		/// </summary>
+		public DefinePasswordStepView()
+		{
+			this.InitializeComponent();
+		}
+
 		public static DefinePasswordStepView Create()
 		{
 			return Create<DefinePasswordStepView>();
 		}
 
-		public DefinePasswordStepView(DefinePasswordOnboardingStepViewModel viewModel)
+		public DefinePasswordStepView(DefinePasswordOnboardingStepViewModel viewModel) : this()
 		{
-			this.InitializeComponent();
 			this.ContentViewModel = viewModel;
 		}
 	}

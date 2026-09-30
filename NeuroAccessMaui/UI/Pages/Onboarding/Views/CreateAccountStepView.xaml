@@ -6,7 +6,7 @@
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                               x:DataType="viewmodels:CreateAccountOnboardingStepViewModel">
+                               x:DataType="{x:Null}">
     <Grid VerticalOptions="Center">
         <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}"
                              VerticalOptions="Center">

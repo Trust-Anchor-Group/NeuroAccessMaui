@@ -7,7 +7,7 @@
                                xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                               x:DataType="viewmodels:WelcomeOnboardingStepViewModel">
+                               x:DataType="{x:Null}">
     <onboarding:BaseOnboardingView.Resources>
         <Style x:Key="GetStartedCompositeEntryLabel"
                TargetType="Label"
