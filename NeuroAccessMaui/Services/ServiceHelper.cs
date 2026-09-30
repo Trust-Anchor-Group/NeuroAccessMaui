@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.Services
 
 			try
 			{
-				Service = MauiProgram.Current?.Services?.GetService<T>();
+				Service = GetServiceProvider()?.GetService<T>();
 			}
 			catch (Exception ex)
 			{
@@ -30,12 +30,17 @@ namespace NeuroAccessMaui.Services
 
 		public static object GetService(Type ServiceType)
 		{
-			object? Service = MauiProgram.Current?.Services?.GetService(ServiceType);
+			object? Service = GetServiceProvider()?.GetService(ServiceType);
 
 			if (Service is not null)
 				return Service;
 			else
 				throw new ArgumentException("Service not found: " + ServiceType);
+		}
+
+		private static IServiceProvider? GetServiceProvider()
+		{
+			return MauiProgram.Current?.Services ?? Microsoft.Maui.IPlatformApplication.Current?.Services;
 		}
 	}
 }
