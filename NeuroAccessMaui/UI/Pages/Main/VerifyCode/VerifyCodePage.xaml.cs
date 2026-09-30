@@ -14,12 +14,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
 		/// </summary>
 		public VerifyCodePage()
+			: this(new VerifyCodeViewModel(ServiceRef.NavigationService.PopLatestArgs<VerifyCodeNavigationArgs>()))
+		{
+		}
+
+		/// <summary>
+		/// Creates a presentation instance backed by the supplied view model.
+		/// </summary>
+		/// <param name="ViewModel">The view model that supplies verification-code state and commands.</param>
+		public VerifyCodePage(BaseViewModel ViewModel)
 		{
 			this.InitializeComponent();
-
-			VerifyCodeViewModel ViewModel = new(ServiceRef.NavigationService.PopLatestArgs<VerifyCodeNavigationArgs>());
-			this.ContentPageModel = ViewModel;
-
 			this.innerLabels = [
 				this.InnerCode1,
 				this.InnerCode2,
@@ -29,7 +34,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				this.InnerCode6
 				];
 
-			this.InnerCodeEntry.Text = string.Empty;
+			this.ContentPageModel = ViewModel;
+			this.InnerCodeEntry.Text ??= string.Empty;
 		}
 
 		/// <inheritdoc/>
@@ -46,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 
 		private async void InnerCodeEntry_TextChanged(object? Sender, TextChangedEventArgs e)
 		{
-			string NewText = e.NewTextValue;
+			string NewText = e.NewTextValue ?? string.Empty;
 			int NewLength = NewText.Length;
 
 			bool IsValid = (NewLength <= this.innerLabels.Count) || NewText.ToCharArray().All(ch => !"0123456789".Contains(ch));
