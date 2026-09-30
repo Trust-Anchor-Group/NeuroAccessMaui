@@ -52,6 +52,14 @@
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
+	<ItemGroup Condition="'$(StorybookReferenceBuild)' == 'true' and '$(TargetFramework)' == 'net10.0-android'">
+		<Compile Remove="Platforms\Android\MainApplication.cs" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(StorybookReferenceBuild)' == 'true'">
+		<DefineConstants>$(DefineConstants);STORYBOOK_REFERENCE</DefineConstants>
+	</PropertyGroup>
+
 	<!-- If on Mac, add iOS as well -->
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
 		<TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
