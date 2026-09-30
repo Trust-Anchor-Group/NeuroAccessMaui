@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="NeuroAccessMaui.UI.Controls.PhoneCountryCodePickerView"
+             x:Name="ThisControl"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
+    <HorizontalStackLayout VerticalOptions="Fill"
+                           Spacing="{DynamicResource SmallSpacing}"
+                           AutomationId="button_select_phone_country">
+        <HorizontalStackLayout.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding SelectCommand, Source={x:Reference ThisControl}}" />
+        </HorizontalStackLayout.GestureRecognizers>
+
+        <Label VerticalOptions="Center"
+               Text="{Binding DialCode, Source={x:Reference ThisControl}}" />
+
+        <Path VerticalOptions="Center"
+              HeightRequest="5"
+              WidthRequest="10"
+              Aspect="Uniform"
+              Data="{x:Static ui:Geometries.DropDownArrowPath}"
+              Fill="{DynamicResource InputFieldsContentPrimary}" />
+    </HorizontalStackLayout>
+</ContentView>
