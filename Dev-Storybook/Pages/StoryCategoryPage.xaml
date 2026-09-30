@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="DevStorybook.Pages.StoryCategoryPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:DevStorybook.ViewModels"
+             x:DataType="viewmodels:StoryCategoryViewModel"
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+            <VerticalStackLayout Spacing="6">
+                <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
+                <Label Text="{Binding Description}" TextColor="{DynamicResource ContentSecondaryWL}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Groups}" Spacing="22">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:StoryCatalogGroupViewModel">
+                        <VerticalStackLayout Spacing="9">
+                            <Label Style="{DynamicResource SectionTitleLabel}" Text="{Binding Name}" />
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="9">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:CatalogNavigationItemViewModel">
+                                        <Border Padding="16,12"
+                                                BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+                                                Stroke="{DynamicResource InputFieldsSurfaceStroke}"
+                                                StrokeShape="RoundRectangle 10">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding OpenCommand}" />
+                                            </Border.GestureRecognizers>
+                                            <VerticalStackLayout Spacing="3">
+                                                <Label FontFamily="SpaceGroteskSemiBold" FontSize="16" Text="{Binding Title}" />
+                                                <Label IsVisible="{Binding HasSubtitle}" FontSize="12" Text="{Binding Subtitle}"
+                                                       TextColor="{DynamicResource ContentSecondaryWL}" />
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

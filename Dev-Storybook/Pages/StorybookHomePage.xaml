@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="DevStorybook.Pages.StorybookHomePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:DevStorybook.ViewModels"
+             x:DataType="viewmodels:StorybookHomeViewModel"
+             Title="Dev Storybook">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="24" RowSpacing="16">
+        <VerticalStackLayout Spacing="6">
+            <Label Style="{DynamicResource PageTitleLabel}" Text="Dev Storybook" />
+            <Label Text="Search and render production UI without completing a flow."
+                   TextColor="{DynamicResource ContentSecondaryWL}" />
+        </VerticalStackLayout>
+
+        <SearchBar Grid.Row="1"
+                   AutomationId="input_story_search"
+                   Placeholder="Search screens, states, components, tags..."
+                   Text="{Binding SearchText}" />
+
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Spacing="20">
+                <VerticalStackLayout IsVisible="{Binding IsSearching}" Spacing="10">
+                    <Label Style="{DynamicResource SectionTitleLabel}" Text="SEARCH RESULTS" />
+                    <Label IsVisible="{Binding HasNoSearchResults}"
+                           Text="No matching stories."
+                           TextColor="{DynamicResource ContentSecondaryWL}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding SearchResults}" Spacing="10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:StoryListItemViewModel">
+                                <Border Padding="16,12"
+                                        BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+                                        Stroke="{DynamicResource InputFieldsSurfaceStroke}"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="4" ColumnSpacing="10">
+                                        <Label FontFamily="SpaceGroteskSemiBold" FontSize="16" Text="{Binding DisplayName}" />
+                                        <Border Grid.Column="1" Padding="8,3" BackgroundColor="{DynamicResource TnPInfobgWL}"
+                                                Stroke="Transparent" StrokeShape="RoundRectangle 20">
+                                            <Label FontFamily="SpaceGroteskSemiBold" FontSize="10"
+                                                   Text="{Binding TypeLabel}" TextColor="{DynamicResource TnPInfoContentWL}" />
+                                        </Border>
+                                        <Label Grid.Row="1" Grid.ColumnSpan="2" FontSize="12" Text="{Binding Breadcrumb}"
+                                               TextColor="{DynamicResource ContentSecondaryWL}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding ShowCategories}" Spacing="10">
+                    <Label Style="{DynamicResource SectionTitleLabel}" Text="CATALOG" />
+                    <Button Style="{DynamicResource StoryCardButton}"
+                            Text="Onboarding"
+                            Command="{Binding OpenOnboardingCommand}" />
+                    <Button Style="{DynamicResource StoryCardButton}"
+                            Text="Shared Components"
+                            Command="{Binding OpenSharedComponentsCommand}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
