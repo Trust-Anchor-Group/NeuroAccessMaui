@@ -148,12 +148,17 @@ namespace NeuroAccessMaui
 
 		private static void InitMauiControlsHandlers()
 		{
-			    // Layouts (Grid, StackLayout, etc.)
-			LayoutHandler.Mapper.AppendToMapping("GlobalIgnoreSafeArea", (handler, view) =>
+			// Layouts (Grid, StackLayout, etc.)
+			LayoutHandler.Mapper.AppendToMapping("GlobalIgnoreSafeArea", (Handler, View) =>
 			{
-				// Sets once at handler creation
-				if(view is Microsoft.Maui.Controls.Layout layout)
-				layout.IgnoreSafeArea = true;
+				if (View is Microsoft.Maui.Controls.Layout Layout)
+				{
+#if ANDROID
+					Layout.IgnoreSafeArea = false;
+#elif IOS
+					Layout.IgnoreSafeArea = true;
+#endif
+				}
 			});
 
 #if IOS
@@ -200,6 +205,11 @@ namespace NeuroAccessMaui
 				handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
 			});
 #elif ANDROID
+			PageHandler.Mapper.AppendToMapping("SystemWindowInsets", (Handler, View) =>
+			{
+				Handler.PlatformView.SetFitsSystemWindows(true);
+			});
+
 			ScrollViewHandler.Mapper.AppendToMapping("OverScrollModeScrollViewHandler", (handler, view) =>
 			{
 				handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
