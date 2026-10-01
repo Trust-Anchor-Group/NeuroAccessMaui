@@ -4,8 +4,12 @@ using DevStorybook.Pages;
 using DevStorybook.Services;
 using DevStorybook.ViewModels;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Handlers;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.UI.Controls;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using SkiaSharp.Views.Maui.Handlers;
 
 namespace DevStorybook
 {
@@ -20,10 +24,19 @@ namespace DevStorybook
 		/// <returns>The configured MAUI application.</returns>
 		public static MauiApp CreateMauiApp()
 		{
+			ConfigureControlMappings();
+
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 			Builder.UseMauiApp<App>();
 			Builder.UseMauiCommunityToolkit();
 			Builder.UseLocalizationManager<AppResources>();
+			Builder.UseSkiaSharp();
+
+			Builder.ConfigureMauiHandlers(Handlers =>
+			{
+				Handlers.AddHandler<AutoHeightSKCanvasView, SKCanvasViewHandler>();
+				Handlers.AddHandler(typeof(AspectRatioLayout), typeof(LayoutHandler));
+			});
 
 			Builder.ConfigureFonts(Fonts =>
 			{
@@ -51,6 +64,17 @@ namespace DevStorybook
 			Builder.Services.AddTransient<StoryViewerPage>();
 
 			return Builder.Build();
+		}
+
+		private static void ConfigureControlMappings()
+		{
+#if ANDROID
+			ViewHandler.ViewMapper.AppendToMapping(nameof(Microsoft.Maui.IView.AutomationId), (Handler, View) =>
+			{
+				if (!string.IsNullOrWhiteSpace(View.AutomationId))
+					ViewHandler.MapSemantics(Handler, View);
+			});
+#endif
 		}
 	}
 }
