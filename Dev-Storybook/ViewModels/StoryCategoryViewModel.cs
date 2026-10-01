@@ -12,6 +12,7 @@ namespace DevStorybook.ViewModels
 		private readonly IStorybookNavigationService navigationService;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(AutomationId))]
 		private string title = string.Empty;
 
 		[ObservableProperty]
@@ -28,6 +29,9 @@ namespace DevStorybook.ViewModels
 		{
 			this.navigationService = NavigationService;
 		}
+
+		/// <summary>Gets the stable identifier for the active category page.</summary>
+		public string AutomationId => StorybookAutomationIds.Create("storybook", "page", "category", this.Title);
 
 		/// <summary>
 		/// Loads the requested catalog category.
@@ -59,6 +63,7 @@ namespace DevStorybook.ViewModels
 					Group.Select(Story => new CatalogNavigationItemViewModel(
 						Story.Screen,
 						$"{StoryRegistry.GetScreenStories(Story.ScreenKey).Count} stories",
+						StorybookAutomationIds.Create("storybook", "screen", Story.Screen),
 						() => this.navigationService.OpenScreenAsync(Story.ScreenKey)))
 						.ToList()))
 				.ToList();
@@ -78,6 +83,7 @@ namespace DevStorybook.ViewModels
 						.Select(Story => new CatalogNavigationItemViewModel(
 							Story.Name,
 							Story.Breadcrumb,
+							StorybookAutomationIds.Create("storybook", "component", Story.Feature, Story.Name),
 							() => this.navigationService.OpenStoryAsync(Story)))
 						.ToList()))
 				.ToList();

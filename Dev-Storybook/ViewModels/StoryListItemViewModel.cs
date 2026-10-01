@@ -41,6 +41,11 @@ namespace DevStorybook.ViewModels
 			_ => this.Story.StoryType.ToString().ToUpperInvariant()
 		};
 
+		/// <summary>Gets the stable identifier used to open this story in UI automation.</summary>
+		public string AutomationId => this.Story.StoryType == StoryType.FullScreen
+			? StorybookAutomationIds.Create("storybook", "story", this.Story.Screen, "fullscreen")
+			: StorybookAutomationIds.Create("storybook", "story", this.Story.Screen, this.Story.StoryType.ToString(), this.Story.Name);
+
 		/// <summary>Gets the command that opens the story directly.</summary>
 		public IAsyncRelayCommand OpenCommand { get; }
 	}

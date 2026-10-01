@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DevStorybook.FakeServices;
+using DevStorybook.Services;
 using DevStorybook.Stories;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Data;
@@ -26,6 +27,9 @@ namespace DevStorybook.ViewModels
 
 		[ObservableProperty]
 		private string storyTypeLabel = string.Empty;
+
+		[ObservableProperty]
+		private string automationId = "storybook_page_story";
 
 		[ObservableProperty]
 		private bool isComponentStory;
@@ -121,6 +125,9 @@ namespace DevStorybook.ViewModels
 			this.Reset();
 			this.Title = Story.Feature;
 			this.Subtitle = Story.Name;
+			this.AutomationId = Story.StoryType == StoryType.FullScreen
+				? StorybookAutomationIds.Create("storybook", "page", "story", Story.Screen, "fullscreen")
+				: StorybookAutomationIds.Create("storybook", "page", "story", Story.Screen, Story.StoryType.ToString(), Story.Name);
 			this.StoryTypeLabel = Story.StoryType switch
 			{
 				StoryType.FullScreen => "FULL SCREEN",

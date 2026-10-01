@@ -12,6 +12,7 @@ namespace DevStorybook.ViewModels
 		private readonly IStorybookNavigationService navigationService;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(AutomationId))]
 		private string title = string.Empty;
 
 		[ObservableProperty]
@@ -37,6 +38,9 @@ namespace DevStorybook.ViewModels
 
 		/// <summary>Gets whether the screen exposes isolated components.</summary>
 		public bool HasComponents => this.ComponentStories.Count > 0;
+
+		/// <summary>Gets the stable identifier for the active screen-detail page.</summary>
+		public string AutomationId => StorybookAutomationIds.Create("storybook", "page", "screen", this.Title);
 
 		/// <summary>
 		/// Loads the detail catalog for a screen.

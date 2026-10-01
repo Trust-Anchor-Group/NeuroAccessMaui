@@ -5,7 +5,8 @@
              xmlns:viewmodels="clr-namespace:DevStorybook.ViewModels"
              x:DataType="viewmodels:StorybookHomeViewModel"
              Title="Dev Storybook">
-    <Grid RowDefinitions="Auto,Auto,*" Padding="24" RowSpacing="16">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="24" RowSpacing="16"
+          AutomationId="storybook_page_home">
         <VerticalStackLayout Spacing="6">
             <Label Style="{DynamicResource PageTitleLabel}" Text="Dev Storybook" />
             <Label Text="Search and render production UI without completing a flow."
@@ -22,12 +23,14 @@
                 <VerticalStackLayout IsVisible="{Binding IsSearching}" Spacing="10">
                     <Label Style="{DynamicResource SectionTitleLabel}" Text="SEARCH RESULTS" />
                     <Label IsVisible="{Binding HasNoSearchResults}"
+                           AutomationId="storybook_search_empty"
                            Text="No matching stories."
                            TextColor="{DynamicResource ContentSecondaryWL}" />
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding SearchResults}" Spacing="10">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="viewmodels:StoryListItemViewModel">
                                 <Border Padding="16,12"
+                                        AutomationId="{Binding AutomationId}"
                                         BackgroundColor="{DynamicResource SurfaceElevation1WL}"
                                         Stroke="{DynamicResource InputFieldsSurfaceStroke}"
                                         StrokeShape="RoundRectangle 10">
@@ -53,9 +56,11 @@
                 <VerticalStackLayout IsVisible="{Binding ShowCategories}" Spacing="10">
                     <Label Style="{DynamicResource SectionTitleLabel}" Text="CATALOG" />
                     <Button Style="{DynamicResource StoryCardButton}"
+                            AutomationId="storybook_category_onboarding"
                             Text="Onboarding"
                             Command="{Binding OpenOnboardingCommand}" />
                     <Button Style="{DynamicResource StoryCardButton}"
+                            AutomationId="storybook_category_shared_components"
                             Text="Shared Components"
                             Command="{Binding OpenSharedComponentsCommand}" />
                 </VerticalStackLayout>

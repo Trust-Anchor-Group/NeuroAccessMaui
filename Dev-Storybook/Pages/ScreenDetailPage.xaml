@@ -6,7 +6,8 @@
              x:DataType="viewmodels:ScreenDetailViewModel"
              Title="{Binding Title}">
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="22">
+        <VerticalStackLayout Padding="24" Spacing="22"
+                             AutomationId="{Binding AutomationId}">
             <VerticalStackLayout Spacing="5">
                 <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
                 <Label FontSize="12" Text="{Binding Breadcrumb}" TextColor="{DynamicResource ContentSecondaryWL}" />
@@ -17,7 +18,10 @@
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding FullScreenStories}" Spacing="9">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="viewmodels:StoryListItemViewModel">
-                            <Button Style="{DynamicResource StoryCardButton}" Text="Full Screen" Command="{Binding OpenCommand}" />
+                            <Button Style="{DynamicResource StoryCardButton}"
+                                    AutomationId="{Binding AutomationId}"
+                                    Text="Full Screen"
+                                    Command="{Binding OpenCommand}" />
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
@@ -28,7 +32,10 @@
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding StateStories}" Spacing="9">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="viewmodels:StoryListItemViewModel">
-                            <Button Style="{DynamicResource StoryCardButton}" Text="{Binding Name}" Command="{Binding OpenCommand}" />
+                            <Button Style="{DynamicResource StoryCardButton}"
+                                    AutomationId="{Binding AutomationId}"
+                                    Text="{Binding Name}"
+                                    Command="{Binding OpenCommand}" />
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
@@ -39,7 +46,10 @@
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding ComponentStories}" Spacing="9">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="viewmodels:StoryListItemViewModel">
-                            <Button Style="{DynamicResource StoryCardButton}" Text="{Binding Name}" Command="{Binding OpenCommand}" />
+                            <Button Style="{DynamicResource StoryCardButton}"
+                                    AutomationId="{Binding AutomationId}"
+                                    Text="{Binding Name}"
+                                    Command="{Binding OpenCommand}" />
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>

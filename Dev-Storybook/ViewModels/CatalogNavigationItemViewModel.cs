@@ -12,11 +12,13 @@ namespace DevStorybook.ViewModels
 		/// </summary>
 		/// <param name="Title">The primary item label.</param>
 		/// <param name="Subtitle">The secondary item label.</param>
+		/// <param name="AutomationId">The stable identifier used by UI automation.</param>
 		/// <param name="OpenAsync">The local catalog navigation action.</param>
-		public CatalogNavigationItemViewModel(string Title, string Subtitle, Func<Task> OpenAsync)
+		public CatalogNavigationItemViewModel(string Title, string Subtitle, string AutomationId, Func<Task> OpenAsync)
 		{
 			this.Title = Title;
 			this.Subtitle = Subtitle;
+			this.AutomationId = AutomationId;
 			this.OpenCommand = new AsyncRelayCommand(OpenAsync);
 		}
 
@@ -28,6 +30,9 @@ namespace DevStorybook.ViewModels
 
 		/// <summary>Gets whether the secondary label is visible.</summary>
 		public bool HasSubtitle => !string.IsNullOrWhiteSpace(this.Subtitle);
+
+		/// <summary>Gets the stable identifier used by UI automation.</summary>
+		public string AutomationId { get; }
 
 		/// <summary>Gets the command that opens the catalog item.</summary>
 		public IAsyncRelayCommand OpenCommand { get; }
