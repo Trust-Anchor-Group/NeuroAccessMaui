@@ -36,8 +36,6 @@ namespace DevStorybook.ViewModels
 			this.Reset();
 		}
 
-		/// <summary>Gets or sets whether the ID-provider view is busy.</summary>
-		public bool IsBusy { get; set; }
 		/// <summary>Gets or sets the invitation code.</summary>
 		public string InviteCode { get; set; } = string.Empty;
 		/// <summary>Gets or sets whether the invitation code is valid.</summary>
