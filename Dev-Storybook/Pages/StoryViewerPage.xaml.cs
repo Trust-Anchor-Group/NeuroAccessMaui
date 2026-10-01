@@ -1,4 +1,5 @@
 using DevStorybook.Controls;
+using DevStorybook.Services;
 using DevStorybook.Stories;
 using DevStorybook.ViewModels;
 using NeuroAccessMaui.Services.Data;
@@ -14,6 +15,7 @@ namespace DevStorybook.Pages
 	{
 		private readonly StoryViewerViewModel viewModel;
 		private readonly OnboardingPreviewViewModel onboardingPreviewViewModel;
+		private bool isExitingFullscreen;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StoryViewerPage"/> class.
@@ -25,6 +27,7 @@ namespace DevStorybook.Pages
 			this.viewModel = ViewModel;
 			this.onboardingPreviewViewModel = new OnboardingPreviewViewModel();
 			this.FullscreenPreviewHost.ExitRequested += this.OnFullscreenExitRequested;
+			this.Loaded += this.OnPageLoaded;
 			this.BindingContext = ViewModel;
 		}
 
@@ -35,11 +38,20 @@ namespace DevStorybook.Pages
 		public void LoadStory(StoryDefinition Story)
 		{
 			bool IsFullscreen = Story.StoryType == StoryType.FullScreen;
+			this.RenderErrorPanel.IsVisible = false;
 			NavigationPage.SetHasNavigationBar(this, !IsFullscreen);
 			this.StorybookChrome.IsVisible = !IsFullscreen;
 			this.FullscreenPreviewHost.IsVisible = IsFullscreen;
-			this.viewModel.LoadStory(Story);
-			this.LoadProductionStory(Story, IsFullscreen);
+
+			try
+			{
+				this.viewModel.LoadStory(Story);
+				this.LoadProductionStory(Story, IsFullscreen);
+			}
+			catch (Exception RenderException)
+			{
+				this.ShowRenderFailure(Story, RenderException);
+			}
 		}
 
 		private void LoadProductionStory(StoryDefinition Story, bool IsFullscreen)
@@ -57,6 +69,7 @@ namespace DevStorybook.Pages
 				ProductionContent = VerificationPage;
 				if (!IsFullscreen)
 				{
+					this.ApplyStandaloneBottomInset();
 					this.StandaloneStoryHost.Content = ProductionContent;
 					this.StandaloneStoryHost.IsVisible = true;
 					return;
@@ -78,6 +91,7 @@ namespace DevStorybook.Pages
 
 				OnboardingPreviewHost ProductionContext = new OnboardingPreviewHost
 				{
+					UseSystemBottomInset = false,
 					PreviewContent = ProductionView
 				};
 				ProductionContent = ProductionContext;
@@ -86,13 +100,36 @@ namespace DevStorybook.Pages
 			this.FullscreenPreviewHost.PreviewContent = ProductionContent;
 		}
 
+		private void OnPageLoaded(object? Sender, EventArgs Args)
+		{
+			this.ApplyStandaloneBottomInset();
+		}
+
+		private void ApplyStandaloneBottomInset()
+		{
+			double BottomInset = StorybookSystemInsets.GetBottomInset();
+			this.StandaloneStoryHost.Padding = new Thickness(0.0, 0.0, 0.0, BottomInset);
+		}
+
 		private void ClearHosts()
 		{
+			this.RenderErrorPanel.IsVisible = false;
 			this.OnboardingPreviewHost.PreviewContent = null;
 			this.OnboardingPreviewHost.IsVisible = false;
 			this.StandaloneStoryHost.Content = null;
 			this.StandaloneStoryHost.IsVisible = false;
 			this.FullscreenPreviewHost.PreviewContent = null;
+		}
+
+		private void ShowRenderFailure(StoryDefinition Story, Exception RenderException)
+		{
+			this.ClearHosts();
+			NavigationPage.SetHasNavigationBar(this, true);
+			this.StorybookChrome.IsVisible = true;
+			this.FullscreenPreviewHost.IsVisible = false;
+			this.RenderErrorMessage.Text = $"{Story.DisplayName} could not be rendered. {RenderException.GetType().Name}: {RenderException.Message}";
+			this.RenderErrorPanel.IsVisible = true;
+			System.Diagnostics.Debug.WriteLine(RenderException);
 		}
 
 		private View CreateOnboardingView(PhoneVerificationStoryState State)
@@ -132,7 +169,18 @@ namespace DevStorybook.Pages
 
 		private async void OnFullscreenExitRequested(object? Sender, EventArgs Args)
 		{
-			await this.Navigation.PopAsync();
+			if (this.isExitingFullscreen)
+				return;
+
+			this.isExitingFullscreen = true;
+			try
+			{
+				await this.Navigation.PopAsync();
+			}
+			finally
+			{
+				this.isExitingFullscreen = false;
+			}
 		}
 
 		private void PhoneCountrySelectionView_CountrySelected(object? Sender, ISO_3166_Country SelectedCountry)

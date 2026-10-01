@@ -1,3 +1,5 @@
+using DevStorybook.Services;
+
 namespace DevStorybook.Controls
 {
 	/// <summary>
@@ -6,10 +8,11 @@ namespace DevStorybook.Controls
 	public partial class FullscreenPreviewHost : ContentView
 	{
 		private static readonly TimeSpan ExitHoldDuration = TimeSpan.FromSeconds(2);
-		private static readonly TimeSpan ExitTapInterval = TimeSpan.FromSeconds(2);
+		private static readonly TimeSpan ExitTapInterval = TimeSpan.FromSeconds(4);
 		private CancellationTokenSource? exitHoldCancellation;
 		private DateTimeOffset lastExitTap;
 		private int exitTapCount;
+		private bool suppressNextClick;
 
 		/// <summary>Identifies the <see cref="PreviewContent"/> bindable property.</summary>
 		public static readonly BindableProperty PreviewContentProperty = BindableProperty.Create(
@@ -22,6 +25,8 @@ namespace DevStorybook.Controls
 		public FullscreenPreviewHost()
 		{
 			this.InitializeComponent();
+			this.Loaded += this.OnHostLoaded;
+			this.SizeChanged += this.OnHostSizeChanged;
 			this.ExitGestureArea.Clicked += this.OnExitGestureClicked;
 			this.ExitGestureArea.Pressed += this.OnExitHoldPressed;
 			this.ExitGestureArea.Released += this.OnExitHoldReleased;
@@ -40,11 +45,36 @@ namespace DevStorybook.Controls
 		private static void OnPreviewContentChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
 			if (Bindable is FullscreenPreviewHost Host)
+			{
 				Host.PreviewContentHost.Content = NewValue as View;
+				Host.ApplySystemBottomInset();
+			}
+		}
+
+		private void OnHostLoaded(object? Sender, EventArgs Args)
+		{
+			this.ApplySystemBottomInset();
+		}
+
+		private void OnHostSizeChanged(object? Sender, EventArgs Args)
+		{
+			this.ApplySystemBottomInset();
+		}
+
+		private void ApplySystemBottomInset()
+		{
+			double BottomInset = StorybookSystemInsets.GetBottomInset();
+			this.PreviewContentHost.Padding = new Thickness(0.0, 0.0, 0.0, BottomInset);
 		}
 
 		private void OnExitGestureClicked(object? Sender, EventArgs Args)
 		{
+			if (this.suppressNextClick)
+			{
+				this.suppressNextClick = false;
+				return;
+			}
+
 			DateTimeOffset CurrentTap = DateTimeOffset.UtcNow;
 			this.exitTapCount = CurrentTap - this.lastExitTap <= ExitTapInterval
 				? this.exitTapCount + 1
@@ -70,7 +100,7 @@ namespace DevStorybook.Controls
 				if (ReferenceEquals(this.exitHoldCancellation, HoldCancellation))
 				{
 					this.exitHoldCancellation = null;
-					this.RequestExit();
+					this.RequestExit(true);
 				}
 			}
 			catch (OperationCanceledException)
@@ -95,9 +125,11 @@ namespace DevStorybook.Controls
 			HoldCancellation?.Cancel();
 		}
 
-		private void RequestExit()
+		private void RequestExit(bool SuppressNextClick = false)
 		{
 			this.CancelExitHold();
+			this.exitTapCount = 0;
+			this.suppressNextClick = SuppressNextClick;
 			this.ExitRequested?.Invoke(this, EventArgs.Empty);
 		}
 	}

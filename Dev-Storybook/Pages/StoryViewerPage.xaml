@@ -7,8 +7,10 @@
              xmlns:viewmodels="clr-namespace:DevStorybook.ViewModels"
              x:DataType="viewmodels:StoryViewerViewModel"
              Title="{Binding Subtitle}">
-    <Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
-        <Grid x:Name="StorybookChrome" RowDefinitions="Auto,*">
+    <Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+          AutomationId="{Binding AutomationId}">
+        <Grid x:Name="StorybookChrome" RowDefinitions="Auto,*"
+              AutomationId="storybook_story_chrome">
             <Grid Padding="16,10" BackgroundColor="{DynamicResource SurfaceElevation1WL}">
                 <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="2">
                     <Label FontFamily="SpaceGroteskBold" FontSize="17" Text="{Binding Title}" />
@@ -24,10 +26,14 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <storybookControls:OnboardingPreviewHost x:Name="OnboardingPreviewHost" IsVisible="False" />
-                <ContentView x:Name="StandaloneStoryHost" IsVisible="False" />
+                <storybookControls:OnboardingPreviewHost x:Name="OnboardingPreviewHost"
+                                                         IsVisible="False" />
+                <ContentView x:Name="StandaloneStoryHost"
+                             AutomationId="storybook_preview_standalone"
+                             IsVisible="False" />
 
-                <ScrollView IsVisible="{Binding IsComponentStory}">
+                <ScrollView IsVisible="{Binding IsComponentStory}"
+                            AutomationId="storybook_preview_component">
                     <VerticalStackLayout Padding="24" Spacing="16">
                         <Border Padding="16,12"
                                 BackgroundColor="{DynamicResource SurfaceElevation1WL}"
@@ -38,6 +44,7 @@
                         </Border>
 
                         <Border IsVisible="{Binding IsCountryPickerStory}"
+                                AutomationId="storybook_component_country_picker"
                                 Padding="16,12"
                                 Style="{DynamicResource ItemOuterBorder}"
                                 BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
@@ -48,6 +55,7 @@
                         </Border>
 
                         <controls:PhoneCountrySelectionView IsVisible="{Binding IsCountrySelectionVisible}"
+                                                            AutomationId="storybook_component_country_selection"
                                                             HeightRequest="520"
                                                             CountrySelected="PhoneCountrySelectionView_CountrySelected" />
 
@@ -57,6 +65,7 @@
                                     BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
                                     Stroke="{DynamicResource InputFieldsSurfaceStroke}">
                                 <controls:PhoneNumberInputView PhoneNumber="{Binding PhoneNumber, Mode=TwoWay}"
+                                                               AutomationId="storybook_component_phone_input"
                                                                TypeIsValid="{Binding TypeIsValid, Mode=TwoWay}"
                                                                LengthIsValid="{Binding LengthIsValid, Mode=TwoWay}"
                                                                IsInputEnabled="{Binding IsComponentEnabled}"
@@ -70,7 +79,27 @@
                     </VerticalStackLayout>
                 </ScrollView>
 
+				<Border x:Name="RenderErrorPanel"
+						AutomationId="storybook_render_error"
+						Margin="24"
+						Padding="18"
+						VerticalOptions="Start"
+						IsVisible="False"
+						BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+						Stroke="{DynamicResource TnPDangerFigureWL}"
+						StrokeShape="RoundRectangle 10">
+					<VerticalStackLayout Spacing="8">
+						<Label FontFamily="SpaceGroteskSemiBold"
+							   FontSize="17"
+							   Text="Preview unavailable" />
+						<Label x:Name="RenderErrorMessage"
+							   AutomationId="storybook_render_error_message"
+							   TextColor="{DynamicResource ContentSecondaryWL}" />
+					</VerticalStackLayout>
+				</Border>
+
                 <Border Margin="16" Padding="12"
+                        AutomationId="storybook_story_status"
                         VerticalOptions="Start"
                         IsVisible="{Binding HasStatus}"
                         BackgroundColor="{Binding StatusColor}"
