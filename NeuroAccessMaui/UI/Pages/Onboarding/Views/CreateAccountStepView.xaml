@@ -7,7 +7,8 @@
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                                x:DataType="{x:Null}">
-    <Grid VerticalOptions="Center">
+    <Grid VerticalOptions="Center"
+          AutomationId="screen_create_account">
         <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}"
                              VerticalOptions="Center">
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
@@ -17,6 +18,7 @@
             </VerticalStackLayout>
 
             <ActivityIndicator VerticalOptions="Center"
+                               AutomationId="progress_create_account"
                                IsVisible="{Binding IsWaitingForIdentity}"
                                IsRunning="{Binding IsWaitingForIdentity}" />
 

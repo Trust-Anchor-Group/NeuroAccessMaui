@@ -59,6 +59,7 @@
                                TextColor="{DynamicResource InputFieldsContentDangerv800}" />
 
                         <Label Grid.Column="1"
+                               AutomationId="button_select_suggested_username"
                                Text="{Binding AlternativeName}"
                                TextDecorations="Underline"
                                LineBreakMode="CharacterWrap"

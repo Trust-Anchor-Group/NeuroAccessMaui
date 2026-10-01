@@ -72,6 +72,7 @@
 
             <controls:TemplatedButton Grid.Row="0"
                                       Grid.ColumnSpan="2"
+                                      AutomationId="button_biometrics_info"
                                       Margin="{DynamicResource LargeBottomMargins}"
                                       HorizontalOptions="Center"
                                       Command="{Binding ShowBiometricsInfoCommand}">
@@ -107,6 +108,7 @@
 
             <controls:TemplatedButton Grid.Row="1"
                                       Grid.Column="1"
+                                      AutomationId="button_biometrics_enable"
                                       Command="{Binding EnableCommand}"
                                       VerticalOptions="End">
                 <Border Style="{DynamicResource FilledTemplateButtonBorder}"

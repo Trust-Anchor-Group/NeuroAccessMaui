@@ -53,6 +53,7 @@
         <controls:TextButton Style="{DynamicResource OutlinedTextButton}"
                              LabelData="{l:Localize ResendCode}"
                              Command="{Binding ResendCodeCommand}"
+                             AutomationId="button_resend_email_code"
                              IsEnabled="{Binding CanResendCode}" />
     </VerticalStackLayout>
 </onboarding:BaseOnboardingView>
