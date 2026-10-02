@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 {
