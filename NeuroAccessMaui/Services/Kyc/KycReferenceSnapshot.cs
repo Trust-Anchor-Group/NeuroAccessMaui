@@ -2,6 +2,7 @@ using System;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc.Models;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Kyc
 {

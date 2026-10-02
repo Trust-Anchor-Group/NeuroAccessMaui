@@ -95,7 +95,6 @@ using Waher.Networking.XMPP.Geo;
 using Waher.Networking.XMPP.HTTPX;
 using Waher.Networking.XMPP.Mail;
 using Waher.Networking.XMPP.P2P;
-using Waher.Networking.XMPP.P2P.E2E;
 using Waher.Networking.XMPP.PEP;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.PubSub;
@@ -120,6 +119,8 @@ using Waher.Layout;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
+using Waher.Security.EllipticCurves.E2EE;
+using Waher.Security.E2EE;
 
 namespace NeuroAccessMaui
 {
@@ -410,7 +411,7 @@ namespace NeuroAccessMaui
                     typeof(AccessViolationException),
                     typeof(InsufficientMemoryException));
 
-                EndpointSecurity.SetCiphers([typeof(Edwards448Endpoint)], false);
+				E2eEndpoint.SetCiphers([typeof(Edwards448Endpoint)], false);
 
                 IXmlSchemaValidationService Xml = ServiceRef.Provider.GetRequiredService<IXmlSchemaValidationService>();
                 Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);

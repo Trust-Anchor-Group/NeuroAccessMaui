@@ -31,6 +31,7 @@ using System.Xml;
 using Microsoft.Maui.Storage;
 using Waher.Networking.XMPP.PubSub;
 using Waher.Networking.XMPP.ResultSetManagement;
+using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Kyc
 {

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
-using Waher.Networking.XMPP.Contracts;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Converters
 {

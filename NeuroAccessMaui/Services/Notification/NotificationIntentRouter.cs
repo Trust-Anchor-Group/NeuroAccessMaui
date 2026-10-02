@@ -19,6 +19,7 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Notification
 {

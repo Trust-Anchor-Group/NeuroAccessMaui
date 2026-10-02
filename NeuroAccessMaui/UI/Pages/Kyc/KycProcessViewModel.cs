@@ -36,6 +36,7 @@ using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI; // For IKeyboardInsetAware
 using NeuroAccessMaui.Services.Authentication;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
