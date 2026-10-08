@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.ValidatePhoneStepView"
+                               AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingPhone}"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -11,14 +12,14 @@
                                x:DataType="viewmodels:ValidatePhoneOnboardingStepViewModel">
     <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
         <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-            <Label Style="{DynamicResource PageTitleLabel}"
+            <Label Style="{DynamicResource PageTitleLabel}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingPhoneTitle}"
                    Text="{l:Localize OnboardingPhonePageTitle}" />
 
             <Label Text="{l:Localize OnboardingPhonePageDetails}" />
 
             <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
                 <Label Style="{DynamicResource SectionTitleLabel}"
-                       Text="{l:Localize PhoneSectionTitle}" />
+                       Text="{l:Localize PhoneSectionTitle}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingPhoneNumber}" />
 
                 <Border Padding="{DynamicResource EditMediumMargins}"
                         Style="{DynamicResource ItemOuterBorder}"
@@ -27,7 +28,7 @@
                     <Grid RowDefinitions="auto"
                           ColumnDefinitions="auto,*"
                           ColumnSpacing="{DynamicResource MediumSpacing}">
-                        <HorizontalStackLayout Grid.Column="0"
+                        <HorizontalStackLayout Grid.Column="0" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingPhoneCountry}"
                                                VerticalOptions="Fill"
                                                Spacing="{DynamicResource SmallSpacing}">
                             <HorizontalStackLayout.GestureRecognizers>
@@ -45,7 +46,7 @@
                                   Fill="{DynamicResource InputFieldsContentPrimary}" />
                         </HorizontalStackLayout>
 
-                        <Entry Grid.Column="1"
+                        <Entry Grid.Column="1" AutomationId="{x:Static automation:AutomationIds.InputOnboardingPhoneNumber}"
                                VerticalOptions="Center"
                                IsSpellCheckEnabled="False"
                                Keyboard="Telephone"
@@ -82,7 +83,7 @@
             </VerticalStackLayout>
         </VerticalStackLayout>
 
-        <controls:TextButton Style="{DynamicResource FilledTextButton}"
+        <controls:TextButton Style="{DynamicResource FilledTextButton}" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingPhoneSendCode}"
                              Command="{Binding SendCodeCommand}"
                              LabelData="{Binding LocalizedSendCodeText}" />
     </VerticalStackLayout>

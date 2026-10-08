@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
+<base:BaseContentPage x:Name="ThisPage" AutomationId="{x:Static automation:AutomationIds.ScreenMainSettings}"
 							 x:Class="NeuroAccessMaui.UI.Pages.Main.Settings.SettingsPage"
 							 x:DataType="viewmodel:SettingsViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -26,7 +26,7 @@
 				Grid.Column="1"
 				HorizontalOptions="End"
 				Style="{DynamicResource PageTitleLabel}"
-				Text="{l:Localize Settings}"/>
+				Text="{l:Localize Settings}" AutomationId="{x:Static automation:AutomationIds.LabelMainSettingsTitle}"/>
 		</Grid>
 				
 		<ScrollView Grid.Row="1">
@@ -63,7 +63,7 @@
 						</Border>
 
 						<!-- Language options -->
-						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangeLanguageCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangeLanguageCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonMainSettingsLanguage}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
@@ -90,7 +90,7 @@
 						</controls:TemplatedButton>
 
 						<!-- Revoke -->
-						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding RevokeCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding RevokeCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonMainSettingsRevokeidentity}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
@@ -118,7 +118,7 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
 						<!-- Change Password -->
-						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangePasswordCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangePasswordCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonMainSettingsChangepassword}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>

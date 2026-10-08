@@ -200,6 +200,8 @@ namespace NeuroAccessMaui
 				handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
 			});
 #elif ANDROID
+			NeuroAccessMaui.UI.Automation.AutomationMetadata.Configure();
+
 			ScrollViewHandler.Mapper.AppendToMapping("OverScrollModeScrollViewHandler", (handler, view) =>
 			{
 				handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;

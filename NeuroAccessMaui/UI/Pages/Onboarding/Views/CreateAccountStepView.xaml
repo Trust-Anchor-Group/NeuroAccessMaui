@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.CreateAccountStepView"
+                               AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingAccount}"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -11,7 +12,7 @@
         <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}"
                              VerticalOptions="Center">
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                <Label Style="{DynamicResource PageTitleLabel}"
+                <Label Style="{DynamicResource PageTitleLabel}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingAccountTitle}"
                        Text="{l:Localize OnboardingAccountPageTitle}" />
                 <Label Text="{l:Localize OnboardingAccountPageDetails}" />
             </VerticalStackLayout>

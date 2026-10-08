@@ -2,6 +2,8 @@
 <base:BaseContentPage
 	x:Name="ThisPage"
 	x:Class="NeuroAccessMaui.UI.Pages.Main.QR.ScanQrCodePage"
+    AutomationId="{x:Static automation:AutomationIds.ScreenMainQrscan}"
+    xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 	x:DataType="viewmodel:ScanQrCodeViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -88,6 +90,7 @@
 								Style="{DynamicResource FilledImageButton}" PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}"
 								SemanticProperties.Description="{l:Localize QrScannerSwitchCamera}" />
 							<controls:ImageButton Command="{Binding SwitchModeCommand}" IsEnabled="{Binding CanSwitchMode}"
+                                AutomationId="{x:Static automation:AutomationIds.ButtonMainQrscanManualentry}"
 								Style="{DynamicResource FilledImageButton}" PathData="{x:Static ui:Geometries.ContractEditPath}"
 								SemanticProperties.Description="{l:Localize QrEnterManually}" />
 						</HorizontalStackLayout>
@@ -95,7 +98,7 @@
 				</Grid>
 			</Grid>
 
-			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan" RowDefinitions="Auto,*">
+			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan" RowDefinitions="Auto,*" AutomationId="{x:Static automation:AutomationIds.ControlMainQrscanManual}">
 				<controls:Background Grid.RowSpan="2" />
 				<controls:ImageButton Margin="{DynamicResource LargeMargins}" HorizontalOptions="Start"
 					Command="{Binding SwitchModeCommand}" IsEnabled="{Binding CanSwitchMode}"
@@ -104,12 +107,14 @@
 				<ScrollView Grid.Row="1">
 					<VerticalStackLayout Padding="{DynamicResource LargeMargins}" Spacing="{DynamicResource LargeSpacing}">
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Label Text="{l:Localize QrScanUri}" />
+							<Label Text="{l:Localize QrScanUri}" AutomationId="{x:Static automation:AutomationIds.LabelMainQrscanPayload}" />
 							<controls:CompositeEntry x:Name="LinkEntry" Style="{DynamicResource RegularCompositeEntry}"
+                                AutomationId="{x:Static automation:AutomationIds.InputMainQrscanPayload}"
 								EntryData="{Binding ManualText}" IsEnabled="{Binding CanSwitchMode}" />
 						</VerticalStackLayout>
 						<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 							<controls:TextButton Command="{Binding OpenUrlCommand}" Style="{DynamicResource FilledTextButton}"
+                                AutomationId="{x:Static automation:AutomationIds.ButtonMainQrscanOpen}"
 								LabelData="{l:Localize Open}" />
 							<controls:TextButton Command="{Binding SwitchModeCommand}" IsEnabled="{Binding CanSwitchMode}"
 								Style="{DynamicResource OutlinedTextButton}" LabelData="{l:Localize QrScanCode}" />

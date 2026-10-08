@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Onboarding.OnboardingPage"
                       x:Name="ThisPage"
+                      AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingRoot}"
                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                       xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
                       xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                       xmlns:tabs="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -20,7 +21,7 @@
                 <Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
             </Grid.Padding>
             <!-- Existing account help (same icon & placement) -->
-            <controls:SvgButton SvgSource="question.svg"
+            <controls:SvgButton SvgSource="question.svg" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingRootExistingaccount}"
                                 Style="{DynamicResource IconButton}"
                                 Command="{Binding ExistingAccountCommand}"
                                 IsVisible="{Binding IsOnWelcomeStep}" />
@@ -29,12 +30,14 @@
                                 Style="{DynamicResource IconButton}"
                                 SvgSource="close.svg"
                                 Command="{Binding GoBackCommand}"
+                                AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingRootBack}"
                                 IsVisible="{Binding CanGoBack}" />
 			<!-- Language change button with label -->
             <controls:SvgButton Grid.Column="2"
                                 SvgSource="globe.svg"
                                 Style="{DynamicResource IconButton}"
                                 Command="{Binding ChangeLanguageCommand}"
+                                AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingRootLanguage}"
                                 LabelText="{Binding SelectedLanguage.MyNativeName}"
                                 LabelPosition="Left"
                                 HorizontalOptions="End"

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.NameEntryStepView"
+                               AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingUsername}"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -19,11 +20,11 @@
         <VerticalStackLayout Grid.Row="0"
                              Spacing="{DynamicResource LargeSpacing}"
                              VerticalOptions="Center">
-            <Label Style="{DynamicResource PageTitleLabel}"
+            <Label Style="{DynamicResource PageTitleLabel}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingUsernameTitle}"
                    Text="{l:Localize OnboardingNameEntryTitle}" />
 
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                <controls:CompositeEntry x:Name="UsernameEntry"
+                <controls:CompositeEntry x:Name="UsernameEntry" AutomationId="{x:Static automation:AutomationIds.InputOnboardingUsernameValue}"
                                          Style="{DynamicResource RegularCompositeEntry}"
                                          EntryData="{Binding Username}"
                                          Placeholder="{l:Localize Username}"
@@ -91,7 +92,7 @@
                 </Grid>
             </Border>
 
-            <controls:TextButton Command="{Binding CreateAccountCommand}"
+            <controls:TextButton Command="{Binding CreateAccountCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingUsernameContinue}"
                                  Style="{DynamicResource FilledTextButton}"
                                  LabelData="{Binding LocalizedContinueText}"
                                  IsEnabled="{Binding CanCreateAccount}" />

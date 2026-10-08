@@ -3,7 +3,7 @@
 					  x:Class="NeuroAccessMaui.UI.Pages.Main.HomePage"
 					  x:DataType="viewmodel:HomeViewModel"
 					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
@@ -34,7 +34,7 @@
 								 TranslationY="-7" Scale=".9"/>
 		</Grid>
 	</Shell.TitleView> -->
-	<Grid x:Name="TheMainGrid"
+	<Grid x:Name="TheMainGrid" AutomationId="{x:Static automation:AutomationIds.ScreenMainHome}"
 		  RowDefinitions="auto, *, auto, auto"
 		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
@@ -47,7 +47,7 @@
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto, *,auto">
 
-			<controls:SvgButton Command="{Binding ShowSettingsCommand}"
+			<controls:SvgButton Command="{Binding ShowSettingsCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonMainHomeSettings}"
 								SvgSource="cog.svg"
 								Style="{DynamicResource IconButton}" />
 
@@ -100,7 +100,7 @@
 			<controls:ConditionView Condition="{Binding ThemeLoaded}"
 									VerticalOptions="End">
 				<controls:ConditionView.True>
-					<controls:UriImage Source="{Binding BannerUri}"
+					<controls:UriImage Source="{Binding BannerUri}" AutomationId="{x:Static automation:AutomationIds.ImageMainHomeBanner}"
 									   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
 									   Grid.Row="0"
 									   HeightRequest="230"
@@ -115,7 +115,7 @@
 			</controls:ConditionView>
 
 			<Grid Grid.Row="1" RowDefinitions="auto" VerticalOptions="Center">
-				<controls:TemplatedButton Command="{Binding GoToApplyIdentityCommand}"
+				<controls:TemplatedButton Command="{Binding GoToApplyIdentityCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonMainHomeApplyidentity}"
 										  IsVisible="{Binding ShowInfoBubble}">
 					<!-- Missing Neuro ID Box-->
 					<Grid RowDefinitions="auto, auto"
@@ -185,7 +185,7 @@
 			  Margin="{DynamicResource SmallMargins}">
 
 			<!-- Scan QR Button -->
-			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
+			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonMainHomeScanqr}">
 				<Border Style="{DynamicResource TransparentTemplateButtonBorder}"
 						InputTransparent="True"
 						HorizontalOptions="Fill"
@@ -209,7 +209,7 @@
 
 			<!-- Show ID Button -->
 			<controls:TemplatedButton Grid.Column="1"
-									  Command="{x:Binding ViewIdCommand}">
+									  Command="{x:Binding ViewIdCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonMainHomeShowidentity}">
 				<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 						InputTransparent="True"
 						HorizontalOptions="Fill"

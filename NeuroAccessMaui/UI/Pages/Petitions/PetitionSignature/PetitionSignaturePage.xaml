@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature.PetitionSignaturePage"
+                             AutomationId="{x:Static automation:AutomationIds.ScreenPetitionsSignature}"
+                             xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 							 x:DataType="viewmodel:PetitionSignatureViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -41,7 +43,7 @@
 				<!-- Info -->
 				<Border	Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout>
-						<Label Style="{DynamicResource PageTitleLabel}"
+						<Label Style="{DynamicResource PageTitleLabel}" AutomationId="{x:Static automation:AutomationIds.LabelPetitionsSignatureTitle}"
 								 HorizontalTextAlignment="Center"
 								 Text="{l:Localize Petition}" />
 
@@ -67,7 +69,7 @@
 								 Style="{DynamicResource KeyLabel}"
 								 Margin="{DynamicResource SmallLeftTopMargins}" />
 
-						<Label Style="{DynamicResource ValueLabel}"
+						<Label Style="{DynamicResource ValueLabel}" AutomationId="{x:Static automation:AutomationIds.LabelPetitionsSignaturePurpose}"
 								 Margin="{DynamicResource SmallMargins}"
 								 HorizontalTextAlignment="Start"
 								 Text="{Binding Path=Purpose}" />
@@ -603,6 +605,7 @@
 
 				<controls:TextButton Grid.Column="0"
 											x:Name="AcceptButton"
+                                            AutomationId="{x:Static automation:AutomationIds.ButtonPetitionsSignatureAccept}"
 											LabelData="{l:Localize Accept}"
 											Command="{Binding AcceptCommand}"
 											Style="{DynamicResource FilledTextButton}" />
