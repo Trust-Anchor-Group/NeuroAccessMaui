@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pages:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation;assembly=NeuroAccessMaui" xmlns:pages="clr-namespace:NeuroAccessMaui.UI.Pages;assembly=NeuroAccessMaui"
+ xmlns:vm="clr-namespace:DevTestPlatform.UI.ViewModels" xmlns:local="clr-namespace:DevTestPlatform.Resources"
+ x:Class="DevTestPlatform.UI.Pages.PreviewPage" x:DataType="vm:PreviewViewModel">
+ <Grid RowDefinitions="Auto,*" AutomationId="{x:Static automation:AutomationIds.DevScreenPlatformPreview}">
+  <VerticalStackLayout Padding="16" Spacing="8" IsVisible="{Binding ShowChrome}">
+   <Label Text="{Binding Title}" FontFamily="SpaceGroteskBold" />
+   <Label Text="{Binding Details}" FontSize="12" />
+   <Label Text="{Binding Diagnostics}" IsVisible="{Binding HasDiagnostics}" AutomationId="{x:Static automation:AutomationIds.DevLabelPlatformPreviewDiagnostics}" />
+   <HorizontalStackLayout Spacing="8">
+    <Button Text="{local:DevLocalize Fullscreen}" Command="{Binding ToggleFullscreenCommand}" AutomationId="{x:Static automation:AutomationIds.DevButtonPlatformPreviewFullscreen}" />
+    <Button Text="{local:DevLocalize Simulate}" Command="{Binding SimulateCommand}" AutomationId="{x:Static automation:AutomationIds.DevButtonPlatformPreviewSimulate}" />
+   </HorizontalStackLayout>
+  </VerticalStackLayout>
+  <ContentView Grid.Row="1" Content="{Binding Preview}" AutomationId="{x:Static automation:AutomationIds.DevControlPlatformPreviewContent}" />
+  <Button Grid.Row="1" Text="{local:DevLocalize Back}" Command="{Binding BackCommand}" HorizontalOptions="End" VerticalOptions="Start" Margin="8" AutomationId="{x:Static automation:AutomationIds.DevButtonPlatformPreviewBack}" />
+ </Grid>
+</pages:BaseContentPage>

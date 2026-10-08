@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pages:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation;assembly=NeuroAccessMaui" xmlns:pages="clr-namespace:NeuroAccessMaui.UI.Pages;assembly=NeuroAccessMaui"
+ xmlns:vm="clr-namespace:DevTestPlatform.UI.ViewModels" xmlns:local="clr-namespace:DevTestPlatform.Resources"
+ x:Class="DevTestPlatform.UI.Pages.CatalogPage" x:DataType="vm:CatalogViewModel">
+ <Grid Padding="24" RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="12" AutomationId="{x:Static automation:AutomationIds.DevScreenPlatformCatalog}">
+  <Label Text="{local:DevLocalize PlatformTitle}" Style="{DynamicResource PageTitleLabel}" />
+  <SearchBar Grid.Row="1" Text="{Binding SearchText}" Placeholder="{local:DevLocalize Search}" AutomationId="{x:Static automation:AutomationIds.DevInputPlatformCatalogSearch}" />
+  <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+   <Picker Title="{local:DevLocalize Section}" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}" AutomationId="{x:Static automation:AutomationIds.DevInputPlatformCatalogSection}" />
+   <Picker Grid.Column="1" Title="{local:DevLocalize Category}" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" AutomationId="{x:Static automation:AutomationIds.DevInputPlatformCatalogCategory}" />
+  </Grid>
+  <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12">
+   <Picker Title="{local:DevLocalize Area}" ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}" AutomationId="{x:Static automation:AutomationIds.DevInputPlatformCatalogArea}" />
+   <Picker Grid.Column="1" Title="{local:DevLocalize Subject}" ItemsSource="{Binding Subjects}" SelectedItem="{Binding SelectedSubject}" AutomationId="{x:Static automation:AutomationIds.DevInputPlatformCatalogSubject}" />
+  </Grid>
+  <CollectionView Grid.Row="4" ItemsSource="{Binding Items}" SelectionMode="None">
+   <CollectionView.EmptyView><Label Text="{local:DevLocalize NoResults}" /></CollectionView.EmptyView>
+   <CollectionView.ItemTemplate>
+    <DataTemplate x:DataType="vm:CatalogItemViewModel">
+     <Border Margin="0,0,0,10" Padding="16" StrokeShape="RoundRectangle 10" BackgroundColor="{DynamicResource SurfaceElevation1WL}" AutomationId="{Binding AutomationId}">
+      <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding OpenCommand}" /></Border.GestureRecognizers>
+      <VerticalStackLayout Spacing="5"><Label Text="{Binding Title}" FontFamily="SpaceGroteskSemiBold" /><Label Text="{Binding Breadcrumb}" FontSize="12" /></VerticalStackLayout>
+     </Border>
+    </DataTemplate>
+   </CollectionView.ItemTemplate>
+  </CollectionView>
+ </Grid>
+</pages:BaseContentPage>

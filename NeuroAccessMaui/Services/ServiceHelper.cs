@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.Services
 
 			try
 			{
-				Service = MauiProgram.Current?.Services?.GetService<T>();
+				Service = (MauiProgram.Current?.Services ?? ServiceRef.Provider)?.GetService<T>();
 			}
 			catch (Exception ex)
 			{
@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.Services
 
 		public static object GetService(Type ServiceType)
 		{
-			object? Service = MauiProgram.Current?.Services?.GetService(ServiceType);
+			object? Service = (MauiProgram.Current?.Services ?? ServiceRef.Provider)?.GetService(ServiceType);
 
 			if (Service is not null)
 				return Service;
