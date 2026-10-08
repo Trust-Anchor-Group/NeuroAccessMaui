@@ -1,0 +1,158 @@
+package com.tag.neuroaccess.neuroaccessespressoautomationtests.common
+
+import java.nio.CharBuffer
+import java.nio.charset.CodingErrorAction
+
+/** Explicit test-side identities, cross-checked against the production-owned catalog. */
+object UiIds {
+    const val DevButtonComponentsTextbuttonSample = "dev_button_components_textbutton_sample"
+    const val DevInputComponentsCompositeentrySample = "dev_input_components_compositeentry_sample"
+    const val DevScreenPlatformPreview = "dev_screen_platform_preview"
+    const val DevLabelPlatformPreviewDiagnostics = "dev_label_platform_preview_diagnostics"
+    const val DevButtonPlatformPreviewFullscreen = "dev_button_platform_preview_fullscreen"
+    const val DevButtonPlatformPreviewSimulate = "dev_button_platform_preview_simulate"
+    const val DevControlPlatformPreviewContent = "dev_control_platform_preview_content"
+    const val DevButtonPlatformPreviewBack = "dev_button_platform_preview_back"
+    const val DevScreenPlatformCatalog = "dev_screen_platform_catalog"
+    const val DevInputPlatformCatalogSearch = "dev_input_platform_catalog_search"
+    const val DevInputPlatformCatalogSection = "dev_input_platform_catalog_section"
+    const val DevInputPlatformCatalogCategory = "dev_input_platform_catalog_category"
+    const val DevInputPlatformCatalogArea = "dev_input_platform_catalog_area"
+    const val DevInputPlatformCatalogSubject = "dev_input_platform_catalog_subject"
+    const val PopupSystemPermission = "popup_system_permission"
+    const val ButtonSystemPermissionSkip = "button_system_permission_skip"
+    const val PopupSharedPhonecountry = "popup_shared_phonecountry"
+    const val InputSharedPhonecountrySearch = "input_shared_phonecountry_search"
+    const val PopupSettingsLanguage = "popup_settings_language"
+    const val ButtonMediaImagecropRotate = "button_media_imagecrop_rotate"
+    const val ScreenOnboardingRoot = "screen_onboarding_root"
+    const val ButtonOnboardingRootExistingaccount = "button_onboarding_root_existingaccount"
+    const val ButtonOnboardingRootBack = "button_onboarding_root_back"
+    const val ButtonOnboardingRootLanguage = "button_onboarding_root_language"
+    const val ScreenOnboardingProvider = "screen_onboarding_provider"
+    const val LabelOnboardingProviderTitle = "label_onboarding_provider_title"
+    const val InputOnboardingProviderInvitecode = "input_onboarding_provider_invitecode"
+    const val ButtonOnboardingProviderScanqr = "button_onboarding_provider_scanqr"
+    const val ButtonOnboardingProviderSelect = "button_onboarding_provider_select"
+    const val ScreenOnboardingFinalize = "screen_onboarding_finalize"
+    const val LabelOnboardingFinalizeTitle = "label_onboarding_finalize_title"
+    const val ButtonOnboardingFinalizeContinue = "button_onboarding_finalize_continue"
+    const val ScreenMainHome = "screen_main_home"
+    const val ButtonMainHomeSettings = "button_main_home_settings"
+    const val ImageMainHomeBanner = "image_main_home_banner"
+    const val ButtonMainHomeApplyidentity = "button_main_home_applyidentity"
+    const val ButtonMainHomeScanqr = "button_main_home_scanqr"
+    const val ButtonMainHomeShowidentity = "button_main_home_showidentity"
+    const val ScreenOnboardingAccount = "screen_onboarding_account"
+    const val LabelOnboardingAccountTitle = "label_onboarding_account_title"
+    const val ScreenOnboardingUsername = "screen_onboarding_username"
+    const val LabelOnboardingUsernameTitle = "label_onboarding_username_title"
+    const val InputOnboardingUsernameValue = "input_onboarding_username_value"
+    const val ButtonOnboardingUsernameContinue = "button_onboarding_username_continue"
+    const val ScreenOnboardingPhone = "screen_onboarding_phone"
+    const val LabelOnboardingPhoneTitle = "label_onboarding_phone_title"
+    const val ButtonOnboardingPhoneCountry = "button_onboarding_phone_country"
+    const val InputOnboardingPhoneNumber = "input_onboarding_phone_number"
+    const val ButtonOnboardingPhoneSendCode = "button_onboarding_phone_send_code"
+    const val ScreenOnboardingPassword = "screen_onboarding_password"
+    const val LabelOnboardingPasswordTitle = "label_onboarding_password_title"
+    const val InputOnboardingPasswordValue = "input_onboarding_password_value"
+    const val InputOnboardingPasswordConfirmation = "input_onboarding_password_confirmation"
+    const val ButtonOnboardingPasswordKeyboard = "button_onboarding_password_keyboard"
+    const val ButtonOnboardingPasswordCreate = "button_onboarding_password_create"
+    const val ScreenOnboardingEmail = "screen_onboarding_email"
+    const val LabelOnboardingEmailTitle = "label_onboarding_email_title"
+    const val InputOnboardingEmailAddress = "input_onboarding_email_address"
+    const val ButtonOnboardingEmailSendCode = "button_onboarding_email_send_code"
+    const val ButtonOnboardingEmailResendCode = "button_onboarding_email_resend_code"
+    const val ScreenOnboardingBiometrics = "screen_onboarding_biometrics"
+    const val LabelOnboardingBiometricsTitle = "label_onboarding_biometrics_title"
+    const val ButtonOnboardingBiometricsLater = "button_onboarding_biometrics_later"
+    const val ButtonOnboardingBiometricsEnable = "button_onboarding_biometrics_enable"
+    const val ScreenSecurityVerifycode = "screen_security_verifycode"
+    const val ButtonSecurityVerifycodeBack = "button_security_verifycode_back"
+    const val LabelSecurityVerifycodeTitle = "label_security_verifycode_title"
+    const val ControlSecurityVerifycodeDigits = "control_security_verifycode_digits"
+    const val InputSecurityVerifycodeValue = "input_security_verifycode_value"
+    const val ButtonSecurityVerifycodeVerify = "button_security_verifycode_verify"
+    const val ButtonSecurityVerifycodeResend = "button_security_verifycode_resend"
+    const val ItemSettingsLanguageOption = "item_settings_language_option"
+    const val ItemSharedPhonecountryOption = "item_shared_phonecountry_option"
+    const val DevItemPlatformCatalogScenario = "dev_item_platform_catalog_scenario"
+
+    const val ScreenMainSettings = "screen_main_settings"
+    const val LabelMainSettingsTitle = "label_main_settings_title"
+    const val ButtonMainSettingsLanguage = "button_main_settings_language"
+    const val ButtonMainSettingsRevokeidentity = "button_main_settings_revokeidentity"
+    const val ButtonMainSettingsChangepassword = "button_main_settings_changepassword"
+    const val PopupSecurityPassword = "popup_security_password"
+    const val LabelSecurityPasswordTitle = "label_security_password_title"
+    const val InputSecurityPasswordValue = "input_security_password_value"
+    const val ButtonSecurityPasswordEnter = "button_security_password_enter"
+    const val ButtonSecurityPasswordCancel = "button_security_password_cancel"
+    const val LabelOnboardingPasswordValue = "label_onboarding_password_value"
+    const val LabelOnboardingPasswordConfirmation = "label_onboarding_password_confirmation"
+    const val LabelOnboardingPhoneNumber = "label_onboarding_phone_number"
+    const val LabelSecurityVerifycodeDigits = "label_security_verifycode_digits"
+    const val LabelSystemPermissionTitle = "label_system_permission_title"
+    const val LabelSystemPermissionDescription = "label_system_permission_description"
+
+    const val ScreenIdentityCard = "screen_identity_card"
+    const val LabelIdentityCardState = "label_identity_card_state"
+    const val LabelIdentityCardName = "label_identity_card_name"
+    const val ButtonIdentityCardBack = "button_identity_card_back"
+    const val LabelIdentityCardDetails = "label_identity_card_details"
+    const val ControlIdentityCardScroll = "control_identity_card_scroll"
+    const val ImageIdentityCardQr = "image_identity_card_qr"
+    const val ButtonIdentityCardAddcontact = "button_identity_card_addcontact"
+    const val ButtonIdentityCardRemovecontact = "button_identity_card_removecontact"
+    const val ButtonIdentityCardChat = "button_identity_card_chat"
+    const val LabelIdentityCardFieldname = "label_identity_card_fieldname"
+    const val LabelIdentityCardFieldvalue = "label_identity_card_fieldvalue"
+    const val ScreenMainQrscan = "screen_main_qrscan"
+    const val ControlMainQrscanManual = "control_main_qrscan_manual"
+    const val ButtonMainQrscanManualentry = "button_main_qrscan_manualentry"
+    const val InputMainQrscanPayload = "input_main_qrscan_payload"
+    const val LabelMainQrscanPayload = "label_main_qrscan_payload"
+    const val ButtonMainQrscanOpen = "button_main_qrscan_open"
+    const val ScreenPetitionsSignature = "screen_petitions_signature"
+    const val LabelPetitionsSignatureTitle = "label_petitions_signature_title"
+    const val LabelPetitionsSignaturePurpose = "label_petitions_signature_purpose"
+    const val ButtonPetitionsSignatureAccept = "button_petitions_signature_accept"
+
+    const val ScreenApplicationsCatalog = "screen_applications_catalog"
+    const val LabelApplicationsCatalogTitle = "label_applications_catalog_title"
+    const val ControlApplicationsCatalogScroll = "control_applications_catalog_scroll"
+    const val ButtonApplicationsCatalogCurrent = "button_applications_catalog_current"
+    const val LabelApplicationsCatalogCurrentstate = "label_applications_catalog_currentstate"
+    const val ItemApplicationsCatalogTemplate = "item_applications_catalog_template"
+    const val LabelApplicationsCatalogTemplatename = "label_applications_catalog_templatename"
+    const val LabelApplicationsCatalogTemplatetype = "label_applications_catalog_templatetype"
+    const val ScreenKycProcess = "screen_kyc_process_form"
+    const val ScreenKycStatus = "screen_kyc_status"
+    const val LabelKycStatusHeading = "label_kyc_status_heading"
+    const val LabelKycStatusTitle = "label_kyc_status_title"
+    const val ButtonKycStatusOpen = "button_kyc_status_open"
+    const val ButtonKycStatusApplications = "button_kyc_status_applications"
+
+    /** Encodes stable key segments without locale, punctuation or ordering normalization. */
+    fun forKey(prefix: String, vararg keys: String): String {
+        require(prefix in setOf(ItemSettingsLanguageOption, ItemSharedPhonecountryOption,
+            DevItemPlatformCatalogScenario, LabelIdentityCardFieldname, LabelIdentityCardFieldvalue,
+            ItemApplicationsCatalogTemplate, LabelApplicationsCatalogTemplatename, LabelApplicationsCatalogTemplatetype)) {
+            "CONTRACT: unregistered dynamic automation prefix."
+        }
+        require(keys.isNotEmpty() && keys.all { it.isNotEmpty() }) {
+            "CONTRACT: stable nonempty automation keys are required."
+        }
+        val encoded = keys.map { key ->
+            val buffer = Charsets.UTF_8.newEncoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .encode(CharBuffer.wrap(key))
+            val bytes = ByteArray(buffer.remaining()).also { buffer.get(it) }
+            bytes.joinToString("") { byte -> "%02x".format(java.util.Locale.ROOT, byte.toInt() and 255) }
+        }
+        return prefix + "_key_" + encoded.joinToString("_")
+    }
+}
