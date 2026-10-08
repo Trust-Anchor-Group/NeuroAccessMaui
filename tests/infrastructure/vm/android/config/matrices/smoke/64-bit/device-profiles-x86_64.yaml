@@ -1,0 +1,900 @@
+scenarios:
+  - name: small-phone-api30
+    enabled: true
+    api_level: 30
+    device_profile: small_phone
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-xl-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_4_xl
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-5-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_5
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-pro-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_6_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6a-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_6a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_7
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-pro-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_7_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7a-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_7a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_8
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-pro-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8a-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_8a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-fold-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_fold
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-tablet-api30
+    enabled: true
+    api_level: 30
+    device_profile: pixel_tablet
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: small-phone-api31
+    enabled: true
+    api_level: 31
+    device_profile: small_phone
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-xl-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_4_xl
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-5-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_5
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-pro-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_6_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6a-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_6a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_7
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-pro-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_7_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7a-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_7a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_8
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-pro-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8a-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_8a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-fold-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_fold
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-tablet-api31
+    enabled: true
+    api_level: 31
+    device_profile: pixel_tablet
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: small-phone-api32
+    enabled: true
+    api_level: 32
+    device_profile: small_phone
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-xl-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_4_xl
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-5-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_5
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-pro-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_6_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6a-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_6a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_7
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-pro-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_7_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7a-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_7a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_8
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-pro-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8a-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_8a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-fold-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_fold
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-tablet-api32
+    enabled: true
+    api_level: 32
+    device_profile: pixel_tablet
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: small-phone-api33
+    enabled: true
+    api_level: 33
+    device_profile: small_phone
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-xl-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_4_xl
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-5-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_5
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-pro-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_6_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6a-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_6a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_7
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-pro-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_7_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7a-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_7a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_8
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-pro-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8a-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_8a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-fold-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_fold
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-tablet-api33
+    enabled: true
+    api_level: 33
+    device_profile: pixel_tablet
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: small-phone-api34
+    enabled: true
+    api_level: 34
+    device_profile: small_phone
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-xl-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_4_xl
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-5-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_5
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-pro-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_6_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6a-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_6a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_7
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-pro-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_7_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7a-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_7a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_8
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-pro-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8a-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_8a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-fold-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_fold
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-tablet-api34
+    enabled: true
+    api_level: 34
+    device_profile: pixel_tablet
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: small-phone-api35
+    enabled: true
+    api_level: 35
+    device_profile: small_phone
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-4-xl-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_4_xl
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-5-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_5
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6-pro-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_6_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-6a-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_6a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_7
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7-pro-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_7_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-7a-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_7a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_8
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8-pro-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-8a-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_8a
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-fold-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_fold
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: cache
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
+
+  - name: pixel-tablet-api35
+    enabled: true
+    api_level: 35
+    device_profile: pixel_tablet
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.IdProviderTest
