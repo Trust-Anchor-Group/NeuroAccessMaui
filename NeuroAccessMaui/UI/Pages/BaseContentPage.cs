@@ -3,6 +3,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.UI;
 using Waher.Events;
 using System.Reflection;
 
@@ -99,6 +100,7 @@ namespace NeuroAccessMaui.UI.Pages
 				catch (Exception Ex) when (App.IsLifecycleException(Ex)) { throw; }
 				catch (Exception ex)
 				{
+					UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, this, "Appearing", "Page", ex);
 					ServiceRef.LogService.LogException(ex);
 				}
 		}
@@ -125,6 +127,7 @@ namespace NeuroAccessMaui.UI.Pages
 				}
 				catch (Exception ex)
 				{
+					UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, this, "Disappearing", "Page", ex);
 					ServiceRef.LogService.LogException(ex);
 				}
 		}

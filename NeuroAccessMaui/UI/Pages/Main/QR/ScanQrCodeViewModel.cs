@@ -14,6 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 	{
 		private readonly ScanQrCodeNavigationArgs? navigationArgs;
 		private bool disposed;
+		private bool closing;
 		private Task? disposalTask;
 
 		/// <summary>
@@ -142,8 +143,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			this.EndScannerSession();
 			this.AttachCamera(null);
 
-			if (this.navigationArgs?.QrCodeScanned is TaskCompletionSource<string> TaskSource)
-				TaskSource.TrySetResult(string.Empty);
+			// A scanner that is removed without delivering a result completes its waiter exactly once, with no result.
+			TaskCompletionSource<string?>? TaskSource = this.navigationArgs?.QrCodeScanned;
+			if (this.navigationArgs is not null)
+				this.navigationArgs.QrCodeScanned = null;
+			TaskSource?.TrySetResult(null);
 
 			await base.OnDisposeAsync();
 		}
@@ -175,37 +179,67 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			return Task.CompletedTask;
 		}
 
-		/// <summary>Applies the existing acceptance rules and presents scan feedback.</summary>
+		/// <summary>Applies the existing acceptance rules, prepares the value, and presents scan feedback.</summary>
 		/// <param name="ScannedText">The decoded value.</param>
 		/// <returns>A task representing feedback and result delivery.</returns>
 		public Task SetScannedText(string? ScannedText) => this.ProcessCandidateAsync(ScannedText);
 
 		/// <summary>
-		/// Tries to set the Scan QR Code result and close the scan page.
+		/// Closes the scan page and then delivers the result to the waiting caller.
 		/// </summary>
-		/// <param name="Url">The URL to set.</param>
+		/// <remarks>
+		/// The result is delivered only once the page is no longer shown. If navigation leaves the page on screen, the waiter
+		/// is kept, scanning resumes, and a prepared value can be retried, so the caller still receives exactly one result.
+		/// </remarks>
+		/// <param name="Url">The accepted value, or <c>null</c> when the scan is cancelled.</param>
 		/// <returns>A task representing navigation and result delivery.</returns>
 		private async Task TrySetResultAndClosePageAsync(string? Url)
 		{
-			if (this.navigationArgs?.QrCodeScanned is not null)
-			{
-				TaskCompletionSource<string?> TaskSource = this.navigationArgs.QrCodeScanned;
-				this.navigationArgs.QrCodeScanned = null;
-				this.State = QrScannerState.Closing;
-				this.EndScannerSession();
+			if (this.closing)
+				return;
 
-				await MainThread.InvokeOnMainThreadAsync(async () =>
+			this.closing = true;
+			string? ScannedValue = this.ScannedText;
+			TaskCompletionSource<string?>? TaskSource = this.navigationArgs?.QrCodeScanned;
+			if (this.navigationArgs is not null)
+				this.navigationArgs.QrCodeScanned = null;
+
+			this.State = QrScannerState.Closing;
+			this.EndScannerSession();
+
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				try
 				{
-					try
-					{
-						await base.GoBack();
-						TaskSource.TrySetResult(Url);
-					}
-					catch (Exception ex)
-					{
-						ServiceRef.LogService.LogException(ex);
-					}
-				});
+					await base.GoBack();
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			});
+
+			if (this.disposed || !ReferenceEquals(ServiceRef.NavigationService.CurrentPage?.BindingContext, this))
+			{
+				TaskSource?.TrySetResult(Url);
+				return;
+			}
+
+			ServiceRef.LogService.LogWarning("QrScannerCloseFailed",
+				new KeyValuePair<string, object?>("HasResult", Url is not null));
+
+			if (this.navigationArgs is not null)
+				this.navigationArgs.QrCodeScanned = TaskSource;
+
+			this.closing = false;
+			this.BeginScannerSession();
+
+			if (Url is not null)
+			{
+				// Keep the prepared value for an explicit retry, and pause before picking the same code up again automatically.
+				this.retryCandidate = Url;
+				this.SuppressCandidate(ScannedValue, DateTime.UtcNow.Add(unavailableCandidateCooldown));
+				this.State = QrScannerState.Unavailable;
 			}
 		}
 
@@ -343,7 +377,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <summary>
 		/// If the manual code can be opened
 		/// </summary>
-		public bool CanOpenManual => this.CanSwitchMode && this.CanOpen(this.ManualText);
+		public bool CanOpenManual => this.CanSwitchMode && this.State != QrScannerState.Validating && this.CanOpen(this.ManualText);
 
 		#endregion
 

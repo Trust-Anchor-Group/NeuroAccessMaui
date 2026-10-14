@@ -1,27 +1,20 @@
 using System.ComponentModel;
 using NeuroAccessMaui.Animations;
-using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc.Views
 {
 	/// <summary>
-	/// Shows a KYC photo field as a card with a document illustration when empty and a preview when filled.
+	/// Shows a KYC image field as a photo card: a document illustration while empty, and the photo with a check badge once
+	/// added.
 	/// </summary>
 	/// <remarks>
-	/// The binding context is an <see cref="ObservableImageField"/>. Code-behind only picks the illustration and plays
-	/// the photo-added animation; capture and validation stay in the field view model.
+	/// The binding context is an <see cref="ObservableImageField"/>. Code-behind only picks the illustration and plays the
+	/// photo-added animation; capture, processing, and validation stay in the field view model.
 	/// </remarks>
 	public partial class KycImageFieldView : ContentView
 	{
-		private const string faceIllustration = "kyc_doc_face.svg";
-		private const string passportIllustration = "kyc_doc_passport.svg";
-		private const string idFrontIllustration = "kyc_doc_id_front.svg";
-		private const string idBackIllustration = "kyc_doc_id_back.svg";
-		private const string licenseIllustration = "kyc_doc_license.svg";
-		private const string genericIllustration = "kyc_doc_generic.svg";
-
 		private ObservableImageField? field;
 		private bool hadImage;
 
@@ -42,69 +35,28 @@ namespace NeuroAccessMaui.UI.Pages.Kyc.Views
 
 			this.Detach();
 			this.field = this.BindingContext as ObservableImageField;
-			this.hadImage = this.field?.HasImage == true;
-			this.Illustration.Source = ResolveIllustration(this.field);
+			this.hadImage = this.field?.HasCapturedImage == true;
+			this.Illustration.Source = ResolveIllustration(this.field?.CaptureProfile ?? KycCaptureProfile.Generic);
 
 			if (this.IsLoaded)
 				this.Attach();
 		}
 
 		/// <summary>
-		/// Picks a document illustration from the field's special type, identifier, and mapping keys.
+		/// Picks the illustration shown while the field has no photo.
 		/// </summary>
-		/// <param name="Field">The photo field.</param>
+		/// <param name="Profile">What the field captures.</param>
 		/// <returns>The file name of the SVG illustration.</returns>
-		private static string ResolveIllustration(ObservableImageField? Field)
+		private static string ResolveIllustration(KycCaptureProfile Profile)
 		{
-			if (Field is null)
-				return genericIllustration;
-
-			List<string> Keys = [Field.SpecialType ?? string.Empty, Field.Id];
-			foreach (KycMapping Mapping in Field.Mappings)
-				Keys.Add(Mapping.Key ?? string.Empty);
-
-			string Hints = string.Join(' ', Keys).ToLowerInvariant();
-			bool IsBack = Hints.Contains("back", StringComparison.Ordinal);
-
-			if (Field.CameraOnly || ContainsAny(Hints, "profilephoto", "profile_photo", "selfie", "face", "portrait"))
-				return faceIllustration;
-
-			if (Hints.Contains("passport", StringComparison.Ordinal))
-				return passportIllustration;
-
-			if (ContainsAny(Hints, "license", "licence"))
-				return IsBack ? idBackIllustration : licenseIllustration;
-
-			if (ContainsAny(Hints, "idcard", "id_card", "identitycard", "identity_card"))
-				return IsBack ? idBackIllustration : idFrontIllustration;
-
-			return genericIllustration;
-		}
-
-		private static bool ContainsAny(string Text, params string[] Values)
-		{
-			foreach (string Value in Values)
+			return Profile switch
 			{
-				if (Text.Contains(Value, StringComparison.Ordinal))
-					return true;
-			}
-
-			return false;
-		}
-
-		private static bool IsReducedMotion
-		{
-			get
-			{
-				try
-				{
-					return ServiceRef.Provider?.GetService<IMotionSettings>()?.ReduceMotion == true;
-				}
-				catch (Exception)
-				{
-					return false;
-				}
-			}
+				KycCaptureProfile.Selfie => "kyc_doc_face.svg",
+				KycCaptureProfile.Passport => "kyc_doc_passport.svg",
+				KycCaptureProfile.IdCardFront => "kyc_doc_id_front.svg",
+				KycCaptureProfile.IdCardBack => "kyc_doc_id_back.svg",
+				_ => "kyc_doc_generic.svg"
+			};
 		}
 
 		private void OnLoaded(object? Sender, EventArgs E)
@@ -124,7 +76,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc.Views
 
 			this.field.PropertyChanged -= this.OnFieldPropertyChanged;
 			this.field.PropertyChanged += this.OnFieldPropertyChanged;
-			this.hadImage = this.field.HasImage;
+			this.hadImage = this.field.HasCapturedImage;
 		}
 
 		private void Detach()
@@ -135,12 +87,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc.Views
 
 		private void OnFieldPropertyChanged(object? Sender, PropertyChangedEventArgs E)
 		{
-			if (E.PropertyName != nameof(ObservableImageField.HasImage))
+			if (E.PropertyName != nameof(ObservableImageField.HasCapturedImage))
 				return;
 
 			this.Dispatcher.Dispatch(() =>
 			{
-				bool HasImage = this.field?.HasImage == true;
+				bool HasImage = this.field?.HasCapturedImage == true;
 				bool IsNewPhoto = HasImage && !this.hadImage;
 				this.hadImage = HasImage;
 
@@ -150,7 +102,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc.Views
 		}
 
 		/// <summary>
-		/// Fades the new photo in and pops the check badge to confirm that the photo was accepted.
+		/// Fades the new photo in and pops the check badge to confirm that the photo was added. With reduced motion the
+		/// photo and badge appear at once.
 		/// </summary>
 		/// <returns>A task that completes when the animation ends.</returns>
 		private async Task RevealPhotoAsync()
@@ -158,10 +111,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc.Views
 			this.Preview.CancelAnimations();
 			this.Badge.CancelAnimations();
 
-			if (IsReducedMotion)
+			if (MotionPreferences.ReduceMotion)
 			{
-				this.Preview.Opacity = 1;
-				this.Badge.Scale = 1;
+				this.ResetPhotoVisuals();
 				return;
 			}
 
@@ -181,11 +133,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc.Views
 			}
 			catch (Exception)
 			{
-				this.Preview.Opacity = 1;
-				this.Preview.Scale = 1;
-				this.Badge.Opacity = 1;
-				this.Badge.Scale = 1;
+				this.ResetPhotoVisuals();
 			}
+		}
+
+		private void ResetPhotoVisuals()
+		{
+			this.Preview.Opacity = 1;
+			this.Preview.Scale = 1;
+			this.Badge.Opacity = 1;
+			this.Badge.Scale = 1;
 		}
 	}
 }

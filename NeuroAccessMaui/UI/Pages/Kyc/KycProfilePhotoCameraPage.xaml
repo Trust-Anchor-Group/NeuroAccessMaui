@@ -12,26 +12,31 @@
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 	x:DataType="viewmodel:KycProfilePhotoCameraViewModel"
 	BackgroundColor="Black"
-	ui:SafeArea.Mode="Ignore">
+	ui:SafeArea.Mode="Ignore"
+	ui:KeyboardInsets.Mode="Ignore">
 	<Grid BackgroundColor="Black">
 		<camera:CameraView x:Name="CameraView"
-						   IsVisible="{Binding ShowCameraPreview}"
 						   HorizontalOptions="Fill"
 						   VerticalOptions="Fill" />
 
-		<Image Source="{Binding CapturedPhotoSource}"
-			   IsVisible="{Binding HasCapturedPhoto}"
-			   Aspect="AspectFill"
-			   HorizontalOptions="Fill"
-			   VerticalOptions="Fill" />
-
-		<GraphicsView x:Name="FaceGuide"
+		<!-- Dims the preview around the face oval or the document frame -->
+		<GraphicsView x:Name="CaptureGuide"
 					  InputTransparent="True"
 					  IsVisible="{Binding ShowCameraPreview}"
 					  HorizontalOptions="Fill"
 					  VerticalOptions="Fill"
 					  AutomationProperties.IsInAccessibleTree="False" />
 
+		<!-- The photo covers the live preview while it is reviewed, so the camera keeps running for a retake -->
+		<Grid BackgroundColor="Black"
+			  IsVisible="{Binding HasCapturedPhoto}">
+			<Image Source="{Binding CapturedPhotoSource}"
+				   Aspect="{Binding ReviewAspect}"
+				   HorizontalOptions="Fill"
+				   VerticalOptions="Fill" />
+		</Grid>
+
+		<!-- Shutter flash -->
 		<BoxView x:Name="Flash"
 				 Color="White"
 				 Opacity="0"
@@ -39,8 +44,8 @@
 				 HorizontalOptions="Fill"
 				 VerticalOptions="Fill" />
 
-		<!-- Keeps the white header readable over bright photos -->
-		<BoxView HeightRequest="150"
+		<!-- Keeps the white header readable over bright scenes -->
+		<BoxView HeightRequest="160"
 				 VerticalOptions="Start"
 				 InputTransparent="True">
 			<BoxView.Background>
@@ -57,22 +62,40 @@
 		<!-- Header -->
 		<Grid Margin="{ext:SafeInsets Type=Top}"
 			  Padding="16,12,16,0"
-			  ColumnDefinitions="Auto,*"
+			  ColumnDefinitions="Auto,*,Auto,Auto"
 			  ColumnSpacing="12"
 			  VerticalOptions="Start">
 			<controls:ImageButton Command="{Binding CancelCommand}"
 								  Style="{DynamicResource FilledImageButton}"
 								  PathData="{x:Static ui:Geometries.BackButtonPath}"
+								  IsEnabled="{Binding IsCapturing, Converter={mct:InvertedBoolConverter}}"
 								  SemanticProperties.Description="{Binding CancelText}" />
+
 			<Label Grid.Column="1"
 				   Text="{Binding TitleText}"
-				   Style="{DynamicResource PageTitleLabel}"
-				   FontSize="22"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="{StaticResource FontSize2xl}"
 				   TextColor="White"
-				   VerticalOptions="Center"
 				   MaxLines="2"
 				   LineBreakMode="WordWrap"
+				   VerticalOptions="Center"
 				   SemanticProperties.HeadingLevel="Level1" />
+
+			<controls:ImageButton Grid.Column="2"
+								  Command="{Binding ToggleTorchCommand}"
+								  Style="{DynamicResource FilledImageButton}"
+								  PathData="{x:Static ui:Geometries.CameraTorchButtonPath}"
+								  IsVisible="{Binding CanUseTorch}"
+								  IsEnabled="{Binding CanCapture}"
+								  SemanticProperties.Description="{Binding TorchDescription}" />
+
+			<controls:ImageButton Grid.Column="3"
+								  Command="{Binding SwitchCameraCommand}"
+								  Style="{DynamicResource FilledImageButton}"
+								  PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}"
+								  IsVisible="{Binding CanSwitchCamera}"
+								  IsEnabled="{Binding CanCapture}"
+								  SemanticProperties.Description="{Binding SwitchCameraText}" />
 		</Grid>
 
 		<!-- Capture -->
@@ -86,25 +109,37 @@
 					BackgroundColor="{x:Static ui:ScannerColors.CardBackground}"
 					StrokeThickness="0"
 					StrokeShape="RoundRectangle 16">
-				<VerticalStackLayout Spacing="4">
-					<Label Text="{Binding GuidanceText}"
-						   FontFamily="SpaceGroteskBold"
-						   FontSize="17"
-						   TextColor="White"
-						   HorizontalTextAlignment="Center"
-						   LineBreakMode="WordWrap" />
-					<Label Text="{Binding TipText}"
-						   FontSize="14"
-						   TextColor="#D9FFFFFF"
-						   HorizontalTextAlignment="Center"
-						   LineBreakMode="WordWrap" />
-				</VerticalStackLayout>
+				<Grid ColumnDefinitions="*,Auto"
+					  ColumnSpacing="12">
+					<VerticalStackLayout Spacing="4"
+										 VerticalOptions="Center">
+						<Label Text="{Binding GuidanceText}"
+							   FontFamily="SpaceGroteskBold"
+							   FontSize="{StaticResource FontSizeLg}"
+							   TextColor="White"
+							   LineBreakMode="WordWrap" />
+						<Label Text="{Binding GuideDetail}"
+							   FontSize="{StaticResource FontSizeSm}"
+							   TextColor="#D9FFFFFF"
+							   LineBreakMode="WordWrap"
+							   IsVisible="{Binding HasGuideDetail}" />
+					</VerticalStackLayout>
+					<controls:SvgView Grid.Column="1"
+									  Source="{Binding GuideIllustration}"
+									  WidthRequest="64"
+									  HeightRequest="44"
+									  VerticalOptions="Center"
+									  TintColor="White"
+									  IsVisible="{Binding HasGuideIllustration}"
+									  AutomationProperties.IsInAccessibleTree="False" />
+				</Grid>
 			</Border>
 
 			<Grid WidthRequest="78"
 				  HeightRequest="78"
 				  HorizontalOptions="Center">
 				<controls:TemplatedButton Command="{Binding CaptureCommand}"
+										  IsEnabled="{Binding CanCapture}"
 										  SemanticProperties.Description="{Binding CaptureText}">
 					<Grid WidthRequest="78"
 						  HeightRequest="78">
@@ -144,9 +179,8 @@
 								 Margin="{ext:SafeInsets Type=Bottom}"
 								 Padding="0,0,0,20">
 				<Label Text="{Binding ReviewHintText}"
-					   Style="{DynamicResource InfoLabel}"
-					   HorizontalTextAlignment="Center"
-					   LineBreakMode="WordWrap" />
+					   Style="{DynamicResource IdentityFlowBodyLabel}"
+					   HorizontalTextAlignment="Center" />
 				<Grid ColumnDefinitions="*,*"
 					  ColumnSpacing="10">
 					<controls:TextButton Style="{DynamicResource OutlinedTextButton}"

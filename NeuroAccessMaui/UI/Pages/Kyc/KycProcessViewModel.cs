@@ -83,13 +83,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private bool applicationSentPublic;
 
 		[ObservableProperty] private bool peerReview;
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(PeerReviewProgressText))]
-		private int nrReviews;
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(PeerReviewProgressText))]
-		[NotifyPropertyChangedFor(nameof(HasPeerReviewTarget))]
-		private int nrReviewers;
+		[ObservableProperty] private int nrReviews;
+		[ObservableProperty] private int nrReviewers;
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(RequestReviewCommand))]
 		private bool hasFeaturedPeerReviewers;
@@ -103,26 +98,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasSections;
 
 		/// <summary>
-		/// Gets the number of steps in the flow: one per visible page plus the review step.
-		/// </summary>
-		[ObservableProperty] private int stepCount;
-
-		/// <summary>
-		/// Gets the number of steps reached, including the current one.
-		/// </summary>
-		[ObservableProperty] private int stepValue;
-
-		/// <summary>
-		/// Gets the localized step caption, such as "Step 2 of 5".
-		/// </summary>
-		[ObservableProperty] private string stepCaption = string.Empty;
-
-		/// <summary>
-		/// Gets a value indicating whether the application is being sent to the provider.
+		/// Gets or sets a value indicating whether the application is being sent.
 		/// </summary>
 		[ObservableProperty] private bool isSubmitting;
-
-		private bool isOnLastFormPage;
 
 		[ObservableProperty] private bool hasCurrentPageAction;
 		[ObservableProperty] private bool currentPageActionIsEnabled;
@@ -147,7 +125,50 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyAddressSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyRepresentativeSummary;
 		[ObservableProperty] private ObservableCollection<string> invalidatedItems = new ObservableCollection<string>();
+
+		/// <summary>
+		/// Gets or sets the optional details the user chooses to keep on, or leave out of, the finished identity.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasKeepChoices))]
+		private ObservableCollection<KycKeepChoiceItem> keepChoices = new ObservableCollection<KycKeepChoiceItem>();
+
+		/// <summary>
+		/// Gets a value indicating whether there are optional details to choose about, so the ID contents step and its summary line apply.
+		/// </summary>
+		public bool HasKeepChoices => this.KeepChoices.Count > 0;
+
+		/// <summary>
+		/// Gets the optional details the finished identity will show, as a comma-separated list for the summary.
+		/// </summary>
+		public string KeptDetailsText
+		{
+			get
+			{
+				List<string> Labels = this.KeepChoices.Where(Item => Item.IsKept).Select(Item => Item.Label).ToList();
+				return Labels.Count > 0
+					? string.Join(", ", Labels)
+					: ServiceRef.Localizer[nameof(AppResources.KycIdContentsNone)];
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether the user can go back from the summary and change which optional details the finished identity shows.
+		/// </summary>
+		public bool CanChangeKeepChoices => this.HasKeepChoices && !this.ApplicationSentPublic;
+
+		partial void OnKeepChoicesChanged(ObservableCollection<KycKeepChoiceItem> value)
+		{
+			this.OnPropertyChanged(nameof(this.KeptDetailsText));
+			this.OnPropertyChanged(nameof(this.CanChangeKeepChoices));
+		}
+
 		[ObservableProperty] private ObservableCollection<string> unvalidatedItems = new ObservableCollection<string>();
+
+		/// <summary>
+		/// Gets or sets the details the reviewer asked the user to fix, shown in the rejection card of the summary.
+		/// </summary>
+		[ObservableProperty] private ObservableCollection<KycReviewIssueItem> reviewIssues = new ObservableCollection<KycReviewIssueItem>();
 
 		[ObservableProperty] private string? errorDescription;
 		[ObservableProperty] private bool hasErrorDescription;
@@ -205,11 +226,160 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public ObservableCollection<KycPage> Pages => this.process is not null ? this.process.Pages : [];
 
 		public bool IsInSummary => this.navigation.State == KycFlowState.Summary || this.navigation.State == KycFlowState.PendingSummary;
+
+		/// <summary>
+		/// Gets a value indicating whether the user is choosing which optional details the finished identity shows.
+		/// </summary>
+		public bool IsInIdContents => this.navigation.State == KycFlowState.IdContents;
+
+		/// <summary>
+		/// Gets a value indicating whether a form page is shown.
+		/// </summary>
+		public bool ShowForm => !this.IsLoading && !this.IsInSummary && !this.IsInIdContents;
+
+		/// <summary>
+		/// Gets a value indicating whether the step for choosing which optional details the finished identity shows is displayed.
+		/// </summary>
+		public bool ShowIdContents => !this.IsLoading && this.IsInIdContents;
+
+		/// <summary>
+		/// Gets a value indicating whether the step caption and progress are shown, which is on every step before the summary.
+		/// </summary>
+		public bool ShowStepProgress => !this.IsLoading && !this.IsInSummary;
+
+		/// <summary>
+		/// Gets a value indicating whether the summary is shown.
+		/// </summary>
+		public bool ShowSummary => !this.IsLoading && this.IsInSummary;
+
+		/// <summary>
+		/// Gets a value indicating whether the flow has a step, before the summary, for choosing which optional details the finished identity shows.
+		/// </summary>
+		/// <remarks>
+		/// The step is offered in preview mode while the application has not been sent and the content policy has optional retained details.
+		/// It is skipped when none of those details have a value.
+		/// </remarks>
+		private bool HasIdContentsStep =>
+			this.process is not null &&
+			this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview &&
+			!this.ApplicationSentPublic &&
+			KycKeepChoices.GetChoiceGroups(this.process).Count > 0;
+
+		partial void OnIsLoadingChanged(bool value)
+		{
+			this.OnPropertyChanged(nameof(this.ShowForm));
+			this.OnPropertyChanged(nameof(this.ShowIdContents));
+			this.OnPropertyChanged(nameof(this.ShowStepProgress));
+			this.OnPropertyChanged(nameof(this.ShowSummary));
+			this.OnPropertyChanged(nameof(this.ShowBottomBar));
+		}
+
+		/// <summary>
+		/// Gets the primary button text: send in the summary, return while editing from it, review on the last page,
+		/// and otherwise next.
+		/// </summary>
+		public string NextButtonText
+		{
+			get
+			{
+				if (this.IsInSummary)
+					return ServiceRef.Localizer[nameof(AppResources.SendApplication)];
+
+				if (this.IsInIdContents)
+					return ServiceRef.Localizer[nameof(AppResources.KycReviewButton)];
+
+				if (this.editingFromSummary)
+					return ServiceRef.Localizer[nameof(AppResources.Kyc_Return)];
+
+				List<int> VisibleIndices = this.GetVisiblePageIndices();
+				bool IsLastPage = VisibleIndices.Count > 0 && VisibleIndices[^1] == this.currentPageIndex;
+				return IsLastPage && !this.HasIdContentsStep
+					? ServiceRef.Localizer[nameof(AppResources.KycReviewButton)]
+					: ServiceRef.Localizer[nameof(AppResources.Kyc_Next)];
+			}
+		}
+
+		/// <summary>
+		/// Occurs when the user tries to continue and the current page has invalid fields. The argument is the first
+		/// invalid visible field, so the view can bring it into view.
+		/// </summary>
+		public event EventHandler<ObservableKycField>? ValidationFailed;
+
+		/// <summary>
+		/// Occurs when the user opens a field from the summary. The argument is the field, so the view can bring it into view.
+		/// </summary>
+		public event EventHandler<ObservableKycField>? FieldRevealRequested;
+
+		/// <summary>
+		/// Gets the one-based step shown to the user, where the summary is the last step.
+		/// </summary>
+		public int DisplayedStepIndex
+		{
+			get
+			{
+				if (this.process is null || this.CurrentPage is null)
+					return 0;
+
+				List<KycPage> Visible = this.Pages.Where(Page => Page.IsVisible(this.process.Values)).ToList();
+				if (Visible.Count == 0)
+					return 0;
+
+				if (this.IsInIdContents)
+					return Visible.Count + 1;
+
+				if (this.IsInSummary)
+					return Visible.Count + (this.HasIdContentsStep ? 2 : 1);
+
+				int Index = Visible.IndexOf(this.CurrentPage);
+				return Index >= 0 ? Index + 1 : 0;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of steps shown to the user: the visible pages, the ID contents step when offered, and the summary.
+		/// </summary>
+		public int DisplayedStepTotal
+		{
+			get
+			{
+				if (this.process is null)
+					return 0;
+
+				int VisibleCount = this.Pages.Count(Page => Page.IsVisible(this.process.Values));
+				if (VisibleCount == 0)
+					return 0;
+
+				return VisibleCount + (this.HasIdContentsStep ? 2 : 1);
+			}
+		}
+
+		/// <summary>
+		/// Gets the localized "Step X of Y" text for the current position in the form.
+		/// </summary>
+		public string ProgressStepText
+		{
+			get
+			{
+				int StepIndex = this.DisplayedStepIndex;
+				int StepTotal = this.DisplayedStepTotal;
+				if (StepIndex <= 0 || StepTotal <= 0)
+					return string.Empty;
+
+				return ServiceRef.Localizer[nameof(AppResources.ContractWizardStepFormat), false, StepIndex, StepTotal];
+			}
+		}
+
 		public bool IsEditingFromSummary => this.editingFromSummary;
 		public bool HasUnvalidatedItems => (this.kycReference?.ApplicationReview?.UnvalidatedClaims?.Length ?? 0) > 0 ||
 			(this.kycReference?.ApplicationReview?.UnvalidatedPhotos?.Length ?? 0) > 0;
 
 		public bool HasInvalidatedItems => this.InvalidatedItems.Count > 0;
+
+		/// <summary>
+		/// Gets a value indicating whether the rejection card lists details to fix.
+		/// </summary>
+		public bool HasReviewIssues => this.ReviewIssues.Count > 0;
+
 		public bool ShouldShowUnvalidatedBanner => this.HasUnvalidatedItems && this.InvalidatedItems.Count == 0 && this.kycReference?.GetEffectiveApplicationIdentityState() == IdentityState.Created;
 		public bool ShouldShowRejectionBanner => ((!string.IsNullOrEmpty(this.kycReference?.ApplicationReview?.Code)) && this.kycReference?.ApplicationReview?.Code != "ManualReview") || this.kycReference?.GetEffectiveApplicationIdentityState() == IdentityState.Rejected;
 
@@ -218,8 +388,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.editingFromSummary == value) return;
 			this.editingFromSummary = value;
 			this.OnPropertyChanged(nameof(this.IsEditingFromSummary));
+			this.OnPropertyChanged(nameof(this.NextButtonText));
 		}
 
+		/// <summary>
+		/// Gets the fraction of the visible pages completed, persisted with the KYC snapshot.
+		/// </summary>
 		public double Progress
 		{
 			get
@@ -230,7 +404,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				ObservableCollection<KycPage> Visible = [.. this.Pages.Where(p => p.IsVisible(this.process.Values))];
 				if (Visible.Count == 0)
 					return 0;
-				if (this.IsInSummary)
+				if (this.IsInSummary || this.IsInIdContents)
 					return 1;
 				int index = Visible.IndexOf(this.CurrentPage);
 				if (index < 0)
@@ -241,48 +415,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return Math.Clamp((double)index / Visible.Count, 0, 1);
 			}
 		}
-
-		/// <summary>
-		/// Gets the primary button text: send in the summary, review on the last page, otherwise next.
-		/// </summary>
-		public string NextButtonText
-		{
-			get
-			{
-				if (this.IsInSummary)
-					return ServiceRef.Localizer[nameof(AppResources.KycSendApplicationButton)];
-
-				return this.isOnLastFormPage
-					? ServiceRef.Localizer[nameof(AppResources.KycReviewButton)]
-					: ServiceRef.Localizer[nameof(AppResources.Kyc_Next)];
-			}
-		}
-
-		/// <summary>
-		/// Gets the localized peer review progress, such as "1 of 3 reviews".
-		/// </summary>
-		public string PeerReviewProgressText => ServiceRef.Localizer[nameof(AppResources.KycPeerReviewProgressFormat), false, this.NrReviews, this.NrReviewers];
-
-		/// <summary>
-		/// Gets a value indicating whether the provider has said how many peer reviews are needed.
-		/// </summary>
-		public bool HasPeerReviewTarget => this.NrReviewers > 0;
-
-		/// <summary>
-		/// Occurs when the user tries to continue and the current page has invalid fields. The argument is the first
-		/// invalid visible field, so the view can bring it into view.
-		/// </summary>
-		public event EventHandler<ObservableKycField>? ValidationFailed;
-
-		/// <summary>
-		/// Occurs after the application has been sent during this visit, so the view can celebrate it.
-		/// </summary>
-		public event EventHandler? ApplicationSubmitted;
-
-		/// <summary>
-		/// Occurs when the user opens a field from the summary. The argument is the field, so the view can bring it into view.
-		/// </summary>
-		public event EventHandler<ObservableKycField>? FieldRevealRequested;
 
 		/// <summary>
 		/// Gets a value indicating whether any on-screen keyboard is currently visible.
@@ -296,9 +428,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		/// <summary>
 		/// Gets a value indicating whether the bottom navigation bar should be shown.
-		/// Hidden when the application has been sent or when the keyboard is visible.
+		/// Hidden while loading, when the application has been sent, or when the keyboard is visible.
 		/// </summary>
-		public bool ShowBottomBar => !this.ApplicationSentPublic && !this.IsKeyboardVisible;
+		public bool ShowBottomBar => !this.IsLoading && !this.ApplicationSentPublic && !this.IsKeyboardVisible;
 
 		/// <summary>
 		/// Receives keyboard inset change notifications from the shell.
@@ -563,6 +695,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
+			this.NotifyProgressUiChanged();
 			MainThread.BeginInvokeOnMainThread(this.NextCommand.NotifyCanExecuteChanged);
 			if (Pending)
 			{
@@ -650,6 +783,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.FieldRevealRequested?.Invoke(this, Target);
 		}
 
+		/// <summary>
+		/// Finds the visible field on the current page that a summary or review mapping refers to, preferring an exact
+		/// mapping match over a grouped one such as a birth date part.
+		/// </summary>
+		/// <param name="MappingKey">The trimmed mapping key.</param>
+		/// <returns>The matching field, or <c>null</c> if the current page has none.</returns>
+		private ObservableKycField? FindCurrentPageFieldByMapping(string MappingKey)
+		{
+			List<ObservableKycField> Fields = this.GetCurrentPageFields().ToList();
+			return Fields.FirstOrDefault(Field => Field.Mappings.Any(Map => string.Equals(Map.Key, MappingKey, StringComparison.OrdinalIgnoreCase)))
+				?? Fields.FirstOrDefault(Field => FieldMatches(Field, MappingKey));
+		}
+
 		private int FindPageIndexByMapping(string Mapping)
 		{
 			if (this.process is null) return -1;
@@ -674,35 +820,18 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return -1;
 		}
 
-		private static bool FieldMatches(ObservableKycField field, string mappingKey)
+		private static bool FieldMatches(ObservableKycField Field, string MappingKey)
 		{
-			foreach (KycMapping Map in field.Mappings)
+			foreach (KycMapping Map in Field.Mappings)
 			{
-				if (string.Equals(Map.Key, mappingKey, StringComparison.OrdinalIgnoreCase)) return true;
-				if (mappingKey.Equals("BDATE", StringComparison.OrdinalIgnoreCase) &&
+				if (string.Equals(Map.Key, MappingKey, StringComparison.OrdinalIgnoreCase)) return true;
+				if (MappingKey.Equals("BDATE", StringComparison.OrdinalIgnoreCase) &&
 					(string.Equals(Map.Key, Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
 					 string.Equals(Map.Key, Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
 					 string.Equals(Map.Key, Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase))) return true;
-				if (mappingKey.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase) && Map.Key.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase)) return true;
+				if (MappingKey.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase) && Map.Key.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase)) return true;
 			}
 			return false;
-		}
-
-		/// <summary>
-		/// Finds the visible field on the current page that produces the given mapping.
-		/// </summary>
-		/// <param name="MappingKey">The mapping key of a summary item.</param>
-		/// <returns>The matching field, or <c>null</c> if none is visible on the current page.</returns>
-		private ObservableKycField? FindCurrentPageFieldByMapping(string MappingKey)
-		{
-			if (this.CurrentPage is null)
-				return null;
-
-			IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields;
-			if (this.CurrentPageSections is not null)
-				Fields = Fields.Concat(this.CurrentPageSections.SelectMany(s => s.VisibleFields));
-
-			return Fields.FirstOrDefault(f => FieldMatches(f, MappingKey));
 		}
 
 		public bool CanRequestFeaturedPeerReviewer => this.ApplicationSentPublic && this.HasFeaturedPeerReviewers;
@@ -718,6 +847,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NotifyNavigationChanged();
 			}
 			this.OnPropertyChanged(nameof(this.ShowBottomBar));
+			this.OnPropertyChanged(nameof(this.CanChangeKeepChoices));
 			this.OnPropertyChanged(nameof(this.CanRequestFeaturedPeerReviewer));
 			this.OnPropertyChanged(nameof(this.FeaturedPeerReviewers));
 			this.NextCommand.NotifyCanExecuteChanged();
@@ -979,50 +1109,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!this.IsInSummary && this.kycReference is not null && this.process is not null && pageChanged)
 				_ = this.kycService.ScheduleSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, Page.Id);
 			this.ScheduleCurrentPageActionRefresh(Page);
-			this.OnPropertyChanged(nameof(this.Progress));
-			this.UpdateStepState();
+			this.NotifyProgressUiChanged();
 			this.NextCommand.NotifyCanExecuteChanged();
-		}
-
-		/// <summary>
-		/// Recomputes the step caption, the segmented progress, and the primary button text from the visible pages.
-		/// The review step counts as the last step.
-		/// </summary>
-		private void UpdateStepState()
-		{
-			int VisiblePages = 0;
-			int CurrentPosition = -1;
-			int LastVisibleIndex = -1;
-
-			if (this.process is not null)
-			{
-				for (int i = 0; i < this.Pages.Count; i++)
-				{
-					if (!this.Pages[i].IsVisible(this.process.Values))
-						continue;
-
-					if (i == this.currentPageIndex)
-						CurrentPosition = VisiblePages;
-
-					VisiblePages++;
-					LastVisibleIndex = i;
-				}
-			}
-
-			int Count = VisiblePages + 1;
-			bool InSummary = this.IsInSummary;
-			int Reached = InSummary ? Count : Math.Max(CurrentPosition, 0) + 1;
-
-			this.isOnLastFormPage = !InSummary && LastVisibleIndex >= 0 && this.currentPageIndex == LastVisibleIndex;
-			this.StepCount = Count;
-			this.StepValue = Reached;
-			this.StepCaption = ServiceRef.Localizer[nameof(AppResources.KycStepCaptionFormat), false, Reached, Count];
-			this.OnPropertyChanged(nameof(this.NextButtonText));
 		}
 
 		private bool CanExecuteNext()
 		{
-			if (this.IsInSummary)
+			if (this.IsInSummary || this.IsInIdContents)
 				return !this.ApplicationSentPublic;
 			if (this.CurrentPage is null) return false;
 			IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields;
@@ -1042,6 +1135,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					await this.ExecuteApplyAsync();
 					return;
 				}
+				if (this.IsInIdContents)
+				{
+					await this.LeaveIdContentsToSummaryAsync();
+					return;
+				}
 				if (this.editingFromSummary)
 				{
 					bool OkEditing = await this.ValidateCurrentPageAsync();
@@ -1056,6 +1154,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						this.currentPageIndex = FirstInvalidFromSummary;
 						this.CurrentPagePosition = FirstInvalidFromSummary;
 						this.SetCurrentPage(FirstInvalidFromSummary);
+						this.NotifyValidationFailed();
 						return;
 					}
 					await this.GoToSummaryAsync();
@@ -1085,6 +1184,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.ScrollUp();
 					this.SetEditingFromSummary(false);
 					this.navigation = NextSnap with { AnchorPageIndex = NextSnap.AnchorPageIndex >= 0 ? NextSnap.AnchorPageIndex : this.navigation.AnchorPageIndex >= 0 ? this.navigation.AnchorPageIndex : this.currentPageIndex };
+					if (NextSnap.State == KycFlowState.Summary && this.HasIdContentsStep && this.KeepChoices.Count > 0)
+						this.navigation = KycTransitions.EnterIdContents(this.navigation, this.currentPageIndex);
 					this.NotifyNavigationChanged();
 					this.OnPropertyChanged(nameof(this.Progress));
 					if (this.kycReference is not null && this.process is not null)
@@ -1183,6 +1284,33 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.OnPropertyChanged(nameof(this.Progress));
 		}
 
+		/// <summary>
+		/// Continues from the ID contents step to the summary and saves where the user is.
+		/// </summary>
+		private async Task LeaveIdContentsToSummaryAsync()
+		{
+			this.ScrollUp();
+			KycProcessState ProcessState = this.BuildProcessState();
+			this.navigation = KycTransitions.Advance(ProcessState, this.GetVisiblePageIndices());
+			this.NotifyNavigationChanged();
+			if (this.kycReference is not null && this.process is not null)
+				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
+		}
+
+		/// <summary>
+		/// Returns from the summary to the step where the user chooses which optional details the finished identity shows.
+		/// </summary>
+		[RelayCommand]
+		private void EnterIdContentsFromSummary()
+		{
+			if (!this.IsInSummary || !this.HasIdContentsStep || this.KeepChoices.Count == 0)
+				return;
+
+			this.ScrollUp();
+			this.navigation = KycTransitions.EnterIdContents(this.navigation, this.currentPageIndex);
+			this.NotifyNavigationChanged();
+		}
+
 		private async Task ExecutePrevious()
 		{
 			if (this.process is null)
@@ -1196,9 +1324,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				if (this.Pages[I].IsVisible(this.process.Values)) VisibleIndices.Add(I);
 			}
+			if (this.IsInSummary && this.HasIdContentsStep && this.KeepChoices.Count > 0)
+			{
+				this.EnterIdContentsFromSummary();
+				return;
+			}
 			KycProcessState ProcessState = this.BuildProcessState();
 			KycNavigationSnapshot PrevSnap = KycTransitions.Back(ProcessState, VisibleIndices);
-			if (this.IsInSummary)
+			if (this.IsInSummary || this.IsInIdContents)
 			{
 				this.navigation = PrevSnap;
 				this.currentPageIndex = PrevSnap.CurrentPageIndex;
@@ -1227,8 +1360,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void NotifyNavigationChanged()
 		{
 			this.OnPropertyChanged(nameof(this.IsInSummary));
+			this.OnPropertyChanged(nameof(this.IsInIdContents));
+			this.OnPropertyChanged(nameof(this.ShowForm));
+			this.OnPropertyChanged(nameof(this.ShowIdContents));
+			this.OnPropertyChanged(nameof(this.ShowStepProgress));
+			this.OnPropertyChanged(nameof(this.ShowSummary));
+			this.NotifyProgressUiChanged();
+		}
+
+		private void NotifyProgressUiChanged()
+		{
 			this.OnPropertyChanged(nameof(this.Progress));
-			this.UpdateStepState();
+			this.OnPropertyChanged(nameof(this.DisplayedStepIndex));
+			this.OnPropertyChanged(nameof(this.DisplayedStepTotal));
+			this.OnPropertyChanged(nameof(this.ProgressStepText));
+			this.OnPropertyChanged(nameof(this.NextButtonText));
 		}
 
 		/// <summary>
@@ -1236,42 +1382,63 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// </summary>
 		private void NotifyValidationFailed()
 		{
-			if (this.CurrentPage is null)
-				return;
-
-			IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields;
-			if (this.CurrentPageSections is not null)
-				Fields = Fields.Concat(this.CurrentPageSections.SelectMany(s => s.VisibleFields));
-
-			ObservableKycField? FirstInvalid = Fields.FirstOrDefault(f => !f.IsValid);
+			ObservableKycField? FirstInvalid = this.GetCurrentPageFields().FirstOrDefault(Field => !Field.IsValid);
 			if (FirstInvalid is not null)
 				this.ValidationFailed?.Invoke(this, FirstInvalid);
 		}
 
-		/// <summary>
-		/// Marks a sent application with haptic feedback, a screen reader announcement, and a view celebration.
-		/// </summary>
-		private void NotifyApplicationSubmitted()
+		private IEnumerable<ObservableKycField> GetCurrentPageFields()
 		{
-			try
+			if (this.CurrentPage is null)
+				return Array.Empty<ObservableKycField>();
+
+			IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields;
+			if (this.CurrentPageSections is not null)
+				Fields = Fields.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
+
+			return Fields;
+		}
+
+		private List<int> GetVisiblePageIndices()
+		{
+			List<int> VisibleIndices = new List<int>();
+			if (this.process is null)
+				return VisibleIndices;
+
+			for (int i = 0; i < this.Pages.Count; i++)
 			{
-				HapticFeedback.Default.Perform(HapticFeedbackType.LongPress);
-			}
-			catch (Exception)
-			{
-				// Devices without haptics still get the visual confirmation.
+				if (this.Pages[i].IsVisible(this.process.Values))
+					VisibleIndices.Add(i);
 			}
 
-			try
-			{
-				SemanticScreenReader.Default.Announce(ServiceRef.Localizer[nameof(AppResources.KycSentTitle)]);
-			}
-			catch (Exception)
-			{
-				// Announcements are best effort.
-			}
+			return VisibleIndices;
+		}
 
-			this.ApplicationSubmitted?.Invoke(this, EventArgs.Empty);
+		/// <summary>
+		/// Confirms a sent application with haptic feedback and a screen reader announcement.
+		/// </summary>
+		private static void NotifyApplicationSubmitted()
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				try
+				{
+					HapticFeedback.Default.Perform(HapticFeedbackType.LongPress);
+				}
+				catch (Exception)
+				{
+					// Devices without haptics still see the sent state in the summary.
+				}
+
+				try
+				{
+					SemanticScreenReader.Default.Announce(ServiceRef.Localizer[nameof(AppResources.KycApplicationSentAnnouncement)]);
+				}
+				catch (Exception)
+				{
+					// Announcements are best effort.
+				}
+			});
 		}
 
 		public override async Task GoBack()
@@ -1456,66 +1623,59 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					return;
 				}
 
-				// The busy state covers the request and the local bookkeeping, so the send button cannot reappear in between.
-				this.IsSubmitting = true;
-				try
+				(bool Succeeded, LegalIdentity? Added) = await this.SendApplicationAsync(SubmissionContent, GenerateNewKeys);
+				if (Succeeded && Added is not null)
 				{
-					(bool Succeeded, LegalIdentity? Added) = await this.SubmitApplicationContentAsync(SubmissionContent, GenerateNewKeys);
-					if (Succeeded && Added is not null)
+					if (!this.ValidateReservedPreviewSubmissionIdentity(Added))
 					{
-						if (!this.ValidateReservedPreviewSubmissionIdentity(Added))
-						{
-							await ServiceRef.UiService.DisplayAlert(
-								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-								ServiceRef.Localizer[nameof(AppResources.ServiceUnavailable)],
-								ServiceRef.Localizer[nameof(AppResources.Ok)]);
-							return;
-						}
-
-						await ServiceRef.TagProfile.SetIdentityApplication(Added, true);
-						this.applicationSent = true;
-						if (this.kycReference is not null)
-						{
-							try
-							{
-								if (this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview)
-									await this.kycService.ApplyPreviewSubmissionAsync(this.kycReference, Added, UsedNfc);
-								else
-									await this.kycService.ApplySubmissionAsync(this.kycReference, Added, UsedNfc);
-							}
-							catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
-						}
-						this.ErrorDescription = null;
-						this.HasErrorDescription = false;
-						this.InvalidatedItems.Clear();
-						this.UnvalidatedItems.Clear();
-						this.UnvalidatedSummaryText = string.Empty;
-						this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
-						this.OnPropertyChanged(nameof(this.ShouldShowUnvalidatedBanner));
-						this.OnPropertyChanged(nameof(this.ShouldShowRejectionBanner));
-						this.RemovePendingAndResubmitCommand?.NotifyCanExecuteChanged();
-						foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
-						{
-							Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
-							if (Match != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
-							{
-								await ServiceRef.AttachmentCacheService.Add(Match.Url, Added.Id, true, LocalAttachment.Data, LocalAttachment.ContentType);
-							}
-						}
-						this.applicationId = Added.Id;
-						this.ApplicationSentPublic = true;
-						this.NrReviews = ServiceRef.TagProfile.NrReviews;
-						this.NotifyApplicationSubmitted();
-						await this.LoadApplicationAttributes();
-						await this.LoadFeaturedPeerReviewers();
-						int AnchorAfterApply = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
-						this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterApply, CurrentPageIndex = AnchorAfterApply >= 0 ? AnchorAfterApply : this.navigation.CurrentPageIndex };
-						this.NotifyNavigationChanged();
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+							ServiceRef.Localizer[nameof(AppResources.ServiceUnavailable)],
+							ServiceRef.Localizer[nameof(AppResources.Ok)]);
+						return;
 					}
-				}
-				finally
-				{
-					this.IsSubmitting = false;
+
+					await ServiceRef.TagProfile.SetIdentityApplication(Added, true);
+					this.applicationSent = true;
+					NotifyApplicationSubmitted();
+					if (this.kycReference is not null)
+					{
+						try
+						{
+							if (this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview)
+								await this.kycService.ApplyPreviewSubmissionAsync(this.kycReference, Added, UsedNfc);
+							else
+								await this.kycService.ApplySubmissionAsync(this.kycReference, Added, UsedNfc);
+						}
+						catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
+					}
+					this.ErrorDescription = null;
+					this.HasErrorDescription = false;
+					this.InvalidatedItems.Clear();
+					this.UnvalidatedItems.Clear();
+					this.ReviewIssues.Clear();
+					this.UnvalidatedSummaryText = string.Empty;
+					this.OnPropertyChanged(nameof(this.HasReviewIssues));
+					this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
+					this.OnPropertyChanged(nameof(this.ShouldShowUnvalidatedBanner));
+					this.OnPropertyChanged(nameof(this.ShouldShowRejectionBanner));
+					this.RemovePendingAndResubmitCommand?.NotifyCanExecuteChanged();
+					foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
+					{
+						Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+						if (Match != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
+						{
+							await ServiceRef.AttachmentCacheService.Add(Match.Url, Added.Id, true, LocalAttachment.Data, LocalAttachment.ContentType);
+						}
+					}
+					this.applicationId = Added.Id;
+					this.ApplicationSentPublic = true;
+					this.NrReviews = ServiceRef.TagProfile.NrReviews;
+					await this.LoadApplicationAttributes();
+					await this.LoadFeaturedPeerReviewers();
+					int AnchorAfterApply = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+					this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterApply, CurrentPageIndex = AnchorAfterApply >= 0 ? AnchorAfterApply : this.navigation.CurrentPageIndex };
+					this.NotifyNavigationChanged();
 				}
 			}).ConfigureAwait(false)) return;
 		}
@@ -1527,11 +1687,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				string ReservedPreviewIdentityId = this.kycReference?.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
 				if (!string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
 				{
-					bool HasReservedPreviewKey = await this.HasPrivateKeyAsync(ReservedPreviewIdentityId);
-					if (!HasReservedPreviewKey)
+					bool CanSignForReservedPreview = await this.CanSignForIdentityAsync(ReservedPreviewIdentityId);
+					if (!CanSignForReservedPreview)
 					{
 						ServiceRef.LogService.LogWarning(
-							"KYC preview submission blocked because reserved preview private key is unavailable.",
+							"KYC preview submission blocked because the current signing keys cannot sign for the reserved preview identity.",
 							new KeyValuePair<string, object?>("HasReservedPreviewIdentityId", true));
 						return (false, false);
 					}
@@ -1550,6 +1710,27 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				ServiceRef.LogService.LogException(Ex,
 					new KeyValuePair<string, object?>("Operation", "KYC.SubmissionSigningKeyCheck"));
 				return (false, false);
+			}
+		}
+
+		/// <summary>
+		/// Sends the application while the view shows that it is being sent.
+		/// </summary>
+		/// <param name="SubmissionContent">The properties and attachments to submit.</param>
+		/// <param name="GenerateNewKeys">Whether new signing keys should be generated.</param>
+		/// <returns>Whether the request succeeded, and the identity that was added.</returns>
+		private async Task<(bool Succeeded, LegalIdentity? Identity)> SendApplicationAsync(
+			KycApplicationContentSet SubmissionContent,
+			bool GenerateNewKeys)
+		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.IsSubmitting = true);
+			try
+			{
+				return await this.SubmitApplicationContentAsync(SubmissionContent, GenerateNewKeys);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsSubmitting = false);
 			}
 		}
 
@@ -1611,14 +1792,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await ServiceRef.XmppService.HasPrivateKey(ApplicationIdentityId);
 		}
 
-		private async Task<bool> HasPrivateKeyAsync(string IdentityId)
+		private async Task<bool> CanSignForIdentityAsync(string IdentityId)
 		{
 			if (string.IsNullOrWhiteSpace(IdentityId))
 				return false;
 
 			try
 			{
-				return await ServiceRef.XmppService.HasPrivateKey(IdentityId.Trim());
+				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(IdentityId.Trim());
+				return await ServiceRef.XmppService.CanSignWithCurrentKeysAsync(Identity);
 			}
 			catch (Exception Ex)
 			{
@@ -1708,6 +1890,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						if (this.kycReference is not null && this.process is not null)
 							await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 						this.NotifyNavigationChanged();
+						this.OnPropertyChanged(nameof(this.Progress));
 						string AlertTitle;
 						string AlertMessage;
 						switch (E.Identity.State)
@@ -1738,9 +1921,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand(CanExecute = nameof(ApplicationSentPublic))]
 		private async Task ScanQrCode()
 		{
-			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanPeerId), [Constants.UriSchemes.IotId]);
-			if (string.IsNullOrEmpty(Url) || !Constants.UriSchemes.StartsWithIdScheme(Url)) return;
-			await this.SendPeerReviewRequest(Uri.UnescapeDataString(Constants.UriSchemes.RemoveScheme(Url) ?? string.Empty));
+			Models.IdentityReference? Scan = await Services.UI.QR.QrCode.GetQrService().ScanIdentityAsync(nameof(AppResources.QrPageTitleScanPeerId));
+			if (Scan is null) return;
+			await this.SendPeerReviewRequest(Scan.Identifier);
 		}
 
 		private async Task SendPeerReviewRequest(string? reviewerId)
@@ -1820,7 +2003,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ServiceRef.TagProfile.SelectedCountry));
 				ISet<string> Invalid = KycSummary.BuildInvalidMappingSet(this.kycReference);
 				KycSummaryModel Model = KycSummary.Generate(this.process, this.mappedValues, this.attachments, Invalid);
-				MainThread.BeginInvokeOnMainThread(() => this.ApplySummaryModel(Model));
+				// Wait until the summary is applied, so callers can decide on the next step from the keep choices it builds.
+				await MainThread.InvokeOnMainThreadAsync(() => this.ApplySummaryModel(Model));
 			});
 		}
 
@@ -1841,6 +2025,68 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasCompanyInformation = this.CompanyInformationSummary.Count > 0;
 			this.HasCompanyAddress = this.CompanyAddressSummary.Count > 0;
 			this.HasCompanyRepresentative = this.CompanyRepresentativeSummary.Count > 0;
+			this.KeepChoices = new ObservableCollection<KycKeepChoiceItem>(this.BuildKeepChoices(model));
+		}
+
+		/// <summary>
+		/// Builds the keep choices for optional retained details that have a value in the summary.
+		/// </summary>
+		/// <remarks>
+		/// Choices only matter when a preview application verifies the details before the final identity is created,
+		/// so none are offered in direct mode.
+		/// </remarks>
+		/// <param name="Model">The summary model holding the displayed details.</param>
+		/// <returns>The keep choices, in content policy order.</returns>
+		private List<KycKeepChoiceItem> BuildKeepChoices(KycSummaryModel Model)
+		{
+			List<KycKeepChoiceItem> Result = new List<KycKeepChoiceItem>();
+			if (this.process is null || this.process.ApplicationPolicy.Mode != KycApplicationMode.Preview)
+				return Result;
+
+			foreach (KycKeepChoiceGroup Group in KycKeepChoices.GetChoiceGroups(this.process))
+			{
+				DisplayQuad? Detail = Model.Sections
+					.SelectMany(Section => Section.Items)
+					.FirstOrDefault(Item => string.Equals(Item.Mapping, Group.Id, StringComparison.OrdinalIgnoreCase));
+				if (Detail is null || Group.PropertyKeys.Count == 0)
+					continue;
+
+				bool IsKept = KycKeepChoices.IsKept(this.process, Group.PropertyKeys[0]);
+				Result.Add(new KycKeepChoiceItem(Detail.Label, Detail.Value, Group.PropertyKeys, IsKept, this.OnKeepChoiceChanged));
+			}
+
+			return Result;
+		}
+
+		private void OnKeepChoiceChanged(KycKeepChoiceItem Item)
+		{
+			if (this.process is null || this.ApplicationSentPublic)
+				return;
+
+			KycKeepChoices.SetKept(this.process, Item.PropertyKeys, Item.IsKept);
+			this.OnPropertyChanged(nameof(this.KeptDetailsText));
+			_ = this.PersistKeepChoicesAsync();
+		}
+
+		/// <summary>
+		/// Saves keep choices right away instead of through the debounced field snapshot.
+		/// </summary>
+		/// <remarks>
+		/// The user may send the application straight after changing a choice, and the final identity is built later from the saved values.
+		/// </remarks>
+		private async Task PersistKeepChoicesAsync()
+		{
+			if (this.kycReference is null || this.process is null)
+				return;
+
+			try
+			{
+				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		private bool HasPreparedManualDocumentEvidence()
@@ -2085,6 +2331,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.UnvalidatedSummaryText = string.Empty;
 				this.InvalidatedItems.Clear();
 				this.UnvalidatedItems.Clear();
+				this.ReviewIssues.Clear();
 			}
 			else
 			{
@@ -2100,6 +2347,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 
 				this.InvalidatedItems.Clear();
+				this.ReviewIssues.Clear();
 				foreach (ApplicationReviewClaimDetail detail in review.InvalidClaimDetails ?? Array.Empty<ApplicationReviewClaimDetail>())
 				{
 					if (detail is null)
@@ -2107,6 +2355,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					string label = this.ResolveDisplayLabel(detail.Claim, detail.DisplayName);
 					string reason = string.IsNullOrWhiteSpace(detail.Reason) ? string.Empty : $" — {detail.Reason}";
 					this.InvalidatedItems.Add($"{label}{reason}");
+					this.AddReviewIssue(label, detail.Reason, detail.Claim);
 				}
 				foreach (ApplicationReviewPhotoDetail Detail in review.InvalidPhotoDetails ?? Array.Empty<ApplicationReviewPhotoDetail>())
 				{
@@ -2115,6 +2364,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					string Label = this.ResolveDisplayLabel(null, Detail.DisplayName);
 					string Reason = string.IsNullOrWhiteSpace(Detail.Reason) ? string.Empty : $" — {Detail.Reason}";
 					this.InvalidatedItems.Add($"{Label}{Reason}");
+					string PhotoMapping = ResolvePhotoMappingKey(Detail.FileName, Detail.DisplayName);
+					this.AddReviewIssue(this.ResolveDisplayLabel(PhotoMapping, Label), Detail.Reason, PhotoMapping);
+				}
+				foreach (string Claim in review.InvalidClaims ?? Array.Empty<string>())
+				{
+					if (string.IsNullOrWhiteSpace(Claim) || this.HasReviewIssueFor(Claim.Trim()))
+						continue;
+					this.AddReviewIssue(this.ResolveDisplayLabel(Claim.Trim(), Claim.Trim()), null, Claim.Trim());
+				}
+				foreach (string Photo in review.InvalidPhotos ?? Array.Empty<string>())
+				{
+					if (string.IsNullOrWhiteSpace(Photo))
+						continue;
+					string PhotoMapping = ResolvePhotoMappingKey(Photo, Photo);
+					if (this.HasReviewIssueFor(PhotoMapping))
+						continue;
+					this.AddReviewIssue(this.ResolveDisplayLabel(PhotoMapping, Photo.Trim()), null, PhotoMapping);
 				}
 
 				this.UnvalidatedItems.Clear();
@@ -2134,10 +2400,46 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
+			this.OnPropertyChanged(nameof(this.HasReviewIssues));
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
 			this.OnPropertyChanged(nameof(this.ShouldShowUnvalidatedBanner));
 			this.OnPropertyChanged(nameof(this.ShouldShowRejectionBanner));
 			this.RemovePendingAndResubmitCommand?.NotifyCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Adds a detail to fix to the rejection card. The issue opens its field when the field can still be edited.
+		/// </summary>
+		/// <param name="Label">The display label of the affected detail.</param>
+		/// <param name="Reason">The reviewer's reason, if any.</param>
+		/// <param name="Mapping">The mapping of the affected field, if known.</param>
+		private void AddReviewIssue(string Label, string? Reason, string? Mapping)
+		{
+			string? MappingKey = string.IsNullOrWhiteSpace(Mapping) ? null : Mapping.Trim();
+			bool CanOpen = MappingKey is not null && this.process?.IsMappingEditable(MappingKey) == true;
+			string Title = string.IsNullOrWhiteSpace(Label) ? MappingKey ?? string.Empty : Label.Trim();
+			this.ReviewIssues.Add(new KycReviewIssueItem(Title, Reason?.Trim() ?? string.Empty, MappingKey, CanOpen));
+		}
+
+		private bool HasReviewIssueFor(string Mapping)
+		{
+			return this.ReviewIssues.Any(Issue => string.Equals(Issue.Mapping, Mapping, StringComparison.OrdinalIgnoreCase));
+		}
+
+		/// <summary>
+		/// Resolves the attachment mapping of a reviewed photo, which is its file name without extension.
+		/// </summary>
+		/// <param name="FileName">The file name reported by the reviewer.</param>
+		/// <param name="DisplayName">The display name reported by the reviewer, used when no file name is given.</param>
+		/// <returns>The mapping key, or an empty string if none can be resolved.</returns>
+		private static string ResolvePhotoMappingKey(string? FileName, string? DisplayName)
+		{
+			string Candidate = !string.IsNullOrWhiteSpace(FileName) ? FileName.Trim() : DisplayName?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(Candidate))
+				return string.Empty;
+
+			string? BaseName = Path.GetFileNameWithoutExtension(Candidate);
+			return string.IsNullOrWhiteSpace(BaseName) ? Candidate : BaseName.Trim();
 		}
 
 		private string ResolveDisplayLabel(string? MappingKey, string? Fallback)

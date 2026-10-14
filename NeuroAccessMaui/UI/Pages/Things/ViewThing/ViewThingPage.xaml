@@ -87,7 +87,7 @@
 												Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
 												Fill="{DynamicResource ContentPrimaryWL}"/>
 										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
-												 Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
+												 Text="•" FontSize="{StaticResource FontSizeDisplayXl}" HorizontalOptions="End" VerticalOptions="Center"
 												 Style="{DynamicResource AlertLabel}"/>
 										<Grid.GestureRecognizers>
 											<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>

@@ -38,7 +38,7 @@ namespace NeuroAccessMaui.UI.Pages
 				// Idempotency: Avoid regenerating the same QR multiple times (mitigates race conditions during animations)
 				if (this.QrCode is not null && string.Equals(this.QrCodeUri, Uri, StringComparison.Ordinal))
 				{
-					ServiceRef.LogService.LogDebug($"GenerateQrCode skipped (same URI): {Uri}");
+					ServiceRef.LogService.LogDebug($"GenerateQrCode skipped (same URI, scheme={Constants.UriSchemes.GetScheme(Uri)}).");
 					return;
 				}
 
@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Pages
 				if (this.QrResolutionScale == 0)
 					this.QrResolutionScale = Constants.QrCode.DefaultResolutionScale;
 
-				ServiceRef.LogService.LogDebug($"GenerateQrCode start: {Uri} ({this.QrCodeWidth}x{this.QrCodeHeight} scale={this.QrResolutionScale})");
+				ServiceRef.LogService.LogDebug($"GenerateQrCode start: scheme={Constants.UriSchemes.GetScheme(Uri)} length={Uri.Length} ({this.QrCodeWidth}x{this.QrCodeHeight} scale={this.QrResolutionScale})");
 				byte[] Bin = Services.UI.QR.QrCode.GeneratePng(Uri, this.QrCodeWidth * this.QrResolutionScale, this.QrCodeHeight * this.QrResolutionScale);
 				this.QrCodeBin = Bin;
 
@@ -75,7 +75,7 @@ namespace NeuroAccessMaui.UI.Pages
 				this.QrCodeContentType = Constants.MimeTypes.Png;
 				this.QrCodeUri = Uri;
 				this.HasQrCode = true;
-				ServiceRef.LogService.LogDebug($"GenerateQrCode done: {Uri} (bytes={Bin.Length})");
+				ServiceRef.LogService.LogDebug($"GenerateQrCode done: scheme={Constants.UriSchemes.GetScheme(Uri)} (bytes={Bin.Length})");
 			}
 		}
 

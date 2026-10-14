@@ -20,7 +20,7 @@
 				 TargetType="Label"
 				 BaseResourceKey="BoldItemTitleLabel">
 			<Setter Property="FontSize"
-					  Value="18" />
+					  Value="{StaticResource FontSizeXl}" />
 			<Setter Property="HorizontalTextAlignment"
 					  Value="Start" />
 		</Style>
@@ -28,7 +28,7 @@
 				 TargetType="Label"
 				 BasedOn="{StaticResource ItemDescriptionLabel}">
 			<Setter Property="FontSize"
-					  Value="14" />
+					  Value="{StaticResource FontSizeSm}" />
 			<Setter Property="Margin"
 					  Value="0" />
 			<Setter Property="HorizontalTextAlignment"

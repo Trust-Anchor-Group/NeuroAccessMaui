@@ -3407,6 +3407,32 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Checks if the current signing keys belong to a legal identity, so that requests signed with the current keys,
+		/// such as attachment uploads, are accepted for that identity.
+		/// </summary>
+		/// <param name="Identity">The legal identity to check.</param>
+		/// <returns>If the current signing keys can sign on behalf of the identity.</returns>
+		/// <remarks>
+		/// Unlike <see cref="HasPrivateKey"/>, this does not rely on the locally stored key record of the identity. The
+		/// contracts client can move that record to another identity of the account that uses the same client key, even
+		/// though the key itself is still available. Key algorithms that signature validation does not support fall back
+		/// to <see cref="HasPrivateKey"/>.
+		/// </remarks>
+		public async Task<bool> CanSignWithCurrentKeysAsync(LegalIdentity Identity)
+		{
+			if (Identity.ClientPubKey is null || string.IsNullOrEmpty(Identity.ClientKeyName))
+				return await this.HasPrivateKey(Identity.Id);
+
+			byte[] Challenge = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
+			byte[] Signature = await this.ContractsClient.SignAsync(Challenge, SignWith.CurrentKeys);
+			if (Signature is null)
+				return false;
+
+			bool? IsValid = this.ContractsClient.ValidateSignature(Identity, Challenge, Signature);
+			return IsValid ?? await this.HasPrivateKey(Identity.Id);
+		}
+
+		/// <summary>
 		/// Checks if locally persisted contract signing keys are available for reuse.
 		/// </summary>
 		/// <returns>If a local signing key set is available.</returns>
@@ -4259,7 +4285,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
-			await App.OpenUrlAsync(e.ClientUrl);
+			// The URL belongs to a petition this client started, and arrives through the user's own server.
+			await App.OpenTrustedUrlAsync(e.ClientUrl);
 		}
 
 		#endregion

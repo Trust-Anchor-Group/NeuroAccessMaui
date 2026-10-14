@@ -18,6 +18,14 @@ namespace NeuroAccessMaui.Services
 		bool ProhibitScreenCapture { get; set; }
 
 		/// <summary>
+		/// Gets a value indicating whether the operating system is set to reduce or remove animations.
+		/// </summary>
+		/// <remarks>
+		/// Never throws; returns <c>false</c> when the setting cannot be read.
+		/// </remarks>
+		bool IsReduceMotionEnabled { get; }
+
+		/// <summary>
 		/// Initializes the device identifier before cryptographic services are resolved.
 		/// </summary>
 		/// <returns>A task that completes when the identifier is ready.</returns>

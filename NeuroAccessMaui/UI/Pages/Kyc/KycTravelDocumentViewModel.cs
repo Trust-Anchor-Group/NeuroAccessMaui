@@ -32,6 +32,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		Intro,
 
 		/// <summary>
+		/// The user is viewing where the machine-readable lines are, before the scanner opens.
+		/// </summary>
+		MrzGuide,
+
+		/// <summary>
 		/// The MRZ scanner is being opened or awaited.
 		/// </summary>
 		MrzCapture,
@@ -67,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// </summary>
 	public partial class KycTravelDocumentViewModel : BaseViewModel, IDisposable
 	{
-		private const string nfcCancelledResourceKey = "KycTravelDocumentNfcCancelled";
+		private const string mrzGuideTitleResourceKey = "KycTravelDocumentMrzGuideTitle";
 		private static readonly TimeSpan placementHelpDelay = TimeSpan.FromSeconds(12);
 		private static readonly TimeSpan failureHapticInterval = TimeSpan.FromMilliseconds(140);
 		private static readonly string[] presentationPropertyNames =
@@ -76,13 +81,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			nameof(CanStartNfc),
 			nameof(ShowIntro),
 			nameof(ShowGuideStepper),
+			nameof(ShowMrzGuide),
+			nameof(ShowMrzGuideNotice),
+			nameof(ShowMrzGuideError),
+			nameof(ShowMrzGuideAction),
+			nameof(MrzGuideTitleText),
 			nameof(ShowSuccess),
 			nameof(ShowNfcMessage),
-			nameof(ShowIntroError),
 			nameof(ShowStartNfcAction),
-			nameof(ShowNfcRetryAction),
+			nameof(PrimaryRecoveryAction),
+			nameof(SecondaryRecoveryAction),
+			nameof(ShowPrimaryRecoveryAction),
+			nameof(ShowSecondaryRecoveryAction),
+			nameof(PrimaryRecoveryText),
+			nameof(SecondaryRecoveryText),
 			nameof(ShowRescanAction),
 			nameof(ShowManualFallback),
+			nameof(HasFooterActions),
 			nameof(ScanVisualState),
 			nameof(IsPassportDocument),
 			nameof(CurrentGuideStep),
@@ -103,6 +118,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private DateTime? activeSessionStartedUtc;
 		private CancellationTokenSource? activeSessionCancellationTokenSource;
 		private string? lastNativeAlertResourceKey;
+		private string? mrzGuideTitleKey;
+		private bool hasAppeared;
+		private bool wasNfcSessionInterrupted;
+		private bool isMrzScanPending;
+		private bool hasReachedChipStep;
 		private bool disposedValue;
 
 		/// <summary>
@@ -166,6 +186,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private bool isPlacementHelpExpanded;
 
 		/// <summary>
+		/// Gets or sets the chip read failure currently shown, or <c>null</c> when no chip read has failed.
+		/// </summary>
+		[ObservableProperty]
+		private TravelDocumentFailure? currentFailure;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the initial flow state has been resolved, so the page can show it
+		/// without first showing the default state.
+		/// </summary>
+		[ObservableProperty]
+		private bool isStateResolved;
+
+		/// <summary>
 		/// Gets a value indicating whether MRZ evidence has been captured.
 		/// </summary>
 		public bool HasMrz => !string.IsNullOrWhiteSpace(this.MrzText);
@@ -178,17 +211,43 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the introductory chip-symbol check should be shown.
 		/// </summary>
-		public bool ShowIntro =>
-			!this.ShowSuccess &&
-			(this.FlowState == KycTravelDocumentFlowState.Intro ||
-			this.FlowState == KycTravelDocumentFlowState.MrzCapture ||
-			(this.FlowState == KycTravelDocumentFlowState.Error && !this.HasMrz));
+		public bool ShowIntro => !this.ShowSuccess && this.FlowState == KycTravelDocumentFlowState.Intro;
 
 		/// <summary>
 		/// Gets a value indicating whether the step guide should be shown. It appears once the user has chosen the chip
 		/// path, since the steps mean nothing while the user is still checking whether the document has a chip.
 		/// </summary>
-		public bool ShowGuideStepper => !this.ShowIntro;
+		public bool ShowGuideStepper => this.IsStateResolved && !this.ShowIntro;
+
+		/// <summary>
+		/// Gets a value indicating whether the guide to the machine-readable lines should be shown. It stays behind the
+		/// scanner while it is open, and it is where scanning problems are explained.
+		/// </summary>
+		public bool ShowMrzGuide =>
+			!this.ShowSuccess &&
+			(this.FlowState == KycTravelDocumentFlowState.MrzGuide ||
+			this.FlowState == KycTravelDocumentFlowState.MrzCapture ||
+			(this.FlowState == KycTravelDocumentFlowState.Error && !this.HasMrz));
+
+		/// <summary>
+		/// Gets the headline of the guide, which names a scanning problem when there is one.
+		/// </summary>
+		public string MrzGuideTitleText => ServiceRef.Localizer[this.mrzGuideTitleKey ?? mrzGuideTitleResourceKey];
+
+		/// <summary>
+		/// Gets a value indicating whether a neutral notice, such as a cancelled scan, is shown in the guide.
+		/// </summary>
+		public bool ShowMrzGuideNotice => this.ShowMrzGuide && this.HasStatusText && !this.HasErrorState;
+
+		/// <summary>
+		/// Gets a value indicating whether a scanning problem, such as missing camera access, is shown in the guide.
+		/// </summary>
+		public bool ShowMrzGuideError => this.ShowMrzGuide && this.HasStatusText && this.HasErrorState;
+
+		/// <summary>
+		/// Gets a value indicating whether the action that opens the scanner from the guide should be shown.
+		/// </summary>
+		public bool ShowMrzGuideAction => this.ShowMrzGuide && !this.IsNfcBusy;
 
 		/// <summary>
 		/// Gets a value indicating whether the readout success state should be shown.
@@ -200,34 +259,73 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the chip-reading headline and status should be shown.
 		/// </summary>
-		public bool ShowNfcMessage => !this.ShowIntro;
-
-		/// <summary>
-		/// Gets a value indicating whether an error should be shown on the introduction, such as an unreadable MRZ.
-		/// </summary>
-		public bool ShowIntroError => this.ShowIntro && this.HasErrorState && this.HasStatusText;
+		public bool ShowNfcMessage => !this.ShowIntro && !this.ShowMrzGuide;
 
 		/// <summary>
 		/// Gets a value indicating whether the action that starts a first chip read should be shown.
 		/// </summary>
-		public bool ShowStartNfcAction => this.CanStartNfc && !this.ShowIntro && !this.HasErrorState;
+		public bool ShowStartNfcAction => this.CanStartNfc && this.ShowNfcMessage && !this.HasErrorState;
 
 		/// <summary>
-		/// Gets a value indicating whether a retry action for NFC should be shown.
+		/// Gets the main action offered after a failed or cancelled chip read.
 		/// </summary>
-		public bool ShowNfcRetryAction => this.CanStartNfc && !this.ShowIntro && this.HasErrorState;
+		public TravelDocumentRecoveryAction PrimaryRecoveryAction => this.IsScanCancelled
+			? TravelDocumentRecoveryAction.RetryCurrentStep
+			: TravelDocumentPresentationMapper.GetPrimaryAction(this.CurrentFailure?.RecoveryAction ?? TravelDocumentRecoveryAction.RetryCurrentStep);
+
+		/// <summary>
+		/// Gets the alternative action offered after a failed chip read, or <see cref="TravelDocumentRecoveryAction.None"/>.
+		/// </summary>
+		public TravelDocumentRecoveryAction SecondaryRecoveryAction => this.IsScanCancelled
+			? TravelDocumentRecoveryAction.None
+			: TravelDocumentPresentationMapper.GetSecondaryAction(this.CurrentFailure?.RecoveryAction ?? TravelDocumentRecoveryAction.RetryCurrentStep);
+
+		/// <summary>
+		/// Gets a value indicating whether the main recovery action should be shown.
+		/// </summary>
+		public bool ShowPrimaryRecoveryAction => this.ShowRecoveryActions && this.PrimaryRecoveryAction != TravelDocumentRecoveryAction.None;
+
+		/// <summary>
+		/// Gets a value indicating whether the alternative recovery action should be shown.
+		/// </summary>
+		public bool ShowSecondaryRecoveryAction => this.ShowRecoveryActions && this.SecondaryRecoveryAction != TravelDocumentRecoveryAction.None;
+
+		/// <summary>
+		/// Gets the label of the main recovery action.
+		/// </summary>
+		public string PrimaryRecoveryText => this.GetRecoveryActionText(this.PrimaryRecoveryAction);
+
+		/// <summary>
+		/// Gets the label of the alternative recovery action.
+		/// </summary>
+		public string SecondaryRecoveryText => this.GetRecoveryActionText(this.SecondaryRecoveryAction);
 
 		/// <summary>
 		/// Gets a value indicating whether the manual fallback action should be shown.
 		/// </summary>
-		public bool ShowManualFallback => !this.ShowIntro && !this.HasReadout && !this.IsNfcBusy;
+		public bool ShowManualFallback => !this.ShowIntro && !this.HasReadout && !this.IsNfcBusy &&
+			!(this.ShowPrimaryRecoveryAction && this.PrimaryRecoveryAction == TravelDocumentRecoveryAction.CloseFlow);
 
 		/// <summary>
-		/// Gets whether the document can be rescanned after an NFC error or to recover a legacy draft.
+		/// Gets whether the document can be rescanned to recover a legacy draft whose chip readout must be redone.
 		/// </summary>
 		public bool ShowRescanAction => !this.IsNfcBusy &&
-			((this.HasMrz && this.HasErrorState && !this.HasReadout && !this.IsScanCancelled) ||
-			this.reference?.CanRescanLegacyNfcReadout == true);
+			!this.ShowMrzGuide &&
+			!this.ShowRecoveryActions &&
+			this.reference?.CanRescanLegacyNfcReadout == true;
+
+		/// <summary>
+		/// Gets a value indicating whether the footer has an action to show, so it stays hidden while the chip is read.
+		/// </summary>
+		public bool HasFooterActions => this.IsStateResolved &&
+			(this.ShowIntro ||
+			this.ShowMrzGuideAction ||
+			this.ShowSuccess ||
+			this.ShowStartNfcAction ||
+			this.ShowPrimaryRecoveryAction ||
+			this.ShowSecondaryRecoveryAction ||
+			this.ShowRescanAction ||
+			this.ShowManualFallback);
 
 		/// <summary>
 		/// Gets the scene shown by the NFC hero visual.
@@ -241,6 +339,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				if (this.ShowIntro)
 					return NfcScanVisualState.Intro;
+
+				if (this.ShowMrzGuide)
+					return NfcScanVisualState.Details;
 
 				if (this.HasErrorState)
 					return this.IsScanCancelled ? NfcScanVisualState.Paused : NfcScanVisualState.Failure;
@@ -287,19 +388,20 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (this.ShowSuccess)
 					return 3;
 
-				return this.ShowIntro ? 0 : 1;
+				return this.ShowIntro || this.ShowMrzGuide ? 0 : 1;
 			}
 		}
 
 		/// <summary>
-		/// Gets the headline for the current chip-reading state.
+		/// Gets the headline for the current chip-reading state. A failed read is named by its failure code.
 		/// </summary>
 		public string NfcHeadlineText => ServiceRef.Localizer[this.ScanVisualState switch
 		{
 			NfcScanVisualState.Preparing => "KycTravelDocumentNfcPreparingTitle",
 			NfcScanVisualState.Reading => "KycTravelDocumentNfcReadingTitle",
 			NfcScanVisualState.Success => "KycTravelDocumentSuccessTitle",
-			NfcScanVisualState.Failure => "KycTravelDocumentNfcErrorTitle",
+			NfcScanVisualState.Failure => TravelDocumentPresentationMapper.GetHeadlineResourceKey(
+				this.CurrentFailure?.FailureCode ?? TravelDocumentFailureCode.Unknown),
 			NfcScanVisualState.Paused when this.IsScanCancelled => "KycTravelDocumentNfcCancelledTitle",
 			_ => "KycTravelDocumentNfcStepTitle"
 		}];
@@ -332,6 +434,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		partial void OnIsPlacementHelpExpandedChanged(bool value) => this.NotifyPresentationChanged();
 
+		partial void OnCurrentFailureChanged(TravelDocumentFailure? value) => this.NotifyPresentationChanged();
+
+		partial void OnIsStateResolvedChanged(bool value)
+		{
+			this.OnPropertyChanged(nameof(this.HasFooterActions));
+			this.OnPropertyChanged(nameof(this.ShowGuideStepper));
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether actions that recover from a failed or cancelled chip read should be shown.
+		/// </summary>
+		private bool ShowRecoveryActions => this.CanStartNfc && this.ShowNfcMessage && this.HasErrorState;
+
 		/// <summary>
 		/// Raises change notifications for every property derived from the flow state.
 		/// </summary>
@@ -339,6 +454,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			foreach (string PropertyName in presentationPropertyNames)
 				this.OnPropertyChanged(PropertyName);
+		}
+
+		private string GetRecoveryActionText(TravelDocumentRecoveryAction Action)
+		{
+			string ResourceKey = TravelDocumentPresentationMapper.GetActionResourceKey(Action);
+			return string.IsNullOrEmpty(ResourceKey) ? string.Empty : ServiceRef.Localizer[ResourceKey];
 		}
 
 		/// <summary>
@@ -354,37 +475,62 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
+
+			// The page reappears when the scanner closes, while the scan result is still being handled. The state is
+			// only resolved again when leaving the page interrupted a chip read.
+			bool IsFirstAppearance = !this.hasAppeared;
+			this.hasAppeared = true;
+			if (!IsFirstAppearance && !this.wasNfcSessionInterrupted)
+			{
+				this.LogFlowEvent("AppearingStateKept");
+				return;
+			}
+
+			this.wasNfcSessionInterrupted = false;
 			this.reference = this.navigationArguments?.Reference ?? this.reference;
 			this.LogFlowEvent(
 				"Appearing",
 				new KeyValuePair<string, object?>("NfcSupported", this.nfcIsoDepSessionService.IsPlatformSupported));
-			if (!await this.IsNfcFlowAvailableAsync())
-			{
-				await this.ContinueToApplicationAsync(BackMethod.Pop2);
-				return;
-			}
 
-			string SavedMrz = this.reference?.TravelDocumentMrz ?? string.Empty;
-			bool HasInsufficientSavedMrz = !string.IsNullOrWhiteSpace(SavedMrz) &&
-				!KycReference.IsFullTravelDocumentMrz(SavedMrz);
-			this.MrzText = HasInsufficientSavedMrz ? string.Empty : SavedMrz;
-			this.HasReadout = !string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml);
-			if (this.HasReadout)
+			// The gate is released on every path, so a failed check or a failed navigation never leaves the page blank.
+			try
 			{
-				this.readProgress.Complete();
-				this.ChipReadProgress = this.readProgress.Progress;
-			}
+				if (!await this.IsNfcFlowAvailableAsync())
+				{
+					await this.ContinueToApplicationAsync(BackMethod.Pop2);
+					return;
+				}
 
-			this.FlowState = this.ResolveInitialFlowState(HasInsufficientSavedMrz);
-			this.StatusText = this.ResolveInitialStatusText(HasInsufficientSavedMrz);
-			this.HasStatusText = !string.IsNullOrWhiteSpace(this.StatusText);
-			this.HasErrorState = HasInsufficientSavedMrz && !this.HasReadout;
-			this.LogFlowEvent("AppearingStateResolved");
+				string SavedMrz = this.reference?.TravelDocumentMrz ?? string.Empty;
+				bool HasInsufficientSavedMrz = !string.IsNullOrWhiteSpace(SavedMrz) &&
+					!KycReference.IsFullTravelDocumentMrz(SavedMrz);
+				this.MrzText = HasInsufficientSavedMrz ? string.Empty : SavedMrz;
+				this.HasReadout = !string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml);
+				if (this.HasReadout)
+				{
+					this.readProgress.Complete();
+					this.ChipReadProgress = this.readProgress.Progress;
+				}
+
+				this.mrzGuideTitleKey = null;
+				this.CurrentFailure = null;
+				this.IsScanCancelled = false;
+				this.FlowState = this.ResolveInitialFlowState(HasInsufficientSavedMrz);
+				this.StatusText = this.ResolveInitialStatusText(HasInsufficientSavedMrz);
+				this.HasStatusText = !string.IsNullOrWhiteSpace(this.StatusText);
+				this.HasErrorState = HasInsufficientSavedMrz && !this.HasReadout;
+				this.LogFlowEvent("AppearingStateResolved");
+			}
+			finally
+			{
+				this.IsStateResolved = true;
+			}
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnDisappearingAsync()
 		{
+			this.wasNfcSessionInterrupted |= this.activeSessionId.HasValue;
 			await this.StopActiveNfcSessionAsync();
 			await base.OnDisappearingAsync();
 		}
@@ -398,56 +544,181 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		[RelayCommand]
+		private void OpenMrzGuide()
+		{
+			if (this.IsNfcBusy || this.isMrzScanPending)
+				return;
+
+			this.mrzGuideTitleKey = null;
+			this.CurrentFailure = null;
+			this.StatusText = string.Empty;
+			this.HasStatusText = false;
+			this.IsScanCancelled = false;
+			this.HasErrorState = false;
+			this.FlowState = KycTravelDocumentFlowState.MrzGuide;
+			this.NotifyPresentationChanged();
+			this.LogFlowEvent("MrzGuideOpened");
+		}
+
+		[RelayCommand]
 		private async Task ScanMrzAsync()
 		{
 			if (this.HasReadout && this.reference?.CanRescanLegacyNfcReadout != true)
 				return;
 
-			if (this.IsNfcBusy)
+			if (this.IsNfcBusy || this.isMrzScanPending)
 			{
-				this.LogFlowEvent("ScanMrzIgnoredNfcBusy");
+				this.LogFlowEvent("ScanMrzIgnoredBusy");
 				return;
 			}
 
-			this.FlowState = KycTravelDocumentFlowState.MrzCapture;
-			this.LogFlowEvent("ScanMrzStarting");
-			TaskCompletionSource<TravelDocumentMrzResult?> CompletionSource = new TaskCompletionSource<TravelDocumentMrzResult?>(
-				TaskCreationOptions.RunContinuationsAsynchronously);
+			// A rescan from the chip step leaves that step in place, so cancelling the scanner returns to it unchanged.
+			bool WasOnChipStep = this.ShowNfcMessage;
+			this.isMrzScanPending = true;
+			try
+			{
+				if (!WasOnChipStep)
+					this.FlowState = KycTravelDocumentFlowState.MrzCapture;
 
-			await ServiceRef.NavigationService.GoToAsync(
-				nameof(KycDocumentMrzScannerPage),
-				new KycDocumentMrzScannerNavigationArgs
+				this.LogFlowEvent("ScanMrzStarting");
+				TaskCompletionSource<TravelDocumentMrzResult?> CompletionSource = new TaskCompletionSource<TravelDocumentMrzResult?>(
+					TaskCreationOptions.RunContinuationsAsynchronously);
+				KycDocumentMrzScannerNavigationArgs ScannerArguments = new KycDocumentMrzScannerNavigationArgs
 				{
 					CompletionSource = CompletionSource,
 					PreferredDocumentKind = OcrDocumentKindHint.Passport
-				});
+				};
 
-			this.LogFlowEvent("ScanMrzAwaitingResult");
-			TravelDocumentMrzResult? Result = await CompletionSource.Task;
-			string ScannedMrz = Result?.NormalizedMrzText ?? string.Empty;
-			this.LogFlowEvent(
-				"ScanMrzResultReceived",
-				new KeyValuePair<string, object?>("ResultIsNull", Result is null),
-				new KeyValuePair<string, object?>("IsSuccessful", Result?.IsSuccessful),
-				new KeyValuePair<string, object?>("HasMrzText", !string.IsNullOrWhiteSpace(ScannedMrz)),
-				new KeyValuePair<string, object?>("NormalizedMrzLength", ScannedMrz.Length),
-				new KeyValuePair<string, object?>("ChipAccessMrzLength", Result?.Document?.MRZ_Information?.Length ?? 0),
-				new KeyValuePair<string, object?>("DocumentType", Result?.Document?.DocumentType ?? string.Empty));
-			if (Result is null ||
-				!Result.IsSuccessful ||
-				string.IsNullOrWhiteSpace(ScannedMrz))
-			{
-				this.LogFlowEvent("ScanMrzRejectedEmptyMrz");
-				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false, true, false, KycTravelDocumentFlowState.Error);
-				return;
+				await ServiceRef.NavigationService.GoToAsync(nameof(KycDocumentMrzScannerPage), ScannerArguments);
+
+				this.LogFlowEvent("ScanMrzAwaitingResult");
+				TravelDocumentMrzResult? Result = await CompletionSource.Task;
+				string ScannedMrz = Result?.NormalizedMrzText ?? string.Empty;
+				this.LogFlowEvent(
+					"ScanMrzResultReceived",
+					new KeyValuePair<string, object?>("ResultIsNull", Result is null),
+					new KeyValuePair<string, object?>("ScannerOutcome", ScannerArguments.Outcome.ToString()),
+					new KeyValuePair<string, object?>("IsSuccessful", Result?.IsSuccessful),
+					new KeyValuePair<string, object?>("HasMrzText", !string.IsNullOrWhiteSpace(ScannedMrz)),
+					new KeyValuePair<string, object?>("NormalizedMrzLength", ScannedMrz.Length),
+					new KeyValuePair<string, object?>("ChipAccessMrzLength", Result?.Document?.MRZ_Information?.Length ?? 0),
+					new KeyValuePair<string, object?>("DocumentType", Result?.Document?.DocumentType ?? string.Empty));
+				if (Result is null ||
+					!Result.IsSuccessful ||
+					string.IsNullOrWhiteSpace(ScannedMrz))
+				{
+					await this.ShowMrzScanOutcomeAsync(ResolveUnacceptedScanOutcome(Result, ScannerArguments.Outcome), WasOnChipStep);
+					return;
+				}
+
+				await this.AcceptScannedMrzAsync(Result, ScannedMrz);
 			}
+			finally
+			{
+				this.isMrzScanPending = false;
+			}
+		}
 
+		/// <summary>
+		/// Classifies a scanner session that ended without usable document details.
+		/// </summary>
+		/// <param name="Result">The scanner result, if one was delivered.</param>
+		/// <param name="Outcome">How the scanner reported that the session ended.</param>
+		/// <returns>The outcome to present.</returns>
+		private static KycDocumentMrzScannerOutcome ResolveUnacceptedScanOutcome(
+			TravelDocumentMrzResult? Result,
+			KycDocumentMrzScannerOutcome Outcome)
+		{
+			// A delivered read that cannot be used is a failed scan, whatever the scanner reported.
+			if (Result is not null)
+				return KycDocumentMrzScannerOutcome.Failed;
+
+			return Outcome switch
+			{
+				KycDocumentMrzScannerOutcome.CameraPermissionDenied or
+				KycDocumentMrzScannerOutcome.CameraUnavailable or
+				KycDocumentMrzScannerOutcome.Failed => Outcome,
+				_ => KycDocumentMrzScannerOutcome.Cancelled
+			};
+		}
+
+		/// <summary>
+		/// Explains why the scanner closed without document details, on the step the user can continue from.
+		/// </summary>
+		/// <param name="Outcome">How the scanner session ended.</param>
+		/// <param name="WasOnChipStep">Whether the scanner was opened from the chip step to rescan the document.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task ShowMrzScanOutcomeAsync(KycDocumentMrzScannerOutcome Outcome, bool WasOnChipStep)
+		{
+			this.LogFlowEvent(
+				"ScanMrzNotAccepted",
+				new KeyValuePair<string, object?>("Outcome", Outcome.ToString()),
+				new KeyValuePair<string, object?>("WasOnChipStep", WasOnChipStep));
+
+			switch (Outcome)
+			{
+				case KycDocumentMrzScannerOutcome.Cancelled:
+					if (!WasOnChipStep)
+						await this.ShowMrzGuideNoticeAsync("KycTravelDocumentNfcCancelledTitle", "KycTravelDocumentNfcCancelledDescription", false);
+					break;
+
+				case KycDocumentMrzScannerOutcome.CameraPermissionDenied:
+					// The scanner already explained the permission in an alert, so the guide only says how to fix it.
+					await this.ShowMrzGuideNoticeAsync("KycDocumentScanCameraPermissionTitle", "KycTravelDocumentCameraPermissionDescription", true);
+					break;
+
+				default:
+					await this.ShowMrzGuideNoticeAsync("KycTravelDocumentMrzScanFailedTitle", "KycTravelDocumentMrzScanFailedDescription", true);
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Shows the guide to the machine-readable lines with a notice about the last scan.
+		/// </summary>
+		/// <param name="TitleKey">The resource key of the guide headline, or <c>null</c> for the default headline.</param>
+		/// <param name="MessageKey">The resource key of the notice.</param>
+		/// <param name="IsError">Whether the notice describes a problem rather than a neutral outcome.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task ShowMrzGuideNoticeAsync(string? TitleKey, string MessageKey, bool IsError)
+		{
+			string Message = ServiceRef.Localizer[MessageKey];
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.mrzGuideTitleKey = TitleKey;
+				this.CurrentFailure = null;
+				this.StatusText = Message;
+				this.HasStatusText = true;
+				this.IsPlacementHelpExpanded = false;
+				this.IsNfcBusy = false;
+				this.IsScanCancelled = false;
+				this.HasErrorState = IsError;
+				this.FlowState = KycTravelDocumentFlowState.MrzGuide;
+				this.NotifyPresentationChanged();
+				this.LogFlowEvent(
+					"MrzGuideNoticeSet",
+					new KeyValuePair<string, object?>("ResourceKey", MessageKey),
+					new KeyValuePair<string, object?>("IsError", IsError));
+
+				if (IsError)
+					Announce(this.MrzGuideTitleText + ". " + this.StatusText);
+			});
+		}
+
+		/// <summary>
+		/// Saves the scanned document details and starts reading the chip.
+		/// </summary>
+		/// <param name="Result">The accepted scanner result.</param>
+		/// <param name="ScannedMrz">The normalized machine-readable lines.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task AcceptScannedMrzAsync(TravelDocumentMrzResult Result, string ScannedMrz)
+		{
 			this.MrzText = ScannedMrz.Trim();
 			TravelDocumentMrzEvidence? Evidence = await this.TryCreateMrzEvidenceAsync(Result, CancellationToken.None);
 			if (Evidence is null)
 			{
 				this.LogFlowEvent("ScanMrzEvidenceCreationFailed");
-				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false, true, false, KycTravelDocumentFlowState.Error);
+				await this.ShowMrzGuideNoticeAsync(null, "KycTravelDocumentInvalidMrz", true);
 				return;
 			}
 
@@ -494,12 +765,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			await this.StopActiveNfcSessionAsync();
+			this.hasReachedChipStep = false;
 
 			TravelDocumentMrzEvidence? Evidence = AvailableEvidence ?? await this.TryCreateMrzEvidenceAsync(CancellationToken.None);
 			if (Evidence is null)
 			{
 				this.LogFlowEvent("StartNfcEvidenceMissing");
-				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false, true, false, KycTravelDocumentFlowState.Error);
+				await this.ShowMrzGuideNoticeAsync(null, "KycTravelDocumentInvalidMrz", true);
 				return;
 			}
 
@@ -577,7 +849,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			catch (OperationCanceledException) when (FlowCancellationToken.IsCancellationRequested)
 			{
 				if (await this.TryBeginNfcFinalizationAsync(SessionId, Evidence.ApplicationIdentityId))
-					await this.FinishFailedNfcSessionAsync(SessionId, "KycTravelDocumentNfcCancelled");
+					await this.FinishFailedNfcSessionAsync(SessionId, TravelDocumentFailureFactory.CreateCancellation());
 			}
 			catch (Exception Ex)
 			{
@@ -590,7 +862,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					new KeyValuePair<string, object?>("SessionId", SessionId),
 					new KeyValuePair<string, object?>("ExceptionType", Ex.GetType().Name));
 				if (await this.TryBeginNfcFinalizationAsync(SessionId, Evidence.ApplicationIdentityId))
-					await this.FinishFailedNfcSessionAsync(SessionId, "KycTravelDocumentNfcFailed");
+					await this.FinishFailedNfcSessionAsync(SessionId, TravelDocumentFailureFactory.CreateSessionFailure());
 			}
 		}
 
@@ -598,6 +870,53 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task ReturnToApplicationAsync()
 		{
 			await this.ContinueToApplicationAsync(BackMethod.Pop);
+		}
+
+		[RelayCommand]
+		private Task RunPrimaryRecoveryAsync()
+		{
+			return this.RunRecoveryActionAsync(this.PrimaryRecoveryAction);
+		}
+
+		[RelayCommand]
+		private Task RunSecondaryRecoveryAsync()
+		{
+			return this.RunRecoveryActionAsync(this.SecondaryRecoveryAction);
+		}
+
+		/// <summary>
+		/// Runs the action the user chose to recover from a failed or cancelled chip read.
+		/// </summary>
+		/// <param name="Action">The recovery action.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task RunRecoveryActionAsync(TravelDocumentRecoveryAction Action)
+		{
+			this.LogFlowEvent(
+				"RecoveryActionChosen",
+				new KeyValuePair<string, object?>("Action", Action.ToString()),
+				new KeyValuePair<string, object?>("FailureCode", this.CurrentFailure?.FailureCode.ToString()));
+
+			switch (Action)
+			{
+				case TravelDocumentRecoveryAction.RetryCurrentStep:
+					await this.StartNfcReadoutFromEvidenceAsync(null);
+					break;
+
+				case TravelDocumentRecoveryAction.RestartFlow:
+				case TravelDocumentRecoveryAction.UseAnotherDocument:
+					await this.ScanMrzAsync();
+					break;
+
+				case TravelDocumentRecoveryAction.CloseFlow:
+					await this.ContinueToApplicationAsync(BackMethod.Pop);
+					break;
+
+				case TravelDocumentRecoveryAction.ContactSupport:
+					// No support channel is configured for document checks, so the page closes and keeps the saved
+					// document details for a later attempt.
+					await this.GoBack();
+					break;
+			}
 		}
 
 		private async Task ContinueToApplicationAsync(BackMethod BackMethod)
@@ -683,7 +1002,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 				else if (!await this.TryRetryWithPacePollingAsync(SessionId, Evidence, PollingPreference, Result, FlowCancellationToken))
 				{
-					await this.FinishFailedNfcSessionAsync(SessionId, this.ResolveReadoutFailureResourceKey(Result.Status));
+					await this.FinishFailedNfcSessionAsync(SessionId, TravelDocumentFailureFactory.CreateReadoutFailure(Result));
 					// Upload the completed trace to its original preview without blocking the retry controls.
 					_ = this.UploadFailedReservedPreviewReadoutAsync(Result, Evidence.ApplicationIdentityId);
 				}
@@ -691,13 +1010,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			catch (OperationCanceledException) when (LinkedCancellation.IsCancellationRequested)
 			{
 				if (IsFinalizing || await this.TryBeginNfcFinalizationAsync(SessionId, Evidence.ApplicationIdentityId))
-					await this.FinishFailedNfcSessionAsync(SessionId, "KycTravelDocumentNfcCancelled");
+					await this.FinishFailedNfcSessionAsync(SessionId, TravelDocumentFailureFactory.CreateCancellation());
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 				if (IsFinalizing || await this.TryBeginNfcFinalizationAsync(SessionId, Evidence.ApplicationIdentityId))
-					await this.FinishFailedNfcSessionAsync(SessionId, "KycTravelDocumentNfcFailed");
+					await this.FinishFailedNfcSessionAsync(SessionId, TravelDocumentFailureFactory.CreateUnexpectedFailure());
 			}
 		}
 
@@ -794,7 +1113,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Announce(Succeeded ? this.NfcHeadlineText : this.NfcHeadlineText + ". " + this.StatusText);
 				if (Succeeded)
 					PerformHaptic(HapticFeedbackType.LongPress);
-				else
+				else if (this.hasReachedChipStep)
 				{
 					// Two short taps set failure apart from the single long success pulse.
 					PerformHaptic(HapticFeedbackType.Click);
@@ -853,25 +1172,25 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
-		private async Task FinishFailedNfcSessionAsync(Guid SessionId, string ResourceKey)
+		private async Task FinishFailedNfcSessionAsync(Guid SessionId, TravelDocumentFailure Failure)
 		{
 			if (this.activeSessionId != SessionId)
 				return;
 
-			this.TrackTerminalNfcSession(SessionId, ResourceKey == nfcCancelledResourceKey ? "Cancelled" : "Failed", ResourceKey);
-			string NativeResourceKey = ResourceKey switch
-			{
-				"KycTravelDocumentNfcCancelled" => "TravelDocumentScan_IosNfcCancelled",
-				"KycTravelDocumentNfcConnectionLost" => "TravelDocumentScan_IosNfcConnectionLost",
-				"KycTravelDocumentNfcTimedOut" => "TravelDocumentScan_IosNfcTimedOut",
-				_ => "TravelDocumentScan_IosNfcFailed"
-			};
-			string NativeMessage = ServiceRef.Localizer[NativeResourceKey];
+			this.TrackTerminalNfcSession(SessionId, Failure.IsCancellation ? "Cancelled" : "Failed", Failure.FailureCode.ToString());
+			string NativeMessage = ServiceRef.Localizer[TravelDocumentPresentationMapper.GetNativeAlertResourceKey(Failure.FailureCode)];
 			try
 			{
 				await this.StopNativeNfcSessionAsync(SessionId, NativeMessage);
-				await this.SetStatusAsync(ResourceKey, true, true, false, KycTravelDocumentFlowState.Error, SessionId);
-				if (ResourceKey != nfcCancelledResourceKey)
+				await this.SetStatusAsync(
+					TravelDocumentPresentationMapper.GetDetailResourceKey(Failure.FailureCode),
+					true,
+					true,
+					false,
+					KycTravelDocumentFlowState.Error,
+					SessionId,
+					Failure);
+				if (!Failure.IsCancellation)
 					await this.ProvideOutcomeFeedbackAsync(false);
 
 				if (this.activeSessionId == SessionId)
@@ -906,12 +1225,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			TravelDocumentReadoutResult Result,
 			CancellationToken FlowCancellationToken)
 		{
+			// Some PACE documents polled as ISO 14443 reject authentication, or drop the connection during the PACE key
+			// exchange, but can be read with PACE polling.
+			bool MayNeedPacePolling = Result.IsPaceExchangeInterrupted ||
+				(Result.Status == TravelDocumentReadoutStatus.AuthenticationFailed &&
+				Result.AuthenticationResult is AuthenticateResult.AlreadyEncrypted or
+					AuthenticateResult.UnableToInitializePace or AuthenticateResult.UnableToAuthenticatePace or
+					AuthenticateResult.UnableToGetBacChallenge or AuthenticateResult.UnableToAuthenticateBac);
 			if (!OperatingSystem.IsIOSVersionAtLeast(16) ||
 				PollingPreference != NfcIsoDepPollingPreference.Iso14443 ||
-				Result.Status != TravelDocumentReadoutStatus.AuthenticationFailed ||
-				Result.AuthenticationResult is not (AuthenticateResult.AlreadyEncrypted or
-					AuthenticateResult.UnableToInitializePace or AuthenticateResult.UnableToAuthenticatePace or
-					AuthenticateResult.UnableToGetBacChallenge or AuthenticateResult.UnableToAuthenticateBac))
+				!MayNeedPacePolling)
 			{
 				return false;
 			}
@@ -920,7 +1243,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!this.IsActiveSession(SessionId, Evidence.ApplicationIdentityId))
 				return true;
 
-			this.TrackTerminalNfcSession(SessionId, "Failed", Result.AuthenticationResult.Value.ToString());
+			this.TrackTerminalNfcSession(SessionId, "Failed", Result.AuthenticationResult?.ToString() ?? Result.Status.ToString());
 			Guid ReplacementSessionId = Guid.NewGuid();
 			this.activeSessionId = ReplacementSessionId;
 			this.activeSessionStartedUtc = DateTime.UtcNow;
@@ -943,7 +1266,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.LogFlowEvent("NfcFailureReceived",
 				new KeyValuePair<string, object?>("SessionId", SessionId),
 				new KeyValuePair<string, object?>("FailureCode", Failure.FailureCode.ToString()));
-			await this.FinishFailedNfcSessionAsync(SessionId, this.ResolveNfcFailureResourceKey(Failure));
+			await this.FinishFailedNfcSessionAsync(SessionId, TravelDocumentFailureFactory.CreatePlatformFailure(Failure));
 		}
 
 		private async Task CompleteNfcSessionAsync(Guid SessionId, string? ErrorMessage = null)
@@ -1081,14 +1404,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			(bool Succeeded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(
 				() => ServiceRef.XmppService.GetLegalIdentity(ReservedPreviewIdentityId));
-			bool HasPrivateKey = Identity is not null && await this.HasPrivateKeyAsync(Identity.Id).ConfigureAwait(false);
+			bool CanSignWithCurrentKeys = Identity is not null && await this.CanSignForIdentityAsync(Identity).ConfigureAwait(false);
 			this.LogFlowEvent(
 				"PreviewReservationReuseChecked",
 				new KeyValuePair<string, object?>("Succeeded", Succeeded),
 				new KeyValuePair<string, object?>("HasIdentity", Identity is not null),
-				new KeyValuePair<string, object?>("HasPrivateKey", HasPrivateKey));
+				new KeyValuePair<string, object?>("CanSignWithCurrentKeys", CanSignWithCurrentKeys));
 
-			if (!Succeeded || Identity is null || !HasPrivateKey)
+			if (!Succeeded || Identity is null || !CanSignWithCurrentKeys)
 				return null;
 
 			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(Reference, Identity).ConfigureAwait(false);
@@ -1112,14 +1435,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await ServiceRef.XmppService.HasPrivateKey(ApplicationIdentityId).ConfigureAwait(false);
 		}
 
-		private async Task<bool> HasPrivateKeyAsync(string? IdentityId)
+		private async Task<bool> CanSignForIdentityAsync(LegalIdentity Identity)
 		{
-			if (string.IsNullOrWhiteSpace(IdentityId))
-				return false;
-
 			try
 			{
-				return await ServiceRef.XmppService.HasPrivateKey(IdentityId.Trim()).ConfigureAwait(false);
+				return await ServiceRef.XmppService.CanSignWithCurrentKeysAsync(Identity).ConfigureAwait(false);
 			}
 			catch (Exception Ex)
 			{
@@ -1274,17 +1594,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			Dictionary<string, string> Values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 			{
-				[Constants.XmppProperties.FirstName] = JoinNameParts(DocumentInformation.SecondaryIdentifier),
 				[Constants.XmppProperties.LastNames] = JoinNameParts(DocumentInformation.PrimaryIdentifier),
+				[Constants.XmppProperties.Country] = ResolveAlpha2CountryCode(DocumentInformation.IssuingState),
 				[Constants.XmppProperties.Nationality] = ResolveAlpha2CountryCode(DocumentInformation.Nationality)
 			};
+			AddGivenNameMappings(Values, JoinNameParts(DocumentInformation.SecondaryIdentifier));
 
 			if (TryResolveGenderCode(DocumentInformation.Gender, out string GenderCode))
 				Values[Constants.XmppProperties.Gender] = GenderCode;
 
-			string CountryCode = ResolveAlpha2CountryCode(DocumentInformation.Nationality);
-			if (string.IsNullOrWhiteSpace(CountryCode))
-				CountryCode = ResolveAlpha2CountryCode(DocumentInformation.IssuingState);
+			string CountryCode = ResolvePersonalNumberCountryCode(DocumentInformation.IssuingState, DocumentInformation.Nationality);
 
 			string PersonalNumber = await ResolvePersonalNumberAsync(DocumentInformation.OptionalData, CountryCode);
 			if (!string.IsNullOrWhiteSpace(PersonalNumber))
@@ -1300,11 +1619,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			Dictionary<string, string> Values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 			{
-				[Constants.XmppProperties.FirstName] = DocumentData.SecondaryIdentifier?.Trim() ?? string.Empty,
 				[Constants.XmppProperties.LastNames] = DocumentData.PrimaryIdentifier?.Trim() ?? string.Empty,
 				[Constants.XmppProperties.Country] = ResolveAlpha2CountryCode(DocumentData.IssuingState),
 				[Constants.XmppProperties.Nationality] = ResolveAlpha2CountryCode(DocumentData.Nationality)
 			};
+			AddGivenNameMappings(Values, DocumentData.SecondaryIdentifier);
 
 			if (TryResolveGenderCode(DocumentData.Gender, out string GenderCode))
 				Values[Constants.XmppProperties.Gender] = GenderCode;
@@ -1312,10 +1631,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			string PersonalNumber = DocumentData.PersonalNumber?.Replace("<", string.Empty).Trim() ?? string.Empty;
 			if (string.IsNullOrWhiteSpace(PersonalNumber))
 			{
-				string CountryCode = ResolveAlpha2CountryCode(DocumentData.Nationality);
-				if (string.IsNullOrWhiteSpace(CountryCode))
-					CountryCode = ResolveAlpha2CountryCode(DocumentData.IssuingState);
-
+				string CountryCode = ResolvePersonalNumberCountryCode(DocumentData.IssuingState, DocumentData.Nationality);
 				PersonalNumber = await ResolvePersonalNumberAsync(DocumentData.OptionalData, CountryCode);
 			}
 
@@ -1409,10 +1725,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			bool IsError = false,
 			bool ReadoutAvailable = false,
 			KycTravelDocumentFlowState? FlowState = null,
-			Guid? SessionId = null)
+			Guid? SessionId = null,
+			TravelDocumentFailure? Failure = null)
 		{
-			bool IsCancelled = IsError && ResourceKey == nfcCancelledResourceKey;
-			string Message = ServiceRef.Localizer[IsCancelled ? "KycTravelDocumentNfcCancelledDescription" : ResourceKey];
+			bool IsCancelled = IsError && Failure?.IsCancellation == true;
+			string Message = ServiceRef.Localizer[ResourceKey];
 			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				if (SessionId.HasValue && this.activeSessionId != SessionId)
@@ -1426,18 +1743,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.ChipReadProgress = this.readProgress.Progress;
 				}
 
+				if (FlowState == KycTravelDocumentFlowState.NfcReady)
+					this.hasReachedChipStep = true;
+
 				if (ReadoutAvailable)
 				{
 					this.readProgress.Complete();
 					this.ChipReadProgress = this.readProgress.Progress;
 				}
 
+				this.mrzGuideTitleKey = null;
 				this.StatusText = Message;
 				this.HasStatusText = !string.IsNullOrWhiteSpace(Message);
 				this.IsPlacementHelpExpanded = false;
 				this.IsNfcBusy = IsBusy;
 
-				// Set before the error flag so a cancelled scan never briefly presents as a failure.
+				// Set before the error flag so a cancelled scan never briefly presents as a failure, and the failure
+				// headline is ready when the failure scene appears.
+				this.CurrentFailure = IsError ? Failure : null;
 				this.IsScanCancelled = IsCancelled;
 				this.HasErrorState = IsError;
 				if (ReadoutAvailable)
@@ -1449,6 +1772,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.LogFlowEvent(
 					"StatusSet",
 					new KeyValuePair<string, object?>("ResourceKey", ResourceKey),
+					new KeyValuePair<string, object?>("FailureCode", Failure?.FailureCode.ToString()),
 					new KeyValuePair<string, object?>("IsBusy", IsBusy),
 					new KeyValuePair<string, object?>("IsError", IsError),
 					new KeyValuePair<string, object?>("ReadoutAvailable", ReadoutAvailable));
@@ -1478,7 +1802,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return KycTravelDocumentFlowState.Success;
 
 			if (HasInsufficientSavedMrz)
-				return KycTravelDocumentFlowState.Error;
+				return KycTravelDocumentFlowState.MrzGuide;
 
 			if (this.reference?.HasFullTravelDocumentMrz == true)
 				return KycTravelDocumentFlowState.NfcReady;
@@ -1567,34 +1891,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			GC.SuppressFinalize(this);
 		}
 
-		private string ResolveReadoutFailureResourceKey(TravelDocumentReadoutStatus Status)
-		{
-			return Status switch
-			{
-				TravelDocumentReadoutStatus.AuthenticationFailed => "KycTravelDocumentNfcAuthenticationFailed",
-				TravelDocumentReadoutStatus.ReadFailed => "KycTravelDocumentNfcReadFailed",
-				TravelDocumentReadoutStatus.ConnectionLost => "KycTravelDocumentNfcConnectionLost",
-				TravelDocumentReadoutStatus.TimedOut => "KycTravelDocumentNfcTimedOut",
-				_ => "KycTravelDocumentNfcFailed"
-			};
-		}
-
-		private string ResolveNfcFailureResourceKey(NfcIsoDepSessionFailure Failure)
-		{
-			return Failure.FailureCode switch
-			{
-				NfcIsoDepSessionFailureCode.NotSupported => "KycTravelDocumentNfcUnavailable",
-				NfcIsoDepSessionFailureCode.Unavailable => "KycTravelDocumentNfcUnavailable",
-				NfcIsoDepSessionFailureCode.Cancelled => "KycTravelDocumentNfcCancelled",
-				NfcIsoDepSessionFailureCode.TimedOut => "KycTravelDocumentNfcTimedOut",
-				NfcIsoDepSessionFailureCode.MultipleTagsDetected => "KycTravelDocumentNfcMultipleTags",
-				NfcIsoDepSessionFailureCode.UnsupportedTag => "KycTravelDocumentNfcUnsupportedTag",
-				NfcIsoDepSessionFailureCode.ConnectionLost => "KycTravelDocumentNfcConnectionLost",
-				NfcIsoDepSessionFailureCode.EntitlementMissing => "KycTravelDocumentNfcUnavailable",
-				_ => "KycTravelDocumentNfcFailed"
-			};
-		}
-
 		private string ResolveInitialStatusText(bool HasInsufficientSavedMrz)
 		{
 			if (!string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml))
@@ -1612,6 +1908,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static string JoinNameParts(string[]? Parts)
 		{
 			return string.Join(" ", Parts ?? Array.Empty<string>()).Trim();
+		}
+
+		/// <summary>
+		/// Adds given-name mappings, placing the first given name in the first name property and any remaining
+		/// given names in the middle names property.
+		/// </summary>
+		/// <param name="Values">Mapped property values to update.</param>
+		/// <param name="GivenNames">All given names read from the travel document.</param>
+		private static void AddGivenNameMappings(IDictionary<string, string> Values, string? GivenNames)
+		{
+			string[] Names = (GivenNames ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+			Values[Constants.XmppProperties.FirstName] = Names.Length > 0 ? Names[0] : string.Empty;
+			Values[Constants.XmppProperties.MiddleNames] = string.Join(" ", Names.Skip(1));
 		}
 
 		private static void AddBirthDateMappings(IDictionary<string, string> Values, string DateOfBirth)
@@ -1664,6 +1973,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return string.Equals(Mapping, Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(Mapping, Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(Mapping, Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Resolves the country whose personal number scheme applies to a travel document.
+		/// </summary>
+		/// <remarks>
+		/// The issuing state assigns the personal number printed on its documents, so it is preferred over the holder's nationality.
+		/// </remarks>
+		/// <param name="IssuingState">The document's issuing state code.</param>
+		/// <param name="Nationality">The holder's nationality code.</param>
+		/// <returns>An ISO 3166-1 alpha-2 country code, or an empty string if neither code can be resolved.</returns>
+		private static string ResolvePersonalNumberCountryCode(string? IssuingState, string? Nationality)
+		{
+			string CountryCode = ResolveAlpha2CountryCode(IssuingState);
+			if (string.IsNullOrWhiteSpace(CountryCode))
+				CountryCode = ResolveAlpha2CountryCode(Nationality);
+
+			return CountryCode;
 		}
 
 		private static string ResolveAlpha2CountryCode(string? CountryCode)

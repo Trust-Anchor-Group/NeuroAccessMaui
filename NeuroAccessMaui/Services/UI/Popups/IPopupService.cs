@@ -79,6 +79,17 @@ namespace NeuroAccessMaui.Services.UI.Popups
 		Task PopAsync();
 
 		/// <summary>
+		/// Dismisses the top-most popup only when it is bound to the given view model.
+		/// </summary>
+		/// <remarks>
+		/// Use this when a popup closes itself after asynchronous work, so that it never dismisses another popup that was
+		/// pushed on top of it in the meantime.
+		/// </remarks>
+		/// <param name="ViewModel">The view model of the popup to dismiss.</param>
+		/// <returns>A task that completes after the popup has been dismissed, or immediately when it is not on top.</returns>
+		Task PopIfTopAsync(BasePopupViewModel ViewModel);
+
+		/// <summary>
 		/// Returns true if at least one popup is currently presented.
 		/// </summary>
 		bool HasOpenPopups { get; }

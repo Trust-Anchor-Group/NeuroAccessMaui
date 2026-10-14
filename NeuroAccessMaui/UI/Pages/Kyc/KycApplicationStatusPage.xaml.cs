@@ -1,11 +1,12 @@
+using NeuroAccessMaui.UI.Controls;
+
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	/// <summary>
 	/// Read-only page that shows the current KYC application status.
 	/// </summary>
 	/// <remarks>
-	/// Code-behind only pauses the status animation while hidden and plays the celebration when the view model reports
-	/// an approval.
+	/// Code-behind only pauses the status badge animation while the page is hidden.
 	/// </remarks>
 	public partial class KycApplicationStatusPage : BaseContentPage
 	{
@@ -17,26 +18,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;
-			ViewModel.ApplicationApproved += this.OnApplicationApproved;
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
-			await this.Dispatcher.DispatchAsync(() => this.Visual.IsAnimationActive = true);
+			await this.Dispatcher.DispatchAsync(() => this.SetStatusAnimationActive(true));
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnDisappearingAsync()
 		{
-			await this.Dispatcher.DispatchAsync(() => this.Visual.IsAnimationActive = false);
+			await this.Dispatcher.DispatchAsync(() => this.SetStatusAnimationActive(false));
 			await base.OnDisappearingAsync();
 		}
 
-		private void OnApplicationApproved(object? Sender, EventArgs E)
+		/// <summary>
+		/// Lets the status badge loop its animation, or pauses it.
+		/// </summary>
+		/// <param name="IsActive">Whether the looping animation may run.</param>
+		private void SetStatusAnimationActive(bool IsActive)
 		{
-			this.Dispatcher.Dispatch(this.Visual.Celebrate);
+			this.StatusBadge.IsAnimationActive = IsActive;
 		}
 	}
 }

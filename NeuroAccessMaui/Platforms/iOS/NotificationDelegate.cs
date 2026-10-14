@@ -13,7 +13,7 @@ namespace NeuroAccessMaui
 {
     public class NotificationDelegate : UNUserNotificationCenterDelegate
     {
-         // Called when a notification is delivered while the app is in the foreground.
+        // Called when a notification is delivered while the app is in the foreground.
         [Export("userNotificationCenter:willPresentNotification:withCompletionHandler:")]
         public override void WillPresentNotification(UNUserNotificationCenter center, UNNotification notification, Action<UNNotificationPresentationOptions> completionHandler)
         {
@@ -28,9 +28,8 @@ namespace NeuroAccessMaui
 				NotificationIntent? intent = this.ParseIntent(userInfo);
 				if (intent is not null)
 				{
-					INotificationServiceV2 service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
 					string raw = JsonSerializer.Serialize(userInfo);
-					service.AddAsync(intent, NotificationSource.Push, raw, CancellationToken.None).ConfigureAwait(false);
+					_ = AddAsync(intent, raw);
 				}
 			}
 			catch (Exception ex)
@@ -54,11 +53,8 @@ namespace NeuroAccessMaui
 				NotificationIntent? intent = this.ParseIntent(userInfo);
 				if (intent is not null)
 				{
-					INotificationServiceV2 service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
 					string raw = JsonSerializer.Serialize(userInfo);
-					service.AddAsync(intent, NotificationSource.Push, raw, CancellationToken.None).ConfigureAwait(false);
-					string id = service.ComputeId(intent, NotificationSource.Push);
-					service.ConsumeAsync(id, CancellationToken.None).ConfigureAwait(false);
+					_ = AddAndConsumeAsync(intent, raw);
 				}
 			}
 			catch (Exception ex)
@@ -66,10 +62,16 @@ namespace NeuroAccessMaui
 				ServiceRef.LogService.LogException(ex);
 			}
 
+			// Completed right away: storing and routing the tap can wait for app startup and continues after this returns.
             completionHandler();
         }
 
-        public static void ProcessSilentNotification(NSDictionary userInfo)
+		/// <summary>
+		/// Stores a silent data notification.
+		/// </summary>
+		/// <param name="userInfo">The push payload.</param>
+		/// <returns>A task that completes when the notification has been stored, or when storing it failed and was logged.</returns>
+        public static async Task ProcessSilentNotificationAsync(NSDictionary userInfo)
         {
 			try
 			{
@@ -79,14 +81,73 @@ namespace NeuroAccessMaui
 
 				string raw = JsonSerializer.Serialize(userInfo);
 				INotificationServiceV2 service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
-				service.AddAsync(intent, NotificationSource.Push, raw, CancellationToken.None).ConfigureAwait(false);
-
+				await service.AddAsync(intent, NotificationSource.Push, raw, CancellationToken.None);
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				LogException(ex);
 			}
         }
+
+		/// <summary>
+		/// Stores a notification that arrived while the app is in the foreground.
+		/// </summary>
+		/// <param name="Intent">The parsed notification intent.</param>
+		/// <param name="RawPayload">The serialized notification payload.</param>
+		/// <returns>A task that completes when the notification has been stored, or when storing it failed and was logged.</returns>
+		private static async Task AddAsync(NotificationIntent Intent, string RawPayload)
+		{
+			try
+			{
+				INotificationServiceV2 Service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				await Service.AddAsync(Intent, NotificationSource.Push, RawPayload, CancellationToken.None);
+			}
+			catch (Exception Ex)
+			{
+				LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Stores a tapped notification and then routes it.
+		/// </summary>
+		/// <remarks>
+		/// The record must be stored before it is consumed; starting both without waiting let the consume run first, find no
+		/// record and drop the tap.
+		/// </remarks>
+		/// <param name="Intent">The parsed notification intent.</param>
+		/// <param name="RawPayload">The serialized notification payload.</param>
+		/// <returns>A task that completes when the tap has been routed, or when handling it failed and was logged.</returns>
+		private static async Task AddAndConsumeAsync(NotificationIntent Intent, string RawPayload)
+		{
+			try
+			{
+				INotificationServiceV2 Service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				await Service.AddAsync(Intent, NotificationSource.Push, RawPayload, CancellationToken.None);
+				string Id = Service.ComputeId(Intent, NotificationSource.Push);
+				await Service.ConsumeAsync(Id, CancellationToken.None);
+			}
+			catch (Exception Ex)
+			{
+				LogException(Ex);
+			}
+		}
+
+		private static void LogException(Exception Ex)
+		{
+			// A failed startup has already been reported by the application lifecycle.
+			if (App.IsLifecycleException(Ex))
+				return;
+
+			try
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			catch (Exception LoggingError)
+			{
+				Console.WriteLine(LoggingError);
+			}
+		}
 
 		private NotificationIntent? ParseIntent(NSDictionary userInfo) => ParseIntentStatic(userInfo);
 

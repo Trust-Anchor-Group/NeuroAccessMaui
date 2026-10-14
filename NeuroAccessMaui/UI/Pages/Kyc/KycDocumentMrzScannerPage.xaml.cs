@@ -175,7 +175,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (DirtyRect.Width <= 0 || DirtyRect.Height <= 0)
 					return;
 
-				bool Animate = !IsReducedMotion();
+				bool Animate = !MotionPreferences.ReduceMotion;
 				double Now = this.clock.Elapsed.TotalMilliseconds;
 				this.SnapTowardTarget(DirtyRect, Animate ? snapRatio : 1d);
 
@@ -439,18 +439,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return GuidanceState is MrzCaptureGuidanceState.HoldSteady
 					or MrzCaptureGuidanceState.Capturing
 					or MrzCaptureGuidanceState.Review;
-			}
-
-			private static bool IsReducedMotion()
-			{
-				try
-				{
-					return ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true;
-				}
-				catch (Exception)
-				{
-					return false;
-				}
 			}
 		}
 	}

@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
 using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Controls;
@@ -14,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// </remarks>
 	public partial class KycTravelDocumentPage : BaseContentPage
 	{
-		private NfcScanVisualState? presentedState;
+		private (NfcScanVisualState State, string Headline)? presentedKey;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KycTravelDocumentPage"/> class.
@@ -37,8 +36,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				ViewModel.PropertyChanged += this.OnViewModelPropertyChanged;
 				this.ScanVisual.IsAnimationActive = true;
 
-				// The chip path usually starts on the scanner page, so the state may have moved on while this page was hidden.
-				this.PresentState(ViewModel.ScanVisualState);
+				// The flow continues on the scanner page, so the state may have moved on while this page was hidden.
+				this.PresentState(ViewModel);
 			});
 		}
 
@@ -49,8 +48,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				this.ViewModel<KycTravelDocumentViewModel>().PropertyChanged -= this.OnViewModelPropertyChanged;
 				this.ScanVisual.IsAnimationActive = false;
-				ResetTransition(this.MessageBlock);
-				ResetTransition(this.Stepper);
+				this.MessageBlock.CancelAnimations();
+				this.MessageBlock.Opacity = 1;
+				this.MessageBlock.TranslationY = 0;
 			});
 			await base.OnDisappearingAsync();
 		}
@@ -60,66 +60,74 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (E.PropertyName != nameof(KycTravelDocumentViewModel.ScanVisualState))
 				return;
 
-			this.Dispatcher.Dispatch(() => this.PresentState(this.ViewModel<KycTravelDocumentViewModel>().ScanVisualState));
+			this.Dispatcher.Dispatch(() => this.PresentState(this.ViewModel<KycTravelDocumentViewModel>()));
 		}
 
 		/// <summary>
-		/// Animates the message, and the step guide when it first appears, when the flow moves to a new state.
-		/// The first state shown is presented without animation.
+		/// Scrolls to the top and reveals the message when the flow moves to a new state, so a new headline is never left
+		/// off-screen. The first state shown is presented without animation.
 		/// </summary>
-		/// <param name="State">The state now shown by the view model.</param>
-		private void PresentState(NfcScanVisualState State)
+		/// <param name="ViewModel">The page view model.</param>
+		private void PresentState(KycTravelDocumentViewModel ViewModel)
 		{
-			NfcScanVisualState? Previous = this.presentedState;
-			if (State == Previous)
+			if (!ViewModel.IsStateResolved)
 				return;
 
-			this.presentedState = State;
-			if (Previous is null)
+			(NfcScanVisualState State, string Headline) Key = (
+				ViewModel.ScanVisualState,
+				ViewModel.ShowMrzGuide ? ViewModel.MrzGuideTitleText : ViewModel.NfcHeadlineText);
+			if (Key == this.presentedKey)
 				return;
 
-			_ = RevealAsync(this.MessageBlock, 10);
+			bool IsFirstPresentation = this.presentedKey is null;
+			this.presentedKey = Key;
+			if (IsFirstPresentation)
+				return;
 
-			if (Previous == NfcScanVisualState.Intro && State != NfcScanVisualState.Intro)
-				_ = RevealAsync(this.Stepper, -8);
+			_ = this.ScrollToTopAsync();
+			_ = this.RevealMessageAsync();
 		}
 
-		private static void ResetTransition(VisualElement Element)
+		private async Task ScrollToTopAsync()
 		{
-			Element.CancelAnimations();
-			Element.Opacity = 1;
-			Element.TranslationY = 0;
-		}
-
-		/// <summary>
-		/// Fades an element in while it slides into place from a small vertical offset.
-		/// </summary>
-		/// <param name="Element">The element to reveal.</param>
-		/// <param name="Offset">The starting vertical offset; positive values rise into place, negative values settle down.</param>
-		/// <returns>A task that completes when the transition ends.</returns>
-		private static async Task RevealAsync(VisualElement Element, double Offset)
-		{
-			Element.CancelAnimations();
-
-			if (ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true)
+			try
 			{
-				Element.Opacity = 1;
-				Element.TranslationY = 0;
+				await this.BodyScroll.ScrollToAsync(0, 0, false);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Fades and lifts the headline and status into place when the flow moves to a new state.
+		/// </summary>
+		/// <returns>A task that completes when the transition ends.</returns>
+		private async Task RevealMessageAsync()
+		{
+			VisualElement Block = this.MessageBlock;
+			Block.CancelAnimations();
+
+			if (MotionPreferences.ReduceMotion)
+			{
+				Block.Opacity = 1;
+				Block.TranslationY = 0;
 				return;
 			}
 
 			try
 			{
-				Element.Opacity = 0;
-				Element.TranslationY = Offset;
+				Block.Opacity = 0;
+				Block.TranslationY = 10;
 				await Task.WhenAll(
-					Element.FadeToAsync(1, 260, Easing.CubicOut),
-					Element.TranslateToAsync(0, 0, 260, Easing.CubicOut));
+					Block.FadeToAsync(1, 260, Easing.CubicOut),
+					Block.TranslateToAsync(0, 0, 260, Easing.CubicOut));
 			}
 			catch (Exception Ex)
 			{
-				Element.Opacity = 1;
-				Element.TranslationY = 0;
+				Block.Opacity = 1;
+				Block.TranslationY = 0;
 				ServiceRef.LogService.LogException(Ex);
 			}
 		}

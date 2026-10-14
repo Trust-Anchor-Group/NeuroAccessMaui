@@ -355,7 +355,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				// Find the viewmodel of WelcomeOnboardingPage
 				WelcomeOnboardingStepViewModel WelcomeVM = this.GetStepViewModel<WelcomeOnboardingStepViewModel>(OnboardingStep.Welcome);
 
-				await WelcomeVM.HandleInviteCodeFromIntent(this.navigationArgs.PendingIntentUri);
+				// The prepared invitation carries decrypted contents, so the navigation arguments do not keep it once it is handed over.
+				Models.Invitation? PreparedInvitation = this.navigationArgs.PreparedInvitation;
+				this.navigationArgs.PreparedInvitation = null;
+
+				await WelcomeVM.HandleInviteCodeFromIntent(this.navigationArgs.PendingIntentUri, PreparedInvitation);
 			}
 		}
 

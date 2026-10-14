@@ -16,12 +16,14 @@
 			<Keep key="FIRST" />
 			<Keep key="MIDDLE" />
 			<Keep key="LAST" />
-			<Keep key="BDAY" />
-			<Keep key="BMONTH" />
-			<Keep key="BYEAR" />
+			<Keep key="BDAY" optional="true" />
+			<Keep key="BMONTH" optional="true" />
+			<Keep key="BYEAR" optional="true" />
+			<Keep key="AGEABOVE" optional="true" />
 			<Keep key="PNR" />
 			<Keep key="COUNTRY" />
-			<Keep key="GENDER" />
+			<Keep key="NATIONALITY" optional="true" default="false" />
+			<Keep key="GENDER" optional="true" />
 			<Keep key="ZIP" />
 			<Keep key="ADDR" />
 			<Keep key="ADDR2" />
@@ -225,6 +227,9 @@
 			<Mapping key="BYEAR">
 				<Transform name="year" />
 			</Mapping>
+			<Mapping key="AGEABOVE">
+				<Transform name="ageAbove" />
+			</Mapping>
 		</Field>
 		<Field id="country" type="country" required="true">
 			<Label>
@@ -238,6 +243,29 @@
 				<Text lang="fr">Pays</Text>
 			</Label>
 			<Mapping key="COUNTRY" />
+		</Field>
+		<Field id="nationality" type="country">
+			<Label>
+				<Text lang="en">Nationality</Text>
+				<Text lang="sv">Medborgarskap</Text>
+				<Text lang="es">Nacionalidad</Text>
+				<Text lang="pt">Nacionalidade</Text>
+				<Text lang="da">Nationalitet</Text>
+				<Text lang="no">Nasjonalitet</Text>
+				<Text lang="fi">Kansalaisuus</Text>
+				<Text lang="fr">Nationalité</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Optional. In the summary you choose whether your ID shows it.</Text>
+				<Text lang="sv">Valfritt. I sammanfattningen väljer du om ditt ID ska visa det.</Text>
+				<Text lang="es">Opcional. En el resumen eliges si tu ID la muestra.</Text>
+				<Text lang="pt">Opcional. No resumo, você escolhe se o seu ID a mostra.</Text>
+				<Text lang="da">Valgfrit. I oversigten vælger du, om dit ID skal vise det.</Text>
+				<Text lang="no">Valgfritt. I sammendraget velger du om ID-en din skal vise det.</Text>
+				<Text lang="fi">Valinnainen. Yhteenvedossa valitset, näkyykö se henkilöllisyydessäsi.</Text>
+				<Text lang="fr">Facultatif. Dans le récapitulatif, vous choisissez si votre identité l’affiche.</Text>
+			</Hint>
+			<Mapping key="NATIONALITY" />
 		</Field>
 		<Field id="gender" type="gender">
 			<Label>

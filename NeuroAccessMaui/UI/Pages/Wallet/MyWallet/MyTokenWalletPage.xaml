@@ -27,16 +27,16 @@
 					   VerticalOptions="Center" HorizontalOptions="Center" />
 				<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=FriendlyName}"
 					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"
-					   FontAttributes="Bold" FontSize="18" HorizontalTextAlignment="Start"
+					   FontAttributes="Bold" FontSize="{StaticResource FontSizeXl}" HorizontalTextAlignment="Start"
 					   BackgroundColor="Transparent" VerticalOptions="Center"/>
 				<Border Grid.Row="0" Grid.Column="2" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding New}"
 						HorizontalOptions="Start" VerticalOptions="Center" Style="{DynamicResource RedButtonActiveBorder}">
 					<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWL}" Text="{Binding NrEvents}" Padding="1"/>
 				</Border>
 				<Label Grid.Column="2" Grid.Row="0" Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
-					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="18"
+					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="{StaticResource FontSizeXl}"
 					   BackgroundColor="Transparent" HorizontalTextAlignment="End" VerticalOptions="Center"/>
-				<Label Grid.Column="3" Grid.Row="0" Text="{Binding Path=Currency}" FontSize="18"
+				<Label Grid.Column="3" Grid.Row="0" Text="{Binding Path=Currency}" FontSize="{StaticResource FontSizeXl}"
 					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"
 					   BackgroundColor="Transparent" HorizontalTextAlignment="Start" VerticalOptions="Center"/>
 				<Grid.GestureRecognizers>
@@ -60,7 +60,7 @@
 						Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
 						Fill="{DynamicResource ContentPrimaryWL}"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
-					    Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
+					    Text="•" FontSize="{StaticResource FontSizeDisplayXl}" HorizontalOptions="End" VerticalOptions="Center"
 					    Style="{DynamicResource AlertLabel}"/>
 				<Grid.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
@@ -96,9 +96,9 @@
 							<CollectionView.ItemTemplate>
 								<DataTemplate x:DataType="objectmodel:TokenTotalItem">
 									<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto" BackgroundColor="Transparent">
-										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Total, Converter={converters:MoneyToString}}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="24" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent"/>
-										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=Currency}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontAttributes="Bold" FontSize="24" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent"/>
-										<Label Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontSize="24" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent">
+										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Total, Converter={converters:MoneyToString}}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="{StaticResource FontSize4xl}" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent"/>
+										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=Currency}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontAttributes="Bold" FontSize="{StaticResource FontSize4xl}" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent"/>
+										<Label Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontSize="{StaticResource FontSize4xl}" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent">
 											<Label.FormattedText>
 												<FormattedString>
 													<Span Text="("/>

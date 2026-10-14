@@ -10,189 +10,156 @@
 					  x:DataType="viewmodel:KycTravelDocumentViewModel"
 					  ui:KeyboardInsets.Mode="Automatic"
 					  ui:SafeArea.Mode="TopAndBottom">
-	<VisualElement.Resources>
-		<Style x:Key="MessageTitle"
-			   TargetType="Label">
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskBold" />
-			<Setter Property="FontSize"
-					Value="28" />
-			<Setter Property="HorizontalTextAlignment"
-					Value="Center" />
-			<Setter Property="LineBreakMode"
-					Value="WordWrap" />
-			<Setter Property="SemanticProperties.HeadingLevel"
-					Value="Level1" />
-		</Style>
-		<Style x:Key="MessageBody"
-			   TargetType="Label"
-			   BasedOn="{StaticResource InfoLabel}">
-			<Setter Property="HorizontalTextAlignment"
-					Value="Center" />
-			<Setter Property="LineBreakMode"
-					Value="WordWrap" />
-		</Style>
-		<Style x:Key="MessagePanel"
-			   TargetType="Border">
-			<Setter Property="StrokeThickness"
-					Value="1" />
-			<Setter Property="StrokeShape"
-					Value="RoundRectangle 12" />
-			<Setter Property="Padding"
-					Value="14,12" />
-		</Style>
-	</VisualElement.Resources>
+	<!-- The step guide, body, and footer stay hidden until the view model has resolved its state, so a saved state never
+		 appears after the default one. The footer also stays hidden while it has no action, such as during a chip read -->
+	<controls:IdentityFlowShell Title="{l:Localize KycTravelDocumentTitle}"
+								ShowLeadingAction="True"
+								LeadingActionCommand="{Binding GoBackCommand}"
+								LeadingActionDescription="{l:Localize Close}"
+								ShowStickyFooter="{Binding HasFooterActions}">
+		<controls:IdentityFlowShell.BodyContent>
+			<Grid RowDefinitions="Auto,*">
+				<controls:GuideStepper CurrentStep="{Binding CurrentGuideStep}"
+									   Margin="24,4,24,0"
+									   MaximumWidthRequest="420"
+									   HorizontalOptions="Fill"
+									   IsVisible="{Binding ShowGuideStepper}">
+					<controls:GuideStepper.Steps>
+						<controls:GuideStep Text="{l:Localize KycTravelDocumentStepScan}" />
+						<controls:GuideStep Text="{l:Localize KycTravelDocumentStepChip}" />
+						<controls:GuideStep Text="{l:Localize KycTravelDocumentProgressDone}" />
+					</controls:GuideStepper.Steps>
+				</controls:GuideStepper>
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-		  RowDefinitions="Auto,Auto,*,Auto">
-		<controls:Background Grid.RowSpan="4" />
+				<ScrollView x:Name="BodyScroll"
+							Grid.Row="1"
+							VerticalScrollBarVisibility="Never"
+							IsVisible="{Binding IsStateResolved}">
+					<VerticalStackLayout Padding="24,12,24,16"
+										 Spacing="20"
+										 MaximumWidthRequest="560"
+										 HorizontalOptions="Fill"
+										 VerticalOptions="Center">
+						<controls:NfcScanVisual x:Name="ScanVisual"
+												HeightRequest="250"
+												HorizontalOptions="Fill"
+												State="{Binding ScanVisualState}"
+												Progress="{Binding ChipReadProgress}"
+												IsPassport="{Binding IsPassportDocument}"
+												AntennaPlacement="{OnPlatform Default=BackCenter, iOS=TopEdge}"
+												SuccessRevealDelay="{OnPlatform Default=0, iOS=900}"
+												AccentColor="{DynamicResource ContentAccessWL}"
+												OnAccentColor="{DynamicResource ContentPrimaryInverted}"
+												ContentColor="{DynamicResource ContentPrimaryWL}"
+												TrackColor="{DynamicResource TnPNeutralv300bgWL}"
+												SurfaceColor="{DynamicResource SurfaceElevation1WL}"
+												WarningColor="{DynamicResource TnPWarningContentWL}" />
 
-		<Grid Padding="16,8"
-			  ColumnDefinitions="44,*"
-			  ColumnSpacing="12">
-			<controls:SvgButton Command="{Binding GoBackCommand}"
-								SvgSource="close.svg"
-								Style="{DynamicResource IconButton}"
-								WidthRequest="44"
-								HeightRequest="44"
-								HorizontalOptions="Start"
-								VerticalOptions="Center"
-								SemanticProperties.Description="{l:Localize Close}" />
+						<VerticalStackLayout x:Name="MessageBlock"
+											 Spacing="14">
+							<VerticalStackLayout Spacing="8"
+												 IsVisible="{Binding ShowIntro}">
+								<Label Style="{DynamicResource IdentityFlowTitleLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{l:Localize KycTravelDocumentHeroTitle}" />
+								<Label Style="{DynamicResource IdentityFlowBodyLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{l:Localize KycTravelDocumentEligibilityChipSymbol}" />
+								<Label Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{l:Localize KycTravelDocumentHeroDescription}" />
+							</VerticalStackLayout>
 
-			<Label Grid.Column="1"
-				   Style="{DynamicResource PageTitleLabel}"
-				   Text="{l:Localize KycTravelDocumentTitle}"
-				   FontSize="21"
-				   HorizontalOptions="End"
-				   VerticalOptions="Center"
-				   LineBreakMode="TailTruncation" />
-		</Grid>
+							<!-- Says where the machine-readable lines are before the camera opens, and why the last scan stopped -->
+							<VerticalStackLayout Spacing="8"
+												 IsVisible="{Binding ShowMrzGuide}">
+								<Label Style="{DynamicResource IdentityFlowTitleLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{Binding MrzGuideTitleText}" />
+								<Label Style="{DynamicResource IdentityFlowBodyLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{Binding StatusText}"
+									   IsVisible="{Binding ShowMrzGuideNotice}" />
+								<Label Style="{DynamicResource IdentityFlowBodyLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{l:Localize KycTravelDocumentMrzGuideDescription}" />
+							</VerticalStackLayout>
 
-		<controls:GuideStepper x:Name="Stepper"
-							   Grid.Row="1"
-							   IsVisible="{Binding ShowGuideStepper}"
-							   CurrentStep="{Binding CurrentGuideStep}"
-							   Margin="24,4,24,0"
-							   MaximumWidthRequest="420"
-							   HorizontalOptions="Fill">
-			<controls:GuideStepper.Steps>
-				<controls:GuideStep Text="{l:Localize KycTravelDocumentStepScan}" />
-				<controls:GuideStep Text="{l:Localize KycTravelDocumentStepChip}" />
-				<controls:GuideStep Text="{l:Localize KycTravelDocumentProgressDone}" />
-			</controls:GuideStepper.Steps>
-		</controls:GuideStepper>
+							<VerticalStackLayout Spacing="8"
+												 IsVisible="{Binding ShowNfcMessage}">
+								<Label Style="{DynamicResource IdentityFlowTitleLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{Binding NfcHeadlineText}" />
+								<Label Style="{DynamicResource IdentityFlowBodyLabel}"
+									   HorizontalTextAlignment="Center"
+									   Text="{Binding StatusText}"
+									   IsVisible="{Binding HasStatusText}" />
+							</VerticalStackLayout>
 
-		<ScrollView Grid.Row="2"
-					VerticalScrollBarVisibility="Never">
-			<VerticalStackLayout Padding="24,12,24,16"
-								 Spacing="20"
-								 MaximumWidthRequest="560"
-								 HorizontalOptions="Fill"
-								 VerticalOptions="Center">
-				<controls:NfcScanVisual x:Name="ScanVisual"
-										HeightRequest="250"
-										HorizontalOptions="Fill"
-										State="{Binding ScanVisualState}"
-										Progress="{Binding ChipReadProgress}"
-										IsPassport="{Binding IsPassportDocument}"
-										AntennaPlacement="{OnPlatform Default=BackCenter, iOS=TopEdge}"
-										SuccessRevealDelay="{OnPlatform Default=0, iOS=900}"
-										AccentColor="{DynamicResource ContentAccessWL}"
-										OnAccentColor="{DynamicResource ContentPrimaryInverted}"
-										ContentColor="{DynamicResource ContentPrimaryWL}"
-										TrackColor="{DynamicResource TnPNeutralv300bgWL}"
-										SurfaceColor="{DynamicResource SurfaceElevation1WL}"
-										WarningColor="{DynamicResource TnPWarningContentWL}" />
+							<Border Style="{DynamicResource IdentityFlowCard}"
+									Padding="14,12"
+									HorizontalOptions="Center"
+									IsVisible="{Binding ShowPlacementTip}">
+								<Grid ColumnDefinitions="Auto,*"
+									  ColumnSpacing="10">
+									<Path Data="{x:Static ui:Geometries.InfoCirclePath}"
+										  Fill="{DynamicResource ContentAccessWL}"
+										  WidthRequest="18"
+										  HeightRequest="18"
+										  Aspect="Uniform"
+										  VerticalOptions="Start"
+										  Margin="0,2,0,0"
+										  AutomationProperties.IsInAccessibleTree="False" />
+									<Label Grid.Column="1"
+										   Text="{Binding PlacementTipText}"
+										   Style="{DynamicResource IdentityFlowBodyLabel}"
+										   FontSize="{StaticResource FontSizeSm}"
+										   VerticalOptions="Center" />
+								</Grid>
+							</Border>
 
-				<VerticalStackLayout x:Name="MessageBlock"
-									 Spacing="14">
-					<!-- Asks the question first, then says how to answer it and why it matters -->
-					<VerticalStackLayout Spacing="8"
-										 IsVisible="{Binding ShowIntro}">
-						<Label Style="{StaticResource MessageTitle}"
-							   Text="{l:Localize KycTravelDocumentHeroTitle}" />
-						<Label Style="{StaticResource MessageBody}"
-							   Text="{l:Localize KycTravelDocumentEligibilityChipSymbol}" />
-						<Label Style="{StaticResource MessageBody}"
-							   FontSize="14"
-							   Text="{l:Localize KycTravelDocumentHeroDescription}"
-							   TextColor="{DynamicResource ContentSecondaryWL}" />
+							<Border Style="{DynamicResource IdentityFlowWarningCard}"
+									Padding="14,12"
+									IsVisible="{Binding ShowMrzGuideError}">
+								<Grid ColumnDefinitions="Auto,*"
+									  ColumnSpacing="10">
+									<Path Data="{x:Static ui:Geometries.ErrorPath}"
+										  Fill="{DynamicResource TnPWarningContentWL}"
+										  WidthRequest="20"
+										  HeightRequest="20"
+										  Aspect="Uniform"
+										  VerticalOptions="Start"
+										  Margin="0,1,0,0"
+										  AutomationProperties.IsInAccessibleTree="False" />
+									<Label Grid.Column="1"
+										   Text="{Binding StatusText}"
+										   Style="{DynamicResource IdentityFlowBodyLabel}"
+										   FontSize="{StaticResource FontSizeSm}"
+										   VerticalOptions="Center" />
+								</Grid>
+							</Border>
+						</VerticalStackLayout>
 					</VerticalStackLayout>
+				</ScrollView>
+			</Grid>
+		</controls:IdentityFlowShell.BodyContent>
 
-					<VerticalStackLayout Spacing="8"
-										 IsVisible="{Binding ShowNfcMessage}">
-						<Label Style="{StaticResource MessageTitle}"
-							   Text="{Binding NfcHeadlineText}" />
-						<Label Style="{StaticResource MessageBody}"
-							   Text="{Binding StatusText}"
-							   IsVisible="{Binding HasStatusText}" />
-					</VerticalStackLayout>
-
-					<Border Style="{StaticResource MessagePanel}"
-							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-							Stroke="{DynamicResource TnPNeutralv300bgWL}"
-							HorizontalOptions="Center"
-							IsVisible="{Binding ShowPlacementTip}">
-						<Grid ColumnDefinitions="Auto,*"
-							  ColumnSpacing="10">
-							<Path Data="{x:Static ui:Geometries.InfoCirclePath}"
-								  Fill="{DynamicResource ContentAccessWL}"
-								  WidthRequest="18"
-								  HeightRequest="18"
-								  Aspect="Uniform"
-								  VerticalOptions="Start"
-								  Margin="0,2,0,0"
-								  AutomationProperties.IsInAccessibleTree="False" />
-							<Label Grid.Column="1"
-								   Text="{Binding PlacementTipText}"
-								   Style="{DynamicResource InfoLabel}"
-								   FontSize="14"
-								   LineBreakMode="WordWrap"
-								   VerticalOptions="Center" />
-						</Grid>
-					</Border>
-
-					<Border Style="{StaticResource MessagePanel}"
-							BackgroundColor="{DynamicResource TnPWarningbgWL}"
-							Stroke="{DynamicResource TnPWarningContentWL}"
-							IsVisible="{Binding ShowIntroError}">
-						<Grid ColumnDefinitions="Auto,*"
-							  ColumnSpacing="10">
-							<Path Data="{x:Static ui:Geometries.ErrorPath}"
-								  Fill="{DynamicResource TnPWarningContentWL}"
-								  WidthRequest="20"
-								  HeightRequest="20"
-								  Aspect="Uniform"
-								  VerticalOptions="Start"
-								  Margin="0,1,0,0"
-								  AutomationProperties.IsInAccessibleTree="False" />
-							<Label Grid.Column="1"
-								   Text="{Binding StatusText}"
-								   Style="{DynamicResource InfoLabel}"
-								   FontSize="14"
-								   LineBreakMode="WordWrap"
-								   VerticalOptions="Center" />
-						</Grid>
-					</Border>
-				</VerticalStackLayout>
-			</VerticalStackLayout>
-		</ScrollView>
-
-		<Border Grid.Row="3"
-				StrokeThickness="0"
-				Padding="24,8,24,16"
-				BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+		<controls:IdentityFlowShell.StickyFooterContent>
 			<VerticalStackLayout Spacing="8"
 								 MaximumWidthRequest="560"
 								 HorizontalOptions="Fill">
 				<controls:TextButton Style="{DynamicResource FilledTextButton}"
 									 LabelData="{l:Localize KycTravelDocumentPrimaryScanButton}"
-									 Command="{Binding ScanMrzCommand}"
+									 Command="{Binding OpenMrzGuideCommand}"
 									 IsVisible="{Binding ShowIntro}" />
 				<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
 									 LabelData="{l:Localize KycTravelDocumentUnsureButton}"
 									 Command="{Binding ReturnToApplicationCommand}"
 									 IsVisible="{Binding ShowIntro}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize KycTravelDocumentMrzGuideStartButton}"
+									 Command="{Binding ScanMrzCommand}"
+									 IsVisible="{Binding ShowMrzGuideAction}" />
 				<controls:TextButton Style="{DynamicResource FilledTextButton}"
 									 LabelData="{l:Localize KycTravelDocumentContinueButton}"
 									 Command="{Binding ReturnToApplicationCommand}"
@@ -201,10 +168,15 @@
 									 LabelData="{l:Localize KycTravelDocumentReadChipButton}"
 									 Command="{Binding StartNfcReadoutCommand}"
 									 IsVisible="{Binding ShowStartNfcAction}" />
+				<!-- Recovery actions follow the failure: try again, scan the details again, use another document, or close -->
 				<controls:TextButton Style="{DynamicResource FilledTextButton}"
-									 LabelData="{l:Localize KycTravelDocumentRetryNfcButton}"
-									 Command="{Binding StartNfcReadoutCommand}"
-									 IsVisible="{Binding ShowNfcRetryAction}" />
+									 LabelData="{Binding PrimaryRecoveryText}"
+									 Command="{Binding RunPrimaryRecoveryCommand}"
+									 IsVisible="{Binding ShowPrimaryRecoveryAction}" />
+				<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{Binding SecondaryRecoveryText}"
+									 Command="{Binding RunSecondaryRecoveryCommand}"
+									 IsVisible="{Binding ShowSecondaryRecoveryAction}" />
 				<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
 									 LabelData="{l:Localize KycTravelDocumentRescanButton}"
 									 Command="{Binding ScanMrzCommand}"
@@ -214,6 +186,6 @@
 									 Command="{Binding ReturnToApplicationCommand}"
 									 IsVisible="{Binding ShowManualFallback}" />
 			</VerticalStackLayout>
-		</Border>
-	</Grid>
+		</controls:IdentityFlowShell.StickyFooterContent>
+	</controls:IdentityFlowShell>
 </base:BaseContentPage>

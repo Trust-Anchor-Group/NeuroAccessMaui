@@ -4,6 +4,7 @@ using Foundation;
 using CoreFoundation;
 using Microsoft.Maui.ApplicationModel;
 using NeuroAccess.Nfc;
+using NeuroAccess.Nfc.Exceptions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Nfc;
 
@@ -183,7 +184,9 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 			{
 				ServiceRef.LogService.LogException(Ex);
 
-				if (this.GetActiveContext(SessionId, ReaderSession) is not null)
+				// A session that has ended reports why through its delegate, for example that the user cancelled the sheet,
+				// so the error is only classified here while the session is still running.
+				if (this.GetActiveContext(SessionId, ReaderSession) is not null && ReaderSession.Ready)
 				{
 					NfcIsoDepSessionFailure Failure = Ex is NSErrorException NativeException
 						? this.MapReaderError(NativeException.Error)

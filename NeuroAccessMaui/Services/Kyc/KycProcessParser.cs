@@ -133,6 +133,11 @@ namespace NeuroAccessMaui.Services.Kyc
 
 					case "Keep":
 						AddRequiredStringAttribute(Policy.KeepPropertyKeys, ContentChild, "key");
+						if (ReadBooleanAttribute(ContentChild, "optional", false))
+						{
+							string Key = ReadStringAttribute(ContentChild, "key")!;
+							Policy.OptionalKeepDefaults[Key] = ReadBooleanAttribute(ContentChild, "default", true);
+						}
 						break;
 
 					case "IncludeAttachment":

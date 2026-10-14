@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using NeuroAccessMaui.Animations;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -24,6 +25,15 @@ namespace NeuroAccessMaui.UI.Controls
 				return;
 
 			cancellationToken.ThrowIfCancellationRequested();
+
+			if (MotionPreferences.ReduceMotion)
+			{
+				// A reused view may still be transparent from when it was faded out.
+				if (newElement is not null)
+					newElement.Opacity = 1.0;
+
+				return;
+			}
 
 			Task? fadeOutTask = null;
 			if (oldElement is not null)

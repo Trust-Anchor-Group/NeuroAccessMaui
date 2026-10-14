@@ -41,9 +41,9 @@
 								<Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWL}">
 									<Label.FormattedText>
 										<FormattedString>
-											<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="50" FontAttributes="Bold"/>
+											<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="{StaticResource FontSizeDisplayXl}" FontAttributes="Bold"/>
 											<Span Text=" "/>
-											<Span Text="{Binding Path=Currency}" FontSize="30"/>
+											<Span Text="{Binding Path=Currency}" FontSize="{StaticResource FontSize7xl}"/>
 										</FormattedString>
 									</Label.FormattedText>
 								</Label>

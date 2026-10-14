@@ -25,6 +25,17 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <inheritdoc/>
+		/// <remarks>
+		/// Starts or joins the first foreground activation of this window. The application's own OnStart, OnResume and OnSleep
+		/// are not used, since MAUI raises them for the same window transitions.
+		/// </remarks>
+		protected override void OnCreated()
+		{
+			base.OnCreated();
+			_ = App.ObserveLifecycleAsync(this.app.HandleWindowCreatedAsync);
+		}
+
+		/// <inheritdoc/>
 		protected override void OnStopped()
 		{
 			base.OnStopped();

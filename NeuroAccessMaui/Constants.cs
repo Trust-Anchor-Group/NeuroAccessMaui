@@ -480,6 +480,11 @@ namespace NeuroAccessMaui
 			public const string BirthYear = "BYEAR";
 
 			/// <summary>
+			/// Minimum age, in whole years, that the identity holder has reached.
+			/// </summary>
+			public const string AgeAbove = "AGEABOVE";
+
+			/// <summary>
 			/// Organization name
 			/// </summary>
 			public const string OrgName = "ORGNAME";
@@ -692,9 +697,19 @@ namespace NeuroAccessMaui
 		public static class Intervals
 		{
 			/// <summary>
-			/// Auto Save interval
+			/// Delay between a profile change and the automatic save of the profile.
 			/// </summary>
 			public static readonly TimeSpan AutoSave = TimeSpan.FromSeconds(1);
+
+			/// <summary>
+			/// Interval of the safety-net profile save, for changes that do not raise a change notification.
+			/// </summary>
+			public static readonly TimeSpan AutoSaveFallback = TimeSpan.FromSeconds(30);
+
+			/// <summary>
+			/// Delay after the first page is shown before deferred startup work starts.
+			/// </summary>
+			public static readonly TimeSpan DeferredStartupWork = TimeSpan.FromSeconds(3);
 
 			/// <summary>
 			/// Reconnect interval
@@ -934,6 +949,14 @@ namespace NeuroAccessMaui
 			/// Maximum age for applying for an ID
 			/// </summary>
 			public const int MaxAge = 120;
+
+			/// <summary>
+			/// Age thresholds, in ascending order, that an identity application can claim through the AGEABOVE property.
+			/// </summary>
+			/// <remarks>
+			/// Only the highest threshold the person has reached is claimed, so the claim reveals as little as possible about the birth date.
+			/// </remarks>
+			public static readonly int[] AgeAboveThresholds = [13, 15, 16, 18, 20, 21];
 		}
 
 		/// <summary>

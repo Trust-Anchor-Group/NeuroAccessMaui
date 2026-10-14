@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="NeuroAccessMaui.UI.Controls.IdentityFlowShell"
+			 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+			 x:Name="ThisShell"
+			 x:DataType="controls:IdentityFlowShell">
+	<Grid RowDefinitions="Auto,*,Auto"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+		<controls:Background Grid.RowSpan="3" />
+
+		<!-- Header: leading action, then the title or custom header content -->
+		<Grid Grid.Row="0"
+			  Padding="16,8,16,8"
+			  ColumnDefinitions="48,*,48"
+			  ColumnSpacing="8"
+			  MinimumHeightRequest="64">
+			<controls:SvgButton Grid.Column="0"
+								Command="{Binding LeadingActionCommand, Source={x:Reference ThisShell}}"
+								IsVisible="{Binding ShowLeadingAction, Source={x:Reference ThisShell}}"
+								SvgSource="{Binding LeadingActionIcon, Source={x:Reference ThisShell}}"
+								SemanticProperties.Description="{Binding LeadingActionDescription, Source={x:Reference ThisShell}}"
+								Style="{DynamicResource IconButton}"
+								HeightRequest="48"
+								WidthRequest="48"
+								HorizontalOptions="Start"
+								VerticalOptions="Center" />
+
+			<Label Grid.Column="1"
+				   Text="{Binding Title, Source={x:Reference ThisShell}}"
+				   IsVisible="{Binding ShowTitle, Source={x:Reference ThisShell}}"
+				   Style="{DynamicResource IdentityFlowHeaderTitleLabel}"
+				   HorizontalOptions="Center"
+				   VerticalOptions="Center" />
+
+			<ContentView Grid.Column="1"
+						 Content="{Binding HeaderContent, Source={x:Reference ThisShell}}"
+						 IsVisible="{Binding HasHeaderContent, Source={x:Reference ThisShell}}"
+						 HorizontalOptions="Center"
+						 VerticalOptions="Center" />
+
+			<ContentView Grid.Column="2"
+						 Content="{Binding TrailingContent, Source={x:Reference ThisShell}}"
+						 HorizontalOptions="End"
+						 VerticalOptions="Center" />
+		</Grid>
+
+		<ContentView Grid.Row="1"
+					 Content="{Binding BodyContent, Source={x:Reference ThisShell}}" />
+
+		<!-- Sticky footer, separated from the scrolling body by a hairline -->
+		<Border Grid.Row="2"
+				Style="{DynamicResource IdentityFlowFooterBorder}"
+				IsVisible="{Binding ShowStickyFooter, Source={x:Reference ThisShell}}">
+			<ContentView Content="{Binding StickyFooterContent, Source={x:Reference ThisShell}}" />
+		</Border>
+	</Grid>
+</ContentView>

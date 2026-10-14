@@ -40,7 +40,7 @@
 						   Text="{Binding Title}"
 						   TextColor="{DynamicResource ContentPrimaryWL}"
 						   FontFamily="HaasGroteskMedium"
-						   FontSize="14" />
+						   FontSize="{StaticResource FontSizeSm}" />
 				</Grid>
 			</Border>
 
@@ -113,7 +113,7 @@
 					   Text="{Binding Title}"
 					   HorizontalOptions="Center"
 					   VerticalOptions="Center"
-					   FontSize="14"
+					   FontSize="{StaticResource FontSizeSm}"
 					   FontFamily="HaasGroteskMedium"
 					   TextColor="{DynamicResource ContentPrimaryWL}" />
 			</Grid>
@@ -189,7 +189,7 @@
 					<Label Text="{Binding Title}"
 						   HorizontalOptions="Center"
 						   VerticalOptions="Center"
-						   FontSize="13"
+						   FontSize="{StaticResource FontSizeXs}"
 						   FontFamily="HaasGroteskMedium"
 						   TextColor="{DynamicResource ContentPrimaryWL}"
 						   LineBreakMode="TailTruncation" />
@@ -234,7 +234,7 @@
 			<Label Text="{Binding Title}"
 				   HorizontalOptions="Center"
 				   VerticalOptions="Center"
-				   FontSize="14"
+				   FontSize="{StaticResource FontSizeSm}"
 				   FontFamily="HaasGroteskMedium"
 				   TextColor="{DynamicResource ContentPrimaryWL}" />
 

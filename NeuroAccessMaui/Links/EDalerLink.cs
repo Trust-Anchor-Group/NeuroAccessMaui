@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services;
+﻿using EDaler.Uris;
+using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links
@@ -25,17 +26,25 @@ namespace NeuroAccessMaui.Links
 			return Link.Scheme.Equals(Constants.UriSchemes.EDaler, StringComparison.OrdinalIgnoreCase) ? Grade.Ok : Grade.NotAtAll;
 		}
 
-		/// <summary>
-		/// Tries to open a link
-		/// </summary>
-		/// <param name="Link">Link to open</param>
-		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
-		/// <returns>If the link was opened.</returns>
-		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
-		{
-			await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerUri(Link.OriginalString.Replace("%40", "@")); // Android has problems with URIs containg @
+		/// <inheritdoc/>
+		public bool RequiresXmppConnection => true;
 
-			return true;
+		/// <inheritdoc/>
+		public Task<PreparedLink?> PrepareAsync(Uri Link, CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+
+			string Url = Link.OriginalString.Replace("%40", "@"); // Android has problems with URIs containg @
+
+			// The same checks the wallet applies when opening the link, so invalid or expired codes are reported in the scanner.
+			if (!ServiceRef.XmppService.TryParseEDalerUri(Url, out EDalerUri Parsed, out _) ||
+				Parsed.Expires.AddDays(1) < DateTime.UtcNow)
+			{
+				return Task.FromResult<PreparedLink?>(null);
+			}
+
+			return Task.FromResult<PreparedLink?>(new PreparedLink(Link,
+				() => ServiceRef.NeuroWalletOrchestratorService.OpenEDalerUri(Url)));
 		}
 	}
 }

@@ -18,6 +18,14 @@ namespace NeuroAccessMaui.Services.Contracts
 		Task OpenLegalIdentity(string LegalId, string Purpose);
 
 		/// <summary>
+		/// Sends a petition to view a legal identity that the user is not permitted to download, and tells the user it was sent.
+		/// </summary>
+		/// <param name="LegalId">The id of the legal identity to petition.</param>
+		/// <param name="Purpose">The purpose to state in the petition.</param>
+		/// <returns>A task representing the petition.</returns>
+		Task PetitionLegalIdentity(string LegalId, string Purpose);
+
+		/// <summary>
 		/// Tries to get a legal identity.
 		/// </summary>
 		/// <param name="LegalId">The id of the legal identity to show.</param>
@@ -32,6 +40,22 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="Purpose">The purpose to state if the contract can't be downloaded and needs to be petitioned instead.</param>
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
 		Task OpenContract(string ContractId, string Purpose, Dictionary<CaseInsensitiveString, object>? ParameterValues);
+
+		/// <summary>
+		/// Opens the page for a <see cref="Contract"/> that has already been downloaded, without downloading it again.
+		/// </summary>
+		/// <param name="Contract">The downloaded contract to show.</param>
+		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
+		/// <returns>A task representing opening the contract.</returns>
+		Task OpenContract(Contract Contract, Dictionary<CaseInsensitiveString, object>? ParameterValues);
+
+		/// <summary>
+		/// Sends a petition to view a contract that the user is not permitted to download, and tells the user it was sent.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to petition.</param>
+		/// <param name="Purpose">The purpose to state in the petition.</param>
+		/// <returns>A task representing the petition.</returns>
+		Task PetitionContract(string ContractId, string Purpose);
 
 		/// <summary>
 		/// TAG Signature request scanned.

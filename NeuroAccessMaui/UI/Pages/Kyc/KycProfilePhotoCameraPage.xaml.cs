@@ -1,15 +1,18 @@
 using System.ComponentModel;
 using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Utility.Images;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	/// <summary>
-	/// App-owned camera page for capturing KYC profile photos without cropping.
+	/// App-owned camera page for capturing KYC photos without cropping, with a framing guide and a review step.
 	/// </summary>
 	/// <remarks>
-	/// Code-behind owns the camera lifetime and purely visual effects: the face guide overlay, the capture flash, and
-	/// the review sheet entrance. Capture and result handling live in <see cref="KycProfilePhotoCameraViewModel"/>.
+	/// Code-behind owns the camera lifetime and purely visual effects: the framing guide, the shutter flash, and the review
+	/// sheet entrance. With reduced motion the flash is skipped and the review sheet appears at once; the haptic tap and the
+	/// review screen still confirm the capture. Capture and result handling live in
+	/// <see cref="KycProfilePhotoCameraViewModel"/>.
 	/// </remarks>
 	public partial class KycProfilePhotoCameraPage
 	{
@@ -26,42 +29,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.BindingContext = ViewModel;
 			ViewModel.CameraView = this.CameraView;
 			ViewModel.PropertyChanged += this.OnViewModelPropertyChanged;
-			this.FaceGuide.Drawable = new FaceGuideDrawable();
+			this.CaptureGuide.Drawable = new CaptureGuideDrawable(ViewModel.CaptureProfile, ViewModel.GuideFrameAspectRatio);
 		}
 
-		/// <inheritdoc/>
-		public override async Task OnDisappearingAsync()
-		{
-			await this.ReleaseCameraAsync();
-			await base.OnDisappearingAsync();
-		}
+		/// <summary>
+		/// Gets the view model created by the constructor.
+		/// </summary>
+		/// <remarks>
+		/// Read from the binding context instead of a field: the view model disposes itself through the page lifecycle, so
+		/// the page does not own it as a disposable field.
+		/// </remarks>
+		private KycProfilePhotoCameraViewModel ViewModel => (KycProfilePhotoCameraViewModel)this.BindingContext;
 
 		/// <inheritdoc/>
+		/// <remarks>
+		/// The camera is released only when the page is disposed, not when it disappears: a released camera cannot start
+		/// again, so the preview could not restart when the page reappears. The view model stops the preview and the torch
+		/// when the page disappears.
+		/// </remarks>
 		public override async Task OnDisposeAsync()
 		{
-			await this.ReleaseCameraAsync();
-			if (this.BindingContext is KycProfilePhotoCameraViewModel ViewModel)
-			{
-				ViewModel.PropertyChanged -= this.OnViewModelPropertyChanged;
-				ViewModel.CameraView = null;
-			}
+			this.ViewModel.PropertyChanged -= this.OnViewModelPropertyChanged;
 
+			// The view model turns the torch off first, which needs the camera before it is released.
 			await base.OnDisposeAsync();
-		}
-
-		private static bool IsReducedMotion
-		{
-			get
-			{
-				try
-				{
-					return ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true;
-				}
-				catch (Exception)
-				{
-					return false;
-				}
-			}
+			await this.ReleaseCameraAsync();
+			this.ViewModel.CameraView = null;
 		}
 
 		private async Task ReleaseCameraAsync()
@@ -77,12 +70,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void OnViewModelPropertyChanged(object? Sender, PropertyChangedEventArgs E)
 		{
-			if (Sender is not KycProfilePhotoCameraViewModel ViewModel)
-				return;
-
-			if (E.PropertyName == nameof(KycProfilePhotoCameraViewModel.IsCapturing) && ViewModel.IsCapturing)
+			if (E.PropertyName == nameof(KycProfilePhotoCameraViewModel.IsCapturing) && this.ViewModel.IsCapturing)
 				this.Dispatcher.Dispatch(() => _ = this.FlashAsync());
-			else if (E.PropertyName == nameof(KycProfilePhotoCameraViewModel.HasCapturedPhoto) && ViewModel.HasCapturedPhoto)
+			else if (E.PropertyName == nameof(KycProfilePhotoCameraViewModel.HasCapturedPhoto) && this.ViewModel.HasCapturedPhoto)
 				this.Dispatcher.Dispatch(() => _ = this.RevealReviewSheetAsync());
 		}
 
@@ -92,7 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <returns>A task that completes when the flash has faded.</returns>
 		private async Task FlashAsync()
 		{
-			if (IsReducedMotion)
+			if (MotionPreferences.ReduceMotion)
 				return;
 
 			try
@@ -116,7 +106,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			VisualElement Sheet = this.ReviewSheet;
 			Sheet.CancelAnimations();
 
-			if (IsReducedMotion)
+			if (MotionPreferences.ReduceMotion)
 			{
 				Sheet.TranslationY = 0;
 				return;
@@ -130,55 +120,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			catch (Exception)
 			{
 				Sheet.TranslationY = 0;
-			}
-		}
-
-		/// <summary>
-		/// Draws a dimmed surround with an oval cut-out that shows where to place the face.
-		/// </summary>
-		private sealed class FaceGuideDrawable : IDrawable
-		{
-			private const float maximumOvalWidth = 300f;
-			private const float ovalAspect = 1.32f;
-
-			/// <inheritdoc/>
-			public void Draw(ICanvas Canvas, RectF DirtyRect)
-			{
-				if (DirtyRect.Width <= 0 || DirtyRect.Height <= 0)
-					return;
-
-				RectF Oval = GetOval(DirtyRect);
-
-				PathF Scrim = new PathF();
-				Scrim.AppendRectangle(DirtyRect);
-				Scrim.AppendEllipse(Oval);
-				Canvas.FillColor = ScannerColors.Scrim;
-				Canvas.FillPath(Scrim, WindingMode.EvenOdd);
-
-				Canvas.StrokeColor = ScannerColors.Neutral.WithAlpha(0.9f);
-				Canvas.StrokeSize = 3f;
-				Canvas.DrawEllipse(Oval);
-			}
-
-			/// <summary>
-			/// Places the oval in the upper part of the screen, above the guidance card and shutter button.
-			/// </summary>
-			/// <param name="Bounds">The overlay bounds.</param>
-			/// <returns>The oval bounds.</returns>
-			private static RectF GetOval(RectF Bounds)
-			{
-				float Width = Math.Min(Bounds.Width * 0.7f, maximumOvalWidth);
-				float Height = Width * ovalAspect;
-				float MaximumHeight = Bounds.Height * 0.48f;
-				if (Height > MaximumHeight)
-				{
-					Height = MaximumHeight;
-					Width = Height / ovalAspect;
-				}
-
-				float CenterX = Bounds.Center.X;
-				float CenterY = Bounds.Top + Bounds.Height * 0.4f;
-				return new RectF(CenterX - Width / 2f, CenterY - Height / 2f, Width, Height);
 			}
 		}
 	}

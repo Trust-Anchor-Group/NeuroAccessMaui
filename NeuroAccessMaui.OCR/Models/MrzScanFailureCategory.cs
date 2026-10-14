@@ -43,6 +43,11 @@ namespace NeuroAccessMaui.OCR.Models
 		/// <summary>
 		/// The visible document side does not appear to contain the requested MRZ.
 		/// </summary>
-		UnsupportedDocumentSide = 7
+		UnsupportedDocumentSide = 7,
+
+		/// <summary>
+		/// The MRZ text lines were too small in the image to be read reliably.
+		/// </summary>
+		MrzTooSmall = 8
 	}
 }

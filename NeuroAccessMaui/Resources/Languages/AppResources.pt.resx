@@ -397,7 +397,17 @@
     <value>Código não reconhecido.</value>
   </data>
   <data name="UnableToOpenLink" xml:space="preserve">
-    <value>Não é possível abrir o link:</value>
+    <value>Não é possível abrir o link.</value>
+  </data>
+  <data name="OpenExternalLinkTitle" xml:space="preserve">
+    <value>Abrir link?</value>
+  </data>
+  <data name="OpenExternalLinkMessage" xml:space="preserve">
+    <value>Este link abre fora do aplicativo:
+
+{0}
+
+Continue apenas se você confia na origem.</value>
   </data>
   <data name="InvalidInvitationCode" xml:space="preserve">
     <value>Código de convite inválido.</value>
@@ -1015,7 +1025,7 @@
     <value>Tire uma foto de si mesmo</value>
   </data>
   <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
-    <value>Posicione o rosto dentro do oval e olhe para a câmera</value>
+    <value>Posicione seu rosto dentro do oval</value>
   </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>A foto é muito grande</value>
@@ -3721,7 +3731,7 @@
     <value>Dados do documento salvos. Agora mantenha o chip do documento encostado no telefone.</value>
   </data>
   <data name="KycTravelDocumentInvalidMrz" xml:space="preserve">
-    <value>Não foi possível validar a MRZ. Verifique o número do documento, a data de nascimento, a data de validade e os dígitos de controle.</value>
+    <value>Não conseguimos usar os dados digitalizados do documento. Digitalize o documento novamente.</value>
   </data>
   <data name="KycTravelDocumentReadoutReady" xml:space="preserve">
     <value>O chip já foi lido.</value>
@@ -3952,136 +3962,217 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="KycDocumentScanCameraPermissionDescription" xml:space="preserve">
     <value>Permita o acesso à câmera para digitalizar seu documento. Você pode tentar novamente depois de ativá-lo.</value>
   </data>
-  <data name="KycStepCaptionFormat" xml:space="preserve">
-    <value>Etapa {0} de {1}</value>
-  </data>
-  <data name="KycReviewButton" xml:space="preserve">
-    <value>Revisar</value>
-  </data>
-  <data name="KycSendApplicationButton" xml:space="preserve">
-    <value>Enviar solicitação</value>
-  </data>
-  <data name="KycSendingApplication" xml:space="preserve">
-    <value>Enviando sua solicitação…</value>
-  </data>
-  <data name="KycLoadingApplication" xml:space="preserve">
-    <value>Carregando sua solicitação…</value>
-  </data>
-  <data name="KycSummaryTitle" xml:space="preserve">
-    <value>Revise sua solicitação</value>
-  </data>
-  <data name="KycSummaryDescription" xml:space="preserve">
-    <value>Confira se está tudo certo antes de enviar. Toque em um dado para alterá-lo.</value>
-  </data>
-  <data name="KycChipVerifiedTitle" xml:space="preserve">
-    <value>Verificado com o chip do seu documento</value>
-  </data>
-  <data name="KycSentTitle" xml:space="preserve">
+  <data name="KycApplicationSentAnnouncement" xml:space="preserve">
     <value>Solicitação enviada</value>
   </data>
-  <data name="KycSentDescription" xml:space="preserve">
-    <value>Avisaremos você assim que ela for analisada. Enquanto isso, você pode fechar esta página.</value>
+  <data name="KycApplicationStatusMethodChip" xml:space="preserve">
+    <value>Chip do documento</value>
   </data>
-  <data name="KycStepDetails" xml:space="preserve">
-    <value>Dados</value>
+  <data name="KycApplicationStatusMethodLabel" xml:space="preserve">
+    <value>Método de verificação</value>
   </data>
-  <data name="KycStepReview" xml:space="preserve">
-    <value>Análise</value>
+  <data name="KycApplicationStatusMethodPhotos" xml:space="preserve">
+    <value>Fotos do documento</value>
   </data>
-  <data name="KycStepIdReady" xml:space="preserve">
-    <value>ID pronto</value>
+  <data name="KycApplicationStatusRefresh" xml:space="preserve">
+    <value>Atualizar status</value>
   </data>
-  <data name="KycPeerReviewTitle" xml:space="preserve">
-    <value>Peça a alguém para revisar</value>
+  <data name="KycApplicationStatusTimelineApprovedDescription" xml:space="preserve">
+    <value>Você poderá usar sua identidade quando a solicitação for aprovada.</value>
   </data>
-  <data name="KycPeerReviewProgressFormat" xml:space="preserve">
-    <value>{0} de {1} revisões recebidas</value>
+  <data name="KycApplicationStatusTimelineFinalizingDescription" xml:space="preserve">
+    <value>Sua identidade aprovada está sendo finalizada.</value>
   </data>
-  <data name="KycDoneButton" xml:space="preserve">
-    <value>Concluir</value>
+  <data name="KycApplicationStatusTimelineReviewDescription" xml:space="preserve">
+    <value>Os dados que você enviou estão sendo verificados.</value>
   </data>
-  <data name="KycRevokeApplicationButton" xml:space="preserve">
-    <value>Revogar solicitação</value>
+  <data name="KycApplicationStatusTimelineSubmitted" xml:space="preserve">
+    <value>Enviada</value>
   </data>
-  <data name="KycYourDetailsTitle" xml:space="preserve">
-    <value>Seus dados</value>
+  <data name="KycApplicationStatusTimelineSubmittedDescription" xml:space="preserve">
+    <value>Recebemos sua solicitação.</value>
   </data>
-  <data name="KycImageEmptyHint" xml:space="preserve">
-    <value>Tire uma foto ou envie uma</value>
+  <data name="KycCameraGuideDocument" xml:space="preserve">
+    <value>Enquadre o documento na moldura</value>
   </data>
-  <data name="KycImageEmptyCameraHint" xml:space="preserve">
-    <value>Toque para tirar uma foto</value>
+  <data name="KycCameraGuideIdBack" xml:space="preserve">
+    <value>Enquadre o verso do cartão na moldura</value>
   </data>
-  <data name="KycImageRetakeButton" xml:space="preserve">
-    <value>Tirar outra</value>
+  <data name="KycCameraGuideIdFront" xml:space="preserve">
+    <value>Enquadre a frente do cartão na moldura</value>
   </data>
-  <data name="KycImageReplaceButton" xml:space="preserve">
-    <value>Substituir</value>
+  <data name="KycCameraGuidePassport" xml:space="preserve">
+    <value>Enquadre a página da foto do passaporte na moldura</value>
+  </data>
+  <data name="KycCameraReviewDocumentHint" xml:space="preserve">
+    <value>Certifique-se de que todo o documento esteja visível, nítido e sem reflexos.</value>
+  </data>
+  <data name="KycCameraReviewSelfieHint" xml:space="preserve">
+    <value>Certifique-se de que todo o seu rosto esteja visível, nítido e bem iluminado.</value>
+  </data>
+  <data name="KycCameraReviewTitle" xml:space="preserve">
+    <value>Confira sua foto</value>
+  </data>
+  <data name="KycCameraStartFailedMessage" xml:space="preserve">
+    <value>Não foi possível iniciar a câmera agora. Tente novamente.</value>
+  </data>
+  <data name="KycCameraStartFailedTitle" xml:space="preserve">
+    <value>Câmera indisponível</value>
+  </data>
+  <data name="KycCameraUsePhotoButton" xml:space="preserve">
+    <value>Usar foto</value>
   </data>
   <data name="KycImageAddedDescription" xml:space="preserve">
     <value>Foto adicionada</value>
   </data>
-  <data name="KycSelfieTitle" xml:space="preserve">
-    <value>Tire sua foto</value>
+  <data name="KycImageEmptyCameraHint" xml:space="preserve">
+    <value>Toque para tirar uma foto</value>
   </data>
-  <data name="KycSelfieTip" xml:space="preserve">
-    <value>Use uma luz uniforme e tire óculos escuros ou chapéu.</value>
+  <data name="KycImageEmptyHint" xml:space="preserve">
+    <value>Tire uma foto ou carregue uma</value>
   </data>
-  <data name="KycSelfieReviewTitle" xml:space="preserve">
-    <value>Confira sua foto</value>
+  <data name="KycImageProcessing" xml:space="preserve">
+    <value>Processando foto…</value>
   </data>
-  <data name="KycSelfieReviewHint" xml:space="preserve">
-    <value>Verifique se o seu rosto aparece inteiro, nítido e bem iluminado.</value>
+  <data name="KycImageRetakeButton" xml:space="preserve">
+    <value>Tirar novamente</value>
   </data>
-  <data name="KycSelfieUsePhotoButton" xml:space="preserve">
-    <value>Usar foto</value>
+  <data name="KycLoadingApplication" xml:space="preserve">
+    <value>Carregando sua solicitação…</value>
   </data>
-  <data name="KycStatusPendingTitle" xml:space="preserve">
-    <value>Sua solicitação está em análise</value>
+  <data name="KycReviewButton" xml:space="preserve">
+    <value>Revisar</value>
   </data>
-  <data name="KycStatusPendingDescription" xml:space="preserve">
-    <value>Isso pode levar um tempo. Avisaremos você assim que houver novidades.</value>
+  <data name="KycSendingApplication" xml:space="preserve">
+    <value>Enviando sua solicitação…</value>
   </data>
-  <data name="KycStatusFinalizingTitle" xml:space="preserve">
-    <value>Quase pronto</value>
+  <data name="KycTravelDocumentCameraPermissionDescription" xml:space="preserve">
+    <value>Permita o acesso à câmera para este app nas configurações do telefone e tente novamente.</value>
   </data>
-  <data name="KycStatusFinalizingDescription" xml:space="preserve">
-    <value>Seus dados foram aprovados. Seu ID digital está sendo criado.</value>
+  <data name="KycTravelDocumentFailureAuthenticationDescription" xml:space="preserve">
+    <value>Isso costuma acontecer quando os dados do documento foram lidos incorretamente. Digitalize os dados novamente ou mantenha o telefone parado sobre o documento e tente novamente.</value>
   </data>
-  <data name="KycStatusApprovedTitle" xml:space="preserve">
-    <value>Seu ID está pronto</value>
+  <data name="KycTravelDocumentFailureAuthenticationTitle" xml:space="preserve">
+    <value>Não foi possível abrir o chip</value>
   </data>
-  <data name="KycStatusApprovedDescription" xml:space="preserve">
-    <value>Seu ID digital foi aprovado e já pode ser usado.</value>
+  <data name="KycTravelDocumentFailureCertificateCheckDescription" xml:space="preserve">
+    <value>A verificação de segurança precisa de conexão com a internet. Verifique sua conexão e tente novamente.</value>
   </data>
-  <data name="KycStatusDraftTitle" xml:space="preserve">
-    <value>Conclua sua solicitação</value>
+  <data name="KycTravelDocumentFailureCertificateCheckTitle" xml:space="preserve">
+    <value>Não foi possível concluir a verificação de segurança</value>
   </data>
-  <data name="KycStatusDraftDescription" xml:space="preserve">
-    <value>Seus dados estão salvos. Continue de onde parou.</value>
+  <data name="KycTravelDocumentFailureCertificateInvalidDescription" xml:space="preserve">
+    <value>Não foi possível confiar nos dados de segurança do chip. Tente novamente ou entre em contato com seu provedor de identidade se o problema persistir.</value>
   </data>
-  <data name="KycStatusExpiredTitle" xml:space="preserve">
-    <value>Seu ID expirou</value>
+  <data name="KycTravelDocumentFailureConnectionLostDescription" xml:space="preserve">
+    <value>Tente novamente e mantenha o telefone e o documento juntos até a leitura terminar.</value>
   </data>
-  <data name="KycStatusExpiredDescription" xml:space="preserve">
-    <value>Ele não é mais válido. Inicie uma nova solicitação para obter um novo ID.</value>
+  <data name="KycTravelDocumentFailureConnectionLostTitle" xml:space="preserve">
+    <value>A conexão foi perdida</value>
   </data>
-  <data name="KycStatusExpiredStage" xml:space="preserve">
-    <value>Expirado</value>
+  <data name="KycTravelDocumentFailureDataIntegrityDescription" xml:space="preserve">
+    <value>Os dados do chip não passaram na verificação de segurança. Tente novamente ou entre em contato com seu provedor de identidade se o problema persistir.</value>
   </data>
-  <data name="KycStatusAttentionTitle" xml:space="preserve">
-    <value>O que precisa ser corrigido</value>
+  <data name="KycTravelDocumentFailureMultipleTagsDescription" xml:space="preserve">
+    <value>Afaste outros cartões e documentos do telefone e tente novamente.</value>
   </data>
-  <data name="KycViewApplicationButton" xml:space="preserve">
-    <value>Ver solicitação</value>
+  <data name="KycTravelDocumentFailureMultipleTagsTitle" xml:space="preserve">
+    <value>Mais de um chip foi encontrado</value>
   </data>
-  <data name="KycContinueApplicationButton" xml:space="preserve">
-    <value>Continuar solicitação</value>
+  <data name="KycTravelDocumentFailureNfcNotSupportedDescription" xml:space="preserve">
+    <value>Este telefone não consegue ler chips de documentos neste app. Você pode continuar sem chip.</value>
   </data>
-  <data name="KycOpenIdButton" xml:space="preserve">
-    <value>Abrir meu ID</value>
+  <data name="KycTravelDocumentFailureNfcNotSupportedTitle" xml:space="preserve">
+    <value>A leitura do chip não está disponível</value>
   </data>
-  <data name="KycAllApplicationsButton" xml:space="preserve">
-    <value>Todos os cadastros</value>
+  <data name="KycTravelDocumentFailureNfcUnavailableDescription" xml:space="preserve">
+    <value>Verifique se o NFC está ativado nas configurações do telefone e tente novamente.</value>
+  </data>
+  <data name="KycTravelDocumentFailureNfcUnavailableTitle" xml:space="preserve">
+    <value>O NFC não está disponível</value>
+  </data>
+  <data name="KycTravelDocumentFailureNotTravelDocumentDescription" xml:space="preserve">
+    <value>O chip não contém dados de passaporte nem de cartão de identidade. Verifique se você está segurando o documento que digitalizou e tente novamente.</value>
+  </data>
+  <data name="KycTravelDocumentFailureNotTravelDocumentTitle" xml:space="preserve">
+    <value>Este chip não pode ser usado</value>
+  </data>
+  <data name="KycTravelDocumentFailureReadTitle" xml:space="preserve">
+    <value>Não foi possível terminar de ler o chip</value>
+  </data>
+  <data name="KycTravelDocumentFailureRevokedDescription" xml:space="preserve">
+    <value>O certificado de segurança do documento foi revogado. Use outro passaporte ou cartão de identidade.</value>
+  </data>
+  <data name="KycTravelDocumentFailureRevokedTitle" xml:space="preserve">
+    <value>Este documento não pode ser aceito</value>
+  </data>
+  <data name="KycTravelDocumentFailureTimedOutDescription" xml:space="preserve">
+    <value>Mova o telefone devagar sobre o documento até o chip ser encontrado e depois mantenha-o parado.</value>
+  </data>
+  <data name="KycTravelDocumentFailureTimedOutTitle" xml:space="preserve">
+    <value>O tempo de leitura do chip se esgotou</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedSecurityDescription" xml:space="preserve">
+    <value>O chip do documento usa um método de segurança que ainda não conseguimos ler. Tente novamente ou entre em contato com seu provedor de identidade se o problema persistir.</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedSecurityTitle" xml:space="preserve">
+    <value>Este documento ainda não é compatível</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedTagDescription" xml:space="preserve">
+    <value>Encoste no telefone o passaporte ou cartão de identidade que você digitalizou e tente novamente.</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedTagTitle" xml:space="preserve">
+    <value>Este chip não é compatível</value>
+  </data>
+  <data name="KycTravelDocumentFailureVerificationTitle" xml:space="preserve">
+    <value>Não foi possível verificar o documento</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideDescription" xml:space="preserve">
+    <value>Passaporte: a página da foto. Cartão de identidade: o verso. Lemos as linhas de texto na parte de baixo.</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideStartButton" xml:space="preserve">
+    <value>Digitalizar documento</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideTitle" xml:space="preserve">
+    <value>Digitalize os dados do documento</value>
+  </data>
+  <data name="KycTravelDocumentMrzScanFailedDescription" xml:space="preserve">
+    <value>Tente novamente com o documento plano, bem iluminado e totalmente visível.</value>
+  </data>
+  <data name="KycTravelDocumentMrzScanFailedTitle" xml:space="preserve">
+    <value>Não foi possível ler o documento</value>
+  </data>
+  <data name="KycTravelDocumentUseAnotherDocumentButton" xml:space="preserve">
+    <value>Usar outro documento</value>
+  </data>
+  <data name="QrScannerCodeInvalid" xml:space="preserve">
+    <value>Este código é inválido ou expirou.</value>
+  </data>
+  <data name="QrScannerCodeNotSupported" xml:space="preserve">
+    <value>Este código não pode ser usado aqui.</value>
+  </data>
+  <data name="QrScannerUnavailable" xml:space="preserve">
+    <value>Não foi possível continuar com este código. Verifique sua conexão e tente novamente.</value>
+  </data>
+  <data name="QrScannerValidating" xml:space="preserve">
+    <value>Verificando o código…</value>
+  </data>
+  <data name="AgeAbove" xml:space="preserve">
+    <value>Idade</value>
+  </data>
+  <data name="AgeAboveValue" xml:space="preserve">
+    <value>{0} anos ou mais</value>
+  </data>
+  <data name="KycIdContentsTitle" xml:space="preserve">
+    <value>Dados opcionais</value>
+  </data>
+  <data name="KycIdContentsDescription" xml:space="preserve">
+    <value>Escolha quais dados opcionais o seu ID inclui. Você pode deixar de fora o que preferir não compartilhar.</value>
+  </data>
+  <data name="KycIdContentsNone" xml:space="preserve">
+    <value>Nenhum</value>
+  </data>
+  <data name="KycIdContentsIncluded" xml:space="preserve">
+    <value>Incluídos no seu ID</value>
   </data>
 </root>

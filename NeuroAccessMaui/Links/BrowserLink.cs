@@ -1,5 +1,3 @@
-using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links
@@ -30,29 +28,15 @@ namespace NeuroAccessMaui.Links
 		}
 
 		/// <inheritdoc/>
-		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
+		public Task<PreparedLink?> PrepareAsync(Uri Link, CancellationToken CancellationToken)
 		{
-			bool CanOpen = false;
+			CancellationToken.ThrowIfCancellationRequested();
 
-			await MainThread.InvokeOnMainThreadAsync(async () =>
+			return Task.FromResult<PreparedLink?>(new PreparedLink(Link, async () =>
 			{
-				CanOpen = await Browser.Default.OpenAsync(Link);
-			});
-
-			if (CanOpen)
-				return true;
-			else
-			{
-				if (ShowErrorIfUnable)
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.QrCodeNotUnderstood)] +
-						Environment.NewLine + Environment.NewLine + Link.OriginalString);
-				}
-
-				return false;
-			}
+				if (!await Browser.Default.OpenAsync(Link))
+					throw new InvalidOperationException("The browser could not open the link.");
+			}));
 		}
 	}
 }

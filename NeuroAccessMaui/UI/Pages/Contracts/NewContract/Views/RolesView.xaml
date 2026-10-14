@@ -17,11 +17,11 @@
 
 	<ContentView.Resources>
 		<Style x:Key="RoleTitleLabel" TargetType="Label" BaseResourceKey="BoldItemTitleLabel">
-			<Setter Property="FontSize" Value="18"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeXl}"/>
 			<Setter Property="HorizontalTextAlignment" Value="Start"/>
 		</Style>
 		<Style x:Key="RoleDescriptionLabel" TargetType="Label" BasedOn="{StaticResource ItemDescriptionLabel}">
-			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeSm}"/>
 			<Setter Property="Margin" Value="0" />
 			<Setter Property="HorizontalTextAlignment" Value="Start"/>
 			<Setter Property="FontFamily" Value="SpaceGroteskMedium" />

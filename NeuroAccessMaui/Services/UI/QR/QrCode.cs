@@ -1,21 +1,20 @@
-using CommunityToolkit.Maui.Views;
-using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.UI.Popups.Info;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using SkiaSharp;
 using Waher.Content.QR;
 using Waher.Content.QR.Encoding;
-using Waher.Runtime.Inventory;
-using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.Services.UI.QR
 {
 	/// <summary>
 	/// Helper class to perform scanning of QR Codes by displaying the UI and handling async results.
 	/// </summary>
+	/// <remarks>
+	/// Scanning and link handling are implemented by <see cref="IQrService"/> and <see cref="ILinkService"/>. These static
+	/// methods remain for existing callers.
+	/// </remarks>
 	public static class QrCode
 	{
 		private static readonly QrEncoder encoder = new();
@@ -26,56 +25,42 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// <returns>Array of schemas the user can scan.</returns>
 		public static string[] GetAllowedSchemas()
 		{
-			List<string> AllowedSchemas = [Constants.UriSchemes.TagSign];
-
-			if (ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false)
-			{
-				AllowedSchemas.Add(Constants.UriSchemes.IotId);
-				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
-				AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
-				AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
-				AllowedSchemas.Add(Constants.UriSchemes.EDaler);
-				AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
-			}
-
-			return [.. AllowedSchemas];
-		}
-
-		public static string[] GetBaseSchemas()
-		{
-			return
-			[
-				Constants.UriSchemes.NeuroAccess,
-				Constants.UriSchemes.Onboarding,
-			];
+			return GetLinkService().GetAllowedSchemes();
 		}
 
 		/// <summary>
-		/// Scans a QR Code, and depending on the actual result, takes different actions.
+		/// Gets the schemas that are always accepted when the application opens an external link.
+		/// </summary>
+		/// <returns>The onboarding and application callback schemas.</returns>
+		public static string[] GetBaseSchemas()
+		{
+			return LinkService.GetBaseSchemes();
+		}
+
+		/// <summary>
+		/// Scans a QR Code, prepares it while the scanner is shown, and then takes its normal action.
 		/// This typically means navigating to an appropriate page.
 		/// </summary>
+		/// <returns>A task representing scanning and the code's action.</returns>
 		public static Task ScanQrCodeAndHandleResult()
 		{
 			return ScanQrCodeAndHandleResult(nameof(AppResources.QrScanCode), GetAllowedSchemas());
 		}
 
 		/// <summary>
-		/// Scans a QR Code, and depending on the actual result, takes different actions.
+		/// Scans a QR Code, prepares it while the scanner is shown, and then takes its normal action.
 		/// This typically means navigating to an appropriate page.
 		/// </summary>
 		/// <param name="QrTitle">Title to present</param>
 		/// <param name="AllowedSchemas">Schemas permitted.</param>
-		public static async Task ScanQrCodeAndHandleResult(string QrTitle, string[] AllowedSchemas)
+		/// <returns>A task representing scanning and the code's action.</returns>
+		public static Task ScanQrCodeAndHandleResult(string QrTitle, string[] AllowedSchemas)
 		{
-			string? Url = await ScanQrCode(QrTitle, AllowedSchemas);
-			if (string.IsNullOrWhiteSpace(Url))
-				return;
-
-			await OpenUrl(Url, true, AllowedSchemas);
+			return GetQrService().ScanAndOpenAsync(QrTitle, AllowedSchemas);
 		}
 
 		/// <summary>
-		/// Scans a QR Code, and depending on the actual result, takes different actions.
+		/// Opens a link, and depending on its content, takes different actions.
 		/// This typically means navigating to an appropriate page.
 		/// </summary>
 		/// <param name="Url">URL to open.</param>
@@ -86,88 +71,19 @@ namespace NeuroAccessMaui.Services.UI.QR
 		}
 
 		/// <summary>
-		/// Scans a QR Code, and depending on the actual result, takes different actions.
+		/// Opens a link, and depending on its content, takes different actions.
 		/// This typically means navigating to an appropriate page.
 		/// </summary>
 		/// <param name="Url">URL to open.</param>
 		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
+		/// <param name="AllowedSchemas">Application schemas permitted, or null for <see cref="GetAllowedSchemas"/>. Onboarding and
+		/// application callback links, and schemas that are not application schemas, are always permitted.</param>
+		/// <param name="IsTrustedSource">Whether the link comes from a trusted source, such as the user's own server. Links from other
+		/// sources ask the user before they open outside the application.</param>
 		/// <returns>If URL was handled.</returns>
-		public static async Task<bool> OpenUrl(string Url, bool ShowErrorIfUnable, string[]? AllowedSchemas = null)
+		public static Task<bool> OpenUrl(string Url, bool ShowErrorIfUnable, string[]? AllowedSchemas = null, bool IsTrustedSource = false)
 		{
-			AllowedSchemas ??= GetAllowedSchemas();
-
-			string UrlSchema = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
-
-			if (string.Equals(UrlSchema, Constants.UriSchemes.NeuroAccess, StringComparison.Ordinal))
-				return true; // TODO: Implement usage of Neuroacces links
-
-			if (!string.IsNullOrEmpty(UrlSchema) &&
-				!AllowedSchemas.Contains(UrlSchema) &&
-				!GetBaseSchemas().Contains(UrlSchema))
-			{
-				if (ShowErrorIfUnable)
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.UrlSchemaNotPermitted)]);
-				}
-				return false;
-			}
-
-			try
-			{
-				if (!System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
-				{
-					if (ShowErrorIfUnable)
-					{
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
-					}
-
-					return false;
-				}
-
-				if (ServiceRef.XmppService.State != Waher.Networking.XMPP.XmppState.Connected && !Url.StartsWith(Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
-					await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
-
-				ILinkOpener Opener = Types.FindBest<ILinkOpener, Uri>(Uri);
-
-				if (Opener is null)
-				{
-					if (ShowErrorIfUnable)
-					{
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
-					}
-
-					return false;
-				}
-
-				if (!await Opener.TryOpenLink(Uri, false).ConfigureAwait(false))
-				{
-					if (ShowErrorIfUnable)
-					{
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							ServiceRef.Localizer[nameof(AppResources.UnableToOpenLink)] + " " + Uri.ToString());
-					}
-
-					return false;
-				}
-
-				return true;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-
-				if (ShowErrorIfUnable)
-					await ServiceRef.UiService.DisplayException(ex);
-
-				return false;
-			}
+			return GetLinkService().OpenAsync(Url, ShowErrorIfUnable, AllowedSchemas, IsTrustedSource);
 		}
 
 		/// <summary>
@@ -187,22 +103,28 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// </summary>
 		/// <param name="QrTitle">The QR page title</param>
 		/// <param name="AllowedSchemas">Permitted schemas</param>
-		/// <returns>Decoded string</returns>
-		public static async Task<string?> ScanQrCode(string? QrTitle, string[] AllowedSchemas)
+		/// <returns>Decoded string, or null if the scan was cancelled or the camera may not be used.</returns>
+		public static Task<string?> ScanQrCode(string? QrTitle, string[] AllowedSchemas)
 		{
-			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			return GetQrService().ScanAsync(QrTitle, AllowedSchemas);
+		}
 
-			if (!Permitted)
-				return null;
+		/// <summary>
+		/// Gets the registered QR service.
+		/// </summary>
+		/// <returns>The QR service.</returns>
+		internal static IQrService GetQrService()
+		{
+			return ServiceRef.Provider.GetRequiredService<IQrService>();
+		}
 
-			ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchemas);
-
-			await ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
-
-			if (NavigationArgs.QrCodeScanned is null)
-				return null;
-			else
-				return await NavigationArgs.QrCodeScanned.Task;
+		/// <summary>
+		/// Gets the registered link service.
+		/// </summary>
+		/// <returns>The link service.</returns>
+		internal static ILinkService GetLinkService()
+		{
+			return ServiceRef.Provider.GetRequiredService<ILinkService>();
 		}
 
 		/// <summary>

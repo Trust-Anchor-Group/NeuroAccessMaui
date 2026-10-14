@@ -4462,7 +4462,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Center your face in the frame.
+        ///   Looks up a localized string similar to Fit your face in the oval.
         /// </summary>
         public static string KycProfilePhotoCameraGuidance {
             get {
@@ -4876,7 +4876,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The MRZ could not be validated. Check the document number, birth date, expiry date, and check digits..
+        ///   Looks up a localized string similar to We couldn't use the scanned document details. Scan your document again..
         /// </summary>
         public static string KycTravelDocumentInvalidMrz {
             get {
@@ -11599,11 +11599,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to open link:.
+        ///   Looks up a localized string similar to Unable to open the link..
         /// </summary>
         public static string UnableToOpenLink {
             get {
                 return ResourceManager.GetString("UnableToOpenLink", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open link?.
+        /// </summary>
+        public static string OpenExternalLinkTitle {
+            get {
+                return ResourceManager.GetString("OpenExternalLinkTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This link opens outside the app: {0} Only continue if you trust where it came from..
+        /// </summary>
+        public static string OpenExternalLinkMessage {
+            get {
+                return ResourceManager.GetString("OpenExternalLinkMessage", resourceCulture);
             }
         }
         
@@ -12332,5 +12350,581 @@ namespace NeuroAccessMaui.Resources.Languages {
 
         /// <summary>Looks up the localized camera retry action.</summary>
         public static string QrScannerRetry => ResourceManager.GetString("QrScannerRetry", resourceCulture);
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application sent.
+        /// </summary>
+        public static string KycApplicationSentAnnouncement {
+            get {
+                return ResourceManager.GetString("KycApplicationSentAnnouncement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document chip.
+        /// </summary>
+        public static string KycApplicationStatusMethodChip {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusMethodChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verification method.
+        /// </summary>
+        public static string KycApplicationStatusMethodLabel {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusMethodLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document photos.
+        /// </summary>
+        public static string KycApplicationStatusMethodPhotos {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusMethodPhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh status.
+        /// </summary>
+        public static string KycApplicationStatusRefresh {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can use your identity once the application is approved..
+        /// </summary>
+        public static string KycApplicationStatusTimelineApprovedDescription {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusTimelineApprovedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your approved identity is being finalized..
+        /// </summary>
+        public static string KycApplicationStatusTimelineFinalizingDescription {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusTimelineFinalizingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The details you sent are being checked..
+        /// </summary>
+        public static string KycApplicationStatusTimelineReviewDescription {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusTimelineReviewDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submitted.
+        /// </summary>
+        public static string KycApplicationStatusTimelineSubmitted {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusTimelineSubmitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We received your application..
+        /// </summary>
+        public static string KycApplicationStatusTimelineSubmittedDescription {
+            get {
+                return ResourceManager.GetString("KycApplicationStatusTimelineSubmittedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit the document in the frame.
+        /// </summary>
+        public static string KycCameraGuideDocument {
+            get {
+                return ResourceManager.GetString("KycCameraGuideDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit the back of the card in the frame.
+        /// </summary>
+        public static string KycCameraGuideIdBack {
+            get {
+                return ResourceManager.GetString("KycCameraGuideIdBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit the front of the card in the frame.
+        /// </summary>
+        public static string KycCameraGuideIdFront {
+            get {
+                return ResourceManager.GetString("KycCameraGuideIdFront", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit the passport photo page in the frame.
+        /// </summary>
+        public static string KycCameraGuidePassport {
+            get {
+                return ResourceManager.GetString("KycCameraGuidePassport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure the whole document is visible, sharp, and free of glare..
+        /// </summary>
+        public static string KycCameraReviewDocumentHint {
+            get {
+                return ResourceManager.GetString("KycCameraReviewDocumentHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure your whole face is visible, sharp, and well lit..
+        /// </summary>
+        public static string KycCameraReviewSelfieHint {
+            get {
+                return ResourceManager.GetString("KycCameraReviewSelfieHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check your photo.
+        /// </summary>
+        public static string KycCameraReviewTitle {
+            get {
+                return ResourceManager.GetString("KycCameraReviewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to start the camera right now. Please try again..
+        /// </summary>
+        public static string KycCameraStartFailedMessage {
+            get {
+                return ResourceManager.GetString("KycCameraStartFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera unavailable.
+        /// </summary>
+        public static string KycCameraStartFailedTitle {
+            get {
+                return ResourceManager.GetString("KycCameraStartFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use photo.
+        /// </summary>
+        public static string KycCameraUsePhotoButton {
+            get {
+                return ResourceManager.GetString("KycCameraUsePhotoButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Processing photo….
+        /// </summary>
+        public static string KycImageProcessing {
+            get {
+                return ResourceManager.GetString("KycImageProcessing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Allow camera access for this app in your phone's settings, then try again..
+        /// </summary>
+        public static string KycTravelDocumentCameraPermissionDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentCameraPermissionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold your phone still against the document and try again. If this continues, scan the document details again..
+        /// </summary>
+        public static string KycTravelDocumentFailureAuthenticationDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureAuthenticationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't open the chip.
+        /// </summary>
+        public static string KycTravelDocumentFailureAuthenticationTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureAuthenticationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The security check needs an internet connection. Check your connection and try again..
+        /// </summary>
+        public static string KycTravelDocumentFailureCertificateCheckDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureCertificateCheckDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't finish the security check.
+        /// </summary>
+        public static string KycTravelDocumentFailureCertificateCheckTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureCertificateCheckTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip's security data couldn't be trusted. Try again, or contact your ID provider if this continues..
+        /// </summary>
+        public static string KycTravelDocumentFailureCertificateInvalidDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureCertificateInvalidDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try again, and keep your phone and document together until reading is done..
+        /// </summary>
+        public static string KycTravelDocumentFailureConnectionLostDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureConnectionLostDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection lost.
+        /// </summary>
+        public static string KycTravelDocumentFailureConnectionLostTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureConnectionLostTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip data didn't pass the security check. Try again, or contact your ID provider if this continues..
+        /// </summary>
+        public static string KycTravelDocumentFailureDataIntegrityDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureDataIntegrityDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move other cards and documents away from your phone, then try again..
+        /// </summary>
+        public static string KycTravelDocumentFailureMultipleTagsDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureMultipleTagsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More than one chip found.
+        /// </summary>
+        public static string KycTravelDocumentFailureMultipleTagsTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureMultipleTagsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This phone can't read document chips in this app. You can continue without the chip..
+        /// </summary>
+        public static string KycTravelDocumentFailureNfcNotSupportedDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureNfcNotSupportedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chip reading isn't available.
+        /// </summary>
+        public static string KycTravelDocumentFailureNfcNotSupportedTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureNfcNotSupportedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check that NFC is turned on in your phone's settings, then try again..
+        /// </summary>
+        public static string KycTravelDocumentFailureNfcUnavailableDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureNfcUnavailableDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC is unavailable.
+        /// </summary>
+        public static string KycTravelDocumentFailureNfcUnavailableTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureNfcUnavailableTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The chip doesn't contain passport or ID card data. Make sure you're holding the document you scanned, then try again..
+        /// </summary>
+        public static string KycTravelDocumentFailureNotTravelDocumentDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureNotTravelDocumentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This chip can't be used.
+        /// </summary>
+        public static string KycTravelDocumentFailureNotTravelDocumentTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureNotTravelDocumentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't finish reading the chip.
+        /// </summary>
+        public static string KycTravelDocumentFailureReadTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureReadTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document's security certificate has been revoked. Use another passport or ID card..
+        /// </summary>
+        public static string KycTravelDocumentFailureRevokedDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureRevokedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This document can't be accepted.
+        /// </summary>
+        public static string KycTravelDocumentFailureRevokedTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureRevokedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move your phone slowly over the document until the chip is found, then hold still..
+        /// </summary>
+        public static string KycTravelDocumentFailureTimedOutDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureTimedOutDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chip reading timed out.
+        /// </summary>
+        public static string KycTravelDocumentFailureTimedOutTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureTimedOutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The document's chip uses a security method we can't read yet. Try again, or contact your ID provider if this continues..
+        /// </summary>
+        public static string KycTravelDocumentFailureUnsupportedSecurityDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureUnsupportedSecurityDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This document isn't supported yet.
+        /// </summary>
+        public static string KycTravelDocumentFailureUnsupportedSecurityTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureUnsupportedSecurityTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold the passport or ID card you scanned against your phone, then try again..
+        /// </summary>
+        public static string KycTravelDocumentFailureUnsupportedTagDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureUnsupportedTagDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This chip isn't supported.
+        /// </summary>
+        public static string KycTravelDocumentFailureUnsupportedTagTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureUnsupportedTagTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document verification failed.
+        /// </summary>
+        public static string KycTravelDocumentFailureVerificationTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentFailureVerificationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passport: the photo page. ID card: the back. We read the lines of text at the bottom..
+        /// </summary>
+        public static string KycTravelDocumentMrzGuideDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzGuideDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan document.
+        /// </summary>
+        public static string KycTravelDocumentMrzGuideStartButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzGuideStartButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan your document's details.
+        /// </summary>
+        public static string KycTravelDocumentMrzGuideTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzGuideTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try again with the document flat, well lit, and fully in view..
+        /// </summary>
+        public static string KycTravelDocumentMrzScanFailedDescription {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzScanFailedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't read the document.
+        /// </summary>
+        public static string KycTravelDocumentMrzScanFailedTitle {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentMrzScanFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use another document.
+        /// </summary>
+        public static string KycTravelDocumentUseAnotherDocumentButton {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentUseAnotherDocumentButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This code is invalid or has expired..
+        /// </summary>
+        public static string QrScannerCodeInvalid {
+            get {
+                return ResourceManager.GetString("QrScannerCodeInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This code can't be used here..
+        /// </summary>
+        public static string QrScannerCodeNotSupported {
+            get {
+                return ResourceManager.GetString("QrScannerCodeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't continue with this code. Check your connection and try again..
+        /// </summary>
+        public static string QrScannerUnavailable {
+            get {
+                return ResourceManager.GetString("QrScannerUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking the code….
+        /// </summary>
+        public static string QrScannerValidating {
+            get {
+                return ResourceManager.GetString("QrScannerValidating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Age.
+        /// </summary>
+        public static string AgeAbove {
+            get {
+                return ResourceManager.GetString("AgeAbove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} or older.
+        /// </summary>
+        public static string AgeAboveValue {
+            get {
+                return ResourceManager.GetString("AgeAboveValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional details.
+        /// </summary>
+        public static string KycIdContentsTitle {
+            get {
+                return ResourceManager.GetString("KycIdContentsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose which optional details your ID includes. You can leave out anything you would rather not share..
+        /// </summary>
+        public static string KycIdContentsDescription {
+            get {
+                return ResourceManager.GetString("KycIdContentsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string KycIdContentsNone {
+            get {
+                return ResourceManager.GetString("KycIdContentsNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Included in your ID.
+        /// </summary>
+        public static string KycIdContentsIncluded {
+            get {
+                return ResourceManager.GetString("KycIdContentsIncluded", resourceCulture);
+            }
+        }
     }
 }

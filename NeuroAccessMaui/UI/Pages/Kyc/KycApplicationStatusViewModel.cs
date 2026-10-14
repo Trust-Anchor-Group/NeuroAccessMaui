@@ -10,7 +10,6 @@ using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Contracts.EventArguments;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -18,20 +17,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// View model for the read-only KYC application status page.
 	/// </summary>
 	/// <remarks>
-	/// Maps the resolved application status to a visual, copy, timeline, and actions, and reloads when the provider
-	/// changes the application while the page is open.
+	/// Pending applications show a Submitted, In review, Approved timeline. Rejected, approved, and reserved applications
+	/// keep their own texts and actions.
 	/// </remarks>
 	public partial class KycApplicationStatusViewModel : BaseViewModel
 	{
-		/// <summary>
-		/// Timeline step shown when every step is complete.
-		/// </summary>
-		private const int timelineComplete = 3;
+		private const string nfcVerificationMethod = "NFC";
+		private const string photoVerificationMethod = "Photo";
 
 		private readonly KycProcessNavigationArgs? navigationArguments;
 		private KycReference? reference;
 		private KycApplicationStatus? status;
-		private bool isSubscribed;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KycApplicationStatusViewModel"/> class.
@@ -39,21 +35,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public KycApplicationStatusViewModel()
 		{
 			this.navigationArguments = ServiceRef.NavigationService.PopLatestArgs<KycProcessNavigationArgs>();
-			this.TitleText = ServiceRef.Localizer[nameof(AppResources.KycStatusPendingTitle)];
-			this.DescriptionText = ServiceRef.Localizer[nameof(AppResources.KycStatusPendingDescription)];
-			this.StageText = ServiceRef.Localizer[nameof(AppResources.InReview)];
-			this.UpdatedText = string.Empty;
-			this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.KycViewApplicationButton)];
-			this.SecondaryActionText = ServiceRef.Localizer[nameof(AppResources.KycAllApplicationsButton)];
+			this.TitleText = ServiceRef.Localizer[nameof(AppResources.IdentityApplication)];
+			this.DescriptionText = ServiceRef.Localizer[nameof(AppResources.KycPendingManualReviewHint)];
+			this.StageText = ServiceRef.Localizer[nameof(AppResources.InProgress)];
+			this.LastUpdatedText = string.Empty;
+			this.MethodText = string.Empty;
+			this.DetailText = ServiceRef.Localizer[nameof(AppResources.KycManualReviewInfo)];
+			this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.Open)];
+			this.SecondaryActionText = ServiceRef.Localizer[nameof(AppResources.Applications)];
 		}
 
 		/// <summary>
-		/// Occurs when the application becomes approved while the page is open, so the view can celebrate it.
+		/// Gets the timeline rows shown for a pending application.
 		/// </summary>
-		public event EventHandler? ApplicationApproved;
+		public ObservableCollection<KycApplicationStatusRow> StatusRows { get; } = new ObservableCollection<KycApplicationStatusRow>();
 
 		/// <summary>
-		/// Gets or sets the status title.
+		/// Gets or sets the page title.
 		/// </summary>
 		[ObservableProperty]
 		private string titleText;
@@ -65,17 +63,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private string descriptionText;
 
 		/// <summary>
-		/// Gets or sets the short stage text shown in the status pill.
+		/// Gets or sets the current stage text.
 		/// </summary>
 		[ObservableProperty]
 		private string stageText;
 
 		/// <summary>
-		/// Gets or sets the last updated text.
+		/// Gets or sets the time of the last update, without a label.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasUpdatedText))]
-		private string updatedText;
+		[NotifyPropertyChangedFor(nameof(HasLastUpdated))]
+		[NotifyPropertyChangedFor(nameof(ShowStatusDetails))]
+		private string lastUpdatedText;
+
+		/// <summary>
+		/// Gets or sets how the application was verified when it was sent.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasMethod))]
+		[NotifyPropertyChangedFor(nameof(ShowStatusDetails))]
+		private string methodText;
+
+		/// <summary>
+		/// Gets or sets supporting status details.
+		/// </summary>
+		[ObservableProperty]
+		private string detailText;
 
 		/// <summary>
 		/// Gets or sets the primary action text.
@@ -90,7 +103,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private string secondaryActionText;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the rejected or invalid state is active.
+		/// Gets or sets a value indicating whether the rejected state is active.
 		/// </summary>
 		[ObservableProperty]
 		private bool isRejected;
@@ -102,135 +115,55 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private bool isFinalizing;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the application has been approved.
+		/// Gets or sets a value indicating whether the application is approved.
 		/// </summary>
 		[ObservableProperty]
 		private bool isApproved;
 
 		/// <summary>
-		/// Gets or sets the scene shown by the status visual.
+		/// Gets or sets a value indicating whether the pending timeline is shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool showTimeline;
+
+		/// <summary>
+		/// Gets or sets the scene of the status badge.
 		/// </summary>
 		[ObservableProperty]
 		private StatusVisualKind visualKind = StatusVisualKind.Pending;
 
 		/// <summary>
-		/// Gets or sets the active timeline step (details, review, ID ready). Three means every step is complete.
+		/// Gets a value indicating whether the verification method is known.
 		/// </summary>
-		[ObservableProperty]
-		private int timelineStep = 1;
+		public bool HasMethod => !string.IsNullOrWhiteSpace(this.MethodText);
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the timeline is shown.
+		/// Gets a value indicating whether the time of the last update is known.
 		/// </summary>
-		[ObservableProperty]
-		private bool showTimeline = true;
+		public bool HasLastUpdated => !string.IsNullOrWhiteSpace(this.LastUpdatedText);
 
 		/// <summary>
-		/// Gets or sets the reviewer's message for a rejected application.
+		/// Gets a value indicating whether the card with the verification method and last update is shown.
 		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasReviewMessage))]
-		[NotifyPropertyChangedFor(nameof(HasAttentionDetails))]
-		private string reviewMessage = string.Empty;
-
-		/// <summary>
-		/// Gets or sets a value indicating whether a pull-to-refresh is in progress.
-		/// </summary>
-		[ObservableProperty]
-		private bool isRefreshing;
-
-		/// <summary>
-		/// Gets the items the reviewer marked as needing attention, with reasons when available.
-		/// </summary>
-		public ObservableCollection<string> AttentionItems { get; } = [];
-
-		/// <summary>
-		/// Gets a value indicating whether a reviewer message is available.
-		/// </summary>
-		public bool HasReviewMessage => !string.IsNullOrWhiteSpace(this.ReviewMessage);
-
-		/// <summary>
-		/// Gets a value indicating whether any items need attention.
-		/// </summary>
-		public bool HasAttentionItems => this.AttentionItems.Count > 0;
-
-		/// <summary>
-		/// Gets a value indicating whether the attention card should be shown.
-		/// </summary>
-		public bool HasAttentionDetails => this.IsRejected && (this.HasReviewMessage || this.HasAttentionItems);
-
-		/// <summary>
-		/// Gets a value indicating whether the last update time is known.
-		/// </summary>
-		public bool HasUpdatedText => !string.IsNullOrWhiteSpace(this.UpdatedText);
+		public bool ShowStatusDetails => this.HasMethod || this.HasLastUpdated;
 
 		/// <inheritdoc/>
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
-			await this.LoadAsync();
-
-			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
-			this.isSubscribed = true;
-		}
-
-		/// <inheritdoc/>
-		public override async Task OnDisposeAsync()
-		{
-			if (this.isSubscribed)
-			{
-				ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
-				this.isSubscribed = false;
-			}
-
-			await base.OnDisposeAsync();
-		}
-
-		partial void OnIsRejectedChanged(bool value)
-		{
-			this.OnPropertyChanged(nameof(this.HasAttentionDetails));
+			await this.LoadAsync(false);
 		}
 
 		[RelayCommand]
 		private async Task Refresh()
 		{
-			try
-			{
-				await this.ReloadReferenceAsync(this.reference?.GetActiveApplicationIdentityId());
-				await this.LoadAsync();
-			}
-			finally
-			{
-				this.IsRefreshing = false;
-			}
-		}
-
-		/// <summary>
-		/// Replaces the shown reference with the latest stored copy for the given identity, when it is the same application.
-		/// </summary>
-		/// <param name="IdentityId">An identity identifier belonging to the application.</param>
-		/// <returns>A task representing the asynchronous operation.</returns>
-		private async Task ReloadReferenceAsync(string? IdentityId)
-		{
-			if (this.reference is null || string.IsNullOrWhiteSpace(IdentityId))
-				return;
-
-			try
-			{
-				KycReference? Updated = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(IdentityId);
-				if (Updated is not null && string.Equals(Updated.ObjectId, this.reference.ObjectId, StringComparison.Ordinal))
-					this.reference = Updated;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
+			await this.LoadAsync(true);
 		}
 
 		[RelayCommand]
 		private async Task PrimaryAction()
 		{
-			if (this.IsApproved)
+			if (this.status?.IsApproved == true)
 			{
 				await this.OpenApprovedIdentityAsync();
 				return;
@@ -300,13 +233,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
-		private async Task LoadAsync()
+		/// <summary>
+		/// Loads the application status from the KYC reference and the profile identities.
+		/// </summary>
+		/// <param name="ReloadReference">Whether to read the latest saved copy of the reference, so updates received while the
+		/// page was open are shown.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task LoadAsync(bool ReloadReference)
 		{
 			this.SetIsBusy(true);
 			try
 			{
-				this.reference ??= this.navigationArguments?.Reference;
 				IdentityApplicationGateDecision? Decision = null;
+				this.reference ??= this.navigationArguments?.Reference;
+
+				if (ReloadReference && this.reference is not null)
+					this.reference = await this.ReloadReferenceAsync(this.reference);
+
 				if (this.reference is null)
 				{
 					Decision = await ServiceRef.IdentityApplicationGateService.EvaluateAsync();
@@ -320,198 +263,117 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				this.ApplyStatus(this.status, Decision);
 			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 			finally
 			{
 				this.SetIsBusy(false);
 			}
 		}
 
-		/// <summary>
-		/// Reloads the status when the provider changes the application while the page is open.
-		/// </summary>
-		private async Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs E)
+		private async Task<KycReference> ReloadReferenceAsync(KycReference Current)
 		{
-			try
-			{
-				string? IdentityId = E.Identity?.Id;
-				if (this.reference is null || !this.reference.MatchesIdentityId(IdentityId))
-					return;
+			string? IdentityId = Current.GetActiveApplicationIdentityId();
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return Current;
 
-				await MainThread.InvokeOnMainThreadAsync(async () =>
-				{
-					bool WasApproved = this.status?.IsApproved == true;
-					await this.ReloadReferenceAsync(IdentityId);
-					await this.LoadAsync();
+			KycReference? Latest = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(IdentityId);
+			if (Latest is null || !string.Equals(Latest.ObjectId, Current.ObjectId, StringComparison.Ordinal))
+				return Current;
 
-					if (!WasApproved && this.status?.IsApproved == true)
-						this.NotifyApproved();
-				});
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		/// <summary>
-		/// Marks an approval that arrived while the page was open with haptic feedback, an announcement, and a celebration.
-		/// </summary>
-		private void NotifyApproved()
-		{
-			try
-			{
-				HapticFeedback.Default.Perform(HapticFeedbackType.LongPress);
-			}
-			catch (Exception)
-			{
-				// Devices without haptics still get the visual confirmation.
-			}
-
-			try
-			{
-				SemanticScreenReader.Default.Announce(this.TitleText);
-			}
-			catch (Exception)
-			{
-				// Announcements are best effort.
-			}
-
-			this.ApplicationApproved?.Invoke(this, EventArgs.Empty);
+			return Latest;
 		}
 
 		private void ApplyStatus(KycApplicationStatus Status, IdentityApplicationGateDecision? Decision)
 		{
-			this.UpdatedText = this.FormatUpdatedText(this.reference?.UpdatedUtc);
+			this.LastUpdatedText = FormatTime(this.reference?.UpdatedUtc);
+			this.MethodText = this.ResolveMethodText(this.reference);
 			this.IsRejected = Status.IsRejectedOrInvalid;
 			this.IsFinalizing = Status.IsFinalizing;
-			this.IsApproved = Status.IsApproved || Decision?.Route == IdentityApplicationRoute.ShowApprovedIdentity;
-			this.ApplyReview(Status.IsRejectedOrInvalid ? this.reference?.ApplicationReview : null);
-			this.SecondaryActionText = ServiceRef.Localizer[nameof(AppResources.KycAllApplicationsButton)];
+			this.IsApproved = false;
+			this.ShowTimeline = false;
+			this.StatusRows.Clear();
 
 			if (Status.IsRejectedOrInvalid)
 			{
-				this.SetPresentation(
-					StatusVisualKind.Attention,
-					null,
-					nameof(AppResources.KycRejectedHeader),
-					nameof(AppResources.KycRejectedDescription),
-					this.ResolveStageText(Status),
-					nameof(AppResources.KycFixInvalidClaimsButton));
-				return;
-			}
-
-			if (Status.Kind == KycApplicationStatusKind.Expired)
-			{
-				this.SetPresentation(
-					StatusVisualKind.Attention,
-					null,
-					nameof(AppResources.KycStatusExpiredTitle),
-					nameof(AppResources.KycStatusExpiredDescription),
-					ServiceRef.Localizer[nameof(AppResources.KycStatusExpiredStage)],
-					nameof(AppResources.KycViewApplicationButton));
-				return;
-			}
-
-			if (this.IsApproved)
-			{
-				this.SetPresentation(
-					StatusVisualKind.Success,
-					timelineComplete,
-					nameof(AppResources.KycStatusApprovedTitle),
-					nameof(AppResources.KycStatusApprovedDescription),
-					ServiceRef.Localizer[nameof(AppResources.Approved)],
-					nameof(AppResources.KycOpenIdButton));
+				this.VisualKind = StatusVisualKind.Attention;
+				this.TitleText = ServiceRef.Localizer[nameof(AppResources.KycRejectedHeader)];
+				this.DescriptionText = ServiceRef.Localizer[nameof(AppResources.KycRejectedDescription)];
+				this.StageText = ServiceRef.Localizer[nameof(AppResources.Rejected)];
+				this.DetailText = ServiceRef.Localizer[nameof(AppResources.KycRejectedInvalidationHint)];
+				this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.KycReapplyWithoutPendingButton)];
 				return;
 			}
 
 			if (Status.IsFinalizing)
 			{
-				this.SetPresentation(
-					StatusVisualKind.Pending,
-					2,
-					nameof(AppResources.KycStatusFinalizingTitle),
-					nameof(AppResources.KycStatusFinalizingDescription),
-					ServiceRef.Localizer[nameof(AppResources.InProgress)],
-					nameof(AppResources.KycViewApplicationButton));
+				this.VisualKind = StatusVisualKind.Pending;
+				this.TitleText = ServiceRef.Localizer[nameof(AppResources.IdentityApplication)];
+				this.DescriptionText = Status.Kind == KycApplicationStatusKind.FinalizationInProgress
+					? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+					: ServiceRef.Localizer[nameof(AppResources.KycManualReviewInfo)];
+				this.StageText = this.ResolveStageText(Status);
+				this.DetailText = Status.Kind == KycApplicationStatusKind.FinalizationInProgress
+					? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+					: ServiceRef.Localizer[nameof(AppResources.KycPendingManualReviewHint)];
+				this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.Open)];
+				this.BuildTimeline(true);
 				return;
 			}
 
-			if (Status.Kind == KycApplicationStatusKind.ReservedPreview)
+			if (Status.IsApproved || Decision?.Route == IdentityApplicationRoute.ShowApprovedIdentity)
 			{
-				this.SetPresentation(
-					StatusVisualKind.Draft,
-					0,
-					nameof(AppResources.KycStatusDraftTitle),
-					nameof(AppResources.KycStatusDraftDescription),
-					ServiceRef.Localizer[nameof(AppResources.InProgress)],
-					nameof(AppResources.KycContinueApplicationButton));
+				this.VisualKind = StatusVisualKind.Success;
+				this.IsApproved = true;
+				this.TitleText = ServiceRef.Localizer[nameof(AppResources.IdentityState_Approved)];
+				this.DescriptionText = ServiceRef.Localizer[nameof(AppResources.ApplyIdInfoMainPage)];
+				this.StageText = ServiceRef.Localizer[nameof(AppResources.Approved)];
+				this.DetailText = ServiceRef.Localizer[nameof(AppResources.ApplyIdInfoMainPage)];
+				this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.Open)];
 				return;
 			}
 
-			this.SetPresentation(
-				StatusVisualKind.Pending,
-				1,
-				nameof(AppResources.KycStatusPendingTitle),
-				nameof(AppResources.KycStatusPendingDescription),
+			bool IsReservedPreview = Status.Kind == KycApplicationStatusKind.ReservedPreview;
+			this.VisualKind = IsReservedPreview ? StatusVisualKind.Draft : StatusVisualKind.Pending;
+			this.TitleText = IsReservedPreview
+				? ServiceRef.Localizer[nameof(AppResources.IdentityApplication)]
+				: ServiceRef.Localizer[nameof(AppResources.IdentityReviewRequest)];
+			this.DescriptionText = IsReservedPreview
+				? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+				: ServiceRef.Localizer[nameof(AppResources.KycPendingManualReviewHint)];
+			this.StageText = this.ResolveStageText(Status);
+			this.DetailText = IsReservedPreview
+				? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+				: ServiceRef.Localizer[nameof(AppResources.KycManualReviewInfo)];
+			this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.Open)];
+
+			if (!IsReservedPreview)
+				this.BuildTimeline(false);
+		}
+
+		/// <summary>
+		/// Builds the Submitted, In review, Approved timeline of a pending application.
+		/// </summary>
+		/// <param name="IsFinalizing">Whether the review is done and the approved identity is being finalized.</param>
+		private void BuildTimeline(bool IsFinalizing)
+		{
+			this.StatusRows.Add(new KycApplicationStatusRow(
+				ServiceRef.Localizer[nameof(AppResources.KycApplicationStatusTimelineSubmitted)],
+				ServiceRef.Localizer[nameof(AppResources.KycApplicationStatusTimelineSubmittedDescription)],
+				IdentityFlowPhaseState.Complete));
+			this.StatusRows.Add(new KycApplicationStatusRow(
 				ServiceRef.Localizer[nameof(AppResources.InReview)],
-				nameof(AppResources.KycViewApplicationButton));
-		}
-
-		/// <summary>
-		/// Applies the visual, timeline, and copy for one status.
-		/// </summary>
-		/// <param name="Kind">The status visual scene.</param>
-		/// <param name="Step">The active timeline step, or <c>null</c> to hide the timeline.</param>
-		/// <param name="TitleKey">Resource key of the title.</param>
-		/// <param name="DescriptionKey">Resource key of the description.</param>
-		/// <param name="Stage">Localized text for the status pill.</param>
-		/// <param name="PrimaryKey">Resource key of the primary action.</param>
-		private void SetPresentation(StatusVisualKind Kind, int? Step, string TitleKey, string DescriptionKey, string Stage, string PrimaryKey)
-		{
-			this.VisualKind = Kind;
-			this.ShowTimeline = Step.HasValue;
-			this.TimelineStep = Step ?? 0;
-			this.TitleText = ServiceRef.Localizer[TitleKey];
-			this.DescriptionText = ServiceRef.Localizer[DescriptionKey];
-			this.StageText = Stage;
-			this.PrimaryActionText = ServiceRef.Localizer[PrimaryKey];
-		}
-
-		/// <summary>
-		/// Shows the reviewer's message and the items marked invalid, or clears them when there is no rejection.
-		/// </summary>
-		/// <param name="Review">The stored application review, if any.</param>
-		private void ApplyReview(ApplicationReview? Review)
-		{
-			this.AttentionItems.Clear();
-
-			if (Review is not null)
-			{
-				foreach (ApplicationReviewClaimDetail Detail in Review.InvalidClaimDetails ?? Array.Empty<ApplicationReviewClaimDetail>())
-				{
-					if (Detail is not null)
-						AddAttentionItem(this.AttentionItems, Detail.DisplayName, Detail.Claim, Detail.Reason);
-				}
-
-				foreach (ApplicationReviewPhotoDetail Detail in Review.InvalidPhotoDetails ?? Array.Empty<ApplicationReviewPhotoDetail>())
-				{
-					if (Detail is not null)
-						AddAttentionItem(this.AttentionItems, Detail.DisplayName, Detail.FileName, Detail.Reason);
-				}
-			}
-
-			this.ReviewMessage = Review?.Message?.Trim() ?? string.Empty;
-			this.OnPropertyChanged(nameof(this.HasAttentionItems));
-			this.OnPropertyChanged(nameof(this.HasAttentionDetails));
-		}
-
-		private static void AddAttentionItem(ObservableCollection<string> Items, string? DisplayName, string? Fallback, string? Reason)
-		{
-			string Label = !string.IsNullOrWhiteSpace(DisplayName) ? DisplayName.Trim() : Fallback?.Trim() ?? string.Empty;
-			if (string.IsNullOrWhiteSpace(Label))
-				return;
-
-			Items.Add(string.IsNullOrWhiteSpace(Reason) ? Label : $"{Label} — {Reason.Trim()}");
+				ServiceRef.Localizer[nameof(AppResources.KycApplicationStatusTimelineReviewDescription)],
+				IsFinalizing ? IdentityFlowPhaseState.Complete : IdentityFlowPhaseState.Current));
+			this.StatusRows.Add(new KycApplicationStatusRow(
+				ServiceRef.Localizer[nameof(AppResources.Approved)],
+				IsFinalizing
+					? ServiceRef.Localizer[nameof(AppResources.KycApplicationStatusTimelineFinalizingDescription)]
+					: ServiceRef.Localizer[nameof(AppResources.KycApplicationStatusTimelineApprovedDescription)],
+				IsFinalizing ? IdentityFlowPhaseState.Current : IdentityFlowPhaseState.Upcoming));
+			this.ShowTimeline = true;
 		}
 
 		private string ResolveStageText(KycApplicationStatus Status)
@@ -522,22 +384,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				KycApplicationStatusKind.PreviewRejected => ServiceRef.Localizer[nameof(AppResources.Rejected)],
 				KycApplicationStatusKind.Rejected => ServiceRef.Localizer[nameof(AppResources.Rejected)],
 				KycApplicationStatusKind.Approved => ServiceRef.Localizer[nameof(AppResources.Approved)],
-				KycApplicationStatusKind.Obsoleted => ServiceRef.Localizer[nameof(AppResources.IdentityState_Obsoleted)],
-				KycApplicationStatusKind.Compromised => ServiceRef.Localizer[nameof(AppResources.IdentityState_Compromised)],
 				_ => ServiceRef.Localizer[nameof(AppResources.InProgress)]
 			};
 		}
 
-		private string FormatUpdatedText(DateTime? UpdatedUtc)
+		private string ResolveMethodText(KycReference? Reference)
+		{
+			string? Method = Reference?.SubmittedVerificationMethod;
+			if (string.Equals(Method, nfcVerificationMethod, StringComparison.OrdinalIgnoreCase))
+				return ServiceRef.Localizer[nameof(AppResources.KycApplicationStatusMethodChip)];
+
+			if (string.Equals(Method, photoVerificationMethod, StringComparison.OrdinalIgnoreCase))
+				return ServiceRef.Localizer[nameof(AppResources.KycApplicationStatusMethodPhotos)];
+
+			return string.Empty;
+		}
+
+		private static string FormatTime(DateTime? UpdatedUtc)
 		{
 			if (!UpdatedUtc.HasValue || UpdatedUtc.Value == default)
 				return string.Empty;
 
 			DateTime LocalTime = UpdatedUtc.Value.Kind == DateTimeKind.Utc ? UpdatedUtc.Value.ToLocalTime() : UpdatedUtc.Value;
-			return string.Format(
-				CultureInfo.CurrentCulture,
-				ServiceRef.Localizer[nameof(AppResources.LastUpdatedFormat)],
-				LocalTime.ToString("g", CultureInfo.CurrentCulture));
+			return LocalTime.ToString("g", CultureInfo.CurrentCulture);
 		}
 	}
 }

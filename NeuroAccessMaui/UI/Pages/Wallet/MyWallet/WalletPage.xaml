@@ -27,7 +27,7 @@
 					   Style="{DynamicResource KeyLabel}"
 					   LineBreakMode="TailTruncation"
 					   FontAttributes="Bold"
-					   FontSize="18" />
+					   FontSize="{StaticResource FontSizeXl}" />
 				<Label Grid.Column="0"
 					   Grid.Row="1"
 					   Text="{Binding Path=ExpiresStr}"
@@ -43,14 +43,14 @@
 					<Label.FormattedText>
 						<FormattedString>
 							<Span Text="-"
-								  FontSize="30"
+								  FontSize="{StaticResource FontSize7xl}"
 								  FontAttributes="Bold" />
 							<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}"
-								  FontSize="30"
+								  FontSize="{StaticResource FontSize7xl}"
 								  FontAttributes="Bold" />
 							<Span Text=" " />
 							<Span Text="{Binding Path=Currency}"
-								  FontSize="20" />
+								  FontSize="{StaticResource FontSize2xl}" />
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
@@ -71,10 +71,10 @@
 					   Style="{DynamicResource KeyLabel}"
 					   LineBreakMode="TailTruncation"
 					   FontAttributes="Bold"
-					   FontSize="18" />
+					   FontSize="{StaticResource FontSizeXl}" />
 				<Label Grid.Row="0"
 					   Grid.Column="1"
-					   FontSize="50"
+					   FontSize="{StaticResource FontSizeDisplayXl}"
 					   Padding="0,-25,0,-25"
 					   Text="•"
 					   HorizontalOptions="Start"
@@ -93,12 +93,12 @@
 					<Label.FormattedText>
 						<FormattedString>
 							<Span Text="{Binding Path=Change, Converter={converters:MoneyToString}}"
-								  FontSize="18"
+								  FontSize="{StaticResource FontSizeXl}"
 								  FontAttributes="Bold"
 								  TextColor="{Binding Path=TextColor}" />
 							<Span Text=" " />
 							<Span Text="{Binding Path=Currency}"
-								  FontSize="16"
+								  FontSize="{StaticResource FontSizeLg}"
 								  TextColor="{Binding Path=TextColor}" />
 						</FormattedString>
 					</Label.FormattedText>
@@ -111,13 +111,13 @@
 						<FormattedString>
 							<Span Text=" (" />
 							<Span Text="{Binding Path=Balance, Converter={converters:MoneyToString}}"
-								  FontSize="14" />
+								  FontSize="{StaticResource FontSizeSm}" />
 							<Span Text="{Binding Path=ReservedSuffix}"
-								  FontSize="14"
+								  FontSize="{StaticResource FontSizeSm}"
 								  TextColor="{DynamicResource PendingColor}" />
 							<Span Text=" " />
 							<Span Text="{Binding Path=Currency}"
-								  FontSize="12" />
+								  FontSize="{StaticResource FontSizeXs}" />
 							<Span Text=" ) " />
 						</FormattedString>
 					</Label.FormattedText>
@@ -187,7 +187,7 @@
 					<Label Grid.Column="1" Grid.Row="0"
 							HorizontalOptions="Start"
 							Text="{l:Localize CreditBalance}"
-							FontSize="16"
+							FontSize="{StaticResource FontSizeLg}"
 							LineHeight="0.8"
 							Style="{DynamicResource PageTitleLabel}"
 							VerticalOptions="Center"/>
@@ -198,9 +198,9 @@
 					<Label>
 						<Label.FormattedText>
 							<FormattedString>
-								<Span Text="{Binding Path=BalanceDecimal}" FontSize="48" FontFamily="SpaceGroteskBold"/>
-								<Span Text=" " FontSize="32" FontFamily="SpaceGroteskBold"/>
-								<Span Text="{Binding Currency}" FontSize="32" FontFamily="SpaceGroteskBold"/>
+								<Span Text="{Binding Path=BalanceDecimal}" FontSize="{StaticResource FontSizeDisplayLg}" FontFamily="SpaceGroteskBold"/>
+								<Span Text=" " FontSize="{StaticResource FontSize8xl}" FontFamily="SpaceGroteskBold"/>
+								<Span Text="{Binding Currency}" FontSize="{StaticResource FontSize8xl}" FontFamily="SpaceGroteskBold"/>
 							</FormattedString>
 						</Label.FormattedText>
 					</Label>
@@ -211,7 +211,7 @@
 						<Grid ColumnDefinitions="*, auto" Margin="0,4,0,0">
 							<Label Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
 								Style="{DynamicResource KeyLabel}"
-								FontSize="12"
+								FontSize="{StaticResource FontSizeXs}"
 								FontFamily="HaasGroteskRegular"
 								VerticalOptions="Center"
 								Margin="0,0,8,0"/>
@@ -232,9 +232,9 @@
 					<Label Grid.Row="2" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start" IsVisible="{Binding HasReserved}">
 						<Label.FormattedText>
 							<FormattedString>
-								<Span Text="{l:Localize Reserved}" FontSize="14" />
+								<Span Text="{l:Localize Reserved}" FontSize="{StaticResource FontSizeSm}" />
 								<Span Text=" " />
-								<Span Text="{Binding ReservedString}" FontSize="14" />
+								<Span Text="{Binding ReservedString}" FontSize="{StaticResource FontSizeSm}" />
 							</FormattedString>
 						</Label.FormattedText>
 					</Label>

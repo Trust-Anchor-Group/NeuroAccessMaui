@@ -18,12 +18,12 @@
 	  <ResourceDictionary>
 		<Style TargetType="Label" x:Key="CardTitleLabel">
 		  <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
-		  <Setter Property="FontSize" Value="16"/>
+		  <Setter Property="FontSize" Value="{StaticResource FontSizeLg}"/>
 		  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
 		</Style>
 		<Style TargetType="Label" x:Key="CardSubtitleLabel">
 		  <Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
-		  <Setter Property="FontSize" Value="14"/>
+		  <Setter Property="FontSize" Value="{StaticResource FontSizeSm}"/>
 		  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
 		</Style>
 	  </ResourceDictionary>
@@ -56,7 +56,7 @@
 											 Padding="0">
 							<Label Text="{l:Localize CurrentApplication}"
 								   TextColor="{DynamicResource ContentSecondaryWL}"
-								   FontSize="16"
+								   FontSize="{StaticResource FontSizeLg}"
 								   FontFamily="SpaceGroteskBold"
 								   IsVisible="{Binding HasCurrentApplication}" />
 							<controls:TemplatedButton Command="{Binding OpenApplicationCommand}"
@@ -172,7 +172,7 @@
 												   Text="{Binding CurrentApplication.UpdatedUtc, Converter={converters:DateTimeToLastUpdatedConverter}}"
 												   VerticalOptions="End"
 												   Style="{DynamicResource CardSubtitleLabel}"
-												   FontSize="14" />
+												   FontSize="{StaticResource FontSizeSm}" />
 											<Grid Grid.Column="1"
 												  RowDefinitions="*,auto">
 												<Border Grid.Row="1"
@@ -211,7 +211,7 @@
 																	Value="{DynamicResource TnPDangerbgWL}" />
 														</DataTrigger>
 													</Border.Triggers>
-													<Label FontSize="12"
+													<Label FontSize="{StaticResource FontSizeXs}"
 														   FontFamily="SpaceGroteskBold"
 														   Text="{l:Localize InProgress}"
 														   TextColor="{DynamicResource TnPWarningContentWL}">
@@ -268,7 +268,7 @@
 								   TextColor="{DynamicResource TnPDangerContentWL}"
 								   BackgroundColor="{DynamicResource TnPDangerbgWL}"
 								   Padding="12,8"
-								   FontSize="14"
+								   FontSize="{StaticResource FontSizeSm}"
 								   FontFamily="SpaceGroteskSemiBold"
 								   IsVisible="{Binding AvailableLoader.IsFailed}">
 								<Label.Triggers>
@@ -288,7 +288,7 @@
 							</Label>
 							<Label Text="{l:Localize AvailableApplications}"
 								   TextColor="{DynamicResource ContentSecondaryWL}"
-								   FontSize="16"
+								   FontSize="{StaticResource FontSizeLg}"
 								   FontFamily="SpaceGroteskBold"
 								   Margin="0,16,0,0"/>
 						</VerticalStackLayout>

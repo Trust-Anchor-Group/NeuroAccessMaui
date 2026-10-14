@@ -135,6 +135,7 @@
 		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf" />
 		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf" />
 		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf" />
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
 		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf" />
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" Exclude="Resources\Raw\OcrModels\**" LogicalName="%(Filename)%(Extension)" />

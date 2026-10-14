@@ -397,7 +397,17 @@
     <value>Koden känns inte igen.</value>
   </data>
   <data name="UnableToOpenLink" xml:space="preserve">
-    <value>Det går inte att öppna länken:</value>
+    <value>Det går inte att öppna länken.</value>
+  </data>
+  <data name="OpenExternalLinkTitle" xml:space="preserve">
+    <value>Öppna länk?</value>
+  </data>
+  <data name="OpenExternalLinkMessage" xml:space="preserve">
+    <value>Den här länken öppnas utanför appen:
+
+{0}
+
+Fortsätt bara om du litar på var den kommer ifrån.</value>
   </data>
   <data name="InvalidInvitationCode" xml:space="preserve">
     <value>Ogiltig inbjudningskod.</value>
@@ -1015,7 +1025,7 @@
     <value>Ta ett foto av dig själv</value>
   </data>
   <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
-    <value>Placera ansiktet i ovalen och titta in i kameran</value>
+    <value>Placera ansiktet i ovalen</value>
   </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>Bilden är för stor</value>
@@ -3706,7 +3716,7 @@
     <value>Dokumentuppgifter sparade. Håll nu dokumentets chip mot telefonen.</value>
   </data>
   <data name="KycTravelDocumentInvalidMrz" xml:space="preserve">
-    <value>MRZ kunde inte valideras. Kontrollera dokumentnummer, födelsedatum, utgångsdatum och kontrollsiffror.</value>
+    <value>Vi kunde inte använda de skannade dokumentuppgifterna. Skanna dokumentet igen.</value>
   </data>
   <data name="KycTravelDocumentReadoutReady" xml:space="preserve">
     <value>Chipet har redan lästs.</value>
@@ -3937,136 +3947,217 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="KycDocumentScanCameraPermissionDescription" xml:space="preserve">
     <value>Tillåt kameraåtkomst för att skanna ditt dokument. Du kan försöka igen när du har aktiverat den.</value>
   </data>
-  <data name="KycStepCaptionFormat" xml:space="preserve">
-    <value>Steg {0} av {1}</value>
-  </data>
-  <data name="KycReviewButton" xml:space="preserve">
-    <value>Granska</value>
-  </data>
-  <data name="KycSendApplicationButton" xml:space="preserve">
-    <value>Skicka ansökan</value>
-  </data>
-  <data name="KycSendingApplication" xml:space="preserve">
-    <value>Skickar din ansökan…</value>
-  </data>
-  <data name="KycLoadingApplication" xml:space="preserve">
-    <value>Laddar din ansökan…</value>
-  </data>
-  <data name="KycSummaryTitle" xml:space="preserve">
-    <value>Granska din ansökan</value>
-  </data>
-  <data name="KycSummaryDescription" xml:space="preserve">
-    <value>Kontrollera att allt stämmer innan du skickar. Tryck på en uppgift för att ändra den.</value>
-  </data>
-  <data name="KycChipVerifiedTitle" xml:space="preserve">
-    <value>Verifierad med ditt ID-chip</value>
-  </data>
-  <data name="KycSentTitle" xml:space="preserve">
+  <data name="KycApplicationSentAnnouncement" xml:space="preserve">
     <value>Ansökan skickad</value>
   </data>
-  <data name="KycSentDescription" xml:space="preserve">
-    <value>Vi meddelar dig så snart den har granskats. Du kan stänga den här sidan så länge.</value>
+  <data name="KycApplicationStatusMethodChip" xml:space="preserve">
+    <value>Dokumentets chip</value>
   </data>
-  <data name="KycStepDetails" xml:space="preserve">
-    <value>Uppgifter</value>
+  <data name="KycApplicationStatusMethodLabel" xml:space="preserve">
+    <value>Verifieringsmetod</value>
   </data>
-  <data name="KycStepReview" xml:space="preserve">
-    <value>Granskning</value>
+  <data name="KycApplicationStatusMethodPhotos" xml:space="preserve">
+    <value>Foton av dokumentet</value>
   </data>
-  <data name="KycStepIdReady" xml:space="preserve">
-    <value>ID klart</value>
+  <data name="KycApplicationStatusRefresh" xml:space="preserve">
+    <value>Uppdatera status</value>
   </data>
-  <data name="KycPeerReviewTitle" xml:space="preserve">
-    <value>Be någon att granska</value>
+  <data name="KycApplicationStatusTimelineApprovedDescription" xml:space="preserve">
+    <value>Du kan använda din identitet när ansökan har godkänts.</value>
   </data>
-  <data name="KycPeerReviewProgressFormat" xml:space="preserve">
-    <value>{0} av {1} granskningar mottagna</value>
+  <data name="KycApplicationStatusTimelineFinalizingDescription" xml:space="preserve">
+    <value>Din godkända identitet håller på att slutföras.</value>
   </data>
-  <data name="KycDoneButton" xml:space="preserve">
-    <value>Klar</value>
+  <data name="KycApplicationStatusTimelineReviewDescription" xml:space="preserve">
+    <value>Uppgifterna du skickade kontrolleras.</value>
   </data>
-  <data name="KycRevokeApplicationButton" xml:space="preserve">
-    <value>Återkalla ansökan</value>
+  <data name="KycApplicationStatusTimelineSubmitted" xml:space="preserve">
+    <value>Skickad</value>
   </data>
-  <data name="KycYourDetailsTitle" xml:space="preserve">
-    <value>Dina uppgifter</value>
+  <data name="KycApplicationStatusTimelineSubmittedDescription" xml:space="preserve">
+    <value>Vi har tagit emot din ansökan.</value>
   </data>
-  <data name="KycImageEmptyHint" xml:space="preserve">
-    <value>Ta ett foto eller ladda upp ett</value>
+  <data name="KycCameraGuideDocument" xml:space="preserve">
+    <value>Placera dokumentet i ramen</value>
   </data>
-  <data name="KycImageEmptyCameraHint" xml:space="preserve">
-    <value>Tryck för att ta ett foto</value>
+  <data name="KycCameraGuideIdBack" xml:space="preserve">
+    <value>Placera kortets baksida i ramen</value>
   </data>
-  <data name="KycImageRetakeButton" xml:space="preserve">
-    <value>Ta om</value>
+  <data name="KycCameraGuideIdFront" xml:space="preserve">
+    <value>Placera kortets framsida i ramen</value>
   </data>
-  <data name="KycImageReplaceButton" xml:space="preserve">
-    <value>Byt ut</value>
+  <data name="KycCameraGuidePassport" xml:space="preserve">
+    <value>Placera passets fotosida i ramen</value>
+  </data>
+  <data name="KycCameraReviewDocumentHint" xml:space="preserve">
+    <value>Se till att hela dokumentet syns, är skarpt och fritt från reflexer.</value>
+  </data>
+  <data name="KycCameraReviewSelfieHint" xml:space="preserve">
+    <value>Se till att hela ansiktet syns, är skarpt och väl belyst.</value>
+  </data>
+  <data name="KycCameraReviewTitle" xml:space="preserve">
+    <value>Kontrollera ditt foto</value>
+  </data>
+  <data name="KycCameraStartFailedMessage" xml:space="preserve">
+    <value>Det gick inte att starta kameran just nu. Försök igen.</value>
+  </data>
+  <data name="KycCameraStartFailedTitle" xml:space="preserve">
+    <value>Kameran är inte tillgänglig</value>
+  </data>
+  <data name="KycCameraUsePhotoButton" xml:space="preserve">
+    <value>Använd foto</value>
   </data>
   <data name="KycImageAddedDescription" xml:space="preserve">
     <value>Foto tillagt</value>
   </data>
-  <data name="KycSelfieTitle" xml:space="preserve">
-    <value>Ta ditt foto</value>
+  <data name="KycImageEmptyCameraHint" xml:space="preserve">
+    <value>Tryck för att ta ett foto</value>
   </data>
-  <data name="KycSelfieTip" xml:space="preserve">
-    <value>Använd jämnt ljus och ta av solglasögon och huvudbonad.</value>
+  <data name="KycImageEmptyHint" xml:space="preserve">
+    <value>Ta ett foto eller ladda upp ett</value>
   </data>
-  <data name="KycSelfieReviewTitle" xml:space="preserve">
-    <value>Kontrollera ditt foto</value>
+  <data name="KycImageProcessing" xml:space="preserve">
+    <value>Bearbetar foto…</value>
   </data>
-  <data name="KycSelfieReviewHint" xml:space="preserve">
-    <value>Se till att hela ansiktet syns och att bilden är skarp och väl upplyst.</value>
+  <data name="KycImageRetakeButton" xml:space="preserve">
+    <value>Ta om</value>
   </data>
-  <data name="KycSelfieUsePhotoButton" xml:space="preserve">
-    <value>Använd foto</value>
+  <data name="KycLoadingApplication" xml:space="preserve">
+    <value>Läser in din ansökan…</value>
   </data>
-  <data name="KycStatusPendingTitle" xml:space="preserve">
-    <value>Din ansökan granskas</value>
+  <data name="KycReviewButton" xml:space="preserve">
+    <value>Granska</value>
   </data>
-  <data name="KycStatusPendingDescription" xml:space="preserve">
-    <value>Det kan ta en stund. Vi meddelar dig så snart det finns en uppdatering.</value>
+  <data name="KycSendingApplication" xml:space="preserve">
+    <value>Skickar din ansökan…</value>
   </data>
-  <data name="KycStatusFinalizingTitle" xml:space="preserve">
-    <value>Nästan klart</value>
+  <data name="KycTravelDocumentCameraPermissionDescription" xml:space="preserve">
+    <value>Tillåt kameraåtkomst för appen i telefonens inställningar och försök sedan igen.</value>
   </data>
-  <data name="KycStatusFinalizingDescription" xml:space="preserve">
-    <value>Dina uppgifter har godkänts. Ditt digitala ID skapas nu.</value>
+  <data name="KycTravelDocumentFailureAuthenticationDescription" xml:space="preserve">
+    <value>Det beror oftast på att dokumentets uppgifter har lästs in fel. Skanna uppgifterna igen, eller håll telefonen stilla mot dokumentet och försök igen.</value>
   </data>
-  <data name="KycStatusApprovedTitle" xml:space="preserve">
-    <value>Ditt ID är klart</value>
+  <data name="KycTravelDocumentFailureAuthenticationTitle" xml:space="preserve">
+    <value>Chipet kunde inte öppnas</value>
   </data>
-  <data name="KycStatusApprovedDescription" xml:space="preserve">
-    <value>Ditt digitala ID har godkänts och är redo att användas.</value>
+  <data name="KycTravelDocumentFailureCertificateCheckDescription" xml:space="preserve">
+    <value>Säkerhetskontrollen kräver en internetanslutning. Kontrollera anslutningen och försök igen.</value>
   </data>
-  <data name="KycStatusDraftTitle" xml:space="preserve">
-    <value>Slutför din ansökan</value>
+  <data name="KycTravelDocumentFailureCertificateCheckTitle" xml:space="preserve">
+    <value>Säkerhetskontrollen kunde inte slutföras</value>
   </data>
-  <data name="KycStatusDraftDescription" xml:space="preserve">
-    <value>Dina uppgifter är sparade. Fortsätt där du slutade.</value>
+  <data name="KycTravelDocumentFailureCertificateInvalidDescription" xml:space="preserve">
+    <value>Chipets säkerhetsuppgifter kunde inte bekräftas. Försök igen, eller kontakta din ID-leverantör om problemet kvarstår.</value>
   </data>
-  <data name="KycStatusExpiredTitle" xml:space="preserve">
-    <value>Ditt ID har gått ut</value>
+  <data name="KycTravelDocumentFailureConnectionLostDescription" xml:space="preserve">
+    <value>Försök igen och håll telefonen och dokumentet tillsammans tills avläsningen är klar.</value>
   </data>
-  <data name="KycStatusExpiredDescription" xml:space="preserve">
-    <value>Det är inte längre giltigt. Starta en ny ansökan för att få ett nytt ID.</value>
+  <data name="KycTravelDocumentFailureConnectionLostTitle" xml:space="preserve">
+    <value>Anslutningen bröts</value>
   </data>
-  <data name="KycStatusExpiredStage" xml:space="preserve">
-    <value>Utgånget</value>
+  <data name="KycTravelDocumentFailureDataIntegrityDescription" xml:space="preserve">
+    <value>Chipets uppgifter klarade inte säkerhetskontrollen. Försök igen, eller kontakta din ID-leverantör om problemet kvarstår.</value>
   </data>
-  <data name="KycStatusAttentionTitle" xml:space="preserve">
-    <value>Det här behöver åtgärdas</value>
+  <data name="KycTravelDocumentFailureMultipleTagsDescription" xml:space="preserve">
+    <value>Flytta bort andra kort och dokument från telefonen och försök sedan igen.</value>
   </data>
-  <data name="KycViewApplicationButton" xml:space="preserve">
-    <value>Visa ansökan</value>
+  <data name="KycTravelDocumentFailureMultipleTagsTitle" xml:space="preserve">
+    <value>Fler än ett chip hittades</value>
   </data>
-  <data name="KycContinueApplicationButton" xml:space="preserve">
-    <value>Fortsätt ansökan</value>
+  <data name="KycTravelDocumentFailureNfcNotSupportedDescription" xml:space="preserve">
+    <value>Den här telefonen kan inte läsa dokumentchip i appen. Du kan fortsätta utan chip.</value>
   </data>
-  <data name="KycOpenIdButton" xml:space="preserve">
-    <value>Öppna mitt ID</value>
+  <data name="KycTravelDocumentFailureNfcNotSupportedTitle" xml:space="preserve">
+    <value>Chipavläsning är inte tillgänglig</value>
   </data>
-  <data name="KycAllApplicationsButton" xml:space="preserve">
-    <value>Alla ansökningar</value>
+  <data name="KycTravelDocumentFailureNfcUnavailableDescription" xml:space="preserve">
+    <value>Kontrollera att NFC är aktiverat i telefonens inställningar och försök sedan igen.</value>
+  </data>
+  <data name="KycTravelDocumentFailureNfcUnavailableTitle" xml:space="preserve">
+    <value>NFC är inte tillgängligt</value>
+  </data>
+  <data name="KycTravelDocumentFailureNotTravelDocumentDescription" xml:space="preserve">
+    <value>Chipet innehåller inga pass- eller id-kortsuppgifter. Kontrollera att du håller dokumentet som du skannade och försök sedan igen.</value>
+  </data>
+  <data name="KycTravelDocumentFailureNotTravelDocumentTitle" xml:space="preserve">
+    <value>Chipet kan inte användas</value>
+  </data>
+  <data name="KycTravelDocumentFailureReadTitle" xml:space="preserve">
+    <value>Chipet kunde inte läsas klart</value>
+  </data>
+  <data name="KycTravelDocumentFailureRevokedDescription" xml:space="preserve">
+    <value>Dokumentets säkerhetscertifikat har återkallats. Använd ett annat pass eller id-kort.</value>
+  </data>
+  <data name="KycTravelDocumentFailureRevokedTitle" xml:space="preserve">
+    <value>Dokumentet kan inte godkännas</value>
+  </data>
+  <data name="KycTravelDocumentFailureTimedOutDescription" xml:space="preserve">
+    <value>För telefonen långsamt över dokumentet tills chipet hittas och håll sedan stilla.</value>
+  </data>
+  <data name="KycTravelDocumentFailureTimedOutTitle" xml:space="preserve">
+    <value>Tidsgränsen för chipavläsningen gick ut</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedSecurityDescription" xml:space="preserve">
+    <value>Dokumentets chip använder en säkerhetsmetod som vi inte kan läsa ännu. Försök igen, eller kontakta din ID-leverantör om problemet kvarstår.</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedSecurityTitle" xml:space="preserve">
+    <value>Dokumentet stöds inte ännu</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedTagDescription" xml:space="preserve">
+    <value>Håll passet eller id-kortet som du skannade mot telefonen och försök sedan igen.</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedTagTitle" xml:space="preserve">
+    <value>Chipet stöds inte</value>
+  </data>
+  <data name="KycTravelDocumentFailureVerificationTitle" xml:space="preserve">
+    <value>Dokumentet kunde inte verifieras</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideDescription" xml:space="preserve">
+    <value>Pass: sidan med fotot. Id-kort: baksidan. Vi läser textraderna längst ned.</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideStartButton" xml:space="preserve">
+    <value>Skanna dokument</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideTitle" xml:space="preserve">
+    <value>Skanna dokumentets uppgifter</value>
+  </data>
+  <data name="KycTravelDocumentMrzScanFailedDescription" xml:space="preserve">
+    <value>Försök igen med dokumentet plant, väl upplyst och helt synligt.</value>
+  </data>
+  <data name="KycTravelDocumentMrzScanFailedTitle" xml:space="preserve">
+    <value>Dokumentet kunde inte läsas</value>
+  </data>
+  <data name="KycTravelDocumentUseAnotherDocumentButton" xml:space="preserve">
+    <value>Använd ett annat dokument</value>
+  </data>
+  <data name="QrScannerCodeInvalid" xml:space="preserve">
+    <value>Koden är ogiltig eller har gått ut.</value>
+  </data>
+  <data name="QrScannerCodeNotSupported" xml:space="preserve">
+    <value>Den här koden kan inte användas här.</value>
+  </data>
+  <data name="QrScannerUnavailable" xml:space="preserve">
+    <value>Det gick inte att fortsätta med koden. Kontrollera anslutningen och försök igen.</value>
+  </data>
+  <data name="QrScannerValidating" xml:space="preserve">
+    <value>Kontrollerar koden…</value>
+  </data>
+  <data name="AgeAbove" xml:space="preserve">
+    <value>Ålder</value>
+  </data>
+  <data name="AgeAboveValue" xml:space="preserve">
+    <value>{0} år eller äldre</value>
+  </data>
+  <data name="KycIdContentsTitle" xml:space="preserve">
+    <value>Valfria uppgifter</value>
+  </data>
+  <data name="KycIdContentsDescription" xml:space="preserve">
+    <value>Välj vilka valfria uppgifter som ditt ID ska innehålla. Du kan utelämna det du inte vill dela.</value>
+  </data>
+  <data name="KycIdContentsNone" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="KycIdContentsIncluded" xml:space="preserve">
+    <value>Ingår i ditt ID</value>
   </data>
 </root>

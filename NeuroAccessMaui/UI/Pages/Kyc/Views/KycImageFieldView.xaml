@@ -15,16 +15,17 @@
 
 		<Style x:Key="PhotoActionBorder"
 			   TargetType="Border"
-			   BasedOn="{StaticResource SecondaryButtonActiveBorder}">
+			   BaseResourceKey="SecondaryButtonActiveBorder">
 			<Setter Property="Padding"
-					Value="12,12" />
+					Value="12" />
 		</Style>
+
 		<Style x:Key="PhotoActionLabel"
 			   TargetType="Label">
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="FontSize"
-					Value="16" />
+					Value="{StaticResource FontSizeLg}" />
 			<Setter Property="VerticalOptions"
 					Value="Center" />
 			<Setter Property="LineBreakMode"
@@ -36,43 +37,41 @@
 
 	<VerticalStackLayout Spacing="10"
 						 IsEnabled="{Binding IsEditable}">
+		<!-- Title, required marker, and the field hint -->
 		<VerticalStackLayout Spacing="2">
 			<Label Style="{DynamicResource RegularCompositeInputViewLabel}"
 				   LineBreakMode="WordWrap">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="{Binding Label.Text}" />
+						<Span Text="{Binding CaptureTitleText}" />
 						<Span Text="{Binding Required, Converter={StaticResource RequiredMarkerConverter}}"
 							  TextColor="{DynamicResource TnPDangerContentWL}" />
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>
 			<Label Text="{Binding Hint.Text}"
-				   FontSize="14"
-				   TextColor="{DynamicResource ContentSecondaryWL}"
-				   LineBreakMode="WordWrap"
+				   Style="{DynamicResource IdentityFlowCaptionLabel}"
 				   IsVisible="{Binding Hint.Text, Converter={mct:IsStringNotNullOrEmptyConverter}}" />
 		</VerticalStackLayout>
 
+		<!-- Photo card: an illustration while empty, the photo once added; tapping it opens the camera -->
 		<Border x:Name="Card"
-				HeightRequest="200"
 				Padding="0"
 				StrokeThickness="1.5"
 				StrokeDashArray="5,4"
 				StrokeShape="RoundRectangle 14"
 				Stroke="{DynamicResource InputFieldsSurfaceStroke}"
 				BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
-				SemanticProperties.Description="{l:Localize TakePhoto}">
+				MaximumHeightRequest="{Binding PreviewHeightRequest}"
+				SemanticProperties.Description="{Binding CaptureButtonText}">
 			<Border.Triggers>
 				<DataTrigger TargetType="Border"
-							 Binding="{Binding HasImage}"
+							 Binding="{Binding HasCapturedImage}"
 							 Value="True">
 					<Setter Property="StrokeThickness"
 							Value="0" />
 					<Setter Property="BackgroundColor"
 							Value="{DynamicResource SurfaceElevation2WL}" />
-					<Setter Property="InputTransparent"
-							Value="True" />
 				</DataTrigger>
 				<DataTrigger TargetType="Border"
 							 Binding="{Binding IsValid}"
@@ -87,64 +86,82 @@
 				<TapGestureRecognizer Command="{Binding TakePhotoCommand}" />
 			</Border.GestureRecognizers>
 
-			<Grid>
-				<VerticalStackLayout Spacing="12"
-									 Padding="16"
-									 HorizontalOptions="Center"
-									 VerticalOptions="Center"
-									 IsVisible="{Binding HasImage, Converter={mct:InvertedBoolConverter}}">
-					<controls:SvgView x:Name="Illustration"
-									  WidthRequest="132"
-									  HeightRequest="92"
-									  HorizontalOptions="Center"
-									  Aspect="AspectFit"
-									  TintColor="{DynamicResource ContentAccessWL}"
-									  AutomationProperties.IsInAccessibleTree="False" />
-					<Label Text="{l:Localize KycImageEmptyHint}"
-						   FontSize="14"
-						   HorizontalTextAlignment="Center"
-						   LineBreakMode="WordWrap"
-						   TextColor="{DynamicResource ContentSecondaryWL}">
-						<Label.Triggers>
-							<DataTrigger TargetType="Label"
-										 Binding="{Binding CanUpload}"
-										 Value="False">
-								<Setter Property="Text"
-										Value="{l:Localize KycImageEmptyCameraHint}" />
-							</DataTrigger>
-						</Label.Triggers>
-					</Label>
-				</VerticalStackLayout>
+			<controls:AspectRatioLayout AspectRatio="{Binding PreviewAspectRatio}">
+				<Grid>
+					<VerticalStackLayout Spacing="12"
+										 Padding="16"
+										 HorizontalOptions="Center"
+										 VerticalOptions="Center"
+										 IsVisible="{Binding HasCapturedImage, Converter={mct:InvertedBoolConverter}}">
+						<controls:SvgView x:Name="Illustration"
+										  WidthRequest="132"
+										  HeightRequest="92"
+										  HorizontalOptions="Center"
+										  Aspect="AspectFit"
+										  TintColor="{DynamicResource ContentAccessWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+						<Label Text="{l:Localize KycImageEmptyHint}"
+							   Style="{DynamicResource IdentityFlowCaptionLabel}"
+							   HorizontalTextAlignment="Center">
+							<Label.Triggers>
+								<DataTrigger TargetType="Label"
+											 Binding="{Binding AllowUploadEffective}"
+											 Value="False">
+									<Setter Property="Text"
+											Value="{l:Localize KycImageEmptyCameraHint}" />
+								</DataTrigger>
+							</Label.Triggers>
+						</Label>
+					</VerticalStackLayout>
 
-				<Image x:Name="Preview"
-					   Source="{Binding ImageSource}"
-					   Aspect="AspectFit"
-					   Margin="8"
-					   IsVisible="{Binding HasImage}"
-					   SemanticProperties.Description="{l:Localize KycImageAddedDescription}" />
+					<Image x:Name="Preview"
+						   Source="{Binding ImageSource}"
+						   Aspect="AspectFit"
+						   Margin="8"
+						   IsVisible="{Binding HasCapturedImage}"
+						   SemanticProperties.Description="{l:Localize KycImageAddedDescription}" />
 
-				<Border x:Name="Badge"
-						WidthRequest="34"
-						HeightRequest="34"
-						Padding="2"
-						Margin="10"
-						HorizontalOptions="End"
-						VerticalOptions="Start"
-						StrokeThickness="0"
-						StrokeShape="Ellipse"
-						BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-						IsVisible="{Binding HasImage}"
-						AutomationProperties.IsInAccessibleTree="False">
-					<controls:SvgView Source="kyc_check_circle.svg"
-									  Aspect="AspectFit"
-									  TintColor="{DynamicResource ContentAccessWL}" />
-				</Border>
-			</Grid>
+					<Border x:Name="Badge"
+							WidthRequest="34"
+							HeightRequest="34"
+							Padding="2"
+							Margin="10"
+							HorizontalOptions="End"
+							VerticalOptions="Start"
+							StrokeThickness="0"
+							StrokeShape="Ellipse"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							IsVisible="{Binding HasCapturedImage}"
+							AutomationProperties.IsInAccessibleTree="False">
+						<controls:SvgView Source="kyc_check_circle.svg"
+										  Aspect="AspectFit"
+										  TintColor="{DynamicResource ContentAccessWL}" />
+					</Border>
+
+					<!-- Shown while a picked or captured photo is read and stored -->
+					<Grid BackgroundColor="#66000000"
+						  IsVisible="{Binding IsImageProcessing}">
+						<VerticalStackLayout Spacing="8"
+											 HorizontalOptions="Center"
+											 VerticalOptions="Center">
+							<ActivityIndicator IsRunning="{Binding IsImageProcessing}"
+											   Color="White"
+											   WidthRequest="28"
+											   HeightRequest="28" />
+							<Label Text="{l:Localize KycImageProcessing}"
+								   FontSize="{StaticResource FontSizeXs}"
+								   TextColor="White"
+								   HorizontalTextAlignment="Center" />
+						</VerticalStackLayout>
+					</Grid>
+				</Grid>
+			</controls:AspectRatioLayout>
 		</Border>
 
+		<!-- Camera and gallery actions -->
 		<Grid ColumnDefinitions="*,*"
 			  ColumnSpacing="8"
-			  IsVisible="{Binding CanUpload}">
+			  IsVisible="{Binding AllowUploadEffective}">
 			<controls:TemplatedButton Command="{Binding TakePhotoCommand}">
 				<Border Style="{StaticResource PhotoActionBorder}">
 					<HorizontalStackLayout Spacing="8"
@@ -155,16 +172,7 @@
 										  VerticalOptions="Center"
 										  TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
 						<Label Style="{StaticResource PhotoActionLabel}"
-							   Text="{l:Localize TakePhoto}">
-							<Label.Triggers>
-								<DataTrigger TargetType="Label"
-											 Binding="{Binding HasImage}"
-											 Value="True">
-									<Setter Property="Text"
-											Value="{l:Localize KycImageRetakeButton}" />
-								</DataTrigger>
-							</Label.Triggers>
-						</Label>
+							   Text="{Binding CaptureButtonText}" />
 					</HorizontalStackLayout>
 				</Border>
 			</controls:TemplatedButton>
@@ -179,23 +187,14 @@
 										  VerticalOptions="Center"
 										  TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
 						<Label Style="{StaticResource PhotoActionLabel}"
-							   Text="{l:Localize Upload}">
-							<Label.Triggers>
-								<DataTrigger TargetType="Label"
-											 Binding="{Binding HasImage}"
-											 Value="True">
-									<Setter Property="Text"
-											Value="{l:Localize KycImageReplaceButton}" />
-								</DataTrigger>
-							</Label.Triggers>
-						</Label>
+							   Text="{l:Localize Upload}" />
 					</HorizontalStackLayout>
 				</Border>
 			</controls:TemplatedButton>
 		</Grid>
 
 		<controls:TemplatedButton Command="{Binding TakePhotoCommand}"
-								  IsVisible="{Binding CanUpload, Converter={mct:InvertedBoolConverter}}">
+								  IsVisible="{Binding AllowUploadEffective, Converter={mct:InvertedBoolConverter}}">
 			<Border Style="{StaticResource PhotoActionBorder}">
 				<HorizontalStackLayout Spacing="8"
 									   HorizontalOptions="Center">
@@ -205,23 +204,14 @@
 									  VerticalOptions="Center"
 									  TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
 					<Label Style="{StaticResource PhotoActionLabel}"
-						   Text="{l:Localize TakePhoto}">
-						<Label.Triggers>
-							<DataTrigger TargetType="Label"
-										 Binding="{Binding HasImage}"
-										 Value="True">
-								<Setter Property="Text"
-										Value="{l:Localize KycImageRetakeButton}" />
-							</DataTrigger>
-						</Label.Triggers>
-					</Label>
+						   Text="{Binding CaptureButtonText}" />
 				</HorizontalStackLayout>
 			</Border>
 		</controls:TemplatedButton>
 
 		<Grid ColumnDefinitions="Auto,*"
 			  ColumnSpacing="6"
-			  IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}">
+			  IsVisible="{Binding ValidationText, Converter={mct:IsStringNotNullOrEmptyConverter}}">
 			<Path Data="{x:Static ui:Geometries.ErrorPath}"
 				  Fill="{DynamicResource InputFieldsContentDangerv500}"
 				  VerticalOptions="Center"

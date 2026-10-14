@@ -80,7 +80,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			Point TopRight,
 			Point BottomRight,
 			Point BottomLeft,
-			string Source,
 			double CenterX,
 			double CenterY,
 			double Width,
@@ -88,13 +87,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			double AspectRatio);
 
 		private const double OutlineSmoothingRatio = 0.85d;
-		private const float MinimumVisualDocumentQuadScore = 0.28f;
 		private const double OutlineCompatibilityCenterRatio = 0.16d;
 		private const double OutlineCompatibilitySizeRatio = 0.36d;
 		private const double OutlineCompatibilityAspectRatio = 0.32d;
-		private const double OutlineSourceSwitchCenterRatio = 0.10d;
-		private const double OutlineSourceSwitchSizeRatio = 0.24d;
-		private const double OutlineSourceSwitchAspectRatio = 0.22d;
 		private const int UnsupportedDocumentEvidenceThreshold = 3;
 		private static readonly TimeSpan OutlineGracePeriod = TimeSpan.FromMilliseconds(550);
 		private static readonly TimeSpan MinimumGuidanceHintDuration = TimeSpan.FromMilliseconds(1800);
@@ -120,8 +115,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private readonly KycDocumentMrzScannerNavigationArgs? navigationArgs;
 		private readonly IOcrScanService ocrScanService;
 		private readonly IMrzPreviewAnalysisService previewAnalysisService;
-		private readonly MrzFrameStabilityTracker frameStabilityTracker = new MrzFrameStabilityTracker();
+		private readonly MrzReadConsensus readConsensus = new MrzReadConsensus();
 		private readonly object scannerHintSyncRoot = new object();
+		private readonly object completionSyncRoot = new object();
 		private readonly OcrDocumentKindHint preferredDocumentKindHint;
 #if OCR_DEBUG_ARTIFACTS_NATIVE_SHARE
 		private readonly IOcrArtifactExportService ocrArtifactExportService;
@@ -139,6 +135,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private MrzPreviewFrame? latestPreviewFrame;
 		private bool isDisposed;
 		private bool resultReturned;
+		private bool sessionCompleted;
 		private ScannerHintKey? currentHintKey;
 		private ScannerHintPriority currentHintPriority;
 		private DateTimeOffset currentHintLockedUntil = DateTimeOffset.MinValue;
@@ -333,34 +330,71 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			bool CameraPermitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			bool CameraPermitted;
+			try
+			{
+				CameraPermitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await this.EndSessionWithoutResultAsync(KycDocumentMrzScannerOutcome.Failed);
+				return;
+			}
+
 			if (!CameraPermitted)
 			{
+				// Recorded before the alert, so leaving while it is shown still reports the missing permission.
+				this.RecordOutcome(KycDocumentMrzScannerOutcome.CameraPermissionDenied);
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer["KycDocumentScanCameraPermissionTitle"],
 					ServiceRef.Localizer["KycDocumentScanCameraPermissionDescription"],
 					ServiceRef.Localizer["Ok"]);
-				this.navigationArgs?.CompletionSource?.TrySetResult(null);
-				this.resultReturned = true;
-				await ServiceRef.NavigationService.GoBackAsync();
+				if (!this.resultReturned)
+				{
+					await this.EndSessionWithoutResultAsync(KycDocumentMrzScannerOutcome.CameraPermissionDenied);
+				}
+
 				return;
 			}
 
 			this.DisposePreviewCancellation();
 			this.previewCancellationTokenSource = new CancellationTokenSource();
-			this.CameraView.Options = new CameraOptions
+			CancellationToken PreviewToken = this.previewCancellationTokenSource.Token;
+			try
 			{
-				PreferRearCamera = true,
-				ContinuousAutoFocus = true,
-				FrameDeliveryInterval = TimeSpan.FromMilliseconds(150),
-				PreviewScaling = CameraPreviewScaling.Fill,
-				TargetFps = 15,
-				TargetResolution = new Size(1920d, 1080d)
-			};
-			this.CameraView.FrameReady += this.CameraView_FrameReady;
-			this.scanStartedAt = DateTimeOffset.UtcNow;
-			await this.CameraView.StartPreviewAsync(this.previewCancellationTokenSource.Token);
-			await this.ResolveTorchSupportAsync(this.previewCancellationTokenSource.Token);
+				this.CameraView.Options = new CameraOptions
+				{
+					PreferRearCamera = true,
+					ContinuousAutoFocus = true,
+					FrameDeliveryInterval = TimeSpan.FromMilliseconds(150),
+					PreviewScaling = CameraPreviewScaling.Fill,
+					TargetFps = 15,
+					TargetResolution = new Size(1920d, 1080d)
+				};
+				this.CameraView.FrameReady += this.CameraView_FrameReady;
+				this.scanStartedAt = DateTimeOffset.UtcNow;
+				await this.CameraView.StartPreviewAsync(PreviewToken);
+			}
+			catch (OperationCanceledException) when (PreviewToken.IsCancellationRequested)
+			{
+				// The page was left while the camera was starting.
+				return;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+
+				// A failure after the page was left is not reported; the scanner starts again if the page reappears.
+				if (!PreviewToken.IsCancellationRequested)
+				{
+					await this.EndSessionWithoutResultAsync(KycDocumentMrzScannerOutcome.CameraUnavailable);
+				}
+
+				return;
+			}
+
+			await this.ResolveTorchSupportAsync(PreviewToken);
 		}
 
 		/// <inheritdoc/>
@@ -380,8 +414,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
-			if (!this.resultReturned)
-				this.navigationArgs?.CompletionSource?.TrySetResult(null);
+			// Disposal always ends the session, so the caller never waits on a scanner that is gone: a read still in its
+			// success confirmation is delivered, otherwise the scan is reported as cancelled.
+			if (this.pendingSuccessfulResult is not null)
+			{
+				this.CompletePendingSuccessfulResult();
+			}
+			else if (!this.sessionCompleted)
+			{
+				this.CompleteWithoutResult(KycDocumentMrzScannerOutcome.Cancelled);
+			}
 
 			this.Dispose();
 			await base.OnDisposeAsync();
@@ -400,12 +442,25 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task CancelAsync()
 		{
 			// Leaving during the success confirmation still delivers the captured details.
+			bool Completed;
 			if (this.pendingSuccessfulResult is not null)
-				this.CompletePendingSuccessfulResult();
+			{
+				Completed = this.CompletePendingSuccessfulResult();
+			}
 			else
-				this.navigationArgs?.CompletionSource?.TrySetResult(null);
+			{
+				Completed = this.CompleteWithoutResult(KycDocumentMrzScannerOutcome.Cancelled);
+			}
 
 			this.resultReturned = true;
+
+			// Every exit path that ends the session also closes the scanner, so when another path got there first,
+			// going back again would also close the page beneath it.
+			if (!Completed)
+			{
+				return;
+			}
+
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
@@ -413,11 +468,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void DismissValidationOverlay()
 		{
 			if (!this.IsValidationOverlayVisible)
+			{
 				return;
+			}
 
 			this.HideValidationOverlay();
 			this.ResetUnsupportedDocumentEvidence();
-			this.frameStabilityTracker.Reset();
+			this.readConsensus.Reset();
 			this.ResetScannerHintLock();
 			this.scanStartedAt = DateTimeOffset.UtcNow;
 			this.SetInitialScannerHint();
@@ -427,7 +484,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task ToggleTorchAsync()
 		{
 			if (!this.CanUseTorch)
+			{
 				return;
+			}
 
 			await this.SetTorchAsync(!this.IsTorchOn);
 		}
@@ -435,7 +494,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task SetTorchAsync(bool IsEnabled)
 		{
 			if (this.CameraView?.Controller is not ICameraController Controller || (!IsEnabled && !this.IsTorchOn))
+			{
 				return;
+			}
 
 			try
 			{
@@ -472,7 +533,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 #if DEBUG && OCR_DEBUG_ARTIFACTS_NATIVE_SHARE
 			if (Interlocked.CompareExchange(ref this.isSharingDebugArtifacts, 1, 0) != 0)
+			{
 				return;
+			}
 
 			try
 			{
@@ -508,7 +571,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					Metadata: DebugMetadata);
 
 				OcrScanResult Result = await this.ocrScanService.ScanAsync(Request, CancellationToken.None);
-
 				if (Result.ArtifactBundle is not null)
 				{
 					await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -533,13 +595,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 #if DEBUG && OCR_DEBUG_ARTIFACTS_NATIVE_SHARE
 			if (Interlocked.CompareExchange(ref this.isSharingDebugArtifacts, 1, 0) != 0)
+			{
 				return;
+			}
 
 			try
 			{
 				MrzPreviewFrame? Frame = this.latestPreviewFrame;
 				MrzPreviewAnalysisResult? AnalysisResult = this.lastPreviewAnalysisResult;
-
 				if (Frame is null || AnalysisResult is null)
 				{
 					this.SetScannerHint(
@@ -554,8 +617,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				OcrArtifactBundle Bundle = this.CreatePreviewDiagnosticsBundle(
 					Frame,
 					AnalysisResult,
-					this.frameStabilityTracker.CreateDiagnostics());
-
+					this.readConsensus.CreateDiagnostics());
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 					await this.ocrArtifactExportService.ShareAsync(Bundle, CancellationToken.None));
 			}
@@ -575,168 +637,233 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		internal void UpdateCameraViewportSize(double Width, double Height)
 		{
 			if (!double.IsFinite(Width) || !double.IsFinite(Height) || Width <= 0d || Height <= 0d)
+			{
 				return;
+			}
 
 			if (Math.Abs(this.cameraViewportWidth - Width) < 0.5d && Math.Abs(this.cameraViewportHeight - Height) < 0.5d)
+			{
 				return;
+			}
 
 			this.cameraViewportWidth = Width;
 			this.cameraViewportHeight = Height;
 			this.RequestDocumentOutlineRefresh();
 		}
 
-		internal void CompletePendingSuccessfulResult()
+		/// <summary>
+		/// Delivers an accepted read that is waiting for its success confirmation to finish.
+		/// </summary>
+		/// <returns><c>true</c> if this call ended the session; otherwise, <c>false</c>.</returns>
+		internal bool CompletePendingSuccessfulResult()
 		{
-			if (this.pendingSuccessfulResult is null)
+			// The scanner and the page can both deliver the result, so read the shared field once.
+			TravelDocumentMrzResult? PendingResult = this.pendingSuccessfulResult;
+			if (PendingResult is null)
 			{
 				this.LogScannerEvent(
 					"CompletePendingSuccessfulResultSkipped",
 					new KeyValuePair<string, object?>("HasCompletionSource", this.navigationArgs?.CompletionSource is not null));
-				return;
+				return false;
 			}
 
-			bool Completed = this.navigationArgs?.CompletionSource?.TrySetResult(this.pendingSuccessfulResult) ?? false;
+			bool Completed = this.TryCompleteSession(KycDocumentMrzScannerOutcome.Accepted, PendingResult);
 
 			this.LogScannerEvent(
 				"CompletePendingSuccessfulResult",
 				new KeyValuePair<string, object?>("Completed", Completed),
 				new KeyValuePair<string, object?>("HasCompletionSource", this.navigationArgs?.CompletionSource is not null),
-				new KeyValuePair<string, object?>("IsSuccessful", this.pendingSuccessfulResult.IsSuccessful),
-				new KeyValuePair<string, object?>("NormalizedMrzLength", this.pendingSuccessfulResult.NormalizedMrzText.Length),
-				new KeyValuePair<string, object?>("ChipAccessMrzLength", this.pendingSuccessfulResult.Document?.MRZ_Information?.Length ?? 0),
-				new KeyValuePair<string, object?>("DocumentType", this.pendingSuccessfulResult.Document?.DocumentType ?? string.Empty));
+				new KeyValuePair<string, object?>("IsSuccessful", PendingResult.IsSuccessful),
+				new KeyValuePair<string, object?>("NormalizedMrzLength", PendingResult.NormalizedMrzText.Length),
+				new KeyValuePair<string, object?>("ChipAccessMrzLength", PendingResult.Document?.MRZ_Information?.Length ?? 0),
+				new KeyValuePair<string, object?>("DocumentType", PendingResult.Document?.DocumentType ?? string.Empty));
 
 			this.pendingSuccessfulResult = null;
+			return Completed;
 		}
 
-		private async void CameraView_FrameReady(object? Sender, CameraFrame Frame)
+		/// <summary>
+		/// Records how the session ended, unless an earlier exit path already did, so a later path such as disposal
+		/// never replaces the outcome.
+		/// </summary>
+		/// <param name="Outcome">The outcome to record.</param>
+		private void RecordOutcome(KycDocumentMrzScannerOutcome Outcome)
+		{
+			lock (this.completionSyncRoot)
+			{
+				if (this.navigationArgs is not null && this.navigationArgs.Outcome == KycDocumentMrzScannerOutcome.Pending)
+				{
+					this.navigationArgs.Outcome = Outcome;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Records the outcome and hands the result to the waiting caller. Both happen under one lock, and only the
+		/// first call ends the session, so the outcome matches the first completion when exit paths race.
+		/// </summary>
+		/// <param name="Outcome">The outcome to record.</param>
+		/// <param name="Result">The accepted result, or <c>null</c> when the session ended without one.</param>
+		/// <returns><c>true</c> if this call ended the session; otherwise, <c>false</c>.</returns>
+		private bool TryCompleteSession(KycDocumentMrzScannerOutcome Outcome, TravelDocumentMrzResult? Result)
+		{
+			lock (this.completionSyncRoot)
+			{
+				if (this.sessionCompleted)
+				{
+					return false;
+				}
+
+				this.sessionCompleted = true;
+				this.RecordOutcome(Outcome);
+				this.navigationArgs?.CompletionSource?.TrySetResult(Result);
+				return true;
+			}
+		}
+
+		private bool CompleteWithoutResult(KycDocumentMrzScannerOutcome Outcome)
+		{
+			this.resultReturned = true;
+			bool Completed = this.TryCompleteSession(Outcome, null);
+			this.LogScannerEvent(
+				"CompletedWithoutResult",
+				new KeyValuePair<string, object?>("Outcome", (this.navigationArgs?.Outcome ?? Outcome).ToString()),
+				new KeyValuePair<string, object?>("Completed", Completed));
+			return Completed;
+		}
+
+		private async Task EndSessionWithoutResultAsync(KycDocumentMrzScannerOutcome Outcome)
+		{
+			this.CompleteWithoutResult(Outcome);
+			await ServiceRef.NavigationService.GoBackAsync();
+		}
+
+		private void CameraView_FrameReady(object? Sender, CameraFrame Frame)
 		{
 			_ = Sender;
 			if (this.resultReturned || this.IsValidationOverlayVisible || Interlocked.CompareExchange(ref this.isProcessingFrame, 1, 0) != 0)
+			{
 				return;
+			}
 
+			MrzPreviewFrame? PreviewFrame = null;
+			CancellationToken ProcessingToken = CancellationToken.None;
+			CancellationTokenSource? PreviewCancellation = this.previewCancellationTokenSource;
 			try
 			{
-				await this.ProcessFrameAsync(Frame, this.previewCancellationTokenSource?.Token ?? CancellationToken.None);
-			}
-			catch (OperationCanceledException)
-			{
+				// A frame delivered while the preview is stopping is not read, since nothing could cancel its inference.
+				if (PreviewCancellation is not null && !PreviewCancellation.IsCancellationRequested)
+				{
+					ProcessingToken = PreviewCancellation.Token;
+					PreviewFrame = this.CreatePreviewFrame(Frame);
+				}
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
-			finally
+
+			if (PreviewFrame is null)
 			{
 				Interlocked.Exchange(ref this.isProcessingFrame, 0);
+				return;
 			}
+
+			// The frame is copied, so the camera thread can return at once instead of waiting for inference.
+			MrzPreviewFrame FrameToProcess = PreviewFrame;
+			_ = Task.Run(async () =>
+			{
+				try
+				{
+					await this.ProcessFrameAsync(FrameToProcess, ProcessingToken);
+				}
+				catch (OperationCanceledException)
+				{
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+				finally
+				{
+					Interlocked.Exchange(ref this.isProcessingFrame, 0);
+				}
+			});
 		}
 
-		private async Task ProcessFrameAsync(CameraFrame Frame, CancellationToken CancellationToken)
+		private MrzPreviewFrame? CreatePreviewFrame(CameraFrame Frame)
 		{
-			if (this.IsValidationOverlayVisible)
-				return;
-
 			this.UpdatePreviewFrameAspectRatio(Frame);
 
 			if (Frame.Format != CameraFrameFormat.Grayscale8)
 			{
 				this.ClearDocumentOutline();
-				return;
+				return null;
 			}
 
 			Matrix<byte> Image = new Matrix<byte>(Frame.Width, Frame.Height, Frame.Buffer.ToArray());
-			MrzPreviewFrame PreviewFrame = new MrzPreviewFrame(Image, Frame.RotationDegrees, Frame.Timestamp);
+			return new MrzPreviewFrame(Image, Frame.RotationDegrees, Frame.Timestamp);
+		}
+
+		/// <summary>
+		/// Reads the MRZ in one frame and hands the read to the consensus, which decides when a read can be accepted.
+		/// Every frame is a full read attempt; there is no separate capture step.
+		/// </summary>
+		private async Task ProcessFrameAsync(MrzPreviewFrame PreviewFrame, CancellationToken CancellationToken)
+		{
 			this.latestPreviewFrame = PreviewFrame;
-			OcrDocumentKindHint DocumentKindHint = this.ResolveDocumentKindHint();
-			OcrDocumentSideHint DocumentSideHint = this.ResolveDocumentSideHint();
 			Dictionary<string, string> PreviewMetadata = new Dictionary<string, string>
 			{
 				["Flow"] = "KycDocumentScan",
 				["DocumentMode"] = this.ResolveDocumentModeMetadata()
 			};
-			AddCaptureEnvironmentMetadata(PreviewMetadata, Frame);
+			AddCaptureEnvironmentMetadata(PreviewMetadata, PreviewFrame);
 			MrzPreviewAnalysisRequest AnalysisRequest = new MrzPreviewAnalysisRequest(
-				Image,
-				Frame.RotationDegrees,
+				PreviewFrame.Image,
+				PreviewFrame.SourceRotationDegrees,
 				null,
-				DocumentKindHint,
-				DocumentSideHint,
+				this.ResolveDocumentKindHint(),
+				this.ResolveDocumentSideHint(),
 				PreviewMetadata);
 			MrzPreviewAnalysisResult AnalysisResult = this.previewAnalysisService.Analyze(AnalysisRequest, CancellationToken);
-			this.UpdateDocumentOutline(AnalysisResult);
-			this.SetScannerTextForGuidance(AnalysisResult);
-			this.frameStabilityTracker.Add(PreviewFrame, AnalysisResult);
-
-			if (!this.frameStabilityTracker.TryGetCommitFrame(out MrzPreviewFrame? CommitFrame) || CommitFrame is null)
-				return;
-
-			if (this.IsValidationOverlayVisible)
-				return;
-
-			this.SetScannerHint(
-				ScannerHintKey.Reading,
-				ServiceRef.Localizer["KycDocumentMrzScannerConfirmingStatus"],
-				ServiceRef.Localizer["KycDocumentMrzScannerKeepStillDetail"],
-				ScannerHintPriority.Progress,
-				MinimumProgressHintDuration);
-			Dictionary<string, string> CommitMetadata = new Dictionary<string, string>
+			CancellationToken.ThrowIfCancellationRequested();
+			if (this.resultReturned || this.IsValidationOverlayVisible)
 			{
-				["Flow"] = "KycDocumentScan",
-				["DocumentMode"] = this.ResolveDocumentModeMetadata(),
-				["ScannerValidationOverlayVisible"] = this.IsValidationOverlayVisible.ToString(),
-				["ScannerUnsupportedEvidenceCountBeforeCommit"] = this.unsupportedDocumentEvidenceCount.ToString(CultureInfo.InvariantCulture),
-				["ScannerUnsupportedEvidenceKeyHashBeforeCommit"] = CreateEvidenceKeyDiagnosticHash(this.unsupportedDocumentEvidenceKey)
-			};
-			AddCaptureEnvironmentMetadata(CommitMetadata, CommitFrame);
-			AddPreviewQuadMetadata(CommitMetadata, AnalysisResult);
-			OcrScanRequest Request = new OcrScanRequest(
-				CommitFrame.Image,
-				OcrScanTargetKind.Mrz,
-				SourceKind: OcrScanSourceKind.PreviewFrame,
-				ExpectedDocumentRegion: null,
-				SourceRotationDegrees: CommitFrame.SourceRotationDegrees,
-				DocumentKindHint: DocumentKindHint,
-				DocumentSideHint: DocumentSideHint,
-				ScanMode: OcrScanMode.Commit,
-#if OCR_DEBUG_ARTIFACTS_TO_JID
-				CaptureDebugArtifacts: true,
-#endif
-				Metadata: CommitMetadata);
-
-			OcrScanResult Result = await this.ocrScanService.ScanAsync(Request, CancellationToken);
-			if (!Result.IsSuccessful || Result.Mrz?.Document is null)
-			{
-				this.ResetUnsupportedDocumentEvidence();
-				this.AddScannerValidationMetadata(Result, ScannerMrzValidationOutcome.BadRead, false);
-				this.WriteScannerValidationDiagnostics(Result, ScannerMrzValidationOutcome.BadRead, false);
-				this.frameStabilityTracker.Reset();
-				this.SetScannerTextForFailedCommit(Result);
 				return;
 			}
 
-			ScannerMrzValidationOutcome ValidationOutcome = this.ClassifyScannerMrzValidation(Result, Result.Mrz.Document);
+			this.UpdateDocumentOutline(AnalysisResult);
+			this.SetScannerTextForGuidance(AnalysisResult);
+			if (!this.readConsensus.TryAccept(AnalysisResult, PreviewFrame.Timestamp, out OcrScanResult? Result)
+				|| Result?.Mrz is null)
+			{
+				return;
+			}
+
+			await this.HandleAcceptedReadAsync(Result, Result.Mrz.Document, PreviewFrame);
+		}
+
+		private async Task HandleAcceptedReadAsync(OcrScanResult Result, DocumentInformation Document, MrzPreviewFrame Frame)
+		{
+			ScannerMrzValidationOutcome ValidationOutcome = this.ClassifyScannerMrzValidation(Result, Document);
 			if (ValidationOutcome == ScannerMrzValidationOutcome.Expired)
 			{
 				this.ResetUnsupportedDocumentEvidence();
 				this.AddScannerValidationMetadata(Result, ValidationOutcome, true);
-				this.WriteScannerValidationDiagnostics(Result, ValidationOutcome, true);
-				this.frameStabilityTracker.Reset();
-
+				this.WriteScannerValidationDiagnostics(Frame, ValidationOutcome, true);
+				this.readConsensus.Reset();
 				this.ShowValidationOverlay(
 					ServiceRef.Localizer["KycDocumentMrzScannerExpiredStatus"],
 					ServiceRef.Localizer["KycDocumentMrzScannerExpiredDetail"]);
-
 				return;
 			}
 
 			if (ValidationOutcome == ScannerMrzValidationOutcome.UnsupportedDocumentType)
 			{
-				bool ShouldShowUnsupportedOverlay = this.RegisterUnsupportedDocumentEvidence(Result.Mrz.Document);
+				bool ShouldShowUnsupportedOverlay = this.RegisterUnsupportedDocumentEvidence(Document);
 				this.AddScannerValidationMetadata(Result, ValidationOutcome, ShouldShowUnsupportedOverlay);
-				this.WriteScannerValidationDiagnostics(Result, ValidationOutcome, ShouldShowUnsupportedOverlay);
-				this.frameStabilityTracker.Reset();
-
+				this.WriteScannerValidationDiagnostics(Frame, ValidationOutcome, ShouldShowUnsupportedOverlay);
+				this.readConsensus.Reset();
 				if (ShouldShowUnsupportedOverlay)
 				{
 					this.ShowValidationOverlay(
@@ -753,20 +880,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				this.ResetUnsupportedDocumentEvidence();
 				this.AddScannerValidationMetadata(Result, ValidationOutcome, false);
-				this.WriteScannerValidationDiagnostics(Result, ValidationOutcome, false);
-				this.frameStabilityTracker.Reset();
+				this.WriteScannerValidationDiagnostics(Frame, ValidationOutcome, false);
+				this.readConsensus.Reset();
 				this.SetRecoverableBadReadHint();
 				return;
 			}
 
 			this.ResetUnsupportedDocumentEvidence();
 			this.AddScannerValidationMetadata(Result, ValidationOutcome, false);
-			this.WriteScannerValidationDiagnostics(Result, ValidationOutcome, false);
-			TravelDocumentMrzResult DocumentResult = new TravelDocumentMrzResult(Result, Result.Mrz.Document);
-
+			this.WriteScannerValidationDiagnostics(Frame, ValidationOutcome, false);
+			TravelDocumentMrzResult DocumentResult = new TravelDocumentMrzResult(Result, Document);
 			if (!DocumentResult.IsSuccessful)
 			{
-				this.frameStabilityTracker.Reset();
+				this.readConsensus.Reset();
 				this.SetRecoverableBadReadHint();
 				return;
 			}
@@ -789,7 +915,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			this.CompletePendingSuccessfulResult();
+			// Another exit path that ended the session first is already closing the scanner; going back again would
+			// also close the page beneath it.
+			if (!this.CompletePendingSuccessfulResult())
+			{
+				this.LogScannerEvent("AcceptedMrzSupersededDuringConfirmation");
+				return;
+			}
+
 			this.LogScannerEvent("NavigateBackAfterAcceptedMrz");
 			await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.NavigationService.GoBackAsync());
 		}
@@ -849,7 +982,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private OcrArtifactBundle CreatePreviewDiagnosticsBundle(
 			MrzPreviewFrame Frame,
 			MrzPreviewAnalysisResult AnalysisResult,
-			IReadOnlyDictionary<string, string> StabilityDiagnostics)
+			IReadOnlyDictionary<string, string> ConsensusDiagnostics)
 		{
 			string SessionId = DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss-fff", CultureInfo.InvariantCulture)
 				+ "-preview-"
@@ -885,19 +1018,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					new
 					{
 						AnalysisResult.GuidanceState,
-						AnalysisResult.IsCommitReady,
 						AnalysisResult.FailureCategory,
-						AnalysisResult.MrzPlausibilityScore,
-						AnalysisResult.QualityMetrics,
-						DocumentQuadCandidate = CreateDocumentQuadDiagnostic(AnalysisResult.DocumentQuadCandidate),
-						MrzCandidate = CreateMrzCandidateDiagnostic(AnalysisResult.MrzCandidate),
+						AnalysisResult.ImageWidth,
+						AnalysisResult.ImageHeight,
+						AnalysisResult.DetectionScore,
+						MrzQuad = CreateQuadDiagnostic(AnalysisResult.MrzQuad),
+						Read = CreateReadDiagnostic(AnalysisResult.Read),
 						AnalysisResult.Metadata
 					},
 					PreviewDebugJsonOptions));
 
 			File.WriteAllText(
-				Path.Combine(SessionDirectory, "stability.json"),
-				JsonSerializer.Serialize(StabilityDiagnostics, PreviewDebugJsonOptions));
+				Path.Combine(SessionDirectory, "consensus.json"),
+				JsonSerializer.Serialize(ConsensusDiagnostics, PreviewDebugJsonOptions));
 
 			string ManifestPath = Path.Combine(SessionDirectory, "manifest.json");
 			File.WriteAllText(
@@ -913,7 +1046,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 							"preview-frame.png",
 							"preview-frame.json",
 							"preview-analysis.json",
-							"stability.json"
+							"consensus.json"
 						}
 					},
 					PreviewDebugJsonOptions));
@@ -921,48 +1054,39 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return new OcrArtifactBundle(SessionId, SessionDirectory, ManifestPath);
 		}
 
-		private static object? CreateDocumentQuadDiagnostic(DocumentQuadCandidate? Candidate)
+		private static object? CreateQuadDiagnostic(DocumentQuad? Quad)
 		{
-			if (Candidate is null)
+			if (Quad is null)
+			{
 				return null;
+			}
 
 			return new
 			{
-				Quad = new
-				{
-					Candidate.Quad.TopLeft,
-					Candidate.Quad.TopRight,
-					Candidate.Quad.BottomRight,
-					Candidate.Quad.BottomLeft
-				},
-				Candidate.Score,
-				Candidate.EdgeSupportScore,
-				Candidate.ContrastScore,
-				Candidate.AreaScore,
-				Candidate.FailureCategory,
-				Candidate.Metadata
+				Quad.TopLeft,
+				Quad.TopRight,
+				Quad.BottomRight,
+				Quad.BottomLeft
 			};
 		}
 
-		private static object? CreateMrzCandidateDiagnostic(MrzRegionCandidate? Candidate)
+		private static object? CreateReadDiagnostic(MrzFrameRead? Read)
 		{
-			if (Candidate is null)
+			if (Read is null)
+			{
 				return null;
+			}
 
 			return new
 			{
-				Candidate.Name,
-				Candidate.Format,
-				Candidate.Bounds,
-				Candidate.Score,
-				Candidate.Metadata,
-				Lines = Candidate.Lines.Select(static Line => new
-				{
-					Line.Bounds,
-					Line.BaselineY,
-					Line.Score,
-					Line.Metadata
-				}).ToList()
+				Read.Format,
+				Read.RawText,
+				Read.NormalizedText,
+				Read.RecognitionConfidence,
+				Read.DecodeScore,
+				Read.IsStrictSuccess,
+				Read.PassedCheckCount,
+				Read.RepairCount
 			};
 		}
 
@@ -975,12 +1099,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			OcrArtifactBundle? Bundle = Result.ArtifactBundle;
 			if (Bundle is null)
+			{
 				return;
+			}
 
 			if (string.IsNullOrWhiteSpace(OcrDebugArtifactRecipientJid))
 			{
 				if (Interlocked.CompareExchange(ref this.ocrDebugArtifactConfigurationWarningLogged, 1, 0) == 0)
+				{
 					ServiceRef.LogService.LogWarning("OCR debug artifact sending is enabled, but no recipient JID is configured.");
+				}
 
 				return;
 			}
@@ -1066,14 +1194,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static string CreateDebugArtifactArchive(OcrArtifactBundle Bundle)
 		{
 			if (!Directory.Exists(Bundle.SessionDirectoryPath))
+			{
 				throw new DirectoryNotFoundException(Bundle.SessionDirectoryPath);
+			}
 
 			string ExportDirectory = Path.Combine(FileSystem.CacheDirectory, "ocr-debug-exports");
 			Directory.CreateDirectory(ExportDirectory);
 			string ArchivePath = Path.Combine(ExportDirectory, Bundle.SessionId + ".zip");
-
 			if (File.Exists(ArchivePath))
+			{
 				File.Delete(ArchivePath);
+			}
 
 			ZipFile.CreateFromDirectory(Bundle.SessionDirectoryPath, ArchivePath, CompressionLevel.Fastest, false);
 			return ArchivePath;
@@ -1107,15 +1238,18 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					DateTimeOffset RequestedLockUntil = IsSticky
 						? DateTimeOffset.MaxValue
 						: Now + MinimumVisibleDuration;
-
 					if (RequestedLockUntil > this.currentHintLockedUntil)
+					{
 						this.currentHintLockedUntil = RequestedLockUntil;
+					}
 
 					return;
 				}
 
 				if (Now < this.currentHintLockedUntil && Priority <= this.currentHintPriority)
+				{
 					return;
+				}
 
 				this.currentHintKey = Key;
 				this.currentHintPriority = Priority;
@@ -1141,13 +1275,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static ScannerHintTone ResolveScannerHintTone(ScannerHintKey Key, ScannerHintPriority Priority)
 		{
 			if (Key == ScannerHintKey.Success)
+			{
 				return ScannerHintTone.Success;
+			}
 
 			if (Priority == ScannerHintPriority.Error)
+			{
 				return ScannerHintTone.Error;
+			}
 
 			if (Priority == ScannerHintPriority.Progress || Key == ScannerHintKey.HoldStill || Key == ScannerHintKey.Reading)
+			{
 				return ScannerHintTone.Progress;
+			}
 
 			return Priority == ScannerHintPriority.ImportantGuidance
 				? ScannerHintTone.Attention
@@ -1212,7 +1352,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			string Detail;
 			ScannerHintPriority Priority = ScannerHintPriority.Guidance;
 			TimeSpan MinimumVisibleDuration = MinimumGuidanceHintDuration;
-
 			switch (Result.GuidanceState)
 			{
 				case MrzCaptureGuidanceState.ReduceGlare:
@@ -1289,44 +1428,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				MinimumTransientFailureHintDuration);
 		}
 
-		private void SetScannerTextForFailedCommit(OcrScanResult Result)
-		{
-			string FailureCategory = Result.Metadata.TryGetValue("MrzFailureCategory", out string? Value) ? Value : string.Empty;
-			ScannerHintKey HintKey = FailureCategory switch
-			{
-				nameof(MrzScanFailureCategory.GlareInMrzArea) => ScannerHintKey.ReduceGlare,
-				nameof(MrzScanFailureCategory.DocumentTooBlurred) => ScannerHintKey.MoveCloser,
-				_ => ScannerHintKey.TransientFailure
-			};
-			string Status = FailureCategory switch
-			{
-				nameof(MrzScanFailureCategory.GlareInMrzArea) => ServiceRef.Localizer["KycDocumentMrzScannerGlareStatus"],
-				nameof(MrzScanFailureCategory.DocumentTooBlurred) => ServiceRef.Localizer["KycDocumentMrzScannerMoveCloserStatus"],
-				_ => ServiceRef.Localizer["KycDocumentMrzScannerTryAgainStatus"]
-			};
-			string Detail = FailureCategory switch
-			{
-				nameof(MrzScanFailureCategory.GlareInMrzArea) => ServiceRef.Localizer["KycDocumentMrzScannerGlareDetail"],
-				nameof(MrzScanFailureCategory.DocumentTooBlurred) => ServiceRef.Localizer["KycDocumentMrzScannerMoveCloserDetail"],
-				nameof(MrzScanFailureCategory.DocumentNotFound) => ServiceRef.Localizer["KycDocumentMrzScannerFindMrzDetail"],
-				_ => ServiceRef.Localizer["KycDocumentMrzScannerTryAgainDetail"]
-			};
-
-			this.SetScannerHint(
-				HintKey,
-				Status,
-				Detail,
-				ScannerHintPriority.ImportantGuidance,
-				MinimumTransientFailureHintDuration);
-		}
-
 		private ScannerMrzValidationOutcome ClassifyScannerMrzValidation(OcrScanResult Result, DocumentInformation Document)
 		{
 			if (Result.ValidationStatus != OcrScanValidationStatus.Succeeded)
+			{
 				return ScannerMrzValidationOutcome.BadRead;
+			}
 
 			if (!TryNormalizeDocumentType(Document.DocumentType, out string NormalizedDocumentType))
+			{
 				return ScannerMrzValidationOutcome.BadRead;
+			}
 
 			if (!IsSupportedScannerDocumentType(NormalizedDocumentType))
 			{
@@ -1336,13 +1448,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			if (!HasRequiredScannerDocumentFields(Document))
+			{
 				return ScannerMrzValidationOutcome.BadRead;
+			}
 
 			DateTime? BirthDate = ParseScannerMrzDate(Document.DateOfBirth, true);
 			DateTime? ExpiryDate = ParseScannerMrzDate(Document.ExpiryDate, false);
-
 			if (!BirthDate.HasValue || !ExpiryDate.HasValue)
+			{
 				return ScannerMrzValidationOutcome.BadRead;
+			}
 
 			return ExpiryDate.Value.Date < DateTime.UtcNow.Date
 				? ScannerMrzValidationOutcome.Expired
@@ -1352,7 +1467,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private bool RegisterUnsupportedDocumentEvidence(DocumentInformation Document)
 		{
 			string EvidenceKey = CreateUnsupportedDocumentEvidenceKey(Document);
-
 			if (string.IsNullOrWhiteSpace(EvidenceKey))
 			{
 				this.ResetUnsupportedDocumentEvidence();
@@ -1360,7 +1474,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			if (string.Equals(this.unsupportedDocumentEvidenceKey, EvidenceKey, StringComparison.Ordinal))
+			{
 				this.unsupportedDocumentEvidenceCount++;
+			}
 			else
 			{
 				this.unsupportedDocumentEvidenceKey = EvidenceKey;
@@ -1379,13 +1495,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static string CreateUnsupportedDocumentEvidenceKey(DocumentInformation Document)
 		{
 			if (!TryNormalizeDocumentType(Document.DocumentType, out string NormalizedDocumentType))
+			{
 				return string.Empty;
+			}
 
 			string DocumentNumber = NormalizeEvidenceField(Document.DocumentNumber);
 			string BirthDate = NormalizeEvidenceField(Document.DateOfBirth);
 			string ExpiryDate = NormalizeEvidenceField(Document.ExpiryDate);
 			string Nationality = NormalizeEvidenceField(Document.Nationality);
-
 			if (string.IsNullOrWhiteSpace(DocumentNumber)
 				|| string.IsNullOrWhiteSpace(BirthDate)
 				|| string.IsNullOrWhiteSpace(ExpiryDate)
@@ -1437,7 +1554,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static DateTime? ParseScannerMrzDate(string? Value, bool AssumeBirthDate)
 		{
 			if (string.IsNullOrWhiteSpace(Value) || Value.Length != 6)
+			{
 				return null;
+			}
 
 			if (!int.TryParse(Value[..2], out int Year) ||
 				!int.TryParse(Value.Substring(2, 2), out int Month) ||
@@ -1457,7 +1576,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			if (AssumeBirthDate && Candidate.Date > DateTime.UtcNow.Date)
+			{
 				Candidate = Candidate.AddYears(-100);
+			}
 
 			return Candidate;
 		}
@@ -1494,7 +1615,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void AddScannerValidationMetadata(OcrScanResult Result, ScannerMrzValidationOutcome Outcome, bool OverlayShown)
 		{
 			if (Result.Metadata is not IDictionary<string, string> Metadata)
+			{
 				return;
+			}
 
 			Metadata["ScannerValidationUiOutcome"] = Outcome.ToString();
 			Metadata["ScannerValidationOverlayShown"] = OverlayShown.ToString();
@@ -1502,15 +1625,56 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			Metadata["ScannerUnsupportedEvidenceKeyHash"] = CreateEvidenceKeyDiagnosticHash(this.unsupportedDocumentEvidenceKey);
 		}
 
-		private void WriteScannerValidationDiagnostics(OcrScanResult Result, ScannerMrzValidationOutcome Outcome, bool OverlayShown)
+		private void WriteScannerValidationDiagnostics(MrzPreviewFrame Frame, ScannerMrzValidationOutcome Outcome, bool OverlayShown)
 		{
-			if (Result.ArtifactBundle is null)
+#if OCR_DEBUG_ARTIFACTS_TO_JID
+			_ = Task.Run(async () => await this.SendScannerValidationArtifactsAsync(Frame, Outcome, OverlayShown));
+#else
+			_ = Frame;
+			_ = Outcome;
+			_ = OverlayShown;
+#endif
+		}
+
+#if OCR_DEBUG_ARTIFACTS_TO_JID
+		/// <summary>
+		/// Re-scans the frame that produced a validation outcome with artifact capture enabled, adds the scanner's
+		/// validation decision, and queues the bundle for upload.
+		/// </summary>
+		private async Task SendScannerValidationArtifactsAsync(MrzPreviewFrame Frame, ScannerMrzValidationOutcome Outcome, bool OverlayShown)
+		{
+			if (this.ocrDebugArtifactUploadCount >= OcrDebugArtifactMaxUploadsPerSession)
+			{
 				return;
+			}
 
 			try
 			{
+				Dictionary<string, string> DebugMetadata = new Dictionary<string, string>
+				{
+					["Flow"] = "KycDocumentScan",
+					["DocumentMode"] = this.ResolveDocumentModeMetadata(),
+					["DebugArtifactRequest"] = "ScannerValidation"
+				};
+				AddCaptureEnvironmentMetadata(DebugMetadata, Frame);
+				OcrScanRequest Request = new OcrScanRequest(
+					Frame.Image,
+					OcrScanTargetKind.Mrz,
+					SourceKind: OcrScanSourceKind.PreviewFrame,
+					SourceRotationDegrees: Frame.SourceRotationDegrees,
+					DocumentKindHint: this.ResolveDocumentKindHint(),
+					DocumentSideHint: this.ResolveDocumentSideHint(),
+					ScanMode: OcrScanMode.StillImage,
+					CaptureDebugArtifacts: true,
+					Metadata: DebugMetadata);
+				OcrScanResult Result = await this.ocrScanService.ScanAsync(Request, CancellationToken.None);
+				if (Result.ArtifactBundle is null)
+				{
+					return;
+				}
+
 				string DiagnosticsPath = Path.Combine(Result.ArtifactBundle.SessionDirectoryPath, "scanner-validation-ui.json");
-				File.WriteAllText(
+				await File.WriteAllTextAsync(
 					DiagnosticsPath,
 					JsonSerializer.Serialize(new
 					{
@@ -1520,21 +1684,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						UnsupportedEvidenceKeyHash = CreateEvidenceKeyDiagnosticHash(this.unsupportedDocumentEvidenceKey),
 						this.IsValidationOverlayVisible
 					}));
+				this.QueueDebugArtifactSend(Result);
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
-
-#if OCR_DEBUG_ARTIFACTS_TO_JID
-			this.QueueDebugArtifactSend(Result);
-#endif
 		}
+#endif
 
 		private static string CreateEvidenceKeyDiagnosticHash(string EvidenceKey)
 		{
 			if (string.IsNullOrWhiteSpace(EvidenceKey))
+			{
 				return string.Empty;
+			}
 
 			byte[] Bytes = System.Text.Encoding.UTF8.GetBytes(EvidenceKey);
 			byte[] Hash = System.Security.Cryptography.SHA256.HashData(Bytes);
@@ -1567,14 +1731,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			double Width = Frame.RotationDegrees is 90 or 270 ? Frame.Height : Frame.Width;
 			double Height = Frame.RotationDegrees is 90 or 270 ? Frame.Width : Frame.Height;
-
 			if (Width <= 0d || Height <= 0d)
+			{
 				return;
+			}
 
 			double FrameAspectRatio = Width / Height;
-
 			if (Math.Abs(this.previewFrameAspectRatio - FrameAspectRatio) < 0.01d)
+			{
 				return;
+			}
 
 			this.previewFrameAspectRatio = FrameAspectRatio;
 			this.RequestDocumentOutlineRefresh();
@@ -1585,7 +1751,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (MainThread.IsMainThread)
 			{
 				if (this.lastPreviewAnalysisResult is not null)
+				{
 					this.SetDocumentOutlineCore(this.lastPreviewAnalysisResult);
+				}
 
 				return;
 			}
@@ -1593,14 +1761,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				if (this.lastPreviewAnalysisResult is not null)
+				{
 					this.SetDocumentOutlineCore(this.lastPreviewAnalysisResult);
+				}
 			});
 		}
 
 		private void UpdateDocumentOutline(MrzPreviewAnalysisResult Result)
 		{
 			this.lastPreviewAnalysisResult = Result;
-
 			if (MainThread.IsMainThread)
 			{
 				this.SetDocumentOutlineCore(Result);
@@ -1614,37 +1783,25 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.CurrentGuidanceState = Result.GuidanceState;
 
-			if (Result.DocumentQuadCandidate is null
-				|| !TryGetMetadataInt(Result.Metadata, "MrzPreviewWidth", out int PreviewWidth)
-				|| !TryGetMetadataInt(Result.Metadata, "MrzPreviewHeight", out int PreviewHeight)
+			DocumentQuad? Quad = Result.MrzQuad;
+			if (Quad is null
+				|| Result.ImageWidth <= 0
+				|| Result.ImageHeight <= 0
 				|| !this.TryResolvePreviewContentBounds(out Microsoft.Maui.Graphics.Rect PreviewBounds))
 			{
 				this.PreserveRecentOutlineOrHide();
 				return;
 			}
 
-			if (Result.DocumentQuadCandidate.FailureCategory != MrzScanFailureCategory.None
-				|| Result.DocumentQuadCandidate.Score < MinimumVisualDocumentQuadScore
-				|| IsUnsafePreviewQuad(Result.Metadata))
-			{
-				this.PreserveRecentOutlineOrHide();
-				return;
-			}
-
-			DocumentQuad Quad = Result.DocumentQuadCandidate.Quad;
-			Point TargetTopLeft = MapPreviewPoint(Quad.TopLeft, PreviewWidth, PreviewHeight, PreviewBounds);
-			Point TargetTopRight = MapPreviewPoint(Quad.TopRight, PreviewWidth, PreviewHeight, PreviewBounds);
-			Point TargetBottomRight = MapPreviewPoint(Quad.BottomRight, PreviewWidth, PreviewHeight, PreviewBounds);
-			Point TargetBottomLeft = MapPreviewPoint(Quad.BottomLeft, PreviewWidth, PreviewHeight, PreviewBounds);
-			string Source = Result.DocumentQuadCandidate.Metadata.TryGetValue("DocumentQuadSource", out string? ParsedSource)
-				? ParsedSource
-				: string.Empty;
+			Point TargetTopLeft = MapPreviewPoint(Quad.TopLeft, Result.ImageWidth, Result.ImageHeight, PreviewBounds);
+			Point TargetTopRight = MapPreviewPoint(Quad.TopRight, Result.ImageWidth, Result.ImageHeight, PreviewBounds);
+			Point TargetBottomRight = MapPreviewPoint(Quad.BottomRight, Result.ImageWidth, Result.ImageHeight, PreviewBounds);
+			Point TargetBottomLeft = MapPreviewPoint(Quad.BottomLeft, Result.ImageWidth, Result.ImageHeight, PreviewBounds);
 			OutlineSnapshot TargetOutline = CreateOutlineSnapshot(
 				TargetTopLeft,
 				TargetTopRight,
 				TargetBottomRight,
-				TargetBottomLeft,
-				Source);
+				TargetBottomLeft);
 
 			if (this.HasDocumentOutline
 				&& this.displayedOutlineSnapshot.HasValue
@@ -1674,9 +1831,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.DocumentOutlineTopLeft,
 				this.DocumentOutlineTopRight,
 				this.DocumentOutlineBottomRight,
-				this.DocumentOutlineBottomLeft,
-				Source);
-
+				this.DocumentOutlineBottomLeft);
 			this.lastGoodOutlineTimestamp = DateTimeOffset.UtcNow;
 			this.HasDocumentOutline = true;
 		}
@@ -1686,7 +1841,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.lastPreviewAnalysisResult = null;
 			this.displayedOutlineSnapshot = null;
 			this.lastGoodOutlineTimestamp = DateTimeOffset.MinValue;
-
 			if (MainThread.IsMainThread)
 			{
 				this.HasDocumentOutline = false;
@@ -1705,7 +1859,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			double ViewportWidth = this.cameraViewportWidth;
 			double ViewportHeight = this.cameraViewportHeight;
-
 			if (ViewportWidth <= 0d || ViewportHeight <= 0d)
 			{
 				PreviewBounds = Microsoft.Maui.Graphics.Rect.Zero;
@@ -1715,7 +1868,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			double PreviewAspectRatio = this.previewFrameAspectRatio > 0d ? this.previewFrameAspectRatio : ViewportWidth / ViewportHeight;
 			double PreviewContentWidth = ViewportWidth;
 			double PreviewContentHeight = PreviewContentWidth / PreviewAspectRatio;
-
 			// The preview fills the view and is center-cropped, so the content may extend past the viewport.
 			if (PreviewContentHeight < ViewportHeight)
 			{
@@ -1726,33 +1878,26 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			double PreviewLeft = (ViewportWidth - PreviewContentWidth) * 0.5d;
 			double PreviewTop = (ViewportHeight - PreviewContentHeight) * 0.5d;
 			PreviewBounds = new Microsoft.Maui.Graphics.Rect(PreviewLeft, PreviewTop, PreviewContentWidth, PreviewContentHeight);
-
 			return true;
 		}
 
 		private void PreserveRecentOutlineOrHide()
 		{
 			if (this.HasDocumentOutline && DateTimeOffset.UtcNow - this.lastGoodOutlineTimestamp <= OutlineGracePeriod)
+			{
 				return;
+			}
 
 			this.displayedOutlineSnapshot = null;
 			this.lastGoodOutlineTimestamp = DateTimeOffset.MinValue;
 			this.HasDocumentOutline = false;
 		}
 
-		private static bool IsUnsafePreviewQuad(IReadOnlyDictionary<string, string> Metadata)
-		{
-			return Metadata.TryGetValue("MrzPreviewQuadRectificationSafe", out string? Text)
-				&& bool.TryParse(Text, out bool IsSafe)
-				&& !IsSafe;
-		}
-
 		private static OutlineSnapshot CreateOutlineSnapshot(
 			Point TopLeft,
 			Point TopRight,
 			Point BottomRight,
-			Point BottomLeft,
-			string Source)
+			Point BottomLeft)
 		{
 			double Width = (Distance(TopLeft, TopRight) + Distance(BottomLeft, BottomRight)) * 0.5d;
 			double Height = (Distance(TopLeft, BottomLeft) + Distance(TopRight, BottomRight)) * 0.5d;
@@ -1763,7 +1908,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				TopRight,
 				BottomRight,
 				BottomLeft,
-				Source,
 				CenterX,
 				CenterY,
 				Width,
@@ -1778,15 +1922,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			double WidthRatio = Math.Abs(Target.Width - Current.Width) / Math.Max(1d, Current.Width);
 			double HeightRatio = Math.Abs(Target.Height - Current.Height) / Math.Max(1d, Current.Height);
 			double AspectRatio = Math.Abs(Target.AspectRatio - Current.AspectRatio) / Math.Max(0.1d, Current.AspectRatio);
-			bool IsSourceSwitch = !string.Equals(Current.Source, Target.Source, StringComparison.Ordinal);
-			double AllowedCenterRatio = IsSourceSwitch ? OutlineSourceSwitchCenterRatio : OutlineCompatibilityCenterRatio;
-			double AllowedSizeRatio = IsSourceSwitch ? OutlineSourceSwitchSizeRatio : OutlineCompatibilitySizeRatio;
-			double AllowedAspectRatio = IsSourceSwitch ? OutlineSourceSwitchAspectRatio : OutlineCompatibilityAspectRatio;
 
-			return CenterRatio <= AllowedCenterRatio
-				&& WidthRatio <= AllowedSizeRatio
-				&& HeightRatio <= AllowedSizeRatio
-				&& AspectRatio <= AllowedAspectRatio;
+			return CenterRatio <= OutlineCompatibilityCenterRatio
+				&& WidthRatio <= OutlineCompatibilitySizeRatio
+				&& HeightRatio <= OutlineCompatibilitySizeRatio
+				&& AspectRatio <= OutlineCompatibilityAspectRatio;
 		}
 
 		private static Point MapPreviewPoint(IdApp.Cv.Basic.Point SourcePoint, int PreviewWidth, int PreviewHeight, Microsoft.Maui.Graphics.Rect PreviewBounds)
@@ -1833,43 +1973,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return Math.Sqrt((dx * dx) + (dy * dy));
 		}
 
-		private static void AddPreviewQuadMetadata(Dictionary<string, string> Metadata, MrzPreviewAnalysisResult AnalysisResult)
-		{
-			DocumentQuadCandidate? Candidate = AnalysisResult.DocumentQuadCandidate;
-			if (Candidate is null
-				|| !AnalysisResult.Metadata.TryGetValue("MrzPreviewWidth", out string? PreviewWidth)
-				|| !AnalysisResult.Metadata.TryGetValue("MrzPreviewHeight", out string? PreviewHeight))
-			{
-				return;
-			}
-
-			Metadata["CommitPreviewQuadAvailable"] = true.ToString();
-			Metadata["CommitPreviewWidth"] = PreviewWidth;
-			Metadata["CommitPreviewHeight"] = PreviewHeight;
-			Metadata["CommitPreviewQuadTopLeft"] = Candidate.Quad.TopLeft.X.ToString(CultureInfo.InvariantCulture) + "," + Candidate.Quad.TopLeft.Y.ToString(CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadTopRight"] = Candidate.Quad.TopRight.X.ToString(CultureInfo.InvariantCulture) + "," + Candidate.Quad.TopRight.Y.ToString(CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadBottomRight"] = Candidate.Quad.BottomRight.X.ToString(CultureInfo.InvariantCulture) + "," + Candidate.Quad.BottomRight.Y.ToString(CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadBottomLeft"] = Candidate.Quad.BottomLeft.X.ToString(CultureInfo.InvariantCulture) + "," + Candidate.Quad.BottomLeft.Y.ToString(CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadScore"] = Candidate.Score.ToString("0.000000", CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadEdgeSupportScore"] = Candidate.EdgeSupportScore.ToString("0.000000", CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadContrastScore"] = Candidate.ContrastScore.ToString("0.000000", CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadAreaScore"] = Candidate.AreaScore.ToString("0.000000", CultureInfo.InvariantCulture);
-			Metadata["CommitPreviewQuadSource"] = Candidate.Metadata.TryGetValue("DocumentQuadSource", out string? Source) ? Source : string.Empty;
-		}
-
-		private static void AddCaptureEnvironmentMetadata(Dictionary<string, string> Metadata, CameraFrame Frame)
-		{
-			Metadata["CaptureDeviceManufacturer"] = DeviceInfo.Current.Manufacturer;
-			Metadata["CaptureDeviceModel"] = DeviceInfo.Current.Model;
-			Metadata["CaptureDevicePlatform"] = DeviceInfo.Current.Platform.ToString();
-			Metadata["CaptureDeviceVersion"] = DeviceInfo.Current.VersionString;
-			Metadata["CaptureFrameWidth"] = Frame.Width.ToString(CultureInfo.InvariantCulture);
-			Metadata["CaptureFrameHeight"] = Frame.Height.ToString(CultureInfo.InvariantCulture);
-			Metadata["CaptureFrameFormat"] = Frame.Format.ToString();
-			Metadata["CaptureFrameRotationDegrees"] = Frame.RotationDegrees.ToString(CultureInfo.InvariantCulture);
-			Metadata["CaptureFrameTimestampUtc"] = Frame.Timestamp.UtcDateTime.ToString("O", CultureInfo.InvariantCulture);
-		}
-
 		private static void AddCaptureEnvironmentMetadata(Dictionary<string, string> Metadata, MrzPreviewFrame Frame)
 		{
 			Metadata["CaptureDeviceManufacturer"] = DeviceInfo.Current.Manufacturer;
@@ -1883,18 +1986,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			Metadata["CaptureFrameTimestampUtc"] = Frame.Timestamp.UtcDateTime.ToString("O", CultureInfo.InvariantCulture);
 		}
 
-		private static bool TryGetMetadataInt(IReadOnlyDictionary<string, string> Metadata, string Key, out int Value)
-		{
-			if (Metadata.TryGetValue(Key, out string? Text) &&
-				int.TryParse(Text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out Value))
-			{
-				return true;
-			}
-
-			Value = 0;
-			return false;
-		}
-
 		/// <summary>
 		/// Releases resources owned by the scanner view model.
 		/// </summary>
@@ -1902,10 +1993,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		protected virtual void Dispose(bool Disposing)
 		{
 			if (this.isDisposed)
+			{
 				return;
+			}
 
 			if (Disposing)
+			{
 				this.DisposePreviewCancellation();
+			}
 
 			this.isDisposed = true;
 		}
@@ -1915,7 +2010,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			CancellationTokenSource? Cancellation = this.previewCancellationTokenSource;
 			this.previewCancellationTokenSource = null;
 			if (Cancellation is null)
+			{
 				return;
+			}
 
 			try
 			{

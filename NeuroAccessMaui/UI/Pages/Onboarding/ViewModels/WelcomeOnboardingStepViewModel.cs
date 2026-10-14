@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -9,28 +7,50 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel;
 using NeuroAccessMaui;
+using NeuroAccessMaui.Links;
+using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.UI.Pages.Onboarding;
-using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
-using Waher.Networking.XMPP.Contracts;
-using Waher.Script.Functions.Strings;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
 	/// <summary>
 	/// Provides state and logic for the welcome onboarding step, including invite and QR handling.
 	/// </summary>
+	/// <remarks>
+	/// Invitation codes contain the key that decrypts the invitation, so neither the code nor the invitation contents are logged.
+	/// </remarks>
 	public partial class WelcomeOnboardingStepViewModel : BaseOnboardingStepViewModel
 	{
+		private const int inviteCodeDebounceMs = 500;
+
+		private readonly IQrService qrService;
+		private readonly ILinkService linkService;
 		private CancellationTokenSource? inviteCodeCts;
-		private const int InviteCodeDebounceMs = 500;
 		private bool autoAdvanced;
 
-		public WelcomeOnboardingStepViewModel() : base(OnboardingStep.Welcome) { }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="WelcomeOnboardingStepViewModel"/> class using the registered QR and link services.
+		/// </summary>
+		public WelcomeOnboardingStepViewModel()
+			: this(QrCode.GetQrService(), QrCode.GetLinkService())
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="WelcomeOnboardingStepViewModel"/> class.
+		/// </summary>
+		/// <param name="QrService">Scans invitation codes and prepares them before the scanner closes.</param>
+		/// <param name="LinkService">Reads and validates invitations that are pasted or opened as links.</param>
+		public WelcomeOnboardingStepViewModel(IQrService QrService, ILinkService LinkService) : base(OnboardingStep.Welcome)
+		{
+			this.qrService = QrService;
+			this.linkService = LinkService;
+		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the welcome content is in its initial loading state.
@@ -76,7 +96,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		/// <summary>
 		/// Gets a value indicating whether the welcome step is initializing or processing invite data.
 		/// </summary>
-		public bool IsBusy => this.IsLoading || this.IsProcessingInvite;
+		public new bool IsBusy => this.IsLoading || this.IsProcessingInvite;
 
 		internal override async Task OnActivatedAsync()
 		{
@@ -98,10 +118,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		partial void OnInviteCodeChanged(string? value)
 		{
-			ServiceRef.LogService.LogDebug($"Invite code changed. RawValue='{value ?? string.Empty}' AutoAdvanced={this.autoAdvanced}.");
 			if (this.autoAdvanced)
 			{
-				ServiceRef.LogService.LogDebug("Change ignored: already auto-advanced.");
+				ServiceRef.LogService.LogDebug("Invite code change ignored: already auto-advanced.");
 				return;
 			}
 
@@ -116,22 +135,21 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 			bool IsValid = BasicValidateInviteCode(value, out string Trimmed);
 			this.InviteCodeIsValid = IsValid;
-			ServiceRef.LogService.LogInformational($"Invite code validation result: Valid={IsValid} Trimmed='{Trimmed}'.");
+			ServiceRef.LogService.LogInformational("Invite code validated.",
+				new KeyValuePair<string, object?>("Valid", IsValid),
+				new KeyValuePair<string, object?>("Length", Trimmed.Length));
 			if (!IsValid)
-			{
-				ServiceRef.LogService.LogWarning("Invite code failed basic validation.");
 				return;
-			}
 
 			CancellationTokenSource DebounceCts = new CancellationTokenSource();
 			this.inviteCodeCts = DebounceCts;
-			ServiceRef.LogService.LogDebug($"Debounce scheduled ({InviteCodeDebounceMs} ms) for invitation processing.");
+			ServiceRef.LogService.LogDebug($"Debounce scheduled ({inviteCodeDebounceMs} ms) for invitation processing.");
 
 			_ = Task.Run(async () =>
 			{
 				try
 				{
-					await Task.Delay(InviteCodeDebounceMs, DebounceCts.Token).ConfigureAwait(false);
+					await Task.Delay(inviteCodeDebounceMs, DebounceCts.Token).ConfigureAwait(false);
 					if (DebounceCts.IsCancellationRequested)
 					{
 						ServiceRef.LogService.LogDebug("Debounce cancelled before execution.");
@@ -146,7 +164,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					this.SetInviteProcessingState(true);
 					try
 					{
-						bool Processed = await this.ProcessInvitationAsync(Trimmed).ConfigureAwait(false);
+						bool Processed = await this.ReadAndProcessInvitationAsync(Trimmed, DebounceCts.Token).ConfigureAwait(false);
 						if (Processed)
 						{
 							MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
@@ -177,23 +195,32 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			}, DebounceCts.Token);
 		}
 
-		public async Task HandleInviteCodeFromIntent(string inviteUrl)
+		/// <summary>
+		/// Processes an invitation that was opened as a link, or prepared before onboarding started.
+		/// </summary>
+		/// <param name="InviteUrl">The invitation URI.</param>
+		/// <param name="PreparedInvitation">The invitation already read and validated for <paramref name="InviteUrl"/>, so it is not read again,
+		/// or <c>null</c> to read it now.</param>
+		/// <returns>A task representing invitation processing and onboarding advancement.</returns>
+		public async Task HandleInviteCodeFromIntent(string InviteUrl, Invitation? PreparedInvitation = null)
 		{
-			ServiceRef.LogService.LogInformational($"Handling invite code from intent: '{inviteUrl}'.");
+			ServiceRef.LogService.LogInformational("Handling invitation from intent.",
+				new KeyValuePair<string, object?>("Prepared", PreparedInvitation is not null));
 
-			bool IsValid = BasicValidateInviteCode(inviteUrl, out string Trimmed);
-			this.InviteCodeIsValid = IsValid;
-			ServiceRef.LogService.LogInformational($"Invite code validation result: Valid={IsValid} Trimmed='{Trimmed}'.");
-
+			bool IsValid = BasicValidateInviteCode(InviteUrl, out string Trimmed);
+			MainThread.BeginInvokeOnMainThread(() => this.InviteCodeIsValid = IsValid);
 			if (!IsValid)
 			{
 				ServiceRef.LogService.LogWarning("Invite code failed basic validation.");
 				return;
 			}
 
+			this.SetInviteProcessingState(true);
 			try
 			{
-				bool Processed = await this.ProcessInvitationAsync(Trimmed).ConfigureAwait(false);
+				bool Processed = PreparedInvitation is not null
+					? await this.ProcessInvitationAsync(PreparedInvitation).ConfigureAwait(false)
+					: await this.ReadAndProcessInvitationAsync(Trimmed, CancellationToken.None).ConfigureAwait(false);
 				if (Processed)
 				{
 					MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
@@ -242,20 +269,27 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private async Task ScanQrCode()
 		{
 			ServiceRef.LogService.LogDebug("ScanQrCode command invoked.");
-			string? Url = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.Onboarding]).ConfigureAwait(false);
-			if (string.IsNullOrWhiteSpace(Url))
+			this.CancelPendingInviteProcessing();
+
+			// The scanner reads and validates the invitation before it closes, and shows any problem itself.
+			Invitation? Invitation = await this.qrService.ScanInvitationAsync(nameof(AppResources.ScanQRCode));
+			if (Invitation is null)
 			{
-				ServiceRef.LogService.LogWarning("QR scan returned empty URL.");
+				ServiceRef.LogService.LogDebug("Invitation scan cancelled.");
 				return;
 			}
-			string? Scheme = Constants.UriSchemes.GetScheme(Url);
-			if (!string.Equals(Scheme, Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
-			{
-				ServiceRef.LogService.LogWarning($"QR scan scheme mismatch: '{Scheme}'.");
-				return;
-			}
+
 			ServiceRef.LogService.LogInformational("Valid onboarding QR code scanned.");
-			MainThread.BeginInvokeOnMainThread(() => this.InviteCode = Url);
+			this.SetInviteProcessingState(true);
+			try
+			{
+				if (await this.ProcessInvitationAsync(Invitation).ConfigureAwait(false))
+					MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
+			}
+			finally
+			{
+				this.SetInviteProcessingState(false);
+			}
 		}
 
 		[RelayCommand]
@@ -408,54 +442,37 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			return true;
 		}
 
-		private async Task<bool> ProcessInvitationAsync(string inviteUrl)
+		/// <summary>
+		/// Retrieves, decrypts, and validates an invitation, and then applies it.
+		/// </summary>
+		/// <param name="InviteUrl">The invitation URI.</param>
+		/// <param name="CancellationToken">Cancels reading the invitation, for example when the code is edited.</param>
+		/// <returns>Whether onboarding should advance to the next step.</returns>
+		private async Task<bool> ReadAndProcessInvitationAsync(string InviteUrl, CancellationToken CancellationToken)
 		{
-			ServiceRef.LogService.LogInformational($"Processing invitation: '{inviteUrl}'.");
-			string[] Parts = inviteUrl.Split(':', StringSplitOptions.RemoveEmptyEntries);
-			if (Parts.Length != 5)
+			PreparationResult<Invitation> Result = await this.linkService.ReadInvitationAsync(InviteUrl, CancellationToken).ConfigureAwait(false);
+			if (Result.Status == PreparationStatus.Cancelled)
+				return false;
+
+			if (Result.Value is not Invitation Invitation)
 			{
-				ServiceRef.LogService.LogWarning("Invitation split length invalid.");
-				this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
+				this.MarkInviteAsInvalid(Result.Status == PreparationStatus.Unavailable
+					? nameof(AppResources.UnableToAccessInvitation)
+					: nameof(AppResources.InvalidInvitationCode));
 				return false;
 			}
-			string Domain = Parts[1];
-			string Code = Parts[2];
-			string KeyStr = Parts[3];
-			string IvStr = Parts[4];
-			string EncryptedStr;
-			Uri DomainInfoUri;
-			try
-			{
-				DomainInfoUri = new Uri("https://" + Domain + "/Onboarding/GetInfo");
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-				this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
-				return false;
-			}
-			try
-			{
-				ServiceRef.LogService.LogDebug("Posting invite code to domain info endpoint.");
-				ContentBinaryResponse Response = await InternetContent.PostAsync(
-					DomainInfoUri,
-					Encoding.ASCII.GetBytes(Code),
-					"text/plain",
-					null,
-					App.ValidateCertificateCallback,
-					new KeyValuePair<string, string>("Accept", "text/plain"));
-				Response.AssertOk();
-				ContentResponse Decoded = await InternetContent.DecodeAsync(Response.ContentType, Response.Encoded, DomainInfoUri);
-				Decoded.AssertOk();
-				EncryptedStr = (string)Decoded.Decoded;
-				ServiceRef.LogService.LogInformational("Invitation payload retrieved successfully.");
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-				this.MarkInviteAsInvalid(nameof(AppResources.UnableToAccessInvitation));
-				return false;
-			}
+
+			return await this.ProcessInvitationAsync(Invitation).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Applies a validated invitation: selects its provider, or prepares the transfer of its account.
+		/// </summary>
+		/// <param name="Invitation">The validated invitation.</param>
+		/// <returns>Whether onboarding should advance to the next step.</returns>
+		private async Task<bool> ProcessInvitationAsync(Invitation Invitation)
+		{
+			ServiceRef.LogService.LogInformational("Processing invitation.");
 
 			XmlElement? LegalIdDefinition = null;
 			string? transferredAccount = null;
@@ -464,25 +481,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			bool domainSelectedFromInvite = false;
 			try
 			{
-				ServiceRef.LogService.LogDebug("Decrypting invitation payload.");
-				byte[] Key = Convert.FromBase64String(KeyStr);
-				byte[] Iv = Convert.FromBase64String(IvStr);
-				byte[] Encrypted = Convert.FromBase64String(EncryptedStr);
-				using Aes Aes = Aes.Create();
-				Aes.BlockSize = 128;
-				Aes.KeySize = 256;
-				Aes.Mode = CipherMode.CBC;
-				Aes.Padding = PaddingMode.PKCS7;
-				using ICryptoTransform Decryptor = Aes.CreateDecryptor(Key, Iv);
-				byte[] Decrypted = Decryptor.TransformFinalBlock(Encrypted, 0, Encrypted.Length);
-				string XmlStr = Encoding.UTF8.GetString(Decrypted);
-				XmlDocument Doc = new XmlDocument { PreserveWhitespace = true };
-				Doc.LoadXml(XmlStr);
-				if (Doc.DocumentElement is null || Doc.DocumentElement.NamespaceURI != ContractsClient.NamespaceOnboarding)
-					throw new Exception("Invalid Invitation XML");
-				ServiceRef.LogService.LogInformational("Invitation XML parsed.");
+				XmlElement? Root = Invitation.Definition.DocumentElement;
+				if (Root is null)
+					throw new FormatException("Invitation has no content.");
+
 				LinkedList<XmlElement> ToProcess = new LinkedList<XmlElement>();
-				ToProcess.AddLast(Doc.DocumentElement);
+				ToProcess.AddLast(Root);
 				while (ToProcess.First is not null)
 				{
 					XmlElement E = ToProcess.First.Value;
@@ -494,10 +498,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							string ApiKey = XML.Attribute(E, "key");
 							string Secret = XML.Attribute(E, "secret");
 							string ApiDomain = XML.Attribute(E, "domain");
-							if(string.IsNullOrEmpty(ApiDomain))
+							if (string.IsNullOrEmpty(ApiDomain))
 							{
-								ApiDomain = await ServiceRef.UiService.DisplayPrompt("Please enter the IP of your provider", "This is for developers and testers", "Enter", "Cancel");
-							}	
+								ApiDomain = await ServiceRef.UiService.DisplayPrompt("Please enter the IP of your provider", "This is for developers and testers", "Enter", "Cancel") ?? string.Empty;
+							}
 							ServiceRef.LogService.LogInformational($"Selecting domain (ApiKey) '{ApiDomain}'.");
 							await SelectDomain(ApiDomain, ApiKey, Secret).ConfigureAwait(false);
 							domainSelectedFromInvite = true;
@@ -507,7 +511,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							string Password = XML.Attribute(E, "password");
 							string PasswordMethod = XML.Attribute(E, "passwordMethod");
 							string AccDomain = XML.Attribute(E, "domain");
-							ServiceRef.LogService.LogInformational($"Selecting domain (Account) '{AccDomain}'. Capturing transfer for user '{UserName}'.");
+							ServiceRef.LogService.LogInformational($"Selecting domain (Account) '{AccDomain}'. Capturing account transfer.");
 							await SelectDomain(AccDomain, string.Empty, string.Empty).ConfigureAwait(false);
 							transferredAccount = UserName;
 							transferredPassword = Password;

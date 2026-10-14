@@ -9,8 +9,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// Page for filling in, reviewing, and sending a KYC identity application.
 	/// </summary>
 	/// <remarks>
-	/// Code-behind only runs purely visual behavior: page transitions, scrolling, and the celebration after sending.
-	/// Flow state lives in <see cref="KycProcessViewModel"/>.
+	/// Code-behind only runs purely visual behavior: page transitions, scrolling, and drawing attention to a field. Flow
+	/// state lives in <see cref="KycProcessViewModel"/>. With reduced motion, pages switch without sliding and fields are
+	/// scrolled into view without being shaken or faded.
 	/// </remarks>
 	public partial class KycProcessPage : BaseContentPage
 	{
@@ -18,45 +19,41 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private const uint transitionLength = 280;
 		private static readonly TimeSpan fieldRevealDelay = TimeSpan.FromMilliseconds(180);
 
+		private readonly KycProcessViewModel viewModel;
 		private bool hasPresentedStep;
-		private bool presentedSummary;
-		private int presentedPageIndex;
+		private int presentedStepPosition;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KycProcessPage"/> class.
 		/// </summary>
-		/// <param name="ViewModel">The page view model.</param>
-		public KycProcessPage(KycProcessViewModel ViewModel)
+		/// <param name="Vm">The page view model.</param>
+		public KycProcessPage(KycProcessViewModel Vm)
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = ViewModel;
+			this.ContentPageModel = Vm;
+			this.viewModel = Vm;
 
-			ViewModel.ScrollToTop += this.OnScrollToTop;
-			ViewModel.ValidationFailed += this.OnValidationFailed;
-			ViewModel.FieldRevealRequested += this.OnFieldRevealRequested;
-			ViewModel.ApplicationSubmitted += this.OnApplicationSubmitted;
-			ViewModel.PropertyChanged += this.OnViewModelPropertyChanged;
+			Vm.ScrollToTop += this.OnScrollToTop;
+			Vm.ValidationFailed += this.OnValidationFailed;
+			Vm.FieldRevealRequested += this.OnFieldRevealRequested;
+			Vm.PropertyChanged += this.OnViewModelPropertyChanged;
 		}
 
-		private static bool IsReducedMotion
+		/// <inheritdoc/>
+		public override async Task OnDisposeAsync()
 		{
-			get
-			{
-				try
-				{
-					return ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true;
-				}
-				catch (Exception)
-				{
-					return false;
-				}
-			}
+			this.viewModel.ScrollToTop -= this.OnScrollToTop;
+			this.viewModel.ValidationFailed -= this.OnValidationFailed;
+			this.viewModel.FieldRevealRequested -= this.OnFieldRevealRequested;
+			this.viewModel.PropertyChanged -= this.OnViewModelPropertyChanged;
+			await base.OnDisposeAsync();
 		}
 
 		private void OnViewModelPropertyChanged(object? Sender, PropertyChangedEventArgs E)
 		{
 			if (E.PropertyName != nameof(KycProcessViewModel.CurrentPagePosition) &&
 				E.PropertyName != nameof(KycProcessViewModel.IsInSummary) &&
+				E.PropertyName != nameof(KycProcessViewModel.IsInIdContents) &&
 				E.PropertyName != nameof(KycProcessViewModel.IsLoading))
 			{
 				return;
@@ -66,42 +63,63 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		/// <summary>
-		/// Slides the new page or the summary in from the direction of travel when the visible step changes.
+		/// Slides the new page, the ID contents step, or the summary in from the direction of travel when the visible step changes.
 		/// </summary>
 		private void PresentCurrentStep()
 		{
-			KycProcessViewModel ViewModel = this.ViewModel<KycProcessViewModel>();
-			bool InSummary = ViewModel.IsInSummary;
-			int PageIndex = ViewModel.CurrentPagePosition;
+			int StepPosition = this.GetStepPosition();
 
-			if (!this.hasPresentedStep || ViewModel.IsLoading)
+			if (!this.hasPresentedStep || this.viewModel.IsLoading)
 			{
-				this.hasPresentedStep = !ViewModel.IsLoading;
-				this.presentedSummary = InSummary;
-				this.presentedPageIndex = PageIndex;
+				this.hasPresentedStep = !this.viewModel.IsLoading;
+				this.presentedStepPosition = StepPosition;
 				return;
 			}
 
-			if (InSummary == this.presentedSummary && (InSummary || PageIndex == this.presentedPageIndex))
+			if (StepPosition == this.presentedStepPosition)
 				return;
 
-			int Direction;
-			if (InSummary != this.presentedSummary)
-				Direction = InSummary ? 1 : -1;
-			else
-				Direction = PageIndex >= this.presentedPageIndex ? 1 : -1;
+			int Direction = StepPosition > this.presentedStepPosition ? 1 : -1;
+			this.presentedStepPosition = StepPosition;
 
-			this.presentedSummary = InSummary;
-			this.presentedPageIndex = PageIndex;
+			_ = SlideInAsync(this.GetStepContent(), Direction);
+		}
 
-			_ = SlideInAsync(InSummary ? this.SummaryContent : this.FormContent, Direction);
+		/// <summary>
+		/// Gets the position of the visible step in the flow: form pages by index, then the ID contents step, then the summary.
+		/// </summary>
+		/// <returns>A value that grows in the direction of travel.</returns>
+		private int GetStepPosition()
+		{
+			if (this.viewModel.IsInSummary)
+				return int.MaxValue;
+
+			if (this.viewModel.IsInIdContents)
+				return int.MaxValue - 1;
+
+			return this.viewModel.CurrentPagePosition;
+		}
+
+		/// <summary>
+		/// Gets the content of the visible step.
+		/// </summary>
+		/// <returns>The layout to animate in.</returns>
+		private VisualElement GetStepContent()
+		{
+			if (this.viewModel.IsInSummary)
+				return this.SummaryContent;
+
+			if (this.viewModel.IsInIdContents)
+				return this.IdContentsContent;
+
+			return this.FormContent;
 		}
 
 		private static async Task SlideInAsync(VisualElement Content, int Direction)
 		{
 			Content.CancelAnimations();
 
-			if (IsReducedMotion)
+			if (MotionPreferences.ReduceMotion)
 			{
 				Content.Opacity = 1;
 				Content.TranslationX = 0;
@@ -126,18 +144,20 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void OnScrollToTop(object? Sender, EventArgs E)
 		{
 			// Dispatch so the scroll happens after the view model has finished switching between form and summary.
-			this.Dispatcher.Dispatch(() =>
+			this.Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(16), () =>
 			{
-				ScrollView Target = this.ViewModel<KycProcessViewModel>().IsInSummary ? this.SummaryScroll : this.FormScroll;
-				_ = ScrollToTopAsync(Target, false);
+				ScrollView Target = this.viewModel.IsInSummary
+					? this.SummaryScroll
+					: this.viewModel.IsInIdContents ? this.IdContentsScroll : this.FormScroll;
+				_ = ScrollToTopAsync(Target);
 			});
 		}
 
-		private static async Task ScrollToTopAsync(ScrollView Scroll, bool Animated)
+		private static async Task ScrollToTopAsync(ScrollView Scroll)
 		{
 			try
 			{
-				await Scroll.ScrollToAsync(0, 0, Animated);
+				await Scroll.ScrollToAsync(0, 0, false);
 			}
 			catch (Exception Ex)
 			{
@@ -147,44 +167,35 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void OnValidationFailed(object? Sender, ObservableKycField Field)
 		{
-			this.Dispatcher.Dispatch(() => _ = this.RevealInvalidFieldAsync(Field));
+			this.Dispatcher.Dispatch(() => this.RevealWhenLaidOut(Field, this.RevealInvalidFieldAsync));
 		}
 
 		private void OnFieldRevealRequested(object? Sender, ObservableKycField Field)
 		{
 			// Wait for the new page to be laid out so the field has a position to scroll to.
-			this.Dispatcher.DispatchDelayed(fieldRevealDelay, () => _ = this.RevealFieldAsync(Field));
+			this.Dispatcher.DispatchDelayed(fieldRevealDelay, () => this.RevealWhenLaidOut(Field, this.RevealFieldAsync));
 		}
 
 		/// <summary>
-		/// Scrolls a field opened from the summary into view and briefly highlights it.
+		/// Runs a reveal for the view of a field, waiting once for layout when the field is on a page that was just opened.
 		/// </summary>
 		/// <param name="Field">The field to reveal.</param>
-		/// <returns>A task that completes when the field has been revealed.</returns>
-		private async Task RevealFieldAsync(ObservableKycField Field)
+		/// <param name="Reveal">The reveal to run on the field's view.</param>
+		private void RevealWhenLaidOut(ObservableKycField Field, Func<VisualElement, Task> Reveal)
 		{
 			VisualElement? Target = this.FindFieldView(Field);
-			if (Target is null)
+			if (Target is not null && Target.Height > 0)
+			{
+				_ = Reveal(Target);
 				return;
-
-			bool ReduceMotion = IsReducedMotion;
-
-			try
-			{
-				await this.FormScroll.ScrollToAsync(Target, ScrollToPosition.Center, !ReduceMotion);
-
-				if (ReduceMotion)
-					return;
-
-				Target.CancelAnimations();
-				Target.Opacity = 0.35;
-				await Target.FadeToAsync(1, 600, Easing.CubicOut);
 			}
-			catch (Exception Ex)
+
+			this.Dispatcher.DispatchDelayed(fieldRevealDelay, () =>
 			{
-				Target.Opacity = 1;
-				ServiceRef.LogService.LogException(Ex);
-			}
+				VisualElement? LaidOutTarget = this.FindFieldView(Field);
+				if (LaidOutTarget is not null)
+					_ = Reveal(LaidOutTarget);
+			});
 		}
 
 		/// <summary>
@@ -201,21 +212,47 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		/// <summary>
-		/// Scrolls the first invalid field into view and nudges it so the user sees what is missing.
+		/// Scrolls a field opened from the summary into view and briefly highlights it.
 		/// </summary>
-		/// <param name="Field">The first invalid field on the page.</param>
+		/// <param name="Target">The view of the field to reveal.</param>
 		/// <returns>A task that completes when the field has been revealed.</returns>
-		private async Task RevealInvalidFieldAsync(ObservableKycField Field)
+		private async Task RevealFieldAsync(VisualElement Target)
 		{
-			VisualElement? Target = this.FindFieldView(Field);
-			if (Target is null)
-				return;
-
-			bool ReduceMotion = IsReducedMotion;
+			bool ReduceMotion = MotionPreferences.ReduceMotion;
 
 			try
 			{
 				await this.FormScroll.ScrollToAsync(Target, ScrollToPosition.Center, !ReduceMotion);
+				SetSemanticFocus(Target);
+
+				if (ReduceMotion)
+					return;
+
+				Target.CancelAnimations();
+				Target.Opacity = 0.35;
+				await Target.FadeToAsync(1, 600, Easing.CubicOut);
+			}
+			catch (Exception Ex)
+			{
+				Target.Opacity = 1;
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Scrolls the first invalid field into view and nudges it so the user sees what is missing. With reduced motion
+		/// the field is only scrolled into view, where its validation message highlights it.
+		/// </summary>
+		/// <param name="Target">The view of the first invalid field on the page.</param>
+		/// <returns>A task that completes when the field has been revealed.</returns>
+		private async Task RevealInvalidFieldAsync(VisualElement Target)
+		{
+			bool ReduceMotion = MotionPreferences.ReduceMotion;
+
+			try
+			{
+				await this.FormScroll.ScrollToAsync(Target, ScrollToPosition.Center, !ReduceMotion);
+				SetSemanticFocus(Target);
 
 				if (ReduceMotion)
 					return;
@@ -233,39 +270,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
-		private void OnApplicationSubmitted(object? Sender, EventArgs E)
+		/// <summary>
+		/// Moves screen reader focus to a field, so users of assistive technology land on the field that needs attention.
+		/// </summary>
+		/// <param name="Target">The view to focus.</param>
+		private static void SetSemanticFocus(VisualElement Target)
 		{
-			this.Dispatcher.Dispatch(() =>
-			{
-				_ = ScrollToTopAsync(this.SummaryScroll, !IsReducedMotion);
-				this.SentVisual.Celebrate();
-				_ = SlideUpAsync(this.SentPanel);
-			});
-		}
-
-		private static async Task SlideUpAsync(VisualElement Content)
-		{
-			Content.CancelAnimations();
-
-			if (IsReducedMotion)
-			{
-				Content.Opacity = 1;
-				Content.TranslationY = 0;
-				return;
-			}
-
 			try
 			{
-				Content.Opacity = 0;
-				Content.TranslationY = 16;
-				await Task.WhenAll(
-					Content.FadeToAsync(1, 320, Easing.CubicOut),
-					Content.TranslateToAsync(0, 0, 320, Easing.CubicOut));
+				Target.SetSemanticFocus();
 			}
 			catch (Exception)
 			{
-				Content.Opacity = 1;
-				Content.TranslationY = 0;
+				// Semantic focus is best effort.
 			}
 		}
 	}
