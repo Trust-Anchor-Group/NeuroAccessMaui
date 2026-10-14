@@ -304,6 +304,28 @@ namespace NeuroAccessMaui
 
 				return Url[(Scheme.Length + 1)..];
 			}
+
+			/// <summary>
+			/// Rewrites an application link written as <c>scheme://data</c> to the <c>scheme:data</c> form that link handlers read.
+			/// </summary>
+			/// <remarks>
+			/// Only the predefined application schemes are rewritten, so web links and other schemes keep their authority.
+			/// </remarks>
+			/// <param name="Url">The link text.</param>
+			/// <returns>The link in <c>scheme:data</c> form, or <paramref name="Url"/> unchanged if it is not an application link
+			/// written with <c>//</c>.</returns>
+			public static string Normalize(string Url)
+			{
+				string? Scheme = GetScheme(Url);
+				if (Scheme is null)
+					return Url;
+
+				int DataStart = Scheme.Length + 1;
+				if (!Url.AsSpan(DataStart).StartsWith("//", StringComparison.Ordinal))
+					return Url;
+
+				return Url[..DataStart] + Url[(DataStart + 2)..];
+			}
 		}
 
 		/// <summary>

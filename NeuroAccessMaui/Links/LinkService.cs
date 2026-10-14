@@ -219,13 +219,17 @@ namespace NeuroAccessMaui.Links
 		/// <summary>
 		/// Parses link text into an absolute URI, after trimming surrounding whitespace.
 		/// </summary>
+		/// <remarks>
+		/// Application links written as <c>scheme://data</c> are rewritten to <c>scheme:data</c> first, so handlers, which read the
+		/// data after the first colon, see the same text for both forms.
+		/// </remarks>
 		/// <param name="Text">The link text.</param>
 		/// <param name="Link">The parsed link, when the text is a usable absolute URI.</param>
 		/// <returns>Whether the text could be parsed.</returns>
 		private static bool TryParseLink(string? Text, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out Uri? Link)
 		{
 			Link = null;
-			string Value = Text?.Trim() ?? string.Empty;
+			string Value = Constants.UriSchemes.Normalize(Text?.Trim() ?? string.Empty);
 			return Value.Length > 0 && !Value.Any(char.IsControl) && Uri.TryCreate(Value, UriKind.Absolute, out Link);
 		}
 

@@ -331,7 +331,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		private bool IsPermittedUrl(string Url)
 		{
 			if (this.navigationArgs?.AllowedSchemas is not null &&
-				System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
+				System.Uri.TryCreate(Constants.UriSchemes.Normalize(Url), UriKind.Absolute, out Uri? Uri))
 			{
 				foreach (string Schema in this.navigationArgs.AllowedSchemas)
 				{
