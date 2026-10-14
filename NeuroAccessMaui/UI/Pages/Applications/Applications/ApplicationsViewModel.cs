@@ -38,6 +38,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 {

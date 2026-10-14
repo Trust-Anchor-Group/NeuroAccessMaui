@@ -17,6 +17,7 @@ using Waher.Networking.XMPP;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Identity;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {

@@ -14,6 +14,7 @@ using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {

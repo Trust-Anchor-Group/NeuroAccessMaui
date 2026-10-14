@@ -89,6 +89,11 @@ using Waher.Persistence;
 using Waher.Runtime.Text;
 using Waher.Security.LoginMonitor;
 using Waher.Layout;
+using NeuroAccess.Nfc.TravelDocuments.PACE;
+using Waher.Security;
+using Waher.Security.EllipticCurves;
+using Waher.Security.EllipticCurves.E2EE;
+using Waher.Security.E2EE;
 
 namespace NeuroAccessMaui
 {
@@ -325,7 +330,7 @@ namespace NeuroAccessMaui
                     typeof(AccessViolationException),
                     typeof(InsufficientMemoryException));
 
-                EndpointSecurity.SetCiphers([typeof(Edwards448Endpoint)], false);
+				E2eEndpoint.SetCiphers([typeof(Edwards448Endpoint)], false);
 
                 IXmlSchemaValidationService Xml = ServiceRef.Provider.GetRequiredService<IXmlSchemaValidationService>();
                 Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
