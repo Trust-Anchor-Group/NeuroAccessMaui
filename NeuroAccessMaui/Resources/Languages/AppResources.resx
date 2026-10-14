@@ -4310,4 +4310,7 @@ Document read. You can move your iPhone.</value>
   <data name="KycIdContentsIncluded" xml:space="preserve">
     <value>Included in your ID</value>
   </data>
+  <data name="KycPickerNotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
 </root>

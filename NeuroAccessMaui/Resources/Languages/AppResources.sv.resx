@@ -4160,4 +4160,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="KycIdContentsIncluded" xml:space="preserve">
     <value>Ingår i ditt ID</value>
   </data>
+  <data name="KycPickerNotSpecified" xml:space="preserve">
+    <value>Ej angivet</value>
+  </data>
 </root>

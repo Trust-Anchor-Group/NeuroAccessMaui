@@ -4175,4 +4175,7 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="KycIdContentsIncluded" xml:space="preserve">
     <value>Incluidos en tu ID</value>
   </data>
+  <data name="KycPickerNotSpecified" xml:space="preserve">
+    <value>Sin especificar</value>
+  </data>
 </root>

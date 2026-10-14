@@ -1009,6 +1009,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				foreach (KycMapping Map in Field.Mappings)
 				{
 					if (string.IsNullOrWhiteSpace(Map.Key)) continue;
+					// Details the ID leaves out unless the user opts in start empty, so they are never entered on the user's behalf.
+					if (KycKeepChoices.IsLeftOutByDefault(this.process, Map.Key)) continue;
 					if (ByName.TryGetValue(Map.Key, out string? Value) && !string.IsNullOrWhiteSpace(Value))
 					{
 						Field.StringValue = Value;

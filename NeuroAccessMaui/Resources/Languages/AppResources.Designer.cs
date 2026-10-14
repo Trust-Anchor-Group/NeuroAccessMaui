@@ -12926,5 +12926,14 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("KycIdContentsIncluded", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not specified.
+        /// </summary>
+        public static string KycPickerNotSpecified {
+            get {
+                return ResourceManager.GetString("KycPickerNotSpecified", resourceCulture);
+            }
+        }
     }
 }

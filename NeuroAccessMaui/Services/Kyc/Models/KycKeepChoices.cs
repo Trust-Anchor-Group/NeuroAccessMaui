@@ -52,6 +52,17 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		}
 
 		/// <summary>
+		/// Determines whether a property stays off the final identity unless the user chooses to keep it.
+		/// </summary>
+		/// <param name="Process">The KYC process.</param>
+		/// <param name="PropertyKey">The identity property key.</param>
+		/// <returns><c>true</c> if the property is optional and left out by default; otherwise, <c>false</c>.</returns>
+		public static bool IsLeftOutByDefault(KycProcess Process, string PropertyKey)
+		{
+			return Process.ApplicationPolicy.Content.OptionalKeepDefaults.TryGetValue(PropertyKey, out bool DefaultKept) && !DefaultKept;
+		}
+
+		/// <summary>
 		/// Determines whether a retained property will be kept on the final identity.
 		/// </summary>
 		/// <param name="Process">The KYC process.</param>
