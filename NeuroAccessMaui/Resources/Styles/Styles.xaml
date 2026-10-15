@@ -14,6 +14,28 @@
 	<s:Double x:Key="ThinStrokeThickness">1</s:Double>
 	<s:Double x:Key="MediumStrokeThickness">2</s:Double>
 	<s:Double x:Key="BoldStrokeThickness">4</s:Double>
+
+	<!-- Type scale: use these keys for FontSize instead of literal values. -->
+	<s:Double x:Key="FontSize2xs">10</s:Double>
+	<s:Double x:Key="FontSizeXs">12</s:Double>
+	<s:Double x:Key="FontSizeSm">14</s:Double>
+	<s:Double x:Key="FontSizeMd">15</s:Double>
+	<s:Double x:Key="FontSizeLg">16</s:Double>
+	<s:Double x:Key="FontSizeXl">18</s:Double>
+	<s:Double x:Key="FontSize2xl">20</s:Double>
+	<s:Double x:Key="FontSize3xl">22</s:Double>
+	<s:Double x:Key="FontSize4xl">24</s:Double>
+	<s:Double x:Key="FontSize5xl">26</s:Double>
+	<s:Double x:Key="FontSize6xl">28</s:Double>
+	<s:Double x:Key="FontSize7xl">30</s:Double>
+	<s:Double x:Key="FontSize8xl">32</s:Double>
+
+	<!-- Display sizes for hero titles, large amounts and indicator glyphs. -->
+	<s:Double x:Key="FontSizeDisplaySm">35</s:Double>
+	<s:Double x:Key="FontSizeDisplayMd">42</s:Double>
+	<s:Double x:Key="FontSizeDisplayLg">48</s:Double>
+	<s:Double x:Key="FontSizeDisplayXl">50</s:Double>
+
 	<Thickness x:Key="NoMargins">0</Thickness>
 	<Thickness x:Key="SmallMargins">8,8,8,8</Thickness>
 	<Thickness x:Key="SmallLeftMargins">8,0,0,0</Thickness>
@@ -69,7 +91,7 @@
 		<Setter Property="CancelButtonColor" Value="{DynamicResource ContentAccessWL}" />
 		<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceBackgroundWL}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
-		<Setter Property="FontSize" Value="18" />
+		<Setter Property="FontSize" Value="{StaticResource FontSizeXl}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Page">
@@ -379,7 +401,7 @@
 		<Setter Property="HorizontalTextAlignment" Value="Start"/>
 		<Setter Property="HorizontalOptions" Value="Center"/>
 		<Setter Property="VerticalTextAlignment" Value="Center"/>
-		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="FontSize" Value="{StaticResource FontSizeSm}"/>
 		<Setter Property="LineBreakMode" Value="WordWrap"/>
 		<Setter Property="TextColor"
 				Value="{DynamicResource ContentSecondaryWL}" />
@@ -428,7 +450,7 @@
 	</Style>
 
 	<Style x:Key="AccentInfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
-		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular"/>
 		<Setter Property="TextColor" Value="{DynamicResource TnPInfoContentWL}" />
 	</Style>

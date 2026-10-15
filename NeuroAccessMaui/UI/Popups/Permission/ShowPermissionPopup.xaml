@@ -28,12 +28,12 @@
                 <Label HorizontalTextAlignment="Start"
                        Style="{DynamicResource ItemDescriptionLabel}"
                        Text="{Binding Description}"
-                       FontSize="15"
+                       FontSize="{StaticResource FontSizeMd}"
                        Margin="{DynamicResource SmallLeftRightMargins}" />
                 <Label HorizontalTextAlignment="Start"
                        Style="{DynamicResource ItemDescriptionLabel}"
                        Text="{Binding DescriptionSecondary}"
-                       FontSize="15"
+                       FontSize="{StaticResource FontSizeMd}"
                        Margin="{DynamicResource SmallLeftRightMargins}" />
             </VerticalStackLayout>
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">

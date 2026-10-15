@@ -13,7 +13,7 @@
 		<Setter Property="FontFamily"
 				Value="HaasGroteskRegular" />
 		<Setter Property="FontSize"
-				Value="18" />
+				Value="{StaticResource FontSizeXl}" />
 		<Setter Property="BackgroundColor"
 				Value="Transparent" />
 	</Style>
@@ -24,7 +24,7 @@
 		<Setter Property="FontFamily"
 				Value="HaasGroteskRegular" />
 		<Setter Property="FontSize"
-				Value="18" />
+				Value="{StaticResource FontSizeXl}" />
 		<Setter Property="BackgroundColor"
 				Value="Transparent" />
 	</Style>
@@ -36,7 +36,7 @@
 		<Setter Property="TextColor"
 				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="{StaticResource FontSizeMd}" />
 		<Setter Property="FontFamily"
 				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"

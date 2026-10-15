@@ -8,7 +8,7 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="FontSize"
-				Value="14" />
+				Value="{StaticResource FontSizeSm}" />
 		<Setter Property="FontFamily"
 				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"
@@ -24,7 +24,7 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="{StaticResource FontSizeMd}" />
 		<Setter Property="FontFamily"
 				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"

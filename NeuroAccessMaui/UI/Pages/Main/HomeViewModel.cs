@@ -84,12 +84,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				}
 				
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
-				await ServiceRef.ThemeService.ThemeLoaded.Task;
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.ThemeLoaded = true;
-					this.OnPropertyChanged(nameof(this.BannerUri));
-				});
+				// Branding may still be downloading on the first run; the banner appears when it is ready.
+				_ = this.ShowBannerWhenThemeLoadedAsync();
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
 
@@ -115,6 +111,27 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			this.notificationService.OnNotificationAdded += this.NotificationService_OnNotificationAdded;
 			await this.RefreshUnreadNotificationsAsync();
+		}
+
+		/// <summary>
+		/// Shows the provider banner once branding has loaded, without delaying the rest of the page setup.
+		/// </summary>
+		/// <returns>A task that completes when the banner state has been updated.</returns>
+		private async Task ShowBannerWhenThemeLoadedAsync()
+		{
+			try
+			{
+				await ServiceRef.ThemeService.ThemeLoaded.Task;
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.ThemeLoaded = true;
+					this.OnPropertyChanged(nameof(this.BannerUri));
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		public override Task OnDisappearingAsync()

@@ -45,9 +45,13 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Android implementation of platform-specific features.
 		/// </summary>
+		/// <remarks>
+		/// Keyboard insets are attached by <see cref="MainActivity"/> through <see cref="AttachKeyboardInsets"/> once its
+		/// window exists, so constructing this service never touches views and never polls for an Activity. That also keeps
+		/// processes started only for a push message free of polling.
+		/// </remarks>
 		public PlatformSpecific()
 		{
-			this.InitializeKeyboard();
 		}
 
 		/// <summary>
@@ -71,8 +75,6 @@ namespace NeuroAccessMaui.Services
 			{
 				protectionTimer?.Dispose();
 				protectionTimer = null;
-				this.initializeKeyboardHandler?.RemoveCallbacksAndMessages(null);
-				this.initializeKeyboardHandler = null;
 				this.DetachInsetsListener();
 				this.rootView = null;
 			}
@@ -151,6 +153,35 @@ namespace NeuroAccessMaui.Services
 		private void ProtectionTimerElapsed(object? P)
 		{
 			MainThread.BeginInvokeOnMainThread(() => this.ProhibitScreenCapture = false);
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether animations are turned off in the device settings, either through
+		/// "Remove animations" or by setting the animator duration scale to zero.
+		/// </summary>
+		public bool IsReduceMotionEnabled
+		{
+			get
+			{
+				try
+				{
+					ContentResolver? Resolver = Application.Context.ContentResolver;
+					if (Resolver is null)
+						return false;
+
+					float AnimatorScale = global::Android.Provider.Settings.Global.GetFloat(
+						Resolver,
+						global::Android.Provider.Settings.Global.AnimatorDurationScale,
+						1f);
+
+					return AnimatorScale <= 0f;
+				}
+				catch (Exception Ex)
+				{
+					Log.Exception(Ex);
+					return false;
+				}
+			}
 		}
 
 		/// <summary>
@@ -695,7 +726,6 @@ namespace NeuroAccessMaui.Services
 		private Activity? activity;
 		private Android.Views.View? rootView;
 		private double lastKeyboardHeight = 0;
-		private Handler? initializeKeyboardHandler;
 		private KeyboardInsetsListener? windowInsetsListener;
 
 		/// <inheritdoc/>
@@ -708,42 +738,41 @@ namespace NeuroAccessMaui.Services
 			this.activity.Window?.DecorView.ClearFocus();
 		}
 
-		private void InitializeKeyboard()
+		/// <summary>
+		/// Attaches the keyboard insets listener to the window of the given activity.
+		/// </summary>
+		/// <remarks>
+		/// Must be called on the main thread after the activity's content view exists. Calling it again for the same window
+		/// only requests fresh insets; calling it for a recreated activity moves the listener to the new window.
+		/// </remarks>
+		/// <param name="Activity">The activity whose window should report keyboard insets.</param>
+		internal void AttachKeyboardInsets(Activity Activity)
 		{
 			try
 			{
-				this.initializeKeyboardHandler = new Handler(Looper.MainLooper!);
-				this.CheckRootView();
+				Android.Views.View? CurrentRoot = Activity.Window?.DecorView?.RootView;
+				if (CurrentRoot is null)
+					return;
+
+				this.activity = Activity;
+
+				if (ReferenceEquals(this.rootView, CurrentRoot) && this.windowInsetsListener is not null)
+				{
+					ViewCompat.RequestApplyInsets(this.rootView);
+					return;
+				}
+
+				this.DetachInsetsListener();
+
+				this.rootView = CurrentRoot;
+				this.windowInsetsListener = new KeyboardInsetsListener(this);
+				ViewCompat.SetOnApplyWindowInsetsListener(this.rootView, this.windowInsetsListener);
+				ViewCompat.RequestApplyInsets(this.rootView);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
-		}
-
-		private void CheckRootView()
-		{
-			this.activity = Platform.CurrentActivity;
-
-			Android.Views.View? currentRoot = this.activity?.Window?.DecorView?.RootView;
-			if (currentRoot is null)
-			{
-				this.initializeKeyboardHandler?.PostDelayed(this.CheckRootView, 100);
-				return;
-			}
-
-			if (ReferenceEquals(this.rootView, currentRoot) && this.windowInsetsListener is not null)
-			{
-				ViewCompat.RequestApplyInsets(this.rootView);
-				return;
-			}
-
-			this.DetachInsetsListener();
-
-			this.rootView = currentRoot;
-			this.windowInsetsListener = new KeyboardInsetsListener(this);
-			ViewCompat.SetOnApplyWindowInsetsListener(this.rootView, this.windowInsetsListener);
-			ViewCompat.RequestApplyInsets(this.rootView);
 		}
 
 		private void DetachInsetsListener()

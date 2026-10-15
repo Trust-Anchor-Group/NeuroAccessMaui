@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using NeuroAccessMaui;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -133,6 +134,11 @@ namespace NeuroAccessMaui.Services.Kyc
 
 					case "Keep":
 						AddRequiredStringAttribute(Policy.KeepPropertyKeys, ContentChild, "key");
+						if (ReadBooleanAttribute(ContentChild, "optional", false))
+						{
+							string Key = ReadStringAttribute(ContentChild, "key")!;
+							Policy.OptionalKeepDefaults[Key] = ReadBooleanAttribute(ContentChild, "default", true);
+						}
 						break;
 
 					case "IncludeAttachment":
@@ -549,6 +555,14 @@ namespace NeuroAccessMaui.Services.Kyc
 						{
 							Field.Options.Add(new KycOption(Country.Alpha2, LocalizedText));
 						}
+					}
+
+					// A picker cannot be cleared once a country is chosen, so optional country fields get an empty choice to go back to.
+					if (!Field.Required)
+					{
+						KycLocalizedText NotSpecifiedText = new KycLocalizedText();
+						NotSpecifiedText.Add(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, ServiceRef.Localizer[nameof(AppResources.KycPickerNotSpecified)]);
+						Field.Options.Insert(0, new KycOption(string.Empty, NotSpecifiedText));
 					}
 				}
 

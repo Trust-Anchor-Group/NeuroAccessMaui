@@ -50,7 +50,7 @@
                                                Style="{DynamicResource KeyLabel}"
                                                LineBreakMode="TailTruncation"
                                                FontAttributes="Bold"
-                                               FontSize="18"
+                                               FontSize="{StaticResource FontSizeXl}"
                                                HorizontalTextAlignment="Start"
                                                VerticalOptions="Center" />
 										<Border Grid.Column="2"
@@ -69,12 +69,12 @@
                                                Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
                                                Style="{DynamicResource KeyLabel}"
                                                LineBreakMode="TailTruncation"
-                                               FontSize="18"
+                                               FontSize="{StaticResource FontSizeXl}"
                                                HorizontalTextAlignment="End"
                                                VerticalOptions="Center" />
 										<Label Grid.Column="3"
                                                Text="{Binding Path=Currency}"
-                                               FontSize="18"
+                                               FontSize="{StaticResource FontSizeXl}"
                                                Style="{DynamicResource KeyLabel}"
                                                LineBreakMode="TailTruncation"
                                                HorizontalTextAlignment="Start"

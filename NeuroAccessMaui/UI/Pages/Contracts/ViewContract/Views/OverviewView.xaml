@@ -23,7 +23,7 @@
 				<Setter Property="TextColor"
 						  Value="{DynamicResource ContentPrimaryWL}" />
 				<Setter Property="FontSize"
-						  Value="15" />
+						  Value="{StaticResource FontSizeMd}" />
 				<Setter Property="FontFamily"
 						  Value="SpaceGroteskSemiBold" />
 				<Setter Property="LineBreakMode"
@@ -41,7 +41,7 @@
 				<Setter Property="TextColor"
 						  Value="{DynamicResource ContentPrimaryWL}" />
 				<Setter Property="FontSize"
-						  Value="15" />
+						  Value="{StaticResource FontSizeMd}" />
 				<Setter Property="FontFamily"
 						  Value="HaasGroteskRegular" />
 				<Setter Property="LineBreakMode"

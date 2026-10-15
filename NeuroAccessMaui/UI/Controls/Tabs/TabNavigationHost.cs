@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using NeuroAccessMaui.Animations;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -631,6 +632,9 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private Task ApplyTouchFeedbackAsync(TabNavigationItemContainer Container)
 		{
+			if (MotionPreferences.ReduceMotion)
+				return Task.CompletedTask;
+
 			switch (this.TouchEffectType)
 			{
 				case TabTouchEffectType.OpacityHighlight:
@@ -705,7 +709,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private void RunSelectionAnimation(int PreviousIndex, int SelectedIndex)
 		{
-			if (this.AnimationStyle == TabAnimationStyle.None)
+			if (this.AnimationStyle == TabAnimationStyle.None || MotionPreferences.ReduceMotion)
 			{
 				return;
 			}

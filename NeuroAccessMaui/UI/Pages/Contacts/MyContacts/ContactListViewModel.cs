@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using EDaler;
 using EDaler.Uris;
+using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI.QR;
@@ -546,22 +547,16 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		[RelayCommand]
 		private async Task ScanQrCode()
 		{
-			string? Code = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.IotId]);
-			if (string.IsNullOrEmpty(Code))
+			IdentityReference? Scan = await QrCode.GetQrService().ScanIdentityAsync(nameof(AppResources.ScanQRCode));
+			if (Scan is null)
 				return;
 
-			if (Constants.UriSchemes.StartsWithIdScheme(Code))
+			// The scanner already resolved the identity when it is accessible, so viewing it does not fetch it again.
+			this.SelectedContact = new ContactInfoModel(new ContactInfo()
 			{
-				this.SelectedContact = new ContactInfoModel(new ContactInfo()
-				{
-					LegalId = Uri.UnescapeDataString(Constants.UriSchemes.RemoveScheme(Code) ?? string.Empty)
-				});
-			}
-			else if (!string.IsNullOrEmpty(Code))
-			{
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.TheSpecifiedCodeIsNotALegalIdentity)]);
-			}
+				LegalId = Scan.Identifier,
+				LegalIdentity = Scan.Identity
+			});
 		}
 
 		/// <summary>

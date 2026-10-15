@@ -381,7 +381,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		[RelayCommand]
 		private static async Task ScanQrCode()
 		{
-			await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
+			await Services.UI.QR.QrCode.GetQrService().ScanAndOpenAsync(nameof(AppResources.QrScanCode));
 		}
 
 		/// <summary>

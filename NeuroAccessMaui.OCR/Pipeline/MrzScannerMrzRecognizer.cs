@@ -11,18 +11,18 @@ namespace NeuroAccessMaui.OCR.Pipeline
 	/// </summary>
 	public sealed class MrzScannerMrzRecognizer : IDisposable
 	{
-		private const string ModelAssetPath = "OcrModels/mrzscanner_recognition_20250221_fp32.onnx";
-		private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<";
-		private const int PadClassIndex = 0;
-		private const int EndOfSequenceClassIndex = 1;
-		private const int SeparatorClassIndex = 2;
-		private const int CharacterStartIndex = 3;
-		private const int DefaultInputWidth = 640;
-		private const int DefaultInputHeight = 64;
+		private const string modelAssetPath = "OcrModels/mrzscanner_recognition_20250221_fp32.onnx";
+		private const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<";
+		private const int padClassIndex = 0;
+		private const int endOfSequenceClassIndex = 1;
+		private const int separatorClassIndex = 2;
+		private const int characterStartIndex = 3;
+		private const int defaultInputWidth = 640;
+		private const int defaultInputHeight = 64;
 
 		private readonly OnnxModelAssetLoader modelAssetLoader;
 		private readonly object sessionSyncRoot = new object();
-		private InferenceSession? session;
+		private RecognizerSession? session;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MrzScannerMrzRecognizer"/> class.
@@ -42,9 +42,20 @@ namespace NeuroAccessMaui.OCR.Pipeline
 		{
 			lock (this.sessionSyncRoot)
 			{
-				this.session?.Dispose();
+				this.session?.Session.Dispose();
 				this.session = null;
 			}
+		}
+
+		/// <summary>
+		/// Gets the image size the recognition model expects, so crops can be produced at that size directly.
+		/// </summary>
+		/// <param name="CancellationToken">The cancellation token.</param>
+		/// <returns>The model input width and height.</returns>
+		internal (int Width, int Height) GetInputSize(CancellationToken CancellationToken)
+		{
+			RecognizerSession Session = this.GetSession(CancellationToken);
+			return (Session.InputWidth, Session.InputHeight);
 		}
 
 		internal OcrTextRecognitionResult Recognize(Matrix<float> MrzImage, CancellationToken CancellationToken)
@@ -52,41 +63,31 @@ namespace NeuroAccessMaui.OCR.Pipeline
 			ArgumentNullException.ThrowIfNull(MrzImage);
 			CancellationToken.ThrowIfCancellationRequested();
 
-			InferenceSession Session = this.GetSession(CancellationToken);
-			string InputName = Session.InputMetadata.Keys.First();
-			NodeMetadata InputMetadata = Session.InputMetadata[InputName];
-			int InputWidth = ResolveInputDimension(InputMetadata, 3, DefaultInputWidth);
-			int InputHeight = ResolveInputDimension(InputMetadata, 2, DefaultInputHeight);
-			DenseTensor<float> InputTensor = CreateInputTensor(MrzImage, InputWidth, InputHeight);
+			RecognizerSession Session = this.GetSession(CancellationToken);
+			float[] InputBuffer = CreateInputBuffer(MrzImage, Session.InputWidth, Session.InputHeight);
+			DenseTensor<float> InputTensor = new DenseTensor<float>(InputBuffer, new[] { 1, 3, Session.InputHeight, Session.InputWidth });
 			List<NamedOnnxValue> Inputs = new List<NamedOnnxValue>
 			{
-				NamedOnnxValue.CreateFromTensor(InputName, InputTensor)
+				NamedOnnxValue.CreateFromTensor(Session.InputName, InputTensor)
 			};
 			Dictionary<string, string> Metadata = new Dictionary<string, string>
 			{
 				["OnnxRecognizer"] = "DocsaidLab.MRZScanner",
 				["OnnxRecognizerModel"] = "mrzscanner_recognition_20250221_fp32.onnx",
-				["OnnxRecognizerInputName"] = InputName,
-				["OnnxRecognizerInputWidth"] = InputWidth.ToString(CultureInfo.InvariantCulture),
-				["OnnxRecognizerInputHeight"] = InputHeight.ToString(CultureInfo.InvariantCulture)
+				["OnnxRecognizerInputWidth"] = Session.InputWidth.ToString(CultureInfo.InvariantCulture),
+				["OnnxRecognizerInputHeight"] = Session.InputHeight.ToString(CultureInfo.InvariantCulture)
 			};
 
-			using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> Outputs = Session.Run(Inputs);
+			using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> Outputs = Session.Session.Run(Inputs);
 			foreach (DisposableNamedOnnxValue Output in Outputs)
 			{
 				if (Output.Value is not Tensor<float> Tensor)
 					continue;
 
 				LineRecognitionResult Result = Decode(Tensor);
-				Metadata["OnnxRecognizerOutputName"] = Output.Name;
 				Metadata["OnnxRecognizerOutputShape"] = string.Join("x", Tensor.Dimensions.ToArray().Select(static Dimension => Dimension.ToString(CultureInfo.InvariantCulture)));
 				Metadata["OnnxRecognizerLineCount"] = Result.Lines.Count.ToString(CultureInfo.InvariantCulture);
-				for (int Index = 0; Index < Result.Lines.Count; Index++)
-				{
-					Metadata["OnnxRecognizerLine" + Index.ToString(CultureInfo.InvariantCulture) + "Text"] = Result.Lines[Index];
-					Metadata["OnnxRecognizerLine" + Index.ToString(CultureInfo.InvariantCulture) + "Confidence"] = Result.Confidence.ToString("0.000000", CultureInfo.InvariantCulture);
-				}
-
+				Metadata["OnnxRecognizerConfidence"] = Result.Confidence.ToString("0.000000", CultureInfo.InvariantCulture);
 				return new OcrTextRecognitionResult(Result.RawText, Result.Lines, Result.Confidence, Metadata);
 			}
 
@@ -94,49 +95,62 @@ namespace NeuroAccessMaui.OCR.Pipeline
 			return new OcrTextRecognitionResult(string.Empty, Array.Empty<string>(), 0f, Metadata);
 		}
 
-		private InferenceSession GetSession(CancellationToken CancellationToken)
+		private RecognizerSession GetSession(CancellationToken CancellationToken)
 		{
+			// Loaded before taking the lock, since loading may wait for the main thread.
+			OnnxRuntimeNativeLoader.EnsureLoaded();
 			lock (this.sessionSyncRoot)
 			{
 				if (this.session is not null)
 					return this.session;
 
-				OnnxRuntimeNativeLoader.EnsureLoaded();
-				string ModelPath = this.modelAssetLoader.GetCachedAssetPath(ModelAssetPath, CancellationToken);
+				string ModelPath = this.modelAssetLoader.GetCachedAssetPath(modelAssetPath, CancellationToken);
 				SessionOptions SessionOptions = new SessionOptions
 				{
 					GraphOptimizationLevel = GraphOptimizationLevel.ORT_ENABLE_ALL
 				};
-				this.session = new InferenceSession(ModelPath, SessionOptions);
+				InferenceSession InferenceSession = new InferenceSession(ModelPath, SessionOptions);
+				string InputName = InferenceSession.InputMetadata.Keys.First();
+				int[] Dimensions = InferenceSession.InputMetadata[InputName].Dimensions.ToArray();
+				this.session = new RecognizerSession(
+					InferenceSession,
+					InputName,
+					ResolveInputDimension(Dimensions, 3, defaultInputWidth),
+					ResolveInputDimension(Dimensions, 2, defaultInputHeight));
 				return this.session;
 			}
 		}
 
-		private static int ResolveInputDimension(NodeMetadata Metadata, int Index, int Fallback)
+		private static int ResolveInputDimension(int[] Dimensions, int Index, int Fallback)
 		{
-			int[] Dimensions = Metadata.Dimensions.ToArray();
 			if (Dimensions.Length > Index && Dimensions[Index] > 0)
 				return Dimensions[Index];
 
 			return Fallback;
 		}
 
-		private static DenseTensor<float> CreateInputTensor(Matrix<float> Image, int InputWidth, int InputHeight)
+		/// <summary>
+		/// Copies the crop into a 1x3xHxW buffer, repeating the gray value across the three color planes. Crops that do not
+		/// already match the model input size are resized first.
+		/// </summary>
+		private static float[] CreateInputBuffer(Matrix<float> Image, int InputWidth, int InputHeight)
 		{
-			Matrix<float> Resized = OcrImagePipelineUtilities.Resize(Image, InputWidth, InputHeight);
-			DenseTensor<float> Tensor = new DenseTensor<float>(new[] { 1, 3, InputHeight, InputWidth });
+			Matrix<float> Input = Image.Width == InputWidth && Image.Height == InputHeight
+				? Image
+				: OcrImagePipelineUtilities.Resize(Image, InputWidth, InputHeight);
+			int PlaneSize = InputWidth * InputHeight;
+			float[] Buffer = new float[PlaneSize * 3];
+			int BufferIndex = 0;
 			for (int y = 0; y < InputHeight; y++)
 			{
+				int SourceIndex = Input.StartIndex(0, y);
 				for (int x = 0; x < InputWidth; x++)
-				{
-					float Value = Math.Clamp(Resized[x, y], 0f, 1f);
-					Tensor[0, 0, y, x] = Value;
-					Tensor[0, 1, y, x] = Value;
-					Tensor[0, 2, y, x] = Value;
-				}
+					Buffer[BufferIndex++] = Math.Clamp(Input.Data[SourceIndex++], 0f, 1f);
 			}
 
-			return Tensor;
+			Array.Copy(Buffer, 0, Buffer, PlaneSize, PlaneSize);
+			Array.Copy(Buffer, 0, Buffer, PlaneSize * 2, PlaneSize);
+			return Buffer;
 		}
 
 		private static LineRecognitionResult Decode(Tensor<float> Tensor)
@@ -145,19 +159,8 @@ namespace NeuroAccessMaui.OCR.Pipeline
 			if (Dimensions.Length < 2)
 				return new LineRecognitionResult(string.Empty, Array.Empty<string>(), 0f);
 
-			int TimeSteps;
-			int ClassCount;
-			if (Dimensions.Length == 3)
-			{
-				TimeSteps = Dimensions[1];
-				ClassCount = Dimensions[2];
-			}
-			else
-			{
-				TimeSteps = Dimensions[0];
-				ClassCount = Dimensions[1];
-			}
-
+			int TimeSteps = Dimensions[^2];
+			int ClassCount = Dimensions[^1];
 			float[] Buffer = Tensor.ToArray();
 			List<char> Characters = new List<char>();
 			float ConfidenceSum = 0f;
@@ -166,40 +169,36 @@ namespace NeuroAccessMaui.OCR.Pipeline
 			{
 				int RowOffset = TimeStep * ClassCount;
 				int BestIndex = 0;
-				float BestProbability = float.MinValue;
 				float MaximumLogit = float.MinValue;
 				for (int ClassIndex = 0; ClassIndex < ClassCount; ClassIndex++)
-					MaximumLogit = Math.Max(MaximumLogit, Buffer[RowOffset + ClassIndex]);
-
-				double ProbabilitySum = 0d;
-				for (int ClassIndex = 0; ClassIndex < ClassCount; ClassIndex++)
-					ProbabilitySum += Math.Exp(Buffer[RowOffset + ClassIndex] - MaximumLogit);
-
-				for (int ClassIndex = 0; ClassIndex < ClassCount; ClassIndex++)
 				{
-					float Probability = (float)(Math.Exp(Buffer[RowOffset + ClassIndex] - MaximumLogit) / Math.Max(double.Epsilon, ProbabilitySum));
-					if (Probability > BestProbability)
+					float Logit = Buffer[RowOffset + ClassIndex];
+					if (Logit > MaximumLogit)
 					{
-						BestProbability = Probability;
+						MaximumLogit = Logit;
 						BestIndex = ClassIndex;
 					}
 				}
 
-				if (BestIndex == EndOfSequenceClassIndex)
+				if (BestIndex == endOfSequenceClassIndex)
 					break;
-				if (BestIndex == PadClassIndex)
+				if (BestIndex == padClassIndex)
 					continue;
 
-				if (BestIndex == SeparatorClassIndex)
+				double ExponentSum = 0d;
+				for (int ClassIndex = 0; ClassIndex < ClassCount; ClassIndex++)
+					ExponentSum += Math.Exp(Buffer[RowOffset + ClassIndex] - MaximumLogit);
+
+				if (BestIndex == separatorClassIndex)
 					Characters.Add('\n');
 				else
 				{
-					int AlphabetIndex = BestIndex - CharacterStartIndex;
-					if (AlphabetIndex >= 0 && AlphabetIndex < Alphabet.Length)
-						Characters.Add(Alphabet[AlphabetIndex]);
+					int AlphabetIndex = BestIndex - characterStartIndex;
+					if (AlphabetIndex >= 0 && AlphabetIndex < alphabet.Length)
+						Characters.Add(alphabet[AlphabetIndex]);
 				}
 
-				ConfidenceSum += BestProbability;
+				ConfidenceSum += (float)(1d / Math.Max(1d, ExponentSum));
 				ConfidenceCount++;
 			}
 
@@ -210,6 +209,8 @@ namespace NeuroAccessMaui.OCR.Pipeline
 			float Confidence = ConfidenceCount == 0 ? 0f : ConfidenceSum / ConfidenceCount;
 			return new LineRecognitionResult(RawText, Lines, Confidence);
 		}
+
+		private sealed record RecognizerSession(InferenceSession Session, string InputName, int InputWidth, int InputHeight);
 
 		private readonly record struct LineRecognitionResult(string RawText, IReadOnlyList<string> Lines, float Confidence);
 	}

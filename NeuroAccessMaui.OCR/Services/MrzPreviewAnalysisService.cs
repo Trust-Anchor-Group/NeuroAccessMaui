@@ -4,7 +4,7 @@ using NeuroAccessMaui.OCR.Pipeline;
 namespace NeuroAccessMaui.OCR.Services
 {
 	/// <summary>
-	/// Provides preview analysis for MRZ capture guidance using the ONNX MRZ pipeline.
+	/// Locates and reads the MRZ in live camera frames using the ONNX MRZ pipeline.
 	/// </summary>
 	public sealed class MrzPreviewAnalysisService : IMrzPreviewAnalysisService
 	{
@@ -24,7 +24,14 @@ namespace NeuroAccessMaui.OCR.Services
 		/// <inheritdoc/>
 		public MrzPreviewAnalysisResult Analyze(MrzPreviewAnalysisRequest Request, CancellationToken CancellationToken)
 		{
-			return this.scanEngine.AnalyzePreview(Request, CancellationToken);
+			ArgumentNullException.ThrowIfNull(Request);
+
+			return this.scanEngine.ProcessFrame(
+				Request.Image,
+				Request.SourceRotationDegrees,
+				Request.DocumentKindHint,
+				Request.Metadata,
+				CancellationToken).Analysis;
 		}
 	}
 }

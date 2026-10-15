@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NeuroAccessMaui.Services.Kyc.Models;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
+using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -172,11 +173,13 @@ namespace NeuroAccessMaui.Services.Kyc
 				KycApplicationContentSet FinalContent = this.contentPolicyService.BuildFinalPromotionContent(
 					Process.ApplicationPolicy,
 					SubmissionProperties,
-					SubmissionAttachments);
+					SubmissionAttachments,
+					KycKeepChoices.GetExcludedPropertyKeys(Process));
 				if (FinalContent.Stage != KycApplicationContentStage.FinalPromotion)
 					return KycPreviewPromotionResult.NoChange("UnexpectedPromotionContentStage");
 
 				List<Property> FinalProperties = FinalContent.Properties.ToList();
+				UsePreviewAgeAbove(FinalProperties, PreviewIdentity);
 				AddOrReplaceProperty(FinalProperties, Constants.XmppProperties.Preview, StripIdentityDomain(PreviewIdentity.Id));
 
 				LegalIdentity FinalIdentity = await ServiceRef.XmppService.AddLegalIdentity(
@@ -224,6 +227,26 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 
 			await ServiceRef.TagProfile.SetIdentityApplication(FinalIdentity, false).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Replaces a rebuilt AGEABOVE claim with the value the preview identity was approved with.
+		/// </summary>
+		/// <remarks>
+		/// AGEABOVE is derived from today's date, so a birthday between preview and promotion could otherwise raise it and make
+		/// the final application disagree with the approved preview.
+		/// </remarks>
+		/// <param name="FinalProperties">The final application properties.</param>
+		/// <param name="PreviewIdentity">The approved preview identity.</param>
+		private static void UsePreviewAgeAbove(List<Property> FinalProperties, LegalIdentity PreviewIdentity)
+		{
+			int Index = FinalProperties.FindIndex(Property => string.Equals(Property.Name, Constants.XmppProperties.AgeAbove, StringComparison.OrdinalIgnoreCase));
+			if (Index < 0)
+				return;
+
+			string PreviewAgeAbove = PreviewIdentity[Constants.XmppProperties.AgeAbove]?.Trim() ?? string.Empty;
+			if (!string.IsNullOrEmpty(PreviewAgeAbove))
+				FinalProperties[Index] = new Property(Constants.XmppProperties.AgeAbove, PreviewAgeAbove);
 		}
 
 		private static void AddOrReplaceProperty(List<Property> Properties, string Name, string Value)

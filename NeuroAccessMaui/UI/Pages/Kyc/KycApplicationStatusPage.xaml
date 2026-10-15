@@ -9,113 +9,176 @@
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  x:DataType="viewmodel:KycApplicationStatusViewModel"
 					  ui:SafeArea.Mode="TopAndBottom">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-		  Margin="16,8,16,0"
-		  RowDefinitions="Auto,*">
-		<controls:Background Grid.RowSpan="2" />
+	<controls:IdentityFlowShell Title="{l:Localize IdentityApplication}"
+								ShowLeadingAction="True"
+								LeadingActionCommand="{Binding GoBackCommand}"
+								LeadingActionDescription="{l:Localize Close}"
+								ShowStickyFooter="True">
+		<controls:IdentityFlowShell.BodyContent>
+			<ScrollView>
+				<VerticalStackLayout Padding="16,8,16,24"
+									 Spacing="16">
+					<controls:StatusVisual x:Name="StatusBadge"
+										   Kind="{Binding VisualKind}"
+										   HeightRequest="140"
+										   HorizontalOptions="Fill"
+										   AccentColor="{DynamicResource ContentAccessWL}"
+										   OnAccentColor="{DynamicResource ContentPrimaryInverted}"
+										   WarningColor="{DynamicResource TnPWarningContentWL}" />
 
-		<Grid ColumnDefinitions="Auto,*,Auto">
-			<controls:SvgButton Command="{Binding GoBackCommand}"
-								SvgSource="close.svg"
-								Style="{DynamicResource IconButton}"
-								HeightRequest="48"
-								WidthRequest="48"
-								HorizontalOptions="Start"
-								VerticalOptions="Start"
-								Grid.Column="0" />
-
-			<Label Grid.Column="2"
-				   Style="{DynamicResource PageTitleLabel}"
-				   Text="{l:Localize IdentityApplication}"
-				   HorizontalOptions="End" />
-		</Grid>
-
-		<ScrollView Grid.Row="1">
-			<VerticalStackLayout Spacing="16"
-								 Padding="0,16,0,16">
-				<Border Style="{DynamicResource BorderSet}"
-						Padding="16"
-						Margin="0">
-					<VerticalStackLayout Spacing="14">
-						<Border Background="{DynamicResource TnPInfobgWL}"
-								Stroke="Transparent"
-								StrokeShape="RoundRectangle 12"
-								Padding="10,6"
-								HorizontalOptions="Start">
+					<VerticalStackLayout Spacing="12">
+						<!-- Current stage -->
+						<Border Style="{DynamicResource IdentityFlowStateChipBorder}">
 							<Border.Triggers>
-								<DataTrigger TargetType="Border"
-											 Binding="{Binding IsRejected}"
-											 Value="True">
-									<Setter Property="Background"
-											Value="{DynamicResource TnPDangerbgWL}" />
-								</DataTrigger>
 								<DataTrigger TargetType="Border"
 											 Binding="{Binding IsFinalizing}"
 											 Value="True">
-									<Setter Property="Background"
+									<Setter Property="BackgroundColor"
 											Value="{DynamicResource TnPWarningbgWL}" />
+								</DataTrigger>
+								<DataTrigger TargetType="Border"
+											 Binding="{Binding IsApproved}"
+											 Value="True">
+									<Setter Property="BackgroundColor"
+											Value="{DynamicResource TnPSuccessbgWL}" />
+								</DataTrigger>
+								<DataTrigger TargetType="Border"
+											 Binding="{Binding IsRejected}"
+											 Value="True">
+									<Setter Property="BackgroundColor"
+											Value="{DynamicResource TnPDangerbgWL}" />
 								</DataTrigger>
 							</Border.Triggers>
 							<Label Text="{Binding StageText}"
-								   FontSize="14"
-								   FontFamily="SpaceGroteskBold"
-								   TextColor="{DynamicResource TnPInfoContentWL}">
+								   Style="{DynamicResource IdentityFlowStateChipLabel}">
 								<Label.Triggers>
-									<DataTrigger TargetType="Label"
-												 Binding="{Binding IsRejected}"
-												 Value="True">
-										<Setter Property="TextColor"
-												Value="{DynamicResource TnPDangerContentWL}" />
-									</DataTrigger>
 									<DataTrigger TargetType="Label"
 												 Binding="{Binding IsFinalizing}"
 												 Value="True">
 										<Setter Property="TextColor"
 												Value="{DynamicResource TnPWarningContentWL}" />
 									</DataTrigger>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding IsApproved}"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource TnPSuccessContentWL}" />
+									</DataTrigger>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding IsRejected}"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource TnPDangerContentWL}" />
+									</DataTrigger>
 								</Label.Triggers>
 							</Label>
 						</Border>
 
 						<Label Text="{Binding TitleText}"
-							   Style="{DynamicResource PageTitleLabel}"
-							   FontSize="28"
-							   LineBreakMode="WordWrap" />
-
+							   Style="{DynamicResource IdentityFlowTitleLabel}" />
 						<Label Text="{Binding DescriptionText}"
-							   Style="{DynamicResource InfoLabel}"
-							   LineBreakMode="WordWrap" />
-
-						<Label Text="{Binding UpdatedText}"
-							   Style="{DynamicResource InfoLabel}"
-							   TextColor="{DynamicResource ContentSecondaryWL}"
-							   LineBreakMode="WordWrap" />
+							   Style="{DynamicResource IdentityFlowBodySecondaryLabel}" />
 					</VerticalStackLayout>
-				</Border>
 
-				<Border Style="{DynamicResource BorderSet}"
-						Padding="16"
-						Margin="0">
-					<VerticalStackLayout Spacing="10">
-						<Label Text="{l:Localize CurrentApplication}"
-							   Style="{DynamicResource InfoLabel}"
-							   FontFamily="SpaceGroteskBold"
-							   LineBreakMode="WordWrap" />
-						<Label Text="{Binding DetailText}"
-							   Style="{DynamicResource InfoLabel}"
-							   LineBreakMode="WordWrap" />
-					</VerticalStackLayout>
-				</Border>
+					<!-- How the application was verified, and when it last changed -->
+					<Border Style="{DynamicResource IdentityFlowCard}"
+							IsVisible="{Binding ShowStatusDetails}">
+						<Grid ColumnDefinitions="*,*"
+							  ColumnSpacing="12">
+							<VerticalStackLayout Spacing="2"
+												 IsVisible="{Binding HasMethod}">
+								<Label Text="{l:Localize KycApplicationStatusMethodLabel}"
+									   Style="{DynamicResource IdentityFlowKeyLabel}" />
+								<Label Text="{Binding MethodText}"
+									   Style="{DynamicResource IdentityFlowValueLabel}" />
+							</VerticalStackLayout>
+							<VerticalStackLayout Grid.Column="1"
+												 Spacing="2"
+												 IsVisible="{Binding HasLastUpdated}">
+								<Label Text="{l:Localize Updated}"
+									   Style="{DynamicResource IdentityFlowKeyLabel}" />
+								<Label Text="{Binding LastUpdatedText}"
+									   Style="{DynamicResource IdentityFlowValueLabel}" />
+							</VerticalStackLayout>
+						</Grid>
+					</Border>
 
-				<VerticalStackLayout Spacing="8">
-					<controls:TextButton Style="{DynamicResource FilledTextButton}"
-										 LabelData="{Binding PrimaryActionText}"
-										 Command="{Binding PrimaryActionCommand}" />
+					<!-- Timeline of a pending application -->
+					<Border Style="{DynamicResource IdentityFlowCard}"
+							IsVisible="{Binding ShowTimeline}">
+						<VerticalStackLayout Spacing="14"
+											 BindableLayout.ItemsSource="{Binding StatusRows}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="viewmodel:KycApplicationStatusRow">
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border WidthRequest="14"
+												HeightRequest="14"
+												Margin="0,5,0,0"
+												VerticalOptions="Start"
+												BackgroundColor="{DynamicResource TnPNeutralv300bgWL}"
+												Stroke="Transparent"
+												StrokeShape="RoundRectangle 7">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsComplete}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource TnPSuccessContentWL}" />
+												</DataTrigger>
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsCurrent}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource TnPInfoContentWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+										</Border>
+
+										<VerticalStackLayout Grid.Column="1"
+															 Spacing="3">
+											<Label Text="{Binding Title}"
+												   Style="{DynamicResource IdentityFlowSectionTitleLabel}"
+												   FontSize="{StaticResource FontSizeLg}" />
+											<Label Text="{Binding Description}"
+												   Style="{DynamicResource IdentityFlowCaptionLabel}" />
+										</VerticalStackLayout>
+									</Grid>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
+					</Border>
+
+					<!-- Supporting details for the current state -->
+					<Border Style="{DynamicResource IdentityFlowCard}">
+						<VerticalStackLayout Spacing="8">
+							<Label Text="{l:Localize CurrentApplication}"
+								   Style="{DynamicResource IdentityFlowSectionTitleLabel}"
+								   FontSize="{StaticResource FontSizeLg}" />
+							<Label Text="{Binding DetailText}"
+								   Style="{DynamicResource IdentityFlowBodyLabel}" />
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+			</ScrollView>
+		</controls:IdentityFlowShell.BodyContent>
+
+		<controls:IdentityFlowShell.StickyFooterContent>
+			<VerticalStackLayout Spacing="8">
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+									 LabelData="{Binding PrimaryActionText}"
+									 Command="{Binding PrimaryActionCommand}" />
+				<Grid ColumnDefinitions="*,*"
+					  ColumnSpacing="{DynamicResource SmallSpacing}">
 					<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+										 LabelData="{l:Localize KycApplicationStatusRefresh}"
+										 Command="{Binding RefreshCommand}" />
+					<controls:TextButton Grid.Column="1"
+										 Style="{DynamicResource OutlinedTextButton}"
 										 LabelData="{Binding SecondaryActionText}"
 										 Command="{Binding SecondaryActionCommand}" />
-				</VerticalStackLayout>
+				</Grid>
 			</VerticalStackLayout>
-		</ScrollView>
-	</Grid>
+		</controls:IdentityFlowShell.StickyFooterContent>
+	</controls:IdentityFlowShell>
 </base:BaseContentPage>

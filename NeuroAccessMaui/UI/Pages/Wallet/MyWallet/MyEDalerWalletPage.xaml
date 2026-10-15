@@ -19,15 +19,15 @@
 
 		<DataTemplate x:Key="PendingPaymentTemplate" x:DataType="objectmodel:PendingPaymentItem">
 			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto">
-				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="{StaticResource FontSizeXl}"/>
 				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=ExpiresStr}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Italic"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="TailTruncation" TextColor="{DynamicResource InputFieldsContentDangerv500}" HorizontalTextAlignment="End">
 					<Label.FormattedText>
 						<FormattedString>
-							<Span Text="-" FontSize="30" FontAttributes="Bold"/>
-							<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="30" FontAttributes="Bold"/>
+							<Span Text="-" FontSize="{StaticResource FontSize7xl}" FontAttributes="Bold"/>
+							<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="{StaticResource FontSize7xl}" FontAttributes="Bold"/>
 							<Span Text=" "/>
-							<Span Text="{Binding Path=Currency}" FontSize="20"/>
+							<Span Text="{Binding Path=Currency}" FontSize="{StaticResource FontSize2xl}"/>
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
@@ -39,17 +39,17 @@
 
 		<DataTemplate x:Key="AccountEventTemplate" x:DataType="objectmodel:AccountEventItem">
 			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto,auto">
-				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
-				<Label Grid.Row="0" Grid.Column="1" FontSize="50" Padding="0,-25,0,-25"
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="{StaticResource FontSizeXl}"/>
+				<Label Grid.Row="0" Grid.Column="1" FontSize="{StaticResource FontSizeDisplayXl}" Padding="0,-25,0,-25"
 					   Text="•"  HorizontalOptions="Start" VerticalOptions="Center" IsVisible="{Binding New}"
 					   Style="{DynamicResource AlertLabel}"/>
 				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=TimestampStr}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"/>
 				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="TailTruncation" HorizontalTextAlignment="End">
 					<Label.FormattedText>
 						<FormattedString>
-							<Span Text="{Binding Path=Change, Converter={converters:MoneyToString}}" FontSize="18" FontAttributes="Bold" TextColor="{Binding Path=TextColor}"/>
+							<Span Text="{Binding Path=Change, Converter={converters:MoneyToString}}" FontSize="{StaticResource FontSizeXl}" FontAttributes="Bold" TextColor="{Binding Path=TextColor}"/>
 							<Span Text=" "/>
-							<Span Text="{Binding Path=Currency}" FontSize="16" TextColor="{Binding Path=TextColor}"/>
+							<Span Text="{Binding Path=Currency}" FontSize="{StaticResource FontSizeLg}" TextColor="{Binding Path=TextColor}"/>
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
@@ -57,10 +57,10 @@
 					<Label.FormattedText>
 						<FormattedString>
 							<Span Text=" ("/>
-							<Span Text="{Binding Path=Balance, Converter={converters:MoneyToString}}" FontSize="14"/>
-							<Span Text="{Binding Path=ReservedSuffix}" FontSize="14" TextColor="{DynamicResource InputFieldsContentDangerv500}"/>
+							<Span Text="{Binding Path=Balance, Converter={converters:MoneyToString}}" FontSize="{StaticResource FontSizeSm}"/>
+							<Span Text="{Binding Path=ReservedSuffix}" FontSize="{StaticResource FontSizeSm}" TextColor="{DynamicResource InputFieldsContentDangerv500}"/>
 							<Span Text=" "/>
-							<Span Text="{Binding Path=Currency}" FontSize="12"/>
+							<Span Text="{Binding Path=Currency}" FontSize="{StaticResource FontSizeXs}"/>
 							<Span Text=" ) "/>
 						</FormattedString>
 					</Label.FormattedText>
@@ -105,9 +105,9 @@
 						<Label Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
-									<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="50" FontAttributes="Bold"/>
+									<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="{StaticResource FontSizeDisplayXl}" FontAttributes="Bold"/>
 									<Span Text=" "/>
-									<Span Text="{Binding Path=Currency}" FontSize="30"/>
+									<Span Text="{Binding Path=Currency}" FontSize="{StaticResource FontSize7xl}"/>
 								</FormattedString>
 							</Label.FormattedText>
 						</Label>
@@ -152,7 +152,7 @@
 								<Border BackgroundColor="{DynamicResource InputFieldsContentSecondary}" StrokeShape="RoundRectangle 8" Padding="5" Margin="0">
 									<Label Text="{Binding LocalisedName}" Style="{DynamicResource KeyLabel}"
 									   HorizontalOptions="Fill" HorizontalTextAlignment="Center"
-									   LineBreakMode="TailTruncation" FontSize="18" />
+									   LineBreakMode="TailTruncation" FontSize="{StaticResource FontSizeXl}" />
 								</Border>
 							</DataTemplate>
 						</CollectionView.GroupHeaderTemplate>

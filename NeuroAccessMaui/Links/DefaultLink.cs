@@ -1,12 +1,14 @@
-﻿using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services;
-using Waher.Runtime.Inventory;
+﻿using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links
 {
 	/// <summary>
-	/// Default link opener.
+	/// Opens e-mail links with the operating system.
 	/// </summary>
+	/// <remarks>
+	/// Links can come from untrusted sources such as chat messages and NFC tags, so only schemes known to be harmless are passed
+	/// to the operating system. Schemes such as <c>file</c>, <c>content</c>, or other applications' schemes are not opened.
+	/// </remarks>
 	public class DefaultLink : ILinkOpener
 	{
 		/// <summary>
@@ -23,33 +25,19 @@ namespace NeuroAccessMaui.Links
 		/// <returns>Support grade of opener for the given link.</returns>
 		public Grade Supports(Uri Link)
 		{
-			return Grade.Barely;
+			return string.Equals(Link.Scheme, Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase) ? Grade.Barely : Grade.NotAtAll;
 		}
 
 		/// <inheritdoc/>
-		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
+		public Task<PreparedLink?> PrepareAsync(Uri Link, CancellationToken CancellationToken)
 		{
-			bool canOpen = false;
+			CancellationToken.ThrowIfCancellationRequested();
 
-			await MainThread.InvokeOnMainThreadAsync(async () =>
+			return Task.FromResult<PreparedLink?>(new PreparedLink(Link, async () =>
 			{
-				canOpen = await Launcher.TryOpenAsync(Link);
-			});
-
-			if (canOpen)
-				return true;
-			else
-			{
-				if (ShowErrorIfUnable)
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.QrCodeNotUnderstood)] +
-						Environment.NewLine + Environment.NewLine + Link.OriginalString);
-				}
-
-				return false;
-			}
+				if (!await Launcher.TryOpenAsync(Link))
+					throw new InvalidOperationException("The operating system could not open the link.");
+			}));
 		}
 	}
 }

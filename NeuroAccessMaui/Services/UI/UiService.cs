@@ -176,7 +176,11 @@ namespace NeuroAccessMaui.Services.UI
 				Profiler.NewState("SKBitmap");
 #endif
 				// Original SKBitmap from PNG stream
-				SKBitmap OriginalBitmap = SKBitmap.FromImage(SKImage.FromEncodedData(PngStream));
+				using SKImage? EncodedImage = SKImage.FromEncodedData(PngStream);
+				if (EncodedImage is null)
+					return null;
+
+				using SKBitmap OriginalBitmap = SKBitmap.FromImage(EncodedImage);
 
 #if PROFILING
 				Profiler.NewState("Scale");
@@ -190,7 +194,10 @@ namespace NeuroAccessMaui.Services.UI
 
 				// Create a new SKBitmap for the downscaled image
 				SKSamplingOptions Options = new(SKFilterMode.Linear, SKMipmapMode.Linear);  // cf. SKFilterQuality.Medium
-				SKBitmap ResizedBitmap = OriginalBitmap.Resize(ResizedInfo, Options);
+				// Resize returns null when the bitmap cannot be scaled, for example when the screenshot is too small.
+				using SKBitmap? ResizedBitmap = OriginalBitmap.Resize(ResizedInfo, Options);
+				if (ResizedBitmap is null)
+					return null;
 
 #if PROFILING
 				Profiler.NewState("Prepare");
@@ -495,13 +502,13 @@ namespace NeuroAccessMaui.Services.UI
 
 		private void SubscribeToShellNavigatingIfNecessary(Application? Application)
 		{
-			if (Application?.MainPage is Shell Shell)
+			if (UiPageResolver.GetShell(Application) is Shell Shell)
 				Shell.Navigating += this.Shell_Navigating;
 		}
 
 		private void UnsubscribeFromShellNavigatingIfNecessary(Application? Application)
 		{
-			if (Application?.MainPage is Shell Shell)
+			if (UiPageResolver.GetShell(Application) is Shell Shell)
 				Shell.Navigating -= this.Shell_Navigating;
 		}
 

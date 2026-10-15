@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.OCR.Services
 	/// </summary>
 	public sealed class OcrScanService : IOcrScanService
 	{
-		private const string ProviderId = "onnx-mrz";
+		private const string ProviderId = OnnxMrzScanEngine.ProviderIdentifier;
 
 		private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
 		{
@@ -74,121 +74,100 @@ namespace NeuroAccessMaui.OCR.Services
 				return Task.FromResult(ArtifactSession.Complete(QrFailureResult));
 			}
 
-			OnnxMrzScanEngineResult EngineResult = this.scanEngine.Scan(Request, CancellationToken);
-			Dictionary<string, string> ResultMetadata = new Dictionary<string, string>(Metadata);
-			OcrImagePipelineUtilities.MergeMetadata(ResultMetadata, EngineResult.Metadata);
-			CaptureArtifacts(ArtifactSession, EngineResult);
-			OcrScanResult Result = CreateResult(Request, EngineResult, ResultMetadata);
+			MrzFrameProcessingResult Processing = this.scanEngine.ProcessFrame(
+				Request.Image,
+				Request.SourceRotationDegrees,
+				Request.DocumentKindHint,
+				Metadata,
+				CancellationToken);
+			CaptureArtifacts(ArtifactSession, Processing);
+			OcrScanResult Result = CreateResult(Request, Processing);
 			return Task.FromResult(ArtifactSession.Complete(Result));
 		}
 
-		private static void CaptureArtifacts(OcrArtifactSessionWriter ArtifactSession, OnnxMrzScanEngineResult EngineResult)
+		private static void CaptureArtifacts(OcrArtifactSessionWriter ArtifactSession, MrzFrameProcessingResult Processing)
 		{
-			ArtifactSession.CaptureData("mrzscanner-detector-detections", EngineResult.Detections.Select(static Detection => new
+			MrzPreviewAnalysisResult Analysis = Processing.Analysis;
+			ArtifactSession.CaptureData("mrzscanner-detection", new
 			{
-				Detection.Bounds,
-				Detection.Score,
-				Detection.TopLeft,
-				Detection.TopRight,
-				Detection.BottomRight,
-				Detection.BottomLeft
-			}).ToArray());
+				Analysis.ImageWidth,
+				Analysis.ImageHeight,
+				Analysis.DetectionScore,
+				TopLeft = Analysis.MrzQuad?.TopLeft,
+				TopRight = Analysis.MrzQuad?.TopRight,
+				BottomRight = Analysis.MrzQuad?.BottomRight,
+				BottomLeft = Analysis.MrzQuad?.BottomLeft,
+				Analysis.GuidanceState,
+				Analysis.FailureCategory
+			});
 
-			if (EngineResult.RectifiedDocument is not null)
-				ArtifactSession.CaptureImage("cv-corrected-mrz", EngineResult.RectifiedDocument.Image, EngineResult.RectifiedDocument.Metadata);
+			if (Processing.RecognitionInput is not null)
+				ArtifactSession.CaptureImage("mrzscanner-recognition-input", Processing.RecognitionInput);
 
-			if (EngineResult.MrzCandidate is not null)
-			{
-				ArtifactSession.CaptureData("cv-corrected-mrz-candidate", new
-				{
-					EngineResult.MrzCandidate.Name,
-					EngineResult.MrzCandidate.Format,
-					EngineResult.MrzCandidate.Bounds,
-					EngineResult.MrzCandidate.Score,
-					EngineResult.MrzCandidate.Metadata,
-					Lines = EngineResult.MrzCandidate.Lines.Select(static Line => new
-					{
-						Line.Bounds,
-						Line.Score,
-						Line.BaselineY,
-						Line.Metadata
-					}).ToArray()
-				});
-			}
-
-			foreach (MrzLineCrop LineCrop in EngineResult.LineCrops)
-			{
-				ArtifactSession.CaptureImage(
-					"mrzscanner-recognition-line-" + LineCrop.LineIndex.ToString(CultureInfo.InvariantCulture),
-					LineCrop.Image,
-					LineCrop.Metadata);
-			}
-
-			if (EngineResult.Recognition is not null)
+			if (Processing.Recognition is not null)
 			{
 				ArtifactSession.CaptureData("mrzscanner-recognition", new
 				{
-					EngineResult.Recognition.RawText,
-					EngineResult.Recognition.Lines,
-					EngineResult.Recognition.Confidence,
-					EngineResult.Recognition.Metadata
+					Processing.Recognition.RawText,
+					Processing.Recognition.Lines,
+					Processing.Recognition.Confidence,
+					Processing.Recognition.Metadata
 				});
 			}
 
-			if (EngineResult.CandidateResult is not null)
+			if (Analysis.Read is not null)
 			{
 				ArtifactSession.CaptureData("mrz-decoded-result", new
 				{
-					EngineResult.CandidateResult.RawText,
-					EngineResult.CandidateResult.NormalizedText,
-					EngineResult.CandidateResult.Format,
-					EngineResult.CandidateResult.Confidence,
-					EngineResult.CandidateResult.IsStrictSuccess,
-					EngineResult.CandidateResult.FailureCategory,
-					EngineResult.CandidateResult.FailureReason,
-					Document = EngineResult.CandidateResult.DocumentInformation,
-					EngineResult.CandidateResult.Metadata
+					Analysis.Read.RawText,
+					Analysis.Read.NormalizedText,
+					Analysis.Read.Format,
+					Analysis.Read.RecognitionConfidence,
+					Analysis.Read.DecodeScore,
+					Analysis.Read.IsStrictSuccess,
+					Analysis.Read.PassedCheckCount,
+					Analysis.Read.RepairCount,
+					Analysis.Read.Document,
+					Analysis.Read.Metadata
 				});
 			}
 		}
 
-		private static OcrScanResult CreateResult(
-			OcrScanRequest Request,
-			OnnxMrzScanEngineResult EngineResult,
-			Dictionary<string, string> Metadata)
+		private static OcrScanResult CreateResult(OcrScanRequest Request, MrzFrameProcessingResult Processing)
 		{
-			MrzRecognitionCandidateResult? CandidateResult = EngineResult.CandidateResult;
-			if (CandidateResult is not null
-				&& CandidateResult.IsStrictSuccess
-				&& CandidateResult.DocumentInformation is not null
-				&& CandidateResult.Format.HasValue)
-			{
-				Metadata["MrzFailureCategory"] = MrzScanFailureCategory.None.ToString();
-				return new OcrScanResult(
-					Request.TargetKind,
-					Request.SourceKind,
-					EngineResult.ProviderId,
-					OcrScanValidationStatus.Succeeded,
-					CandidateResult.RawText,
-					CandidateResult.NormalizedText,
-					new MrzScanResult(CandidateResult.Format.Value, CandidateResult.NormalizedText, CandidateResult.DocumentInformation),
-					CandidateResult.Confidence,
-					null,
-					Metadata);
-			}
+			MrzPreviewAnalysisResult Analysis = Processing.Analysis;
+			Dictionary<string, string> Metadata = new Dictionary<string, string>(Analysis.Metadata);
+			MrzFrameRead? Read = Analysis.Read;
+			if (Read is not null && Read.IsStrictSuccess && Read.Document is not null)
+				return MrzReadDecoder.CreateSuccessResult(Read, Request.TargetKind, Request.SourceKind, Metadata);
 
-			Metadata["MrzFailureCategory"] = EngineResult.FailureCategory.ToString();
+			Metadata["MrzFailureCategory"] = Analysis.FailureCategory.ToString();
 			return new OcrScanResult(
 				Request.TargetKind,
 				Request.SourceKind,
-				EngineResult.ProviderId,
-				EngineResult.ValidationStatus,
-				CandidateResult?.RawText ?? string.Empty,
-				CandidateResult?.NormalizedText ?? string.Empty,
+				ProviderId,
+				Processing.IsModelFailure ? OcrScanValidationStatus.Failed : OcrScanValidationStatus.Invalid,
+				Read?.RawText ?? Processing.Recognition?.RawText ?? string.Empty,
+				Read?.NormalizedText ?? string.Empty,
 				null,
-				CandidateResult?.Confidence ?? 0f,
-				EngineResult.FailureReason ?? CandidateResult?.FailureReason ?? "MRZ validation failed.",
+				Read?.RecognitionConfidence ?? 0f,
+				ResolveFailureReason(Processing),
 				Metadata);
+		}
+
+		private static string ResolveFailureReason(MrzFrameProcessingResult Processing)
+		{
+			if (Processing.IsModelFailure)
+				return "The ONNX MRZ models are unavailable or failed to run.";
+
+			return Processing.Analysis.FailureCategory switch
+			{
+				MrzScanFailureCategory.MrzRegionNotFound => "No plausible MRZ region was localized.",
+				MrzScanFailureCategory.MrzTooSmall => "The MRZ text was too small to read reliably.",
+				MrzScanFailureCategory.GlareInMrzArea => "Glare in the MRZ area prevented a valid read.",
+				MrzScanFailureCategory.OcrNoText => "No MRZ candidate could be normalized from the OCR text.",
+				_ => "MRZ validation failed."
+			};
 		}
 
 		private static OcrScanResult CreateFailureResult(

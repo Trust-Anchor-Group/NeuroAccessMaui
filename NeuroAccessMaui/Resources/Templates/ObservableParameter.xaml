@@ -19,7 +19,7 @@
 		<Setter Property="TextColor"
 				Value="{DynamicResource ContentSecondaryWL}" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="{StaticResource FontSizeMd}" />
 		<Setter Property="FontFamily"
 				Value="HaasGroteskRegular" />
 		<Setter Property="LineBreakMode"
@@ -35,7 +35,7 @@
 		<Setter Property="TextColor"
 				Value="{DynamicResource ContentPrimaryWL}" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="{StaticResource FontSizeMd}" />
 		<Setter Property="FontFamily"
 				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"
@@ -274,7 +274,7 @@
 									TextColor="{DynamicResource ContentPrimaryWL}"
 									VerticalOptions="Center"
 									FontFamily="HaasGroteskRegular"
-									FontSize="18" />
+									FontSize="{StaticResource FontSizeXl}" />
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -465,7 +465,7 @@
 										TextColor="{DynamicResource ContentPrimaryWL}"
 										VerticalOptions="Center"
 										FontFamily="HaasGroteskRegular"
-										FontSize="18">
+										FontSize="{StaticResource FontSizeXl}">
 								<TimePicker.Triggers>
 									<DataTrigger TargetType="TimePicker"
 												 Binding="{Binding IsValid}"

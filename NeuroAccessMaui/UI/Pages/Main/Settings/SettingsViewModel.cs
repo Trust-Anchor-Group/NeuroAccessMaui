@@ -242,6 +242,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
+			base.OnPropertyChanged(e);
+
 			try
 			{
 				switch (e.PropertyName)
@@ -623,7 +625,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				// Branding and KYC invalidations
 				string? domain = ServiceRef.TagProfile.Domain;
 				string? pubSub = ServiceRef.TagProfile.PubSubJid;
-				ICacheInvalidationService invalidation = Waher.Runtime.Inventory.Types.InstantiateDefault<ICacheInvalidationService>(false);
+				ICacheInvalidationService invalidation = ServiceRef.Provider.GetRequiredService<ICacheInvalidationService>();
 				if (!string.IsNullOrWhiteSpace(domain))
 					await invalidation.InvalidateByParentId($"KycProcess:{domain}", scope: "Kyc");
 				if (!string.IsNullOrWhiteSpace(pubSub))

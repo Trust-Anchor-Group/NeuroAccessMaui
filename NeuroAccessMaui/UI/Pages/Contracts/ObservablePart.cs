@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
@@ -39,13 +40,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// Initializes the part, setting properties which needs to be set asynchronosly
 		/// </summary>
-		public async Task InitializeAsync(bool sendPetition = true)
+		/// <param name="sendPetition">Whether to request access to the identity when it is protected.</param>
+		/// <param name="PreparedIdentity">The identity already looked up by the scanner, or <c>null</c> to look it up here.</param>
+		/// <returns>A task representing part initialization.</returns>
+		public async Task InitializeAsync(bool sendPetition = true, IdentityReference? PreparedIdentity = null)
 		{
 			try
 			{
 				// Set Friendly name before anything can go wrong
 				this.FriendlyName = await this.GetFriendlyNameAsync();
-				if (sendPetition)
+				if (PreparedIdentity is not null)
+					await this.ApplyPreparedIdentityAsync(PreparedIdentity, sendPetition);
+				else if (sendPetition)
 					await this.PetitionIdentityAsync();
 				else
 				{
@@ -90,6 +96,40 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					this.OnPropertyChanged(nameof(this.HasSentPetition));
 				});
 			}
+		}
+
+		/// <summary>
+		/// Uses an identity the scanner has already looked up, so it is not requested from the server a second time.
+		/// </summary>
+		/// <param name="PreparedIdentity">The scanned identity. Its <see cref="IdentityReference.Identity"/> is <c>null</c> when
+		/// the identity is protected.</param>
+		/// <param name="SendPetition">Whether to request access to a protected identity.</param>
+		/// <returns>A task that completes when the part reflects the identity.</returns>
+		private async Task ApplyPreparedIdentityAsync(IdentityReference PreparedIdentity, bool SendPetition)
+		{
+			bool PetitionSent = false;
+
+			if (PreparedIdentity.Identity is not null)
+				this.identity = PreparedIdentity.Identity;
+			else if (SendPetition)
+			{
+				// The scanner was refused access, so ask the owner directly instead of being refused again first.
+				await ServiceRef.XmppService.PetitionIdentity(this.LegalId, Guid.NewGuid().ToString(),
+					ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
+				PetitionSent = true;
+			}
+
+			string FriendlyName = await this.GetFriendlyNameAsync();
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (PetitionSent)
+					this.HasSentPetition = true;
+				this.OnPropertyChanged(nameof(this.HasIdentity));
+				this.OnPropertyChanged(nameof(this.CanSendProposal));
+				this.OnPropertyChanged(nameof(this.HasSentPetition));
+				this.FriendlyName = FriendlyName;
+			});
 		}
 
 		private async Task PetitionIdentityAsync()

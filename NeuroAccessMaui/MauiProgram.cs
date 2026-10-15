@@ -18,7 +18,7 @@ using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.UI.Toasts;
-using Waher.Runtime.Inventory;
+using NeuroAccessMaui.Services.Startup;
 using SkiaSharp.Views.Maui.Handlers;
 
 
@@ -49,6 +49,9 @@ namespace NeuroAccessMaui
 
 		public static MauiApp CreateMauiApp()
 		{
+			// Build the Waher type inventory in parallel with MAUI startup instead of inside the App constructor.
+			RuntimeTypeInventory.EnsureStarted();
+
 			InitMauiControlsHandlers();
 
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
@@ -106,6 +109,7 @@ namespace NeuroAccessMaui
 				fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
 				fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
 				fonts.AddFont("NHaasGroteskTXPro-75Bd.ttf", "HaasGroteskBold");
+				fonts.AddFont("NHaasGroteskTXPro-65Md.ttf", "HaasGroteskMedium");
 				fonts.AddFont("NHaasGroteskTXPro-55Rg.ttf", "HaasGroteskRegular");
 			});
 
@@ -151,9 +155,9 @@ namespace NeuroAccessMaui
 			    // Layouts (Grid, StackLayout, etc.)
 			LayoutHandler.Mapper.AppendToMapping("GlobalIgnoreSafeArea", (handler, view) =>
 			{
-				// Sets once at handler creation
-				if(view is Microsoft.Maui.Controls.Layout layout)
-				layout.IgnoreSafeArea = true;
+				// Sets once at handler creation. CustomShell applies safe-area insets itself, so MAUI must not add its own.
+				if (view is Microsoft.Maui.Controls.Layout Layout)
+					Layout.SafeAreaEdges = Microsoft.Maui.SafeAreaEdges.None;
 			});
 
 #if IOS

@@ -40,18 +40,26 @@ namespace NeuroAccessMaui.OCR.Pipeline
 			await this.syncRoot.WaitAsync(CancellationToken).ConfigureAwait(false);
 			try
 			{
-				if (File.Exists(LocalPath) && new FileInfo(LocalPath).Length > 0)
+				await using Stream Source = await OpenPackagedAssetAsync(NormalizedAssetPath).ConfigureAwait(false);
+				if (IsCachedCopyComplete(LocalPath, TryGetLength(Source)))
 					return LocalPath;
 
+				// The model is copied next to the cached path and then moved into place, so an interrupted copy never
+				// leaves a truncated model that every later load would fail on.
+				string TemporaryPath = LocalPath + ".tmp";
 				try
 				{
-					await using Stream Source = await FileSystem.OpenAppPackageFileAsync(NormalizedAssetPath).ConfigureAwait(false);
-					await using FileStream Target = File.Create(LocalPath);
-					await Source.CopyToAsync(Target, CancellationToken).ConfigureAwait(false);
+					await using (FileStream Target = File.Create(TemporaryPath))
+					{
+						await Source.CopyToAsync(Target, CancellationToken).ConfigureAwait(false);
+					}
+
+					File.Move(TemporaryPath, LocalPath, true);
 				}
-				catch (FileNotFoundException)
+				catch
 				{
-					throw new FileNotFoundException("The packaged OCR model asset was not found. Add it under Resources/Raw/OcrModels and ensure it is included as a MauiAsset.", NormalizedAssetPath);
+					TryDeleteFile(TemporaryPath);
+					throw;
 				}
 
 				return LocalPath;
@@ -59,6 +67,64 @@ namespace NeuroAccessMaui.OCR.Pipeline
 			finally
 			{
 				this.syncRoot.Release();
+			}
+		}
+
+		private static async Task<Stream> OpenPackagedAssetAsync(string AssetPath)
+		{
+			try
+			{
+				return await FileSystem.OpenAppPackageFileAsync(AssetPath).ConfigureAwait(false);
+			}
+			catch (FileNotFoundException)
+			{
+				throw new FileNotFoundException("The packaged OCR model asset was not found. Add it under Resources/Raw/OcrModels and ensure it is included as a MauiAsset.", AssetPath);
+			}
+		}
+
+		/// <summary>
+		/// Checks that a cached model exists and, when the packaged size is known, that it has that size.
+		/// </summary>
+		/// <param name="LocalPath">The cached model path.</param>
+		/// <param name="ExpectedLength">The packaged model size, or <c>null</c> if the platform cannot report it cheaply.</param>
+		/// <returns><c>true</c> if the cached model can be used; otherwise <c>false</c>.</returns>
+		private static bool IsCachedCopyComplete(string LocalPath, long? ExpectedLength)
+		{
+			FileInfo CachedFile = new FileInfo(LocalPath);
+			return CachedFile.Exists &&
+				CachedFile.Length > 0 &&
+				(!ExpectedLength.HasValue || CachedFile.Length == ExpectedLength.Value);
+		}
+
+		/// <summary>
+		/// Gets the length of a packaged asset stream without reading it. Android asset streams cannot seek, so their length
+		/// is unknown.
+		/// </summary>
+		/// <param name="Source">The packaged asset stream.</param>
+		/// <returns>The stream length, or <c>null</c> if it is unknown.</returns>
+		private static long? TryGetLength(Stream Source)
+		{
+			try
+			{
+				return Source.CanSeek ? Source.Length : null;
+			}
+			catch (NotSupportedException)
+			{
+				return null;
+			}
+		}
+
+		private static void TryDeleteFile(string FilePath)
+		{
+			try
+			{
+				File.Delete(FilePath);
+			}
+			catch (IOException)
+			{
+			}
+			catch (UnauthorizedAccessException)
+			{
 			}
 		}
 

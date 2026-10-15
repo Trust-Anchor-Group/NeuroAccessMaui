@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
 using ControlsVisualElement = Microsoft.Maui.Controls.VisualElement;
@@ -85,7 +86,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 				this.originalPadding.Right,
 				totalBottom);
 
-			if (!animate)
+			if (!animate || MotionPreferences.ReduceMotion)
 			{
 				SetPadding(view, targetPadding);
 				return;

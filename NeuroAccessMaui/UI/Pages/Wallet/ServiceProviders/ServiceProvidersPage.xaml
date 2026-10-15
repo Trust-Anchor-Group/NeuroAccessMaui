@@ -23,7 +23,7 @@
 			<Setter Property="FontFamily"
 					Value="HaasGroteskBold" />
 			<Setter Property="FontSize"
-					Value="14" />
+					Value="{StaticResource FontSizeSm}" />
 			<Setter Property="LineBreakMode"
 					Value="WordWrap" />
 		</Style>

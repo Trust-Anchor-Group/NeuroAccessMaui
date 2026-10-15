@@ -1,6 +1,7 @@
 ﻿using Android.Nfc;
 using Android.Nfc.Tech;
 using NeuroAccess.Nfc;
+using NeuroAccess.Nfc.Exceptions;
 using Waher.Networking;
 
 namespace NeuroAccessMaui.AndroidPlatform.Nfc
@@ -50,7 +51,17 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		{
 			CommunicationLayer.TransmitBinary(false, Command);
 
-			byte[]? Response = await this.isoDep.TransceiveAsync(Command);
+			byte[]? Response;
+
+			try
+			{
+				Response = await this.TransceiveAsync(Command);
+			}
+			catch (NfcConnectionLostException Ex)
+			{
+				CommunicationLayer.Error(Ex.Message);
+				throw;
+			}
 
 			if (Response is null)
 			{
@@ -61,6 +72,25 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 			CommunicationLayer.ReceiveBinary(false, Response);
 
 			return Response;
+		}
+
+		/// <summary>
+		/// Sends a command to the tag, reporting a tag that left the field as a lost connection.
+		/// </summary>
+		/// <param name="Command">Command</param>
+		/// <returns>Response, or null if the tag returned nothing.</returns>
+		/// <exception cref="NfcConnectionLostException">The tag left the field or the exchange failed.</exception>
+		private async Task<byte[]?> TransceiveAsync(byte[] Command)
+		{
+			try
+			{
+				return await this.isoDep.TransceiveAsync(Command);
+			}
+			catch (Java.IO.IOException Ex)
+			{
+				// Covers TagLostException, which Android throws when the document is moved away mid-read.
+				throw new NfcConnectionLostException("NFC tag connection lost: " + Ex.Message, Ex);
+			}
 		}
 	}
 }

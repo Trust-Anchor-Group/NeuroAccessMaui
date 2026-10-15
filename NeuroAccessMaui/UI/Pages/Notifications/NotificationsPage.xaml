@@ -64,7 +64,7 @@
 											  HorizontalOptions="Start">
 						<Label Text="{l:Localize NotificationsAllLabel}"
 							   TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"
-							   FontSize="14"
+							   FontSize="{StaticResource FontSizeSm}"
 							   FontFamily="SpaceGroteskSemiBold" />
 					</controls:TemplatedButton>
 					<controls:TemplatedButton Command="{Binding SetUnreadCommand}"
@@ -72,7 +72,7 @@
 											  HorizontalOptions="Start">
 						<Label Text="{l:Localize NotificationsUnreadLabel}"
 							   TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"
-							   FontSize="14"
+							   FontSize="{StaticResource FontSizeSm}"
 							   FontFamily="SpaceGroteskSemiBold" />
 					</controls:TemplatedButton>
 				</StackLayout>
@@ -83,7 +83,7 @@
 										  HorizontalOptions="End">
 					<Label Text="{l:Localize NotificationsClearAllLabel}"
 						   TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"
-						   FontSize="14"
+						   FontSize="{StaticResource FontSizeSm}"
 						   FontFamily="SpaceGroteskSemiBold" />
 				</controls:TemplatedButton>
 			</Grid>
@@ -144,7 +144,7 @@
 													</DataTrigger>
 												</Border.Triggers>
 												<Label Text="{Binding OccurrenceCount}"
-													   FontSize="10"
+													   FontSize="{StaticResource FontSize2xs}"
 													   TextColor="{DynamicResource TnPWarningContentWL}"
 													   HorizontalOptions="Center"
 													   VerticalOptions="Center" />
@@ -155,12 +155,12 @@
 															 Spacing="4">
 											<Label Text="{Binding Title}"
 												   Style="{DynamicResource MenuItemLabel}"
-												   FontSize="12" />
+												   FontSize="{StaticResource FontSizeXs}" />
 											<Grid RowDefinitions="*, auto">
 												<Label Text="{Binding Body}"
 													   Grid.Row="1"
 													   Style="{DynamicResource ItemDescriptionLabel}"
-													   FontSize="14"
+													   FontSize="{StaticResource FontSizeSm}"
 													   MaxLines="2" />
 											</Grid>
 
@@ -172,7 +172,7 @@
 													 VerticalOptions="Center">
 											<Label Text="{Binding DateText}"
 												   Style="{DynamicResource ItemDescriptionLabel}"
-												   FontSize="12"
+												   FontSize="{StaticResource FontSizeXs}"
 												   HorizontalTextAlignment="End" />
 											<Border StrokeShape="RoundRectangle 8"
 													BackgroundColor="{Binding StateColor}"
@@ -180,7 +180,7 @@
 													Padding="8,2">
 												<Grid>
 													<Label Text="{Binding StateLabel}"
-														   FontSize="11"
+														   FontSize="{StaticResource FontSize2xs}"
 														   VerticalOptions="Center"
 														   HorizontalOptions="Center"
 														   TextColor="{Binding StateTextColor}" />
@@ -198,7 +198,7 @@
 																  CommandParameter="{Binding .}"
 																  Padding="0">
 											<Label Text="{l:Localize NotificationsMarkReadLabel}"
-												   FontSize="12"
+												   FontSize="{StaticResource FontSizeXs}"
 												   TextColor="{DynamicResource TnPInfoContentWL}" VerticalOptions="End"/>
 										</controls:TemplatedButton>
 										<controls:TemplatedButton Grid.Column="2"
@@ -206,7 +206,7 @@
 																  CommandParameter="{Binding .}"
 																  Padding="0" HorizontalOptions="End">
 											<Label Text="{l:Localize NotificationsDeleteLabel}"
-												   FontSize="12"
+												   FontSize="{StaticResource FontSizeXs}"
 												   TextColor="{DynamicResource TnPDangerContentWL}"
 												   HorizontalOptions="End"
 												   VerticalOptions="End"/>

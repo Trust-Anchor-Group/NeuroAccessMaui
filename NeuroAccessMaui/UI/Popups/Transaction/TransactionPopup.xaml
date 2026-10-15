@@ -52,7 +52,7 @@
 							<Label Grid.Column="1" Style="{DynamicResource Brand2LabelS}" Text="{Binding TransactionEevent.FriendlyName}" LineBreakMode="TailTruncation" VerticalOptions="Center"/>
 							<Grid Grid.Column="1" Grid.Row="1" ColumnDefinitions="auto">
 								<Border Padding="8,2,8,2" StrokeShape="RoundRectangle 10" BackgroundColor="{DynamicResource TnPWarningbgWL}" IsVisible="{Binding IsContact, Converter={StaticResource InvertedBoolConverter}}">
-									<Label Style="{DynamicResource Brand2LabelSSecondary}" TextColor="{DynamicResource TnPWarningContentWL}" Text="{l:Localize NotInContacts}" FontSize="14" HorizontalOptions="Center"/>
+									<Label Style="{DynamicResource Brand2LabelSSecondary}" TextColor="{DynamicResource TnPWarningContentWL}" Text="{l:Localize NotInContacts}" FontSize="{StaticResource FontSizeSm}" HorizontalOptions="Center"/>
 								</Border>
 							</Grid>
 							
@@ -78,9 +78,9 @@
 							<Label TextColor="{Binding TransactionEevent.ChangeColor}" LineBreakMode="TailTruncation" >
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding Change}" FontSize="16" />
-										<Span Text=" " FontSize="16" />
-										<Span Text="{Binding TransactionEevent.Currency}" FontSize="16" />
+										<Span Text="{Binding Change}" FontSize="{StaticResource FontSizeLg}" />
+										<Span Text=" " FontSize="{StaticResource FontSizeLg}" />
+										<Span Text="{Binding TransactionEevent.Currency}" FontSize="{StaticResource FontSizeLg}" />
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>

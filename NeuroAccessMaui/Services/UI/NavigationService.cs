@@ -25,10 +25,7 @@ namespace NeuroAccessMaui.Services.UI
 
         private bool IsBusy => this.isNavigating || this.isExecuting;
 
-        private IShellPresenter Presenter =>
-            (Application.Current.MainPage as NavigationPage)?.CurrentPage as IShellPresenter
-            ?? Application.Current.MainPage as IShellPresenter
-            ?? throw new InvalidOperationException("CustomShell presenter not found.");
+        private IShellPresenter Presenter => UiPageResolver.GetRequiredShellPresenter();
 
         #region INavigationService implementation
 
@@ -49,6 +46,7 @@ namespace NeuroAccessMaui.Services.UI
         {
             return this.Enqueue(async () =>
             {
+                BaseContentPage? SourcePage = this.screenStack.Count > 0 ? this.screenStack.Peek() : null;
                 NavigationArgs? parent = this.navigationArgsStack.Count > 0 ? this.navigationArgsStack.Peek() : null;
                 NavigationArgs navArgs = Args ?? new TArgs();
                 navArgs.SetBackArguments(parent, BackMethod, UniqueId);
@@ -58,6 +56,7 @@ namespace NeuroAccessMaui.Services.UI
                 BaseContentPage page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or not a BaseContentPage");
 
+                long StartTimestamp = UiTelemetry.LogNavigationStarted(ServiceRef.LogService, "GoTo", SourcePage, page, Route, BackMethod);
                 this.navigationArgsStack.Push(navArgs);
                 this.screenStack.Push(page);
 
@@ -76,16 +75,26 @@ namespace NeuroAccessMaui.Services.UI
                             await Task.Yield();
                             await App.WaitForServicesAsync();
                             await page.OnAppearingAsync();
+                            UiTelemetry.LogPageAppeared(ServiceRef.LogService, page, "GoTo");
+                            UiTelemetry.LogNavigationCompleted(ServiceRef.LogService, "GoTo", SourcePage, page, StartTimestamp, Route, BackMethod);
                             navArgs.NavigationCompletionSource.TrySetResult(true);
                         }
                         catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                        catch (Exception ex) { ServiceRef.LogService.LogException(Waher.Events.Log.UnnestException(ex)); }
+                        catch (Exception ex)
+                        {
+                            Exception UnnestedException = Waher.Events.Log.UnnestException(ex);
+                            UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, page, "Appearing", "GoTo", UnnestedException);
+                            UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "GoTo", UnnestedException, SourcePage, page, StartTimestamp, Route, BackMethod);
+                            ServiceRef.LogService.LogException(UnnestedException);
+                        }
                         finally { navArgs.NavigationCompletionSource.TrySetResult(false); }
                     });
                 }
                 catch (Exception ex)
                 {
-                    ServiceRef.LogService.LogException(Waher.Events.Log.UnnestException(ex));
+                    Exception UnnestedException = Waher.Events.Log.UnnestException(ex);
+                    UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "GoTo", UnnestedException, SourcePage, page, StartTimestamp, Route, BackMethod);
+                    ServiceRef.LogService.LogException(UnnestedException);
                     navArgs.NavigationCompletionSource.TrySetResult(false);
                 }
                 finally { this.isNavigating = false; }
@@ -97,6 +106,8 @@ namespace NeuroAccessMaui.Services.UI
         {
             return this.Enqueue(async () =>
             {
+                BaseContentPage? SourcePage = this.screenStack.Count > 0 ? this.screenStack.Peek() : null;
+                long StartTimestamp = UiTelemetry.LogNavigationStarted(ServiceRef.LogService, "GoToPage", SourcePage, Page);
                 this.latestArguments = null;
                 this.navigationArgsStack.Push(null);
                 this.screenStack.Push(Page);
@@ -114,11 +125,24 @@ namespace NeuroAccessMaui.Services.UI
                             await initializationTask;
                             await Task.Yield();
                             await App.WaitForServicesAsync();
-                        await Page.OnAppearingAsync();
+                            await Page.OnAppearingAsync();
+                            UiTelemetry.LogPageAppeared(ServiceRef.LogService, Page, "GoToPage");
+                            UiTelemetry.LogNavigationCompleted(ServiceRef.LogService, "GoToPage", SourcePage, Page, StartTimestamp);
                         }
                         catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                        catch (Exception ex) { ServiceRef.LogService.LogException(Waher.Events.Log.UnnestException(ex)); }
+                        catch (Exception ex)
+                        {
+                            Exception UnnestedException = Waher.Events.Log.UnnestException(ex);
+                            UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, Page, "Appearing", "GoToPage", UnnestedException);
+                            UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "GoToPage", UnnestedException, SourcePage, Page, StartTimestamp);
+                            ServiceRef.LogService.LogException(UnnestedException);
+                        }
                     });
+                }
+                catch (Exception ex)
+                {
+                    UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "GoToPage", Waher.Events.Log.UnnestException(ex), SourcePage, Page, StartTimestamp);
+                    throw;
                 }
                 finally { this.isNavigating = false; }
             });
@@ -131,12 +155,12 @@ namespace NeuroAccessMaui.Services.UI
             {
                 BaseContentPage page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or not a BaseContentPage");
-                await this.SetRootInternalAsync(page, null);
+                await this.SetRootInternalAsync(page, null, "SetRoot", Route);
             });
         }
 
         /// <inheritdoc/>
-        public Task SetRootAsync(BaseContentPage Page) => this.Enqueue(async () => await this.SetRootInternalAsync(Page, null));
+        public Task SetRootAsync(BaseContentPage Page) => this.Enqueue(async () => await this.SetRootInternalAsync(Page, null, "SetRootPage"));
 
         /// <inheritdoc/>
         public Task SetRootAsync<TArgs>(string Route, TArgs? Args) where TArgs : NavigationArgs, new()
@@ -147,7 +171,7 @@ namespace NeuroAccessMaui.Services.UI
                 this.latestArguments = navArgs;
                 BaseContentPage page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or not a BaseContentPage");
-                await this.SetRootInternalAsync(page, navArgs);
+                await this.SetRootInternalAsync(page, navArgs, "SetRoot", Route);
             });
         }
 
@@ -159,6 +183,9 @@ namespace NeuroAccessMaui.Services.UI
         {
             if (this.screenStack.Count <= 1)
                 return;
+            BaseContentPage SourcePage = this.screenStack.Peek();
+            BaseContentPage RootPage = this.screenStack.Last();
+            long StartTimestamp = UiTelemetry.LogNavigationStarted(ServiceRef.LogService, "PopToRoot", SourcePage, RootPage);
             List<BaseContentPage> removedPages = new();
             bool transitionCompleted = false;
             this.isNavigating = true;
@@ -176,13 +203,30 @@ namespace NeuroAccessMaui.Services.UI
                 transitionCompleted = true;
                 _ = root.Dispatcher.Dispatch(async () =>
                 {
-                    try { await Task.Yield(); await App.WaitForServicesAsync(); await root.OnAppearingAsync(); } catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                    catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                    try
+                    {
+                        await Task.Yield();
+                        await App.WaitForServicesAsync();
+                        await root.OnAppearingAsync();
+                        UiTelemetry.LogPageAppeared(ServiceRef.LogService, root, "PopToRoot");
+                        UiTelemetry.LogNavigationCompleted(ServiceRef.LogService, "PopToRoot", SourcePage, root, StartTimestamp);
+                    }
+                    catch (Exception ex) when (App.IsLifecycleException(ex)) { }
+                    catch (Exception ex)
+                    {
+                        UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, root, "Appearing", "PopToRoot", ex);
+                        UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "PopToRoot", ex, SourcePage, root, StartTimestamp);
+                        ServiceRef.LogService.LogException(ex);
+                    }
                 });
                 this.Presenter.UpdateBars(root);
             }
             catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-            catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+            catch (Exception ex)
+            {
+                UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "PopToRoot", ex, SourcePage, RootPage, StartTimestamp);
+                ServiceRef.LogService.LogException(ex);
+            }
             finally { this.isNavigating = false; }
 
             await Task.Yield();
@@ -201,7 +245,11 @@ namespace NeuroAccessMaui.Services.UI
                         disposable.Dispose();
                 }
                 catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                catch (Exception ex)
+                {
+                    UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, removed, "Cleanup", "PopToRoot", ex);
+                    ServiceRef.LogService.LogException(ex);
+                }
             }
         });
 
@@ -288,6 +336,9 @@ namespace NeuroAccessMaui.Services.UI
                 return;
             List<BaseContentPage> removedPages = new();
             bool transitionCompleted = false;
+            BaseContentPage SourcePage = this.screenStack.Peek();
+            BaseContentPage? TargetPage = null;
+            long StartTimestamp = UiTelemetry.LogNavigationStarted(ServiceRef.LogService, "GoBack", SourcePage, null);
             try
             {
                 NavigationArgs? poppedArgs = this.navigationArgsStack.Pop();
@@ -305,18 +356,36 @@ namespace NeuroAccessMaui.Services.UI
                 }
 
                 BaseContentPage target = this.screenStack.Peek();
+                TargetPage = target;
                 this.isNavigating = true;
 				await this.Presenter.ShowScreen(target, TransitionType.Fade);
                 transitionCompleted = true;
                 _ = target.Dispatcher.Dispatch(async () =>
                 {
-                    try { await Task.Yield(); await App.WaitForServicesAsync(); await target.OnAppearingAsync(); } catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                    catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                    try
+                    {
+                        await Task.Yield();
+                        await App.WaitForServicesAsync();
+                        await target.OnAppearingAsync();
+                        UiTelemetry.LogPageAppeared(ServiceRef.LogService, target, "GoBack");
+                        UiTelemetry.LogNavigationCompleted(ServiceRef.LogService, "GoBack", SourcePage, target, StartTimestamp);
+                    }
+                    catch (Exception ex) when (App.IsLifecycleException(ex)) { }
+                    catch (Exception ex)
+                    {
+                        UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, target, "Appearing", "GoBack", ex);
+                        UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "GoBack", ex, SourcePage, target, StartTimestamp);
+                        ServiceRef.LogService.LogException(ex);
+                    }
                 });
                 this.Presenter.UpdateBars(target);
             }
             catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-            catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+            catch (Exception ex)
+            {
+                UiTelemetry.LogNavigationFailed(ServiceRef.LogService, "GoBack", ex, SourcePage, TargetPage, StartTimestamp);
+                ServiceRef.LogService.LogException(ex);
+            }
             finally { this.isNavigating = false; }
 
             await Task.Yield();
@@ -335,7 +404,11 @@ namespace NeuroAccessMaui.Services.UI
                         disposable.Dispose();
                 }
                 catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                catch (Exception ex)
+                {
+                    UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, removed, "Cleanup", "GoBack", ex);
+                    ServiceRef.LogService.LogException(ex);
+                }
             }
         }
 
@@ -445,8 +518,10 @@ namespace NeuroAccessMaui.Services.UI
             return false;
         }
 
-        private async Task SetRootInternalAsync(BaseContentPage Page, NavigationArgs? Args)
+        private async Task SetRootInternalAsync(BaseContentPage Page, NavigationArgs? Args, string Action, string? Route = null)
         {
+            BaseContentPage? SourcePage = this.screenStack.Count > 0 ? this.screenStack.Peek() : null;
+            long StartTimestamp = UiTelemetry.LogNavigationStarted(ServiceRef.LogService, Action, SourcePage, Page, Route);
             List<BaseContentPage> removedPages = new();
             while (this.screenStack.Count > 0)
             {
@@ -481,15 +556,23 @@ namespace NeuroAccessMaui.Services.UI
                         await Task.Yield();
                         await App.WaitForServicesAsync();
                         await Page.OnAppearingAsync();
+                        UiTelemetry.LogPageAppeared(ServiceRef.LogService, Page, Action);
+                        UiTelemetry.LogNavigationCompleted(ServiceRef.LogService, Action, SourcePage, Page, StartTimestamp, Route);
                         Args?.NavigationCompletionSource.TrySetResult(true);
                     }
                     catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                    catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                    catch (Exception ex)
+                    {
+                        UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, Page, "Appearing", Action, ex);
+                        UiTelemetry.LogNavigationFailed(ServiceRef.LogService, Action, ex, SourcePage, Page, StartTimestamp, Route);
+                        ServiceRef.LogService.LogException(ex);
+                    }
                     finally { Args?.NavigationCompletionSource.TrySetResult(false); }
                 });
             }
             catch (Exception ex)
             {
+                UiTelemetry.LogNavigationFailed(ServiceRef.LogService, Action, ex, SourcePage, Page, StartTimestamp, Route);
                 ServiceRef.LogService.LogException(ex);
                 Args?.NavigationCompletionSource.TrySetResult(false);
             }
@@ -511,7 +594,11 @@ namespace NeuroAccessMaui.Services.UI
                         disposable.Dispose();
                 }
                 catch (Exception ex) when (App.IsLifecycleException(ex)) { }
-                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                catch (Exception ex)
+                {
+                    UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, removed, "Cleanup", Action, ex);
+                    ServiceRef.LogService.LogException(ex);
+                }
             }
         }
 

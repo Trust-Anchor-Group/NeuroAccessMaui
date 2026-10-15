@@ -1,20 +1,23 @@
+using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Security;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using EDaler;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls.Internals;
+using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Resources.Styles;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Startup;
+using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
@@ -78,43 +81,12 @@ using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
-using NeuroFeatures;
 using Waher.Content;
-using Waher.Content.Images;
-using Waher.Content.Markdown;
-using Waher.Content.Xml;
 using Waher.Events;
-using Waher.Events.Persistence;
-using Waher.Networking.DNS;
-using Waher.Networking.XMPP;
-using Waher.Networking.XMPP.Avatar;
-using Waher.Networking.XMPP.Concentrator;
-using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Control;
-using Waher.Networking.XMPP.Geo;
-using Waher.Networking.XMPP.HTTPX;
-using Waher.Networking.XMPP.Mail;
 using Waher.Networking.XMPP.P2P;
-using Waher.Networking.XMPP.PEP;
-using Waher.Networking.XMPP.Provisioning;
-using Waher.Networking.XMPP.PubSub;
-using Waher.Networking.XMPP.Push;
-using Waher.Networking.XMPP.Sensor;
 using Waher.Persistence;
-using Waher.Persistence.Files;
-using Waher.Persistence.Serialization;
-using Waher.Runtime.Geo;
-using Waher.Runtime.Inventory;
-using Waher.Runtime.Settings;
-using Waher.Runtime.Settings.SettingObjects;
 using Waher.Runtime.Text;
-using Waher.Script;
-using Waher.Script.Content;
-using Waher.Script.Graphs;
-using Waher.Security.JWS;
-using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
-using Waher.Things;
 using Waher.Layout;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
 using Waher.Security;
@@ -136,13 +108,20 @@ namespace NeuroAccessMaui
 
         private static readonly SemaphoreSlim lifecycleSemaphore = new SemaphoreSlim(1, 1);
         private static readonly SemaphoreSlim autoSaveSemaphore = new SemaphoreSlim(1, 1);
-        private static Task? initialization;
+        private static readonly AsyncLocal<bool> inCoreInitialization = new AsyncLocal<bool>();
+        private static volatile Task? initialization;
         private static Task transition = Task.CompletedTask;
-        private static Task? previousRunReport;
+        private static Task? foregroundActivation;
+        private static Task? deferredWork;
+        private static CancellationTokenSource? deferredCancellation;
+        private static volatile bool previousRunReported;
+        private static volatile bool providerThemeRefreshed;
         private static TaskCompletionSource<bool> servicesReady = CreateServicesReadySignal();
         private static CancellationTokenSource? activationCancellation;
         private static LifecycleState lifecycleState;
-        private static Timer? autoSaveTimer;
+        private static bool sessionAdmitted;
+        private static volatile Timer? autoSaveTimer;
+        private static int autoSaveScheduled;
         private static App? appInstance;
         private static Exception? startupFailure;
         private static Exception? cleanupFailure;
@@ -261,44 +240,19 @@ namespace NeuroAccessMaui
 
         #region Constructor
 
-        /// <summary>Creates the foreground application UI and joins process startup.</summary>
-        public App() : this(false) { }
-
-        /// <summary>Creates an application instance and requests its initial activation.</summary>
-        /// <param name="backgroundStart">Whether activation was requested without foreground UI.</param>
-        public App(bool backgroundStart)
+        /// <summary>Creates the application UI and starts process startup.</summary>
+        /// <remarks>
+        /// MAUI creates the application on every process start, including starts for a push message or another background
+        /// component. Core initialization (local storage, profile and theme) and the session (network, XMPP, contracts) both
+        /// start here, so a process started in the background keeps its session. Foreground work starts when a window is
+        /// created or resumed, see <see cref="AppWindow"/>. The Waher type inventory is already being built in the background,
+        /// see <see cref="RuntimeTypeInventory"/>.
+        /// </remarks>
+        public App()
         {
             appInstance = this;
-            try { InitializeRuntimeTypes(); }
-            catch (Exception Ex)
-            {
-                initialization ??= Task.FromException(Ex);
-                _ = initialization.Exception;
-                servicesReady.TrySetException(Ex);
-                _ = servicesReady.Task.Exception;
-                lifecycleState = LifecycleState.Failed;
-                ReportLifecycleFailure(Ex);
-                return;
-            }
             this.InitializeComponent();
-            _ = ObserveLifecycleAsync(() => this.ResumeAsync(backgroundStart));
-        }
-
-        void SetTheme(AppTheme Theme)
-        {
-            if (Theme is AppTheme.Unspecified) Theme = Application.Current!.RequestedTheme;
-
-            ICollection<ResourceDictionary> Merged = this.Resources.MergedDictionaries;
-
-            // Remove only our color theme dictionaries
-            foreach (ResourceDictionary? Dict in Merged.Where(d => d.ContainsKey("IsLocalThemeDictionary")).ToList())
-                Merged.Remove(Dict);
-
-            // Add correct one
-            if (Theme == AppTheme.Dark)
-                Merged.Add(new Dark());
-            else
-                Merged.Add(new Light());
+            _ = ObserveLifecycleAsync(() => this.ResumeAsync(isBackground: true));
         }
 
         /// <summary>
@@ -306,6 +260,7 @@ namespace NeuroAccessMaui
         /// </summary>
         protected override Window CreateWindow(IActivationState? activationState)
         {
+            SyncMotionSettings();
             if (this.Windows.Any())
                 return this.Windows[0];
             Page Root = startupFailure is null
@@ -318,6 +273,11 @@ namespace NeuroAccessMaui
         #endregion
 
         #region Window lifecycle bridge
+
+        /// <summary>
+        /// Invoked when the MAUI window has been created, which starts or joins the first foreground activation.
+        /// </summary>
+        internal Task HandleWindowCreatedAsync() => ReferenceEquals(this, Current) ? this.ResumeAsync(isBackground: false) : Task.CompletedTask;
 
         /// <summary>
         /// Invoked when the MAUI window enters the stopped state.
@@ -345,65 +305,23 @@ namespace NeuroAccessMaui
 
         #region Initialization
 
-        private static void InitializeRuntimeTypes()
-        {
-            if (!Types.IsInitialized)
-            {
-                Types.Initialize(
-                    typeof(App).Assembly,
-                    typeof(Database).Assembly,
-                    typeof(ObjectSerializer).Assembly,
-                    typeof(FilesProvider).Assembly,
-                    typeof(Setting).Assembly,
-                    typeof(RuntimeSettings).Assembly,
-                    typeof(PersistedEvent).Assembly,
-                    typeof(InternetContent).Assembly,
-                    typeof(ImageCodec).Assembly,
-                    typeof(MarkdownDocument).Assembly,
-                    typeof(XML).Assembly,
-                    typeof(DnsResolver).Assembly,
-                    typeof(XmppClient).Assembly,
-                    typeof(ContractsClient).Assembly,
-                    typeof(NeuroFeaturesClient).Assembly,
-                    typeof(EDalerClient).Assembly,
-                    typeof(SensorClient).Assembly,
-                    typeof(ControlClient).Assembly,
-                    typeof(ConcentratorClient).Assembly,
-                    typeof(ProvisioningClient).Assembly,
-                    typeof(PubSubClient).Assembly,
-                    typeof(PepClient).Assembly,
-                    typeof(AvatarClient).Assembly,
-                    typeof(PushNotificationClient).Assembly,
-                    typeof(MailClient).Assembly,
-                    typeof(GeoClient).Assembly,
-                    typeof(GeoPosition).Assembly,
-                    typeof(ThingReference).Assembly,
-                    typeof(JwtFactory).Assembly,
-                    typeof(JwsAlgorithm).Assembly,
-                    typeof(Expression).Assembly,
-                    typeof(Graph).Assembly,
-                    typeof(GraphEncoder).Assembly,
-                    typeof(XmppServerlessMessaging).Assembly,
-                    typeof(HttpxClient).Assembly,
-                    typeof(Waher.Script.Persistence.SQL.Select).Assembly,
-                    typeof(Waher.Layout.Layout2D.Layout2DDocument).Assembly,
-                    typeof(IPaceProtocol).Assembly,
-                    typeof(ISignatureAlgorithm).Assembly,
-                    typeof(EllipticCurve).Assembly);
-            }
-        }
-
         private static async Task InitializeProcessAsync()
         {
             await lifecycleSemaphore.WaitAsync();
             try
             {
+                // Code that initialization runs must not wait for initialization to complete, see WaitForCoreAsync.
+                inCoreInitialization.Value = true;
+
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     LocalizationManager.Current.CurrentCulture = SelectedLanguage;
                     AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                     TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
                 });
+
+                // Persistence, content encoding and scripting resolve types through the inventory.
+                await RuntimeTypeInventory.WaitUntilReadyAsync();
                 // Register exceptions as alerts.
                 Log.RegisterAlertExceptionType(true,
                     typeof(OutOfMemoryException),
@@ -428,6 +346,9 @@ namespace NeuroAccessMaui
                 storage = ServiceRef.StorageService;
                 await storage.Init(CancellationToken.None);
                 await CreateOrRestoreConfigurationAsync();
+                // The theme only needs the local profile, so it is applied before the session starts. Applying it again
+                // later does nothing unless it changed.
+                ServiceRef.ThemeService.SetTheme(ServiceRef.TagProfile.Theme);
                 attachments = ServiceRef.AttachmentCacheService;
                 await attachments.Load(false, CancellationToken.None);
                 internetCache = ServiceRef.InternetCacheService;
@@ -467,16 +388,49 @@ namespace NeuroAccessMaui
                     throw new OperationCanceledException("The requested activation is no longer active.");
             });
 
+        /// <summary>Waits until durable process initialization (local storage, profile and local services) has completed.</summary>
+        /// <param name="CancellationToken">Cancels only this wait, never the initialization itself.</param>
+        /// <returns>Completion when initialization has succeeded; its failure or cancellation otherwise.</returns>
+        /// <remarks>
+        /// Starts initialization if no application instance has started it yet. Returns at once when called from code that
+        /// initialization itself runs, so that code can never wait for its own completion.
+        /// </remarks>
+        public static Task WaitForCoreAsync(CancellationToken CancellationToken = default)
+        {
+            Task? Core = initialization;
+            if (Core is not null && Core.IsCompletedSuccessfully)
+                return Task.CompletedTask;
+            if (inCoreInitialization.Value)
+                return Task.CompletedTask;
+            return WaitForCoreSlowAsync(CancellationToken);
+        }
+
+        private static async Task WaitForCoreSlowAsync(CancellationToken CancellationToken)
+        {
+            Task? Core = null;
+            await MainThread.InvokeOnMainThreadAsync(() => { Core = StartCore(); });
+            await Core!.WaitAsync(CancellationToken);
+        }
+
+        /// <summary>Starts durable process initialization unless it has already started. Must run on the main thread.</summary>
+        /// <returns>The retained initialization task.</returns>
+        private static Task StartCore() => initialization ??= Task.Run(InitializeProcessAsync);
+
         /// <summary>Observes an asynchronous platform callback without allowing its exception to escape.</summary>
         /// <param name="Callback">Lifecycle callback to invoke immediately.</param>
         /// <returns>Completion after observing the callback outcome.</returns>
+        /// <remarks>
+        /// Startup, activation and cleanup report their own failures, which shows the bootstrap error page. Any other
+        /// exception that reaches this point, such as one thrown by an <see cref="AppActivated"/> subscriber or by foreground
+        /// UI work, is only logged.
+        /// </remarks>
         internal static async Task ObserveLifecycleAsync(Func<Task> Callback)
         {
             try { await Callback(); }
-            catch (OperationCanceledException) { }
+            catch (Exception Ex) when (IsLifecycleException(Ex)) { }
             catch (Exception Ex)
             {
-                try { await MainThread.InvokeOnMainThreadAsync(() => ReportLifecycleFailure(Ex)); }
+                try { ServiceRef.LogService.LogException(Ex); }
                 catch (Exception ReportingError) { System.Diagnostics.Debug.WriteLine(ReportingError); }
             }
         }
@@ -509,15 +463,15 @@ namespace NeuroAccessMaui
         /// <returns>The shared activation outcome.</returns>
         public Task OnBackgroundStart() => this.ResumeAsync(true);
 
-        /// <inheritdoc/>
-        protected override async void OnStart() => await ObserveLifecycleAsync(() => this.ResumeAsync(false));
-
-        /// <inheritdoc/>
-        protected override async void OnResume() => await ObserveLifecycleAsync(() => this.ResumeAsync(false));
-
         /// <summary>Starts or joins the current activation, applying foreground UI when requested.</summary>
         /// <param name="isBackground">Whether foreground presentation should be deferred.</param>
         /// <returns>The activation outcome, including required foreground setup.</returns>
+        /// <remarks>
+        /// <see cref="Application.OnStart"/>, <see cref="Application.OnResume"/> and <see cref="Application.OnSleep"/> are not
+        /// overridden: MAUI raises them for the same window transitions that <see cref="AppWindow"/> forwards, and handling
+        /// both ran every transition twice. Window creation and every resume join the same activation, and its foreground
+        /// work runs once.
+        /// </remarks>
         public Task ResumeAsync(bool isBackground) => MainThread.InvokeOnMainThreadAsync(async () =>
         {
             if (!ReferenceEquals(this, Current))
@@ -527,18 +481,30 @@ namespace NeuroAccessMaui
             await Activation;
             if (!ReferenceEquals(Attempt, servicesReady.Task) || lifecycleState != LifecycleState.Active)
                 throw new OperationCanceledException();
-            if (!isBackground)
-            {
-                Current?.SetTheme(ServiceRef.TagProfile.Theme);
-                ServiceRef.ThemeService.SetTheme(ServiceRef.TagProfile.Theme);
-                Window? Window = Current?.Windows.FirstOrDefault();
-                if (Window?.Page is BootstrapErrorPage)
-                    Window.Page = ServiceRef.Provider.GetRequiredService<CustomShell>();
-                if (Window?.Page is CustomShell Shell)
-                    _ = Shell.InitializeLoadingPageAsync();
-                previousRunReport ??= Task.Run(() => ObserveOptionalAsync(SendErrorReportFromPreviousRunAsync));
-            }
+            if (isBackground || ReferenceEquals(foregroundActivation, Attempt))
+                return;
+            foregroundActivation = Attempt;
+            this.ApplyForegroundState();
         });
+
+        /// <summary>Applies the foreground UI state once per activation. Runs on the main thread.</summary>
+        private void ApplyForegroundState()
+        {
+            // Does nothing unless the theme changed, for example when it follows the system theme.
+            ServiceRef.ThemeService.SetTheme(ServiceRef.TagProfile.Theme);
+            Window? Window = this.Windows.FirstOrDefault();
+            if (Window?.Page is BootstrapErrorPage)
+                Window.Page = ServiceRef.Provider.GetRequiredService<CustomShell>();
+            if (Window?.Page is CustomShell Shell)
+            {
+                _ = Shell.InitializeLoadingPageAsync();
+
+                // On a cold start the loading page schedules deferred work once it has chosen the first page. On a resume
+                // the first page is already shown, so work that did not run to completion is scheduled again here.
+                if (Shell.CurrentPage is not LoadingPage)
+                    ScheduleDeferredWork();
+            }
+        }
 
         private static Task AdmitActivation()
         {
@@ -550,13 +516,16 @@ namespace NeuroAccessMaui
                 return initialization;
             if (lifecycleState is LifecycleState.Starting or LifecycleState.Active)
                 return transition;
-            bool IsResuming = initialization is not null;
-            if (IsResuming)
+            // Core initialization can have been started without a session, by WaitForCoreAsync, so resumption is tracked
+            // separately.
+            bool IsResuming = sessionAdmitted;
+            if (IsResuming || servicesReady.Task.IsCompleted)
             {
                 servicesReady.TrySetCanceled();
                 servicesReady = CreateServicesReadySignal();
             }
-            initialization ??= Task.Run(InitializeProcessAsync);
+            sessionAdmitted = true;
+            StartCore();
             activationCancellation = new CancellationTokenSource();
             lifecycleState = LifecycleState.Starting;
             TaskCompletionSource<bool> Signal = servicesReady;
@@ -596,8 +565,10 @@ namespace NeuroAccessMaui
                                 throw new OperationCanceledException();
                             lifecycleState = LifecycleState.Active;
                             startupFailure = null;
+                            // Profile changes bring the next save forward (see TagProfile_Changed); the period is a safety net.
+                            Interlocked.Exchange(ref autoSaveScheduled, 0);
                             autoSaveTimer = new Timer(SaveFromTimer, Signal.Task,
-                                Constants.Intervals.AutoSave.Multiply(4), Constants.Intervals.AutoSave);
+                                Constants.Intervals.AutoSave.Multiply(4), Constants.Intervals.AutoSaveFallback);
                             Signal.TrySetResult(true);
                         });
                     }
@@ -644,10 +615,89 @@ namespace NeuroAccessMaui
         private static async Task ObserveOptionalAsync(Func<Task> Callback)
         {
             try { await Callback(); }
+            catch (OperationCanceledException) { }
             catch (Exception Ex)
             {
                 try { Log.Exception(Ex); }
                 catch (Exception ReportingError) { System.Diagnostics.Debug.WriteLine(ReportingError); }
+            }
+        }
+
+        /// <summary>
+        /// Schedules startup work that the first page does not need, to run a few seconds after it has been shown.
+        /// </summary>
+        /// <remarks>
+        /// Runs the crash report of the previous run and the background refresh of provider branding. Each step runs to
+        /// completion once per process, except that a branding refresh that failed for a transient reason is tried again at
+        /// the next foreground activation. Going to the background cancels pending work, and the next foreground activation
+        /// schedules the remaining steps again. Safe to call from any thread and any number of times.
+        /// </remarks>
+        internal static void ScheduleDeferredWork()
+        {
+            if (!MainThread.IsMainThread)
+            {
+                MainThread.BeginInvokeOnMainThread(ScheduleDeferredWork);
+                return;
+            }
+
+            if (lifecycleState != LifecycleState.Active)
+                return;
+            if (previousRunReported && providerThemeRefreshed)
+                return;
+
+            Task? Previous = deferredWork;
+            bool PreviousRunning = Previous is not null && !Previous.IsCompleted;
+            if (PreviousRunning && deferredCancellation?.IsCancellationRequested != true)
+                return;
+
+            // A new source each time, so work cancelled by going to the background can be scheduled again. A cancelled run can
+            // still be finishing a step that does not observe cancellation, such as a network request. The new run waits for it
+            // instead of being skipped, and the source of that run is left to it rather than disposed under it.
+            if (!PreviousRunning)
+                deferredCancellation?.Dispose();
+            CancellationTokenSource Cancellation = new CancellationTokenSource();
+            deferredCancellation = Cancellation;
+            deferredWork = Task.Run(async () =>
+            {
+                if (PreviousRunning)
+                    await Task.WhenAny(Previous!);
+                await RunDeferredWorkAsync(Cancellation.Token);
+            });
+        }
+
+        private static async Task RunDeferredWorkAsync(CancellationToken Token)
+        {
+            try
+            {
+                // Leave the first frames and the first user interactions to the UI.
+                await Task.Delay(Constants.Intervals.DeferredStartupWork, Token);
+
+                if (!previousRunReported)
+                {
+                    await ObserveOptionalAsync(SendErrorReportFromPreviousRunAsync);
+                    previousRunReported = true;
+                }
+
+                Token.ThrowIfCancellationRequested();
+
+                // Provider branding exists only for onboarded profiles. Until then this step stays pending, so it runs once
+                // onboarding has finished and the loading page has shown the main page.
+                if (!providerThemeRefreshed && ServiceRef.TagProfile.IsComplete())
+                {
+                    ThemeApplyOutcome Outcome = ThemeApplyOutcome.FailedTransient;
+                    await ObserveOptionalAsync(async () =>
+                        Outcome = await ServiceRef.ThemeService.ApplyProviderThemeAsync(ThemeFetchPolicy.BackgroundRefresh, Token));
+                    Token.ThrowIfCancellationRequested();
+
+                    // The loading page no longer waits for branding. A transient failure, typically a start without network
+                    // and without cached branding, is therefore retried at the next foreground activation.
+                    if (Outcome != ThemeApplyOutcome.FailedTransient)
+                        providerThemeRefreshed = true;
+                }
+            }
+            catch (OperationCanceledException) when (Token.IsCancellationRequested)
+            {
+                // The app left the foreground or is shutting down; the next activation schedules the remaining work.
             }
         }
 
@@ -747,10 +797,6 @@ namespace NeuroAccessMaui
         /// <returns>The shared stop outcome.</returns>
         public Task OnBackgroundSleep() => RequestStopAsync(false, false);
 
-        /// <inheritdoc/>
-        protected override async void OnSleep() => await ObserveLifecycleAsync(() =>
-            ReferenceEquals(this, Current) ? this.OnBackgroundSleep() : Task.CompletedTask);
-
         /// <summary>Terminates owned resources and then closes the application.</summary>
         /// <returns>Completion of process shutdown.</returns>
         internal static async Task StopAsync()
@@ -766,6 +812,7 @@ namespace NeuroAccessMaui
                 return transition;
             if (!Terminate && cleanupFailure is not null)
                 return Task.FromException(cleanupFailure);
+            deferredCancellation?.Cancel();
             activationCancellation?.Cancel();
             if (transition.IsCompleted)
             {
@@ -818,10 +865,11 @@ namespace NeuroAccessMaui
         private static async Task CleanupActivationAsync(bool InPanic)
         {
             List<Exception> Errors = new List<Exception>();
-            if (autoSaveTimer is not null)
+            Timer? Timer = autoSaveTimer;
+            if (Timer is not null)
             {
-                await autoSaveTimer.DisposeAsync();
                 autoSaveTimer = null;
+                await Timer.DisposeAsync();
             }
             await autoSaveSemaphore.WaitAsync();
             autoSaveSemaphore.Release();
@@ -846,7 +894,12 @@ namespace NeuroAccessMaui
         private static async Task CleanupProcessAsync()
         {
             List<Exception> Errors = new List<Exception>();
-            if (previousRunReport is not null) await TryCleanupAsync(() => previousRunReport, Errors);
+            Task? Deferred = deferredWork;
+            if (Deferred is not null)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() => deferredCancellation?.Cancel());
+                await TryCleanupAsync(() => Deferred, Errors);
+            }
             if (push is not null) await TryCleanupAsync(push.Unload, Errors);
             push = null;
             if (notifications is not null) await TryCleanupAsync(notifications.Unload, Errors);
@@ -880,8 +933,47 @@ namespace NeuroAccessMaui
 
         #region AutoSave
 
-        private static async void SaveFromTimer(object? State) =>
+        /// <summary>
+        /// Brings the next automatic save forward when the profile changes.
+        /// </summary>
+        /// <remarks>
+        /// Only the first change after a save schedules the next one, so a burst of changes is saved together shortly after it
+        /// starts, and a steady stream of changes cannot postpone saving. Does nothing while no session is active; stopping
+        /// the session saves the profile.
+        /// </remarks>
+        /// <param name="Sender">The profile.</param>
+        /// <param name="e">The changed property.</param>
+        private static void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
+        {
+            Timer? Timer = autoSaveTimer;
+            if (Timer is null)
+                return;
+
+            if (Interlocked.Exchange(ref autoSaveScheduled, 1) == 1)
+                return;
+
+            try
+            {
+                Timer.Change(Constants.Intervals.AutoSave, Constants.Intervals.AutoSaveFallback);
+            }
+            catch (ObjectDisposedException)
+            {
+                // The session stopped concurrently; stopping saves the profile.
+            }
+        }
+
+        private static async void SaveFromTimer(object? State)
+        {
+            // Changes made from here on schedule a new save.
+            Interlocked.Exchange(ref autoSaveScheduled, 0);
+
+            // Most ticks of the safety-net timer find nothing to save; checking first avoids the main-thread round trips.
+            ITagProfile? Profile = profile;
+            if (Profile is null || !Profile.IsDirty)
+                return;
+
             await ObserveOptionalAsync(() => SaveConfigurationAsync(State as Task, false));
+        }
 
         private static async Task SaveConfigurationAsync(Task? Attempt, bool FinalSave)
         {
@@ -945,7 +1037,13 @@ namespace NeuroAccessMaui
             }
 
             await MainThread.InvokeOnMainThreadAsync(() => ServiceRef.TagProfile.FromConfiguration(Configuration));
-            profile = ServiceRef.TagProfile;
+            ITagProfile Profile = ServiceRef.TagProfile;
+            if (!ReferenceEquals(profile, Profile))
+            {
+                // Subscribed once for the process. The profile keeps weak references to its handlers, so the handler is static.
+                Profile.Changed += TagProfile_Changed;
+                profile = Profile;
+            }
         }
 
         #endregion
@@ -1140,6 +1238,17 @@ namespace NeuroAccessMaui
             return QrCode.OpenUrl(url, showErrorIfUnable);
         }
 
+        /// <summary>
+        /// Opens a link that comes from a trusted source, such as the user's own server, without asking the user before it
+        /// leaves the application.
+        /// </summary>
+        /// <param name="url">The link to open.</param>
+        /// <returns>Whether the link was opened.</returns>
+        public static Task<bool> OpenTrustedUrlAsync(string url)
+        {
+            return QrCode.OpenUrl(url, true, IsTrustedSource: true);
+        }
+
         #endregion
 
 
@@ -1175,7 +1284,31 @@ namespace NeuroAccessMaui
         /// <summary>Notifies subscribers that a platform foreground event occurred.</summary>
         public static void RaiseAppActivated()
         {
-            _ = ObserveLifecycleAsync(() => MainThread.InvokeOnMainThreadAsync(() => AppActivated?.Invoke(Current, EventArgs.Empty)));
+            _ = ObserveLifecycleAsync(() => MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                SyncMotionSettings();
+                AppActivated?.Invoke(Current, EventArgs.Empty);
+            }));
+        }
+
+        /// <summary>
+        /// Copies the operating system's reduce-motion preference into the app's motion settings.
+        /// </summary>
+        /// <remarks>
+        /// Runs when the window is created and each time the app returns to the foreground, which is when the user can have
+        /// changed the setting. Never throws.
+        /// </remarks>
+        internal static void SyncMotionSettings()
+        {
+            try
+            {
+                IMotionSettings? Settings = MotionPreferences.Settings;
+                Settings?.Update(ServiceRef.PlatformSpecific.IsReduceMotionEnabled, Settings.DurationScale);
+            }
+            catch (Exception Ex)
+            {
+                System.Diagnostics.Debug.WriteLine(Ex);
+            }
         }
 
         /// <summary>

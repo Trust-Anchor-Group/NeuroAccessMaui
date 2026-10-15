@@ -127,6 +127,7 @@ namespace NeuroAccessMaui.Services.Identity
 				Constants.XmppProperties.MiddleNames,
 				Constants.XmppProperties.LastNames,
 				Constants.CustomXmppProperties.BirthDate,
+				Constants.XmppProperties.AgeAbove,
                 Constants.XmppProperties.PersonalNumber,
                 Constants.XmppProperties.Nationality,
                 Constants.XmppProperties.Gender,
@@ -245,6 +246,9 @@ namespace NeuroAccessMaui.Services.Identity
 
 				if (Key.Equals(Constants.XmppProperties.Nationality, StringComparison.OrdinalIgnoreCase))
 					Val = ISO_3166_1.ToName(Val) ?? Val;
+
+				if (Key.Equals(Constants.XmppProperties.AgeAbove, StringComparison.OrdinalIgnoreCase))
+					Val = FormatAgeAbove(Val, EffectiveCulture);
 
 				if (Key.Equals(Constants.XmppProperties.Gender, StringComparison.OrdinalIgnoreCase))
 				{
@@ -428,6 +432,7 @@ namespace NeuroAccessMaui.Services.Identity
                 Constants.XmppProperties.BirthDay,
                 Constants.XmppProperties.BirthMonth,
                 Constants.XmppProperties.BirthYear,
+                Constants.XmppProperties.AgeAbove,
                 Constants.XmppProperties.Address,
                 Constants.XmppProperties.Address2,
                 Constants.XmppProperties.ZipCode,
@@ -508,6 +513,9 @@ namespace NeuroAccessMaui.Services.Identity
                 if (string.IsNullOrWhiteSpace(Value))
                     continue;
 
+                if (Key.Equals(Constants.XmppProperties.AgeAbove, StringComparison.OrdinalIgnoreCase))
+                    Value = FormatAgeAbove(Value, EffectiveCulture);
+
                 AddField(Result, PersonalKeys, OrgKeys, TechnicalKeys, ReviewableKeys,
                     Key, GetLabel(LabelMap, Key), Value);
                 UsedKeys.Add(Key);
@@ -545,6 +553,23 @@ namespace NeuroAccessMaui.Services.Identity
             return Result;
         }
 
+        /// <summary>
+        /// Formats an AGEABOVE claim for display, such as "18 or older".
+        /// </summary>
+        /// <param name="Value">The claimed age threshold.</param>
+        /// <param name="Culture">The display culture.</param>
+        /// <returns>The localized display text, or the raw value if it is not a whole number.</returns>
+        public static string FormatAgeAbove(string Value, CultureInfo Culture)
+        {
+            if (!int.TryParse(Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int Age))
+                return Value;
+
+            Microsoft.Extensions.Localization.LocalizedString Format = ServiceRef.Localizer[nameof(AppResources.AgeAboveValue), false];
+            return Format.ResourceNotFound
+                ? Age.ToString(Culture)
+                : string.Format(Culture, Format.Value, Age);
+        }
+
         private static string Get(Dictionary<string, string> Dict, string Key)
         {
             if (Dict.TryGetValue(Key, out string? Value))
@@ -569,6 +594,7 @@ namespace NeuroAccessMaui.Services.Identity
 				{ Constants.XmppProperties.MiddleNames, ServiceRef.Localizer[nameof(AppResources.MiddleNames)].Value },
 				{ Constants.XmppProperties.LastNames, ServiceRef.Localizer[nameof(AppResources.LastNames)].Value },
 				{ Constants.CustomXmppProperties.BirthDate, ServiceRef.Localizer[nameof(AppResources.BirthDate)].Value },
+				{ Constants.XmppProperties.AgeAbove, ServiceRef.Localizer[nameof(AppResources.AgeAbove)].Value },
                 { Constants.XmppProperties.PersonalNumber, ServiceRef.Localizer[nameof(AppResources.PersonalNumber)].Value },
                 { Constants.XmppProperties.Nationality, ServiceRef.Localizer[nameof(AppResources.Nationality)].Value },
                 { Constants.XmppProperties.Gender, ServiceRef.Localizer[nameof(AppResources.Gender)].Value },
@@ -614,6 +640,7 @@ namespace NeuroAccessMaui.Services.Identity
                 { Constants.XmppProperties.MiddleNames, ServiceRef.Localizer[nameof(AppResources.MiddleNames)].Value},
                 { Constants.XmppProperties.LastNames,   ServiceRef.Localizer[nameof(AppResources.LastNames)].Value},
                 { Constants.CustomXmppProperties.BirthDate, ServiceRef.Localizer[nameof(AppResources.BirthDate)].Value},
+                { Constants.XmppProperties.AgeAbove,    ServiceRef.Localizer[nameof(AppResources.AgeAbove)].Value},
                 { Constants.XmppProperties.Address,     ServiceRef.Localizer[nameof(AppResources.Address)].Value},
                 { Constants.XmppProperties.Address2,    ServiceRef.Localizer[nameof(AppResources.Address2)].Value},
                 { Constants.XmppProperties.ZipCode,     ServiceRef.Localizer[nameof(AppResources.ZipCode)].Value},

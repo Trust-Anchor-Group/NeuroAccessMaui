@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using NeuroAccess.Nfc;
+using NeuroAccess.Nfc.Exceptions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Nfc;
 
@@ -177,6 +178,17 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 			catch (OperationCanceledException)
 			{
 				throw;
+			}
+			catch (NfcConnectionLostException Ex)
+			{
+				// Moving the document away is an expected user action, so it is reported without logging an error.
+				await FailureHandler(new NfcIsoDepSessionFailure(
+					NfcIsoDepSessionFailureCode.ConnectionLost,
+					nameof(AndroidNfcIsoDepSessionService),
+					null,
+					Ex.GetType().Name,
+					Ex.Message), CancellationToken);
+				return true;
 			}
 			catch (Exception Ex)
 			{

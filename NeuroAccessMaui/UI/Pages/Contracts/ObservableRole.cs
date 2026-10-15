@@ -4,6 +4,7 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
@@ -189,8 +190,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// Adds a part with a given LegalId to the role.
 		/// </summary>
-		/// <param name="LegalId"></param>
-		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true, bool PresetFromArgs = false)
+		/// <param name="LegalId">The identity to include in the role.</param>
+		/// <param name="Notify">Whether to notify observers that the parts collection changed.</param>
+		/// <param name="AutoPetition">Whether to request access to a protected identity.</param>
+		/// <param name="PresetFromArgs">Whether the participant was preset by navigation arguments.</param>
+		/// <param name="PreparedIdentity">The identity already looked up by the scanner, if any.</param>
+		/// <returns>A task representing participant initialization.</returns>
+		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true, bool PresetFromArgs = false,
+			IdentityReference? PreparedIdentity = null)
 		{
 			//Check if Part Exists
 			if (this.Parts.Any(p => string.Equals(p.LegalId, LegalId, StringComparison.OrdinalIgnoreCase)))
@@ -202,7 +209,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				IsPresetFromArgs = PresetFromArgs
 			};
-			await ObservablePart.InitializeAsync(AutoPetition);
+			await ObservablePart.InitializeAsync(AutoPetition, PreparedIdentity);
 
 			//Notify changes
 			TaskCompletionSource TaskCompletionSource = new();
@@ -308,13 +315,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task AddPartFromQr()
 		{
-			string? Code = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.IotId]);
-			if (string.IsNullOrEmpty(Code))
+			IdentityReference? Scan = await QrCode.GetQrService().ScanIdentityAsync(nameof(AppResources.ScanQRCode));
+			if (Scan is null)
 				return;
 
-			string LegalId = Uri.UnescapeDataString(Constants.UriSchemes.RemoveScheme(Code) ?? string.Empty);
-
-			await this.AddPart(LegalId);
+			await this.AddPart(Scan.Identifier, PreparedIdentity: Scan);
 		}
 		#endregion
 	}

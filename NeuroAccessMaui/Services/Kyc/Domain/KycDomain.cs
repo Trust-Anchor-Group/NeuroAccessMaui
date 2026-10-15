@@ -9,7 +9,12 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		Summary,
 		EditingFromSummary,
 		RejectedSummary,
-		PendingSummary
+		PendingSummary,
+
+		/// <summary>
+		/// The user chooses which optional details the finished identity shows. This step sits between the last form page and the summary.
+		/// </summary>
+		IdContents
 	}
 
 	/// <summary>

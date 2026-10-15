@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using CommunityToolkit.Maui.Layouts;
-using Microsoft.Extensions.DependencyInjection;
 using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.Camera;
 using NeuroAccessMaui.Services;
@@ -148,7 +147,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 					ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
 					if (e.PropertyName == nameof(ScanQrCodeViewModel.State))
 					{
-						if (ViewModel.State is QrScannerState.Starting or QrScannerState.CameraUnavailable or QrScannerState.Closing)
+						if (ViewModel.State is QrScannerState.Starting or QrScannerState.Unavailable or QrScannerState.CameraUnavailable or QrScannerState.Closing)
 							await this.SynchronizePresentationAsync();
 						await this.AnimateFeedbackAsync();
 					}
@@ -168,13 +167,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			this.ManualFeedback.CancelAnimations();
 			this.ScanFeedback.Scale = 1;
 			this.ManualFeedback.Scale = 1;
-			if (!this.pageVisible || ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true)
+			if (!this.pageVisible || MotionPreferences.ReduceMotion)
 				return;
 			ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
 			VisualElement Feedback = ViewModel.IsAutomaticScan ? this.ScanFeedback : this.ManualFeedback;
 			QrScannerState State = ViewModel.State;
-			await Feedback.ScaleToAsync(State is QrScannerState.Accepted or QrScannerState.Rejected ? 0.94 : 1, 140, Easing.CubicOut);
-			if (State == QrScannerState.Rejected && Version == this.feedbackVersion && this.pageVisible)
+			await Feedback.ScaleToAsync(State is QrScannerState.Ready or QrScannerState.Rejected or QrScannerState.Unavailable ? 0.94 : 1, 140, Easing.CubicOut);
+			if ((State is QrScannerState.Rejected or QrScannerState.Unavailable) && Version == this.feedbackVersion && this.pageVisible)
 				await Feedback.ScaleToAsync(1, 140, Easing.CubicOut);
 		}
 
@@ -198,7 +197,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				{
 					await this.StopCameraAsync();
 					this.LinkEntry.Unfocus();
-					if (ServiceRef.Provider.GetService<IMotionSettings>()?.ReduceMotion == true)
+					if (MotionPreferences.ReduceMotion)
 						StateContainer.SetCurrentState(this.GridWithAnimation, DesiredState);
 					else
 						await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, DesiredState, CancellationToken.None);

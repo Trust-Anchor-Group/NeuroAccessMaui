@@ -54,7 +54,7 @@
 
             <Label Style="{DynamicResource SectionTitleLabel}"
                    Text="{Binding DetailText}"
-                   FontSize="16"
+                   FontSize="{StaticResource FontSizeLg}"
                    HorizontalOptions="Center" />
         </VerticalStackLayout>
 
@@ -85,7 +85,7 @@
 
                     <Label VerticalOptions="Center"
                            FontFamily="HaasGroteskRegular"
-                           FontSize="14"
+                           FontSize="{StaticResource FontSizeSm}"
                            Text="{Binding WhatIsX}"
                            TextColor="{DynamicResource TnPInfoContentWL}" />
                 </HorizontalStackLayout>

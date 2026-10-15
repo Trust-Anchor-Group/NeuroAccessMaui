@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Xml;
+using NeuroAccess.Nfc.Exceptions;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.DataObjects;
 using NeuroAccess.Nfc.TravelDocuments.Events;
@@ -2513,7 +2514,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				return true;
 			}
-			catch (Exception ex)
+			// An interrupted exchange is not a rejected authentication, so it is left for the caller to handle.
+			catch (Exception ex) when (ex is not (NfcConnectionLostException or TimeoutException or OperationCanceledException))
 			{
 				this.Exception(ex);
 				return false;

@@ -1,101 +1,161 @@
-using System.Globalization;
 using IdApp.Cv;
-using IdApp.Cv.Transformations;
-using IdApp.Cv.Transformations.Linear;
 using NeuroAccessMaui.OCR.Models;
 using CvPoint = IdApp.Cv.Basic.Point;
 
 namespace NeuroAccessMaui.OCR.Pipeline
 {
 	/// <summary>
-	/// Rectifies detected MRZ quadrilaterals into upright MRZ region images.
+	/// Warps a quadrilateral of an image into an upright image of a fixed size.
 	/// </summary>
+	/// <remarks>
+	/// Coordinates use the pixel-area convention: pixel <c>(x, y)</c> covers <c>[x, x + 1) × [y, y + 1)</c>, so the quad
+	/// corners map to the outer corners of the output image. When the source region is larger than the output, each output
+	/// pixel averages a grid of bilinear samples to avoid aliasing the thin MRZ strokes. Areas outside the image are black,
+	/// like the padding the detection model was trained with.
+	/// </remarks>
 	public sealed class MrzRegionRectifier
 	{
-		private const int PreferredMrzWidth = 900;
-		private const int MinimumMrzWidth = 480;
-		private const int MaximumMrzWidth = 1200;
-		private const float MinimumMrzAspectRatio = 3.0f;
-		private const float MaximumMrzAspectRatio = 14.0f;
+		private const int maximumSamplesPerAxis = 2;
 
 		/// <summary>
-		/// Rectifies the MRZ region using the detected quadrilateral.
+		/// Warps a quadrilateral, given in upright coordinates, into an upright grayscale image.
 		/// </summary>
-		/// <param name="Image">The upright grayscale source image.</param>
-		/// <param name="QuadCandidate">The selected MRZ quadrilateral candidate.</param>
+		/// <param name="Image">The image to sample.</param>
+		/// <param name="Quad">The quadrilateral in upright image coordinates.</param>
+		/// <param name="OutputWidth">The width of the output image.</param>
+		/// <param name="OutputHeight">The height of the output image.</param>
 		/// <param name="CancellationToken">The cancellation token.</param>
-		/// <returns>The rectified MRZ region image.</returns>
-		public RectifiedDocument Rectify(
-			Matrix<float> Image,
-			DocumentQuadCandidate QuadCandidate,
+		/// <returns>The rectified image with values in the 0..1 range.</returns>
+		internal Matrix<float> Rectify(
+			UprightImage Image,
+			DocumentQuad Quad,
+			int OutputWidth,
+			int OutputHeight,
 			CancellationToken CancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(Image);
-			ArgumentNullException.ThrowIfNull(QuadCandidate);
+			ArgumentNullException.ThrowIfNull(Quad);
+			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(OutputWidth);
+			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(OutputHeight);
 			CancellationToken.ThrowIfCancellationRequested();
 
-			DocumentQuad Quad = QuadCandidate.Quad;
-			float TopWidth = Distance(Quad.TopLeft, Quad.TopRight);
-			float BottomWidth = Distance(Quad.BottomLeft, Quad.BottomRight);
-			float LeftHeight = Distance(Quad.TopLeft, Quad.BottomLeft);
-			float RightHeight = Distance(Quad.TopRight, Quad.BottomRight);
-			float SourceWidth = Math.Max(TopWidth, BottomWidth);
-			float SourceHeight = Math.Max(LeftHeight, RightHeight);
-			float AspectRatio = Math.Clamp(SourceWidth / Math.Max(1f, SourceHeight), MinimumMrzAspectRatio, MaximumMrzAspectRatio);
-			int OutputWidth = Math.Clamp((int)Math.Round(SourceWidth), MinimumMrzWidth, MaximumMrzWidth);
-			OutputWidth = Math.Min(OutputWidth, PreferredMrzWidth);
-			int OutputHeight = Math.Max(24, (int)Math.Round(OutputWidth / AspectRatio));
+			// Sampling through the corners mapped to the stored image produces the upright result without rotating pixels.
+			double[] Homography = CreateHomography(Image.ToSource(Quad), OutputWidth, OutputHeight);
+			float SourceWidth = Math.Max(Distance(Quad.TopLeft, Quad.TopRight), Distance(Quad.BottomLeft, Quad.BottomRight));
+			float SourceHeight = Math.Max(Distance(Quad.TopLeft, Quad.BottomLeft), Distance(Quad.TopRight, Quad.BottomRight));
+			float DownscaleRatio = Math.Max(SourceWidth / OutputWidth, SourceHeight / OutputHeight);
+			int SamplesPerAxis = Math.Clamp((int)MathF.Ceiling(DownscaleRatio), 1, maximumSamplesPerAxis);
+			double SampleStep = 1d / SamplesPerAxis;
+			float SampleWeight = 1f / (SamplesPerAxis * SamplesPerAxis * 255f);
+			SourcePixels Pixels = new SourcePixels(Image.Source);
 
-			Matrix<float> Transform = CreateHomography(Quad, OutputWidth, OutputHeight);
-			Matrix<float> RectifiedImage = Image.LinearTransform(Transform, OutputWidth, OutputHeight);
-			DocumentQualityMetrics RawQualityMetrics = OcrImagePipelineUtilities.EvaluateQuality(RectifiedImage);
-			RectifiedImage.Contrast();
-			DocumentQualityMetrics QualityMetrics = OcrImagePipelineUtilities.EvaluateQuality(RectifiedImage);
-			Dictionary<string, string> Metadata = new Dictionary<string, string>(QuadCandidate.Metadata)
+			// Each pass walks one row of samples, stepping the homography numerators instead of recomputing them.
+			float[] Result = new float[OutputWidth * OutputHeight];
+			int SamplesPerRow = OutputWidth * SamplesPerAxis;
+			double StepX = Homography[0] * SampleStep;
+			double StepY = Homography[3] * SampleStep;
+			double StepW = Homography[6] * SampleStep;
+			for (int y = 0; y < OutputHeight; y++)
 			{
-				["RectifiedMrzWidth"] = OutputWidth.ToString(CultureInfo.InvariantCulture),
-				["RectifiedMrzHeight"] = OutputHeight.ToString(CultureInfo.InvariantCulture),
-				["RectifiedMrzAspectRatio"] = AspectRatio.ToString("0.000000", CultureInfo.InvariantCulture),
-				["RectifiedMrzSourceWidth"] = SourceWidth.ToString("0.000", CultureInfo.InvariantCulture),
-				["RectifiedMrzSourceHeight"] = SourceHeight.ToString("0.000", CultureInfo.InvariantCulture)
-			};
-			OcrImagePipelineUtilities.MergeMetadata(
-				Metadata,
-				OcrImagePipelineUtilities.CreateQualityMetadata(RawQualityMetrics, "RectifiedMrzRaw"));
-			OcrImagePipelineUtilities.MergeMetadata(
-				Metadata,
-				OcrImagePipelineUtilities.CreateQualityScoreBreakdownMetadata(RawQualityMetrics, "RectifiedMrzRaw"));
-			OcrImagePipelineUtilities.MergeMetadata(
-				Metadata,
-				OcrImagePipelineUtilities.CreateQualityMetadata(QualityMetrics, "RectifiedMrz"));
-			OcrImagePipelineUtilities.MergeMetadata(
-				Metadata,
-				OcrImagePipelineUtilities.CreateQualityScoreBreakdownMetadata(QualityMetrics, "RectifiedMrz"));
+				int RowStart = y * OutputWidth;
+				for (int sy = 0; sy < SamplesPerAxis; sy++)
+				{
+					double u = 0.5d * SampleStep;
+					double v = y + (sy + 0.5d) * SampleStep;
+					double NumeratorX = Homography[0] * u + Homography[1] * v + Homography[2];
+					double NumeratorY = Homography[3] * u + Homography[4] * v + Homography[5];
+					double Denominator = Homography[6] * u + Homography[7] * v + 1d;
+					for (int Sample = 0; Sample < SamplesPerRow; Sample++)
+					{
+						Result[RowStart + Sample / SamplesPerAxis] += Pixels.SampleBilinear(
+							(float)(NumeratorX / Denominator),
+							(float)(NumeratorY / Denominator));
+						NumeratorX += StepX;
+						NumeratorY += StepY;
+						Denominator += StepW;
+					}
+				}
 
-			return new RectifiedDocument(RectifiedImage, Quad, QualityMetrics, Metadata);
+				for (int x = 0; x < OutputWidth; x++)
+					Result[RowStart + x] *= SampleWeight;
+			}
+
+			return new Matrix<float>(OutputWidth, OutputHeight, Result);
 		}
 
-		private static Matrix<float> CreateHomography(DocumentQuad Quad, int OutputWidth, int OutputHeight)
+		/// <summary>
+		/// Creates a function that maps normalized output coordinates, 0..1 on both axes, to the coordinates of the given
+		/// quadrilateral.
+		/// </summary>
+		/// <param name="Quad">The quadrilateral.</param>
+		/// <returns>The mapping function.</returns>
+		internal static Func<double, double, (double X, double Y)> CreateUnitSquareMapping(DocumentQuad Quad)
+		{
+			ArgumentNullException.ThrowIfNull(Quad);
+
+			double[] Homography = CreateHomography(Quad, 1, 1);
+			return (u, v) =>
+			{
+				double w = Homography[6] * u + Homography[7] * v + 1d;
+				return ((Homography[0] * u + Homography[1] * v + Homography[2]) / w, (Homography[3] * u + Homography[4] * v + Homography[5]) / w);
+			};
+		}
+
+		/// <summary>
+		/// Holds the pixel layout of an image so that samples avoid per-call property and index calculations.
+		/// </summary>
+		private readonly struct SourcePixels
+		{
+			private readonly byte[] data;
+			private readonly int origin;
+			private readonly int rowSize;
+			private readonly int width;
+			private readonly int height;
+
+			public SourcePixels(Matrix<byte> Image)
+			{
+				this.data = Image.Data;
+				this.origin = Image.StartIndex(0, 0);
+				this.rowSize = Image.RowSize;
+				this.width = Image.Width;
+				this.height = Image.Height;
+			}
+
+			/// <summary>
+			/// Samples the image bilinearly at a point in pixel-area coordinates. Points outside the image are black.
+			/// </summary>
+			public float SampleBilinear(float X, float Y)
+			{
+				if (X < 0f || Y < 0f || X > this.width || Y > this.height)
+					return 0f;
+
+				float SampleX = Math.Clamp(X - 0.5f, 0f, this.width - 1);
+				float SampleY = Math.Clamp(Y - 0.5f, 0f, this.height - 1);
+				int x0 = (int)SampleX;
+				int y0 = (int)SampleY;
+				int x1 = Math.Min(x0 + 1, this.width - 1);
+				int Row0 = this.origin + y0 * this.rowSize;
+				int Row1 = y0 + 1 < this.height ? Row0 + this.rowSize : Row0;
+				float fx = SampleX - x0;
+				float fy = SampleY - y0;
+				byte[] Data = this.data;
+				float Top = Data[Row0 + x0] + (Data[Row0 + x1] - Data[Row0 + x0]) * fx;
+				float Bottom = Data[Row1 + x0] + (Data[Row1 + x1] - Data[Row1 + x0]) * fx;
+				return Top + (Bottom - Top) * fy;
+			}
+		}
+
+		/// <summary>
+		/// Solves the homography that maps output coordinates to source coordinates.
+		/// </summary>
+		private static double[] CreateHomography(DocumentQuad Quad, int OutputWidth, int OutputHeight)
 		{
 			double[,] Equations = new double[8, 9];
-			AddHomographyEquation(Equations, 0, Quad.TopLeft.X, Quad.TopLeft.Y, 0d, 0d);
-			AddHomographyEquation(Equations, 2, Quad.TopRight.X, Quad.TopRight.Y, OutputWidth - 1d, 0d);
-			AddHomographyEquation(Equations, 4, Quad.BottomRight.X, Quad.BottomRight.Y, OutputWidth - 1d, OutputHeight - 1d);
-			AddHomographyEquation(Equations, 6, Quad.BottomLeft.X, Quad.BottomLeft.Y, 0d, OutputHeight - 1d);
-			double[] Solution = SolveLinearSystem(Equations);
-
-			return new Matrix<float>(3, 3, new[]
-			{
-				(float)Solution[0],
-				(float)Solution[1],
-				(float)Solution[2],
-				(float)Solution[3],
-				(float)Solution[4],
-				(float)Solution[5],
-				(float)Solution[6],
-				(float)Solution[7],
-				1f
-			});
+			AddHomographyEquation(Equations, 0, 0d, 0d, Quad.TopLeft.X, Quad.TopLeft.Y);
+			AddHomographyEquation(Equations, 2, OutputWidth, 0d, Quad.TopRight.X, Quad.TopRight.Y);
+			AddHomographyEquation(Equations, 4, OutputWidth, OutputHeight, Quad.BottomRight.X, Quad.BottomRight.Y);
+			AddHomographyEquation(Equations, 6, 0d, OutputHeight, Quad.BottomLeft.X, Quad.BottomLeft.Y);
+			return SolveLinearSystem(Equations);
 		}
 
 		private static void AddHomographyEquation(double[,] Equations, int Row, double SourceX, double SourceY, double DestinationX, double DestinationY)

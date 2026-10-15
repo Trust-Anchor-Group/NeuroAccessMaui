@@ -40,12 +40,18 @@
 							<ActivityIndicator WidthRequest="40" HeightRequest="40" Color="White"
 								IsVisible="{Binding IsStarting}" IsRunning="{Binding IsStarting}"
 								HorizontalOptions="Center" VerticalOptions="Center" />
+							<ActivityIndicator WidthRequest="40" HeightRequest="40" Color="White"
+								IsVisible="{Binding ShowProcessingSpinner}" IsRunning="{Binding ShowProcessingSpinner}"
+								HorizontalOptions="Center" VerticalOptions="Center" />
 						</Grid>
 					</Grid>
 
 					<VerticalStackLayout Grid.Row="2" Spacing="{DynamicResource MediumSpacing}">
 						<Label Text="{Binding FeedbackDescription}" IsVisible="{Binding ShowFeedbackMessage}"
 							TextColor="{Binding FeedbackColor}" HorizontalTextAlignment="Center" />
+						<controls:TextButton Command="{Binding RetryPreparationCommand}" IsVisible="{Binding ShowPreparationRetry}"
+							Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize QrScannerRetry}"
+							HorizontalOptions="Center" />
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{DynamicResource MediumSpacing}"
 											   IsVisible="{Binding ShowCameraRecovery}">
 							<controls:TextButton Command="{Binding RetryCameraCommand}"
@@ -119,6 +125,14 @@
 							<Path Data="{x:Static ui:Geometries.SuccessCheckmarkPath}" Fill="{Binding FeedbackColor}"
 								WidthRequest="56" HeightRequest="56" Aspect="Uniform" HorizontalOptions="Center" />
 						</Grid>
+						<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+							<ActivityIndicator HorizontalOptions="Center" IsVisible="{Binding ShowProcessingSpinner}"
+								IsRunning="{Binding ShowProcessingSpinner}" />
+							<Label Text="{Binding FeedbackDescription}" IsVisible="{Binding ShowFeedbackMessage}"
+								HorizontalTextAlignment="Center" />
+							<controls:TextButton Command="{Binding RetryPreparationCommand}" IsVisible="{Binding ShowPreparationRetry}"
+								Style="{DynamicResource OutlinedTextButton}" LabelData="{l:Localize QrScannerRetry}" />
+						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</ScrollView>
 			</Grid>

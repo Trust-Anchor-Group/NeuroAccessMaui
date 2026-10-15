@@ -1,6 +1,7 @@
 ﻿using Android.Nfc;
 using Android.Nfc.Tech;
 using NeuroAccess.Nfc;
+using NeuroAccess.Nfc.Exceptions;
 
 namespace NeuroAccessMaui.AndroidPlatform.Nfc
 {
@@ -39,10 +40,19 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// Connects the interface, if not connected.
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="NfcConnectionLostException">The tag left the field before it could be connected.</exception>
 		public async Task OpenIfClosed()
 		{
-			if (!this.technology.IsConnected)
-				await this.technology.ConnectAsync();
+			try
+			{
+				if (!this.technology.IsConnected)
+					await this.technology.ConnectAsync();
+			}
+			catch (Java.IO.IOException Ex)
+			{
+				// Covers TagLostException, which Android throws when the tag is moved away before connecting.
+				throw new NfcConnectionLostException("NFC tag connection lost: " + Ex.Message, Ex);
+			}
 		}
 
 		/// <summary>
@@ -50,8 +60,20 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// </summary>
 		public void CloseIfOpen()
 		{
-			if (this.technology.IsConnected)
-				this.technology.Close();
+			try
+			{
+				if (this.technology.IsConnected)
+					this.technology.Close();
+			}
+			catch (Java.Lang.SecurityException)
+			{
+				// Android invalidates the tag handle once another tag is discovered, for example when the document is
+				// presented again. Cleanup must not replace the original readout result with this failure.
+			}
+			catch (Java.IO.IOException)
+			{
+				// A tag that left the field can also fail while its connection is being closed.
+			}
 		}
 
 		/// <summary>

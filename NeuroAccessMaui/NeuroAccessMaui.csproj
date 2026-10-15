@@ -19,9 +19,9 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.10.1</ApplicationDisplayVersion>
-		<Version>2.10.1</Version>
-		<ApplicationVersion>1101</ApplicationVersion>
+		<ApplicationDisplayVersion>2.10.2</ApplicationDisplayVersion>
+		<Version>2.10.2</Version>
+		<ApplicationVersion>1102</ApplicationVersion>
 
 		<NeutralLanguage>en</NeutralLanguage>
 
@@ -135,6 +135,7 @@
 		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf" />
 		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf" />
 		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf" />
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
 		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf" />
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" Exclude="Resources\Raw\OcrModels\**" LogicalName="%(Filename)%(Extension)" />
@@ -332,6 +333,7 @@
 		<PackageReference Include="Waher.Security" Version="1.5.0" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.5" />
 		<PackageReference Include="Waher.Security.JWT" Version="1.7.1" />
+		<PackageReference Include="Waher.Security.PQC" Version="1.2.0" />
 		<!--
 		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.EDaler\Waher.Networking.XMPP.EDaler.csproj" />
 		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.NeuroFeatures\Waher.Networking.XMPP.NeuroFeatures.csproj" />
@@ -401,11 +403,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Resources\Languages\AppResources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>AppResources.resx</DependentUpon>
-	  </Compile>
+		<Compile Update="Resources\Languages\AppResources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>AppResources.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -416,11 +418,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="UI\Pages\Main\NfcTester\NfcTesterPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\FilterContractsPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="UI\Pages\Main\NfcTester\NfcTesterPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\FilterContractsPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 </Project>

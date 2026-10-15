@@ -17,6 +17,8 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 			KycNavigationSnapshot nav = State.Navigation;
 			if (State.Navigation.State is KycFlowState.Summary or KycFlowState.PendingSummary)
 				return nav; // Already at summary; engine will decide apply action.
+			if (State.Navigation.State == KycFlowState.IdContents)
+				return nav with { State = State.ApplicationSent ? KycFlowState.PendingSummary : KycFlowState.Summary };
 
 			// Find next visible page after current
 			int Current = nav.CurrentPageIndex;
@@ -39,9 +41,9 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		public static KycNavigationSnapshot Back(KycProcessState state, IReadOnlyList<int> visibleIndices)
 		{
 			KycNavigationSnapshot Nav = state.Navigation;
-			if (Nav.State == KycFlowState.Summary)
+			if (Nav.State is KycFlowState.Summary or KycFlowState.IdContents)
 			{
-				// Leave summary returning to anchor page
+				// Leave summary or the ID contents step, returning to anchor page
 				return Nav with { State = KycFlowState.Form, CurrentPageIndex = Nav.AnchorPageIndex >= 0 ? Nav.AnchorPageIndex : Nav.CurrentPageIndex };
 			}
 			int Current = Nav.CurrentPageIndex;
@@ -54,6 +56,15 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 			if (Prev < 0)
 				return Nav; // At first page; caller decides to exit.
 			return Nav with { CurrentPageIndex = Prev };
+		}
+
+		/// <summary>
+		/// Enters the step where the user chooses which optional details the finished identity shows, preserving the anchor page.
+		/// </summary>
+		public static KycNavigationSnapshot EnterIdContents(KycNavigationSnapshot Nav, int AnchorPageIndex)
+		{
+			int Anchor = Nav.AnchorPageIndex >= 0 ? Nav.AnchorPageIndex : AnchorPageIndex;
+			return Nav with { State = KycFlowState.IdContents, AnchorPageIndex = Anchor, CurrentPageIndex = Anchor >= 0 ? Anchor : Nav.CurrentPageIndex };
 		}
 
 		/// <summary>

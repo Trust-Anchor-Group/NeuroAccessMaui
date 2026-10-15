@@ -1,7 +1,9 @@
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Services;
+using NeuroAccessMaui.Services.AppPermissions;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.Invalidation;
 using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
@@ -18,10 +20,14 @@ using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
+using NeuroAccessMaui.Services.ThingRegistries;
 using NeuroAccessMaui.Services.TravelDocuments;
+using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Animations;
+using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Controls;
@@ -92,7 +98,6 @@ using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
-using Waher.Runtime.Inventory;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Popups.OnboardingHelp;
 using NeuroAccessMaui.UI.Pages.Utility;
@@ -117,16 +122,18 @@ namespace NeuroAccessMaui.UI
 		/// <returns>The same builder instance for chaining.</returns>
 		public static MauiAppBuilder RegisterTypes(this MauiAppBuilder Builder)
 		{
-			// Instantiate default services.
-			Builder.Services.AddSingleton<ITagProfile>((_) => Types.InstantiateDefault<ITagProfile>(false));
-			Builder.Services.AddSingleton<ILogService>((_) => Types.InstantiateDefault<ILogService>(false));
-			Builder.Services.AddSingleton<IUiService>((_) => Types.InstantiateDefault<IUiService>(false));
-			Builder.Services.AddSingleton<ICryptoService>((_) => Types.InstantiateDefault<ICryptoService>(false));
-			Builder.Services.AddSingleton<INetworkService>((_) => Types.InstantiateDefault<INetworkService>(false));
-			Builder.Services.AddSingleton<IStorageService>((_) => Types.InstantiateDefault<IStorageService>(false));
-			Builder.Services.AddSingleton<ISettingsService>((_) => Types.InstantiateDefault<ISettingsService>(false));
-			Builder.Services.AddSingleton<IAuthenticationService>((_) => Types.InstantiateDefault<IAuthenticationService>(false));
-			Builder.Services.AddSingleton<IXmppService>((_) => Types.InstantiateDefault<IXmppService>(false));
+			// Services are registered with their implementation types instead of being created through the Waher type inventory,
+			// so resolving them never depends on the inventory, which is built in the background during startup. Resolve them by
+			// interface: HybridServiceProvider maps a request for an implementation type to the registered singleton.
+			Builder.Services.AddSingleton<ITagProfile, TagProfile>();
+			Builder.Services.AddSingleton<ILogService, LogService>();
+			Builder.Services.AddSingleton<IUiService, UiService>();
+			Builder.Services.AddSingleton<ICryptoService, CryptoService>();
+			Builder.Services.AddSingleton<INetworkService, NetworkService>();
+			Builder.Services.AddSingleton<IStorageService, StorageService>();
+			Builder.Services.AddSingleton<ISettingsService, SettingsService>();
+			Builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+			Builder.Services.AddSingleton<IXmppService, XmppService>();
 			Builder.Services.AddSingleton<IPushTransport, FirebasePushTransport>();
 			Builder.Services.AddSingleton<IPushTokenRegistrar, PushTokenRegistrar>();
 			Builder.Services.AddSingleton<INotificationRenderer>((_) =>
@@ -143,18 +150,21 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<INotificationIntentRouter, NotificationIntentRouter>();
 			Builder.Services.AddSingleton<INotificationServiceV2, NotificationServiceV2>();
 			Builder.Services.AddSingleton<IPushNotificationService, PushNotificationService>();
-			Builder.Services.AddSingleton<IAttachmentCacheService>((_) => Types.InstantiateDefault<IAttachmentCacheService>(false));
-			Builder.Services.AddSingleton<IInternetCacheService>((_) => Types.InstantiateDefault<IInternetCacheService>(false));
-			Builder.Services.AddSingleton<IContractOrchestratorService>((_) => Types.InstantiateDefault<IContractOrchestratorService>(false));
-			Builder.Services.AddSingleton<IIdentityApplicationGateService>((_) => Types.InstantiateDefault<IIdentityApplicationGateService>(false));
-			Builder.Services.AddSingleton<IKycService>((_) => Types.InstantiateDefault<IKycService>(false));
+			Builder.Services.AddSingleton<IAttachmentCacheService, AttachmentCacheService>();
+			Builder.Services.AddSingleton<IInternetCacheService, InternetCacheService>();
+			Builder.Services.AddSingleton<ICacheInvalidationService, CacheInvalidationService>();
+			Builder.Services.AddSingleton<IContractOrchestratorService, ContractOrchestratorService>();
+			Builder.Services.AddSingleton<IThingRegistryOrchestratorService, ThingRegistryOrchestratorService>();
+			Builder.Services.AddSingleton<INeuroWalletOrchestratorService, NeuroWalletOrchestratorService>();
+			Builder.Services.AddSingleton<IIdentityApplicationGateService, IdentityApplicationGateService>();
+			Builder.Services.AddSingleton<IKycService, KycService>();
 			Builder.Services.AddSingleton<KycEvidenceValidationService>();
-			Builder.Services.AddSingleton<IKycPreviewPromotionService>((_) => Types.InstantiateDefault<IKycPreviewPromotionService>(false));
+			Builder.Services.AddSingleton<IKycPreviewPromotionService, KycPreviewPromotionService>();
 			Builder.Services.AddSingleton<IKycPageAction, TravelDocumentNfcAction>();
 			Builder.Services.AddSingleton<KycActionRegistry>();
-			Builder.Services.AddSingleton<ITravelDocumentEvidenceService>((_) => Types.InstantiateDefault<ITravelDocumentEvidenceService>(false));
-			Builder.Services.AddSingleton<ITravelDocumentReadoutService>((_) => Types.InstantiateDefault<ITravelDocumentReadoutService>(false));
-			Builder.Services.AddSingleton<INfcService>((_) => Types.InstantiateDefault<INfcService>(false));
+			Builder.Services.AddSingleton<ITravelDocumentEvidenceService, TravelDocumentEvidenceService>();
+			Builder.Services.AddSingleton<ITravelDocumentReadoutService, TravelDocumentReadoutService>();
+			Builder.Services.AddSingleton<INfcService, NfcService>();
 			Builder.Services.AddSingleton<INfcIsoDepSessionService>((_) =>
 			{
 #if ANDROID
@@ -165,11 +175,14 @@ namespace NeuroAccessMaui.UI
 				return new DefaultNfcIsoDepSessionService();
 #endif
 			});
-			Builder.Services.AddSingleton<INotificationService>((_) => Types.InstantiateDefault<INotificationService>(false));
-			Builder.Services.AddSingleton<IIntentService>((_) => Types.InstantiateDefault<IIntentService>(false));
-			Builder.Services.AddSingleton<IXmlSchemaValidationService>((_) => Types.InstantiateDefault<IXmlSchemaValidationService>(false));
-			Builder.Services.AddSingleton<IThemeService>((_) => Types.InstantiateDefault<IThemeService>(false));
-			Builder.Services.AddSingleton<INavigationService>((_) => Types.InstantiateDefault<NavigationService>(false));
+			Builder.Services.AddSingleton<INotificationService, NotificationService>();
+			Builder.Services.AddSingleton<IIntentService, IntentService>();
+			Builder.Services.AddSingleton<IXmlSchemaValidationService, XmlSchemaValidationService>();
+			Builder.Services.AddSingleton<IThemeService, ThemeService>();
+			Builder.Services.AddSingleton<INavigationService, NavigationService>();
+			Builder.Services.AddSingleton<IPermissionService, PermissionService>();
+			Builder.Services.AddSingleton<ILinkService, LinkService>();
+			Builder.Services.AddSingleton<IQrService, QrService>();
 			Builder.Services.AddSingleton<IPopupService, PopupService>();
 			Builder.Services.AddSingleton<IToastService, ToastService>();
 			Builder.Services.AddSingleton<IMotionSettings, MotionSettings>();

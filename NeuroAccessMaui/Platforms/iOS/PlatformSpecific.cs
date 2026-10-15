@@ -78,6 +78,24 @@ namespace NeuroAccessMaui.Services
 			set => _ = value; // ignore the value
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether "Reduce Motion" is turned on in the accessibility settings.
+		/// </summary>
+		public bool IsReduceMotionEnabled
+		{
+			get
+			{
+				try
+				{
+					return UIAccessibility.IsReduceMotionEnabled;
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+		}
+
 		/// <inheritdoc/>
 		public string? GetDeviceId() => this.deviceId
 			?? throw new InvalidOperationException("The device identifier has not been initialized.");

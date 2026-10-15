@@ -95,8 +95,14 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <param name="Source">Origin of the notification.</param>
 		/// <param name="RawPayload">Raw payload if available.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <remarks>
+		/// Waits for local storage before persisting. Push messages and notification taps can arrive while the process is
+		/// still starting, and were lost when storage was not yet initialized.
+		/// </remarks>
 		public async Task AddAsync(NotificationIntent Intent, NotificationSource Source, string? RawPayload, CancellationToken CancellationToken)
 		{
+			await App.WaitForCoreAsync(CancellationToken);
+
 			NotificationFilterDecision filterDecision = this.filterRegistry.ShouldIgnore(Intent, false, CancellationToken);
 			bool shouldPersist = Intent.Presentation is NotificationPresentation.RenderAndStore or NotificationPresentation.StoreOnly;
 			bool shouldRender = Intent.Presentation is NotificationPresentation.RenderAndStore or NotificationPresentation.RenderOnly;
@@ -202,8 +208,13 @@ namespace NeuroAccessMaui.Services.Notification
 		/// </summary>
 		/// <param name="Id">Notification identifier.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <remarks>
+		/// Waits for local storage, like <see cref="AddAsync"/>, so a tap that starts the app is not dropped.
+		/// </remarks>
 		public async Task ConsumeAsync(string Id, CancellationToken CancellationToken)
 		{
+			await App.WaitForCoreAsync(CancellationToken);
+
 			NotificationRecord? Record = await this.MarkConsumedCoreAsync(Id);
 			if (Record is null)
 				return;
@@ -216,6 +227,10 @@ namespace NeuroAccessMaui.Services.Notification
 				{
 					this.pendingRoutes.Enqueue(Intent);
 				}
+
+				// The first page may have appeared, and processed the queue, between routing and queueing.
+				if (ServiceRef.NavigationService.CurrentPage is not null)
+					await this.ProcessPendingAsync(CancellationToken);
 			}
 		}
 

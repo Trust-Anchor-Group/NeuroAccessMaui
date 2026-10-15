@@ -14,6 +14,7 @@
 				<ResourceDictionary Source="Resources/Styles/CompositeInputViewStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/EntryStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/PickerStyles.xaml" />
+				<ResourceDictionary Source="Resources/Styles/IdentityFlowStyles.xaml" />
 				<ResourceDictionary Source="Resources/Templates/ObservableParameter.xaml" />
 				<ResourceDictionary Source="Resources/Templates/TabNavigationTemplates.xaml" />
 			</ResourceDictionary.MergedDictionaries>

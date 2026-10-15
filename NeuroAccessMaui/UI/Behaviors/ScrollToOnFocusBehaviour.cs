@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.UI.Controls;
 using Waher.Script.Constants;
 
@@ -75,7 +76,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 
 			if (this.TargetScrollView is not null)
 			{
-				await this.TargetScrollView.ScrollToAsync(target, ScrollToPosition.Start, true);
+				await this.TargetScrollView.ScrollToAsync(target, ScrollToPosition.Start, !MotionPreferences.ReduceMotion);
 			}
 			else
 			{
@@ -84,7 +85,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 				while (Loop is not null && Loop is not ScrollView)
 					Loop = Loop.Parent;
 
-				(Loop as ScrollView)?.ScrollToAsync(target, this.ScrollToPosition, true);
+				(Loop as ScrollView)?.ScrollToAsync(target, this.ScrollToPosition, !MotionPreferences.ReduceMotion);
 			}
 		}
 	}

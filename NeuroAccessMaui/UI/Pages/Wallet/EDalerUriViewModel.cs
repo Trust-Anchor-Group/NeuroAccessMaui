@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Authentication;
@@ -967,30 +968,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		{
 			try
 			{
-				string[] AllowedSchemas = [Constants.UriSchemes.IotId];
-				string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), AllowedSchemas);
-				if (string.IsNullOrEmpty(Url))
+				// The scanner only accepts iotid links, so the identifier always comes from a validated identity link. Only the
+				// identifier is needed to fill in the recipient, so the identity is not looked up and scanning works offline.
+				IdentityReference? Scan = await Services.UI.QR.QrCode.GetQrService().ScanIdentityAsync(nameof(AppResources.ScanQRCode),
+					LookUpIdentity: false);
+				if (Scan is null)
 					return;
 
-				string? NeuroId = null;
-
-				// Accept formats:
-				// 1. iotid:LegalIdentityId
-				// 2. Raw LegalIdentityId (no scheme)
-				if (Url.StartsWith(Constants.UriSchemes.IotId + ":", StringComparison.OrdinalIgnoreCase))
-				{
-					int i = Url.IndexOf(':');
-					NeuroId = System.Uri.UnescapeDataString(Url[(i + 1)..].Trim());
-				}
-				else
-					NeuroId = Url.Trim();
-
-				if (string.IsNullOrEmpty(NeuroId))
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
-					return;
-				}
+				string NeuroId = Scan.Identifier;
 
 				// Set recipient as Legal ID initially
 				this.To = NeuroId;

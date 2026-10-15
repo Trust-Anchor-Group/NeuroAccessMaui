@@ -43,15 +43,24 @@ namespace NeuroAccessMaui.Services.Theme
 		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(5) };
 
 		private readonly FileCacheManager cacheManager;
-		private readonly Dictionary<string, Uri> imageUrisMap;
-		private ResourceDictionary? localLightDict = new Light();
-		private ResourceDictionary? localDarkDict = new Dark();
+		private Dictionary<string, Uri> imageUrisMap;
+
+		// Colour dictionaries merged on top of the bundled Light dictionary that App.xaml merges as the base layer.
+		// lightDict stays null while the bundled light colours apply unchanged. darkDict is created on first use.
+		// Provider branding replaces both with dictionaries that hold the provider's colours.
+		private ResourceDictionary? lightDict;
+		private ResourceDictionary? darkDict;
+		private ResourceDictionary? appliedDict;
 		private AppTheme? lastAppliedLocalTheme;
 		private bool disposedValue;
 
 		/// <summary>
 		/// Initializes a new <see cref="ThemeService"/> instance with cache manager and synchronization primitives.
 		/// </summary>
+		/// <remarks>
+		/// Theme dictionaries are created on first use. The bundled light dictionary merged by App.xaml is adopted instead
+		/// of being inflated a second time.
+		/// </remarks>
 		public ThemeService()
 		{
 			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
@@ -78,61 +87,176 @@ namespace NeuroAccessMaui.Services.Theme
 		/// the system requested theme is used. Also updates status bar appearance when supported.
 		/// </summary>
 		/// <param name="Theme">Desired theme or <see cref="AppTheme.Unspecified"/>.</param>
+		/// <remarks>
+		/// Applies immediately when called on the main thread, otherwise posts once to it. Applying the theme that is already
+		/// active does not touch the resource dictionaries, so calling this on every resume is cheap.
+		/// </remarks>
 		public void SetTheme(AppTheme Theme)
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
+			if (MainThread.IsMainThread)
+				this.ApplyThemeOnMainThread(Theme);
+			else
+				MainThread.BeginInvokeOnMainThread(() => this.ApplyThemeOnMainThread(Theme));
+		}
+
+		private void ApplyThemeOnMainThread(AppTheme Theme)
+		{
+			try
 			{
+				ServiceRef.TagProfile.Theme = Theme;
+				Application? CurrentApplication = Application.Current;
+				if (CurrentApplication is not null && CurrentApplication.UserAppTheme != Theme)
+					CurrentApplication.UserAppTheme = Theme;
+
+				this.ApplyLocalThemeOnMainThread(Theme);
+
+				// Platform specific status bar adjustments (iOS & MacCatalyst with supported versions)
+#if IOS || MACCATALYST
 				try
 				{
-					ServiceRef.TagProfile.Theme = Theme;
-					Application.Current!.UserAppTheme = Theme;
-					this.SetLocalTheme(Theme);
-					// Platform specific status bar adjustments (iOS & MacCatalyst with supported versions)
-#if IOS || MACCATALYST
-					try
-					{
-						CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
-						CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(Theme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent);
-					}
-					catch (Exception)
-					{
-						// Non-fatal: ignore status bar styling issues on unsupported platforms/versions.
-					}
-#endif
+					// The effective theme, so that "follow system" with a dark system theme gets light status bar content.
+					AppTheme EffectiveTheme = Application.Current?.RequestedTheme ?? Theme;
+					CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
+					CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(EffectiveTheme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent);
 				}
-				catch (Exception Ex)
-				{ ServiceRef.LogService.LogException(new Exception($"SetTheme failed for theme {Theme}.", Ex)); }
-			});
+				catch (Exception)
+				{
+					// Non-fatal: ignore status bar styling issues on unsupported platforms/versions.
+				}
+#endif
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(new Exception($"SetTheme failed for theme {Theme}.", Ex));
+			}
 		}
 
 		/// <summary>
 		/// Applies only bundled local theme dictionaries for the selected theme (no remote branding fetch).
 		/// </summary>
 		/// <param name="Theme">Theme to apply locally.</param>
+		/// <remarks>
+		/// Applies immediately when called on the main thread, otherwise posts once to it. Does nothing when the theme is
+		/// already applied.
+		/// </remarks>
 		public void SetLocalTheme(AppTheme Theme)
 		{
-			if (Theme == AppTheme.Unspecified)
-				Theme = Application.Current?.RequestedTheme ?? AppTheme.Unspecified;
-
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				try
-				{
-					ICollection<ResourceDictionary> Merged = Application.Current!.Resources.MergedDictionaries;
-					this.RemoveAllThemeDictionaries(Merged, this.localLightDict);
-					this.RemoveAllThemeDictionaries(Merged, this.localDarkDict);
-					this.localLightDict ??= new Light();
-					this.localDarkDict ??= new Dark();
-					if (Theme == AppTheme.Dark && !Merged.Contains(this.localDarkDict))
-						Merged.Add(this.localDarkDict);
-					else if (Theme != AppTheme.Dark && !Merged.Contains(this.localLightDict))
-						Merged.Add(this.localLightDict);
-					this.lastAppliedLocalTheme = Theme;
-				}
-				catch (Exception Ex)
-				{ ServiceRef.LogService.LogException(new Exception($"SetLocalTheme failed for theme {Theme}.", Ex)); }
-			});
+			if (MainThread.IsMainThread)
+				this.TryApplyLocalThemeOnMainThread(Theme);
+			else
+				MainThread.BeginInvokeOnMainThread(() => this.TryApplyLocalThemeOnMainThread(Theme));
 		}
+
+		private void TryApplyLocalThemeOnMainThread(AppTheme Theme)
+		{
+			try
+			{
+				this.ApplyLocalThemeOnMainThread(Theme);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(new Exception($"SetLocalTheme failed for theme {Theme}.", Ex));
+			}
+		}
+
+		/// <summary>
+		/// Merges the colour dictionary for <paramref name="Theme"/> and removes the one for the other theme.
+		/// </summary>
+		/// <remarks>
+		/// Must run on the main thread. Every change to the merged dictionaries re-resolves all dynamic resources in the
+		/// visual tree, so nothing is changed when the requested dictionary is already the applied one.
+		/// </remarks>
+		/// <param name="Theme">Theme to apply. <see cref="AppTheme.Unspecified"/> follows the system theme.</param>
+		private void ApplyLocalThemeOnMainThread(AppTheme Theme)
+		{
+			Application? CurrentApplication = Application.Current;
+			if (CurrentApplication is null)
+				return;
+
+			if (Theme == AppTheme.Unspecified)
+				Theme = CurrentApplication.RequestedTheme;
+
+			if (Theme != AppTheme.Dark)
+				Theme = AppTheme.Light;
+
+			ICollection<ResourceDictionary> Merged = CurrentApplication.Resources.MergedDictionaries;
+			ResourceDictionary? Target = this.GetThemeDictionary(Theme, Merged);
+
+			if (this.lastAppliedLocalTheme == Theme && ReferenceEquals(this.appliedDict, Target) &&
+				(Target is null || Merged.Contains(Target)))
+			{
+				return;
+			}
+
+			foreach (ResourceDictionary Dict in Merged.Where(Dict => !ReferenceEquals(Dict, Target) && IsThemeDictionary(Dict)).ToList())
+				Merged.Remove(Dict);
+
+			if (Target is not null && !Merged.Contains(Target))
+				Merged.Add(Target);
+
+			this.appliedDict = Target;
+			this.lastAppliedLocalTheme = Theme;
+		}
+
+		/// <summary>
+		/// Gets the dictionary to merge for a theme, creating it on first use.
+		/// </summary>
+		/// <param name="Theme">Either <see cref="AppTheme.Light"/> or <see cref="AppTheme.Dark"/>.</param>
+		/// <param name="Merged">The application's merged dictionaries.</param>
+		/// <returns>The dictionary to merge, or <c>null</c> when the bundled light dictionary from App.xaml already applies.</returns>
+		private ResourceDictionary? GetThemeDictionary(AppTheme Theme, ICollection<ResourceDictionary> Merged)
+		{
+			if (Theme == AppTheme.Dark)
+				return this.darkDict ??= new Dark();
+
+			if (this.lightDict is not null || HasBundledLightBase(Merged))
+				return this.lightDict;
+
+			// App.xaml no longer merges the bundled light colours, so they are merged here instead.
+			return this.lightDict = new Light();
+		}
+
+		/// <summary>
+		/// Checks whether App.xaml has merged the bundled light dictionary as the base colour layer.
+		/// </summary>
+		/// <remarks>
+		/// App.xaml merges it through a <c>Source</c> reference, so the merged entry is a plain wrapper whose own keys do not
+		/// include the theme flag. It is never removed, and the dark and provider dictionaries are merged on top of it.
+		/// </remarks>
+		/// <param name="Merged">The application's merged dictionaries.</param>
+		/// <returns><c>true</c> if the bundled light dictionary is merged as the base layer.</returns>
+		private static bool HasBundledLightBase(ICollection<ResourceDictionary> Merged)
+		{
+			foreach (ResourceDictionary Dict in Merged)
+			{
+				if (IsThemeDictionary(Dict))
+					continue;
+
+				if (Dict is Light)
+					return true;
+
+				string? SourcePath = Dict.Source?.OriginalString;
+				if (string.IsNullOrEmpty(SourcePath))
+					continue;
+
+				int AssemblySeparator = SourcePath.IndexOf(';');
+				if (AssemblySeparator >= 0)
+					SourcePath = SourcePath[..AssemblySeparator];
+
+				if (string.Equals(Path.GetFileName(SourcePath), "Light.xaml", StringComparison.Ordinal))
+					return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Checks whether a merged dictionary is one that this service adds and removes.
+		/// </summary>
+		/// <param name="Dict">Merged dictionary.</param>
+		/// <returns><c>true</c> for local theme and provider branding dictionaries.</returns>
+		private static bool IsThemeDictionary(ResourceDictionary Dict) =>
+			Dict.ContainsKey(localFlagKey) || Dict.ContainsKey(providerFlagKey);
 
 		/// <summary>
 		/// Attempts to fetch and apply provider branding using the background refresh policy.
@@ -173,6 +297,7 @@ namespace NeuroAccessMaui.Services.Theme
 
 			this.providerThemeState = ProviderThemeStatus.InProgress;
 			this.lastDomainAttempted = Domain;
+			bool CompleteThemeLoaded = true;
 
 			try
 			{
@@ -194,13 +319,15 @@ namespace NeuroAccessMaui.Services.Theme
 						return RefreshOutcome == ThemeApplyOutcome.Applied ? ThemeApplyOutcome.Applied : ThemeApplyOutcome.AppliedFromCache;
 					}
 					if (CacheExpired)
-						this.StartBackgroundRefresh(Domain);
+						this.StartBackgroundRefresh(Domain, ThemeFetchPolicy.BackgroundRefresh);
 					return ThemeApplyOutcome.AppliedFromCache;
 				}
 
 				if (Policy == ThemeFetchPolicy.BackgroundRefresh)
 				{
-					this.StartBackgroundRefresh(Domain);
+					// Nothing is cached, so the fetch gets the longer first-run timeout. It runs in the background and swaps the
+					// theme when the branding arrives; ThemeLoaded completes when that fetch has finished.
+					CompleteThemeLoaded = !this.StartBackgroundRefresh(Domain, ThemeFetchPolicy.BlockingFirstRun);
 					this.providerThemeState = ProviderThemeStatus.FailedTransient;
 					await this.SetLocalThemeFromBackgroundThread();
 					return ThemeApplyOutcome.FailedTransient;
@@ -221,7 +348,8 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 			finally
 			{
-				this.ThemeLoaded.TrySetResult();
+				if (CompleteThemeLoaded)
+					this.ThemeLoaded.TrySetResult();
 			}
 		}
 
@@ -237,17 +365,23 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 		}
 
-		private void StartBackgroundRefresh(string Domain)
+		/// <summary>
+		/// Starts fetching provider branding in the background, unless a fetch is already running.
+		/// </summary>
+		/// <param name="Domain">Provider domain.</param>
+		/// <param name="Policy">Policy that selects the fetch timeouts.</param>
+		/// <returns><c>true</c> if a background fetch is running, which completes <see cref="ThemeLoaded"/> when it ends.</returns>
+		private bool StartBackgroundRefresh(string Domain, ThemeFetchPolicy Policy)
 		{
 			if (!ServiceRef.NetworkService.IsOnline)
-				return;
+				return false;
 			if (this.backgroundRefreshTask is not null && !this.backgroundRefreshTask.IsCompleted)
-				return;
+				return true;
 			this.backgroundRefreshTask = Task.Run(async () =>
 			{
 				try
 				{
-					ThemeApplyOutcome Outcome = await this.FetchAndApplyProviderThemeAsync(Domain, ThemeFetchPolicy.BackgroundRefresh, false, CancellationToken.None, true);
+					ThemeApplyOutcome Outcome = await this.FetchAndApplyProviderThemeAsync(Domain, Policy, false, CancellationToken.None, true);
 					if (Outcome == ThemeApplyOutcome.Applied)
 						this.providerThemeState = ProviderThemeStatus.Applied;
 				}
@@ -255,7 +389,12 @@ namespace NeuroAccessMaui.Services.Theme
 				{
 					ServiceRef.LogService.LogException(new Exception($"Background provider theme refresh failed for {Domain}.", Ex));
 				}
+				finally
+				{
+					this.ThemeLoaded.TrySetResult();
+				}
 			});
+			return true;
 		}
 
 		private async Task<(bool Applied, bool CacheExpired)> TryApplyCachedProviderThemeAsync(string Domain, ThemeFetchPolicy Policy, CancellationToken CancellationToken)
@@ -482,14 +621,7 @@ namespace NeuroAccessMaui.Services.Theme
 				return;
 			if (System.Array.IndexOf(Constants.Schemes.BrandingV2NamespaceKeys, Root.NamespaceURI) < 0)
 				return;
-			this.imageUrisMap.Clear();
-			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
-			{
-				string Id = Node.GetAttribute("id");
-				string UriText = Node.GetAttribute("uri");
-				if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(UriText) && Uri.TryCreate(UriText, UriKind.Absolute, out Uri? ImgUri))
-					this.imageUrisMap[Id] = ImgUri;
-			}
+			this.imageUrisMap = ReadImageReferences(Root);
 			Uri? LightUri = null;
 			Uri? DarkUri = null;
 			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ColorsUri']")?.OfType<XmlElement>() ?? [])
@@ -501,36 +633,14 @@ namespace NeuroAccessMaui.Services.Theme
 				else if (ThemeName == "dark")
 					DarkUri = new Uri(UriText2);
 			}
-			await MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				ICollection<ResourceDictionary>? Merged = Application.Current?.Resources.MergedDictionaries;
-				if (Merged is null)
-					return;
-				this.RemoveAllThemeDictionaries(Merged, this.localLightDict);
-				this.RemoveAllThemeDictionaries(Merged, this.localDarkDict);
-				this.localLightDict ??= new Light();
-				this.localDarkDict ??= new Dark();
-				this.localLightDict.Clear();
-				this.localDarkDict.Clear();
-				if (LightUri is not null)
-				{
-					ResourceDictionary? LightDict = await this.LoadProviderDictionaryAsync(LightUri, "Light", Policy, CancellationToken, ForceNetwork);
-					if (LightDict is not null) foreach (string K in LightDict.Keys.OfType<string>()) this.localLightDict[K] = LightDict[K];
-				}
-				if (DarkUri is not null)
-				{
-					ResourceDictionary? DarkDict = await this.LoadProviderDictionaryAsync(DarkUri, "Dark", Policy, CancellationToken, ForceNetwork);
-					if (DarkDict is not null) foreach (string K in DarkDict.Keys.OfType<string>()) this.localDarkDict[K] = DarkDict[K];
-				}
-				this.localLightDict[localFlagKey] = true;
-				this.localDarkDict[localFlagKey] = true;
-				AppTheme Current = await this.GetTheme();
-				if (Current == AppTheme.Dark && !Merged.Contains(this.localDarkDict))
-					Merged.Add(this.localDarkDict);
-				else if (Current != AppTheme.Dark && !Merged.Contains(this.localLightDict))
-					Merged.Add(this.localLightDict);
-				this.lastAppliedLocalTheme = Current;
-			});
+
+			// Fetch and build the new dictionaries first, so the current theme stays merged while the fetch is in flight.
+			ResourceDictionary? LightColors = LightUri is null ? null : await this.LoadProviderDictionaryAsync(LightUri, "Light", Policy, CancellationToken, ForceNetwork);
+			ResourceDictionary? DarkColors = DarkUri is null ? null : await this.LoadProviderDictionaryAsync(DarkUri, "Dark", Policy, CancellationToken, ForceNetwork);
+			ResourceDictionary LightDict = CreateBrandingDictionary(LightColors);
+			ResourceDictionary DarkDict = CreateBrandingDictionary(DarkColors);
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.ApplyBrandingOnMainThread(LightDict, DarkDict));
 		}
 
 		private async Task ApplyV1Async(XmlDocument Doc, ThemeFetchPolicy Policy, CancellationToken CancellationToken, bool ForceNetwork)
@@ -538,12 +648,7 @@ namespace NeuroAccessMaui.Services.Theme
 			XmlElement? Root = Doc.DocumentElement;
 			if (Root is null || Root.NamespaceURI != Constants.Schemes.NeuroAccessBrandingV1)
 				return;
-			this.imageUrisMap.Clear();
-			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
-			{
-				string Id = Node.GetAttribute("id"); string UriText = Node.GetAttribute("uri");
-				if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(UriText) && Uri.TryCreate(UriText, UriKind.Absolute, out Uri? ImgUri)) this.imageUrisMap[Id] = ImgUri;
-			}
+			this.imageUrisMap = ReadImageReferences(Root);
 			if (Root.SelectSingleNode("//*[local-name()='ColorsUri']") is not XmlElement ColorsNode) 
 				return;
 			Uri ColorsUri = new(ColorsNode.InnerText.Trim());
@@ -558,29 +663,80 @@ namespace NeuroAccessMaui.Services.Theme
 				else if (K.EndsWith("Dark", StringComparison.OrdinalIgnoreCase)) Dark[K[..^4]] = Orig[K];
 				else { Light[K] = Orig[K]; Dark[K] = Orig[K]; }
 			}
-			await MainThread.InvokeOnMainThreadAsync(async () =>
+			ResourceDictionary LightDict = CreateBrandingDictionary(Light);
+			ResourceDictionary DarkDict = CreateBrandingDictionary(Dark);
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.ApplyBrandingOnMainThread(LightDict, DarkDict));
+		}
+
+		/// <summary>
+		/// Reads the image references of a branding descriptor.
+		/// </summary>
+		/// <param name="Root">Root element of the branding descriptor.</param>
+		/// <returns>A new map of image identifiers to absolute URIs.</returns>
+		private static Dictionary<string, Uri> ReadImageReferences(XmlElement Root)
+		{
+			Dictionary<string, Uri> ImageUris = new(StringComparer.OrdinalIgnoreCase);
+			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
 			{
-				ICollection<ResourceDictionary>? Merged = Application.Current?.Resources.MergedDictionaries;
-				if (Merged is null)
-					return;
-				this.RemoveAllThemeDictionaries(Merged, this.localLightDict);
-				this.RemoveAllThemeDictionaries(Merged, this.localDarkDict);
-				this.localLightDict ??= new Light(); this.localDarkDict ??= new Dark();
-				this.localLightDict.Clear();
-				this.localDarkDict.Clear();
-				foreach (KeyValuePair<string, object> Kv in Light)
-					this.localLightDict[Kv.Key] = Kv.Value;
-				foreach (KeyValuePair<string, object> Kv in Dark)
-					this.localDarkDict[Kv.Key] = Kv.Value;
-				this.localLightDict[localFlagKey] = true;
-				this.localDarkDict[localFlagKey] = true;
-				AppTheme Current = await this.GetTheme();
-				if (Current == AppTheme.Dark && !Merged.Contains(this.localDarkDict))
-					Merged.Add(this.localDarkDict);
-				else if (Current != AppTheme.Dark && !Merged.Contains(this.localLightDict))
-					Merged.Add(this.localLightDict);
-				this.lastAppliedLocalTheme = Current;
-			});
+				string Id = Node.GetAttribute("id");
+				string UriText = Node.GetAttribute("uri");
+				if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(UriText) && Uri.TryCreate(UriText, UriKind.Absolute, out Uri? ImgUri))
+					ImageUris[Id] = ImgUri;
+			}
+			return ImageUris;
+		}
+
+		/// <summary>
+		/// Creates a theme dictionary that holds provider colours.
+		/// </summary>
+		/// <remarks>
+		/// Colours the provider does not define resolve from the bundled light dictionary that App.xaml merges below it.
+		/// </remarks>
+		/// <param name="Colors">Provider colours, or <c>null</c> if none could be loaded.</param>
+		/// <returns>A new dictionary flagged as a theme dictionary.</returns>
+		private static ResourceDictionary CreateBrandingDictionary(ResourceDictionary? Colors)
+		{
+			ResourceDictionary Dict = new ResourceDictionary();
+			if (Colors is not null)
+			{
+				foreach (string K in Colors.Keys.OfType<string>())
+					Dict[K] = Colors[K];
+			}
+			Dict[localFlagKey] = true;
+			return Dict;
+		}
+
+		/// <summary>
+		/// Creates a theme dictionary that holds provider colours.
+		/// </summary>
+		/// <param name="Colors">Provider colours by resource key.</param>
+		/// <returns>A new dictionary flagged as a theme dictionary.</returns>
+		private static ResourceDictionary CreateBrandingDictionary(Dictionary<string, object> Colors)
+		{
+			ResourceDictionary Dict = new ResourceDictionary();
+			foreach (KeyValuePair<string, object> Kv in Colors)
+				Dict[Kv.Key] = Kv.Value;
+			Dict[localFlagKey] = true;
+			return Dict;
+		}
+
+		/// <summary>
+		/// Replaces the light and dark theme dictionaries with provider branding and merges the one for the current theme.
+		/// </summary>
+		/// <remarks>
+		/// Must run on the main thread. Goes through the same tracking as <see cref="SetTheme"/>, so the merged dictionaries
+		/// change exactly once.
+		/// </remarks>
+		/// <param name="LightDict">Branded light dictionary.</param>
+		/// <param name="DarkDict">Branded dark dictionary.</param>
+		private void ApplyBrandingOnMainThread(ResourceDictionary LightDict, ResourceDictionary DarkDict)
+		{
+			if (Application.Current is null)
+				return;
+			this.lightDict = LightDict;
+			this.darkDict = DarkDict;
+			this.ApplyLocalThemeOnMainThread(Application.Current.UserAppTheme);
 		}
 
 		private async Task<ResourceDictionary?> LoadProviderDictionaryAsync(Uri Uri, string Tag, ThemeFetchPolicy Policy, CancellationToken CancellationToken, bool ForceNetwork)
@@ -678,12 +834,6 @@ namespace NeuroAccessMaui.Services.Theme
 				ServiceRef.LogService.LogException(new Exception($"Branding XML validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex), new KeyValuePair<string, object?>("Domain", Domain));
 				return false;
 			}
-		}
-
-		private void RemoveAllThemeDictionaries(ICollection<ResourceDictionary> Merged, ResourceDictionary? Instance)
-		{
-			if (Instance is not null) while (Merged.Contains(Instance)) Merged.Remove(Instance);
-			foreach (ResourceDictionary? D in Merged.Where(D => D.ContainsKey(localFlagKey) || D.ContainsKey(providerFlagKey)).ToList()) Merged.Remove(D);
 		}
 
 		/// <summary>
