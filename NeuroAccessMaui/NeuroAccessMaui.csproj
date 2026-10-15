@@ -333,6 +333,7 @@
 		<PackageReference Include="Waher.Security" Version="1.5.0" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.5" />
 		<PackageReference Include="Waher.Security.JWT" Version="1.7.1" />
+		<PackageReference Include="Waher.Security.PQC" Version="1.2.0" />
 		<!--
 		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.EDaler\Waher.Networking.XMPP.EDaler.csproj" />
 		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.NeuroFeatures\Waher.Networking.XMPP.NeuroFeatures.csproj" />

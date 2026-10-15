@@ -27,6 +27,7 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
+using Waher.Security;
 using NeuroAccessMaui.Services.UI.Popups;
 
 namespace NeuroAccessMaui.Services.Contracts

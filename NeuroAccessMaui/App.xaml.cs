@@ -84,7 +84,6 @@ using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using Waher.Content;
 using Waher.Events;
 using Waher.Networking.XMPP.P2P;
-using Waher.Networking.XMPP.P2P.E2E;
 using Waher.Persistence;
 using Waher.Runtime.Text;
 using Waher.Security.LoginMonitor;

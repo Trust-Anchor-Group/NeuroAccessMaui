@@ -338,7 +338,7 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			return this.Step >= RegistrationStep.CreateAccount ||
 				(this.LegalIdentity is not null &&
-				this.LegalIdentity.State == Waher.Networking.XMPP.Contracts.IdentityState.Created);
+				this.LegalIdentity.State == Waher.Security.IdentityState.Created);
 		}
 
 		/// <summary>

@@ -64,9 +64,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsApproved))]
-		private IdentityState? identityState = Waher.Networking.XMPP.Contracts.IdentityState.Created;
+		private IdentityState? identityState = Waher.Security.IdentityState.Created;
 
-		public bool IsApproved => this.IdentityState is not null && this.IdentityState == Waher.Networking.XMPP.Contracts.IdentityState.Approved;
+		public bool IsApproved => this.IdentityState is not null && this.IdentityState == Waher.Security.IdentityState.Approved;
 
 
 		[ObservableProperty]
@@ -361,7 +361,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 							(Info.LegalIdentity is null ||
 							(Info.LegalId != this.identity.Id &&
 							Info.LegalIdentity.Created < this.identity!.Created &&
-							this.identity.State == Waher.Networking.XMPP.Contracts.IdentityState.Approved)))
+							this.identity.State == Waher.Security.IdentityState.Approved)))
 						{
 							Info.LegalId = this.identity.Id;
 							Info.LegalIdentity = this.identity;

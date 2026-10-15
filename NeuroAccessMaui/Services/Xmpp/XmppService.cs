@@ -83,6 +83,7 @@ using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
 using Waher.Script.Constants;
+using Waher.Security;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;

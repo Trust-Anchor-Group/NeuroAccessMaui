@@ -17,6 +17,7 @@ using NeuroAccessMaui.UI.Popups.QR;
 using NeuroAccessMaui.UI.Popups.Settings;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding
 {

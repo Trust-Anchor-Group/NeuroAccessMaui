@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NeuroAccessMaui.Services.Kyc.Models;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
+using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
