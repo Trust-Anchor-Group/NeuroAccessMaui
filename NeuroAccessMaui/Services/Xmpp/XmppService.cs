@@ -125,6 +125,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private DateTime xmppLastStateChange = DateTime.MinValue;
 		private readonly InMemorySniffer? sniffer = new(250, "Connection In-memory sniffer.");
 		private readonly SemaphoreSlim clientSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim createdContractsSemaphore = new SemaphoreSlim(1, 1);
+		private HashSet<string>? createdContractIds;
+		private string? createdContractIdsAccount;
 		private CancellationTokenSource? activationCancellation;
 		private Task connectionTask = Task.CompletedTask;
 		private EventFilter? xmppFilteredEventSink;
@@ -3936,7 +3939,59 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			Contract Result = await this.ContractsClient.CreateContractAsync(TemplateId, Parts, Parameters, Visibility, PartsMode, Duration, ArchiveRequired, ArchiveOptional, SignAfter, SignBefore, CanActAsTemplate);
 			await UpdateContractReference(Result);
+			await this.RememberCreatedContractAsync(Result.ContractId);
 			return Result;
+		}
+
+		/// <summary>
+		/// Checks if the current account created a contract. The server's list of created contracts is fetched
+		/// at most once per account while the app runs, and contracts created here are added to it.
+		/// </summary>
+		/// <param name="ContractId">The contract ID.</param>
+		/// <returns>If the current account created the contract. False if it can't be determined, for example when offline.</returns>
+		public async Task<bool> IsContractCreatorAsync(CaseInsensitiveString ContractId)
+		{
+			string Account = this.BareJid;
+
+			await this.createdContractsSemaphore.WaitAsync();
+			try
+			{
+				if (this.createdContractIds is null || this.createdContractIdsAccount != Account)
+				{
+					string[] ContractIds = await this.GetCreatedContractReferences();
+					this.createdContractIds = new HashSet<string>(ContractIds, StringComparer.OrdinalIgnoreCase);
+					this.createdContractIdsAccount = Account;
+				}
+
+				return this.createdContractIds.Contains(ContractId.Value);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return false;
+			}
+			finally
+			{
+				this.createdContractsSemaphore.Release();
+			}
+		}
+
+		/// <summary>
+		/// Adds a contract created by the current account to the list used by <see cref="IsContractCreatorAsync"/>.
+		/// </summary>
+		/// <param name="ContractId">The ID of the created contract.</param>
+		private async Task RememberCreatedContractAsync(CaseInsensitiveString ContractId)
+		{
+			await this.createdContractsSemaphore.WaitAsync();
+			try
+			{
+				if (this.createdContractIds is not null && this.createdContractIdsAccount == this.BareJid)
+					this.createdContractIds.Add(ContractId.Value);
+			}
+			finally
+			{
+				this.createdContractsSemaphore.Release();
+			}
 		}
 
 		/// <summary>

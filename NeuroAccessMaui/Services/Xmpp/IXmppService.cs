@@ -777,6 +777,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 			bool CanActAsTemplate);
 
 		/// <summary>
+		/// Checks if the current account created a contract. The server's list of created contracts is fetched
+		/// at most once per account while the app runs, and contracts created here are added to it.
+		/// </summary>
+		/// <param name="ContractId">The contract ID.</param>
+		/// <returns>If the current account created the contract. False if it can't be determined, for example when offline.</returns>
+		Task<bool> IsContractCreatorAsync(CaseInsensitiveString ContractId);
+
+		/// <summary>
 		/// Deletes a contract.
 		/// </summary>
 		/// <param name="ContractId">The id of the contract to delete.</param>

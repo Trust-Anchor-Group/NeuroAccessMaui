@@ -5,6 +5,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
@@ -100,14 +101,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		private Contract? lastCreatedContract;
-
-		/// <summary>
-		/// When enabled, bypasses step validations and allows creating with invalid parameters (for testing).
-		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(CanCreate))]
-		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
-		private bool isValidationDisabled = false;
 
 		public string ProgressText => this.CurrentStep is null ? string.Empty : ServiceRef.Localizer[nameof(AppResources.ContractWizardStepFormat), this.CurrentStep.Index + 1, this.Steps.Count] ?? string.Empty;
 
@@ -235,9 +228,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 
 		public bool CanCreate =>
-			(this.IsParametersOk && this.IsRolesOk && this.IsContractOk
-			&& this.SelectedContractVisibilityItem is not null)
-			|| this.IsValidationDisabled;
+			this.IsParametersOk && this.IsRolesOk && this.IsContractOk
+			&& this.SelectedContractVisibilityItem is not null;
 
 		partial void OnIsContractOkChanged(bool value)
 		{
@@ -410,8 +402,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					ValidateFunc = () =>
 					{
-						if (this.IsValidationDisabled)
-							return Task.FromResult(true);
 						bool Ok = true;
 						foreach (ObservableParameter Param in this.EditableParameters)
 						{
@@ -427,21 +417,38 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 				else if (Key == nameof(NewContractStep.Roles))
 				{
-					ValidateFunc = () => Task.FromResult(this.IsValidationDisabled || this.CheckRolesValid());
+					ValidateFunc = () => Task.FromResult(this.CheckRolesValid());
 				}
 				else if (Key == nameof(NewContractStep.Preview))
 				{
-					ValidateFunc = () => Task.FromResult(this.IsValidationDisabled || this.IsContractOk);
+					ValidateFunc = () => Task.FromResult(this.IsContractOk);
 				}
 
 				this.Steps.Add(new StepDescriptor
 				{
 					Key = Key,
-					Title = Key,
+					Title = GetStepTitle(Key),
 					Index = I++,
 					ValidateAsync = ValidateFunc
 				});
 			}
+		}
+
+		/// <summary>
+		/// Gets the localized title of a wizard step.
+		/// </summary>
+		/// <param name="Key">The step's key, the name of a <see cref="NewContractStep"/>.</param>
+		/// <returns>The localized title.</returns>
+		private static string GetStepTitle(string Key)
+		{
+			return Key switch
+			{
+				nameof(NewContractStep.Intro) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepIntro)],
+				nameof(NewContractStep.Parameters) => ServiceRef.Localizer[nameof(AppResources.Parameters)],
+				nameof(NewContractStep.Roles) => ServiceRef.Localizer[nameof(AppResources.Roles)],
+				nameof(NewContractStep.Preview) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepReview)],
+				_ => Key
+			};
 		}
 
 		private bool CheckRolesValid()
@@ -475,12 +482,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				this.IsCurrentStepValid = true;
 				return;
 			}
-			if (this.IsValidationDisabled)
-			{
-				this.IsCurrentStepValid = true;
-				this.CurrentStep.IsComplete = true;
-				return;
-			}
 			bool Ok = false;
 			try
 			{
@@ -492,11 +493,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 			this.IsCurrentStepValid = Ok;
 			this.CurrentStep.IsComplete = Ok;
-		}
-
-		partial void OnIsValidationDisabledChanged(bool value)
-		{
-			_ = this.UpdateCurrentStepValidityAsync();
 		}
 
 		private async void NavigateStateForStep(StepDescriptor Step)
@@ -856,9 +852,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-			ContractsClient Client = ServiceRef.XmppService.ContractsClient;
-
-			Contract? CreatedContract = null;
 			List<Part> Parts = [];
 			foreach (ObservableRole Role in this.Contract.Roles)
 			{
@@ -868,9 +861,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 			}
 
+			// Create through the XMPP service, which saves the contract before anything else can fail.
+			Contract CreatedContract;
 			try
 			{
-				CreatedContract = await Client.CreateContractAsync(
+				CreatedContract = await ServiceRef.XmppService.CreateContract(
 					this.Contract.Contract.ContractId,
 					[.. Parts],
 					this.Contract.Contract.Parameters,
@@ -880,7 +875,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
 					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
 					null, null, false);
-				this.lastCreatedContract = CreatedContract;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ContractErrorMessages.GetMessage(Ex),
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoToState(NewContractStep.Preview);
+				return;
+			}
+
+			// Directly open created contract (no Final step)
+			this.lastCreatedContract = CreatedContract;
+
+			try
+			{
 				await this.OpenCreatedContract();
 				// Sign for all selected roles (could be none)
 				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
@@ -913,7 +924,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 					if (string.IsNullOrWhiteSpace(BareJid))
 						continue;
-					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, BareJid, true);
 
 					string? FriendlyTarget = Info?.FriendlyName;
 					if (string.IsNullOrWhiteSpace(FriendlyTarget))
@@ -922,47 +932,34 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						FriendlyTarget = BareJid;
 
 					string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
-						ServiceRef.Localizer[nameof(AppResources.EnterProposal), FriendlyTarget],
+						ServiceRef.Localizer[nameof(AppResources.EnterProposalMessage), FriendlyTarget],
 						ServiceRef.Localizer[nameof(AppResources.Send)],
 						ServiceRef.Localizer[nameof(AppResources.Cancel)]);
 
-					if (!string.IsNullOrEmpty(Proposal))
-						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, BareJid, Proposal);
-					else
-						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, BareJid, ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
+					if (Proposal is null) // Cancelled: skip this part, grant no access and send nothing
+						continue;
+					if (string.IsNullOrEmpty(Proposal)) // Use default if empty
+						Proposal = ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)];
+
+					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, BareJid, true);
+					await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, BareJid, Proposal);
 				}
-			}
-			catch (Waher.Networking.XMPP.XmppException Ex)
-			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					Ex.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
-
-				//Todo: display contract errors
-
-			}
-
-			if (CreatedContract is null)
-			{
 				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.Error)],
-					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ContractErrorMessages.GetMessage(Ex, CreatedContract),
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				await this.GoToState(NewContractStep.Parameters);
-				return;
 			}
-
-			// Directly open created contract (no Final step)
-			this.lastCreatedContract = CreatedContract;
-			// Complete the post-create TCS so ViewContract can update signing UI
-			this.postCreateCompletion?.TrySetResult(CreatedContract);
-			this.postCreateCompletion = null;
-
+			finally
+			{
+				// Always complete the post-create TCS, with the latest version of the contract, so ViewContract never waits forever.
+				this.lastCreatedContract = CreatedContract;
+				this.postCreateCompletion?.TrySetResult(CreatedContract);
+				this.postCreateCompletion = null;
+			}
 		}
 
 

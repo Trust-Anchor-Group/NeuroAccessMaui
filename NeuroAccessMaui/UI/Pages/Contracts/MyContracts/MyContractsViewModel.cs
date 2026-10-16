@@ -2,7 +2,6 @@
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.Notification.Contracts;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
@@ -36,7 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		public event Action<SelectableTag>? TagSelected;
 
-		private readonly string AllCategory = "All";
+		private readonly string AllCategory = ServiceRef.Localizer[nameof(AppResources.All)];
 		private readonly int contractBatchSize = 10;
 
 		private int loadedContracts;

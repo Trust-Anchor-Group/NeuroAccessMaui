@@ -94,7 +94,7 @@
 							Stroke="Transparent"
 							Padding="8,4,8,4"
 							  BackgroundColor="{DynamicResource TnPInfobgWL}">
-						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
+						<Label Text="{Binding Contract, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
 								 TextColor="{DynamicResource TnPInfoContentWL}" />
 					</Border>
@@ -338,10 +338,10 @@
 											  BottomLabelText="{l:Localize ServerSignatureButtonDescription}"
 											  Command="{Binding OpenServerSignatureCommand}" />
 
-					<controls:TextButton LabelData="{l:Localize ObsoleteContract}"
+					<controls:TextButton LabelData="{l:Localize WithdrawContract}"
 										 Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
-										 Command="{Binding Path=ObsoleteContractCommand}"
-										 IsVisible="{Binding Path=CanObsoleteContract}"
+										 Command="{Binding Path=WithdrawContractCommand}"
+										 IsVisible="{Binding Path=CanWithdrawContract}"
 										 Margin="{DynamicResource SmallTopBottomMargins}" />
 					<controls:TextButton LabelData="{l:Localize DeleteContract}"
 										 Style="{DynamicResource FilledTextButtonDecline}"

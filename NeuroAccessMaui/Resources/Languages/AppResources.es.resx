@@ -4178,4 +4178,85 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="KycPickerNotSpecified" xml:space="preserve">
     <value>Sin especificar</value>
   </data>
+  <data name="ContractErrorNotOpenYet" xml:space="preserve">
+    <value>Este contrato no se puede firmar antes del {0}.</value>
+  </data>
+  <data name="ContractErrorSigningClosed" xml:space="preserve">
+    <value>Este contrato solo se podía firmar hasta el {0}.</value>
+  </data>
+  <data name="ContractErrorRoleFull" xml:space="preserve">
+    <value>Este rol ya tiene todas las firmas que admite.</value>
+  </data>
+  <data name="ContractErrorNoSuchRole" xml:space="preserve">
+    <value>Este rol no existe en el contrato.</value>
+  </data>
+  <data name="ContractErrorNotAPart" xml:space="preserve">
+    <value>No eres una de las partes indicadas en este contrato.</value>
+  </data>
+  <data name="ContractErrorMissingProperty" xml:space="preserve">
+    <value>Tu ID no incluye {0}, que este rol requiere.</value>
+  </data>
+  <data name="ContractErrorNoKeysOnDevice" xml:space="preserve">
+    <value>Tu ID aprobado y sus claves no están en este dispositivo, así que no puedes firmar aquí.</value>
+  </data>
+  <data name="ContractErrorCreatorOnly" xml:space="preserve">
+    <value>Solo quien creó este contrato puede hacer esto.</value>
+  </data>
+  <data name="ContractErrorArchivePeriod" xml:space="preserve">
+    <value>Este contrato debe conservarse hasta que termine su periodo de archivo, así que aún no se puede eliminar.</value>
+  </data>
+  <data name="ContractErrorBinding" xml:space="preserve">
+    <value>Este contrato es legalmente vinculante, así que no se puede retirar ni eliminar.</value>
+  </data>
+  <data name="ContractErrorCannotRevoke" xml:space="preserve">
+    <value>Tu rol en este contrato no permite retirarlo.</value>
+  </data>
+  <data name="ContractErrorTemplateOnly" xml:space="preserve">
+    <value>Esto es una plantilla. Crea un contrato a partir de ella para firmar.</value>
+  </data>
+  <data name="ContractErrorObsoleted" xml:space="preserve">
+    <value>Este contrato ha sido retirado.</value>
+  </data>
+  <data name="ContractErrorDeleted" xml:space="preserve">
+    <value>Este contrato ha sido eliminado.</value>
+  </data>
+  <data name="ContractErrorFailed" xml:space="preserve">
+    <value>Este contrato ha fallado y ya no se puede firmar.</value>
+  </data>
+  <data name="ContractErrorRejected" xml:space="preserve">
+    <value>Este contrato ha sido rechazado.</value>
+  </data>
+  <data name="ContractErrorNotApproved" xml:space="preserve">
+    <value>Este contrato aún no ha sido aprobado para firmar.</value>
+  </data>
+  <data name="ContractErrorInvalidParameter" xml:space="preserve">
+    <value>El valor de {0} no es válido.</value>
+  </data>
+  <data name="ContractErrorNotFound" xml:space="preserve">
+    <value>No se encontró este contrato. Puede que se haya eliminado.</value>
+  </data>
+  <data name="WithdrawContract" xml:space="preserve">
+    <value>Retirar contrato</value>
+  </data>
+  <data name="ContractWithdrawConfirm" xml:space="preserve">
+    <value>¿Quieres retirar este contrato? Se cancelará para todas las partes y no se puede deshacer.</value>
+  </data>
+  <data name="ContractWithdrawn" xml:space="preserve">
+    <value>El contrato ha sido retirado.</value>
+  </data>
+  <data name="EnterProposalMessage" xml:space="preserve">
+    <value>Escribe un mensaje para {0}. Déjalo en blanco para enviar un mensaje estándar.</value>
+  </data>
+  <data name="ContractStateReadyToSign" xml:space="preserve">
+    <value>Listo para firmar</value>
+  </data>
+  <data name="PetitionNoLongerAvailable" xml:space="preserve">
+    <value>Esta solicitud ha caducado o ya no está disponible.</value>
+  </data>
+  <data name="ContractWizardStepIntro" xml:space="preserve">
+    <value>Introducción</value>
+  </data>
+  <data name="ContractWizardStepReview" xml:space="preserve">
+    <value>Revisar</value>
+  </data>
 </root>

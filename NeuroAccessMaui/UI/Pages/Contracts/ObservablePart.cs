@@ -11,6 +11,7 @@ using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
@@ -199,6 +200,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				this.SetProperty(ref this.signature, value);
 				this.OnPropertyChanged(nameof(this.HasSigned));
+				this.OnPropertyChanged(nameof(this.CanViewSignature));
 				this.OnPropertyChanged(nameof(this.CanSendProposal));
 				this.OpenSignatureCommand.NotifyCanExecuteChanged();
 			}
@@ -239,6 +241,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool HasIdentity => this.identity is not null;
 
 		public bool HasSigned => this.Signature is not null;
+
+		/// <summary>
+		/// If "View signature" is offered for this part. Follows <see cref="ContractActionRules.CanViewSignature"/>.
+		/// </summary>
+		public bool CanViewSignature => ContractActionRules.CanViewSignature(this.Signature);
 
 		public bool CanSendProposal => this.IsThirdParty && this.HasIdentity && !this.HasSigned && this.Role != "TrustProvider";
 

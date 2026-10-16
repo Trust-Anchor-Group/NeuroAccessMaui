@@ -12935,5 +12935,248 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("KycPickerNotSpecified", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract can't be signed before {0}..
+        /// </summary>
+        public static string ContractErrorNotOpenYet {
+            get {
+                return ResourceManager.GetString("ContractErrorNotOpenYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract could only be signed until {0}..
+        /// </summary>
+        public static string ContractErrorSigningClosed {
+            get {
+                return ResourceManager.GetString("ContractErrorSigningClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This role already has all the signatures it allows..
+        /// </summary>
+        public static string ContractErrorRoleFull {
+            get {
+                return ResourceManager.GetString("ContractErrorRoleFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This role doesn't exist in the contract..
+        /// </summary>
+        public static string ContractErrorNoSuchRole {
+            get {
+                return ResourceManager.GetString("ContractErrorNoSuchRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You're not one of the parties named in this contract..
+        /// </summary>
+        public static string ContractErrorNotAPart {
+            get {
+                return ResourceManager.GetString("ContractErrorNotAPart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your ID doesn't include {0}, which this role requires..
+        /// </summary>
+        public static string ContractErrorMissingProperty {
+            get {
+                return ResourceManager.GetString("ContractErrorMissingProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your approved ID and its keys aren't on this device, so you can't sign here..
+        /// </summary>
+        public static string ContractErrorNoKeysOnDevice {
+            get {
+                return ResourceManager.GetString("ContractErrorNoKeysOnDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the person who created this contract can do this..
+        /// </summary>
+        public static string ContractErrorCreatorOnly {
+            get {
+                return ResourceManager.GetString("ContractErrorCreatorOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract must be kept until its archiving period ends, so it can't be deleted yet..
+        /// </summary>
+        public static string ContractErrorArchivePeriod {
+            get {
+                return ResourceManager.GetString("ContractErrorArchivePeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract is legally binding, so it can't be withdrawn or deleted..
+        /// </summary>
+        public static string ContractErrorBinding {
+            get {
+                return ResourceManager.GetString("ContractErrorBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your role in this contract isn't allowed to withdraw it..
+        /// </summary>
+        public static string ContractErrorCannotRevoke {
+            get {
+                return ResourceManager.GetString("ContractErrorCannotRevoke", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a template. Create a contract from it to sign..
+        /// </summary>
+        public static string ContractErrorTemplateOnly {
+            get {
+                return ResourceManager.GetString("ContractErrorTemplateOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract has been withdrawn..
+        /// </summary>
+        public static string ContractErrorObsoleted {
+            get {
+                return ResourceManager.GetString("ContractErrorObsoleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract has been deleted..
+        /// </summary>
+        public static string ContractErrorDeleted {
+            get {
+                return ResourceManager.GetString("ContractErrorDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract has failed and can no longer be signed..
+        /// </summary>
+        public static string ContractErrorFailed {
+            get {
+                return ResourceManager.GetString("ContractErrorFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract has been rejected..
+        /// </summary>
+        public static string ContractErrorRejected {
+            get {
+                return ResourceManager.GetString("ContractErrorRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract hasn't been approved for signing yet..
+        /// </summary>
+        public static string ContractErrorNotApproved {
+            get {
+                return ResourceManager.GetString("ContractErrorNotApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of {0} isn't valid..
+        /// </summary>
+        public static string ContractErrorInvalidParameter {
+            get {
+                return ResourceManager.GetString("ContractErrorInvalidParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract couldn't be found. It may have been deleted..
+        /// </summary>
+        public static string ContractErrorNotFound {
+            get {
+                return ResourceManager.GetString("ContractErrorNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Withdraw contract.
+        /// </summary>
+        public static string WithdrawContract {
+            get {
+                return ResourceManager.GetString("WithdrawContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Withdraw this contract? It will be cancelled for everyone in it, and this can't be undone..
+        /// </summary>
+        public static string ContractWithdrawConfirm {
+            get {
+                return ResourceManager.GetString("ContractWithdrawConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The contract has been withdrawn..
+        /// </summary>
+        public static string ContractWithdrawn {
+            get {
+                return ResourceManager.GetString("ContractWithdrawn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write a message for {0}. Leave it blank to send a standard message..
+        /// </summary>
+        public static string EnterProposalMessage {
+            get {
+                return ResourceManager.GetString("EnterProposalMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to sign.
+        /// </summary>
+        public static string ContractStateReadyToSign {
+            get {
+                return ResourceManager.GetString("ContractStateReadyToSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This request has expired or is no longer available..
+        /// </summary>
+        public static string PetitionNoLongerAvailable {
+            get {
+                return ResourceManager.GetString("PetitionNoLongerAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introduction.
+        /// </summary>
+        public static string ContractWizardStepIntro {
+            get {
+                return ResourceManager.GetString("ContractWizardStepIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review.
+        /// </summary>
+        public static string ContractWizardStepReview {
+            get {
+                return ResourceManager.GetString("ContractWizardStepReview", resourceCulture);
+            }
+        }
     }
 }

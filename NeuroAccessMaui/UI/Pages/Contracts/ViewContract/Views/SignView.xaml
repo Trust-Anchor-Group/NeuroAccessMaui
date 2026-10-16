@@ -166,7 +166,7 @@
 												Command="{Binding BackCommand}" />
 					<controls:TextButton Style="{DynamicResource FilledTextButton}"
 												Grid.Column="1"
-												LabelData="Sign"
+												LabelData="{l:Localize Sign}"
 												Command="{Binding SignCommand}" />
 
 				</Grid>

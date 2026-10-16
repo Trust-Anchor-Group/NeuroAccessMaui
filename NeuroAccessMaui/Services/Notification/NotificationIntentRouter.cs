@@ -206,7 +206,7 @@ namespace NeuroAccessMaui.Services.Notification
 					if (!Succeeded || RequestedIdentity is null)
 					{
 						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
-						string Message = "Petition has expired or is no longer available.";
+						string Message = ServiceRef.Localizer[nameof(AppResources.PetitionNoLongerAvailable)];
 						await ServiceRef.UiService.DisplayAlert(Title, Message);
 						return NotificationRouteResult.Failed;
 					}
@@ -245,7 +245,7 @@ namespace NeuroAccessMaui.Services.Notification
 					if (RequestorIdentity is null || string.IsNullOrEmpty(RequestorFullJid))
 					{
 						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
-						string Message = "Petition has expired or is no longer available.";
+						string Message = ServiceRef.Localizer[nameof(AppResources.PetitionNoLongerAvailable)];
 						await ServiceRef.UiService.DisplayAlert(Title, Message);
 						return NotificationRouteResult.Failed;
 					}
@@ -259,7 +259,7 @@ namespace NeuroAccessMaui.Services.Notification
 					{
 						ServiceRef.LogService.LogException(ex);
 						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
-						string Message = "Petition has expired or is no longer available.";
+						string Message = ServiceRef.Localizer[nameof(AppResources.PetitionNoLongerAvailable)];
 						await ServiceRef.UiService.DisplayAlert(Title, Message);
 						return NotificationRouteResult.Failed;
 					}

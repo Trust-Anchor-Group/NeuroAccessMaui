@@ -123,7 +123,7 @@
 
 													<controls:TemplatedButton Command="{Binding OpenSignatureCommand}"
 																						  VerticalOptions="End"
-																						  IsVisible="true"
+																						  IsVisible="{Binding CanViewSignature}"
 																						  HorizontalOptions="End">
 														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 																  Margin="0">
