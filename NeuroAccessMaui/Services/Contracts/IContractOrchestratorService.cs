@@ -104,6 +104,13 @@ namespace NeuroAccessMaui.Services.Contracts
 		Task<string?> RequestIdentityAsync(CaseInsensitiveString LegalId, string Purpose);
 
 		/// <summary>
+		/// Checks if a request sent with <see cref="RequestIdentityAsync"/> is still waiting for the owner's answer.
+		/// </summary>
+		/// <param name="LegalId">The requested legal ID.</param>
+		/// <returns>If a request for the legal ID is waiting for an answer.</returns>
+		bool IsIdentityRequestPending(CaseInsensitiveString LegalId);
+
+		/// <summary>
 		/// Raised when the owner answers a request sent with <see cref="RequestIdentityAsync"/>.
 		/// </summary>
 		event EventHandlerAsync<IdentityPetitionAnsweredEventArgs>? IdentityPetitionAnswered;

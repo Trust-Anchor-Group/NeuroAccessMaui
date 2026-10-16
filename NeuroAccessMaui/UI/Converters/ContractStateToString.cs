@@ -38,7 +38,7 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <param name="State">The contract state.</param>
 		/// <param name="IsTemplate">If the contract is a template, which can't be signed.</param>
 		/// <returns>The localized text.</returns>
-		private static string GetText(ContractState State, bool IsTemplate)
+		internal static string GetText(ContractState State, bool IsTemplate)
 		{
 			string Key = State switch
 			{

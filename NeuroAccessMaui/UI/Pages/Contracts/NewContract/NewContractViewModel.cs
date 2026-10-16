@@ -229,7 +229,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 
 		public bool CanCreate =>
-			this.IsParametersOk && this.IsRolesOk && this.IsContractOk
+			this.IsParametersOk && this.IsRolesOk && this.IsContractOk && this.IsSettingsOk
 			&& this.SelectedContractVisibilityItem is not null;
 
 		partial void OnIsContractOkChanged(bool value)
@@ -238,6 +238,295 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				_ = this.UpdateCurrentStepValidityAsync();
 		}
 
+		#endregion
+
+		#region Settings
+		/// <summary>
+		/// The choices of who can sign the new contract.
+		/// </summary>
+		public ObservableCollection<ContractPartsModeModel> PartsModeItems { get; } =
+		  [
+				new ContractPartsModeModel(ContractParts.ExplicitlyDefined, ServiceRef.Localizer[nameof(AppResources.ContractPartsNamed)]),
+				new ContractPartsModeModel(ContractParts.Open, ServiceRef.Localizer[nameof(AppResources.ContractPartsOpen)])
+		  ];
+
+		/// <summary>
+		/// The chosen parts mode.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsNamedParts))]
+		[NotifyPropertyChangedFor(nameof(IsOpenParts))]
+		private ContractPartsModeModel? selectedPartsMode;
+
+		/// <summary>
+		/// If only the people named in the contract can sign it.
+		/// </summary>
+		public bool IsNamedParts => !this.IsOpenParts;
+
+		/// <summary>
+		/// If anyone who can see the contract can sign it.
+		/// </summary>
+		public bool IsOpenParts => this.SelectedPartsMode?.PartsMode == ContractParts.Open;
+
+		/// <summary>
+		/// The local date from which signatures are accepted, or null for no start.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasSignAfter))]
+		private DateTime? signAfterDate;
+
+		/// <summary>
+		/// The local time of day from which signatures are accepted.
+		/// </summary>
+		[ObservableProperty]
+		private TimeSpan? signAfterTime;
+
+		/// <summary>
+		/// The local date until which signatures are accepted, or null for no end.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasSignBefore))]
+		private DateTime? signBeforeDate;
+
+		/// <summary>
+		/// The local time of day until which signatures are accepted.
+		/// </summary>
+		[ObservableProperty]
+		private TimeSpan? signBeforeTime;
+
+		/// <summary>
+		/// If the signing window has a start.
+		/// </summary>
+		public bool HasSignAfter => this.SignAfterDate.HasValue;
+
+		/// <summary>
+		/// If the signing window has an end.
+		/// </summary>
+		public bool HasSignBefore => this.SignBeforeDate.HasValue;
+
+		/// <summary>
+		/// How long the contract is valid, counted from when it is created.
+		/// </summary>
+		[ObservableProperty]
+		private Duration contractDuration = Duration.FromYears(1);
+
+		/// <summary>
+		/// How long the contract must be archived after it ends.
+		/// </summary>
+		[ObservableProperty]
+		private Duration archiveRequiredTime = Duration.FromYears(5);
+
+		/// <summary>
+		/// How long the contract may be archived after the required time.
+		/// </summary>
+		[ObservableProperty]
+		private Duration archiveOptionalTime = Duration.FromYears(5);
+
+		/// <summary>
+		/// If the settings are values the server accepts.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanCreate))]
+		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
+		private bool isSettingsOk = true;
+
+		/// <summary>
+		/// Why the settings can't be used, or empty.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasSettingsError))]
+		private string settingsErrorText = string.Empty;
+
+		/// <summary>
+		/// If there is a settings error to show.
+		/// </summary>
+		public bool HasSettingsError => !string.IsNullOrEmpty(this.SettingsErrorText);
+
+		/// <summary>
+		/// The start of the signing window in UTC, or null.
+		/// </summary>
+		private DateTime? SignAfterUtc => ToUtc(this.SignAfterDate, this.SignAfterTime);
+
+		/// <summary>
+		/// The end of the signing window in UTC, or null.
+		/// </summary>
+		private DateTime? SignBeforeUtc => ToUtc(this.SignBeforeDate, this.SignBeforeTime);
+
+		partial void OnSelectedPartsModeChanged(ContractPartsModeModel? value)
+		{
+			this.OnSettingsChanged();
+		}
+
+		partial void OnSignAfterDateChanged(DateTime? value)
+		{
+			if (value.HasValue && !this.SignAfterTime.HasValue)
+				this.SignAfterTime = TimeSpan.Zero;
+			else if (!value.HasValue)
+				this.SignAfterTime = null;
+
+			this.OnSettingsChanged();
+		}
+
+		partial void OnSignAfterTimeChanged(TimeSpan? value)
+		{
+			this.OnSettingsChanged();
+		}
+
+		partial void OnSignBeforeDateChanged(DateTime? value)
+		{
+			if (value.HasValue && !this.SignBeforeTime.HasValue)
+				this.SignBeforeTime = new TimeSpan(23, 59, 0);
+			else if (!value.HasValue)
+				this.SignBeforeTime = null;
+
+			this.OnSettingsChanged();
+		}
+
+		partial void OnSignBeforeTimeChanged(TimeSpan? value)
+		{
+			this.OnSettingsChanged();
+		}
+
+		partial void OnContractDurationChanged(Duration value)
+		{
+			this.OnSettingsChanged();
+		}
+
+		partial void OnArchiveRequiredTimeChanged(Duration value)
+		{
+			this.OnSettingsChanged();
+		}
+
+		partial void OnArchiveOptionalTimeChanged(Duration value)
+		{
+			this.OnSettingsChanged();
+		}
+
+		/// <summary>
+		/// Removes the start of the signing window.
+		/// </summary>
+		[RelayCommand]
+		private void ClearSignAfter()
+		{
+			this.SignAfterDate = null;
+		}
+
+		/// <summary>
+		/// Removes the end of the signing window.
+		/// </summary>
+		[RelayCommand]
+		private void ClearSignBefore()
+		{
+			this.SignBeforeDate = null;
+		}
+
+		/// <summary>
+		/// Prefills the settings from the template.
+		/// </summary>
+		/// <param name="Template">The template the contract is created from.</param>
+		private void InitializeSettings(Contract Template)
+		{
+			ContractParts PartsMode = Template.PartsMode == ContractParts.Open ? ContractParts.Open : ContractParts.ExplicitlyDefined;
+			this.SelectedPartsMode = this.PartsModeItems.FirstOrDefault(Item => Item.PartsMode == PartsMode);
+
+			this.ContractDuration = Template.Duration ?? Duration.FromYears(1);
+			this.ArchiveRequiredTime = Template.ArchiveRequired ?? Duration.FromYears(5);
+			this.ArchiveOptionalTime = Template.ArchiveOptional ?? Duration.FromYears(5);
+
+			if (Template.SignAfter is DateTime SignAfter && SignAfter.ToUniversalTime() > DateTime.UtcNow)
+			{
+				DateTime Local = SignAfter.ToLocalTime();
+				this.SignAfterDate = Local.Date;
+				this.SignAfterTime = new TimeSpan(Local.Hour, Local.Minute, 0);
+			}
+
+			if (Template.SignBefore is DateTime SignBefore && SignBefore < DateTime.MaxValue)
+			{
+				DateTime Local = SignBefore.ToLocalTime();
+				this.SignBeforeDate = Local.Date;
+				this.SignBeforeTime = new TimeSpan(Local.Hour, Local.Minute, 0);
+			}
+
+			// Callers that preset the visibility, such as the token flows, set it on the template.
+			if (this.args?.SetVisibility == true)
+			{
+				this.SelectedContractVisibilityItem = this.ContractVisibilityItems.FirstOrDefault(Item => Item.Visibility == Template.Visibility)
+					?? this.SelectedContractVisibilityItem;
+			}
+
+			this.CheckSettingsValid();
+		}
+
+		/// <summary>
+		/// Revalidates the settings, and the step when it is showing.
+		/// </summary>
+		private void OnSettingsChanged()
+		{
+			if (this.CurrentStep?.Key == nameof(NewContractStep.Settings))
+				_ = this.UpdateCurrentStepValidityAsync();
+			else
+				this.CheckSettingsValid();
+		}
+
+		/// <summary>
+		/// Checks the settings against what the server accepts, and sets the error text.
+		/// </summary>
+		/// <returns>If the settings can be used.</returns>
+		private bool CheckSettingsValid()
+		{
+			string Error = string.Empty;
+			DateTime? SignAfter = this.SignAfterUtc;
+			DateTime? SignBefore = this.SignBeforeUtc;
+
+			if (!IsLongerThanZero(this.ContractDuration))
+				Error = ServiceRef.Localizer[nameof(AppResources.ContractSettingsDurationInvalid)];
+			else if (this.ArchiveRequiredTime.Negation || this.ArchiveOptionalTime.Negation)
+				Error = ServiceRef.Localizer[nameof(AppResources.ContractSettingsArchiveInvalid)];
+			else if (SignAfter.HasValue && SignBefore.HasValue && SignBefore.Value <= SignAfter.Value)
+				Error = ServiceRef.Localizer[nameof(AppResources.ContractSettingsWindowOrder)];
+			else if (SignBefore.HasValue && SignBefore.Value <= DateTime.UtcNow)
+				Error = ServiceRef.Localizer[nameof(AppResources.ContractSettingsWindowPassed)];
+
+			this.SettingsErrorText = Error;
+			this.IsSettingsOk = string.IsNullOrEmpty(Error);
+			return this.IsSettingsOk;
+		}
+
+		/// <summary>
+		/// Checks if a duration is longer than zero.
+		/// </summary>
+		/// <param name="Value">The duration.</param>
+		/// <returns>If it is longer than zero.</returns>
+		private static bool IsLongerThanZero(Duration Value)
+		{
+			if (Value.Negation)
+				return false;
+
+			DateTime Start = DateTime.UtcNow;
+			try
+			{
+				return Start + Value > Start;
+			}
+			catch (ArgumentOutOfRangeException)
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// Combines a local date and time of day into UTC.
+		/// </summary>
+		/// <param name="Date">The local date, or null.</param>
+		/// <param name="Time">The local time of day, or null for midnight.</param>
+		/// <returns>The point in time in UTC, or null without a date.</returns>
+		private static DateTime? ToUtc(DateTime? Date, TimeSpan? Time)
+		{
+			if (!Date.HasValue)
+				return null;
+
+			DateTime Local = DateTime.SpecifyKind(Date.Value.Date + (Time ?? TimeSpan.Zero), DateTimeKind.Local);
+			return Local.ToUniversalTime();
+		}
 		#endregion
 
 		#region Methods
@@ -260,6 +549,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			try
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
+				this.InitializeSettings(this.args.Template);
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
 				ServiceRef.ContractOrchestratorService.IdentityPetitionAnswered += this.OrchestratorService_IdentityPetitionAnswered;
 				this.Contract.PartChanged += (_, __) =>
@@ -407,7 +697,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.Steps.Count > 0)
 				return;
 
-			string[] Order = [nameof(NewContractStep.Intro), nameof(NewContractStep.Parameters), nameof(NewContractStep.Roles), nameof(NewContractStep.Preview)];
+			string[] Order = [nameof(NewContractStep.Intro), nameof(NewContractStep.Parameters), nameof(NewContractStep.Settings),
+				nameof(NewContractStep.Roles), nameof(NewContractStep.Preview)];
 			int I = 0;
 			foreach (string Key in Order)
 			{
@@ -421,18 +712,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					ValidateFunc = () =>
 					{
-						bool Ok = true;
-						foreach (ObservableParameter Param in this.EditableParameters)
-						{
-							if (Param.Value is null || !Param.IsValid)
-							{
-								Ok = false;
-								break;
-							}
-						}
+						bool Ok = this.EditableParameters.All(IsParameterComplete);
 						this.IsParametersOk = Ok;
 						return Task.FromResult(Ok);
 					};
+				}
+				else if (Key == nameof(NewContractStep.Settings))
+				{
+					ValidateFunc = () => Task.FromResult(this.CheckSettingsValid());
 				}
 				else if (Key == nameof(NewContractStep.Roles))
 				{
@@ -464,34 +751,56 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				nameof(NewContractStep.Intro) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepIntro)],
 				nameof(NewContractStep.Parameters) => ServiceRef.Localizer[nameof(AppResources.Parameters)],
+				nameof(NewContractStep.Settings) => ServiceRef.Localizer[nameof(AppResources.Settings)],
 				nameof(NewContractStep.Roles) => ServiceRef.Localizer[nameof(AppResources.Roles)],
 				nameof(NewContractStep.Preview) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepReview)],
 				_ => Key
 			};
 		}
 
+		/// <summary>
+		/// Checks the roles. The user doesn't have to take a role: they can create a contract for others to sign.
+		/// </summary>
+		/// <returns>If every role has the parts it needs.</returns>
 		private bool CheckRolesValid()
+		{
+			bool Ok = this.AreRoleCountsMet();
+			this.IsRolesOk = Ok;
+			return Ok;
+		}
+
+		/// <summary>
+		/// Checks that every role has at least the parts it requires. In an open contract, anyone can sign later.
+		/// </summary>
+		/// <returns>If every role meets its minimum count.</returns>
+		private bool AreRoleCountsMet()
 		{
 			if (this.Contract is null)
 				return false;
 
-			// Must have at least one role selected by the current user
-			bool HasMySelection = this.HasSelectedRoles;
+			if (this.IsOpenParts)
+				return true;
 
-			// All roles must meet their minimum part requirements
-			bool MinCountsOk = true;
 			foreach (ObservableRole Role in this.Contract.Roles)
 			{
 				if (Role.Parts.Count < Role.MinCount)
-				{
-					MinCountsOk = false;
-					break;
-				}
+					return false;
 			}
 
-			bool Ok = HasMySelection && MinCountsOk;
-			this.IsRolesOk = Ok;
-			return Ok;
+			return true;
+		}
+
+		/// <summary>
+		/// Checks if a parameter is ready for creation: it is valid, and has a value unless the template lets it be empty.
+		/// </summary>
+		/// <param name="Parameter">The parameter to check.</param>
+		/// <returns>If the parameter is complete.</returns>
+		private static bool IsParameterComplete(ObservableParameter Parameter)
+		{
+			if (!Parameter.IsValid)
+				return false;
+
+			return !(Parameter.IsValueMissing && Parameter.Parameter.ErrorReason == ParameterErrorReason.LacksValue);
 		}
 
 		private async Task UpdateCurrentStepValidityAsync()
@@ -658,28 +967,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.FlushValidationAsync();
 
-			bool ParametersOk = true;
-			foreach (ObservableParameter ParamItem in this.EditableParameters)
-			{
-				if (ParamItem.Value is null || !ParamItem.IsValid)
-				{
-					ParametersOk = false;
-					break;
-				}
-			}
-
-			bool RolesOk = this.HasSelectedRoles;
-			if (RolesOk)
-			{
-				foreach (ObservableRole Role in this.Contract.Roles)
-				{
-					if (Role.Parts.Count < Role.MinCount)
-					{
-						RolesOk = false;
-						break;
-					}
-				}
-			}
+			bool ParametersOk = this.EditableParameters.All(IsParameterComplete);
+			bool RolesOk = this.AreRoleCountsMet();
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -738,8 +1027,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							IsValid = true;
 							ValidationText = string.Empty;
 						}
-						else if(ParamToValidate.Value is null)
+						else if (ParamToValidate.Value is null)
 						{
+							// A value nobody has entered yet isn't an error to show; it only keeps the step incomplete.
+							IsValid = ParamToValidate.Parameter.ErrorReason == ParameterErrorReason.LacksValue;
 							ValidationText = string.Empty;
 						}
 						else
@@ -771,7 +1062,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Result.Param.ValidationText = Result.ValidationText;
 					}
 					// Reflect aggregate state for step gating without triggering another validation run
-					this.IsParametersOk = this.EditableParameters.All(p => p.Value is not null && p.IsValid);
+					this.IsParametersOk = this.EditableParameters.All(IsParameterComplete);
 				});
 			}
 			catch (Exception Ex)
@@ -889,11 +1180,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					[.. Parts],
 					this.Contract.Contract.Parameters,
 					this.SelectedContractVisibilityItem?.Visibility ?? this.Contract.Visibility,
-					ContractParts.ExplicitlyDefined,
-					this.Contract.Contract.Duration ?? Duration.FromYears(1),
-					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
-					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
-					null, null, false);
+					this.IsOpenParts ? ContractParts.Open : ContractParts.ExplicitlyDefined,
+					this.ContractDuration,
+					this.ArchiveRequiredTime,
+					this.ArchiveOptionalTime,
+					this.SignAfterUtc,
+					this.SignBeforeUtc,
+					this.Contract.Contract.CanActAsTemplate);
 			}
 			catch (Exception Ex)
 			{
@@ -926,11 +1219,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 
 				// One sheet invites everyone, with one message. Access is only granted to those the user sends to.
+				List<ObservablePart> Unreachable = [];
 				IReadOnlyList<InviteRecipient> Recipients = await InvitePartsViewModel.GetRecipientsAsync(this.Contract,
-					this.args?.SuppressedProposalLegalIds, false);
+					this.args?.SuppressedProposalLegalIds, false, Unreachable);
 
 				if (Recipients.Count > 0)
 					await InvitePartsViewModel.ShowAsync(CreatedContract, Recipients);
+
+				if (Unreachable.Count > 0)
+					await OfferIdentityRequestsAsync(Unreachable);
 			}
 			catch (Exception Ex)
 			{
@@ -949,6 +1246,45 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
+
+		/// <summary>
+		/// Tells the user who wasn't invited because their identity isn't visible, so the app can't reach them, and offers to
+		/// ask them to show it. Once they do, the contract page offers to invite them.
+		/// </summary>
+		/// <param name="Parts">The parts who couldn't be reached.</param>
+		private static async Task OfferIdentityRequestsAsync(IReadOnlyList<ObservablePart> Parts)
+		{
+			ObservablePart[] Waiting = [.. Parts
+				.Where(Part => Part.CanRequestIdentityToInvite || Part.IsIdentityRequested)
+				.DistinctBy(Part => Part.LegalId)];
+
+			if (Waiting.Length == 0)
+				return;
+
+			string Names = string.Join(", ", Waiting.Select(Part => string.IsNullOrEmpty(Part.FriendlyName) ? Part.LegalId : Part.FriendlyName));
+			ObservablePart[] Requestable = [.. Waiting.Where(Part => Part.CanRequestIdentityToInvite)];
+
+			if (Requestable.Length == 0)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.InviteNotSentTitle)],
+					ServiceRef.Localizer[nameof(AppResources.InviteWaitingForIdentity), Names],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				return;
+			}
+
+			bool Request = await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.InviteNotSentTitle)],
+				ServiceRef.Localizer[nameof(AppResources.InviteNeedsIdentity), Names],
+				ServiceRef.Localizer[nameof(AppResources.RequestIdentity)],
+				ServiceRef.Localizer[nameof(AppResources.Later)]);
+
+			if (!Request)
+				return;
+
+			foreach (ObservablePart Part in Requestable)
+				await Part.SendIdentityRequestAsync();
+		}
 
 		/// <summary>
 		/// A custom back command, similar to inherited GoBack with Views in mind

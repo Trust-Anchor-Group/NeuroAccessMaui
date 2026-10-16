@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<views:BaseViewContractView x:Name="ThisPage"
+									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.SignResultView"
+									 x:DataType="base:ViewContractViewModel"
+									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
+	<Grid RowDefinitions="*, auto">
+		<Border Grid.Row="0"
+				  Style="{DynamicResource BorderSet}"
+				  Margin="{DynamicResource MediumLeftRightMargins}"
+				  VerticalOptions="Center">
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+				<Border Style="{DynamicResource RoundedBorder}"
+						  Stroke="Transparent"
+						  Padding="12"
+						  HorizontalOptions="Center"
+						  BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+						  IsVisible="{Binding IsSignSuccess}">
+					<Label Text="{l:Localize Signed}"
+							 TextColor="{DynamicResource TnPSuccessContentWL}" />
+				</Border>
+				<Border Style="{DynamicResource RoundedBorder}"
+						  Stroke="Transparent"
+						  Padding="12"
+						  HorizontalOptions="Center"
+						  BackgroundColor="{DynamicResource TnPDangerbgWL}"
+						  IsVisible="{Binding IsSignFailure}">
+					<Label Text="{l:Localize ContractSignNotSigned}"
+							 TextColor="{DynamicResource TnPDangerContentWL}" />
+				</Border>
+				<Label Text="{Binding SignResultTitle}"
+						 Style="{DynamicResource BoldItemTitleLabel}"
+						 HorizontalTextAlignment="Center"
+						 LineBreakMode="WordWrap" />
+				<Label Text="{Binding SignResultText}"
+						 Style="{DynamicResource InfoLabel}"
+						 HorizontalTextAlignment="Center"
+						 LineBreakMode="WordWrap" />
+			</VerticalStackLayout>
+		</Border>
+
+		<!-- BOTTOM BAR -->
+		<Border Grid.Row="1"
+				  Style="{DynamicResource BottomBarBorder}">
+			<Grid HorizontalOptions="Fill"
+					VerticalOptions="Center"
+					ColumnSpacing="{DynamicResource SmallSpacing}"
+					Padding="{DynamicResource SmallMargins}"
+					ColumnDefinitions="*,*">
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+											Grid.ColumnSpan="2"
+											LabelData="{l:Localize ContractSignDone}"
+											Command="{Binding FinishSigningCommand}"
+											IsVisible="{Binding IsSignSuccess}" />
+				<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+											Grid.Column="0"
+											LabelData="{l:Localize Back}"
+											Command="{Binding FinishSigningCommand}"
+											IsVisible="{Binding IsSignFailure}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+											Grid.Column="1"
+											LabelData="{l:Localize ContractSignTryAgain}"
+											Command="{Binding RetrySigningCommand}"
+											IsVisible="{Binding IsSignFailure}" />
+			</Grid>
+		</Border>
+	</Grid>
+</views:BaseViewContractView>

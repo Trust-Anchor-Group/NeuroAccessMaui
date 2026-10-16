@@ -37,7 +37,7 @@
 															BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
 															DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
 															DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
-															NumericalTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+															NumericalTemplate="{StaticResource NumericalParameterReadOnlyTemplate}"
 															StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 															TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
 															DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"

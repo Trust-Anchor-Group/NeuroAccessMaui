@@ -1,7 +1,7 @@
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
 	/// <summary>
-	/// The different steps of creating a new contract.
+	/// The different steps of viewing and signing a contract.
 	/// </summary>
 	public enum ViewContractStep
 	{
@@ -30,9 +30,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		Review = 60,
 		/// <summary>
-		/// Sign contract
+		/// What the user is about to sign: the parties, the contract, the role on offer and the signing window.
 		/// </summary>
-		Sign = 70
+		Summary = 55,
+		/// <summary>
+		/// Choose the role and sign.
+		/// </summary>
+		Sign = 70,
+		/// <summary>
+		/// The outcome of signing, and what happens next.
+		/// </summary>
+		Result = 80
 
 
 

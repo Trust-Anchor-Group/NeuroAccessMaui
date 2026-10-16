@@ -145,6 +145,35 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool HasReachedMinCount => this.Parts.Count >= this.MinCount;
 
 		/// <summary>
+		/// Number of signatures collected for the role.
+		/// </summary>
+		public int SignatureCount => this.Parts.Count(Part => Part.HasSigned);
+
+		/// <summary>
+		/// The signatures collected, out of the number required and allowed, as a localized text.
+		/// </summary>
+		public string SignaturesText
+		{
+			get
+			{
+				if (this.MinCount == this.MaxCount)
+					return ServiceRef.Localizer[nameof(AppResources.RoleSignaturesFormat), this.SignatureCount, this.MaxCount];
+
+				return ServiceRef.Localizer[nameof(AppResources.RoleSignaturesRangeFormat), this.SignatureCount, this.MinCount, this.MaxCount];
+			}
+		}
+
+		/// <summary>
+		/// If the role has no parts, neither listed nor signed.
+		/// </summary>
+		public bool HasNoParts => this.Parts.Count == 0;
+
+		/// <summary>
+		/// If the user is a part in the role.
+		/// </summary>
+		public bool IsMyRole => this.Parts.Any(Part => Part.IsMe);
+
+		/// <summary>
 		/// True if user can select themselves for this role (not at max or already selected).
 		/// </summary>
 		public bool CanSelectMe
@@ -235,6 +264,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 				this.OnPropertyChanged(nameof(this.HasReachedMinCount));
 				this.OnPropertyChanged(nameof(this.IsSelectedByMe));
+				this.OnPartsChanged();
 				if (Notify)
 					this.OnPropertyChanged(nameof(this.Parts));
 				TaskCompletionSource.SetResult();
@@ -262,6 +292,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
 					Found.Signature = signature;
+					this.OnPartsChanged();
 				});
 				await Found.InitializeAsync();
 			}
@@ -282,6 +313,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 					this.OnPropertyChanged(nameof(this.HasReachedMinCount));
 					this.OnPropertyChanged(nameof(this.IsSelectedByMe));
+					this.OnPartsChanged();
 					if (Notify)
 						this.OnPropertyChanged(nameof(this.Parts));
 				});
@@ -294,6 +326,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public void RemovePart(Part part)
 		{
 			this.RemovePart(part.LegalId);
+		}
+
+		/// <summary>
+		/// Notifies the values that depend on the parts and their signatures. Called on the main thread.
+		/// </summary>
+		private void OnPartsChanged()
+		{
+			this.OnPropertyChanged(nameof(this.SignatureCount));
+			this.OnPropertyChanged(nameof(this.SignaturesText));
+			this.OnPropertyChanged(nameof(this.HasNoParts));
+			this.OnPropertyChanged(nameof(this.IsMyRole));
 		}
 
 		[RelayCommand]

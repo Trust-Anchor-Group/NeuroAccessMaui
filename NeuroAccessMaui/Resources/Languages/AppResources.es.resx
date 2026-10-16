@@ -4421,4 +4421,199 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="SignatureRequestDeclinedText" xml:space="preserve">
     <value>La persona no quiso firmar tu solicitud.</value>
   </data>
+  <data name="ContractGroupNeedsAction" xml:space="preserve">
+    <value>Requiere tu acción</value>
+  </data>
+  <data name="ContractGroupInProgress" xml:space="preserve">
+    <value>En curso</value>
+  </data>
+  <data name="ContractGroupSigned" xml:space="preserve">
+    <value>Firmados</value>
+  </data>
+  <data name="ContractGroupEnded" xml:space="preserve">
+    <value>Finalizados</value>
+  </data>
+  <data name="ContractMarkerInvitation" xml:space="preserve">
+    <value>Invitación</value>
+  </data>
+  <data name="ContractMarkerNeedsSignature" xml:space="preserve">
+    <value>Necesita tu firma</value>
+  </data>
+  <data name="ContractMarkerRequest" xml:space="preserve">
+    <value>Solicitud para ver</value>
+  </data>
+  <data name="ContractRowRoleFormat" xml:space="preserve">
+    <value>Tu rol: {0}</value>
+  </data>
+  <data name="ContractSectionParties" xml:space="preserve">
+    <value>Partes</value>
+  </data>
+  <data name="ContractSectionDates" xml:space="preserve">
+    <value>Fechas</value>
+  </data>
+  <data name="ContractSectionTemplate" xml:space="preserve">
+    <value>Creado a partir de la plantilla</value>
+  </data>
+  <data name="ContractSectionAttachments" xml:space="preserve">
+    <value>Adjuntos</value>
+  </data>
+  <data name="ContractSectionTechnicalDetails" xml:space="preserve">
+    <value>Detalles técnicos</value>
+  </data>
+  <data name="ContractShowDetails" xml:space="preserve">
+    <value>Mostrar</value>
+  </data>
+  <data name="ContractHideDetails" xml:space="preserve">
+    <value>Ocultar</value>
+  </data>
+  <data name="ContractSigningWindow" xml:space="preserve">
+    <value>Plazo para firmar</value>
+  </data>
+  <data name="ContractSigningWindowBetween" xml:space="preserve">
+    <value>{0} a {1}</value>
+  </data>
+  <data name="ContractSigningWindowFrom" xml:space="preserve">
+    <value>Desde {0}</value>
+  </data>
+  <data name="ContractSigningWindowUntil" xml:space="preserve">
+    <value>Hasta {0}</value>
+  </data>
+  <data name="ContractValidFrom" xml:space="preserve">
+    <value>Válido desde</value>
+  </data>
+  <data name="ContractValidTo" xml:space="preserve">
+    <value>Válido hasta</value>
+  </data>
+  <data name="ContractArchivedUntil" xml:space="preserve">
+    <value>Archivado hasta</value>
+  </data>
+  <data name="ContractArchiveRequired" xml:space="preserve">
+    <value>Tiempo de archivo obligatorio</value>
+  </data>
+  <data name="ContractArchiveOptional" xml:space="preserve">
+    <value>Tiempo de archivo opcional</value>
+  </data>
+  <data name="RoleSignaturesFormat" xml:space="preserve">
+    <value>Firmas: {0} de {1}</value>
+  </data>
+  <data name="RoleSignaturesRangeFormat" xml:space="preserve">
+    <value>Firmas: {0} (necesita {1}, permite hasta {2})</value>
+  </data>
+  <data name="ParameterNotSet" xml:space="preserve">
+    <value>Aún sin elegir</value>
+  </data>
+  <data name="ContractPartsNamed" xml:space="preserve">
+    <value>Solo las personas nombradas en el contrato</value>
+  </data>
+  <data name="ContractPartsOpen" xml:space="preserve">
+    <value>Cualquiera que pueda ver el contrato</value>
+  </data>
+  <data name="ContractSettingsWhoCanSign" xml:space="preserve">
+    <value>Quién puede firmar</value>
+  </data>
+  <data name="ContractSettingsParts" xml:space="preserve">
+    <value>Partes</value>
+  </data>
+  <data name="ContractSettingsOpenHint" xml:space="preserve">
+    <value>No nombrarás a nadie en el siguiente paso. Cualquiera que pueda ver el contrato puede firmarlo en un rol que no esté completo.</value>
+  </data>
+  <data name="ContractSettingsVisibilityPlaceholder" xml:space="preserve">
+    <value>Elige quién puede ver el contrato</value>
+  </data>
+  <data name="ContractSettingsWindowHint" xml:space="preserve">
+    <value>Deja una fecha vacía para aceptar firmas sin ese límite.</value>
+  </data>
+  <data name="ContractSettingsSignAfter" xml:space="preserve">
+    <value>Aceptar firmas desde</value>
+  </data>
+  <data name="ContractSettingsSignBefore" xml:space="preserve">
+    <value>Aceptar firmas hasta</value>
+  </data>
+  <data name="ContractSettingsChooseDate" xml:space="preserve">
+    <value>Sin fecha</value>
+  </data>
+  <data name="ContractSettingsClear" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="ContractSettingsValidity" xml:space="preserve">
+    <value>Validez y archivo</value>
+  </data>
+  <data name="ContractSettingsValidityHint" xml:space="preserve">
+    <value>La validez empieza cuando se crea el contrato. Los tiempos de archivo cuentan desde que termina.</value>
+  </data>
+  <data name="ContractSettingsDurationInvalid" xml:space="preserve">
+    <value>La duración debe ser mayor que cero.</value>
+  </data>
+  <data name="ContractSettingsArchiveInvalid" xml:space="preserve">
+    <value>Los tiempos de archivo no pueden ser negativos.</value>
+  </data>
+  <data name="ContractSettingsWindowOrder" xml:space="preserve">
+    <value>El plazo para firmar debe terminar después de empezar.</value>
+  </data>
+  <data name="ContractSettingsWindowPassed" xml:space="preserve">
+    <value>El fin del plazo para firmar ya pasó.</value>
+  </data>
+  <data name="ContractGuardIdentityNotApproved" xml:space="preserve">
+    <value>Necesitas un ID aprobado para firmar contratos.</value>
+  </data>
+  <data name="ContractGuardOpenIdentity" xml:space="preserve">
+    <value>Abrir mi ID</value>
+  </data>
+  <data name="ContractGuardAlreadySigned" xml:space="preserve">
+    <value>Ya firmaste este contrato con este rol.</value>
+  </data>
+  <data name="ContractGuardTitle" xml:space="preserve">
+    <value>Aún no puedes firmar</value>
+  </data>
+  <data name="ContractSummaryTitle" xml:space="preserve">
+    <value>Antes de firmar</value>
+  </data>
+  <data name="ContractSummaryRoles" xml:space="preserve">
+    <value>Puedes firmar como</value>
+  </data>
+  <data name="ContractSummaryStepsHint" xml:space="preserve">
+    <value>Luego, lee el texto completo, elige tu rol y confirma con tu PIN o biometría.</value>
+  </data>
+  <data name="ContractSignResultSuccessTitle" xml:space="preserve">
+    <value>Firmaste el contrato</value>
+  </data>
+  <data name="ContractSignResultFailedTitle" xml:space="preserve">
+    <value>El contrato no se firmó</value>
+  </data>
+  <data name="ContractSignResultSigned" xml:space="preserve">
+    <value>El contrato ya tiene todas las firmas que necesita.</value>
+  </data>
+  <data name="ContractSignResultWaitingOne" xml:space="preserve">
+    <value>Falta 1 firma más.</value>
+  </data>
+  <data name="ContractSignResultWaitingMany" xml:space="preserve">
+    <value>Faltan {0} firmas más.</value>
+  </data>
+  <data name="ContractSignResultAdded" xml:space="preserve">
+    <value>Se agregó tu firma.</value>
+  </data>
+  <data name="ContractSignTryAgain" xml:space="preserve">
+    <value>Intentar de nuevo</value>
+  </data>
+  <data name="ContractSignDone" xml:space="preserve">
+    <value>Listo</value>
+  </data>
+  <data name="ContractSignNotSigned" xml:space="preserve">
+    <value>Sin firmar</value>
+  </data>
+  <data name="InviteNotSentTitle" xml:space="preserve">
+    <value>Aún sin invitar</value>
+  </data>
+  <data name="InviteNeedsIdentity" xml:space="preserve">
+    <value>No puedes ver la identidad de {0}, así que la aplicación no tiene una dirección a la que enviar la invitación. ¿Quieres pedirles que la muestren? Cuando lo hagan, podrás invitarlos desde el contrato.</value>
+  </data>
+  <data name="InviteWaitingForIdentity" xml:space="preserve">
+    <value>Aún no puedes ver la identidad de {0}, así que no se les invitó. Cuando acepten tu solicitud, podrás invitarlos desde el contrato.</value>
+  </data>
+  <data name="InviteNobodyReachable" xml:space="preserve">
+    <value>Aún no se puede invitar a nadie. Para invitar a alguien cuya identidad no puedes ver, solicita primero su identidad en Partes.</value>
+  </data>
+  <data name="InviteRequestIdentityHint" xml:space="preserve">
+    <value>Solicita su identidad para invitarlos.</value>
+  </data>
 </root>

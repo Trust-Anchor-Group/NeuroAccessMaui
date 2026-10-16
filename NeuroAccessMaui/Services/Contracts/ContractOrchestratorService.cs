@@ -1538,6 +1538,12 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
+		/// <inheritdoc/>
+		public bool IsIdentityRequestPending(CaseInsensitiveString LegalId)
+		{
+			return this.identityPetitions.Values.Any(Requested => string.Equals(Requested, LegalId.Value, StringComparison.OrdinalIgnoreCase));
+		}
+
 		/// <summary>
 		/// TAG Signature request scanned.
 		/// </summary>

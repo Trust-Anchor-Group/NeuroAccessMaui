@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -12,10 +13,12 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
-using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
+using NeuroAccessMaui.UI.Pages.Contracts.SigningBlockers;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
+using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -187,6 +190,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalRole))]
+		[NotifyPropertyChangedFor(nameof(SigningRolesText))]
 		private string? proposalRole;
 
 		[ObservableProperty]
@@ -263,10 +267,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool canDeclineInvitation;
 
 		/// <summary>
-		/// If Invite is offered.
+		/// If Invite is offered. Only people whose address is known can be invited.
 		/// </summary>
 		[ObservableProperty]
 		private bool canInviteParts;
+
+		/// <summary>
+		/// If the parts who haven't signed can still be invited, so the Parties section shows what is needed to invite them.
+		/// </summary>
+		[ObservableProperty]
+		private bool canManageParts;
 
 		/// <summary>
 		/// If the deleted or access-denied banner is shown.
@@ -285,9 +295,341 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		#endregion
 
+		#region Overview
+
+		/// <summary>
+		/// If the technical details on the overview are shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool isTechnicalDetailsExpanded;
+
+		/// <summary>
+		/// The machine-readable part of the contract, as formatted XML. Set when the technical details are shown.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasMachineReadableXml))]
+		private string? machineReadableXml;
+
+		/// <summary>
+		/// If there is a machine-readable part to show.
+		/// </summary>
+		public bool HasMachineReadableXml => !string.IsNullOrEmpty(this.MachineReadableXml);
+
+		/// <summary>
+		/// The contract's name, which is the page title: its title, else the page's own title.
+		/// </summary>
+		public string ContractName =>
+			string.IsNullOrEmpty(this.Contract?.Category) ? ServiceRef.Localizer[nameof(AppResources.ViewContract)] : this.Contract.Category;
+
+		/// <summary>
+		/// The localized state of the contract.
+		/// </summary>
+		public string StateText
+		{
+			get
+			{
+				if (this.Contract is null)
+					return string.Empty;
+
+				if (this.IsDeletedOnServer)
+					return ContractStateToString.GetText(ContractState.Deleted, false);
+
+				return ContractStateToString.GetText(this.Contract.ContractState, this.Contract.IsTemplate);
+			}
+		}
+
+		/// <summary>
+		/// If the state chip shows success: the contract is signed.
+		/// </summary>
+		public bool IsStateSuccess => !this.IsDeletedOnServer && this.Contract?.ContractState == ContractState.Signed;
+
+		/// <summary>
+		/// If the state chip shows that the contract has ended or failed.
+		/// </summary>
+		public bool IsStateDanger =>
+			this.IsDeletedOnServer ||
+			this.Contract?.ContractState is ContractState.Rejected or ContractState.Failed or ContractState.Obsoleted or ContractState.Deleted;
+
+		/// <summary>
+		/// The signing window, in local time, or an empty string if signatures are accepted at any time.
+		/// </summary>
+		public string SigningWindowText
+		{
+			get
+			{
+				DateTime? After = this.Contract?.Contract.SignAfter;
+				DateTime? Before = this.Contract?.Contract.SignBefore;
+
+				if (After.HasValue && Before.HasValue)
+					return ServiceRef.Localizer[nameof(AppResources.ContractSigningWindowBetween), FormatDate(After.Value), FormatDate(Before.Value)];
+
+				if (After.HasValue)
+					return ServiceRef.Localizer[nameof(AppResources.ContractSigningWindowFrom), FormatDate(After.Value)];
+
+				if (Before.HasValue)
+					return ServiceRef.Localizer[nameof(AppResources.ContractSigningWindowUntil), FormatDate(Before.Value)];
+
+				return string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// If the contract has a signing window.
+		/// </summary>
+		public bool HasSigningWindow => !string.IsNullOrEmpty(this.SigningWindowText);
+
+		/// <summary>
+		/// If the contract has validity dates. These are set when it becomes signed.
+		/// </summary>
+		private bool HasValidity => this.Contract is not null && this.Contract.Contract.From != DateTime.MinValue;
+
+		/// <summary>
+		/// When the contract is valid from, in local time.
+		/// </summary>
+		public string ValidFromText => this.HasValidity ? FormatDate(this.Contract!.Contract.From) : string.Empty;
+
+		/// <summary>
+		/// If the valid-from date is shown.
+		/// </summary>
+		public bool HasValidFrom => this.HasValidity;
+
+		/// <summary>
+		/// When the contract is valid to, in local time.
+		/// </summary>
+		public string ValidToText => this.HasValidTo ? FormatDate(this.Contract!.Contract.To) : string.Empty;
+
+		/// <summary>
+		/// If the valid-to date is shown.
+		/// </summary>
+		public bool HasValidTo => this.HasValidity && this.Contract!.Contract.To != DateTime.MaxValue;
+
+		/// <summary>
+		/// How long the contract is valid once signed. Shown until it has validity dates.
+		/// </summary>
+		public string DurationText => this.HasDuration ? DurationToString.ToString(this.Contract!.Contract.Duration!.Value) : string.Empty;
+
+		/// <summary>
+		/// If the duration is shown.
+		/// </summary>
+		public bool HasDuration => !this.HasValidity && this.Contract?.Contract.Duration is not null;
+
+		/// <summary>
+		/// When the signed contract may be removed from the server, in local time: its end, plus the archive times.
+		/// </summary>
+		public string ArchivedUntilText
+		{
+			get
+			{
+				if (!this.HasArchivedUntil)
+					return string.Empty;
+
+				try
+				{
+					Contract Current = this.Contract!.Contract;
+					DateTime Until = Current.To;
+
+					if (Current.ArchiveRequired is Waher.Content.Duration Required)
+						Until += Required;
+
+					if (Current.ArchiveOptional is Waher.Content.Duration Optional)
+						Until += Optional;
+
+					return FormatDate(Until);
+				}
+				catch (ArgumentOutOfRangeException)
+				{
+					return string.Empty;	// Beyond the last representable date.
+				}
+			}
+		}
+
+		/// <summary>
+		/// If the archive date is shown.
+		/// </summary>
+		public bool HasArchivedUntil =>
+			this.HasValidTo &&
+			(this.Contract!.Contract.ArchiveRequired is not null || this.Contract.Contract.ArchiveOptional is not null);
+
+		/// <summary>
+		/// The required archive time. Shown until the contract has validity dates.
+		/// </summary>
+		public string ArchiveRequiredText => this.HasArchiveRequired ? DurationToString.ToString(this.Contract!.Contract.ArchiveRequired!.Value) : string.Empty;
+
+		/// <summary>
+		/// If the required archive time is shown.
+		/// </summary>
+		public bool HasArchiveRequired => !this.HasValidity && this.Contract?.Contract.ArchiveRequired is not null;
+
+		/// <summary>
+		/// The optional archive time. Shown until the contract has validity dates.
+		/// </summary>
+		public string ArchiveOptionalText => this.HasArchiveOptional ? DurationToString.ToString(this.Contract!.Contract.ArchiveOptional!.Value) : string.Empty;
+
+		/// <summary>
+		/// If the optional archive time is shown.
+		/// </summary>
+		public bool HasArchiveOptional => !this.HasValidity && this.Contract?.Contract.ArchiveOptional is not null;
+
+		/// <summary>
+		/// When the contract was created, in local time.
+		/// </summary>
+		public string CreatedText => this.Contract is null ? string.Empty : FormatDate(this.Contract.Contract.Created);
+
+		/// <summary>
+		/// When the contract was last updated, in local time.
+		/// </summary>
+		public string UpdatedText => this.HasUpdated ? FormatDate(this.Contract!.Contract.Updated) : string.Empty;
+
+		/// <summary>
+		/// If the contract has been updated since it was created.
+		/// </summary>
+		public bool HasUpdated => this.Contract is not null &&
+			this.Contract.Contract.Updated != DateTime.MinValue &&
+			this.Contract.Contract.Updated != this.Contract.Contract.Created;
+
+		/// <summary>
+		/// The template the contract was created from, if any.
+		/// </summary>
+		public string TemplateId => this.Contract?.TemplateId ?? string.Empty;
+
+		/// <summary>
+		/// If the contract was created from a template.
+		/// </summary>
+		public bool HasTemplate => !string.IsNullOrEmpty(this.TemplateId);
+
+		/// <summary>
+		/// File names of the contract's attachments.
+		/// </summary>
+		public string[] AttachmentNames => this.Contract?.Contract.Attachments?
+			.Select(Attachment => string.IsNullOrEmpty(Attachment.FileName) ? Attachment.Id : Attachment.FileName)
+			.ToArray() ?? [];
+
+		/// <summary>
+		/// If the contract has attachments.
+		/// </summary>
+		public bool HasAttachments => (this.Contract?.Contract.Attachments?.Length ?? 0) > 0;
+
+		/// <summary>
+		/// Shows or hides the technical details. The machine-readable part is formatted when first shown.
+		/// </summary>
+		[RelayCommand]
+		private void ToggleTechnicalDetails()
+		{
+			this.IsTechnicalDetailsExpanded = !this.IsTechnicalDetailsExpanded;
+
+			if (this.IsTechnicalDetailsExpanded && this.MachineReadableXml is null)
+				this.MachineReadableXml = this.FormatMachineReadable();
+		}
+
+		/// <summary>
+		/// Formats the machine-readable part of the contract as indented XML.
+		/// </summary>
+		/// <returns>The formatted XML, or an empty string if there is none.</returns>
+		private string FormatMachineReadable()
+		{
+			try
+			{
+				if (this.Contract?.Contract.ForMachines is null)
+					return string.Empty;
+
+				return XML.PrettyXml(this.Contract.Contract.ForMachines);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return this.Contract?.Contract.ForMachines?.OuterXml ?? string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Formats a date and time in local time.
+		/// </summary>
+		/// <param name="Value">The date and time, in UTC unless marked as local.</param>
+		/// <returns>The local date and time.</returns>
+		private static string FormatDate(DateTime Value)
+		{
+			DateTime Local = Value.Kind switch
+			{
+				DateTimeKind.Local => Value,
+				DateTimeKind.Utc => Value.ToLocalTime(),
+				_ => DateTime.SpecifyKind(Value, DateTimeKind.Utc).ToLocalTime()
+			};
+
+			return Local.ToString("g", CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		/// Follows the shown contract, so the overview updates when it changes.
+		/// </summary>
+		partial void OnContractChanged(ObservableContract? oldValue, ObservableContract? newValue)
+		{
+			if (oldValue is not null)
+				oldValue.PropertyChanged -= this.Contract_PropertyChanged;
+
+			if (newValue is not null)
+				newValue.PropertyChanged += this.Contract_PropertyChanged;
+
+			this.MachineReadableXml = this.IsTechnicalDetailsExpanded ? this.FormatMachineReadable() : null;
+			this.OnOverviewChanged();
+		}
+
+		partial void OnIsDeletedOnServerChanged(bool value)
+		{
+			this.OnOverviewChanged();
+		}
+
+		/// <summary>
+		/// The title is read when the contract is initialized, after the contract is shown.
+		/// </summary>
+		private void Contract_PropertyChanged(object? Sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(ObservableContract.Category))
+				MainThread.BeginInvokeOnMainThread(() => this.OnPropertyChanged(nameof(this.ContractName)));
+		}
+
+		/// <summary>
+		/// Notifies every value the overview shows about the contract.
+		/// </summary>
+		private void OnOverviewChanged()
+		{
+			this.OnPropertyChanged(nameof(this.ContractName));
+			this.OnPropertyChanged(nameof(this.StateText));
+			this.OnPropertyChanged(nameof(this.IsStateSuccess));
+			this.OnPropertyChanged(nameof(this.IsStateDanger));
+			this.OnPropertyChanged(nameof(this.SigningWindowText));
+			this.OnPropertyChanged(nameof(this.HasSigningWindow));
+			this.OnPropertyChanged(nameof(this.ValidFromText));
+			this.OnPropertyChanged(nameof(this.HasValidFrom));
+			this.OnPropertyChanged(nameof(this.ValidToText));
+			this.OnPropertyChanged(nameof(this.HasValidTo));
+			this.OnPropertyChanged(nameof(this.DurationText));
+			this.OnPropertyChanged(nameof(this.HasDuration));
+			this.OnPropertyChanged(nameof(this.ArchivedUntilText));
+			this.OnPropertyChanged(nameof(this.HasArchivedUntil));
+			this.OnPropertyChanged(nameof(this.ArchiveRequiredText));
+			this.OnPropertyChanged(nameof(this.HasArchiveRequired));
+			this.OnPropertyChanged(nameof(this.ArchiveOptionalText));
+			this.OnPropertyChanged(nameof(this.HasArchiveOptional));
+			this.OnPropertyChanged(nameof(this.CreatedText));
+			this.OnPropertyChanged(nameof(this.UpdatedText));
+			this.OnPropertyChanged(nameof(this.HasUpdated));
+			this.OnPropertyChanged(nameof(this.TemplateId));
+			this.OnPropertyChanged(nameof(this.HasTemplate));
+			this.OnPropertyChanged(nameof(this.AttachmentNames));
+			this.OnPropertyChanged(nameof(this.HasAttachments));
+			this.OnPropertyChanged(nameof(this.Visibility));
+		}
+
+		#endregion
+
 		#region Signing
 
 		public ObservableCollection<ObservableRole> SignableRoles { get; } = new();
+
+		/// <summary>
+		/// Roles of a named-parts contract the user can sign for an earlier identity of theirs, after renewing it.
+		/// </summary>
+		private IReadOnlyCollection<string> rolesSignableAsEarlierIdentity = Array.Empty<string>();
 
 		private bool HasSignableRoles => this.SignableRoles.Count > 0;
 		private bool AlreadySigned => this.Contract?.Roles.Any(r => r.Parts.Any(p => p.IsMe && p.HasSigned)) == true;
@@ -300,7 +642,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			!this.AlreadySigned &&
 			!this.IsDeletedOnServer &&
 			this.Contract is not null &&
-			ContractActionRules.CanSign(this.Contract.Contract, ServiceRef.TagProfile.LegalIdentity?.Id, DateTime.UtcNow);
+			ContractActionRules.CanSign(this.Contract.Contract, ServiceRef.TagProfile.LegalIdentity?.Id, DateTime.UtcNow,
+				this.rolesSignableAsEarlierIdentity);
 
 		// Public flag for bottom bar visibility; sign bar only when not awaiting post-create
 		public bool CanShowSignBar => !this.IsAwaitingPostCreateCompletion && this.CanSign;
@@ -324,7 +667,45 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Signs the contract in the selected role, after the user confirms with PIN or biometrics.
+		/// If the user is going through the signing steps: Summary, Review, Role, and Result.
+		/// </summary>
+		[ObservableProperty]
+		private bool isSigningFlow;
+
+		/// <summary>
+		/// If the last signing attempt succeeded.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsSignFailure))]
+		private bool isSignSuccess;
+
+		/// <summary>
+		/// If the last signing attempt failed.
+		/// </summary>
+		public bool IsSignFailure => !this.IsSignSuccess;
+
+		/// <summary>
+		/// The heading of the result step.
+		/// </summary>
+		[ObservableProperty]
+		private string signResultTitle = string.Empty;
+
+		/// <summary>
+		/// What happens next, or why the signature wasn't made.
+		/// </summary>
+		[ObservableProperty]
+		private string signResultText = string.Empty;
+
+		/// <summary>
+		/// The role the user is invited to sign as, or the roles they can choose from.
+		/// </summary>
+		public string SigningRolesText => !string.IsNullOrEmpty(this.ProposalRole)
+			? this.ProposalRole
+			: string.Join(", ", this.SignableRoles.Select(Role => Role.Name));
+
+		/// <summary>
+		/// Signs the contract in the selected role: confirms with PIN or biometrics, checks again, signs, and shows the result.
+		/// A cancelled or failed confirmation stays on the Role step, and nothing is sent.
 		/// </summary>
 		/// <returns>A task that completes when signing has finished or was cancelled.</returns>
 		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(ReadyToSign))]
@@ -335,21 +716,96 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (this.Contract is null || this.SelectedRole is null)
 					return;
 
+				Contract ToSign = this.Contract.Contract;
+				string RoleName = this.SelectedRole.Name;
+
 				if (!await ServiceRef.AuthenticationService.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 					return;
+
+				// Check again just before the request, since time passes and others sign.
+				IReadOnlyList<ContractSigningBlocker> Blockers = await ContractSigningGuard.CheckAsync(ToSign, RoleName);
+				if (Blockers.Count > 0)
+				{
+					await this.ShowSignResultAsync(false, string.Join(Environment.NewLine, Blockers.Select(Blocker => Blocker.Message)));
+					return;
+				}
+
+				Contract? SignedContract = null;
+				string ErrorText = string.Empty;
 
 				await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
 				try
 				{
-					Contract SignedContract = await ServiceRef.XmppService.SignContract(this.Contract.Contract, this.SelectedRole.Name, false);
-					await this.GoToStateAsync(ViewContractStep.Overview);
-					await this.RefreshContractAsync(SignedContract);
+					SignedContract = await ServiceRef.XmppService.SignContract(ToSign, RoleName, false);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+					ErrorText = ContractErrorMessages.GetMessage(Ex, ToSign);
 				}
 				finally
 				{
 					await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
 				}
+
+				if (SignedContract is null)
+				{
+					await this.ShowSignResultAsync(false, ErrorText);
+					return;
+				}
+
+				await this.ShowSignResultAsync(true, GetSignedText(SignedContract));
+				await this.RefreshContractAsync(SignedContract);
 			});
+		}
+
+		/// <summary>
+		/// Shows the result step.
+		/// </summary>
+		/// <param name="Success">If the contract was signed.</param>
+		/// <param name="Text">What happens next, or why it wasn't signed.</param>
+		private async Task ShowSignResultAsync(bool Success, string Text)
+		{
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.IsSignSuccess = Success;
+				this.SignResultTitle = Success
+					? ServiceRef.Localizer[nameof(AppResources.ContractSignResultSuccessTitle)]
+					: ServiceRef.Localizer[nameof(AppResources.ContractSignResultFailedTitle)];
+				this.SignResultText = string.IsNullOrWhiteSpace(Text)
+					? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]
+					: Text;
+			});
+
+			await this.GoToStateAsync(ViewContractStep.Result);
+		}
+
+		/// <summary>
+		/// Explains what happens after the user's signature: the contract is signed, or how many signatures are missing.
+		/// </summary>
+		/// <param name="Signed">The contract returned after signing.</param>
+		/// <returns>The localized text.</returns>
+		private static string GetSignedText(Contract Signed)
+		{
+			if (Signed.State == ContractState.Signed)
+				return ServiceRef.Localizer[nameof(AppResources.ContractSignResultSigned)];
+
+			int Missing = 0;
+
+			foreach (Role Role in Signed.Roles ?? [])
+			{
+				int Count = Signed.ClientSignatures?.Count(Signature => Signature.Role == Role.Name) ?? 0;
+				if (Count < Role.MinCount)
+					Missing += Role.MinCount - Count;
+			}
+
+			if (Missing == 1)
+				return ServiceRef.Localizer[nameof(AppResources.ContractSignResultWaitingOne)];
+
+			if (Missing > 1)
+				return ServiceRef.Localizer[nameof(AppResources.ContractSignResultWaitingMany), Missing];
+
+			return ServiceRef.Localizer[nameof(AppResources.ContractSignResultAdded)];
 		}
 
 		#endregion
@@ -368,8 +824,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				ViewContractStep Step = Enum.Parse<ViewContractStep>(this.CurrentState);
 				if (Step == ViewContractStep.Overview || Step == ViewContractStep.Loading)
 					await base.GoBack();
+				else if (this.IsSigningFlow && Step == ViewContractStep.Review)
+					await this.GoToStateAsync(ViewContractStep.Summary);
+				else if (this.IsSigningFlow && Step == ViewContractStep.Sign)
+					await this.GoToStateAsync(ViewContractStep.Review);
 				else
-					await this.GoToStateAsync(ViewContractStep.Overview);
+					await this.EndSigningFlowAsync();
 			});
 		}
 
@@ -384,36 +844,98 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private Task GoToRolesAsync() => this.RunContractActionAsync(() => this.GoToStepAsync(ViewContractStep.Roles));
 
+		/// <summary>
+		/// Starts signing. Checks first what the server would refuse, and lists it instead of starting.
+		/// </summary>
+		/// <returns>A task that completes when the first step is shown, or the reasons are.</returns>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private Task GoToSignAsync()
-		{
-			return this.RunContractActionAsync(async () =>
-			{
-				await this.GoToStepAsync(ViewContractStep.Sign);
-				await MainThread.InvokeOnMainThreadAsync(() =>
-				{
-					if (!string.IsNullOrEmpty(this.ProposalRole))
-						this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
-					else if (this.SignableRoles.Count == 1)
-						this.SelectedRole = this.SignableRoles[0];
-				});
-			});
-		}
-
-		[RelayCommand(CanExecute = nameof(CanStateChange))]
-		private Task GoToReviewAsync()
 		{
 			return this.RunContractActionAsync(async () =>
 			{
 				if (this.Contract is null)
 					return;
 
-				await this.GoToStepAsync(ViewContractStep.Review, Prepare: async () =>
+				string? RoleName = string.IsNullOrEmpty(this.ProposalRole) ? null : this.ProposalRole;
+				IReadOnlyList<ContractSigningBlocker> Blockers = await ContractSigningGuard.CheckAsync(this.Contract.Contract, RoleName);
+
+				if (Blockers.Count > 0)
 				{
-					await this.ValidateParametersAsync();
-					VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
-					this.HumanReadableText = HumanReadableText;
+					await SigningBlockersViewModel.ShowAsync(Blockers);
+					return;
+				}
+
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsSigningFlow = true);
+				await this.GoToStateAsync(ViewContractStep.Summary);
+			});
+		}
+
+		/// <summary>
+		/// Goes from the summary to the full text.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private Task GoToSigningReviewAsync() => this.RunContractActionAsync(this.ShowReviewAsync);
+
+		/// <summary>
+		/// Goes from the full text to choosing the role.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private Task GoToSigningRoleAsync()
+		{
+			return this.RunContractActionAsync(async () =>
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					if (this.SelectedRole is not null)
+						return;
+
+					if (!string.IsNullOrEmpty(this.ProposalRole))
+						this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
+					else if (this.SignableRoles.Count == 1)
+						this.SelectedRole = this.SignableRoles[0];
 				});
+
+				await this.GoToStateAsync(ViewContractStep.Sign);
+			});
+		}
+
+		/// <summary>
+		/// Goes back to choosing the role after a failed attempt.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private Task RetrySigningAsync() => this.RunContractActionAsync(() => this.GoToStateAsync(ViewContractStep.Sign));
+
+		/// <summary>
+		/// Leaves the signing steps and shows the overview.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private Task FinishSigningAsync() => this.RunContractActionAsync(this.EndSigningFlowAsync);
+
+		/// <summary>
+		/// Ends the signing steps, if running, and shows the overview.
+		/// </summary>
+		private async Task EndSigningFlowAsync()
+		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.IsSigningFlow = false);
+			await this.GoToStateAsync(ViewContractStep.Overview);
+		}
+
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private Task GoToReviewAsync() => this.RunContractActionAsync(this.ShowReviewAsync);
+
+		/// <summary>
+		/// Shows the human-readable text, after checking the parameter values.
+		/// </summary>
+		private async Task ShowReviewAsync()
+		{
+			if (this.Contract is null)
+				return;
+
+			await this.GoToStepAsync(ViewContractStep.Review, Prepare: async () =>
+			{
+				await this.ValidateParametersAsync();
+				VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+				this.HumanReadableText = HumanReadableText;
 			});
 		}
 
@@ -506,8 +1028,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (Recipients.Count == 0)
 				{
 					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.NetworkAddressOfContactUnknown)],
+						ServiceRef.Localizer[nameof(AppResources.InviteToSign)],
+						ServiceRef.Localizer[nameof(AppResources.InviteNobodyReachable)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					return;
 				}
@@ -838,6 +1360,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				this.OnPropertyChanged(nameof(this.CanSign));
 				this.OnPropertyChanged(nameof(this.CanShowSignBar));
+				this.OnPropertyChanged(nameof(this.SigningRolesText));
 			});
 
 		/// <summary>
@@ -873,8 +1396,39 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (this.Contract is not null && await this.Contract.ApplyIdentityAnswerAsync(e))
-					_ = this.PreparePropertiesAsync();
+				if (this.Contract is null || !await this.Contract.ApplyIdentityAnswerAsync(e))
+					return;
+
+				await this.PreparePropertiesAsync();
+
+				if (e.Accepted)
+					_ = this.OfferInvitationAsync(e.LegalId);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Offers to invite a part who just showed their identity, since that is what the app needed to reach them.
+		/// Nothing is sent unless the user sends it.
+		/// </summary>
+		/// <param name="LegalId">The legal ID of the part.</param>
+		private async Task OfferInvitationAsync(string LegalId)
+		{
+			try
+			{
+				if (this.Contract is null || !this.CanManageParts || ServiceRef.NavigationService.CurrentPage is not ViewContractPage)
+					return;
+
+				IReadOnlyList<InviteRecipient> Recipients = await InvitePartsViewModel.GetRecipientsAsync(this.Contract, null, true);
+				InviteRecipient[] Shown = [.. Recipients.Where(Recipient => string.Equals(Recipient.LegalId, LegalId, StringComparison.OrdinalIgnoreCase))];
+				if (Shown.Length == 0)
+					return;
+
+				Contract Current = this.Contract.Contract;
+				await MainThread.InvokeOnMainThreadAsync(() => InvitePartsViewModel.ShowAsync(Current, Shown));
 			}
 			catch (Exception Ex)
 			{
@@ -894,6 +1448,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.CanDeleteContract = false;
 			this.CanWithdrawContract = false;
 			this.CanInviteParts = false;
+			this.CanManageParts = false;
 			this.CanDeclineInvitation = false;
 		}
 
@@ -909,6 +1464,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.IsAccessDenied = true;
 				this.CanRequestAccess = HasSignatures;
 				this.CanInviteParts = false;
+				this.CanManageParts = false;
 			});
 		}
 
@@ -974,11 +1530,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					bool IsValid = false;
 					string ValidationText = string.Empty;
+
+					// Transient values are gone after creation, and encrypted values can't be checked without the key.
+					if (ParamToValidate.IsTransient || (ParamToValidate.IsEncrypted && !ParamToValidate.CanReadValue))
+						return (Param: ParamToValidate, IsValid: true, ValidationText: string.Empty);
+
 					try
 					{
 						IsValid = await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false);
 						IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
-						ValidationText = ParamToValidate.Parameter.ErrorText;
+						ValidationText = IsValid ? string.Empty : ParamToValidate.Parameter.ErrorText ?? string.Empty;
 					}
 					catch (Exception Ex2)
 					{
@@ -989,12 +1550,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				}).ToArray();
 
 				(ObservableParameter Param, bool IsValid, string ValidationText)[] Results = await Task.WhenAll(ValidationTasks);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					foreach ((ObservableParameter Param, bool IsValid, string ValidationText) Result in Results)
+					{
+						Result.Param.IsValid = Result.IsValid;
+						Result.Param.ValidationText = Result.ValidationText;
+					}
+				});
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
 		}
+
 		private bool ValidateArgs()
 		{
 			return this.args is not null && (this.args.Contract is not null || this.args.ContractRef is not null);
@@ -1179,7 +1750,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			else
 			{
 				foreach (ObservableRole Role in this.Contract.Roles)
-					if (Role.Parts.Any(p => p.IsMe))
+					if (Role.Parts.Any(p => p.IsMe) || this.rolesSignableAsEarlierIdentity.Contains(Role.Name))
 						this.SignableRoles.Add(Role);
 			}
 		}
@@ -1235,9 +1806,38 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				// Contracts the user created or signed come back with the next sync, so only others can be removed.
 				bool CanRemove = Row is not null && (DeletedOnServer || (Ended && !IsCreator && !HasSigned));
 				bool CanDecline = !ReadOnly && !Ended && Row?.HasOpenInvitation == true;
-				bool CanInvite = !ReadOnly && !Ended && !this.IsAccessDenied &&
-					Current.State is ContractState.Proposed or ContractState.Approved or ContractState.BeingSigned &&
-					this.Contract.Roles.ToArray().Any(Role => Role.Parts.ToArray().Any(Part => Part.IsThirdParty && !Part.HasSigned && Part.Role != "TrustProvider"));
+				// After renewing an identity, the user can sign for the earlier one that the contract names.
+				IReadOnlyCollection<string> RenewedRoles = Array.Empty<string>();
+				if (!ReadOnly && !Ended && !HasSigned && !string.IsNullOrEmpty(MyLegalId) &&
+					Current.PartsMode == ContractParts.ExplicitlyDefined &&
+					Current.State is ContractState.Approved or ContractState.BeingSigned)
+				{
+					try
+					{
+						RenewedRoles = await ContractSigningGuard.GetRolesSignableAsEarlierIdentityAsync(Current, MyLegalId);
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+				}
+
+				bool CanManageParts = !ReadOnly && !Ended && !this.IsAccessDenied &&
+					Current.State is ContractState.Proposed or ContractState.Approved or ContractState.BeingSigned;
+
+				// Parts whose identity the user can't see have no known address. The Parties section offers to request it instead.
+				bool CanInvite = false;
+				if (CanManageParts)
+				{
+					try
+					{
+						CanInvite = (await InvitePartsViewModel.GetRecipientsAsync(this.Contract, null, true)).Count > 0;
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+				}
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
@@ -1249,6 +1849,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					this.CanRemoveFromList = CanRemove;
 					this.CanDeclineInvitation = CanDecline;
 					this.CanInviteParts = CanInvite;
+					this.CanManageParts = CanManageParts;
+
+					if (RenewedRoles.Count > 0 || this.rolesSignableAsEarlierIdentity.Count > 0)
+					{
+						this.rolesSignableAsEarlierIdentity = RenewedRoles;
+						this.PrepareSignableRoles();
+						this.OnPropertyChanged(nameof(this.CanSign));
+						this.OnPropertyChanged(nameof(this.CanShowSignBar));
+					}
 
 					if (DeletedOnServer && !this.IsDeletedOnServer)
 						this.ShowDeleted(Row is not null);
@@ -1495,7 +2104,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		#region ILinkableView Implementation
 
 		public override string? Link { get; }
-		public override Task<string> Title => ContractModel.GetName(this.Contract?.Contract);
+		public override Task<string> Title => Task.FromResult(this.ContractName);
 
 		#endregion
 

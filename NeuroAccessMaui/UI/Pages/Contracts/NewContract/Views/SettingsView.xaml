@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseNewContractView x:Name="ThisPage"
+						   x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.SettingsView"
+						   x:DataType="base:NewContractViewModel"
+						   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views">
+	<ContentView.Resources>
+		<Style x:Key="SettingsHintLabel" TargetType="Label">
+			<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
+			<Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
+			<Setter Property="LineBreakMode" Value="WordWrap" />
+		</Style>
+	</ContentView.Resources>
+
+	<ScrollView>
+		<VerticalStackLayout Spacing="16" Padding="16,0,16,16">
+			<!-- Who can sign -->
+			<Border Style="{DynamicResource BorderSet}" Margin="0">
+				<VerticalStackLayout Spacing="8">
+					<Label Text="{l:Localize ContractSettingsWhoCanSign}"
+						   Style="{DynamicResource BoldItemTitleLabel}" />
+					<controls:CompositePicker LabelText="{l:Localize ContractSettingsParts}"
+											  Style="{DynamicResource RegularCompositePicker}"
+											  ItemsSource="{Binding PartsModeItems}"
+											  SelectedItem="{Binding SelectedPartsMode}" />
+					<Label Text="{l:Localize ContractSettingsOpenHint}"
+						   Style="{StaticResource SettingsHintLabel}"
+						   IsVisible="{Binding IsOpenParts}" />
+					<controls:CompositePicker LabelText="{l:Localize Visibility}"
+											  Style="{DynamicResource RegularCompositePicker}"
+											  Placeholder="{l:Localize ContractSettingsVisibilityPlaceholder}"
+											  ItemsSource="{Binding ContractVisibilityItems}"
+											  SelectedItem="{Binding SelectedContractVisibilityItem}" />
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Signing window -->
+			<Border Style="{DynamicResource BorderSet}" Margin="0">
+				<VerticalStackLayout Spacing="8">
+					<Label Text="{l:Localize ContractSigningWindow}"
+						   Style="{DynamicResource BoldItemTitleLabel}" />
+					<Label Text="{l:Localize ContractSettingsWindowHint}"
+						   Style="{StaticResource SettingsHintLabel}" />
+
+					<controls:CompositeDatePicker Style="{DynamicResource RegularCompositeDatePicker}"
+												  LabelText="{l:Localize ContractSettingsSignAfter}"
+												  NullableDate="{Binding SignAfterDate}"
+												  Placeholder="{l:Localize ContractSettingsChooseDate}" />
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="{DynamicResource SmallSpacing}"
+						  IsVisible="{Binding HasSignAfter}">
+						<controls:CompositeInputView Grid.Column="0"
+													 Style="{DynamicResource BaseCompositeInputView}">
+							<controls:CompositeInputView.CenterView>
+								<TimePicker Time="{Binding SignAfterTime, Mode=TwoWay}"
+											BackgroundColor="Transparent"
+											TextColor="{DynamicResource ContentPrimaryWL}"
+											VerticalOptions="Center"
+											FontFamily="HaasGroteskRegular"
+											FontSize="{StaticResource FontSizeXl}" />
+							</controls:CompositeInputView.CenterView>
+						</controls:CompositeInputView>
+						<controls:TextButton Grid.Column="1"
+											 LabelData="{l:Localize ContractSettingsClear}"
+											 Style="{DynamicResource TransparentTextButton}"
+											 Command="{Binding ClearSignAfterCommand}" />
+					</Grid>
+
+					<controls:CompositeDatePicker Style="{DynamicResource RegularCompositeDatePicker}"
+												  LabelText="{l:Localize ContractSettingsSignBefore}"
+												  NullableDate="{Binding SignBeforeDate}"
+												  Placeholder="{l:Localize ContractSettingsChooseDate}" />
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="{DynamicResource SmallSpacing}"
+						  IsVisible="{Binding HasSignBefore}">
+						<controls:CompositeInputView Grid.Column="0"
+													 Style="{DynamicResource BaseCompositeInputView}">
+							<controls:CompositeInputView.CenterView>
+								<TimePicker Time="{Binding SignBeforeTime, Mode=TwoWay}"
+											BackgroundColor="Transparent"
+											TextColor="{DynamicResource ContentPrimaryWL}"
+											VerticalOptions="Center"
+											FontFamily="HaasGroteskRegular"
+											FontSize="{StaticResource FontSizeXl}" />
+							</controls:CompositeInputView.CenterView>
+						</controls:CompositeInputView>
+						<controls:TextButton Grid.Column="1"
+											 LabelData="{l:Localize ContractSettingsClear}"
+											 Style="{DynamicResource TransparentTextButton}"
+											 Command="{Binding ClearSignBeforeCommand}" />
+					</Grid>
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Validity and archiving -->
+			<Border Style="{DynamicResource BorderSet}" Margin="0">
+				<VerticalStackLayout Spacing="8">
+					<Label Text="{l:Localize ContractSettingsValidity}"
+						   Style="{DynamicResource BoldItemTitleLabel}" />
+					<Label Text="{l:Localize ContractSettingsValidityHint}"
+						   Style="{StaticResource SettingsHintLabel}" />
+					<controls:CompositeDurationPicker TitleLabelText="{l:Localize Duration}"
+													  TitleLabelStyle="{DynamicResource DurationLabel}"
+													  DurationValue="{Binding ContractDuration, Mode=TwoWay}" />
+					<controls:CompositeDurationPicker TitleLabelText="{l:Localize ContractArchiveRequired}"
+													  TitleLabelStyle="{DynamicResource DurationLabel}"
+													  DurationValue="{Binding ArchiveRequiredTime, Mode=TwoWay}" />
+					<controls:CompositeDurationPicker TitleLabelText="{l:Localize ContractArchiveOptional}"
+													  TitleLabelStyle="{DynamicResource DurationLabel}"
+													  DurationValue="{Binding ArchiveOptionalTime, Mode=TwoWay}" />
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- What the server would refuse -->
+			<Border Style="{DynamicResource RoundedBorder}"
+					BackgroundColor="{DynamicResource TnPDangerbgWL}"
+					Stroke="Transparent"
+					Padding="12"
+					IsVisible="{Binding HasSettingsError}">
+				<Label Text="{Binding SettingsErrorText}"
+					   TextColor="{DynamicResource TnPDangerContentWL}"
+					   LineBreakMode="WordWrap" />
+			</Border>
+		</VerticalStackLayout>
+	</ScrollView>
+</views:BaseNewContractView>

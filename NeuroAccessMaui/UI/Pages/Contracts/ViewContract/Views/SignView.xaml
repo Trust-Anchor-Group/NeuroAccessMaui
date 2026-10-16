@@ -113,7 +113,7 @@
 								</VerticalStackLayout>
 
 								<Border Style="{DynamicResource BorderSet}"
-										  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
+										  IsVisible="{Binding Path=HasNoParts}">
 									<Label Text="{l:Localize None}"
 											 Style="{DynamicResource RoleDescriptionLabel}"
 											 TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"

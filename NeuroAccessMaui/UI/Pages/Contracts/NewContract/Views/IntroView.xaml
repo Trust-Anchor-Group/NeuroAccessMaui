@@ -20,21 +20,6 @@
 				</VerticalStackLayout>
 			</Border>
 
-			<!-- Settings preview (same as last step's settings) -->
-			<Border Style="{DynamicResource BorderSet}" Margin="0">
-				<VerticalStackLayout Spacing="8">
-					<Label Text="{l:Localize Settings}"
-						   Style="{DynamicResource BoldItemTitleLabel}"
-						   FontSize="{StaticResource FontSize4xl}" />
-					<controls:CompositePicker
-						LabelText="{l:Localize Visibility}"
-						Style="{DynamicResource RegularCompositePicker}"
-						Placeholder="Select who should have access"
-						ItemsSource="{Binding Path=ContractVisibilityItems}"
-						SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />
-				</VerticalStackLayout>
-			</Border>
-
 			<!-- Optional link to see human-readable part early -->
 			<controls:TextButton Command="{Binding ShowPreviewFromIntroCommand}" Style="{DynamicResource SecondaryButton}" LabelData="{l:Localize ReviewContractTitle}" />
 		</VerticalStackLayout>

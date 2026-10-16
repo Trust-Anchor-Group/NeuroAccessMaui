@@ -50,9 +50,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.InviteParts
 		/// <param name="Contract">The contract.</param>
 		/// <param name="SuppressedLegalIds">Legal IDs that must not be invited, or null.</param>
 		/// <param name="ExcludeTrustProvider">If parts in the trust provider's role are left out.</param>
+		/// <param name="Unreachable">If not null, gets the parts who can't be invited yet, because their address isn't known.
+		/// That is the case when the user can't see their identity.</param>
 		/// <returns>The people who can be invited.</returns>
 		public static async Task<IReadOnlyList<InviteRecipient>> GetRecipientsAsync(ObservableContract Contract,
-			CaseInsensitiveString[]? SuppressedLegalIds, bool ExcludeTrustProvider)
+			CaseInsensitiveString[]? SuppressedLegalIds, bool ExcludeTrustProvider, List<ObservablePart>? Unreachable = null)
 		{
 			List<InviteRecipient> Result = [];
 
@@ -78,7 +80,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.InviteParts
 						BareJid = Part.GetJid();
 
 					if (string.IsNullOrWhiteSpace(BareJid))
+					{
+						Unreachable?.Add(Part);
 						continue;
+					}
 
 					string? FriendlyName = Info?.FriendlyName;
 					if (string.IsNullOrWhiteSpace(FriendlyName))

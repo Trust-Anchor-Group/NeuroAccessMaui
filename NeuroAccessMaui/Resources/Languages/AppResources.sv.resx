@@ -4406,4 +4406,199 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="SignatureRequestDeclinedText" xml:space="preserve">
     <value>Personen har avböjt att signera din förfrågan.</value>
   </data>
+  <data name="ContractGroupNeedsAction" xml:space="preserve">
+    <value>Väntar på dig</value>
+  </data>
+  <data name="ContractGroupInProgress" xml:space="preserve">
+    <value>Pågår</value>
+  </data>
+  <data name="ContractGroupSigned" xml:space="preserve">
+    <value>Signerade</value>
+  </data>
+  <data name="ContractGroupEnded" xml:space="preserve">
+    <value>Avslutade</value>
+  </data>
+  <data name="ContractMarkerInvitation" xml:space="preserve">
+    <value>Inbjudan</value>
+  </data>
+  <data name="ContractMarkerNeedsSignature" xml:space="preserve">
+    <value>Behöver din signatur</value>
+  </data>
+  <data name="ContractMarkerRequest" xml:space="preserve">
+    <value>Begäran om att se</value>
+  </data>
+  <data name="ContractRowRoleFormat" xml:space="preserve">
+    <value>Din roll: {0}</value>
+  </data>
+  <data name="ContractSectionParties" xml:space="preserve">
+    <value>Parter</value>
+  </data>
+  <data name="ContractSectionDates" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="ContractSectionTemplate" xml:space="preserve">
+    <value>Skapat från mall</value>
+  </data>
+  <data name="ContractSectionAttachments" xml:space="preserve">
+    <value>Bilagor</value>
+  </data>
+  <data name="ContractSectionTechnicalDetails" xml:space="preserve">
+    <value>Tekniska detaljer</value>
+  </data>
+  <data name="ContractShowDetails" xml:space="preserve">
+    <value>Visa</value>
+  </data>
+  <data name="ContractHideDetails" xml:space="preserve">
+    <value>Dölj</value>
+  </data>
+  <data name="ContractSigningWindow" xml:space="preserve">
+    <value>Signeringsperiod</value>
+  </data>
+  <data name="ContractSigningWindowBetween" xml:space="preserve">
+    <value>{0} till {1}</value>
+  </data>
+  <data name="ContractSigningWindowFrom" xml:space="preserve">
+    <value>Från {0}</value>
+  </data>
+  <data name="ContractSigningWindowUntil" xml:space="preserve">
+    <value>Till {0}</value>
+  </data>
+  <data name="ContractValidFrom" xml:space="preserve">
+    <value>Giltigt från</value>
+  </data>
+  <data name="ContractValidTo" xml:space="preserve">
+    <value>Giltigt till</value>
+  </data>
+  <data name="ContractArchivedUntil" xml:space="preserve">
+    <value>Arkiveras till</value>
+  </data>
+  <data name="ContractArchiveRequired" xml:space="preserve">
+    <value>Obligatorisk arkiveringstid</value>
+  </data>
+  <data name="ContractArchiveOptional" xml:space="preserve">
+    <value>Valfri arkiveringstid</value>
+  </data>
+  <data name="RoleSignaturesFormat" xml:space="preserve">
+    <value>Signaturer: {0} av {1}</value>
+  </data>
+  <data name="RoleSignaturesRangeFormat" xml:space="preserve">
+    <value>Signaturer: {0} (kräver {1}, tillåter upp till {2})</value>
+  </data>
+  <data name="ParameterNotSet" xml:space="preserve">
+    <value>Inte valt än</value>
+  </data>
+  <data name="ContractPartsNamed" xml:space="preserve">
+    <value>Bara personerna som anges i kontraktet</value>
+  </data>
+  <data name="ContractPartsOpen" xml:space="preserve">
+    <value>Alla som kan se kontraktet</value>
+  </data>
+  <data name="ContractSettingsWhoCanSign" xml:space="preserve">
+    <value>Vem som kan signera</value>
+  </data>
+  <data name="ContractSettingsParts" xml:space="preserve">
+    <value>Parter</value>
+  </data>
+  <data name="ContractSettingsOpenHint" xml:space="preserve">
+    <value>Du anger ingen i nästa steg. Alla som kan se kontraktet kan signera det i en roll som inte är full.</value>
+  </data>
+  <data name="ContractSettingsVisibilityPlaceholder" xml:space="preserve">
+    <value>Välj vem som kan se kontraktet</value>
+  </data>
+  <data name="ContractSettingsWindowHint" xml:space="preserve">
+    <value>Lämna ett datum tomt för att ta emot signaturer utan den gränsen.</value>
+  </data>
+  <data name="ContractSettingsSignAfter" xml:space="preserve">
+    <value>Ta emot signaturer från</value>
+  </data>
+  <data name="ContractSettingsSignBefore" xml:space="preserve">
+    <value>Ta emot signaturer till och med</value>
+  </data>
+  <data name="ContractSettingsChooseDate" xml:space="preserve">
+    <value>Inget datum</value>
+  </data>
+  <data name="ContractSettingsClear" xml:space="preserve">
+    <value>Rensa</value>
+  </data>
+  <data name="ContractSettingsValidity" xml:space="preserve">
+    <value>Giltighet och arkivering</value>
+  </data>
+  <data name="ContractSettingsValidityHint" xml:space="preserve">
+    <value>Giltigheten börjar när kontraktet skapas. Arkiveringstiderna räknas från när det upphör.</value>
+  </data>
+  <data name="ContractSettingsDurationInvalid" xml:space="preserve">
+    <value>Varaktigheten måste vara längre än noll.</value>
+  </data>
+  <data name="ContractSettingsArchiveInvalid" xml:space="preserve">
+    <value>Arkiveringstider kan inte vara negativa.</value>
+  </data>
+  <data name="ContractSettingsWindowOrder" xml:space="preserve">
+    <value>Signeringsperioden måste sluta efter att den börjar.</value>
+  </data>
+  <data name="ContractSettingsWindowPassed" xml:space="preserve">
+    <value>Signeringsperiodens slut har redan passerat.</value>
+  </data>
+  <data name="ContractGuardIdentityNotApproved" xml:space="preserve">
+    <value>Du behöver ett godkänt ID för att signera kontrakt.</value>
+  </data>
+  <data name="ContractGuardOpenIdentity" xml:space="preserve">
+    <value>Öppna mitt ID</value>
+  </data>
+  <data name="ContractGuardAlreadySigned" xml:space="preserve">
+    <value>Du har redan signerat kontraktet i den här rollen.</value>
+  </data>
+  <data name="ContractGuardTitle" xml:space="preserve">
+    <value>Du kan inte signera än</value>
+  </data>
+  <data name="ContractSummaryTitle" xml:space="preserve">
+    <value>Innan du signerar</value>
+  </data>
+  <data name="ContractSummaryRoles" xml:space="preserve">
+    <value>Du kan signera som</value>
+  </data>
+  <data name="ContractSummaryStepsHint" xml:space="preserve">
+    <value>Läs sedan hela texten, välj din roll och bekräfta med din PIN-kod eller biometri.</value>
+  </data>
+  <data name="ContractSignResultSuccessTitle" xml:space="preserve">
+    <value>Du har signerat kontraktet</value>
+  </data>
+  <data name="ContractSignResultFailedTitle" xml:space="preserve">
+    <value>Kontraktet signerades inte</value>
+  </data>
+  <data name="ContractSignResultSigned" xml:space="preserve">
+    <value>Kontraktet har nu alla signaturer som behövs.</value>
+  </data>
+  <data name="ContractSignResultWaitingOne" xml:space="preserve">
+    <value>Väntar på 1 signatur till.</value>
+  </data>
+  <data name="ContractSignResultWaitingMany" xml:space="preserve">
+    <value>Väntar på {0} signaturer till.</value>
+  </data>
+  <data name="ContractSignResultAdded" xml:space="preserve">
+    <value>Din signatur har lagts till.</value>
+  </data>
+  <data name="ContractSignTryAgain" xml:space="preserve">
+    <value>Försök igen</value>
+  </data>
+  <data name="ContractSignDone" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+  <data name="ContractSignNotSigned" xml:space="preserve">
+    <value>Inte signerat</value>
+  </data>
+  <data name="InviteNotSentTitle" xml:space="preserve">
+    <value>Inte inbjudna än</value>
+  </data>
+  <data name="InviteNeedsIdentity" xml:space="preserve">
+    <value>Du kan inte se identiteten för {0}, så appen har ingen adress att skicka inbjudan till. Vill du be dem visa den? När de har gjort det kan du bjuda in dem från kontraktet.</value>
+  </data>
+  <data name="InviteWaitingForIdentity" xml:space="preserve">
+    <value>Du kan inte se identiteten för {0} än, så de bjöds inte in. När de godkänner din förfrågan kan du bjuda in dem från kontraktet.</value>
+  </data>
+  <data name="InviteNobodyReachable" xml:space="preserve">
+    <value>Ingen kan bjudas in än. För att bjuda in någon vars identitet du inte kan se, begär först deras identitet under Parter.</value>
+  </data>
+  <data name="InviteRequestIdentityHint" xml:space="preserve">
+    <value>Begär deras identitet för att bjuda in dem.</value>
+  </data>
 </root>

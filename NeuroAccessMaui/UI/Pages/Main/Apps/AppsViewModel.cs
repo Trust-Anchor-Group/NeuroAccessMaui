@@ -154,17 +154,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				if (!ServiceRef.TagProfile.HasBetaFeatures)
-				{
-					this.BetaFeaturePressed = true;
-					await Task.Delay(100);
-					this.BetaFeaturePressed = false;
-				}
-				else
-				{
-					MyContractsNavigationArgs Args = new(ContractsListMode.ContractTemplates);
-					await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
-				}
+				MyContractsNavigationArgs Args = new(ContractsListMode.ContractTemplates);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{

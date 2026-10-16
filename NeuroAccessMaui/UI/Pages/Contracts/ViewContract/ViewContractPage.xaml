@@ -38,7 +38,9 @@
 			<Label Grid.Row="0"
 					 Grid.Column="1"
 					 Style="{DynamicResource PageTitleLabel}"
-					 Text="{l:Localize ViewContract}"
+					 Text="{Binding ContractName}"
+					 LineBreakMode="TailTruncation"
+					 MaxLines="2"
 					 HorizontalTextAlignment="Center" />
 			<controls:SvgButton Grid.Row="0"
 								Grid.Column="2"
@@ -61,10 +63,14 @@
 											 mct:StateView.StateKey="Parameters" />
 				<views:RolesView x:Name="RolesView"
 									  mct:StateView.StateKey="Roles" />
+				<views:SummaryView x:Name="SummaryView"
+										 mct:StateView.StateKey="Summary" />
 				<views:PreviewView x:Name="PreviewView"
 										 mct:StateView.StateKey="Review" />
 				<views:SignView x:Name="SignView"
 									 mct:StateView.StateKey="Sign" />
+				<views:SignResultView x:Name="SignResultView"
+										 mct:StateView.StateKey="Result" />
 			</mct:StateContainer.StateViews>
 
 			<!-- default state, should not occur -->

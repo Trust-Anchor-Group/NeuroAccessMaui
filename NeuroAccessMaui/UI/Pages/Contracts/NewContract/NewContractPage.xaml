@@ -66,6 +66,7 @@
 				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
 				<views:IntroView x:Name="IntroView" mct:StateView.StateKey="Intro" />
 				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
+				<views:SettingsView x:Name="SettingsView" mct:StateView.StateKey="Settings" />
 				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
 				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
 			</mct:StateContainer.StateViews>

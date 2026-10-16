@@ -53,6 +53,8 @@
 									 Style="{DynamicResource RoleTitleLabel}" />
 							<Label Text="{Binding Description}"
 									 Style="{DynamicResource RoleDescriptionLabel}" />
+							<Label Text="{Binding SignaturesText}"
+									 Style="{DynamicResource RoleDescriptionLabel}" />
 							<!-- Part Collection -->
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
 								<BindableLayout.ItemTemplate>
@@ -174,7 +176,7 @@
 							</VerticalStackLayout>
 
 							<Border Style="{DynamicResource BorderSet}"
-									  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
+									  IsVisible="{Binding Path=HasNoParts}">
 								<Label Text="{l:Localize None}"
 										 Style="{DynamicResource RoleDescriptionLabel}"
 										 TextColor="{DynamicResource ButtonAccessPrimarybgWL}"

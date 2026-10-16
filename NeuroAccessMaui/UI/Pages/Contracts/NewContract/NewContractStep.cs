@@ -10,13 +10,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		Loading = 20,
 		/// <summary>
-		/// Introductory step with category and settings.
+		/// Introductory step with the template's category.
 		/// </summary>
 		Intro = 25,
 		/// <summary>
 		/// Edit parameters.
 		/// </summary>
 		Parameters = 30,
+		/// <summary>
+		/// Choose who can sign, the signing window, validity, archiving and visibility.
+		/// </summary>
+		Settings = 35,
 		/// <summary>
 		/// Edit roles.
 		/// </summary>

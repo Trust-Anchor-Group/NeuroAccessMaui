@@ -38,6 +38,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
+using NeuroAccessMaui.UI.Pages.Contracts.SigningBlockers;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
@@ -329,6 +330,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<SelectLanguagePopup>();
 			Builder.Services.AddTransient<SelectLanguagePopupViewModel>();
 			Builder.Services.AddTransient<InvitePartsPopup>();
+			Builder.Services.AddTransient<SigningBlockersPopup>();
 
 			// Xmpp
 			Builder.Services.AddTransient<RemoveSubscriptionPopup>();

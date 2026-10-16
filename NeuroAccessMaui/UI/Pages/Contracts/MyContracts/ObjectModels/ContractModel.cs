@@ -4,7 +4,8 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
-using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.UI.Converters;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
@@ -14,25 +15,21 @@ using Waher.Networking.XMPP.Contracts.HumanReadable.InlineElements;
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 {
 	/// <summary>
-	/// The data model for a contract.
+	/// The data model for a row in the list of contracts or templates.
 	/// </summary>
 	public class ContractModel : IUniqueItem, INotifyPropertyChanged
 	{
 		private readonly string contractId;
-		private readonly string? category;
-		private readonly string? name;
-		private readonly DateTime timestamp;
-		private readonly ContractReference contractRef;
-		private NotificationEvent[] events;
+		private ContractReference contractRef;
 
-		public ContractModel(ContractReference ContractRef, NotificationEvent[] Events)
+		/// <summary>
+		/// The data model for a row in the list of contracts or templates.
+		/// </summary>
+		/// <param name="ContractRef">The stored contract.</param>
+		public ContractModel(ContractReference ContractRef)
 		{
 			this.contractRef = ContractRef;
-			this.contractId = ContractRef.ContractId;
-			this.timestamp = ContractRef.Created;
-			this.category = ContractRef.Category;
-			this.name = ContractRef.Name;
-			this.events = Events;
+			this.contractId = ContractRef.ContractId?.Value ?? string.Empty;
 		}
 
 		/// <summary>
@@ -46,6 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				return string.Empty;
 
 			Dictionary<string, ClientSignature> Signatures = [];
+			string? MyLegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 			StringBuilder? StringBuilder = null;
 
 			if (Contract.ClientSignatures is not null)
@@ -56,7 +54,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 
 			foreach (Part Part in Contract.Parts)
 			{
-				if (Part.LegalId == ServiceRef.TagProfile.LegalJid ||
+				if (string.Equals(Part.LegalId, MyLegalId, StringComparison.OrdinalIgnoreCase) ||
 					 (Signatures.TryGetValue(Part.LegalId, out ClientSignature? PartSignature) &&
 					 string.Equals(PartSignature.BareJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase)))
 				{
@@ -127,7 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <summary>
 		/// The created timestamp of the contract.
 		/// </summary>
-		public DateTime Timestamp => this.timestamp;
+		public DateTime Timestamp => this.contractRef.Created;
 
 		/// <summary>
 		/// A reference to the contract.
@@ -135,34 +133,165 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public ContractReference ContractRef => this.contractRef;
 
 		/// <summary>
-		/// Displayable name for the contract.
+		/// Names of the other parties of the contract.
 		/// </summary>
-		public string Name => this.name;
+		public string Name => this.contractRef.Name ?? string.Empty;
 
 		/// <summary>
 		/// Name, or category if no name.
 		/// </summary>
-		public string NameOrCategory => string.IsNullOrEmpty(this.name) ? this.category : this.name;
+		public string NameOrCategory => string.IsNullOrEmpty(this.Name) ? this.Category : this.Name;
 
 		/// <summary>
-		/// Displayable category for the contract.
+		/// Displayable category for the contract. This is the header of its first section, which works as its title.
 		/// </summary>
-		public string Category => this.category;
+		public string Category => this.contractRef.Category ?? string.Empty;
 
 		/// <summary>
-		/// If the contract has associated notification events.
+		/// The name shown for the contract: its title, else a text for an invitation that can't be read yet, else its ID.
 		/// </summary>
-		public bool HasEvents => this.NrEvents > 0;
+		public string DisplayName
+		{
+			get
+			{
+				if (!string.IsNullOrEmpty(this.contractRef.Category))
+					return this.contractRef.Category;
+
+				if (!this.contractRef.ContractLoaded && !string.IsNullOrEmpty(this.contractRef.InvitedBy))
+					return ServiceRef.Localizer[nameof(AppResources.NotificationInvitationTitleUnnamed)];
+
+				return this.contractId;
+			}
+		}
 
 		/// <summary>
-		/// Number of notification events associated with the contract.
+		/// Names of the other parties. The user's own name is never included.
 		/// </summary>
-		public int NrEvents => this.events?.Length ?? 0;
+		public string PartyNames => this.contractRef.PartyNames ?? string.Empty;
 
 		/// <summary>
-		/// Notification events.
+		/// If there are names of other parties to show.
 		/// </summary>
-		public NotificationEvent[] Events => this.events;
+		public bool HasPartyNames => !string.IsNullOrEmpty(this.contractRef.PartyNames);
+
+		/// <summary>
+		/// The group the contract is listed under.
+		/// </summary>
+		public ContractListGroup Group => this.contractRef.ListGroup;
+
+		/// <summary>
+		/// The localized state of the contract, or an empty string if the contract hasn't been read.
+		/// </summary>
+		public string StateText
+		{
+			get
+			{
+				if (this.contractRef.IsDeletedOnServer)
+					return ContractStateToString.GetText(ContractState.Deleted, false);
+
+				if (!this.contractRef.ContractLoaded)
+					return string.Empty;
+
+				return ContractStateToString.GetText(this.contractRef.State, this.contractRef.IsTemplate);
+			}
+		}
+
+		/// <summary>
+		/// If there is a state to show.
+		/// </summary>
+		public bool HasStateText => !string.IsNullOrEmpty(this.StateText);
+
+		/// <summary>
+		/// The user's roles in the contract, or the role the user was invited to, as "Your role: X".
+		/// </summary>
+		public string MyRoleText
+		{
+			get
+			{
+				string[]? Roles = this.contractRef.MyRoles;
+				string? Text = Roles is not null && Roles.Length > 0 ? string.Join(", ", Roles) : this.contractRef.InvitedRole;
+
+				if (string.IsNullOrEmpty(Text))
+					return string.Empty;
+
+				return ServiceRef.Localizer[nameof(AppResources.ContractRowRoleFormat), Text];
+			}
+		}
+
+		/// <summary>
+		/// If the user has, or is invited to, a role.
+		/// </summary>
+		public bool HasMyRole => !string.IsNullOrEmpty(this.MyRoleText);
+
+		/// <summary>
+		/// When the contract last changed, as a short local text: a time today, "Yesterday", or a date.
+		/// </summary>
+		public string LastChangedText
+		{
+			get
+			{
+				DateTime Changed = this.contractRef.LastChanged;
+				if (Changed == DateTime.MinValue)
+					Changed = this.contractRef.Created;
+
+				if (Changed == DateTime.MinValue)
+					return string.Empty;
+
+				DateTime Local = Changed.Kind switch
+				{
+					DateTimeKind.Local => Changed,
+					DateTimeKind.Utc => Changed.ToLocalTime(),
+					_ => DateTime.SpecifyKind(Changed, DateTimeKind.Utc).ToLocalTime()
+				};
+
+				DateTime Today = DateTime.Today;
+
+				if (Local.Date == Today)
+					return Local.ToShortTimeString();
+
+				if (Local.Date == Today.AddDays(-1))
+					return ServiceRef.Localizer[nameof(AppResources.Yesterday)];
+
+				return Local.ToShortDateString();
+			}
+		}
+
+		/// <summary>
+		/// If the contract changed since the user last opened it.
+		/// </summary>
+		public bool IsUnread => this.contractRef.IsUnread;
+
+		/// <summary>
+		/// A short marker saying what the user needs to do: "Invitation" or "Needs your signature".
+		/// </summary>
+		public string MarkerText
+		{
+			get
+			{
+				if (this.contractRef.HasOpenInvitation)
+					return ServiceRef.Localizer[nameof(AppResources.ContractMarkerInvitation)];
+
+				if (this.contractRef.ListGroup == ContractListGroup.NeedsAction)
+					return ServiceRef.Localizer[nameof(AppResources.ContractMarkerNeedsSignature)];
+
+				return string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// If there is a marker to show.
+		/// </summary>
+		public bool HasMarker => !string.IsNullOrEmpty(this.MarkerText);
+
+		/// <summary>
+		/// Replaces the stored contract the row shows, and updates every displayed value.
+		/// </summary>
+		/// <param name="ContractRef">The updated stored contract.</param>
+		public void Update(ContractReference ContractRef)
+		{
+			this.contractRef = ContractRef;
+			this.OnPropertyChanged(string.Empty);
+		}
 
 		/// <summary>
 		/// Called when a property has changed.
@@ -184,81 +313,5 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// Occurs when a property value changes.
 		/// </summary>
 		public event PropertyChangedEventHandler? PropertyChanged;
-
-		/// <summary>
-		/// Method called when notifications for the item have been updated.
-		/// </summary>
-		/// <param name="Events">Updated set of events.</param>
-		public void NotificationsUpdated(NotificationEvent[] Events)
-		{
-			this.events = Events;
-
-			this.OnPropertyChanged(nameof(this.Events));
-			this.OnPropertyChanged(nameof(this.HasEvents));
-			this.OnPropertyChanged(nameof(this.NrEvents));
-		}
-
-		/// <summary>
-		/// Adds a notification event.
-		/// </summary>
-		/// <param name="Event">Notification event.</param>
-		/// <returns>If event was added (true), or if it was ignored because the event was already in the list of events (false).</returns>
-		public bool AddEvent(NotificationEvent Event)
-		{
-			if (this.events is null)
-				this.NotificationsUpdated([ Event ]);
-			else
-			{
-				foreach (NotificationEvent Event2 in this.events)
-				{
-					if (Event2.ObjectId == Event.ObjectId)
-						return false;
-				}
-
-				int c = this.events.Length;
-				NotificationEvent[] NewArray = new NotificationEvent[c + 1];
-				Array.Copy(this.events, 0, NewArray, 0, c);
-				NewArray[c] = Event;
-
-				this.NotificationsUpdated(NewArray);
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// Removes a notification event.
-		/// </summary>
-		/// <param name="Event">Notification event.</param>
-		/// <returns>If the event was found and removed.</returns>
-		public bool RemoveEvent(NotificationEvent Event)
-		{
-			if (this.events is not null)
-			{
-				int i, c = this.events.Length;
-
-				for (i = 0; i < c; i++)
-				{
-					NotificationEvent Event2 = this.events[i];
-
-					if (Event2.ObjectId == Event.ObjectId)
-					{
-						NotificationEvent[] NewArray = new NotificationEvent[c - 1];
-
-						if (i > 0)
-							Array.Copy(this.events, 0, NewArray, 0, i);
-
-						if (i < c - 1)
-							Array.Copy(this.events, i + 1, NewArray, i, c - i - 1);
-
-						this.NotificationsUpdated(NewArray);
-
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
 	}
 }

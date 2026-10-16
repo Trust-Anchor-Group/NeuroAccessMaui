@@ -185,7 +185,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (this.DurationValue.Years != 0)
 			{
 				if (!PreviousUnits.Contains(DurationUnits.Years))
-					this.AddUnit(DurationUnits.Years, this.DurationValue.Years.ToString(CultureInfo.InvariantCulture));
+					this.AddUnit(DurationUnits.Years, this.DurationValue.Years.ToString(CultureInfo.InvariantCulture), false);
 
 				AvaliableUnits.Remove(DurationUnits.Years);
 			}
@@ -193,7 +193,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (this.DurationValue.Months != 0)
 			{
 				if (!PreviousUnits.Contains(DurationUnits.Months))
-					this.AddUnit(DurationUnits.Months, this.DurationValue.Months.ToString(CultureInfo.InvariantCulture));
+					this.AddUnit(DurationUnits.Months, this.DurationValue.Months.ToString(CultureInfo.InvariantCulture), false);
 
 				AvaliableUnits.Remove(DurationUnits.Months);
 			}
@@ -201,7 +201,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (this.DurationValue.Days != 0)
 			{
 				if (!PreviousUnits.Contains(DurationUnits.Days))
-					this.AddUnit(DurationUnits.Days, this.DurationValue.Days.ToString(CultureInfo.InvariantCulture));
+					this.AddUnit(DurationUnits.Days, this.DurationValue.Days.ToString(CultureInfo.InvariantCulture), false);
 
 				AvaliableUnits.Remove(DurationUnits.Days);
 			}
@@ -209,7 +209,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (this.DurationValue.Hours != 0)
 			{
 				if (!PreviousUnits.Contains(DurationUnits.Hours))
-					this.AddUnit(DurationUnits.Hours, this.DurationValue.Hours.ToString(CultureInfo.InvariantCulture));
+					this.AddUnit(DurationUnits.Hours, this.DurationValue.Hours.ToString(CultureInfo.InvariantCulture), false);
 
 				AvaliableUnits.Remove(DurationUnits.Hours);
 			}
@@ -217,7 +217,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (this.DurationValue.Minutes != 0)
 			{
 				if (!PreviousUnits.Contains(DurationUnits.Minutes))
-					this.AddUnit(DurationUnits.Minutes, this.DurationValue.Minutes.ToString(CultureInfo.InvariantCulture));
+					this.AddUnit(DurationUnits.Minutes, this.DurationValue.Minutes.ToString(CultureInfo.InvariantCulture), false);
 
 				AvaliableUnits.Remove(DurationUnits.Minutes);
 			}
@@ -225,7 +225,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (this.DurationValue.Seconds != 0)
 			{
 				if (!PreviousUnits.Contains(DurationUnits.Seconds))
-					this.AddUnit(DurationUnits.Seconds, this.DurationValue.Seconds.ToString(CultureInfo.InvariantCulture));
+					this.AddUnit(DurationUnits.Seconds, this.DurationValue.Seconds.ToString(CultureInfo.InvariantCulture), false);
 
 				AvaliableUnits.Remove(DurationUnits.Seconds);
 			}
@@ -239,7 +239,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// Add a duration entry to the durations container
 		/// </summary>
 		/// <param name="Unit"></param>
-		private void AddUnit(DurationUnits Unit, string Value)
+		/// <param name="Value">The value to show in the entry.</param>
+		/// <param name="FocusEntry">If the new entry should get focus. Only when the user adds a unit, so a bound value doesn't open the keyboard.</param>
+		private void AddUnit(DurationUnits Unit, string Value, bool FocusEntry)
 		{
 			// Setup the Composite Entry
 			CompositeEntry DurationEntry = new()
@@ -296,10 +298,13 @@ namespace NeuroAccessMaui.UI.Controls
 			foreach (CompositeEntry Entry in SortedDurationEntries)
 				MainThread.BeginInvokeOnMainThread(() => this.durationsContainer.Add(Entry));
 
-			MainThread.BeginInvokeOnMainThread(async () => {
-				await Task.Delay(500);
-				DurationEntry.Focus();
-			});
+			if (FocusEntry)
+			{
+				MainThread.BeginInvokeOnMainThread(async () => {
+					await Task.Delay(500);
+					DurationEntry.Focus();
+				});
+			}
 		  }
 
 		/// <summary>
@@ -398,7 +403,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (DurationUnit is not DurationUnits Unit)
 				return; // No unit selected or popup canceled
 
-			this.AddUnit(Unit, "");
+			this.AddUnit(Unit, "", true);
 		}
 
 		#endregion

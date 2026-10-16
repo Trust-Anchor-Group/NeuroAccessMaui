@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Popups.Info;
 using Waher.Content;
@@ -201,8 +202,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				}
 				this.SetProperty(ref this.value, value);
 				this.OnPropertyChanged(nameof(this.CanReadValue));
+				this.OnPropertyChanged(nameof(this.IsValueMissing));
 			}
 		}
+
+		/// <summary>
+		/// If nobody has entered a value yet, and the template didn't provide one.
+		/// </summary>
+		public bool IsValueMissing => this.value is null;
 
 		/// <summary>
 		/// Clears values through nullable properties for parameter types whose SetValue rejects null.
@@ -285,6 +292,42 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		#endregion
 
 		public bool CanShowError => !string.IsNullOrEmpty(this.ValidationText);
+
+		#region Formatting
+		/// <summary>
+		/// Formats a number for the current culture, keeping every significant decimal and dropping trailing zeros.
+		/// </summary>
+		/// <param name="Value">The number to format.</param>
+		/// <returns>The localized text.</returns>
+		public static string FormatNumber(decimal Value)
+		{
+			decimal Normalized = Value / 1.000000000000000000000000000000000m;
+			return Normalized.ToString("N" + Normalized.Scale.ToString(CultureInfo.InvariantCulture), CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		/// Formats a time span for the current culture, keeping its days.
+		/// </summary>
+		/// <param name="Value">The time span to format.</param>
+		/// <returns>The localized text.</returns>
+		public static string FormatTimeSpan(TimeSpan Value)
+		{
+			CultureInfo Culture = CultureInfo.CurrentCulture;
+			string Sign = Value < TimeSpan.Zero ? "-" : string.Empty;
+			TimeSpan Length = Value.Duration();
+			string Time = Length.ToString(@"hh\:mm\:ss", Culture);
+
+			if (Length.Days == 0)
+				return Sign + Time;
+
+			string Unit = Length.Days == 1
+				? ServiceRef.Localizer[nameof(AppResources.Day)]
+				: ServiceRef.Localizer[nameof(AppResources.Days)];
+
+			return Sign + Length.Days.ToString(Culture) + " " + Unit + ", " + Time;
+		}
+		#endregion
+
 		#region Commands
 
 
@@ -323,7 +366,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
 		{
-			this.InitializeValue(parameter.ObjectValue is true);
+			this.InitializeValue(parameter.ObjectValue as bool?);
 		}
 
 		public bool BooleanValue
@@ -392,6 +435,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 
 		/// <summary>
+		/// The value as localized text, with its full precision.
+		/// </summary>
+		public string DecimalText => this.DecimalValue is decimal Number ? FormatNumber(Number) : "-";
+
+		/// <summary>
 		/// Notifies the numeric editor when the underlying observable value changes.
 		/// </summary>
 		/// <param name="Args">The property change notification.</param>
@@ -400,7 +448,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			base.OnPropertyChanged(Args);
 
 			if (Args.PropertyName == nameof(this.Value))
+			{
 				this.OnPropertyChanged(nameof(this.DecimalValue));
+				this.OnPropertyChanged(nameof(this.DecimalText));
+			}
 		}
 	}
 
@@ -420,7 +471,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public ObservableStringParameter(StringParameter parameter) : base(parameter)
 		{
-			this.InitializeValue(parameter.ObjectValue as string ?? string.Empty);
+			this.InitializeValue(parameter.ObjectValue as string);
 		}
 
 		public string StringValue
@@ -446,13 +497,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
 		{
-			this.InitializeValue(parameter.ObjectValue is TimeSpan TimeSpan ? TimeSpan : TimeSpan.Zero);
+			this.InitializeValue(parameter.ObjectValue as TimeSpan?);
 		}
 
-		public TimeSpan TimeSpanValue
+		/// <summary>
+		/// The time, or null while nobody has chosen one.
+		/// </summary>
+		public TimeSpan? TimeSpanValue
 		{
-			get => this.Value as TimeSpan? ?? TimeSpan.Zero;
-			set => this.Value = value;
+			get => this.Value as TimeSpan?;
+			set
+			{
+				if (value == this.TimeSpanValue)
+					return;
+
+				this.Value = value;
+			}
 		}
 	}
 
@@ -475,7 +535,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public ObservableDurationParameter(DurationParameter parameter) : base(parameter)
 		{
-			this.InitializeValue(parameter.ObjectValue is Duration Duration ? Duration : Duration.Zero);
+			this.InitializeValue(parameter.ObjectValue is Duration Duration ? Duration : null);
 		}
 
 		public string StringValue
@@ -490,11 +550,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 		}
 
+		/// <summary>
+		/// The duration shown by the picker, which shows an unset duration as empty.
+		/// </summary>
 		public Duration DurationValue
 		{
 			get => this.Value as Duration? ?? Duration.Zero;
 			set
 			{
+				// The picker reports an empty duration while nothing is set; that isn't a value someone chose.
+				if (this.Value is null && value.Equals(Duration.Zero))
+					return;
+
 				if (Duration.TryParse(value.ToString(), out Duration DurationValue))
 					this.Value = DurationValue;
 				else
@@ -520,7 +587,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public ObservableRoleParameter(RoleParameter parameter) : base(parameter)
 		{
-			this.InitializeValue(parameter.ObjectValue as string ?? string.Empty);
+			this.InitializeValue(parameter.ObjectValue as string);
 		}
 
 		public string RoleValue
@@ -567,11 +634,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 				return Value switch
 				{
-					decimal DecimalValue => DecimalValue.ToString("N", Culture), // Number format with localization
-					DateTime DateTimeValue => DateTimeValue.ToString("G", Culture), // Localized date format
-					TimeSpan TimeSpanValue => TimeSpanValue.ToString(@"hh\:mm\:ss", Culture), // Time format
+					decimal DecimalValue => FormatNumber(DecimalValue),
+					double DoubleValue => DoubleValue.ToString("G17", Culture),
+					DateTime DateTimeValue => (DateTimeValue.Kind == DateTimeKind.Utc ? DateTimeValue.ToLocalTime() : DateTimeValue).ToString("G", Culture),
+					TimeSpan TimeSpanValue => FormatTimeSpan(TimeSpanValue),
+					Duration DurationValue => DurationToString.ToString(DurationValue),
+					bool BooleanValue => ServiceRef.Localizer[BooleanValue ? nameof(AppResources.Yes) : nameof(AppResources.No)].Value,
 					string StringValue => string.IsNullOrEmpty(StringValue) ? "-" : StringValue,
-					_ => Value?.ToString() ?? string.Empty // Fallback for unknown types
+					_ => Value?.ToString() ?? string.Empty
 				};
 			}
 		}
@@ -597,12 +667,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
 		{
-			// Extract initial value from parameter
-			if (parameter.ObjectValue is DateTime Dt)
-				this.InitializeValue(Dt);
-			else
-				this.InitializeValue(parameter.Min);
+			this.InitializeValue(parameter.ObjectValue as DateTime?);
 		}
+
+		/// <summary>
+		/// A time chosen before the date, kept until a date is chosen.
+		/// </summary>
+		private TimeSpan? pendingTime;
 
 		/// <summary>
 		/// The DateTime value of the parameter.
@@ -627,30 +698,37 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 				if (value.HasValue)
 				{
-					DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
-					this.DateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, Current.Hour, Current.Minute, Current.Second);
+					TimeSpan Time = this.SelectedTime ?? TimeSpan.Zero;
+					this.pendingTime = null;
+					this.DateTimeValue = value.Value.Date + new TimeSpan(Time.Hours, Time.Minutes, Time.Seconds);
 				}
 				else
 				{
+					this.pendingTime = this.DateTimeValue?.TimeOfDay;
 					this.DateTimeValue = null;
 				}
 			}
 		}
 
 		/// <summary>
-		/// Helper to get or set just the Time portion.
+		/// Helper to get or set just the Time portion. Without a date, the time waits for one.
 		/// </summary>
-		public TimeSpan SelectedTime
+		public TimeSpan? SelectedTime
 		{
-			get => this.DateTimeValue?.TimeOfDay ?? TimeSpan.Zero;
+			get => this.DateTimeValue?.TimeOfDay ?? this.pendingTime;
 			set
 			{
-				// A cleared date displays midnight; binding feedback must not recreate a date.
+				// Binding feedback must not create a date nobody chose.
 				if (value == this.SelectedTime)
 					return;
 
-				DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
-				this.DateTimeValue = Current.Date + value;
+				if (this.DateTimeValue is DateTime Current && value.HasValue)
+					this.DateTimeValue = Current.Date + value.Value;
+				else
+				{
+					this.pendingTime = value;
+					this.OnPropertyChanged(nameof(this.SelectedTime));
+				}
 			}
 		}
 	}
@@ -703,7 +781,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			try
 			{
 				TaskCompletionSource<Contract?> TaskCompletionSource = new();
-				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource);
+				ContractPickerFilter Filter = new ContractPickerFilter((ContractReferenceParameter)this.Parameter);
+				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource, Filter);
 				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args);
 				Contract? Contract = await TaskCompletionSource.Task;
 

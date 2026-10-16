@@ -74,6 +74,10 @@
 						</Grid>
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
+				<Label Text="{l:Localize ParameterNotSet}"
+					   IsVisible="{Binding IsValueMissing}"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   FontSize="{StaticResource FontSizeSm}" />
 				<!-- Added Protection Indicator here -->
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
@@ -203,7 +207,7 @@
 						   Text="{Binding Label}"
 						   Style="{DynamicResource ParameterItemTitleLabel}" />
 					<Label Grid.Row="1"
-						   Text="{Binding DecimalValue,Converter={converters:MoneyToString}}"
+						   Text="{Binding DecimalText}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -277,6 +281,10 @@
 									FontSize="{StaticResource FontSizeXl}" />
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
+				<Label Text="{l:Localize ParameterNotSet}"
+					   IsVisible="{Binding IsValueMissing}"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   FontSize="{StaticResource FontSizeSm}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
@@ -305,7 +313,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding TimeSpanValue, StringFormat='{}{0:hh\\:mm\\:ss}'}"
+						   Text="{Binding TimeSpanValue, StringFormat='{}{0:hh\\:mm\\:ss}', TargetNullValue='-'}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -325,6 +333,10 @@
 													TitleLabelStyle="{DynamicResource DurationLabel}"
 													DurationValue="{Binding DurationValue, Mode=TwoWay}"
 													IsValid="{Binding IsValid}" />
+				<Label Text="{l:Localize ParameterNotSet}"
+					   IsVisible="{Binding IsValueMissing}"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   FontSize="{StaticResource FontSizeSm}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
@@ -479,6 +491,10 @@
 						</controls:CompositeInputView.CenterView>
 					</controls:CompositeInputView>
 				</Grid>
+				<Label Text="{l:Localize ParameterNotSet}"
+					   IsVisible="{Binding IsValueMissing}"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   FontSize="{StaticResource FontSizeSm}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
@@ -558,7 +574,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding CalcValue,Converter={converters:MoneyToString}}"
+						   Text="{Binding CalcString}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"

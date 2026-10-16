@@ -88,8 +88,11 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="Contract">The contract.</param>
 		/// <param name="LegalId">The user's legal identity ID, if any.</param>
 		/// <param name="UtcNow">The current time, in UTC.</param>
+		/// <param name="RolesSignableAsEarlierIdentity">Roles the user can sign for an earlier identity of theirs, when
+		/// their identity was renewed. See <see cref="ContractSigningGuard.GetRolesSignableAsEarlierIdentityAsync"/>.</param>
 		/// <returns>If signing should be offered.</returns>
-		public static bool CanSign(Contract Contract, string? LegalId, DateTime UtcNow)
+		public static bool CanSign(Contract Contract, string? LegalId, DateTime UtcNow,
+			IReadOnlyCollection<string>? RolesSignableAsEarlierIdentity = null)
 		{
 			if (string.IsNullOrEmpty(LegalId))
 				return false;
@@ -111,7 +114,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 			foreach (Role Role in Contract.Roles)
 			{
-				if (CanSignInRole(Contract, Role, LegalId))
+				if (CanSignInRole(Contract, Role, LegalId, RolesSignableAsEarlierIdentity))
 					return true;
 			}
 
@@ -135,8 +138,10 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="Contract">The contract.</param>
 		/// <param name="Role">The role.</param>
 		/// <param name="LegalId">The user's legal identity ID.</param>
+		/// <param name="RolesSignableAsEarlierIdentity">Roles the user can sign for an earlier identity of theirs, or null.</param>
 		/// <returns>If the user can sign in the role.</returns>
-		private static bool CanSignInRole(Contract Contract, Role Role, string LegalId)
+		private static bool CanSignInRole(Contract Contract, Role Role, string LegalId,
+			IReadOnlyCollection<string>? RolesSignableAsEarlierIdentity)
 		{
 			int Count = 0;
 
@@ -158,6 +163,9 @@ namespace NeuroAccessMaui.Services.Contracts
 				return false;
 
 			if (Contract.PartsMode != ContractParts.ExplicitlyDefined)
+				return true;
+
+			if (RolesSignableAsEarlierIdentity?.Contains(Role.Name) == true)
 				return true;
 
 			if (Contract.Parts is null)

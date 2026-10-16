@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Pages.Contracts.SigningBlockers.SigningBlockersPopup"
+					 x:Name="ThisPopup"
+					 x:DataType="viewmodel:SigningBlockersViewModel"
+					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+					 xmlns:contracts="clr-namespace:NeuroAccessMaui.Services.Contracts"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.SigningBlockers">
+	<ScrollView VerticalOptions="Center">
+		<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+			<Label HorizontalTextAlignment="Center"
+					 Style="{DynamicResource PageTitleLabel}"
+					 Text="{l:Localize ContractGuardTitle}" />
+
+			<VerticalStackLayout BindableLayout.ItemsSource="{Binding Blockers}"
+										Spacing="{DynamicResource MediumSpacing}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate x:DataType="contracts:ContractSigningBlocker">
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+							<Label Style="{DynamicResource InfoLabel}"
+									 Text="{Binding Message}"
+									 LineBreakMode="WordWrap" />
+							<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+														LabelData="{Binding ActionText}"
+														IsVisible="{Binding HasAction}"
+														Command="{Binding RunActionCommand, Source={RelativeSource AncestorType={x:Type viewmodel:SigningBlockersViewModel}}, x:DataType=viewmodel:SigningBlockersViewModel}"
+														CommandParameter="{Binding .}" />
+						</VerticalStackLayout>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+			</VerticalStackLayout>
+
+			<controls:TextButton Command="{Binding CloseCommand}"
+										Style="{DynamicResource FilledTextButton}"
+										LabelData="{l:Localize Close}" />
+		</VerticalStackLayout>
+	</ScrollView>
+</base:BasePopup>

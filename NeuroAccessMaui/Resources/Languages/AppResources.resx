@@ -4556,4 +4556,199 @@ Document read. You can move your iPhone.</value>
   <data name="SignatureRequestDeclinedText" xml:space="preserve">
     <value>The person declined to sign your request.</value>
   </data>
+  <data name="ContractGroupNeedsAction" xml:space="preserve">
+    <value>Needs your action</value>
+  </data>
+  <data name="ContractGroupInProgress" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="ContractGroupSigned" xml:space="preserve">
+    <value>Signed</value>
+  </data>
+  <data name="ContractGroupEnded" xml:space="preserve">
+    <value>Ended</value>
+  </data>
+  <data name="ContractMarkerInvitation" xml:space="preserve">
+    <value>Invitation</value>
+  </data>
+  <data name="ContractMarkerNeedsSignature" xml:space="preserve">
+    <value>Needs your signature</value>
+  </data>
+  <data name="ContractMarkerRequest" xml:space="preserve">
+    <value>Request to see</value>
+  </data>
+  <data name="ContractRowRoleFormat" xml:space="preserve">
+    <value>Your role: {0}</value>
+  </data>
+  <data name="ContractSectionParties" xml:space="preserve">
+    <value>Parties</value>
+  </data>
+  <data name="ContractSectionDates" xml:space="preserve">
+    <value>Dates</value>
+  </data>
+  <data name="ContractSectionTemplate" xml:space="preserve">
+    <value>Created from template</value>
+  </data>
+  <data name="ContractSectionAttachments" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
+  <data name="ContractSectionTechnicalDetails" xml:space="preserve">
+    <value>Technical details</value>
+  </data>
+  <data name="ContractShowDetails" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="ContractHideDetails" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="ContractSigningWindow" xml:space="preserve">
+    <value>Signing window</value>
+  </data>
+  <data name="ContractSigningWindowBetween" xml:space="preserve">
+    <value>{0} to {1}</value>
+  </data>
+  <data name="ContractSigningWindowFrom" xml:space="preserve">
+    <value>From {0}</value>
+  </data>
+  <data name="ContractSigningWindowUntil" xml:space="preserve">
+    <value>Until {0}</value>
+  </data>
+  <data name="ContractValidFrom" xml:space="preserve">
+    <value>Valid from</value>
+  </data>
+  <data name="ContractValidTo" xml:space="preserve">
+    <value>Valid to</value>
+  </data>
+  <data name="ContractArchivedUntil" xml:space="preserve">
+    <value>Archived until</value>
+  </data>
+  <data name="ContractArchiveRequired" xml:space="preserve">
+    <value>Required archive time</value>
+  </data>
+  <data name="ContractArchiveOptional" xml:space="preserve">
+    <value>Optional archive time</value>
+  </data>
+  <data name="RoleSignaturesFormat" xml:space="preserve">
+    <value>Signatures: {0} of {1}</value>
+  </data>
+  <data name="RoleSignaturesRangeFormat" xml:space="preserve">
+    <value>Signatures: {0} (needs {1}, allows up to {2})</value>
+  </data>
+  <data name="ParameterNotSet" xml:space="preserve">
+    <value>Not chosen yet</value>
+  </data>
+  <data name="ContractPartsNamed" xml:space="preserve">
+    <value>Only the people named in the contract</value>
+  </data>
+  <data name="ContractPartsOpen" xml:space="preserve">
+    <value>Anyone who can see the contract</value>
+  </data>
+  <data name="ContractSettingsWhoCanSign" xml:space="preserve">
+    <value>Who can sign</value>
+  </data>
+  <data name="ContractSettingsParts" xml:space="preserve">
+    <value>Parts</value>
+  </data>
+  <data name="ContractSettingsOpenHint" xml:space="preserve">
+    <value>You won't name anyone in the next step. Anyone who can see the contract can sign it in a role that isn't full.</value>
+  </data>
+  <data name="ContractSettingsVisibilityPlaceholder" xml:space="preserve">
+    <value>Choose who can see the contract</value>
+  </data>
+  <data name="ContractSettingsWindowHint" xml:space="preserve">
+    <value>Leave a date empty to accept signatures without that limit.</value>
+  </data>
+  <data name="ContractSettingsSignAfter" xml:space="preserve">
+    <value>Accept signatures from</value>
+  </data>
+  <data name="ContractSettingsSignBefore" xml:space="preserve">
+    <value>Accept signatures until</value>
+  </data>
+  <data name="ContractSettingsChooseDate" xml:space="preserve">
+    <value>No date</value>
+  </data>
+  <data name="ContractSettingsClear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="ContractSettingsValidity" xml:space="preserve">
+    <value>Validity and archiving</value>
+  </data>
+  <data name="ContractSettingsValidityHint" xml:space="preserve">
+    <value>The validity starts when the contract is created. The archive times count from when it ends.</value>
+  </data>
+  <data name="ContractSettingsDurationInvalid" xml:space="preserve">
+    <value>The duration must be longer than zero.</value>
+  </data>
+  <data name="ContractSettingsArchiveInvalid" xml:space="preserve">
+    <value>Archive times can't be negative.</value>
+  </data>
+  <data name="ContractSettingsWindowOrder" xml:space="preserve">
+    <value>The signing window must end after it starts.</value>
+  </data>
+  <data name="ContractSettingsWindowPassed" xml:space="preserve">
+    <value>The end of the signing window has already passed.</value>
+  </data>
+  <data name="ContractGuardIdentityNotApproved" xml:space="preserve">
+    <value>You need an approved ID to sign contracts.</value>
+  </data>
+  <data name="ContractGuardOpenIdentity" xml:space="preserve">
+    <value>Open my ID</value>
+  </data>
+  <data name="ContractGuardAlreadySigned" xml:space="preserve">
+    <value>You have already signed this contract in this role.</value>
+  </data>
+  <data name="ContractGuardTitle" xml:space="preserve">
+    <value>You can't sign yet</value>
+  </data>
+  <data name="ContractSummaryTitle" xml:space="preserve">
+    <value>Before you sign</value>
+  </data>
+  <data name="ContractSummaryRoles" xml:space="preserve">
+    <value>You can sign as</value>
+  </data>
+  <data name="ContractSummaryStepsHint" xml:space="preserve">
+    <value>Next, read the full text, choose your role and confirm with your PIN or biometrics.</value>
+  </data>
+  <data name="ContractSignResultSuccessTitle" xml:space="preserve">
+    <value>You signed the contract</value>
+  </data>
+  <data name="ContractSignResultFailedTitle" xml:space="preserve">
+    <value>The contract wasn't signed</value>
+  </data>
+  <data name="ContractSignResultSigned" xml:space="preserve">
+    <value>The contract now has all the signatures it needs.</value>
+  </data>
+  <data name="ContractSignResultWaitingOne" xml:space="preserve">
+    <value>Waiting for 1 more signature.</value>
+  </data>
+  <data name="ContractSignResultWaitingMany" xml:space="preserve">
+    <value>Waiting for {0} more signatures.</value>
+  </data>
+  <data name="ContractSignResultAdded" xml:space="preserve">
+    <value>Your signature was added.</value>
+  </data>
+  <data name="ContractSignTryAgain" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="ContractSignDone" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="ContractSignNotSigned" xml:space="preserve">
+    <value>Not signed</value>
+  </data>
+  <data name="InviteNotSentTitle" xml:space="preserve">
+    <value>Not invited yet</value>
+  </data>
+  <data name="InviteNeedsIdentity" xml:space="preserve">
+    <value>You can't see the identity of {0}, so the app has no address to send the invitation to. Ask them to show it? Once they do, you can invite them from the contract.</value>
+  </data>
+  <data name="InviteWaitingForIdentity" xml:space="preserve">
+    <value>You can't see the identity of {0} yet, so they weren't invited. Once they accept your request, you can invite them from the contract.</value>
+  </data>
+  <data name="InviteNobodyReachable" xml:space="preserve">
+    <value>Nobody can be invited yet. To invite someone whose identity you can't see, request their identity under Parties first.</value>
+  </data>
+  <data name="InviteRequestIdentityHint" xml:space="preserve">
+    <value>Request their identity to invite them.</value>
+  </data>
 </root>

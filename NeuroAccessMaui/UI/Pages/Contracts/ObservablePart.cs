@@ -58,22 +58,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 						Identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(this.LegalId, string.Empty);
 				}
 
-				// A protected identity may still be known from the contact list.
+				// A protected identity may still be known from the contact list, or at least the contact's address.
+				bool HasContactAddress = false;
 				if (Identity is null)
 				{
 					ContactInfo? Info = await ContactInfo.FindByLegalId(this.LegalId);
 					Identity = Info?.LegalIdentity;
+					HasContactAddress = !string.IsNullOrWhiteSpace(Info?.BareJid);
 				}
 
 				this.identity = Identity;
 				string FriendlyName = await this.GetFriendlyNameAsync();
 
+				// A request sent from another page, such as the one that created the contract, is still shown as sent.
+				bool Requested = Identity is null && this.IsThirdParty &&
+					ServiceRef.ContractOrchestratorService.IsIdentityRequestPending(this.LegalId);
+
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.FriendlyName = FriendlyName;
+					this.hasContactAddress = HasContactAddress;
 
 					if (this.identity is not null)
 						this.IdentityState = PartIdentityState.Visible;
+					else if (Requested)
+						this.IdentityState = PartIdentityState.Requested;
 					else if (this.IdentityState == PartIdentityState.Visible)
 						this.IdentityState = PartIdentityState.NotVisible;
 					else
@@ -121,6 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.OnPropertyChanged(nameof(this.IsIdentityRequested));
 			this.OnPropertyChanged(nameof(this.IsIdentityDeclined));
 			this.OnPropertyChanged(nameof(this.CanRequestIdentity));
+			this.OnPropertyChanged(nameof(this.CanRequestIdentityToInvite));
 			this.OnPropertyChanged(nameof(this.CanSendProposal));
 		}
 
@@ -157,6 +167,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 		#region Properties
 		private LegalIdentity? identity;
+		private bool hasContactAddress;
 
 		/// <summary>
 		/// The wrapped Part object
@@ -173,6 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.HasSigned));
 				this.OnPropertyChanged(nameof(this.CanViewSignature));
 				this.OnPropertyChanged(nameof(this.CanSendProposal));
+				this.OnPropertyChanged(nameof(this.CanRequestIdentityToInvite));
 				this.OpenSignatureCommand.NotifyCanExecuteChanged();
 			}
 		}
@@ -250,6 +262,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool CanSendProposal => this.IsThirdParty && this.HasIdentity && !this.HasSigned && this.Role != "TrustProvider";
 
 		/// <summary>
+		/// If the user is offered to request the identity, since the part can't be invited without it. Contacts can be invited
+		/// at their address, and parts set by the caller and the trust provider aren't invited this way.
+		/// </summary>
+		public bool CanRequestIdentityToInvite => this.CanRequestIdentity && !this.hasContactAddress && !this.HasSigned &&
+			!this.IsPresetFromArgs && this.Role != "TrustProvider";
+
+		/// <summary>
 		/// True if this part was preselected via navigation args and therefore should not be removable in the Roles view.
 		/// </summary>
 		public bool IsPresetFromArgs
@@ -261,6 +280,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					this.OnPropertyChanged(nameof(this.ShowRemoveAsMe));
 					this.OnPropertyChanged(nameof(this.ShowRemoveAsThirdParty));
+					this.OnPropertyChanged(nameof(this.CanRequestIdentityToInvite));
 				}
 			}
 		}
@@ -312,13 +332,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 
 		/// <summary>
-		/// Asks the owner of the part's identity to show it. The answer updates the part when it arrives.
+		/// Asks the owner of the part's identity to show it, and tells the user it was sent. The answer updates the part when it arrives.
 		/// </summary>
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task RequestIdentityAsync()
 		{
-			if (!this.CanRequestIdentity)
+			if (!await this.SendIdentityRequestAsync())
 				return;
+
+			await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.Petition)],
+				ServiceRef.Localizer[nameof(AppResources.PetitionIdentitySent)],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		}
+
+		/// <summary>
+		/// Asks the owner of the part's identity to show it. The answer updates the part when it arrives.
+		/// </summary>
+		/// <returns>If the request was sent. If not, the user has been told why.</returns>
+		public async Task<bool> SendIdentityRequestAsync()
+		{
+			if (!this.CanRequestIdentity)
+				return false;
 
 			string Purpose = string.IsNullOrEmpty(this.ContractName)
 				? ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]
@@ -326,17 +361,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			string? PetitionId = await ServiceRef.ContractOrchestratorService.RequestIdentityAsync(this.LegalId, Purpose);
 			if (PetitionId is null)
-				return;
+				return false;
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.IdentityState = PartIdentityState.Requested;
 			});
 
-			await ServiceRef.UiService.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.Petition)],
-				ServiceRef.Localizer[nameof(AppResources.PetitionIdentitySent)],
-				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			return true;
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(HasSigned))]

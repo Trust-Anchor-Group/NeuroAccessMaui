@@ -48,6 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly SelectContractAction action;
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private readonly ContractsListMode mode;
+		private readonly ContractPickerFilter? filter;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyContractsNavigationArgs"/> class.
@@ -80,6 +81,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <summary>
+		/// Creates an instance of the <see cref="MyContractsNavigationArgs"/> class, for picking a contract that meets a
+		/// parameter's rules.
+		/// </summary>
+		/// <param name="Mode">What list of contracts to display.</param>
+		/// <param name="Selection">Selection source, where selected item will be stored, or null if cancelled.</param>
+		/// <param name="Filter">The rules a picked contract must meet.</param>
+		public MyContractsNavigationArgs(ContractsListMode Mode, TaskCompletionSource<Contract?> Selection, ContractPickerFilter? Filter)
+			: this(Mode, Selection)
+		{
+			this.filter = Filter;
+		}
+
+		/// <summary>
 		/// Action to take when a contact has been selected.
 		/// </summary>
 		public SelectContractAction Action => this.action;
@@ -93,5 +107,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// Selection source, if selecting identity.
 		/// </summary>
 		public TaskCompletionSource<Contract?>? Selection => this.selection;
+
+		/// <summary>
+		/// The rules a picked contract must meet, if picking a contract for a contract-reference parameter.
+		/// </summary>
+		public ContractPickerFilter? Filter => this.filter;
 	}
 }

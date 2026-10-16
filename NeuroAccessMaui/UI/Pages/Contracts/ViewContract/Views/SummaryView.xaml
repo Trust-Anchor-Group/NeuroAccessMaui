@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<views:BaseViewContractView x:Name="ThisPage"
+									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.SummaryView"
+									 x:DataType="base:ViewContractViewModel"
+									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+									 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel">
+	<Grid RowDefinitions="*, auto">
+		<ScrollView Grid.Row="0">
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}"
+										Padding="{DynamicResource MediumLeftRightMargins}">
+				<!-- What it is -->
+				<Border Style="{DynamicResource BorderSet}"
+						  Margin="0">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Text="{l:Localize ContractSummaryTitle}"
+								 Style="{DynamicResource SectionTitleLabel}" />
+						<Label Text="{Binding ContractName}"
+								 Style="{DynamicResource BoldItemTitleLabel}"
+								 HorizontalTextAlignment="Start"
+								 LineBreakMode="WordWrap" />
+						<Label Text="{Binding Contract.Category}"
+								 Style="{DynamicResource ItemDescriptionLabel}"
+								 LineBreakMode="WordWrap" />
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- The role on offer, and the signing window -->
+				<Border Style="{DynamicResource BorderSet}"
+						  Margin="0">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Text="{l:Localize ContractSummaryRoles}"
+								 Style="{DynamicResource SectionTitleLabel}" />
+						<Label Text="{Binding SigningRolesText}"
+								 Style="{DynamicResource BoldItemTitleLabel}"
+								 HorizontalTextAlignment="Start"
+								 LineBreakMode="WordWrap" />
+						<Label Text="{l:Localize ContractSigningWindow}"
+								 Style="{DynamicResource SectionTitleLabel}"
+								 IsVisible="{Binding HasSigningWindow}" />
+						<Label Text="{Binding SigningWindowText}"
+								 Style="{DynamicResource ItemDescriptionLabel}"
+								 IsVisible="{Binding HasSigningWindow}" />
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Who is in the contract -->
+				<Border Style="{DynamicResource BorderSet}"
+						  Margin="0">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Text="{l:Localize ContractSectionParties}"
+								 Style="{DynamicResource SectionTitleLabel}" />
+						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contract.Roles}"
+													Spacing="{DynamicResource SmallSpacing}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="objectModel:ObservableRole">
+									<VerticalStackLayout Spacing="2">
+										<Label Text="{Binding Name}"
+												 Style="{DynamicResource BoldItemTitleLabel}"
+												 HorizontalTextAlignment="Start" />
+										<Label Text="{Binding SignaturesText}"
+												 Style="{DynamicResource ItemDescriptionLabel}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="objectModel:ObservablePart">
+													<Grid ColumnDefinitions="*, auto"
+															ColumnSpacing="{DynamicResource SmallSpacing}">
+														<Label Grid.Column="0"
+																 Text="{Binding FriendlyName}"
+																 Style="{DynamicResource ItemDescriptionLabel}" />
+														<Label Grid.Column="1"
+																 Text="{l:Localize Signed}"
+																 Style="{DynamicResource ItemDescriptionLabel}"
+																 TextColor="{DynamicResource TnPSuccessContentWL}"
+																 IsVisible="{Binding HasSigned}" />
+														<Label Grid.Column="1"
+																 Text="{l:Localize PendingSignature}"
+																 Style="{DynamicResource ItemDescriptionLabel}"
+																 TextColor="{DynamicResource BrandColorsNeuroOrange}"
+																 IsVisible="{Binding HasSigned, Converter={mct:InvertedBoolConverter}}" />
+													</Grid>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+										<Label Text="{l:Localize None}"
+												 Style="{DynamicResource ItemDescriptionLabel}"
+												 IsVisible="{Binding HasNoParts}" />
+									</VerticalStackLayout>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+				</Border>
+
+				<Label Text="{l:Localize ContractSummaryStepsHint}"
+						 Style="{DynamicResource InfoLabel}"
+						 LineBreakMode="WordWrap" />
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<!-- BOTTOM BAR -->
+		<Border Grid.Row="1"
+				  Style="{DynamicResource BottomBarBorder}">
+			<Grid HorizontalOptions="Fill"
+					VerticalOptions="Center"
+					ColumnSpacing="{DynamicResource SmallSpacing}"
+					Padding="{DynamicResource SmallMargins}"
+					ColumnDefinitions="*,*">
+				<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+											Grid.Column="0"
+											LabelData="{l:Localize Back}"
+											Command="{Binding BackCommand}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+											Grid.Column="1"
+											LabelData="{l:Localize ContractWizardNext}"
+											Command="{Binding GoToSigningReviewCommand}" />
+			</Grid>
+		</Border>
+	</Grid>
+</views:BaseViewContractView>

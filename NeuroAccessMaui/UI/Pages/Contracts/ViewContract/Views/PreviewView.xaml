@@ -11,11 +11,31 @@
                            xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
-	<Grid RowDefinitions="*" ColumnDefinitions="*">
-		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
+	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
+		<Border Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
 			<ScrollView >
 				<ContentView Content="{Binding HumanReadableText}" />
 			</ScrollView>
+		</Border>
+
+		<!-- While signing, the full text is the second step -->
+		<Border Grid.Row="1"
+				  Style="{DynamicResource BottomBarBorder}"
+				  IsVisible="{Binding IsSigningFlow}">
+			<Grid HorizontalOptions="Fill"
+					VerticalOptions="Center"
+					ColumnSpacing="{DynamicResource SmallSpacing}"
+					Padding="{DynamicResource SmallMargins}"
+					ColumnDefinitions="*,*">
+				<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+											Grid.Column="0"
+											LabelData="{l:Localize Back}"
+											Command="{Binding BackCommand}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+											Grid.Column="1"
+											LabelData="{l:Localize ContractWizardNext}"
+											Command="{Binding GoToSigningRoleCommand}" />
+			</Grid>
 		</Border>
 	</Grid>
 </views:BaseViewContractView>

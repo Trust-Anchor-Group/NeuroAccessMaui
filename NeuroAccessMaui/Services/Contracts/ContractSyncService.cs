@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.Services.Contracts
 	/// <summary>
 	/// Reads contracts from the server and stores them through <see cref="IContractStore"/>.
 	/// </summary>
-	internal class ContractSyncService : IContractSyncService
+	internal class ContractSyncService : IContractSyncService, IDisposable
 	{
 		private const string LastSyncKey = "Contracts.LastSync";
 		private const int ReferencePageSize = 50;
@@ -22,6 +22,7 @@ namespace NeuroAccessMaui.Services.Contracts
 		private DateTime lastSync = DateTime.MinValue;
 		private bool lastSyncRestored;
 		private volatile bool isSyncing;
+		private bool disposed;
 
 		/// <summary>
 		/// Reads contracts from the server and stores them through <see cref="IContractStore"/>.
@@ -359,6 +360,30 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Releases the resources owned by the service.
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Releases the resources owned by the service.
+		/// </summary>
+		/// <param name="Disposing">If managed resources should be released.</param>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.disposed)
+				return;
+
+			if (Disposing)
+				this.syncLock.Dispose();
+
+			this.disposed = true;
 		}
 
 		private static bool SameTime(DateTime A, DateTime B)
