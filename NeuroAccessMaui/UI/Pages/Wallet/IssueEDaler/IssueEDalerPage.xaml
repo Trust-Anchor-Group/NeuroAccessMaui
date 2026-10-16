@@ -61,11 +61,11 @@
 									<Label.FormattedText>
 										<FormattedString>
 											<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}"
-												  FontSize="50"
+												  FontSize="{StaticResource FontSizeDisplayXl}"
 												  FontAttributes="Bold" />
 											<Span Text=" " />
 											<Span Text="{Binding Path=Currency}"
-												  FontSize="30" />
+												  FontSize="{StaticResource FontSize7xl}" />
 										</FormattedString>
 									</Label.FormattedText>
 								</Label>

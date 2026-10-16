@@ -31,6 +31,10 @@ namespace NeuroAccessMaui.UI.Pages
 			await base.OnInitializeAsync();
 
 			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+
+			// The view model may be constructed long before it is initialized (for example a main page tab), so any
+			// state changes raised in between were missed. Re-read the current state now that events are subscribed.
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetConnectionStateAndText(ServiceRef.XmppService.State));
 		}
 
 		/// <inheritdoc/>

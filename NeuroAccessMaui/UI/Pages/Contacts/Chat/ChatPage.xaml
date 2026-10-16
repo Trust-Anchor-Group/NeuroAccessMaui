@@ -20,7 +20,7 @@
 			<controls:ImageButton Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
 											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-			<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource PageTitleLabel}" FontSize="24" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
+			<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource PageTitleLabel}" FontSize="{StaticResource FontSize4xl}" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
 
 			<ScrollView Grid.ColumnSpan="2" Grid.Row="1" x:Name="ScrollView" x:FieldModifier="public" Orientation="Vertical">
 				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}" HorizontalOptions="Fill">

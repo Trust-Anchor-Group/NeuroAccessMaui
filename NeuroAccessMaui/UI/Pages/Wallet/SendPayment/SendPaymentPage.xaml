@@ -37,7 +37,7 @@
 							<Label Grid.Column="1" Grid.Row="0"
 									HorizontalOptions="Start"
 									Text="{l:Localize CreditBalance}"
-									FontSize="16"
+									FontSize="{StaticResource FontSizeLg}"
 									LineHeight="0.8"
 									Style="{DynamicResource PageTitleLabel}"
 									VerticalOptions="Center"/>
@@ -49,7 +49,7 @@
 							<Grid ColumnDefinitions="*, auto" Margin="0,4,0,0">
 								<Label Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
 										Style="{DynamicResource KeyLabel}"
-										FontSize="12"
+										FontSize="{StaticResource FontSizeXs}"
 										FontFamily="HaasGroteskRegular"
 										VerticalOptions="Center"
 										Margin="0,0,8,0"/>
@@ -71,18 +71,18 @@
 							<Label>
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding Path=BalanceDecimal}" FontSize="48" FontFamily="SpaceGroteskBold"/>
+										<Span Text="{Binding Path=BalanceDecimal}" FontSize="{StaticResource FontSizeDisplayLg}" FontFamily="SpaceGroteskBold"/>
 										<Span Text=" "/>
-										<Span Text="{Binding Currency}" FontSize="32" FontFamily="SpaceGroteskBold"/>
+										<Span Text="{Binding Currency}" FontSize="{StaticResource FontSize8xl}" FontFamily="SpaceGroteskBold"/>
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>
 							<Label Grid.Row="1" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start" IsVisible="{Binding HasReserved}">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{l:Localize Reserved}" FontSize="14" />
+										<Span Text="{l:Localize Reserved}" FontSize="{StaticResource FontSizeSm}" />
 										<Span Text=" " />
-										<Span Text="{Binding ReservedString}" FontSize="14" />
+										<Span Text="{Binding ReservedString}" FontSize="{StaticResource FontSizeSm}" />
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>
@@ -121,7 +121,7 @@
 													</controls:SvgView.Triggers>
 												</controls:SvgView>
 											</Border>
-											<Label Text="{Binding ToContact.FriendlyName}" Grid.Column="1" LineBreakMode="TailTruncation" VerticalOptions="Center" FontSize="14"/>
+											<Label Text="{Binding ToContact.FriendlyName}" Grid.Column="1" LineBreakMode="TailTruncation" VerticalOptions="Center" FontSize="{StaticResource FontSizeSm}"/>
 											<controls:SvgButton SvgSource="close.svg" Grid.Column="2" HeightRequest="32" WidthRequest="32" Command="{Binding ClearRecipientCommand}"/>
 										</Grid>
 									</Border>

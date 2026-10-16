@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 		{
 			string? Result;
 
-			Page? DisplayedPage = App.Current?.MainPage;
+			Page? DisplayedPage = UiPageResolver.GetPresentedPage(App.Current);
 
 			if (DisplayedPage is null)
 				Result = null;

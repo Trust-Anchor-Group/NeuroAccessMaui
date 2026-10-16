@@ -104,7 +104,7 @@
 													  CommandParameter="{Binding .}">
 									<Border StrokeShape="RoundRectangle 24" Padding="8"
 												Background="{DynamicResource TnPSuccessbgWL}">
-										<Label Text="{Binding Category}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
+										<Label Text="{Binding Category}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="{StaticResource FontSizeSm}"/>
 
 										<Border.Triggers>
 											<DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">

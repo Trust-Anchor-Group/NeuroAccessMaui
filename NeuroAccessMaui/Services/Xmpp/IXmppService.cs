@@ -620,6 +620,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId);
 
 		/// <summary>
+		/// Checks if the current signing keys belong to a legal identity, so that requests signed with the current keys,
+		/// such as attachment uploads, are accepted for that identity.
+		/// </summary>
+		/// <param name="Identity">The legal identity to check.</param>
+		/// <returns>If the current signing keys can sign on behalf of the identity.</returns>
+		Task<bool> CanSignWithCurrentKeysAsync(LegalIdentity Identity);
+
+		/// <summary>
 		/// Checks if locally persisted contract signing keys are available for reuse.
 		/// </summary>
 		/// <returns>If a local signing key set is available.</returns>

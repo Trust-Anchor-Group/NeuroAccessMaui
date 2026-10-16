@@ -32,16 +32,42 @@ namespace NeuroAccessMaui
 		{
 			Console.WriteLine("Silent data notification received: " + userInfo);
 
+			_ = ProcessSilentNotificationAsync(userInfo, completionHandler);
+		}
+
+		/// <summary>
+		/// Stores a silent data notification and then reports completion to iOS.
+		/// </summary>
+		/// <remarks>
+		/// Storing can wait for app startup when the push launched the app, so iOS is told the work is finished only after
+		/// the notification has been stored. The completion handler is called exactly once, also when storing fails.
+		/// </remarks>
+		/// <param name="userInfo">The push payload.</param>
+		/// <param name="completionHandler">The completion handler supplied by iOS.</param>
+		/// <returns>A task that completes after the completion handler has been called.</returns>
+		private static async Task ProcessSilentNotificationAsync(NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+		{
+			UIBackgroundFetchResult Result = UIBackgroundFetchResult.NewData;
 			try
 			{
-				NotificationDelegate.ProcessSilentNotification(userInfo);
+				await NotificationDelegate.ProcessSilentNotificationAsync(userInfo);
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				Result = UIBackgroundFetchResult.Failed;
+				try
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+				catch (Exception LoggingError)
+				{
+					Console.WriteLine(LoggingError);
+				}
 			}
-
-			completionHandler(UIBackgroundFetchResult.NewData);
+			finally
+			{
+				completionHandler(Result);
+			}
 		}
 
 		[Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]

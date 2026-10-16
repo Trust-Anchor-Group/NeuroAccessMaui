@@ -27,6 +27,7 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
+using Waher.Security;
 using NeuroAccessMaui.Services.UI.Popups;
 
 namespace NeuroAccessMaui.Services.Contracts
@@ -645,16 +646,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				// When this happens, try to send a petition to view it instead.
 				// Normal operation. Should not be logged.
 
-				MainThread.BeginInvokeOnMainThread(async () =>
-				{
-					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
-					if (Succeeded)
-					{
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
-							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheOwner)]);
-					}
-				});
+				await this.PetitionLegalIdentity(LegalId, Purpose);
 			}
 			catch (TimeoutException)
 			{
@@ -671,6 +663,23 @@ namespace NeuroAccessMaui.Services.Contracts
 					ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
+		}
+
+		/// <inheritdoc/>
+		public Task PetitionLegalIdentity(string LegalId, string Purpose)
+		{
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				bool Succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
+				if (Succeeded)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+						ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheOwner)]);
+				}
+			});
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -710,10 +719,36 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
 		public async Task OpenContract(string ContractId, string Purpose, Dictionary<CaseInsensitiveString, object>? ParameterValues)
 		{
+			Contract Contract;
+
 			try
 			{
-				Contract Contract = await ServiceRef.XmppService.GetContract(ContractId);
+				Contract = await ServiceRef.XmppService.GetContract(ContractId);
+			}
+			catch (ForbiddenException)
+			{
+				// This happens if you try to view someone else's contract.
+				// When this happens, try to send a petition to view it instead.
+				// Normal operation. Should not be logged.
 
+				await this.PetitionContract(ContractId, Purpose);
+				return;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				await ServiceRef.UiService.DisplayException(ex);
+				return;
+			}
+
+			await this.OpenContract(Contract, ParameterValues);
+		}
+
+		/// <inheritdoc/>
+		public async Task OpenContract(Contract Contract, Dictionary<CaseInsensitiveString, object>? ParameterValues)
+		{
+			try
+			{
 				ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
 					new FilterFieldEqualTo("ContractId", Contract.ContractId));
 
@@ -767,29 +802,29 @@ namespace NeuroAccessMaui.Services.Contracts
 					}
 				});
 			}
-			catch (ForbiddenException)
-			{
-				// This happens if you try to view someone else's contract.
-				// When this happens, try to send a petition to view it instead.
-				// Normal operation. Should not be logged.
-
-				MainThread.BeginInvokeOnMainThread(async () =>
-				{
-					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
-						ServiceRef.XmppService.PetitionContract(ContractId, Guid.NewGuid().ToString(), Purpose));
-
-					if (Succeeded)
-					{
-						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
-							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
-					}
-				});
-			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				await ServiceRef.UiService.DisplayException(ex);
 			}
+		}
+
+		/// <inheritdoc/>
+		public Task PetitionContract(string ContractId, string Purpose)
+		{
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+					ServiceRef.XmppService.PetitionContract(ContractId, Guid.NewGuid().ToString(), Purpose));
+
+				if (Succeeded)
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+						ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
+				}
+			});
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -810,7 +845,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 			if (ID is null)
 			{
-				await ServiceRef.Provider.GetRequiredService<UiService>().DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.NotCompletedOnboardingError)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				return;
@@ -818,7 +853,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 			if (ID.State != IdentityState.Approved)
 			{
-				await ServiceRef.Provider.GetRequiredService<UiService>().DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.LegalIdNotApproved)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				return;

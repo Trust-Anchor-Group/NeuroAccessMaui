@@ -57,7 +57,7 @@
             ApplyToDerivedTypes="False"
             TargetType="Label">
             <Setter Property="FontFamily" Value="SpaceGroteskBold" />
-            <Setter Property="FontSize" Value="26" />
+            <Setter Property="FontSize" Value="{StaticResource FontSize5xl}" />
             <Setter Property="LineBreakMode" Value="WordWrap" />
             <Setter Property="HorizontalTextAlignment" Value="Center" />
             <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
@@ -68,7 +68,7 @@
             BasedOn="{StaticResource FriendlyNameLabel}"
             TargetType="Label">
             <Setter Property="FontFamily" Value="SpaceGroteskMedium" />
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeXl}" />
             <Setter Property="LineBreakMode" Value="WordWrap" />
             <Setter Property="HorizontalTextAlignment" Value="Center" />
             <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
@@ -79,7 +79,7 @@
             BasedOn="{StaticResource FriendlyNameLabel}"
             TargetType="Label">
             <Setter Property="FontFamily" Value="SpaceGroteskBold" />
-            <Setter Property="FontSize" Value="27" />
+            <Setter Property="FontSize" Value="{StaticResource FontSize5xl}" />
             <Setter Property="LineBreakMode" Value="WordWrap" />
             <Setter Property="HorizontalTextAlignment" Value="Center" />
         </Style>
@@ -121,7 +121,7 @@
             </Setter>
         </Style>
         <Style x:Key="StatusPillLabel" TargetType="Label">
-            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontSize" Value="{StaticResource FontSize2xs}" />
             <Setter Property="FontFamily" Value="SpaceGroteskBold" />
             <Setter Property="TextColor" Value="{DynamicResource TnPNeutralv300ContentWL}" />
             <Setter Property="Text" Value="{l:Localize NotAvailable}" />
@@ -166,17 +166,17 @@
 
         <!--  Field Styles  -->
         <Style x:Key="FieldKeyLabel" TargetType="Label">
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
             <Setter Property="FontFamily" Value="SpaceGroteskRegular" />
             <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
         </Style>
         <Style x:Key="FieldValueLabel" TargetType="Label">
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeLg}" />
             <Setter Property="FontFamily" Value="SpaceGroteskRegular" />
             <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
         </Style>
         <Style x:Key="FieldTitleLabel" TargetType="Label">
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
             <Setter Property="FontFamily" Value="SpaceGroteskBold" />
             <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
         </Style>
@@ -469,7 +469,7 @@
                 Margin="0,0,0,4"
                 VerticalOptions="End">
                 <Label
-                    FontSize="14"
+                    FontSize="{StaticResource FontSizeSm}"
                     Style="{DynamicResource SubTextLabel}"
                     Text="{l:Localize Path=ExpiresFormat,
                                       Arg={Binding ExpireDate}}" />
@@ -517,7 +517,7 @@
                             WidthRequest="24" />
                         <Label
                             FontFamily="SpaceGroteskBold"
-                            FontSize="16"
+                            FontSize="{StaticResource FontSizeLg}"
                             HorizontalOptions="Center"
                             HorizontalTextAlignment="Center"
                             Text="{l:Localize SwipeForDetails}"

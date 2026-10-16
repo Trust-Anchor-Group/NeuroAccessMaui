@@ -164,11 +164,11 @@ namespace NeuroAccessMaui.Services.UI.Toasts
 
 		private IShellPresenter GetPresenter()
 		{
-			Page? MainPage = Application.Current?.MainPage;
-			if (MainPage is null)
+			Page? PresentedPage = UiPageResolver.GetPresentedPage();
+			if (PresentedPage is null)
 				throw new InvalidOperationException("No main page is available for toast presentation.");
 
-			IShellPresenter? Presenter = (MainPage as NavigationPage)?.CurrentPage as IShellPresenter ?? MainPage as IShellPresenter;
+			IShellPresenter? Presenter = PresentedPage as IShellPresenter;
 			if (Presenter is null)
 				throw new InvalidOperationException("CustomShell presenter not found.");
 

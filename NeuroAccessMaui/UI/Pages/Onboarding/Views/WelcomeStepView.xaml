@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.WelcomeStepView"
-                               AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingProvider}"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -27,12 +26,19 @@
 			<Grid RowDefinitions="*, auto">
 				<VerticalStackLayout Grid.Row="0" VerticalOptions="End" Spacing="16">
 					<VerticalStackLayout>
-						<Label Style="{DynamicResource PageTitleLabel}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingProviderTitle}"
-							   FontSize="42"
+						<Label Style="{DynamicResource PageTitleLabel}"
+							   FontSize="{StaticResource FontSizeDisplayMd}"
 							   Text="{l:Localize ActivateYourDigitalIdentity}"/>
 					</VerticalStackLayout>
 
-					<controls:CompositeEntry LabelText="{l:Localize HaveAnInviteCodeQuestion}" AutomationId="{x:Static automation:AutomationIds.InputOnboardingProviderInvitecode}"
+					<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
+										Style="{DynamicResource PrimaryIconButton}"
+										LabelText="{l:Localize QrScanCode}"
+										SvgSource="scan_qr.svg"
+										LabelPosition="Right"
+										/>
+
+					<controls:CompositeEntry LabelText="{l:Localize HaveAnInviteCodeQuestion}"
 											 Placeholder="{l:Localize PasteInviteCodeHere}"
 											 Style="{DynamicResource RegularCompositeEntry}"
 											 LabelStyle="{DynamicResource GetStartedCompositeEntryLabel}"
@@ -41,9 +47,10 @@
 											 IsValid="{Binding InviteCodeIsValid, Mode=OneWay}">
 						<controls:CompositeEntry.RightView>
 							<Grid>
-								<controls:TemplatedButton Command="{Binding PasteInviteCodeCommand}">
+								<controls:TemplatedButton Command="{Binding PasteInviteCodeCommand}"
+														  SemanticProperties.Description="{l:Localize Paste}">
 									<Border Style="{DynamicResource SecondaryButtonActiveBorder}" StrokeShape="RoundRectangle 0" Scale="1.05">
-										<Label Style="{DynamicResource SecondaryButtonActiveLabel}" FontSize="14"
+										<Label Style="{DynamicResource SecondaryButtonActiveLabel}" FontSize="{StaticResource FontSizeSm}"
 										   Text="{l:Localize Paste}" />
 									</Border>
 								</controls:TemplatedButton>
@@ -51,13 +58,6 @@
 						</controls:CompositeEntry.RightView>
 
 					</controls:CompositeEntry>
-
-					<controls:SvgButton Command="{Binding ScanQrCodeCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingProviderScanqr}"
-										Style="{DynamicResource PrimaryIconButton}"
-										LabelText="{l:Localize QrScanCode}"
-										SvgSource="scan_qr.svg"
-										LabelPosition="Right"
-										/>
 
 					<Grid ColumnDefinitions="*, auto, *"
 						  ColumnSpacing="16">
@@ -70,7 +70,7 @@
 							   HorizontalOptions="Center"
 							   VerticalOptions="Center"
 							   FontFamily="SpaceGroteskRegular"
-							   FontSize="16"
+							   FontSize="{StaticResource FontSizeLg}"
 							   TextColor="{DynamicResource ContentSecondaryWL}" />
 						<BoxView Grid.Column="2"
 								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
@@ -78,7 +78,7 @@
 								 VerticalOptions="Center" />
 					</Grid>
 
-					<controls:TextButton Style="{DynamicResource PrimaryButton}" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingProviderSelect}"
+					<controls:TextButton Style="{DynamicResource SecondaryButton}"
 										 LabelData="{l:Localize SelectForMe}"
 										 Command="{Binding SelectForMeCommand}" />
 				</VerticalStackLayout>

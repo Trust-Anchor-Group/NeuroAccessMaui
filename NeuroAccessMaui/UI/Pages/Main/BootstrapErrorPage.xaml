@@ -14,7 +14,7 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 				<Label VerticalOptions="Start" FontFamily="HaasGroteskBold" Text="{Binding TraceTitle}" />
-				<Label FontSize="14" Text="{Binding TraceText}" />
+				<Label FontSize="{StaticResource FontSizeSm}" Text="{Binding TraceText}" />
 			</VerticalStackLayout>
 		</ScrollView>
 

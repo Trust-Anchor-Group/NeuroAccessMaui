@@ -14,9 +14,12 @@
 		/// <summary>
 		/// Method called when a URL needs to be opened by the client.
 		/// </summary>
+		/// <remarks>
+		/// The URL is supplied by the user's own server, such as a payment page, so it opens without asking the user first.
+		/// </remarks>
 		public static async Task OpenUrl(string Url)
 		{
-			await App.OpenUrlAsync(Url);
+			await App.OpenTrustedUrlAsync(Url);
 		}
 
 		/// <summary>

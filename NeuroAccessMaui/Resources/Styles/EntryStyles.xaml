@@ -14,7 +14,7 @@
 		<Setter Property="FontFamily"
 				Value="HaasGroteskRegular" />
 		<Setter Property="FontSize"
-				Value="18" />
+				Value="{StaticResource FontSizeXl}" />
 	</Style>
 
 	<!-- Styles for CompositeInputView label and validation when used with entries -->
@@ -22,7 +22,7 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="FontSize"
-				Value="14" />
+				Value="{StaticResource FontSizeSm}" />
 		<Setter Property="FontFamily"
 				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"
@@ -39,7 +39,7 @@
 		<Setter Property="TextColor"
 				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="FontSize"
-				Value="15" />
+				Value="{StaticResource FontSizeMd}" />
 		<Setter Property="FontFamily"
 				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"
@@ -57,12 +57,12 @@
 		<Setter Property="FontFamily"
 				Value="HaasGroteskRegular" />
 		<Setter Property="FontSize"
-				Value="18" />
+				Value="{StaticResource FontSizeXl}" />
 	</Style>
 
 	<Style x:Key="ThickCompositeEntryEntry" TargetType="Entry">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
-		<Setter Property="FontSize" Value="32"/>
+		<Setter Property="FontSize" Value="{StaticResource FontSize8xl}"/>
 	</Style>
 
 	<!-- Regular CompositeEntry style, based on BaseCompositeInputView -->

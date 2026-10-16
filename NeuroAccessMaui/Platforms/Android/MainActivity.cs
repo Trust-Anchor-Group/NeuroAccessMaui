@@ -104,13 +104,12 @@ namespace NeuroAccessMaui
 				base.OnCreate(savedInstanceState);
 				this.CreateNotificationChannelsIfNeeded();
 				nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
-				await this.HandleIntent(this.Intent);
 			}
 			catch (Exception ex)
 			{
 				StringBuilder msg = new();
 
-				msg.AppendLine("An error occurred in the Android MainActivity.OnPostCreate method.");
+				msg.AppendLine("An error occurred in the Android MainActivity.OnCreate method.");
 				msg.AppendLine("Exception message:");
 				msg.Append(ex.Message);
 				msg.AppendLine("\n\n");
@@ -121,6 +120,15 @@ namespace NeuroAccessMaui
 				await App.SendAlertAsync(msg.ToString(), "text/plain");
 			}
 
+			this.ConfigureWindow();
+			this.AttachKeyboardInsets();
+
+			// Intent handling can wait for local storage to become ready, so it runs only after the window is configured.
+			await this.HandleIntent(this.Intent);
+		}
+
+		private void ConfigureWindow()
+		{
 			App.Current?.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
 			if (this.Window is null)
 				return;
@@ -133,9 +141,23 @@ namespace NeuroAccessMaui
 			}
 		}
 
+		private void AttachKeyboardInsets()
+		{
+			try
+			{
+				if (ServiceRef.PlatformSpecific is PlatformSpecific AndroidPlatformSpecific)
+					AndroidPlatformSpecific.AttachKeyboardInsets(this);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		protected override void OnResume()
 		{
 			base.OnResume();
+			this.AttachKeyboardInsets();
 
 			if (nfcAdapter is not null)
 			{

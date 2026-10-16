@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.Services.Authentication
 
 		public AuthenticationService()
 		{
-			this.tagProfile = ServiceRef.Provider.GetRequiredService<TagProfile>();
+			this.tagProfile = ServiceRef.Provider.GetRequiredService<ITagProfile>();
 
 			this.uiService = ServiceRef.Provider.GetRequiredService<IUiService>();
 			this.popupService = ServiceRef.Provider.GetRequiredService<IPopupService>();

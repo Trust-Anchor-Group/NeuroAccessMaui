@@ -61,7 +61,7 @@
 								BackgroundColor="{DynamicResource TnPDangerFigureWL}"
 								TextColor="{DynamicResource TnPNeutralv750ContentWL}"
 								FontFamily="HaasGroteskRegular"
-								FontSize="14"
+								FontSize="{StaticResource FontSizeSm}"
 								TextMargin="4,2"
 								Stroke="{DynamicResource SurfaceElevation2WL}"
 								InputTransparent="True"

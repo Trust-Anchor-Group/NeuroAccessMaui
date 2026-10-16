@@ -406,7 +406,17 @@
     <value>Code not recognized.</value>
   </data>
   <data name="UnableToOpenLink" xml:space="preserve">
-    <value>Unable to open link:</value>
+    <value>Unable to open the link.</value>
+  </data>
+  <data name="OpenExternalLinkTitle" xml:space="preserve">
+    <value>Open link?</value>
+  </data>
+  <data name="OpenExternalLinkMessage" xml:space="preserve">
+    <value>This link opens outside the app:
+
+{0}
+
+Only continue if you trust where it came from.</value>
   </data>
   <data name="InvalidInvitationCode" xml:space="preserve">
     <value>Invalid invitation code.</value>
@@ -1024,7 +1034,7 @@
     <value>Take a Photo of yourself</value>
   </data>
   <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
-    <value>Center your face in the frame</value>
+    <value>Fit your face in the oval</value>
   </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>Photo is too large</value>
@@ -3142,37 +3152,37 @@
     <value>Some submitted details could not be verified. Tap to review.</value>
   </data>
   <data name="KycTravelDocumentTitle" xml:space="preserve">
-    <value>Personal ID</value>
+    <value>Scan your ID</value>
   </data>
   <data name="KycTravelDocumentSummaryTitle" xml:space="preserve">
-    <value>Document chip readout</value>
+    <value>Verify with your ID</value>
   </data>
   <data name="KycTravelDocumentSummaryMissing" xml:space="preserve">
-    <value>Scan a compatible travel document to include a secure chip readout with this application.</value>
+    <value>Not scanned yet.</value>
   </data>
   <data name="KycTravelDocumentSummaryMrzReady" xml:space="preserve">
-    <value>MRZ saved. Tap the document with your phone to read the chip before applying.</value>
+    <value>Document details saved. Read the chip to finish.</value>
   </data>
   <data name="KycTravelDocumentSummaryReadoutReady" xml:space="preserve">
-    <value>NFC chip readout is ready and will be attached to this application.</value>
+    <value>Chip read. It will be added to your application.</value>
   </data>
   <data name="KycTravelDocumentOpenButton" xml:space="preserve">
-    <value>Use document chip</value>
+    <value>Scan your ID</value>
   </data>
   <data name="KycTravelDocumentDescription" xml:space="preserve">
-    <value>Scan the machine-readable lines on your travel document, then hold the document against your phone to read the chip. The secure readout is attached as NFC.xml when you apply.</value>
+    <value>Scan your passport or ID card and hold it to your phone. We fill in your details and add a secure chip check to your application.</value>
   </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
-    <value>Look for this symbol</value>
+    <value>Does your ID have a chip?</value>
   </data>
   <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
-    <value>It may be on the front, back, or inside cover.</value>
+    <value>If it's there, we can fill in your details from the chip and verify them securely.</value>
   </data>
   <data name="KycTravelDocumentEligibilityTitle" xml:space="preserve">
     <value>Do you see it on your document?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>This symbol means the document has a chip.</value>
+    <value>Look for this symbol on your passport cover or ID card.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Use a phone with NFC enabled.</value>
@@ -3187,7 +3197,7 @@
     <value>Yes, scan document</value>
   </data>
   <data name="KycTravelDocumentUnsureButton" xml:space="preserve">
-    <value>No</value>
+    <value>No, fill in manually</value>
   </data>
   <data name="KycTravelDocumentMrzStepTitle" xml:space="preserve">
     <value>Scan the machine-readable lines</value>
@@ -3241,7 +3251,7 @@
     <value>Try again</value>
   </data>
   <data name="KycTravelDocumentRescanButton" xml:space="preserve">
-    <value>Scan document details again</value>
+    <value>Scan details again</value>
   </data>
   <data name="KycTravelDocumentContinueButton" xml:space="preserve">
     <value>Continue</value>
@@ -3253,7 +3263,7 @@
     <value>Document read successfully. You can move your phone.</value>
   </data>
   <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
-    <value>Continue manually</value>
+    <value>Continue without chip</value>
   </data>
   <data name="KycTravelDocumentMrzLabel" xml:space="preserve">
     <value>MRZ</value>
@@ -3274,10 +3284,10 @@
     <value>Document details saved. Now hold the document chip against your phone.</value>
   </data>
   <data name="KycTravelDocumentInvalidMrz" xml:space="preserve">
-    <value>The MRZ could not be validated. Check the document number, birth date, expiry date, and check digits.</value>
+    <value>We couldn't use the scanned document details. Scan your document again.</value>
   </data>
   <data name="KycTravelDocumentReadoutReady" xml:space="preserve">
-    <value>NFC readout is already ready for this application.</value>
+    <value>Your chip has already been read.</value>
   </data>
   <data name="KycTravelDocumentNfcReady" xml:space="preserve">
     <value>Ready to read. Hold the travel document near your phone and keep it still.</value>
@@ -3292,10 +3302,10 @@
     <value>Document read successfully. You can move your phone.</value>
   </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
-    <value>Chip reading is unavailable. You can continue manually.</value>
+    <value>Chip reading is unavailable. You can continue without the chip.</value>
   </data>
   <data name="KycTravelDocumentNfcReservationFailed" xml:space="preserve">
-    <value>Could not prepare secure verification. Try again or continue manually.</value>
+    <value>Could not prepare secure verification. Try again or continue without the chip.</value>
   </data>
   <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
     <value>Scan cancelled.</value>
@@ -3433,58 +3443,58 @@
   <data name="NfcTesterOtherNumbers" xml:space="preserve"><value>Other numbers</value></data>
   <data name="NfcTesterCustodyInformation" xml:space="preserve"><value>Custody information</value></data>
   <data name="KycDocumentMrzScannerBackAction" xml:space="preserve">
-    <value>Back</value>
+    <value>Go back</value>
   </data>
   <data name="KycDocumentMrzScannerTitle" xml:space="preserve">
-    <value>Scan the document page</value>
+    <value>Scan your document</value>
   </data>
   <data name="KycDocumentMrzScannerInitialStatus" xml:space="preserve">
-    <value>Scan the document lines</value>
+    <value>Fit the document in the frame</value>
   </data>
   <data name="KycDocumentMrzScannerInitialDetail" xml:space="preserve">
-    <value>Place the machine-readable lines inside the highlighted area.</value>
+    <value>Passport: photo page. ID card: back side.</value>
   </data>
   <data name="KycDocumentMrzScannerFindMrzStatus" xml:space="preserve">
-    <value>Find the document lines</value>
+    <value>Fit the document in the frame</value>
   </data>
   <data name="KycDocumentMrzScannerFindMrzDetail" xml:space="preserve">
-    <value>Place the machine-readable lines inside the highlighted area.</value>
+    <value>Passport: photo page. ID card: back side.</value>
   </data>
   <data name="KycDocumentMrzScannerConfirmingStatus" xml:space="preserve">
     <value>Hold still</value>
   </data>
   <data name="KycDocumentMrzScannerKeepStillDetail" xml:space="preserve">
-    <value>Keep the document still.</value>
+    <value>Reading the text at the bottom…</value>
   </data>
   <data name="KycDocumentMrzScannerOneMoreDetail" xml:space="preserve">
-    <value>Reading the document lines.</value>
+    <value>Reading the text at the bottom…</value>
   </data>
   <data name="KycDocumentMrzScannerExpiredStatus" xml:space="preserve">
-    <value>Document expired</value>
+    <value>This document has expired</value>
   </data>
   <data name="KycDocumentMrzScannerExpiredDetail" xml:space="preserve">
-    <value>This document cannot be used for verification.</value>
+    <value>Expired documents can't be used. Scan a valid passport or ID card.</value>
   </data>
   <data name="KycDocumentMrzScannerUnsupportedStatus" xml:space="preserve">
     <value>Document not supported</value>
   </data>
   <data name="KycDocumentMrzScannerUnsupportedDetail" xml:space="preserve">
-    <value>Use a supported passport or ID card.</value>
+    <value>Scan a passport or national ID card.</value>
   </data>
   <data name="KycDocumentMrzScannerGlareStatus" xml:space="preserve">
     <value>Reduce glare</value>
   </data>
   <data name="KycDocumentMrzScannerGlareDetail" xml:space="preserve">
-    <value>Tilt the document or move away from bright reflections.</value>
+    <value>Tilt the document slightly or move away from bright light.</value>
   </data>
   <data name="KycDocumentMrzScannerMoveCloserStatus" xml:space="preserve">
     <value>Move closer</value>
   </data>
   <data name="KycDocumentMrzScannerMoveCloserDetail" xml:space="preserve">
-    <value>Keep the document lines sharp and fill more of the guide.</value>
+    <value>Fill the frame with the document.</value>
   </data>
   <data name="KycDocumentMrzScannerTryAgainStatus" xml:space="preserve">
-    <value>Try again</value>
+    <value>Let's try again</value>
   </data>
   <data name="KycDocumentScanRetryAction" xml:space="preserve">
     <value>Try again</value>
@@ -4038,5 +4048,269 @@ Document read. You can move your iPhone.</value>
   </data>
   <data name="KycTravelDocumentNfcCheckingDocument" xml:space="preserve">
     <value>Checking your document…</value>
+  </data>
+  <data name="KycTravelDocumentStepScan" xml:space="preserve">
+    <value>Scan details</value>
+  </data>
+  <data name="KycTravelDocumentStepChip" xml:space="preserve">
+    <value>Read chip</value>
+  </data>
+  <data name="KycTravelDocumentReadChipButton" xml:space="preserve">
+    <value>Read chip</value>
+  </data>
+  <data name="KycTravelDocumentNfcPreparingTitle" xml:space="preserve">
+    <value>Getting ready</value>
+  </data>
+  <data name="KycTravelDocumentNfcSecuring" xml:space="preserve">
+    <value>Opening a secure connection…</value>
+  </data>
+  <data name="KycTravelDocumentNfcErrorTitle" xml:space="preserve">
+    <value>Couldn't read the chip</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledTitle" xml:space="preserve">
+    <value>Scan cancelled</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelledDescription" xml:space="preserve">
+    <value>Nothing was read. Try again when you're ready.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpPassport" xml:space="preserve">
+    <value>Can't find the chip? Remove any phone case and try the front cover, back cover, or photo page.</value>
+  </data>
+  <data name="KycTravelDocumentNfcHelpIdCard" xml:space="preserve">
+    <value>Can't find the chip? Remove any phone case and slide the card slowly across the back of your phone.</value>
+  </data>
+  <data name="KycDocumentMrzScannerTryAgainDetail" xml:space="preserve">
+    <value>Keep the document flat and the bottom lines sharp.</value>
+  </data>
+  <data name="KycDocumentMrzScannerHelpStatus" xml:space="preserve">
+    <value>Having trouble?</value>
+  </data>
+  <data name="KycDocumentMrzScannerHelpDetail" xml:space="preserve">
+    <value>Use good light, avoid glare and hold the phone parallel to the document.</value>
+  </data>
+  <data name="KycDocumentMrzScannerSuccessStatus" xml:space="preserve">
+    <value>Got it</value>
+  </data>
+  <data name="KycDocumentMrzScannerSuccessDetail" xml:space="preserve">
+    <value>Document details captured.</value>
+  </data>
+  <data name="KycDocumentMrzScannerAnotherDocumentAction" xml:space="preserve">
+    <value>Scan another document</value>
+  </data>
+  <data name="KycApplicationSentAnnouncement" xml:space="preserve">
+    <value>Application sent</value>
+  </data>
+  <data name="KycApplicationStatusMethodChip" xml:space="preserve">
+    <value>Document chip</value>
+  </data>
+  <data name="KycApplicationStatusMethodLabel" xml:space="preserve">
+    <value>Verification method</value>
+  </data>
+  <data name="KycApplicationStatusMethodPhotos" xml:space="preserve">
+    <value>Document photos</value>
+  </data>
+  <data name="KycApplicationStatusRefresh" xml:space="preserve">
+    <value>Refresh status</value>
+  </data>
+  <data name="KycApplicationStatusTimelineApprovedDescription" xml:space="preserve">
+    <value>You can use your identity once the application is approved.</value>
+  </data>
+  <data name="KycApplicationStatusTimelineFinalizingDescription" xml:space="preserve">
+    <value>Your approved identity is being finalized.</value>
+  </data>
+  <data name="KycApplicationStatusTimelineReviewDescription" xml:space="preserve">
+    <value>The details you sent are being checked.</value>
+  </data>
+  <data name="KycApplicationStatusTimelineSubmitted" xml:space="preserve">
+    <value>Submitted</value>
+  </data>
+  <data name="KycApplicationStatusTimelineSubmittedDescription" xml:space="preserve">
+    <value>We received your application.</value>
+  </data>
+  <data name="KycCameraGuideDocument" xml:space="preserve">
+    <value>Fit the document in the frame</value>
+  </data>
+  <data name="KycCameraGuideIdBack" xml:space="preserve">
+    <value>Fit the back of the card in the frame</value>
+  </data>
+  <data name="KycCameraGuideIdFront" xml:space="preserve">
+    <value>Fit the front of the card in the frame</value>
+  </data>
+  <data name="KycCameraGuidePassport" xml:space="preserve">
+    <value>Fit the passport photo page in the frame</value>
+  </data>
+  <data name="KycCameraReviewDocumentHint" xml:space="preserve">
+    <value>Make sure the whole document is visible, sharp, and free of glare.</value>
+  </data>
+  <data name="KycCameraReviewSelfieHint" xml:space="preserve">
+    <value>Make sure your whole face is visible, sharp, and well lit.</value>
+  </data>
+  <data name="KycCameraReviewTitle" xml:space="preserve">
+    <value>Check your photo</value>
+  </data>
+  <data name="KycCameraStartFailedMessage" xml:space="preserve">
+    <value>Unable to start the camera right now. Please try again.</value>
+  </data>
+  <data name="KycCameraStartFailedTitle" xml:space="preserve">
+    <value>Camera unavailable</value>
+  </data>
+  <data name="KycCameraUsePhotoButton" xml:space="preserve">
+    <value>Use photo</value>
+  </data>
+  <data name="KycImageAddedDescription" xml:space="preserve">
+    <value>Photo added</value>
+  </data>
+  <data name="KycImageEmptyCameraHint" xml:space="preserve">
+    <value>Tap to take a photo</value>
+  </data>
+  <data name="KycImageEmptyHint" xml:space="preserve">
+    <value>Take a photo or upload one</value>
+  </data>
+  <data name="KycImageProcessing" xml:space="preserve">
+    <value>Processing photo…</value>
+  </data>
+  <data name="KycImageRetakeButton" xml:space="preserve">
+    <value>Retake</value>
+  </data>
+  <data name="KycLoadingApplication" xml:space="preserve">
+    <value>Loading your application…</value>
+  </data>
+  <data name="KycReviewButton" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="KycSendingApplication" xml:space="preserve">
+    <value>Sending your application…</value>
+  </data>
+  <data name="KycTravelDocumentCameraPermissionDescription" xml:space="preserve">
+    <value>Allow camera access for this app in your phone's settings, then try again.</value>
+  </data>
+  <data name="KycTravelDocumentFailureAuthenticationDescription" xml:space="preserve">
+    <value>This usually happens when the document details were misread. Scan the details again, or hold your phone still against the document and try again.</value>
+  </data>
+  <data name="KycTravelDocumentFailureAuthenticationTitle" xml:space="preserve">
+    <value>Couldn't open the chip</value>
+  </data>
+  <data name="KycTravelDocumentFailureCertificateCheckDescription" xml:space="preserve">
+    <value>The security check needs an internet connection. Check your connection and try again.</value>
+  </data>
+  <data name="KycTravelDocumentFailureCertificateCheckTitle" xml:space="preserve">
+    <value>Couldn't finish the security check</value>
+  </data>
+  <data name="KycTravelDocumentFailureCertificateInvalidDescription" xml:space="preserve">
+    <value>The chip's security data couldn't be trusted. Try again, or contact your ID provider if this continues.</value>
+  </data>
+  <data name="KycTravelDocumentFailureConnectionLostDescription" xml:space="preserve">
+    <value>Try again, and keep your phone and document together until reading is done.</value>
+  </data>
+  <data name="KycTravelDocumentFailureConnectionLostTitle" xml:space="preserve">
+    <value>Connection lost</value>
+  </data>
+  <data name="KycTravelDocumentFailureDataIntegrityDescription" xml:space="preserve">
+    <value>The chip data didn't pass the security check. Try again, or contact your ID provider if this continues.</value>
+  </data>
+  <data name="KycTravelDocumentFailureMultipleTagsDescription" xml:space="preserve">
+    <value>Move other cards and documents away from your phone, then try again.</value>
+  </data>
+  <data name="KycTravelDocumentFailureMultipleTagsTitle" xml:space="preserve">
+    <value>More than one chip found</value>
+  </data>
+  <data name="KycTravelDocumentFailureNfcNotSupportedDescription" xml:space="preserve">
+    <value>This phone can't read document chips in this app. You can continue without the chip.</value>
+  </data>
+  <data name="KycTravelDocumentFailureNfcNotSupportedTitle" xml:space="preserve">
+    <value>Chip reading isn't available</value>
+  </data>
+  <data name="KycTravelDocumentFailureNfcUnavailableDescription" xml:space="preserve">
+    <value>Check that NFC is turned on in your phone's settings, then try again.</value>
+  </data>
+  <data name="KycTravelDocumentFailureNfcUnavailableTitle" xml:space="preserve">
+    <value>NFC is unavailable</value>
+  </data>
+  <data name="KycTravelDocumentFailureNotTravelDocumentDescription" xml:space="preserve">
+    <value>The chip doesn't contain passport or ID card data. Make sure you're holding the document you scanned, then try again.</value>
+  </data>
+  <data name="KycTravelDocumentFailureNotTravelDocumentTitle" xml:space="preserve">
+    <value>This chip can't be used</value>
+  </data>
+  <data name="KycTravelDocumentFailureReadTitle" xml:space="preserve">
+    <value>Couldn't finish reading the chip</value>
+  </data>
+  <data name="KycTravelDocumentFailureRevokedDescription" xml:space="preserve">
+    <value>The document's security certificate has been revoked. Use another passport or ID card.</value>
+  </data>
+  <data name="KycTravelDocumentFailureRevokedTitle" xml:space="preserve">
+    <value>This document can't be accepted</value>
+  </data>
+  <data name="KycTravelDocumentFailureTimedOutDescription" xml:space="preserve">
+    <value>Move your phone slowly over the document until the chip is found, then hold still.</value>
+  </data>
+  <data name="KycTravelDocumentFailureTimedOutTitle" xml:space="preserve">
+    <value>Chip reading timed out</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedSecurityDescription" xml:space="preserve">
+    <value>The document's chip uses a security method we can't read yet. Try again, or contact your ID provider if this continues.</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedSecurityTitle" xml:space="preserve">
+    <value>This document isn't supported yet</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedTagDescription" xml:space="preserve">
+    <value>Hold the passport or ID card you scanned against your phone, then try again.</value>
+  </data>
+  <data name="KycTravelDocumentFailureUnsupportedTagTitle" xml:space="preserve">
+    <value>This chip isn't supported</value>
+  </data>
+  <data name="KycTravelDocumentFailureVerificationTitle" xml:space="preserve">
+    <value>Document verification failed</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideDescription" xml:space="preserve">
+    <value>Passport: the photo page. ID card: the back. We read the lines of text at the bottom.</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideStartButton" xml:space="preserve">
+    <value>Scan document</value>
+  </data>
+  <data name="KycTravelDocumentMrzGuideTitle" xml:space="preserve">
+    <value>Scan your document's details</value>
+  </data>
+  <data name="KycTravelDocumentMrzScanFailedDescription" xml:space="preserve">
+    <value>Try again with the document flat, well lit, and fully in view.</value>
+  </data>
+  <data name="KycTravelDocumentMrzScanFailedTitle" xml:space="preserve">
+    <value>Couldn't read the document</value>
+  </data>
+  <data name="KycTravelDocumentUseAnotherDocumentButton" xml:space="preserve">
+    <value>Use another document</value>
+  </data>
+  <data name="QrScannerCodeInvalid" xml:space="preserve">
+    <value>This code is invalid or has expired.</value>
+  </data>
+  <data name="QrScannerCodeNotSupported" xml:space="preserve">
+    <value>This code can't be used here.</value>
+  </data>
+  <data name="QrScannerUnavailable" xml:space="preserve">
+    <value>Couldn't continue with this code. Check your connection and try again.</value>
+  </data>
+  <data name="QrScannerValidating" xml:space="preserve">
+    <value>Checking the code…</value>
+  </data>
+  <data name="AgeAbove" xml:space="preserve">
+    <value>Age</value>
+  </data>
+  <data name="AgeAboveValue" xml:space="preserve">
+    <value>{0} or older</value>
+  </data>
+  <data name="KycIdContentsTitle" xml:space="preserve">
+    <value>Optional details</value>
+  </data>
+  <data name="KycIdContentsDescription" xml:space="preserve">
+    <value>Choose which optional details your ID includes. You can leave out anything you would rather not share.</value>
+  </data>
+  <data name="KycIdContentsNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="KycIdContentsIncluded" xml:space="preserve">
+    <value>Included in your ID</value>
+  </data>
+  <data name="KycPickerNotSpecified" xml:space="preserve">
+    <value>Not specified</value>
   </data>
 </root>

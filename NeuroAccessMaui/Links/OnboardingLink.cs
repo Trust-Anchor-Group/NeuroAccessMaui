@@ -1,25 +1,30 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
-using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Onboarding;
 using Waher.Content;
-using Waher.Content.Xml;
-using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links
 {
 	/// <summary>
-	/// Opens onboarding links.
+	/// Opens onboarding links, and reads and validates the invitations they refer to.
 	/// </summary>
+	/// <remarks>
+	/// Invitation links have the form <c>obinfo:domain:code:key:iv</c>. The key and IV decrypt the invitation, so the link
+	/// must never be logged or shown.
+	/// </remarks>
 	public class OnboardingLink : ILinkOpener
 	{
+		private const int fetchTimeoutMilliseconds = 15000;
+		private const int maxInvitationCharacters = 1024 * 1024;
+		private const int maxResponseBytes = 2 * 1024 * 1024;
+
 		/// <summary>
 		/// Opens onboarding links.
 		/// </summary>
@@ -38,403 +43,234 @@ namespace NeuroAccessMaui.Links
 		}
 
 		/// <inheritdoc/>
-		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
+		public async Task<PreparedLink?> PrepareAsync(Uri Link, CancellationToken CancellationToken)
 		{
-			try
+			if (!CanClaimInvitation())
 			{
+				// The invitation is not read when it cannot be claimed; opening the link explains why instead.
+				return new PreparedLink(Link, () => ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ThisCodeCannotBeClaimedAtThisTime)]));
+			}
 
-				if (ServiceRef.TagProfile.Step == Services.Tag.RegistrationStep.GetStarted || ServiceRef.TagProfile.Step == Services.Tag.RegistrationStep.ContactSupport)
+			Invitation? Invitation = await this.ReadAsync(Link, CancellationToken);
+			if (Invitation is null)
+				return null;
+
+			return new PreparedLink(Link, async () =>
+			{
+				OnboardingNavigationArgs Args = new(OnboardingScenario.FullSetup, Invitation.Uri.OriginalString)
 				{
-					WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(true));
-					await this.ScanQrCode(Link.ToString());
-					return true;
-				}
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-
-			if (ShowErrorIfUnable)
-			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.ThisCodeCannotBeClaimedAtThisTime)]);
-			}
-
-			return false;
-		}
-
-		private async Task ScanQrCode(string Url)
-		{
-			if (string.IsNullOrEmpty(Url))
-				return;
-
-			string Scheme = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
-
-			// Notify UI that onboarding processing has started. This makes the GetStarted view show its loading indicator
-			// even when the deep link is opened from the OS camera and the app resumes from background on iOS.
-			WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(true));
-
-			if (!string.Equals(Scheme, Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
-			{
-				WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
-				return;
-			}
-
-			string[] Parts = Url.Split(':');
-
-			if (Parts.Length != 5)
-			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-
-				CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
-				return;
-			}
-
-			string Domain = Parts[1];
-			string Code = Parts[2];
-			string KeyStr = Parts[3];
-			string IVStr = Parts[4];
-			string EncryptedStr;
-			Uri Uri;
-
-			try
-			{
-				Uri = new Uri("https://" + Domain + "/Onboarding/GetInfo");
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
-				return;
-			}
-
-			try
-			{
-				ContentBinaryResponse Response = await InternetContent.PostAsync(Uri, Encoding.ASCII.GetBytes(Code), "text/plain",
-					null,                               // Certificate
-					App.ValidateCertificateCallback,          // RemoteCertificateValidator
-					new KeyValuePair<string, string>("Accept", "text/plain"));
-				Response.AssertOk();
-
-				ContentResponse Decoded = await InternetContent.DecodeAsync(Response.ContentType, Response.Encoded, Uri);
-				Decoded.AssertOk();
-
-				EncryptedStr = (string)Decoded.Decoded;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.UnableToAccessInvitation)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				return;
-			}
-
-			try
-			{
-				byte[] Key = Convert.FromBase64String(KeyStr);
-				byte[] IV = Convert.FromBase64String(IVStr);
-				byte[] Encrypted = Convert.FromBase64String(EncryptedStr);
-
-				using Aes Aes = Aes.Create();
-				Aes.BlockSize = 128;
-				Aes.KeySize = 256;
-				Aes.Mode = CipherMode.CBC;
-				Aes.Padding = PaddingMode.PKCS7;
-
-				using ICryptoTransform Decryptor = Aes.CreateDecryptor(Key, IV);
-				byte[] Decrypted = Decryptor.TransformFinalBlock(Encrypted, 0, Encrypted.Length);
-				string Xml = Encoding.UTF8.GetString(Decrypted);
-
-				XmlDocument Doc = new()
-				{
-					PreserveWhitespace = true
+					PreparedInvitation = Invitation
 				};
 
-				Doc.LoadXml(Xml);
-
-				if ((Doc.DocumentElement is null) || (Doc.DocumentElement.NamespaceURI != ContractsClient.NamespaceOnboarding))
-					throw new Exception("Invalid Invitation XML");
-
-				LinkedList<XmlElement> ToProcess = new();
-				ToProcess.AddLast(Doc.DocumentElement);
-
-				bool AccountDone = false;
-				XmlElement? LegalIdDefinition = null;
-				string? Pin = null;
-
-				while (ToProcess.First is not null)
-				{
-					XmlElement E = ToProcess.First.Value;
-					ToProcess.RemoveFirst();
-					switch (E.LocalName)
-					{
-
-						case "ApiKey":
-							KeyStr = XML.Attribute(E, "key");
-							string Secret = XML.Attribute(E, "secret");
-							Domain = XML.Attribute(E, "domain");
-
-							await SelectDomain(Domain, KeyStr, Secret);
-
-							await ServiceRef.UiService.DisplayAlert(
-								ServiceRef.Localizer[nameof(AppResources.InvitationAccepted)],
-								ServiceRef.Localizer[nameof(AppResources.InvitedToCreateAccountOnDomain), Domain],
-								ServiceRef.Localizer[nameof(AppResources.Ok)]);
-
-							OnboardingNavigationArgs Args;
-							if (Url is not null)
-							{
-								Args = new OnboardingNavigationArgs(OnboardingScenario.FullSetup, Url);
-								await ServiceRef.NavigationService.SetRootAsync(nameof(OnboardingPage), Args);
-							}
-
-							break;
-
-						case "Account":
-							string UserName = XML.Attribute(E, "userName");
-							string Password = XML.Attribute(E, "password");
-							string PasswordMethod = XML.Attribute(E, "passwordMethod");
-							Domain = XML.Attribute(E, "domain");
-
-							string DomainBak = ServiceRef.TagProfile?.Domain ?? string.Empty;
-							bool DefaultConnectivityBak = ServiceRef.TagProfile?.DefaultXmppConnectivity ?? false;
-							string ApiKeyBak = ServiceRef.TagProfile?.ApiKey ?? string.Empty;
-							string ApiSecretBak = ServiceRef.TagProfile?.ApiSecret ?? string.Empty;
-
-							await SelectDomain(Domain, string.Empty, string.Empty);
-
-							if (!await this.ConnectToAccount(UserName, Password, PasswordMethod, string.Empty, LegalIdDefinition, Pin ?? string.Empty))
-							{
-								ServiceRef.TagProfile?.SetDomain(DomainBak, DefaultConnectivityBak, ApiKeyBak, ApiSecretBak);
-								throw new Exception("Invalid account.");
-							}
-
-							AccountDone = true;
-							break;
-
-						case "LegalId":
-							LegalIdDefinition = E;
-							break;
-
-						case "Pin":
-							//Pin = XML.Attribute(E, "pin");
-							break;
-
-						case "Transfer":
-							foreach (XmlNode N in E.ChildNodes)
-							{
-								if (N is XmlElement E2)
-								{
-									ToProcess.AddLast(E2);
-								}
-							}
-							break;
-
-						default:
-							throw new Exception("Invalid Invitation XML");
-					}
-				}
-
-				if (AccountDone && LegalIdDefinition is not null)
-				{
-					BaseViewModel.GoToRegistrationStep(RegistrationStep.DefinePassword);
-				}
-				else if (AccountDone)
-				{
-					BaseViewModel.GoToRegistrationStep(RegistrationStep.ValidatePhone);
-				}
-				else
-					BaseViewModel.GoToRegistrationStep(RegistrationStep.ChooseProvider);
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-			}
-
-			// Processing finished; let UI hide loader.
-			WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
+				await ServiceRef.NavigationService.SetRootAsync(nameof(OnboardingPage), Args);
+			});
 		}
-		private static async Task SelectDomain(string Domain, string Key, string Secret)
+
+		/// <summary>
+		/// Retrieves, decrypts, and validates an invitation without applying it.
+		/// </summary>
+		/// <param name="Link">The invitation link.</param>
+		/// <param name="CancellationToken">Cancellation for reading the invitation.</param>
+		/// <returns>The validated invitation.</returns>
+		/// <exception cref="FormatException">The link or the invitation is malformed.</exception>
+		/// <exception cref="CryptographicException">The invitation cannot be decrypted with the link's key.</exception>
+		/// <exception cref="XmlException">The decrypted invitation is not well-formed.</exception>
+		public async Task<Invitation?> ReadAsync(Uri Link, CancellationToken CancellationToken)
 		{
-			bool DefaultConnectivity;
+			XmlDocument Definition = await ReadDefinitionAsync(Link.OriginalString, CancellationToken);
+			return new Invitation(Link, Definition);
+		}
+
+		/// <summary>
+		/// Checks whether the current profile can accept an invitation opened from outside the onboarding flow.
+		/// </summary>
+		/// <remarks>
+		/// A profile that already has an account never accepts one, because opening the invitation would restart onboarding
+		/// over the existing account.
+		/// </remarks>
+		/// <returns>Whether an invitation may be claimed now.</returns>
+		private static bool CanClaimInvitation()
+		{
+			if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.Account))
+				return false;
+
+			RegistrationStep Step = ServiceRef.TagProfile.Step;
+			return Step == RegistrationStep.GetStarted || Step == RegistrationStep.ContactSupport;
+		}
+
+		private static async Task<XmlDocument> ReadDefinitionAsync(string Text, CancellationToken CancellationToken)
+		{
+			string Stage = "Structure";
 
 			try
 			{
-				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(Domain);
-				DefaultConnectivity = HostName == Domain && PortNumber == XmppCredentials.DefaultPort;
+				string[] Parts = Text.Trim().Split(':');
+				if (Parts.Length != 5 ||
+					!string.Equals(Parts[0], Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase) ||
+					string.IsNullOrWhiteSpace(Parts[1]) || Parts[1].Any(char.IsWhiteSpace) ||
+					string.IsNullOrWhiteSpace(Parts[2]))
+				{
+					throw new FormatException("Invalid invitation structure.");
+				}
+
+				Stage = "EncryptionParameters";
+				byte[] Key = Convert.FromBase64String(Parts[3]);
+				byte[] Iv = Convert.FromBase64String(Parts[4]);
+
+				// Existing invitation generators use 128-bit keys, so every AES key size is accepted.
+				if (Key.Length is not (16 or 24 or 32) || Iv.Length != 16)
+					throw new FormatException("Invalid invitation encryption parameters.");
+
+				CancellationToken.ThrowIfCancellationRequested();
+
+				Stage = "Endpoint";
+				Uri Endpoint = CreateEndpoint(Parts[1]);
+
+				Stage = "Fetch";
+				ContentBinaryResponse Response = await InternetContent.PostAsync(Endpoint, Encoding.ASCII.GetBytes(Parts[2]), "text/plain",
+					null, App.ValidateCertificateCallback, fetchTimeoutMilliseconds,
+					new KeyValuePair<string, string>("Accept", "text/plain")).WaitAsync(CancellationToken).ConfigureAwait(false);
+				Response.AssertOk();
+
+				if (Response.Encoded is null || Response.Encoded.Length > maxResponseBytes)
+					throw new FormatException("Invalid invitation response size.");
+
+				Stage = "ResponseDecoding";
+				ContentResponse Decoded = await InternetContent.DecodeAsync(Response.ContentType, Response.Encoded, Endpoint)
+					.WaitAsync(CancellationToken).ConfigureAwait(false);
+				Decoded.AssertOk();
+
+				if (Decoded.Decoded is not string EncryptedText)
+					throw new FormatException("Invalid invitation response.");
+
+				Stage = "Decryption";
+				byte[] Encrypted = Convert.FromBase64String(EncryptedText);
+				byte[] Plaintext;
+
+				using (Aes Cipher = Aes.Create())
+				{
+					Cipher.Mode = CipherMode.CBC;
+					Cipher.Padding = PaddingMode.PKCS7;
+
+					using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Key, Iv);
+					Plaintext = Decryptor.TransformFinalBlock(Encrypted, 0, Encrypted.Length);
+				}
+
+				Stage = "XmlParsing";
+				XmlDocument Document = new()
+				{
+					PreserveWhitespace = true,
+					XmlResolver = null
+				};
+
+				using (StringReader TextReader = new(Encoding.UTF8.GetString(Plaintext)))
+				using (XmlReader Reader = XmlReader.Create(TextReader, new XmlReaderSettings
+				{
+					DtdProcessing = DtdProcessing.Prohibit,
+					XmlResolver = null,
+					MaxCharactersInDocument = maxInvitationCharacters
+				}))
+				{
+					Document.Load(Reader);
+				}
+
+				Stage = "DocumentValidation";
+				ValidateDocument(Document);
+
+				CancellationToken.ThrowIfCancellationRequested();
+				return Document;
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
-				DefaultConnectivity = false;
+				// Only the stage and exception type are logged; messages may describe the invitation or its keys.
+				ServiceRef.LogService.LogWarning("OnboardingInvitationReadFailed",
+					new KeyValuePair<string, object?>("Stage", Stage),
+					new KeyValuePair<string, object?>("ExceptionType", Ex.GetType().Name));
+				throw;
 			}
-
-			ServiceRef.TagProfile.SetDomain(Domain, DefaultConnectivity, Key, Secret);
 		}
 
-		private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid, XmlElement? LegalIdDefinition, string Pin)
+		/// <summary>
+		/// Builds the address that invitations are read from, after checking that the invitation names a public domain.
+		/// </summary>
+		/// <remarks>
+		/// The domain comes from a scanned code or an external link and is contacted before the user confirms anything, so only
+		/// a fully qualified DNS name is accepted. IP addresses, single-label names such as <c>localhost</c>, and text that would
+		/// change the path or credentials of the request are rejected.
+		/// </remarks>
+		/// <param name="Domain">The domain named by the invitation.</param>
+		/// <returns>The invitation endpoint.</returns>
+		/// <exception cref="FormatException">The domain is not a usable public domain name.</exception>
+		private static Uri CreateEndpoint(string Domain)
 		{
-			try
+			if (Uri.CheckHostName(Domain) != UriHostNameType.Dns || !Domain.Contains('.') ||
+				Domain.EndsWith(".local", StringComparison.OrdinalIgnoreCase) ||
+				Domain.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase))
 			{
-				async Task OnConnected(XmppClient client)
-				{
-					DateTime Now = DateTime.Now;
-					LegalIdentity? CreatedIdentity = null;
-					LegalIdentity? ApprovedIdentity = null;
-
-					bool ServiceDiscoverySucceeded;
-
-					if (ServiceRef.TagProfile.NeedsUpdating())
-					{
-						ServiceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
-					}
-					else
-					{
-						ServiceDiscoverySucceeded = true;
-					}
-
-					if (ServiceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
-					{
-						bool DestroyContractsClient = false;
-
-						if (!client.TryGetExtension(typeof(ContractsClient), out IXmppExtension Extension) ||
-							Extension is not ContractsClient ContractsClient)
-						{
-							ContractsClient = new ContractsClient(client, ServiceRef.TagProfile.LegalJid);
-							DestroyContractsClient = true;
-						}
-
-						try
-						{
-							if (LegalIdDefinition is not null)
-								await ContractsClient.ImportKeys(LegalIdDefinition);
-
-							LegalIdentity[] Identities = await ContractsClient.GetLegalIdentitiesAsync();
-
-							foreach (LegalIdentity Identity in Identities)
-							{
-								try
-								{
-									if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, StringComparison.OrdinalIgnoreCase) == 0) &&
-										Identity.HasClientSignature &&
-										Identity.HasClientPublicKey &&
-										Identity.From <= Now &&
-										Identity.To >= Now &&
-										(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created) &&
-										Identity.ValidateClientSignature() &&
-										await ContractsClient.HasPrivateKey(Identity))
-									{
-										if (Identity.State == IdentityState.Approved)
-										{
-											ApprovedIdentity = Identity;
-											break;
-										}
-
-										CreatedIdentity ??= Identity;
-									}
-								}
-								catch (Exception)
-								{
-									// Keys might not be available. Ignore at this point. Keys will be generated later.
-								}
-							}
-
-							LegalIdentity? SelectedIdentity = ApprovedIdentity ?? CreatedIdentity;
-
-							string SelectedId;
-
-							if (SelectedIdentity is not null)
-							{
-								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, SelectedIdentity);
-								SelectedId = SelectedIdentity.Id;
-
-								ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
-							}
-							else
-							{
-								ServiceRef.TagProfile.SetAccount(AccountName, client.PasswordHash, client.PasswordHashMethod);
-								SelectedId = string.Empty;
-								ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
-							}
-
-							if (!string.IsNullOrEmpty(Pin))
-							{
-								ServiceRef.TagProfile.LocalPassword = Pin;
-							}
-
-							foreach (LegalIdentity Identity in Identities)
-							{
-								if (Identity.Id == SelectedId)
-								{
-									continue;
-								}
-
-								switch (Identity.State)
-								{
-									case IdentityState.Approved:
-									case IdentityState.Created:
-										await ContractsClient.ObsoleteLegalIdentityAsync(Identity.Id);
-										break;
-								}
-							}
-						}
-						finally
-						{
-							if (DestroyContractsClient)
-							{
-								ContractsClient.Dispose();
-							}
-						}
-					}
-				}
-
-				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(
-					ServiceRef.TagProfile?.Domain ?? string.Empty);
-
-				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(
-					ServiceRef.TagProfile?.Domain ?? string.Empty,
-					IsIpAddress, HostName, PortNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
-					typeof(App).Assembly, OnConnected);
-
-				if (!Succeeded)
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ErrorMessage ?? string.Empty,
-						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				}
-
-				return Succeeded;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile?.Domain ?? string.Empty],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				throw new FormatException("Invalid invitation domain.");
 			}
 
-			return false;
+			UriBuilder Builder = new(Uri.UriSchemeHttps, Domain)
+			{
+				Path = "/Onboarding/GetInfo"
+			};
+
+			return Builder.Uri;
+		}
+
+		/// <summary>
+		/// Checks that an invitation is an onboarding definition that names a provider or an account to transfer.
+		/// </summary>
+		/// <param name="Document">The decrypted invitation.</param>
+		/// <exception cref="FormatException">The invitation is not a usable onboarding definition.</exception>
+		private static void ValidateDocument(XmlDocument Document)
+		{
+			XmlElement? Root = Document.DocumentElement;
+			if (Root is null || Root.NamespaceURI != ContractsClient.NamespaceOnboarding)
+				throw new FormatException("Invalid invitation namespace.");
+
+			Queue<XmlElement> Pending = new();
+			Pending.Enqueue(Root);
+			bool HasProviderOrAccount = false;
+
+			while (Pending.TryDequeue(out XmlElement? Element))
+			{
+				switch (Element.LocalName)
+				{
+					case "Transfer":
+						foreach (XmlNode Node in Element.ChildNodes)
+						{
+							if (Node is XmlElement Child)
+								Pending.Enqueue(Child);
+						}
+						break;
+
+					case "ApiKey":
+						// An empty domain is allowed; development invitations let the user enter the provider address.
+						HasProviderOrAccount = true;
+						break;
+
+					case "Account":
+						if (string.IsNullOrWhiteSpace(Element.GetAttribute("userName")) ||
+							string.IsNullOrWhiteSpace(Element.GetAttribute("password")) ||
+							string.IsNullOrWhiteSpace(Element.GetAttribute("domain")))
+						{
+							throw new FormatException("Invalid account invitation.");
+						}
+
+						HasProviderOrAccount = true;
+						break;
+				}
+			}
+
+			if (!HasProviderOrAccount)
+				throw new FormatException("The invitation has no provider or account.");
 		}
 	}
 }

@@ -1,7 +1,7 @@
 using CoreNFC;
 using Foundation;
 using NeuroAccess.Nfc;
-using NeuroAccessMaui.Services.Nfc;
+using NeuroAccess.Nfc.Exceptions;
 using Waher.Networking;
 
 namespace NeuroAccessMaui.Platforms.iOS.Nfc
@@ -12,6 +12,7 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 	internal sealed class IosIsoDepInterface : IIsoDepInterface
 	{
 		private const int defaultTimeoutMilliseconds = 60000;
+		private static readonly TimeSpan sessionEndReportTimeout = TimeSpan.FromSeconds(3);
 
 		private readonly INFCIso7816Tag iso7816Tag;
 		private readonly IosNfcTag tag;
@@ -141,15 +142,21 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 							string ErrorDetails = FormatReaderError(Error, ReaderError);
 							CommunicationLayer?.Error(ErrorDetails);
 
-							if (ReaderError is NFCReaderError.ReaderTransceiveErrorTagConnectionLost or
+							Exception Failure = ReaderError is NFCReaderError.ReaderTransceiveErrorTagConnectionLost or
 								NFCReaderError.ReaderTransceiveErrorTagNotConnected or
-								NFCReaderError.ReaderTransceiveErrorRetryExceeded)
+								NFCReaderError.ReaderTransceiveErrorRetryExceeded
+								? new NfcConnectionLostException(ErrorDetails)
+								: new InvalidOperationException(ErrorDetails);
+
+							// A command fails when its session ends, for example when the user cancels the NFC sheet. The session
+							// delegate reports why it ended, so this failure must not overtake that reason.
+							if (this.HasSessionEnded(ReaderError))
 							{
-								ResultSource.TrySetException(new NfcConnectionLostException(ErrorDetails));
+								_ = this.FailAfterSessionEndAsync(ResultSource, Failure);
 								return;
 							}
 
-							ResultSource.TrySetException(new InvalidOperationException(ErrorDetails));
+							ResultSource.TrySetException(Failure);
 							return;
 						}
 
@@ -167,6 +174,47 @@ namespace NeuroAccessMaui.Platforms.iOS.Nfc
 				Cleanup();
 				throw;
 			}
+		}
+
+		/// <summary>
+		/// Determines whether a command failed because its reader session has ended rather than because of the tag.
+		/// </summary>
+		/// <param name="ReaderError">The reader error reported for the command.</param>
+		/// <returns><c>true</c> if the reader session has ended; otherwise <c>false</c>.</returns>
+		private bool HasSessionEnded(NFCReaderError ReaderError)
+		{
+			if (ReaderError is NFCReaderError.ReaderTransceiveErrorSessionInvalidated or
+				NFCReaderError.ReaderSessionInvalidationErrorUserCanceled or
+				NFCReaderError.ReaderSessionInvalidationErrorSessionTimeout or
+				NFCReaderError.ReaderSessionInvalidationErrorSessionTerminatedUnexpectedly or
+				NFCReaderError.ReaderSessionInvalidationErrorSystemIsBusy)
+			{
+				return true;
+			}
+
+			return this.iso7816Tag.Session?.Ready == false;
+		}
+
+		/// <summary>
+		/// Ends a command whose session has ended after the session service has reported why, which it signals by
+		/// cancelling the session token. The command then ends as cancelled, or with its own failure if no report arrives.
+		/// </summary>
+		/// <param name="ResultSource">The pending command result.</param>
+		/// <param name="Failure">The failure to report if the session service does not report the end in time.</param>
+		/// <returns>A task that completes when the command result has been set.</returns>
+		private async Task FailAfterSessionEndAsync(TaskCompletionSource<byte[]> ResultSource, Exception Failure)
+		{
+			try
+			{
+				await Task.Delay(sessionEndReportTimeout, this.cancellationToken).ConfigureAwait(false);
+			}
+			catch (OperationCanceledException)
+			{
+				ResultSource.TrySetCanceled(this.cancellationToken);
+				return;
+			}
+
+			ResultSource.TrySetException(Failure);
 		}
 
 		private static string FormatReaderError(NSError Error, NFCReaderError ReaderError)

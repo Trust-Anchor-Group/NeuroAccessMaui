@@ -37,7 +37,7 @@
 							   HorizontalOptions="Center"
 							   VerticalOptions="Center"
 							   FontFamily="SpaceGroteskBold"
-							   FontSize="14"
+							   FontSize="{StaticResource FontSizeSm}"
 							   TextColor="{DynamicResource NavMenuContentInactiveWL}" />
 					</VerticalStackLayout>
 						<Grid.Triggers>

@@ -16,7 +16,7 @@
 			<Border Style="{DynamicResource BorderSet}"
 					Margin="0">
 				<VerticalStackLayout Spacing="6">
-					<Label Text="{Binding Contract.Category}" Style="{DynamicResource BoldItemTitleLabel}" FontSize="24" HorizontalOptions="Center" />
+					<Label Text="{Binding Contract.Category}" Style="{DynamicResource BoldItemTitleLabel}" FontSize="{StaticResource FontSize4xl}" HorizontalOptions="Center" />
 				</VerticalStackLayout>
 			</Border>
 
@@ -25,7 +25,7 @@
 				<VerticalStackLayout Spacing="8">
 					<Label Text="{l:Localize Settings}"
 						   Style="{DynamicResource BoldItemTitleLabel}"
-						   FontSize="24" />
+						   FontSize="{StaticResource FontSize4xl}" />
 					<controls:CompositePicker
 						LabelText="{l:Localize Visibility}"
 						Style="{DynamicResource RegularCompositePicker}"

@@ -138,6 +138,17 @@ namespace NeuroAccessMaui.Services.UI.Popups
 			return this.Enqueue(this.PopTopAsync);
 		}
 
+		/// <inheritdoc/>
+		public Task PopIfTopAsync(BasePopupViewModel ViewModel)
+		{
+			ArgumentNullException.ThrowIfNull(ViewModel);
+			return this.Enqueue(async () =>
+			{
+				if (this.popupStack.Count > 0 && ReferenceEquals(this.popupStack.Peek().BindingContext, ViewModel))
+					await this.PopTopAsync();
+			});
+		}
+
 		private async Task<PopupSession> PrepareAndShowPopupAsync(ContentView popupView, object? viewModel, PopupOptions options)
 		{
 			options.Normalize();
@@ -262,10 +273,10 @@ namespace NeuroAccessMaui.Services.UI.Popups
 
 		private IShellPresenter GetPresenter()
 		{
-			Page? mainPage = Application.Current?.MainPage;
-			if (mainPage is null)
+			Page? PresentedPage = UiPageResolver.GetPresentedPage();
+			if (PresentedPage is null)
 				throw new InvalidOperationException("No main page is available for popup presentation.");
-			IShellPresenter? presenter = (mainPage as NavigationPage)?.CurrentPage as IShellPresenter ?? mainPage as IShellPresenter;
+			IShellPresenter? presenter = PresentedPage as IShellPresenter;
 			if (presenter is null)
 				throw new InvalidOperationException("CustomShell presenter not found.");
 			if (!ReferenceEquals(this.attachedPresenter, presenter))

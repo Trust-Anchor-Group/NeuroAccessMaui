@@ -2,17 +2,17 @@
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Permission.ShowPermissionPopup"
                 x:DataType="viewmodel:ShowPermissionViewModel"
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission">
-    <ScrollView VerticalOptions="Center" AutomationId="{x:Static automation:AutomationIds.PopupSystemPermission}">
+    <ScrollView VerticalOptions="Center">
         <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
                 <Label HorizontalTextAlignment="Center"
                        Style="{DynamicResource PageTitleLabel}"
-                       Text="{Binding Title}" AutomationId="{x:Static automation:AutomationIds.LabelSystemPermissionTitle}" />
+                       Text="{Binding Title}" />
                 <Border WidthRequest="{Binding CameraIconBackgroundSize}"
 						HeightRequest="{Binding CameraIconBackgroundSize}"
 						StrokeShape="{Binding CameraIconBackgroundStrokeShape}"
@@ -27,20 +27,20 @@
                 </Border>
                 <Label HorizontalTextAlignment="Start"
                        Style="{DynamicResource ItemDescriptionLabel}"
-                       Text="{Binding Description}" AutomationId="{x:Static automation:AutomationIds.LabelSystemPermissionDescription}"
-                       FontSize="15"
+                       Text="{Binding Description}"
+                       FontSize="{StaticResource FontSizeMd}"
                        Margin="{DynamicResource SmallLeftRightMargins}" />
                 <Label HorizontalTextAlignment="Start"
                        Style="{DynamicResource ItemDescriptionLabel}"
                        Text="{Binding DescriptionSecondary}"
-                       FontSize="15"
+                       FontSize="{StaticResource FontSizeMd}"
                        Margin="{DynamicResource SmallLeftRightMargins}" />
             </VerticalStackLayout>
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
                 <controls:TextButton Command="{Binding GoToSettingsCommand}"
                                      LabelData="{l:Localize GoToSettings}"
                                      Style="{DynamicResource PrimaryButton}" />
-                <controls:TextButton Command="{Binding CloseCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonSystemPermissionSkip}"
+                <controls:TextButton Command="{Binding CloseCommand}"
                                      LabelData="{l:Localize Skip}"
                                      Style="{DynamicResource SecondaryButton}" />
             </VerticalStackLayout>

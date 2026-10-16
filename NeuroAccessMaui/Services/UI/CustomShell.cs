@@ -1,5 +1,3 @@
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
 using NeuroAccessMaui.UI;
@@ -85,7 +83,7 @@ namespace NeuroAccessMaui.Services.UI
 			this.popupOverlay.Add(this.popupBackground);
 			this.popupHost = new Grid { VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
 			this.popupOverlay.Add(this.popupHost);
-            this.popupOverlay.IgnoreSafeArea = true;
+            this.popupOverlay.SafeAreaEdges = SafeAreaEdges.None;
 
 			TapGestureRecognizer popupBackgroundTap = new();
             popupBackgroundTap.Tapped += this.OnPopupBackgroundTapped;
@@ -95,7 +93,7 @@ namespace NeuroAccessMaui.Services.UI
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            this.toastLayer.IgnoreSafeArea = true;
+            this.toastLayer.SafeAreaEdges = SafeAreaEdges.None;
 
 
             this.layout.Add(this.topBar, 0, 0);
@@ -107,8 +105,9 @@ namespace NeuroAccessMaui.Services.UI
             this.layout.Add(this.toastLayer);
             Grid.SetRowSpan(this.toastLayer, 3);
 
-            this.layout.IgnoreSafeArea = true;
-            this.On<iOS>().SetUseSafeArea(false);
+            // The shell applies safe-area and keyboard insets itself (see ApplyInsetsToHost), so MAUI must not add its own.
+            this.layout.SafeAreaEdges = SafeAreaEdges.None;
+            this.SafeAreaEdges = SafeAreaEdges.None;
             this.HideSoftInputOnTapped = true;
 
             this.Content = this.layout;
@@ -126,16 +125,20 @@ namespace NeuroAccessMaui.Services.UI
 
 #if !WINDOWS
 			AppTheme CurrentTheme = Microsoft.Maui.Controls.Application.Current?.RequestedTheme ?? AppTheme.Light;
-			StatusBarStyle StatusStyle = CurrentTheme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent;
-			StatusBarBehavior StatusBehaviour = new() { StatusBarColor = Colors.Transparent, StatusBarStyle = StatusStyle };
+			StatusBarBehavior StatusBehaviour = new() { StatusBarColor = Colors.Transparent, StatusBarStyle = GetStatusBarStyle(CurrentTheme) };
 			this.Behaviors.Add(StatusBehaviour);
 
 			if (Microsoft.Maui.Controls.Application.Current is not null)
 			{
+				// RequestedTheme is the effective theme: the user's choice in settings, or the system theme when the user
+				// has not picked one. MAUI raises this event for both kinds of change.
 				Microsoft.Maui.Controls.Application.Current.RequestedThemeChanged += (s, e) =>
 				{
-					StatusBarStyle StatusStyle = CurrentTheme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent;
-					StatusBehaviour.StatusBarStyle = StatusStyle;
+					StatusBarStyle StatusStyle = GetStatusBarStyle(e.RequestedTheme);
+					if (MainThread.IsMainThread)
+						StatusBehaviour.StatusBarStyle = StatusStyle;
+					else
+						MainThread.BeginInvokeOnMainThread(() => StatusBehaviour.StatusBarStyle = StatusStyle);
 				};
 			}
 #endif
@@ -162,10 +165,27 @@ namespace NeuroAccessMaui.Services.UI
                 await App.WaitForServicesAsync();
                 await Page.OnInitializeAsync();
                 await Page.OnAppearingAsync();
+                UiTelemetry.LogPageAppeared(ServiceRef.LogService, Page, "Startup");
             }
             catch (Exception Ex) when (App.IsLifecycleException(Ex)) { }
-            catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
+            catch (Exception Ex)
+            {
+                UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, Page, "Appearing", "Startup", Ex);
+                ServiceRef.LogService.LogException(Ex);
+            }
         }
+
+#if !WINDOWS
+        /// <summary>
+        /// Picks the status bar content style that stays readable on the given theme.
+        /// </summary>
+        /// <param name="Theme">The effective app theme.</param>
+        /// <returns>Light content on a dark theme, dark content otherwise.</returns>
+        private static StatusBarStyle GetStatusBarStyle(AppTheme Theme)
+        {
+            return Theme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent;
+        }
+#endif
 
         private void OnPopupBackgroundTapped(object? sender, EventArgs e)
         {
@@ -222,7 +242,11 @@ namespace NeuroAccessMaui.Services.UI
             if (OutgoingPage is not null)
             {
                 try { await OutgoingPage.OnDisappearingAsync(); }
-                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                catch (Exception ex)
+                {
+                    UiTelemetry.LogPageLifecycleFailed(ServiceRef.LogService, OutgoingPage, "Disappearing", "ShowScreen", ex);
+                    ServiceRef.LogService.LogException(ex);
+                }
             }
 
             ActiveSlot.IsVisible = false;
@@ -252,11 +276,11 @@ namespace NeuroAccessMaui.Services.UI
             double currentOpacity = this.popupBackground.Opacity;
             if (!overlayWasVisible)
             {
-                await this.popupBackground.FadeToAsync(targetOpacity, 150, Easing.CubicOut);
+                await this.FadePopupBackgroundAsync(targetOpacity, 150);
             }
             else if (Math.Abs(currentOpacity - targetOpacity) > 0.01)
             {
-                await this.popupBackground.FadeToAsync(targetOpacity, 120, Easing.CubicOut);
+                await this.FadePopupBackgroundAsync(targetOpacity, 120);
             }
 
             if (popup is BasePopupView popupView)
@@ -283,7 +307,7 @@ namespace NeuroAccessMaui.Services.UI
 					PopupTransition.Fade => AnimationKeys.Shell.PopupShowFade,
 					PopupTransition.Scale => AnimationKeys.Shell.PopupShowScale,
 					PopupTransition.SlideUp => AnimationKeys.Shell.PopupShowSlideUp,
-					_ => null
+					_ => (AnimationKey?)null
 				};
 
 				if (ShowKey.HasValue)
@@ -315,7 +339,7 @@ namespace NeuroAccessMaui.Services.UI
 					PopupTransition.Fade => AnimationKeys.Shell.PopupHideFade,
 					PopupTransition.Scale => AnimationKeys.Shell.PopupHideScale,
 					PopupTransition.SlideUp => AnimationKeys.Shell.PopupHideSlideUp,
-					_ => null
+					_ => (AnimationKey?)null
 				};
 
 				if (HideKey.HasValue)
@@ -335,7 +359,7 @@ namespace NeuroAccessMaui.Services.UI
 
             if (nextVisualState is null)
             {
-                await this.popupBackground.FadeToAsync(0, 150, Easing.CubicOut);
+                await this.FadePopupBackgroundAsync(0, 150);
                 this.popupOverlay.IsVisible = false;
                 this.popupOverlay.InputTransparent = true;
                 this.currentPopupState = null;
@@ -348,10 +372,28 @@ namespace NeuroAccessMaui.Services.UI
                 if (!this.popupOverlay.IsVisible)
                     this.popupOverlay.IsVisible = true;
                 if (Math.Abs(currentOpacity - targetOpacity) > 0.01)
-                    await this.popupBackground.FadeToAsync(targetOpacity, 120, Easing.CubicOut);
+                    await this.FadePopupBackgroundAsync(targetOpacity, 120);
                 this.currentPopupState = nextVisualState;
             }
         }
+
+		/// <summary>
+		/// Fades the dimmed popup backdrop to the given opacity, or sets it at once when motion is reduced.
+		/// </summary>
+		/// <param name="TargetOpacity">The opacity to end at.</param>
+		/// <param name="Duration">The fade length in milliseconds.</param>
+		/// <returns>A task that completes when the backdrop has reached the opacity.</returns>
+		private Task FadePopupBackgroundAsync(double TargetOpacity, uint Duration)
+		{
+			if (MotionPreferences.ReduceMotion)
+			{
+				Microsoft.Maui.Controls.ViewExtensions.CancelAnimations(this.popupBackground);
+				this.popupBackground.Opacity = TargetOpacity;
+				return Task.CompletedTask;
+			}
+
+			return this.popupBackground.FadeToAsync(TargetOpacity, Duration, Easing.CubicOut);
+		}
 
 		public async Task ShowToast(View Toast, ToastTransition Transition = ToastTransition.SlideFromTop, ToastPlacement Placement = ToastPlacement.Top)
 		{
@@ -374,7 +416,7 @@ namespace NeuroAccessMaui.Services.UI
 				ToastTransition.SlideFromBottom => AnimationKeys.Shell.ToastShowSlideBottom,
 				ToastTransition.SlideFromTop when Placement == ToastPlacement.Bottom => AnimationKeys.Shell.ToastShowSlideBottom,
 				ToastTransition.SlideFromTop => AnimationKeys.Shell.ToastShowSlideTop,
-				_ => null
+				_ => (AnimationKey?)null
 			};
 
 			if (ShowKey.HasValue)
@@ -405,7 +447,7 @@ namespace NeuroAccessMaui.Services.UI
 				ToastTransition.SlideFromBottom => AnimationKeys.Shell.ToastHideSlideBottom,
 				ToastTransition.SlideFromTop when this.activeToastPlacement == ToastPlacement.Bottom => AnimationKeys.Shell.ToastHideSlideBottom,
 				ToastTransition.SlideFromTop => AnimationKeys.Shell.ToastHideSlideTop,
-				_ => null
+				_ => (AnimationKey?)null
 			};
 
 			if (HideKey.HasValue)
@@ -513,7 +555,7 @@ namespace NeuroAccessMaui.Services.UI
             if (!this.TryGetPadding(view, out Thickness currentPadding))
                 return;
 
-            if (!animate)
+            if (!animate || MotionPreferences.ReduceMotion)
             {
                 this.AssignPadding(view, targetPadding);
                 return;

@@ -20,12 +20,12 @@
 			   FontSize="Subtitle"/>
 		<Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Fill" VerticalOptions="Fill"
 			   Stroke="Black" Margin="{DynamicResource SmallMargins}" StrokeShape="RoundRectangle 8" BackgroundColor="Transparent" Padding="20,5,20,5">
-			<Label FontSize="30" HorizontalOptions="Fill" VerticalOptions="Fill"
+			<Label FontSize="{StaticResource FontSize7xl}" HorizontalOptions="Fill" VerticalOptions="Fill"
 				   HorizontalTextAlignment="Start" VerticalTextAlignment="Center">
 				<Label.FormattedText>
 					<FormattedString>
 						<Span Text="{Binding Value}"/>
-						<Span Text="|" TextColor="{DynamicResource InputFieldsContentSecondary}" FontSize="35"/>
+						<Span Text="|" TextColor="{DynamicResource InputFieldsContentSecondary}" FontSize="{StaticResource FontSizeDisplaySm}"/>
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>

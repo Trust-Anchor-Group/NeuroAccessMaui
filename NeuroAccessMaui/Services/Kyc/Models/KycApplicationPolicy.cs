@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
@@ -48,6 +50,14 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// Gets the property keys sent with the first application and retained for promotion.
 		/// </summary>
 		public Collection<string> KeepPropertyKeys { get; } = new Collection<string>();
+
+		/// <summary>
+		/// Gets the retained property keys the user may leave out of the final application, mapped to whether they are retained by default.
+		/// </summary>
+		/// <remarks>
+		/// Every key here is also listed in <see cref="KeepPropertyKeys"/>. Keys not listed here are always retained.
+		/// </remarks>
+		public Dictionary<string, bool> OptionalKeepDefaults { get; } = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// Gets the attachment names sent with the first application only.

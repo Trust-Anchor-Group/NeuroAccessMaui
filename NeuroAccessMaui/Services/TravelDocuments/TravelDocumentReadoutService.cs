@@ -1,10 +1,10 @@
 using System.Text;
 using System.Xml;
 using NeuroAccess.Nfc;
+using NeuroAccess.Nfc.Exceptions;
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.DataObjects;
-using NeuroAccessMaui.Services.Nfc;
 using Waher.Content.Xml;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
@@ -222,6 +222,11 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 		/// Gets the unexpected error message, if one was captured.
 		/// </summary>
 		public string? ErrorMessage { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether the connection was lost, or a chip command timed out, during the PACE key exchange.
+		/// </summary>
+		public bool IsPaceExchangeInterrupted { get; init; }
 
 		/// <summary>
 		/// Gets a value indicating whether the readout completed successfully.
@@ -503,7 +508,11 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 					null,
 					TravelDocumentReadoutService.CreateDocumentData(Client, Request.DocumentInformation),
 					TravelDocumentReadoutService.CreateCertificateData(Client, null, false),
-					Ex.Message);
+					Ex.Message)
+				{
+					IsPaceExchangeInterrupted = (Ex is NfcConnectionLostException or TimeoutException) &&
+						TravelDocumentReadoutService.IsPaceExchangeState(Client?.State)
+				};
 			}
 			finally
 			{
@@ -527,6 +536,20 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 				0x00,
 				0x0C
 			], SilentCommunicationLayer);
+		}
+
+		/// <summary>
+		/// Determines whether the chip client was in the PACE key exchange, so an interruption there can be told apart from
+		/// one while reading the document data.
+		/// </summary>
+		/// <param name="State">The chip client state when the readout was interrupted.</param>
+		/// <returns><c>true</c> if the state belongs to the PACE key exchange; otherwise <c>false</c>.</returns>
+		private static bool IsPaceExchangeState(TravelDocumentsState? State)
+		{
+			return State is TravelDocumentsState.GettingNonce or
+				TravelDocumentsState.GettingPublicKey or
+				TravelDocumentsState.GettingEphemeralPublicKey or
+				TravelDocumentsState.GettingVerificationToken;
 		}
 
 		private static TravelDocumentData? CreateDocumentData(TravelDocumentsClient? Client, DocumentInformation? FallbackDocumentInformation)

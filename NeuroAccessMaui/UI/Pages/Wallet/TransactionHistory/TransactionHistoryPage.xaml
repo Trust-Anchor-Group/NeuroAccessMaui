@@ -56,9 +56,9 @@
 												<Label Grid.Column="1" Grid.Row="1" HorizontalTextAlignment="End" TextColor="{Binding ChangeColor}" LineBreakMode="TailTruncation" >
 													<Label.FormattedText>
 														<FormattedString>
-															<Span Text="{Binding Change}" FontSize="18" FontAttributes="Bold" />
+															<Span Text="{Binding Change}" FontSize="{StaticResource FontSizeXl}" FontAttributes="Bold" />
 															<Span Text=" " />
-															<Span Text="{Binding Currency}" FontSize="18" FontAttributes="Bold" />
+															<Span Text="{Binding Currency}" FontSize="{StaticResource FontSizeXl}" FontAttributes="Bold" />
 														</FormattedString>
 													</Label.FormattedText>
 												</Label>

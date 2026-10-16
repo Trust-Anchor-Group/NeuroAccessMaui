@@ -9,6 +9,7 @@ using Waher.Persistence.Attributes;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
+using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Kyc
 {

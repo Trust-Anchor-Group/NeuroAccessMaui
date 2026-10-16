@@ -6,6 +6,7 @@ using Waher.Networking.XMPP.Contracts;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
 using CommunityToolkit.Mvvm.Input;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 {

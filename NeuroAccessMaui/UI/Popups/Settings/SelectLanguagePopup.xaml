@@ -17,7 +17,7 @@
 			<Setter Property="FontAttributes"
 					Value="Bold" />
 			<Setter Property="FontSize"
-					Value="15" />
+					Value="{StaticResource FontSizeMd}" />
 		</Style>
 
 		<DataTemplate x:Key="SelectLanguageDataTemplate"

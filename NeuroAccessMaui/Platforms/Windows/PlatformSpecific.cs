@@ -49,6 +49,25 @@ namespace NeuroAccessMaui.Services
 			set => _ = value; // Not supported on Windows currently.
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether "Animation effects" is turned off in the Windows accessibility settings.
+		/// </summary>
+		public bool IsReduceMotionEnabled
+		{
+			get
+			{
+				try
+				{
+					global::Windows.UI.ViewManagement.UISettings UiSettings = new global::Windows.UI.ViewManagement.UISettings();
+					return !UiSettings.AnimationsEnabled;
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+		}
+
 		/// <inheritdoc/>
 		public string? GetDeviceId() => this.deviceId
 			?? throw new InvalidOperationException("The device identifier has not been initialized.");

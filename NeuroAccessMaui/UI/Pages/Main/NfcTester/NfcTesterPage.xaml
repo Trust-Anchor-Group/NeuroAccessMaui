@@ -56,7 +56,7 @@
 					</Border>
 					<Label Text="{l:Localize NfcTesterTitle}"
 						   Style="{DynamicResource PageTitleLabel}"
-						   FontSize="29"
+						   FontSize="{StaticResource FontSize6xl}"
 						   HorizontalTextAlignment="Center"
 						   LineBreakMode="WordWrap" />
 					<Label Text="{l:Localize NfcTesterDescription}"

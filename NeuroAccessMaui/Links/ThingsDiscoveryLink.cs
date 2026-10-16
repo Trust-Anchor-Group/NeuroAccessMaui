@@ -1,4 +1,3 @@
-using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
@@ -26,36 +25,31 @@ namespace NeuroAccessMaui.Links
 			return Link.Scheme.Equals(Constants.UriSchemes.IotDisco, StringComparison.OrdinalIgnoreCase) ? Grade.Ok : Grade.NotAtAll;
 		}
 
-		/// <summary>
-		/// Tries to open a link
-		/// </summary>
-		/// <param name="Link">Link to open</param>
-		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
-		/// <returns>If the link was opened.</returns>
-		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
+		/// <inheritdoc/>
+		public bool RequiresXmppConnection => true;
+
+		/// <inheritdoc/>
+		public Task<PreparedLink?> PrepareAsync(Uri Link, CancellationToken CancellationToken)
 		{
+			CancellationToken.ThrowIfCancellationRequested();
+
 			string Url = Link.OriginalString.Replace("%40", "@"); // iOS has problems with URIs containg @
+			Func<string, Task> Open;
 
 			if (ServiceRef.XmppService.IsIoTDiscoClaimURI(Url))
-				await ServiceRef.ThingRegistryOrchestratorService.OpenClaimDevice(Url);
+				Open = ServiceRef.ThingRegistryOrchestratorService.OpenClaimDevice;
 			else if (ServiceRef.XmppService.IsIoTDiscoSearchURI(Url))
-				await ServiceRef.ThingRegistryOrchestratorService.OpenSearchDevices(Url);
+				Open = ServiceRef.ThingRegistryOrchestratorService.OpenSearchDevices;
 			else if (ServiceRef.XmppService.IsIoTDiscoDirectURI(Url))
-				await ServiceRef.ThingRegistryOrchestratorService.OpenDeviceReference(Url);
+				Open = ServiceRef.ThingRegistryOrchestratorService.OpenDeviceReference;
 			else
+				return Task.FromResult<PreparedLink?>(null);
+
+			return Task.FromResult<PreparedLink?>(new PreparedLink(Link, async () =>
 			{
-				if (ShowErrorIfUnable)
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.InvalidIoTDiscoveryCode)] + Environment.NewLine + Environment.NewLine + Url);
-				}
-
-				return false;
-			}
-
-			ServiceRef.TagProfile.HasThing = true;
-
-			return true;
+				await Open(Url);
+				ServiceRef.TagProfile.HasThing = true;
+			}));
 		}
 	}
 }

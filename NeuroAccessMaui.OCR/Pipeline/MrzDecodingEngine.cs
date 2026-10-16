@@ -61,6 +61,33 @@ namespace NeuroAccessMaui.OCR.Pipeline
 				.ToList();
 		}
 
+		/// <summary>
+		/// Decodes an observation whose lines already have the exact shape of one MRZ layout, without searching other
+		/// windows, line lengths or layouts.
+		/// </summary>
+		/// <param name="Observation">The observation to decode.</param>
+		/// <returns>The decoded candidate, or <see langword="null"/> if the lines do not match a layout exactly.</returns>
+		public static MrzDecodedCandidate? DecodeExactShape(StructuredTextObservation Observation)
+		{
+			ArgumentNullException.ThrowIfNull(Observation);
+
+			List<string> Lines = SplitAndNormalizeLines(Observation);
+			MrzFormatShape? Shape = Shapes.FirstOrDefault(Candidate =>
+				Candidate.LineCount == Lines.Count && Lines.All(Line => Line.Length == Candidate.LineLength));
+			if (Shape is null)
+				return null;
+
+			return DecodeCandidate(new MrzSourceCandidate(
+				Shape.Format,
+				Lines,
+				"Block",
+				new[] { Observation },
+				new[] { "NormalizeObservationText", "ExactShape" },
+				0,
+				Lines.Count - 1,
+				Lines.Count));
+		}
+
 		private static List<MrzSourceCandidate> CreateSourceCandidates(IReadOnlyList<StructuredTextObservation> Observations)
 		{
 			List<MrzSourceCandidate> Results = new List<MrzSourceCandidate>();

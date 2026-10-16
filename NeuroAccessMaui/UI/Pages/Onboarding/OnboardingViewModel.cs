@@ -17,6 +17,7 @@ using NeuroAccessMaui.UI.Popups.QR;
 using NeuroAccessMaui.UI.Popups.Settings;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Security;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding
 {
@@ -355,7 +356,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				// Find the viewmodel of WelcomeOnboardingPage
 				WelcomeOnboardingStepViewModel WelcomeVM = this.GetStepViewModel<WelcomeOnboardingStepViewModel>(OnboardingStep.Welcome);
 
-				await WelcomeVM.HandleInviteCodeFromIntent(this.navigationArgs.PendingIntentUri);
+				// The prepared invitation carries decrypted contents, so the navigation arguments do not keep it once it is handed over.
+				Models.Invitation? PreparedInvitation = this.navigationArgs.PreparedInvitation;
+				this.navigationArgs.PreparedInvitation = null;
+
+				await WelcomeVM.HandleInviteCodeFromIntent(this.navigationArgs.PendingIntentUri, PreparedInvitation);
 			}
 		}
 

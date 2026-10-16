@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -58,14 +59,21 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <param name="Policy">The application policy to apply.</param>
 		/// <param name="Properties">The prepared identity properties.</param>
 		/// <param name="Attachments">The prepared identity attachments.</param>
+		/// <param name="ExcludedPropertyKeys">Optional retained property keys the user chose to leave out of the final application.</param>
 		/// <returns>The content that should survive into the final promoted application.</returns>
 		public KycApplicationContentSet BuildFinalPromotionContent(
 			KycApplicationPolicy Policy,
 			IEnumerable<Property> Properties,
-			IEnumerable<LegalIdentityAttachment> Attachments)
+			IEnumerable<LegalIdentityAttachment> Attachments,
+			IEnumerable<string>? ExcludedPropertyKeys = null)
 		{
 			KycContentPolicy Content = Policy.Content;
 			HashSet<string> PropertyKeys = CreateKeySet(Content.KeepPropertyKeys, appRequiredPropertyKeys);
+			foreach (string ExcludedKey in ExcludedPropertyKeys ?? Array.Empty<string>())
+			{
+				if (Content.OptionalKeepDefaults.ContainsKey(ExcludedKey))
+					PropertyKeys.Remove(ExcludedKey.Trim());
+			}
 			HashSet<string> AttachmentNames = CreateKeySet(Content.KeepAttachmentNames);
 			HashSet<string> AttachmentTags = CreateKeySet(Content.KeepAttachmentTags);
 

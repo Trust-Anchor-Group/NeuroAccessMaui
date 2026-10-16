@@ -52,6 +52,7 @@ namespace NeuroAccessMaui.Services.Kyc.Transforms
 			Register(new YearTransform());
 			Register(new MonthTransform());
 			Register(new DayTransform());
+			Register(new AgeAboveTransform());
 			Register(new PersonalNumberNormalizeTransform());
 		}
 
@@ -121,6 +122,59 @@ namespace NeuroAccessMaui.Services.Kyc.Transforms
 		}
 	}
 
+	/// <summary>
+	/// Derives the AGEABOVE claim from a birth date: the highest configured age threshold the person has reached today.
+	/// </summary>
+	/// <remarks>
+	/// Returns an empty string when the date is invalid or no threshold has been reached, so no property is produced.
+	/// </remarks>
+	internal sealed class AgeAboveTransform : SimpleFuncTransform
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="AgeAboveTransform"/> class.
+		/// </summary>
+		public AgeAboveTransform() : base("ageAbove") { }
+
+		/// <inheritdoc/>
+		public override Task<string> ApplyAsync(ObservableKycField field, KycProcess process, string currentValue, CancellationToken ct)
+		{
+			if (!DateTime.TryParse(currentValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime BirthDate))
+				return Task.FromResult(string.Empty);
+
+			int? Threshold = ResolveThreshold(DateOnly.FromDateTime(BirthDate), DateOnly.FromDateTime(DateTime.UtcNow));
+			return Task.FromResult(Threshold?.ToString(CultureInfo.InvariantCulture) ?? string.Empty);
+		}
+
+		/// <summary>
+		/// Gets the highest age threshold reached on a given date.
+		/// </summary>
+		/// <param name="BirthDate">The person's birth date.</param>
+		/// <param name="Today">The date the age is measured on.</param>
+		/// <returns>The highest reached threshold, or <c>null</c> when none is reached or the birth date is implausible.</returns>
+		internal static int? ResolveThreshold(DateOnly BirthDate, DateOnly Today)
+		{
+			if (BirthDate > Today)
+				return null;
+
+			int Age = Today.Year - BirthDate.Year;
+			// A Feb 29 birthday is reached on Mar 1 in non-leap years, since Feb 29 does not exist then.
+			if (Today.Month < BirthDate.Month || (Today.Month == BirthDate.Month && Today.Day < BirthDate.Day))
+				Age--;
+
+			if (Age > Constants.Age.MaxAge)
+				return null;
+
+			int? Result = null;
+			foreach (int Threshold in Constants.Age.AgeAboveThresholds)
+			{
+				if (Age >= Threshold)
+					Result = Threshold;
+			}
+
+			return Result;
+		}
+	}
+
 	internal sealed class PersonalNumberNormalizeTransform : SimpleFuncTransform
 	{
 		public PersonalNumberNormalizeTransform() : base("personalNumberNormalize") { }
@@ -133,7 +187,7 @@ namespace NeuroAccessMaui.Services.Kyc.Transforms
 			try
 			{
 				// Try explicit country field id patterns first
-				string? fromValues = process.Values.Where(kv => kv.Key.Contains("country", StringComparison.OrdinalIgnoreCase))
+				string? fromValues = process.Values.Where(kv => kv.Key.Contains("country", StringComparison.OrdinalIgnoreCase) && !KycKeepChoices.IsChoiceValueKey(kv.Key))
 					.Select(kv => kv.Value)
 					.FirstOrDefault(v => !string.IsNullOrEmpty(v));
 				if (!string.IsNullOrEmpty(fromValues))

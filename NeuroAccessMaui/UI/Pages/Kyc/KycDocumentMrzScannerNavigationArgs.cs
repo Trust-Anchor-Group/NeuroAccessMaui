@@ -18,5 +18,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Gets or sets the preferred document type shown when the scanner opens.
 		/// </summary>
 		public OcrDocumentKindHint PreferredDocumentKind { get; init; } = OcrDocumentKindHint.Unknown;
+
+		/// <summary>
+		/// Gets or sets how the scanner session ended. The scanner sets this before it completes
+		/// <see cref="CompletionSource"/>, so callers can tell a cancelled scan from a missing camera permission
+		/// or a scanner failure when the result is <c>null</c>.
+		/// </summary>
+		public KycDocumentMrzScannerOutcome Outcome { get; set; } = KycDocumentMrzScannerOutcome.Pending;
 	}
 }

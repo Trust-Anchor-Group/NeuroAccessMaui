@@ -25,15 +25,29 @@ namespace NeuroAccessMaui.Links
 			return Link.Scheme.Equals(Constants.UriSchemes.Xmpp, StringComparison.OrdinalIgnoreCase) ? Grade.Ok : Grade.NotAtAll;
 		}
 
-		/// <summary>
-		/// Tries to open a link
-		/// </summary>
-		/// <param name="Link">Link to open</param>
-		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
-		/// <returns>If the link was opened.</returns>
-		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
+		/// <inheritdoc/>
+		public bool RequiresXmppConnection => true;
+
+		/// <inheritdoc/>
+		public Task<PreparedLink?> PrepareAsync(Uri Link, CancellationToken CancellationToken)
 		{
-			return await ChatViewModel.ProcessXmppUri(Link.OriginalString);
+			CancellationToken.ThrowIfCancellationRequested();
+
+			string Url = Link.OriginalString;
+			int SchemeEnd = Url.IndexOf(':');
+			string Address = SchemeEnd < 0 ? string.Empty : Url[(SchemeEnd + 1)..].Trim();
+			int QueryStart = Address.IndexOf('?');
+			if (QueryStart >= 0)
+				Address = Address[..QueryStart].TrimEnd();
+
+			if (string.IsNullOrEmpty(Address) || Address.Any(char.IsWhiteSpace))
+				return Task.FromResult<PreparedLink?>(null);
+
+			return Task.FromResult<PreparedLink?>(new PreparedLink(Link, async () =>
+			{
+				if (!await ChatViewModel.ProcessXmppUri(Url))
+					throw new InvalidOperationException("The XMPP link could not be processed.");
+			}));
 		}
 	}
 }

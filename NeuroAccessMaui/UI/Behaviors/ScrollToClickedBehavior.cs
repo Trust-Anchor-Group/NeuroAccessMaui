@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using NeuroAccessMaui.Animations;
 
 namespace NeuroAccessMaui.UI.Behaviors
 {
@@ -67,7 +68,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 			while (Loop is not null && Loop is not ScrollView)
 				Loop = Loop.Parent;
 
-			(Loop as ScrollView)?.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true);
+			(Loop as ScrollView)?.ScrollToAsync(Element, ScrollToPosition.MakeVisible, !MotionPreferences.ReduceMotion);
 		}
 	}
 }
