@@ -16,14 +16,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		public override Task<string> GetTitle() => Task.FromResult<string>(ServiceRef.Localizer[nameof(AppResources.History)]);
 
 		/// <summary>
-		/// Gets the XAML for the report.
+		/// Gets the MAUI representation of the report.
 		/// </summary>
-		/// <returns>String-representation of XAML of report.</returns>
-		public override Task<string> GetReportXaml()
-		{
-			return ServiceRef.XmppService.GenerateNeuroFeatureHistoryReport(this.TokenId);
-		}
-
+		/// <returns>MAUI representation of report.</returns>
 		public override Task<VerticalStackLayout> GetReportMaui()
 		{
 			return ServiceRef.XmppService.GenerateNeuroFeatureHistoryReportMaui(this.TokenId);

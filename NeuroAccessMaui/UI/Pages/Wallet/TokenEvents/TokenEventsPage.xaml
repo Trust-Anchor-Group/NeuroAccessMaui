@@ -206,9 +206,9 @@
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
-				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXmlInBrowser}" Style="{DynamicResource ClickableValueLabel}">
+				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXml}" Style="{DynamicResource ClickableValueLabel}">
 					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
+						<TapGestureRecognizer Command="{Binding ViewXmlCommand}" CommandParameter="{Binding Note}" />
 					</Label.GestureRecognizers>
 				</Label>
 			</Grid>
@@ -263,9 +263,9 @@
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
-				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXmlInBrowser}" Style="{DynamicResource ClickableValueLabel}">
+				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXml}" Style="{DynamicResource ClickableValueLabel}">
 					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
+						<TapGestureRecognizer Command="{Binding ViewXmlCommand}" CommandParameter="{Binding Note}" />
 					</Label.GestureRecognizers>
 				</Label>
 			</Grid>
@@ -288,7 +288,7 @@
 				<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize KillerId}" Style="{DynamicResource KeyLabel}"/>
 				<Label Grid.Column="1" Grid.Row="2" Text="{Binding LegalId}" Style="{DynamicResource ClickableValueLabel}">
 					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding LegalId}" />
 					</Label.GestureRecognizers>
 				</Label>
 			</Grid>
@@ -329,7 +329,8 @@
 								  BindableLayout.ItemsSource="{Binding Path=Events}" BindableLayout.ItemTemplateSelector="{StaticResource EventStyleSelector}" />
 						<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize AddNote}" Margin="{DynamicResource SmallBottomMargins}"
 													Command="{Binding Path=AddNoteCommand}" Style="{DynamicResource FilledTextButton}"
-													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+													IsVisible="{Binding IsMyToken}"/>
 					</Grid>
 				</Border>
 			</VerticalStackLayout>

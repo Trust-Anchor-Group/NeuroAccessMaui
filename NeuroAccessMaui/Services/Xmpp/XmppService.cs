@@ -5630,7 +5630,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.lastTokenEvent = DateTime.Now;
 
 			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedTitle)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)];
+			string? Name = e.Token?.FriendlyName;
+			string Body = string.IsNullOrWhiteSpace(Name) ? ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)] : Name;
+
+			ServiceRef.TokenNameCache.Remember(e.Token);
 
 			NotificationIntent Intent = new()
 			{
@@ -5657,7 +5660,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.lastTokenEvent = DateTime.Now;
 
 			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedTitle)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)];
+			string? Name = e.Token?.FriendlyName;
+			string Body = string.IsNullOrWhiteSpace(Name) ? ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)] : Name;
+
+			ServiceRef.TokenNameCache.Remember(e.Token);
 
 			NotificationIntent Intent = new()
 			{
@@ -5692,6 +5698,32 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task NeuroFeaturesClient_StateUpdated(object? _, NewStateEventArgs e)
 		{
 			await this.NeuroFeatureStateUpdated.Raise(this, e);
+
+			// One record per token, so repeated state changes update the same notification.
+			try
+			{
+				string Title = await ServiceRef.TokenNameCache.GetNameAsync(e.TokenId) ?? ServiceRef.Localizer[nameof(AppResources.State)];
+				string Body = string.IsNullOrEmpty(e.NewState)
+					? ServiceRef.Localizer[nameof(AppResources.TokenStateEnded)]
+					: ServiceRef.Localizer[nameof(AppResources.TokenStateBody), e.NewState];
+
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Tokens,
+					Title = Title,
+					Body = Body,
+					Action = NotificationAction.OpenToken,
+					EntityId = e.TokenId,
+					CorrelationId = e.TokenId + "/state",
+					Presentation = NotificationPresentation.StoreOnly
+				};
+
+				await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		/// <summary>
@@ -5883,18 +5915,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return this.NeuroFeaturesClient.GetCreationAttributesAsync();
 		}
 
-		/// <summary>
-		/// Generates a XAML report for a state diagram corresponding to the token.
-		/// </summary>
-		/// <returns>String-representation of XAML of report.</returns>
-		public async Task<string> GenerateNeuroFeatureStateDiagramReport(string TokenId)
-		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateStateDiagramAsync(TokenId, ReportFormat.Markdown);
-			if (!e.Ok)
-				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetStateDiagram)]);
-
-			return await e.ReportText.MarkdownToXaml();
-		}
 
 		/// <summary>
 		/// Generates a Maui report for a state diagram corresponding to the token.
@@ -5909,18 +5929,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return await e.ReportText.MarkdownToMaui();
 		}
 
-		/// <summary>
-		/// Generates a XAML report for a timing diagram corresponding to the token.
-		/// </summary>
-		/// <returns>String-representation of XAML of report.</returns>
-		public async Task<string> GenerateNeuroFeatureProfilingReport(string TokenId)
-		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateProfilingReportAsync(TokenId, ReportFormat.Markdown);
-			if (!e.Ok)
-				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetProfiling)]);
-
-			return await e.ReportText.MarkdownToXaml();
-		}
 
 		/// <summary>
 		/// Generates a Maui report for a timing diagram corresponding to the token.
@@ -5935,18 +5943,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return await e.ReportText.MarkdownToMaui();
 		}
 
-		/// <summary>
-		/// Generates a XAML present report for a token.
-		/// </summary>
-		/// <returns>String-representation of XAML of report.</returns>
-		public async Task<string> GenerateNeuroFeaturePresentReport(string TokenId)
-		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GeneratePresentReportAsync(TokenId, ReportFormat.Markdown);
-			if (!e.Ok)
-				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetPresent)]);
-
-			return await e.ReportText.MarkdownToXaml();
-		}
 
 		/// <summary>
 		/// Generates a MAUI present report for a token.
@@ -5961,18 +5957,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return await e.ReportText.MarkdownToMaui();
 		}
 
-		/// <summary>
-		/// Generates a XAML history report for a token.
-		/// </summary>
-		/// <returns>String-representation of XAML of report.</returns>
-		public async Task<string> GenerateNeuroFeatureHistoryReport(string TokenId)
-		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.Markdown);
-			if (!e.Ok)
-				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetHistory)]);
-
-			return await e.ReportText.MarkdownToXaml();
-		}
 
 		/// <summary>
 		/// Generates a MAUI history report for a token.
@@ -5982,6 +5966,20 @@ namespace NeuroAccessMaui.Services.Xmpp
 			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetHistory)]);
+
+			return await e.ReportText.MarkdownToMaui();
+		}
+
+		/// <summary>
+		/// Gets the description of a token as its Neuron renders it, as MAUI views.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <returns>The rendered description.</returns>
+		public async Task<VerticalStackLayout> GenerateNeuroFeatureDescriptionMaui(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateDescriptionAsync(TokenId, ReportFormat.Markdown);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(e.ErrorText);
 
 			return await e.ReportText.MarkdownToMaui();
 		}

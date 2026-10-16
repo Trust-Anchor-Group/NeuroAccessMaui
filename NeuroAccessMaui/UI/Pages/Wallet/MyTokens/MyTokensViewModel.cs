@@ -1,12 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
-using System.Collections.ObjectModel;
-using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 {
@@ -16,42 +14,44 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 	/// <param name="Args">Navigation arguments</param>
 	public partial class MyTokensViewModel(MyTokensNavigationArgs? Args) : XmppViewModel()
 	{
+		/// <summary>
+		/// How many already loaded positions each "load more" request asks for again. The server sorts tokens by when they
+		/// were last updated, so tokens can move while the list is open, and the overlap keeps such moves from skipping tokens.
+		/// </summary>
+		private const int PageOverlap = 5;
+
 		private readonly MyTokensNavigationArgs? navigationArgs = Args;
+		private readonly HashSet<string> loadedTokenIds = new(StringComparer.OrdinalIgnoreCase);
+		private int serverOffset;
 
 		/// <inheritdoc/>
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
 
+			ServiceRef.TokenUnreadTracker.UnreadChanged += this.TokenUnreadTracker_UnreadChanged;
+
 			try
 			{
+				await ServiceRef.TokenUnreadTracker.EnsureLoadedAsync();
+
 				TokensEventArgs e = await ServiceRef.XmppService.GetNeuroFeatures(0, Constants.BatchSizes.TokenBatchSize);
-				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCateogy = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Wallet);
 
-				MainThread.BeginInvokeOnMainThread(() =>
+				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					if (e.Ok)
+					this.Tokens.Clear();
+					this.loadedTokenIds.Clear();
+					this.serverOffset = 0;
+
+					if (e.Ok && e.Tokens is not null)
 					{
-						this.Tokens.Clear();
-
-						if (e.Tokens is not null)
-						{
-							foreach (Token Token in e.Tokens)
-							{
-								if (!EventsByCateogy.TryGetValue(Token.TokenId, out NotificationEvent[]? Events))
-									Events = [];
-
-								this.Tokens.Add(new TokenItem(Token, this.navigationArgs?.TokenItemProvider, Events));
-							}
-
-							this.HasTokens = true;
-							this.HasMoreTokens = e.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
-						}
-						else
-							this.HasTokens = false;
+						this.AddTokens(e.Tokens, 0);
+						this.HasMoreTokens = e.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
 					}
 					else
-						this.HasTokens = false;
+						this.HasMoreTokens = false;
+
+					this.HasTokens = this.Tokens.Count > 0;
 				});
 
 				ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
@@ -66,6 +66,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// <inheritdoc/>
 		public override Task OnDisposeAsync()
 		{
+			ServiceRef.TokenUnreadTracker.UnreadChanged -= this.TokenUnreadTracker_UnreadChanged;
 			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
 
@@ -75,19 +76,52 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			return base.OnDisposeAsync();
 		}
 
+		/// <summary>
+		/// Adds tokens received from the server to the end of the list, skipping tokens that are already in it.
+		/// Called on the main thread.
+		/// </summary>
+		/// <param name="Tokens">Tokens received from the server.</param>
+		/// <param name="Offset">The offset the tokens were requested from.</param>
+		private void AddTokens(Token[] Tokens, int Offset)
+		{
+			this.serverOffset = Offset + Tokens.Length;
+
+			foreach (Token Token in Tokens)
+			{
+				if (this.loadedTokenIds.Add(Token.TokenId))
+					this.Tokens.Add(this.CreateItem(Token));
+			}
+		}
+
+		/// <summary>
+		/// Creates a list item for a token. In picker mode, every item completes the picker when tapped.
+		/// </summary>
+		/// <param name="Token">The token.</param>
+		/// <returns>The list item.</returns>
+		private TokenItem CreateItem(Token Token)
+		{
+			ServiceRef.TokenNameCache.Remember(Token);
+
+			return new TokenItem(Token, this.navigationArgs?.TokenItemProvider)
+			{
+				UnreadCount = ServiceRef.TokenUnreadTracker.GetUnreadCount(Token.TokenId)
+			};
+		}
+
 		private Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
 		{
-			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, e.Token.TokenId, out NotificationEvent[]? Events))
-				Events = [];
+			if (e.Token is null)
+				return Task.CompletedTask;
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				TokenItem Item = new(e.Token, this.navigationArgs?.TokenItemProvider, Events);
+				if (!this.loadedTokenIds.Add(e.Token.TokenId))
+					return;
 
-				if (this.Tokens.Count == 0)
-					this.Tokens.Add(Item);
-				else
-					this.Tokens.Insert(0, Item);
+				// The server lists the newest token first, so every loaded token moves one position down.
+				this.serverOffset++;
+				this.Tokens.Insert(0, this.CreateItem(e.Token));
+				this.HasTokens = true;
 			});
 
 			return Task.CompletedTask;
@@ -95,23 +129,50 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 
 		private Task Wallet_TokenRemoved(object? Sender, TokenEventArgs e)
 		{
+			if (e.Token is null)
+				return Task.CompletedTask;
+
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
+				if (!this.loadedTokenIds.Remove(e.Token.TokenId))
+					return;
+
+				this.serverOffset = Math.Max(0, this.serverOffset - 1);
+
 				int i, c = this.Tokens.Count;
 
 				for (i = 0; i < c; i++)
 				{
 					TokenItem Item = this.Tokens[i];
 
-					if (Item.TokenId == e.Token.TokenId)
+					if (string.Equals(Item.TokenId, e.Token.TokenId, StringComparison.OrdinalIgnoreCase))
 					{
 						this.Tokens.RemoveAt(i);
 						break;
 					}
 				}
+
+				this.HasTokens = this.Tokens.Count > 0;
 			});
 
 			return Task.CompletedTask;
+		}
+
+		private void TokenUnreadTracker_UnreadChanged(object? Sender, string TokenId)
+		{
+			int Count = ServiceRef.TokenUnreadTracker.GetUnreadCount(TokenId);
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				foreach (TokenItem Item in this.Tokens)
+				{
+					if (string.Equals(Item.TokenId, TokenId, StringComparison.OrdinalIgnoreCase))
+					{
+						Item.UnreadCount = Count;
+						break;
+					}
+				}
+			});
 		}
 
 		#region Properties
@@ -157,40 +218,33 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		[RelayCommand]
 		private async Task LoadMoreTokens()
 		{
-			if (this.HasMoreTokens)
+			if (!this.HasMoreTokens)
+				return;
+
+			this.HasMoreTokens = false; // So multiple requests are not made while scrolling.
+
+			try
 			{
-				this.HasMoreTokens = false; // So multiple requests are not made while scrolling.
+				int Offset = Math.Max(0, this.serverOffset - PageOverlap);
+				int MaxCount = this.serverOffset - Offset + Constants.BatchSizes.TokenBatchSize;
+				TokensEventArgs e = await ServiceRef.XmppService.GetNeuroFeatures(Offset, MaxCount);
 
-				try
+				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					TokensEventArgs e = await ServiceRef.XmppService.GetNeuroFeatures(this.Tokens.Count, Constants.BatchSizes.TokenBatchSize);
-					SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCateogy = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Wallet);
-
-					MainThread.BeginInvokeOnMainThread(() =>
+					if (e.Ok && e.Tokens is not null)
 					{
-						if (e.Ok)
-						{
-							if (e.Tokens is not null)
-							{
-								foreach (Token Token in e.Tokens)
-								{
-									if (!EventsByCateogy.TryGetValue(Token.TokenId, out NotificationEvent[]? Events))
-										Events = [];
-
-									this.Tokens.Add(new TokenItem(Token, Events));
-								}
-
-								this.HasMoreTokens = e.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
-							}
-						}
-					});
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
+						this.AddTokens(e.Tokens, Offset);
+						this.HasMoreTokens = e.Tokens.Length == MaxCount;
+					}
+					else
+						this.HasMoreTokens = true;
+				});
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				this.HasMoreTokens = true;
 			}
 		}
-
 	}
 }

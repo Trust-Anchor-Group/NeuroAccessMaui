@@ -22,16 +22,16 @@
 			<Grid ColumnDefinitions="*,4*,2*,*" RowDefinitions="auto" BackgroundColor="Transparent">
 				<Image Grid.Column="0" Grid.Row="0"
 					   Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
-					   WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}"
-					   HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}"
+					   WidthRequest="{Binding Path=GlyphWidth}"
+					   HeightRequest="{Binding Path=GlyphHeight}"
 					   VerticalOptions="Center" HorizontalOptions="Center" />
 				<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=FriendlyName}"
 					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"
 					   FontAttributes="Bold" FontSize="{StaticResource FontSizeXl}" HorizontalTextAlignment="Start"
 					   BackgroundColor="Transparent" VerticalOptions="Center"/>
-				<Border Grid.Row="0" Grid.Column="2" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding New}"
+				<Border Grid.Row="0" Grid.Column="2" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding HasUnread}"
 						HorizontalOptions="Start" VerticalOptions="Center" Style="{DynamicResource RedButtonActiveBorder}">
-					<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWL}" Text="{Binding NrEvents}" Padding="1"/>
+					<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWL}" Text="{Binding UnreadCount}" Padding="1"/>
 				</Border>
 				<Label Grid.Column="2" Grid.Row="0" Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
 					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="{StaticResource FontSizeXl}"

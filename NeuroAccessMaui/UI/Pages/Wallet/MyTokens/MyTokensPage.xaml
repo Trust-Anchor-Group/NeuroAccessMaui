@@ -38,13 +38,22 @@
 							<controls:TemplatedButton Command="{Binding ClickedCommand}" CommandParameter="{Binding .}">
 								<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="0">
 									<Grid ColumnDefinitions="*,4*,2*,*" RowDefinitions="auto" Padding="16" ColumnSpacing="8">
-										<Image Grid.Column="0"
-                                               Source="{Binding Path=GlyphImage}"
-                                               IsVisible="{Binding Path=HasGlyphImage}"
-                                               WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}"
-                                               HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="Center" />
+										<Grid Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center">
+											<Image Source="{Binding Path=GlyphImage}"
+												   IsVisible="{Binding Path=HasGlyphImage}"
+												   WidthRequest="{Binding Path=GlyphWidth}"
+												   HeightRequest="{Binding Path=GlyphHeight}"
+												   VerticalOptions="Center"
+												   HorizontalOptions="Center" />
+											<Path Data="{x:Static ui:Geometries.TokenPath}"
+												  IsVisible="{Binding Path=ShowGlyphPlaceholder}"
+												  Fill="{DynamicResource ContentSecondaryWL}"
+												  Aspect="Uniform"
+												  WidthRequest="{Binding Path=GlyphWidth}"
+												  HeightRequest="{Binding Path=GlyphHeight}"
+												  VerticalOptions="Center"
+												  HorizontalOptions="Center" />
+										</Grid>
 										<Label Grid.Column="1"
                                                Text="{Binding Path=FriendlyName}"
                                                Style="{DynamicResource KeyLabel}"
@@ -56,13 +65,13 @@
 										<Border Grid.Column="2"
 											   Margin="2"
 											   Padding="8,3,8,3"
-											   IsVisible="{Binding New}"
+											   IsVisible="{Binding HasUnread}"
 											   HorizontalOptions="Start"
 											   VerticalOptions="Center"
 											   Style="{DynamicResource BorderSubSet}">
 											<Label FontSize="Caption"
                                                    TextColor="{DynamicResource SurfaceBackgroundWL}"
-                                                   Text="{Binding NrEvents}"
+                                                   Text="{Binding UnreadCount}"
                                                    Padding="1" />
 										</Border>
 										<Label Grid.Column="2"

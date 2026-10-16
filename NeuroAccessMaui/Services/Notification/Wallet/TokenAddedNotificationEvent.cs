@@ -8,6 +8,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 	/// <summary>
 	/// Contains information about a token that has been added.
 	/// </summary>
+	[Obsolete("Token notifications are stored as notification records. Kept so that events stored by earlier versions can be loaded and deleted. Remove in a later release.")]
 	public class TokenAddedNotificationEvent : TokenNotificationEvent
 	{
 		/// <summary>

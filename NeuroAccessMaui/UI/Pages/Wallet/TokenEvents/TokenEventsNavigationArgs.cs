@@ -21,9 +21,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// <param name="TokenId">Token ID</param>
 		/// <param name="Events">Token events</param>
 		public TokenEventsNavigationArgs(string TokenId, TokenEvent[] Events)
+			: this(TokenId, Events, false)
+		{
+		}
+
+		/// <summary>
+		/// Creates a new instance of the <see cref="TokenEventsNavigationArgs"/> class.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <param name="Events">Token events</param>
+		/// <param name="IsMyToken">If the token belongs to the user, who can then add notes.</param>
+		public TokenEventsNavigationArgs(string TokenId, TokenEvent[] Events, bool IsMyToken)
 		{
 			this.TokenId = TokenId;
 			this.Events = Events;
+			this.IsMyToken = IsMyToken;
 		}
 
 		/// <summary>
@@ -35,5 +47,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// Token events
 		/// </summary>
 		public TokenEvent[]? Events { get; }
+
+		/// <summary>
+		/// If the token belongs to the user, who can then add notes.
+		/// </summary>
+		public bool IsMyToken { get; }
 	}
 }

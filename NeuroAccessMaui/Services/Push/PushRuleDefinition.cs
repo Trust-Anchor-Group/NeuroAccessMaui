@@ -413,16 +413,18 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'tokenAdded');",
 					"E2:=GetElement(E,'token');",
+					"TokenId:=GetAttribute(E2,'id');",
+					"TokenName:=GetAttribute(E2,'friendlyName');",
 					$"TitleText:='{NotificationTokenAddedTitle}';",
-					$"BodyText:='{NotificationTokenAddedBody}';",
+					$"BodyText:=(if empty(TokenName) then '{NotificationTokenAddedBody}' else TokenName);",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
 					"'visual': { 'title': TitleText, 'body': BodyText },",
-					$"'action': {{ 'type': '{NotificationAction.OpenToken}', 'entityId': GetAttribute(E2,'tokenId'), 'correlationId': GetAttribute(E2,'tokenId') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenToken}', 'entityId': TokenId, 'correlationId': TokenId }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Tokens}' }},",
 					"'delivery': { 'priority': 'High' },",
-					"'data': { 'tokenId': GetAttribute(E2,'tokenId'), 'value': Num(GetAttribute(E2,'value')), 'currency': GetAttribute(E2,'currency') }",
+					"'data': { 'tokenId': TokenId, 'value': Num(GetAttribute(E2,'value')), 'currency': GetAttribute(E2,'currency') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -435,16 +437,18 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'tokenRemoved');",
 					"E2:=GetElement(E,'token');",
+					"TokenId:=GetAttribute(E2,'id');",
+					"TokenName:=GetAttribute(E2,'friendlyName');",
 					$"TitleText:='{NotificationTokenRemovedTitle}';",
-					$"BodyText:='{NotificationTokenRemovedBody}';",
+					$"BodyText:=(if empty(TokenName) then '{NotificationTokenRemovedBody}' else TokenName);",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
 					"'visual': { 'title': TitleText, 'body': BodyText },",
-					$"'action': {{ 'type': '{NotificationAction.OpenToken}', 'entityId': GetAttribute(E2,'tokenId'), 'correlationId': GetAttribute(E2,'tokenId') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenToken}', 'entityId': TokenId, 'correlationId': TokenId }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Tokens}' }},",
 					"'delivery': { 'priority': 'High' },",
-					"'data': { 'tokenId': GetAttribute(E2,'tokenId'), 'value': Num(GetAttribute(E2,'value')), 'currency': GetAttribute(E2,'currency') }",
+					"'data': { 'tokenId': TokenId, 'value': Num(GetAttribute(E2,'value')), 'currency': GetAttribute(E2,'currency') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(

@@ -14249,5 +14249,185 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("InviteRequestIdentityHint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try again.
+        /// </summary>
+        public static string TryAgain {
+            get {
+                return ResourceManager.GetString("TryAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string TokenOrdinalOfBatch {
+            get {
+                return ResourceManager.GetString("TokenOrdinalOfBatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This token is no longer in your wallet..
+        /// </summary>
+        public static string TokenNoLongerInWallet {
+            get {
+                return ResourceManager.GetString("TokenNoLongerInWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unverified copy. This token couldn't be checked with its Neuron..
+        /// </summary>
+        public static string TokenUnverifiedCopy {
+            get {
+                return ResourceManager.GetString("TokenUnverifiedCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This token has changed since it was shared..
+        /// </summary>
+        public static string TokenChangedSinceShared {
+            get {
+                return ResourceManager.GetString("TokenChangedSinceShared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This token isn't public, so {0} may not be able to open it..
+        /// </summary>
+        public static string TokenShareNotPublic {
+            get {
+                return ResourceManager.GetString("TokenShareNotPublic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View definition.
+        /// </summary>
+        public static string ViewDefinition {
+            get {
+                return ResourceManager.GetString("ViewDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View XML.
+        /// </summary>
+        public static string ViewXml {
+            get {
+                return ResourceManager.GetString("ViewXml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State: {0}.
+        /// </summary>
+        public static string TokenStateBody {
+            get {
+                return ResourceManager.GetString("TokenStateBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The state machine has ended..
+        /// </summary>
+        public static string TokenStateEnded {
+            get {
+                return ResourceManager.GetString("TokenStateEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You're not allowed to do this with this token..
+        /// </summary>
+        public static string NotAllowedForToken {
+            get {
+                return ResourceManager.GetString("NotAllowedForToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This token couldn't be found..
+        /// </summary>
+        public static string TokenNotFound {
+            get {
+                return ResourceManager.GetString("TokenNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The token's Neuron can't be reached right now..
+        /// </summary>
+        public static string TokenNeuronUnreachable {
+            get {
+                return ResourceManager.GetString("TokenNeuronUnreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destroyed.
+        /// </summary>
+        public static string Destroyed {
+            get {
+                return ResourceManager.GetString("Destroyed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transferred.
+        /// </summary>
+        public static string Transferred {
+            get {
+                return ResourceManager.GetString("Transferred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Donated.
+        /// </summary>
+        public static string Donated {
+            get {
+                return ResourceManager.GetString("Donated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seller.
+        /// </summary>
+        public static string Seller {
+            get {
+                return ResourceManager.GetString("Seller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Donor.
+        /// </summary>
+        public static string Donor {
+            get {
+                return ResourceManager.GetString("Donor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal.
+        /// </summary>
+        public static string NoteIsPersonal {
+            get {
+                return ResourceManager.GetString("NoteIsPersonal", resourceCulture);
+            }
+        }
     }
 }

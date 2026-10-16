@@ -6,22 +6,28 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.Payment;
 using NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
-using NeuroFeatures.EventArguments;
+using Waher.Persistence;
 using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings;
 
 namespace NeuroAccessMaui.Services.Wallet
 {
 	[Singleton]
 	internal class NeuroWalletOrchestratorService : LoadableService, INeuroWalletOrchestratorService
 	{
+		private bool legacyCleanupStarted;
+
 		public NeuroWalletOrchestratorService()
 		{
 		}
@@ -32,12 +38,14 @@ namespace NeuroAccessMaui.Services.Wallet
 			if (this.BeginLoad(isResuming, CancellationToken))
 			{
 				ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
-				ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
-				ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
-				ServiceRef.XmppService.NeuroFeatureStateUpdated += Wallet_StateUpdated;
-				ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;
 
 				this.EndLoad(true);
+
+				if (!this.legacyCleanupStarted)
+				{
+					this.legacyCleanupStarted = true;
+					_ = Task.Run(DeleteLegacyTokenEventsAsync);
+				}
 			}
 
 			return Task.CompletedTask;
@@ -49,10 +57,6 @@ namespace NeuroAccessMaui.Services.Wallet
 			if (this.IsLoading || this.BeginUnload())
 			{
 				ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
-				ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
-				ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
-				ServiceRef.XmppService.NeuroFeatureStateUpdated -= Wallet_StateUpdated;
-				ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_VariablesUpdated;
 
 				this.IsLoading = false;
 				this.EndUnload();
@@ -83,55 +87,52 @@ namespace NeuroAccessMaui.Services.Wallet
 			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 		}
 
-		private async Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
-		{
-			// Do nothing here. Check XMPPService
-		}
-
-		private async Task Wallet_TokenRemoved(object? Sender, TokenEventArgs e)
-		{
-			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedTitle)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)];
-
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Tokens,
-				Title = Title,
-				Body = Body,
-				Action = NotificationAction.OpenToken,
-				EntityId = e.Token.TokenId
-			};
-
-			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
-		}
-
-		private static async Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
-		{
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Tokens,
-				Title = ServiceRef.Localizer[nameof(AppResources.State)],
-				Action = NotificationAction.OpenToken,
-				EntityId = e.TokenId
-			};
-
-			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
-		}
-
-		private async Task Wallet_VariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
-		{
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Tokens,
-				Title = ServiceRef.Localizer[nameof(AppResources.State)],
-				Action = NotificationAction.OpenToken,
-				EntityId = e.TokenId
-			};
-
-			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
-		}
-
 		#endregion
+
+		/// <summary>
+		/// Deletes the token notification events that earlier versions of the app stored, once. Token notifications are
+		/// stored as notification records now, and the old events are no longer shown anywhere.
+		/// </summary>
+		private static async Task DeleteLegacyTokenEventsAsync()
+		{
+			try
+			{
+				if (await RuntimeSettings.GetAsync(Constants.Settings.LegacyTokenEventsDeleted, false))
+					return;
+
+				await ServiceRef.NotificationService.Load(false, CancellationToken.None);
+
+				List<NotificationEvent> ToDelete = [];
+
+#pragma warning disable CS0618 // The old event types are kept only so that stored events can be loaded and deleted.
+				SortedDictionary<CaseInsensitiveString, TokenNotificationEvent[]> EventsByToken =
+					ServiceRef.NotificationService.GetEventsByCategory<TokenNotificationEvent>(NotificationEventType.Wallet);
+
+				foreach (TokenNotificationEvent[] Events in EventsByToken.Values)
+				{
+					foreach (TokenNotificationEvent Event in Events)
+					{
+						if (Event is TokenAddedNotificationEvent ||
+							Event is TokenRemovedNotificationEvent ||
+							Event is StateMachineNewStateNotificationEvent ||
+							Event is StateMachineVariablesUpdatedNotificationEvent)
+						{
+							ToDelete.Add(Event);
+						}
+					}
+				}
+#pragma warning restore CS0618
+
+				if (ToDelete.Count > 0)
+					await ServiceRef.NotificationService.DeleteEvents([.. ToDelete]);
+
+				await RuntimeSettings.SetAsync(Constants.Settings.LegacyTokenEventsDeleted, true);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		/// <summary>
 		/// Opens the wallet
@@ -218,24 +219,134 @@ namespace NeuroAccessMaui.Services.Wallet
 				return;
 
 			string TokenId = Uri[(i + 1)..];
+			if (string.IsNullOrEmpty(TokenId))
+				return;
 
+			await this.OpenTokenAsync(TokenId, null);
+		}
+
+		/// <inheritdoc/>
+		public async Task<bool> OpenTokenAsync(string TokenId, Token? SharedCopy)
+		{
 			try
 			{
-				Token Token = await ServiceRef.XmppService.GetNeuroFeature(TokenId);
+				Token Live;
 
-				if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, TokenId, out NotificationEvent[]? Events))
-					Events = [];
+				try
+				{
+					Live = await ServiceRef.XmppService.GetNeuroFeature(TokenId);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
 
-				TokenDetailsNavigationArgs Args = new(new TokenItem(Token, Events));
+					if (SharedCopy is null)
+					{
+						await TokenErrors.ShowAsync(Ex);
+						return false;
+					}
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+					await GoToTokenDetailsAsync(SharedCopy, TokenOrigin.UnverifiedCopy, false);
+					return true;
+				}
+
+				bool Changed = SharedCopy is not null && HasChangedSinceShared(SharedCopy, Live);
+				await GoToTokenDetailsAsync(Live, TokenOrigin.Live, Changed);
+				return true;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+				return false;
 			}
 		}
 
+		/// <inheritdoc/>
+		public async Task OpenTokenFromNotificationAsync(string? TokenId)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(TokenId))
+				{
+					await GoToMyTokensAsync(null);
+					return;
+				}
+
+				Token Token;
+
+				try
+				{
+					Token = await ServiceRef.XmppService.GetNeuroFeature(TokenId);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+
+					string Message = TokenErrors.IsUnreachable(Ex)
+						? ServiceRef.Localizer[nameof(AppResources.TokenNeuronUnreachable)]
+						: ServiceRef.Localizer[nameof(AppResources.TokenNoLongerInWallet)];
+
+					await GoToMyTokensAsync(Message);
+					return;
+				}
+
+				if (string.Equals(Token.OwnerJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase))
+					await GoToTokenDetailsAsync(Token, TokenOrigin.Live, false);
+				else
+					await GoToMyTokensAsync(ServiceRef.Localizer[nameof(AppResources.TokenNoLongerInWallet)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Opens token details.
+		/// </summary>
+		/// <param name="Token">The token to show.</param>
+		/// <param name="Origin">Where the token comes from.</param>
+		/// <param name="ChangedSinceShared">If the token has changed since a copy of it was shared.</param>
+		private static Task GoToTokenDetailsAsync(Token Token, TokenOrigin Origin, bool ChangedSinceShared)
+		{
+			if (Origin != TokenOrigin.UnverifiedCopy)
+				ServiceRef.TokenNameCache.Remember(Token);
+
+			TokenDetailsNavigationArgs Args = new(new TokenItem(Token), Origin, ChangedSinceShared);
+			return ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+		}
+
+		/// <summary>
+		/// Opens My Tokens, and shows a message as a toast, if one is given.
+		/// </summary>
+		/// <param name="Message">The message to show, if any.</param>
+		private static async Task GoToMyTokensAsync(string? Message)
+		{
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage));
+
+			if (!string.IsNullOrEmpty(Message))
+				await ServiceRef.ToastService.ShowTextAsync(Message);
+		}
+
+		/// <summary>
+		/// Checks if the live token differs from a copy that was shared earlier.
+		/// </summary>
+		/// <param name="SharedCopy">The shared copy.</param>
+		/// <param name="Live">The token, as fetched from its Neuron.</param>
+		/// <returns>If the token has changed since it was shared.</returns>
+		private static bool HasChangedSinceShared(Token SharedCopy, Token Live)
+		{
+			if (SharedCopy.Updated != Live.Updated)
+				return true;
+
+			byte[]? SharedSignature = SharedCopy.Signature;
+			byte[]? LiveSignature = Live.Signature;
+
+			if (SharedSignature is null || LiveSignature is null)
+				return (SharedSignature is null) != (LiveSignature is null);
+
+			return !SharedSignature.AsSpan().SequenceEqual(LiveSignature);
+		}
 	}
 }

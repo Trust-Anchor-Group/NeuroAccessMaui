@@ -24,15 +24,36 @@
 			</Grid>
 			<ScrollView Grid.Row="1">
 				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+					<Border IsVisible="{Binding IsUnverifiedCopy}" BackgroundColor="{DynamicResource TnPWarningbgWL}"
+							Stroke="Transparent" StrokeShape="RoundRectangle 8" Padding="12">
+						<Label Text="{l:Localize TokenUnverifiedCopy}" TextColor="{DynamicResource TnPWarningContentWL}"/>
+					</Border>
+					<Border IsVisible="{Binding ChangedSinceShared}" BackgroundColor="{DynamicResource TnPWarningbgWL}"
+							Stroke="Transparent" StrokeShape="RoundRectangle 8" Padding="12">
+						<Label Text="{l:Localize TokenChangedSinceShared}" TextColor="{DynamicResource TnPWarningContentWL}"/>
+					</Border>
 					<Border Style="{DynamicResource BorderSet}">
 						<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 							<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
 								<Label Text="{l:Localize TokenDetails}" Margin="{DynamicResource SmallTopMargins}"
 										 VerticalOptions="Start"/>
 								<Label Text="{l:Localize TokenDetailsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-								<Label Text="{l:Localize Description}" Margin="{DynamicResource SmallTopMargins}"
+								<VerticalStackLayout IsVisible="{Binding HasDescription}">
+									<Label Text="{l:Localize Description}" Margin="{DynamicResource SmallTopMargins}"
 										 VerticalOptions="Start"/>
-								<ContentView Content="{Binding Description}" VerticalOptions="Start" Margin="{DynamicResource SmallLeftRightBottomMargins}"/>
+									<controls:TaskView Task="{Binding DescriptionTask}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
+										<controls:TaskView.RunningView>
+											<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center"/>
+										</controls:TaskView.RunningView>
+										<controls:TaskView.ErrorView>
+											<controls:TextButton LabelData="{l:Localize TryAgain}" Command="{Binding DescriptionTask.ReloadCommand}"
+																 Style="{DynamicResource OutlinedTextButton}" HorizontalOptions="Center"/>
+										</controls:TaskView.ErrorView>
+										<controls:TaskView.SucceededView>
+											<ContentView Content="{Binding Description}" VerticalOptions="Start"/>
+										</controls:TaskView.SucceededView>
+									</controls:TaskView>
+								</VerticalStackLayout>
 								<Grid x:Name="GeneralInfoGrid">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*"/>
@@ -81,15 +102,7 @@
 									<Label Grid.Column="1" Grid.Row="5" Text="{Binding Visibility, Converter={converters:LocalizedState}}" Style="{DynamicResource ValueLabel}"/>
 
 									<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize Ordinal}" Style="{DynamicResource KeyLabel}"/>
-									<Label Grid.Column="1" Grid.Row="6" Style="{DynamicResource ValueLabel}">
-										<Label.FormattedText>
-											<FormattedString>
-												<Span Text="{Binding Ordinal}"/>
-												<Span Text=" of "/>
-												<Span Text="{Binding BatchSize}"/>
-											</FormattedString>
-										</Label.FormattedText>
-									</Label>
+									<Label Grid.Column="1" Grid.Row="6" Text="{Binding OrdinalText}" Style="{DynamicResource ValueLabel}"/>
 
 									<Label Grid.Column="0" Grid.Row="7" Text="{l:Localize Valuation}" Style="{DynamicResource KeyLabel}"/>
 									<Label Grid.Column="1" Grid.Row="7" Style="{DynamicResource ValueLabel}">
@@ -112,9 +125,15 @@
 									<Label Grid.Column="1" Grid.Row="10" Text="{Binding Expires, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
 								</Grid>
 
-								<Image Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
-						   WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}" HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}" 
-						   VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
+								<Grid VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}">
+									<Image Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
+										   WidthRequest="{Binding Path=GlyphWidth}" HeightRequest="{Binding Path=GlyphHeight}"
+										   VerticalOptions="Center" HorizontalOptions="Center"/>
+									<Path Data="{x:Static ui:Geometries.TokenPath}" IsVisible="{Binding Path=ShowGlyphPlaceholder}"
+										  Fill="{DynamicResource ContentSecondaryWL}" Aspect="Uniform"
+										  WidthRequest="{Binding Path=GlyphWidth}" HeightRequest="{Binding Path=GlyphHeight}"
+										  VerticalOptions="Center" HorizontalOptions="Center"/>
+								</Grid>
 
 								<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
 						   WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
@@ -309,9 +328,10 @@
 									<Label Grid.Column="1" Grid.Row="4" Text="{Binding DefinitionSchemaHashFunction}" Style="{DynamicResource ValueLabel}"/>
 								</Grid>
 
-								<controls:TextButton LabelData="{l:Localize ShowM2MInfo}" Margin="{DynamicResource SmallBottomMargins}"
-															Command="{Binding Path=ShowM2mInfoCommand}" Style="{DynamicResource FilledTextButton}"
-															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+								<controls:TextButton LabelData="{l:Localize ViewDefinition}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=ViewDefinitionCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+															IsVisible="{Binding IsVerified}"/>
 
 								<Label Text="{l:Localize Actions}" Margin="{DynamicResource SmallTopMargins}"
 										 VerticalOptions="Start"/>
@@ -337,11 +357,12 @@
 								<controls:TextButton LabelData="{l:Localize OfferToBuy}" Margin="{DynamicResource SmallBottomMargins}"
 															Command="{Binding Path=OfferToBuyCommand}" Style="{DynamicResource FilledTextButton}"
 															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-															IsVisible="{Binding IsMyToken, Converter={StaticResource InvertedBoolConverter}}"/>
+															IsVisible="{Binding CanOfferToBuy}"/>
 
 								<controls:TextButton LabelData="{l:Localize ViewEvents}" Margin="{DynamicResource SmallBottomMargins}"
 															Command="{Binding Path=ViewEventsCommand}" Style="{DynamicResource FilledTextButton}"
-															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+															IsVisible="{Binding IsVerified}"/>
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 					</Border>

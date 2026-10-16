@@ -23,6 +23,7 @@ using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.ThingRegistries;
 using NeuroAccessMaui.Services.TravelDocuments;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.UI.Toasts;
@@ -94,13 +95,13 @@ using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
 using NeuroAccessMaui.UI.Popups.Settings;
-using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
+using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
 using NeuroAccessMaui.UI.Popups.OnboardingHelp;
 using NeuroAccessMaui.UI.Pages.Utility;
 using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
@@ -160,6 +161,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<IContractOrchestratorService, ContractOrchestratorService>();
 			Builder.Services.AddSingleton<IThingRegistryOrchestratorService, ThingRegistryOrchestratorService>();
 			Builder.Services.AddSingleton<INeuroWalletOrchestratorService, NeuroWalletOrchestratorService>();
+			Builder.Services.AddSingleton<ITokenUnreadTracker, TokenUnreadTracker>();
+			Builder.Services.AddSingleton<TokenNameCache>();
 			Builder.Services.AddSingleton<IIdentityApplicationGateService, IdentityApplicationGateService>();
 			Builder.Services.AddSingleton<IKycService, KycService>();
 			Builder.Services.AddSingleton<KycEvidenceValidationService>();
@@ -317,12 +320,11 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
 			Builder.Services.AddTransient<TransactionHistoryPage, TransactionHistoryViewModel>();
 			Builder.Services.AddTransient<EmbeddedLayoutPage, EmbeddedLayoutViewModel>();
+			Builder.Services.AddTransient<XmlViewerPage, XmlViewerViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ImageView>();
 			Builder.Services.AddTransient<ImageViewModel>();
-			Builder.Services.AddTransient<AddTextNotePopup>();
-			Builder.Services.AddTransient<AddTextNoteViewModel>();
 			Builder.Services.AddTransient<CheckPasswordPopup>();
 			Builder.Services.AddTransient<CheckPasswordViewModel>();
 			Builder.Services.AddTransient<OnboardingHelpPopup>();

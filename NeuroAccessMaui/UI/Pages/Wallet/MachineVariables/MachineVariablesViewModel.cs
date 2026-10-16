@@ -11,6 +11,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 	/// </summary>
 	public partial class MachineVariablesViewModel : BaseViewModel
 	{
+		private readonly string? tokenId;
+
 		/// <summary>
 		/// The view model to bind to for when displaying information about the current state of a state-machine.
 		/// </summary>
@@ -22,6 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 
 			if (Args is not null)
 			{
+				this.tokenId = Args.TokenId;
 				this.Running = Args.Running;
 				this.Ended = Args.Ended;
 				this.CurrentState = Args.CurrentState;
@@ -52,8 +55,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 			return base.OnDisposeAsync();
 		}
 
+		private bool IsForThisToken(NeuroFeatures.EventArguments.StateMachineEventArgs e)
+		{
+			return this.tokenId is not null && string.Equals(e.TokenId, this.tokenId, StringComparison.OrdinalIgnoreCase);
+		}
+
 		private Task Wallet_StateUpdated(object? Sender, NeuroFeatures.EventArguments.NewStateEventArgs e)
 		{
+			if (!this.IsForThisToken(e))
+				return Task.CompletedTask;
+
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.CurrentState = e.NewState;
@@ -66,6 +77,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 
 		private Task Wallet_VariablesUpdated(object? Sender, NeuroFeatures.EventArguments.VariablesUpdatedEventArgs e)
 		{
+			if (!this.IsForThisToken(e))
+				return Task.CompletedTask;
+
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				foreach (Variable Variable in e.Variables)

@@ -5,6 +5,8 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -12,7 +14,9 @@ using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
+using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
@@ -26,7 +30,6 @@ using System.Web;
 using System.Xml;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
 using Waher.Security;
 
@@ -64,7 +67,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				this.CertifierCanDestroy = this.navigationArguments.Token?.CertifierCanDestroy ?? false;
 				this.FriendlyName = this.navigationArguments.Token?.FriendlyName;
 				this.Category = this.navigationArguments.Token?.Category;
-				this.Description = this.navigationArguments.Token?.Description is null ? null : await this.navigationArguments.Token.Description.MarkdownToParsedXaml();
 				this.GlyphContentType = this.navigationArguments.Token?.GlyphContentType;
 				this.Ordinal = this.navigationArguments.Token?.Ordinal;
 				this.Value = this.navigationArguments.Token?.Value;
@@ -88,29 +90,38 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				this.DefinitionNamespace = this.navigationArguments.Token?.DefinitionNamespace;
 				this.CreationContract = this.navigationArguments.Token?.CreationContract;
 				this.OwnershipContract = this.navigationArguments.Token?.OwnershipContract;
-				this.GlyphImage = this.navigationArguments.Token?.GlyphImage;
-				this.HasGlyphImage = this.navigationArguments.Token?.HasGlyphImage ?? false;
-				this.GlyphWidth = this.navigationArguments.Token?.GlyphWidth;
-				this.GlyphHeight = this.navigationArguments.Token?.GlyphHeight;
+				this.GlyphWidth = TokenGlyph.DetailsBoxSize;
+				this.GlyphHeight = TokenGlyph.DetailsBoxSize;
 				this.TokenXml = this.navigationArguments.Token?.Token.ToXml();
-				this.IsMyToken = string.Equals(this.OwnerJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase);
-				this.HasStateMachine = this.navigationArguments.Token?.HasStateMachine ?? false;
-				this.HasEmbeddedLayout = this.navigationArguments.Token?.HasEmbeddedLayout ?? false;
 
+				// A shared copy that couldn't be checked with its Neuron is labeled, and offers nothing beyond copy and share.
+				// Its embedded layout isn't rendered, since rendering runs the token's own script.
+				this.IsUnverifiedCopy = this.navigationArguments.Origin == TokenOrigin.UnverifiedCopy;
+				this.IsVerified = !this.IsUnverifiedCopy;
+				this.ChangedSinceShared = this.IsVerified && this.navigationArguments.ChangedSinceShared;
+				this.IsMyToken = this.IsVerified && string.Equals(this.OwnerJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase);
+				this.CanOfferToBuy = this.IsVerified && !this.IsMyToken;
+				this.HasStateMachine = this.IsVerified && (this.navigationArguments.Token?.HasStateMachine ?? false);
+				this.HasEmbeddedLayout = this.IsVerified && (this.navigationArguments.Token?.HasEmbeddedLayout ?? false);
+				this.OrdinalText = ServiceRef.Localizer[nameof(AppResources.TokenOrdinalOfBatch), this.Ordinal ?? 0, this.BatchSize ?? 0];
+
+				string? RawDescription = this.navigationArguments.Token?.Description;
+				this.HasDescription = !string.IsNullOrWhiteSpace(RawDescription) && RawDescription != this.FriendlyName;
+
+				if (this.HasDescription)
+					this.DescriptionTask.Load(this.LoadDescriptionAsync);
+
+				if (this.navigationArguments.Token is not null)
+					_ = this.LoadGlyphAsync(this.navigationArguments.Token.Token);
+
+				// Only http(s) values are shown as links.
 				if (!string.IsNullOrEmpty(this.navigationArguments.Token?.Reference))
-				{
-					if (Uri.TryCreate(this.navigationArguments.Token?.Reference, UriKind.Absolute, out Uri? RefUri) &&
-						RefUri.Scheme.ToLower(CultureInfo.InvariantCulture) is string s &&
-						(s == "http" || s == "https"))
-					{
-						this.page.AddLink(this, ServiceRef.Localizer[nameof(AppResources.Reference)], s);   // TODO: Replace with grouped collection, when this works in Maui.
-					}
-				}
+					this.page.AddTag(this, ServiceRef.Localizer[nameof(AppResources.Reference)], this.navigationArguments.Token.Reference);   // TODO: Replace with grouped collection, when this works in Maui.
 
 				if (this.navigationArguments.Token?.Tags is not null)
 				{
 					foreach (TokenTag Tag in this.navigationArguments.Token.Tags)
-						this.page.AddLink(this, Tag.Name, Tag.Value?.ToString() ?? string.Empty);   // TODO: Replace with grouped collection, when this works in Maui.
+						this.page.AddTag(this, Tag.Name, Tag.Value?.ToString() ?? string.Empty);   // TODO: Replace with grouped collection, when this works in Maui.
 				}
 
 				if (this.TokenId is not null)
@@ -145,6 +156,74 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				sb.Append("&Download=1");
 
 				this.DefinitionSchemaUrl = sb.ToString();   // TODO: The above assume contract hosted by the TAG Neuron. URL should be retrieved using API, or be standardized.
+			}
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnAppearingAsync()
+		{
+			await base.OnAppearingAsync();
+
+			if (this.IsVerified && !string.IsNullOrEmpty(this.TokenId))
+				await ServiceRef.TokenUnreadTracker.MarkTokenReadAsync(this.TokenId);
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnDisposeAsync()
+		{
+			this.DescriptionTask.Cancel();
+
+			await base.OnDisposeAsync();
+		}
+
+		/// <summary>
+		/// Loads the description as the token's Neuron renders it. When that fails, the description engraved in the token
+		/// is shown instead.
+		/// </summary>
+		/// <param name="Context">Task context.</param>
+		private async Task LoadDescriptionAsync(TaskContext<int> Context)
+		{
+			VerticalStackLayout? Content = null;
+
+			if (this.IsVerified && !string.IsNullOrEmpty(this.TokenId))
+			{
+				try
+				{
+					Content = await ServiceRef.XmppService.GenerateNeuroFeatureDescriptionMaui(this.TokenId);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
+
+			Content ??= await (this.navigationArguments?.Token?.Description ?? string.Empty).MarkdownToMaui();
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.Description = Content);
+		}
+
+		/// <summary>
+		/// Loads the glyph shown in token details.
+		/// </summary>
+		/// <param name="Token">The token.</param>
+		private async Task LoadGlyphAsync(Token Token)
+		{
+			try
+			{
+				TokenGlyph Glyph = await TokenGlyph.CreateAsync(Token, TokenGlyph.DetailsBoxSize);
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.GlyphImage = Glyph.Image;
+					this.HasGlyphImage = !Glyph.IsPlaceholder;
+					this.ShowGlyphPlaceholder = Glyph.IsPlaceholder;
+					this.GlyphWidth = Glyph.Width;
+					this.GlyphHeight = Glyph.Height;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
@@ -476,16 +555,22 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private bool hasGlyphImage;
 
 		/// <summary>
-		/// Gets or sets the value representing the width of the glyph.
+		/// If the token placeholder is shown, because the token has no glyph, or its glyph can't be read.
 		/// </summary>
 		[ObservableProperty]
-		private int? glyphWidth;
+		private bool showGlyphPlaceholder;
 
 		/// <summary>
-		/// Gets or sets the value representing the height of the glyph.
+		/// Display width of the glyph.
 		/// </summary>
 		[ObservableProperty]
-		private int? glyphHeight;
+		private double glyphWidth;
+
+		/// <summary>
+		/// Display height of the glyph.
+		/// </summary>
+		[ObservableProperty]
+		private double glyphHeight;
 
 		/// <summary>
 		/// If the token belongs to the user.
@@ -504,6 +589,47 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		[ObservableProperty]
 		private bool hasEmbeddedLayout;
+
+		/// <summary>
+		/// If the token comes from the wallet or was fetched from its Neuron, and can be trusted.
+		/// </summary>
+		[ObservableProperty]
+		private bool isVerified;
+
+		/// <summary>
+		/// If the token is a shared copy that couldn't be checked with its Neuron.
+		/// </summary>
+		[ObservableProperty]
+		private bool isUnverifiedCopy;
+
+		/// <summary>
+		/// If the token has changed since a copy of it was shared.
+		/// </summary>
+		[ObservableProperty]
+		private bool changedSinceShared;
+
+		/// <summary>
+		/// If the user can offer to buy the token.
+		/// </summary>
+		[ObservableProperty]
+		private bool canOfferToBuy;
+
+		/// <summary>
+		/// If the token has a description worth showing: one that isn't empty, and isn't just the name.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasDescription;
+
+		/// <summary>
+		/// Position of the token within its batch, as text.
+		/// </summary>
+		[ObservableProperty]
+		private string? ordinalText;
+
+		/// <summary>
+		/// Loads the description, and exposes its loading and loaded states.
+		/// </summary>
+		public ObservableTask DescriptionTask { get; } = new();
 
 
 		#endregion
@@ -648,26 +774,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		}
 
 		/// <summary>
-		/// Command to show machine-readable details of token.
+		/// Command to view the token's machine-readable definition.
 		/// </summary>
 		[RelayCommand]
-		private async Task ShowM2mInfo()
+		private async Task ViewDefinition()
 		{
-			if (this.Definition is null)
+			if (string.IsNullOrEmpty(this.Definition))
 				return;
 
 			try
 			{
-				byte[] Bin = Encoding.UTF8.GetBytes(this.Definition);
-				HttpFileUploadEventArgs e = await ServiceRef.XmppService.RequestUploadSlotAsync(this.TokenId + ".xml", "text/xml; charset=utf-8", Bin.Length);
-
-				if (e.Ok)
-				{
-					await e.PUT(Bin, "text/xml", (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
-					await App.OpenUrlAsync(e.GetUrl);
-				}
-				else
-					await ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
+				XmlViewerNavigationArgs Args = new(this.FriendlyName ?? ServiceRef.Localizer[nameof(AppResources.ViewDefinition)], this.Definition);
+				await ServiceRef.NavigationService.GoToAsync(nameof(XmlViewerPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
@@ -681,6 +799,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		[RelayCommand]
 		private async Task SendToContact()
 		{
+			Token? Token = this.navigationArguments?.Token?.Token;
+			if (Token is null)
+				return;
+
 			TaskCompletionSource<ContactInfoModel?> Selected = new();
 			ContactListNavigationArgs ContactListArgs = new(ServiceRef.Localizer[nameof(AppResources.SendInformationTo)], Selected)
 			{
@@ -693,14 +815,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			if (Contact is null)
 				return;
 
-			StringBuilder Markdown = new();
+			string ContactName = Contact.FriendlyName ?? Contact.BareJid?.Value ?? string.Empty;
+			if (!await TokenShareFormatter.ConfirmShareAsync(Token, ContactName))
+				return;
 
-			Markdown.Append("```");
-			Markdown.AppendLine(Constants.UriSchemes.NeuroFeature);
-			Markdown.AppendLine(this.TokenXml);
-			Markdown.AppendLine("```");
-
-			await ChatViewModel.ExecuteSendMessage(string.Empty, Markdown.ToString(), Contact.BareJid);
+			await ChatViewModel.ExecuteSendMessage(string.Empty, TokenShareFormatter.ToChatMarkdown(Token), Contact.BareJid);
 
 			if (Contact.Contact is not null)
 			{
@@ -997,7 +1116,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			try
 			{
 				TokenEvent[] Events = this.TokenId is null ? [] : await ServiceRef.XmppService.GetNeuroFeatureEvents(this.TokenId);
-				TokenEventsNavigationArgs Args = new(this.TokenId!, Events);
+				TokenEventsNavigationArgs Args = new(this.TokenId!, Events, this.IsMyToken);
 
 				await ServiceRef.NavigationService.GoToAsync(nameof(TokenEventsPage), Args, BackMethod.Pop);
 			}
@@ -1080,7 +1199,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				CurrentStateEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureCurrentState(this.TokenId);
 				if (e.Ok)
 				{
-					MachineVariablesNavigationArgs Args = new(e.Running, e.Ended, e.CurrentState, e.Variables);
+					MachineVariablesNavigationArgs Args = new(this.TokenId, e.Running, e.Ended, e.CurrentState, e.Variables);
 
 					await ServiceRef.NavigationService.GoToAsync(nameof(MachineVariablesPage), Args, BackMethod.Pop);
 				}

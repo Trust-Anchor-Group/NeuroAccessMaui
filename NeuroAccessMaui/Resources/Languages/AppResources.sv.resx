@@ -4601,4 +4601,79 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="InviteRequestIdentityHint" xml:space="preserve">
     <value>Begär deras identitet för att bjuda in dem.</value>
   </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Försök igen</value>
+  </data>
+  <data name="TokenOrdinalOfBatch" xml:space="preserve">
+    <value>{0} av {1}</value>
+  </data>
+  <data name="TokenNoLongerInWallet" xml:space="preserve">
+    <value>Den här token finns inte längre i din plånbok.</value>
+  </data>
+  <data name="TokenUnverifiedCopy" xml:space="preserve">
+    <value>Overifierad kopia. Den här token kunde inte kontrolleras mot sin Neuron.</value>
+  </data>
+  <data name="TokenChangedSinceShared" xml:space="preserve">
+    <value>Den här token har ändrats sedan den delades.</value>
+  </data>
+  <data name="TokenShareNotPublic" xml:space="preserve">
+    <value>Den här token är inte offentlig, så {0} kanske inte kan öppna den.</value>
+  </data>
+  <data name="ViewDefinition" xml:space="preserve">
+    <value>Visa definition</value>
+  </data>
+  <data name="ViewXml" xml:space="preserve">
+    <value>Visa XML</value>
+  </data>
+  <data name="TokenStateBody" xml:space="preserve">
+    <value>Tillstånd: {0}</value>
+  </data>
+  <data name="TokenStateEnded" xml:space="preserve">
+    <value>Tillståndsmaskinen har avslutats.</value>
+  </data>
+  <data name="NotAllowedForToken" xml:space="preserve">
+    <value>Du får inte göra det här med den här token.</value>
+  </data>
+  <data name="TokenNotFound" xml:space="preserve">
+    <value>Den här token kunde inte hittas.</value>
+  </data>
+  <data name="TokenNeuronUnreachable" xml:space="preserve">
+    <value>Tokenens Neuron kan inte nås just nu.</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Lägg till</value>
+  </data>
+  <data name="Destroyed" xml:space="preserve">
+    <value>Förstörd</value>
+  </data>
+  <data name="Transferred" xml:space="preserve">
+    <value>Överförd</value>
+  </data>
+  <data name="Donated" xml:space="preserve">
+    <value>Skänkt</value>
+  </data>
+  <data name="Seller" xml:space="preserve">
+    <value>Säljare</value>
+  </data>
+  <data name="Donor" xml:space="preserve">
+    <value>Givare</value>
+  </data>
+  <data name="NoteIsPersonal" xml:space="preserve">
+    <value>Personlig</value>
+  </data>
+  <data name="EmbeddedLayout" xml:space="preserve">
+    <value>Inbäddad layout</value>
+  </data>
+  <data name="ViewEmbeddedLayout" xml:space="preserve">
+    <value>Visa inbäddad layout</value>
+  </data>
+  <data name="Killed" xml:space="preserve">
+    <value>Avbruten</value>
+  </data>
+  <data name="KillerUser" xml:space="preserve">
+    <value>Avbruten av</value>
+  </data>
+  <data name="KillerId" xml:space="preserve">
+    <value>Avbrytarens ID</value>
+  </data>
 </root>

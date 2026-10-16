@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
-using Waher.Script.Functions.ComplexNumbers;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 {
@@ -15,11 +11,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 	{
 		private readonly EmbeddedLayoutNavigationArgs? navigationArguments;
 
+		/// <summary>
+		/// The rendered layout.
+		/// </summary>
 		[ObservableProperty]
 		private ImageSource? renderedLayout;
-
-		[ObservableProperty]
-		private bool loaded = false;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EmbeddedLayoutViewModel"/> class.
@@ -31,6 +27,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 		}
 
 		/// <summary>
+		/// Renders the layout, and exposes its loading, error and loaded states.
+		/// </summary>
+		public ObservableTask RenderTask { get; } = new();
+
+		/// <summary>
 		/// Initializes the view model asynchronously.
 		/// </summary>
 		/// <returns>A task representing the asynchronous operation.</returns>
@@ -38,17 +39,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout
 		{
 			await base.OnInitializeAsync();
 
-			await MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				if (this.navigationArguments is null)
-					return;
+			this.RenderTask.Load(this.RenderAsync);
+		}
 
-				if (this.navigationArguments.TokenItem is null)
-					return;
+		/// <inheritdoc/>
+		public override Task OnDisposeAsync()
+		{
+			this.RenderTask.Cancel();
 
-				this.RenderedLayout = await this.navigationArguments.TokenItem.RenderEmbeddedLayout();
-				this.Loaded = true;
-			});
+			return base.OnDisposeAsync();
+		}
+
+		private async Task RenderAsync(TaskContext<int> Context)
+		{
+			TokenItem? Item = this.navigationArguments?.TokenItem;
+			if (Item is null)
+				return;
+
+			byte[]? Png = await Item.RenderEmbeddedLayoutPngAsync();
+			ImageSource? Source = Png is null ? null : ImageSource.FromStream(() => new MemoryStream(Png));
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.RenderedLayout = Source);
 		}
 	}
 }

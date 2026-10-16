@@ -750,7 +750,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 						if (Token is not null)
 						{
-							NewTokens.Add(new TokenItem(Token, P.Value));
+							NewTokens.Add(new TokenItem(Token));
 						}
 						else
 						{
@@ -783,10 +783,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 								if (NotificationEvents.ContainsKey(Token.TokenId))
 									continue;
 
-								if (!EventsByCateogy.TryGetValue(Token.TokenId, out NotificationEvent[]? Events))
-									Events = [];
-
-								NewTokens.Add(new TokenItem(Token, Events));
+								NewTokens.Add(new TokenItem(Token));
 							}
 						}
 
@@ -924,10 +921,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 							{
 								foreach (Token Token in e.Tokens)
 								{
-									if (!EventsByCateogy.TryGetValue(Token.TokenId, out NotificationEvent[]? Events))
-										Events = [];
-
-									this.Tokens.Add(new TokenItem(Token, Events));
+									this.Tokens.Add(new TokenItem(Token));
 								}
 
 								this.hasMoreTokens = e.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
@@ -944,12 +938,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 		private Task Wallet_TokenAdded(object _, TokenEventArgs e)
 		{
-			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, e.Token.TokenId, out NotificationEvent[]? Events))
-				Events = [];
-
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				TokenItem Item = new(e.Token, Events);
+				TokenItem Item = new(e.Token);
 
 				if (this.Tokens.Count == 0)
 					this.Tokens.Add(Item);

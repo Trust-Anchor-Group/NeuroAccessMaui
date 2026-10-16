@@ -5,7 +5,6 @@ using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroFeatures.Events;
 using System.Collections.ObjectModel;
-using Waher.Content.Xml;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
@@ -25,6 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		{
 			this.navigationArguments = Args;
 			this.TokenId = Args?.TokenId;
+			this.IsMyToken = Args?.IsMyToken ?? false;
 
 			this.Events = [];
 		}
@@ -71,19 +71,30 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		[ObservableProperty]
 		private string? tokenId;
 
+		/// <summary>
+		/// If the token belongs to the user, who can then add notes.
+		/// </summary>
+		[ObservableProperty]
+		private bool isMyToken;
+
 		#endregion
 
 		#region Commands
 
 		/// <summary>
-		/// Command to copy a value to the clipboard.
+		/// Command to add a text note to the token. Notes are always sent as text, as written.
 		/// </summary>
 		[RelayCommand]
 		private async Task AddNote()
 		{
+			string? TokenId = this.TokenId;
+			if (string.IsNullOrEmpty(TokenId))
+				return;
+
 			try
 			{
-				AddTextNoteViewModel AddTextNoteViewModel = new();
+				AddTextNoteViewModel AddTextNoteViewModel = new((Note, Personal) =>
+					ServiceRef.XmppService.AddNeuroFeatureTextNote(TokenId, Note, Personal));
 				AddTextNotePopup AddTextNotePopup = new(AddTextNoteViewModel);
 
 				await ServiceRef.PopupService.PushAsync(AddTextNotePopup);
@@ -91,32 +102,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 
 				if (Result.HasValue && Result.Value)
 				{
-					NoteItem NewEvent;
-
-					if (XML.IsValidXml(AddTextNoteViewModel.TextNote))
+					NoteTextItem NewEvent = new(new NoteText()
 					{
-						await ServiceRef.XmppService.AddNeuroFeatureXmlNote(this.TokenId!, AddTextNoteViewModel.TextNote!, AddTextNoteViewModel.Personal);
-
-						NewEvent = new NoteXmlItem(new NoteXml()
-						{
-							Note = AddTextNoteViewModel.TextNote,
-							Personal = AddTextNoteViewModel.Personal,
-							TokenId = this.TokenId,
-							Timestamp = DateTime.Now
-						});
-					}
-					else
-					{
-						await ServiceRef.XmppService.AddNeuroFeatureTextNote(this.TokenId!, AddTextNoteViewModel.TextNote!, AddTextNoteViewModel.Personal);
-
-						NewEvent = new NoteTextItem(new NoteText()
-						{
-							Note = AddTextNoteViewModel.TextNote,
-							Personal = AddTextNoteViewModel.Personal,
-							TokenId = this.TokenId,
-							Timestamp = DateTime.Now
-						});
-					}
+						Note = AddTextNoteViewModel.TextNote,
+						Personal = AddTextNoteViewModel.Personal,
+						TokenId = TokenId,
+						Timestamp = DateTime.Now
+					});
 
 					await NewEvent.DoBind();
 

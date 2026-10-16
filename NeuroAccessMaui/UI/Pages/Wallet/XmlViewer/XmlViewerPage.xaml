@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.XmlViewer.XmlViewerPage"
+							 x:DataType="viewmodel:XmlViewerViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.XmlViewer">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto,*,auto">
+		<controls:Background Grid.RowSpan="3"/>
+
+		<Grid ColumnDefinitions="auto,*" Margin="16,8,16,8" ColumnSpacing="16">
+			<controls:SvgButton HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
+			<Label Grid.Column="1" Text="{Binding Title}" Style="{DynamicResource PageTitleLabel}"
+				   HorizontalOptions="End" LineBreakMode="TailTruncation"/>
+		</Grid>
+
+		<ScrollView Grid.Row="1" Margin="16,0,16,0">
+			<Border Style="{DynamicResource BorderSet}">
+				<Editor Text="{Binding Xml}" IsReadOnly="True" AutoSize="TextChanges" FontSize="12"
+						TextColor="{DynamicResource ContentPrimaryWL}" BackgroundColor="Transparent">
+					<Editor.FontFamily>
+						<OnPlatform x:TypeArguments="x:String">
+							<On Platform="Android" Value="monospace"/>
+							<On Platform="iOS, MacCatalyst" Value="Menlo"/>
+						</OnPlatform>
+					</Editor.FontFamily>
+				</Editor>
+			</Border>
+		</ScrollView>
+
+		<Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource SmallSpacing}" Margin="16">
+			<controls:TextButton Grid.Column="0" LabelData="{l:Localize CopyToClipboard}" Command="{Binding CopyXmlCommand}"
+								 Style="{DynamicResource OutlinedTextButton}"/>
+			<controls:TextButton Grid.Column="1" LabelData="{l:Localize Share}" Command="{Binding ShareXmlCommand}"
+								 Style="{DynamicResource FilledTextButton}"/>
+		</Grid>
+	</Grid>
+</base:BaseContentPage>

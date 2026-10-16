@@ -7,6 +7,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
+using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat.Controls;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -1253,16 +1254,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			if (Selected is null)
 				return;
 
-			StringBuilder Markdown = new();
+			if (!await TokenShareFormatter.ConfirmShareAsync(Selected.Token, this.FriendlyName ?? this.BareJid ?? string.Empty))
+				return;
 
-			Markdown.AppendLine("```nfeat");
-
-			Selected.Token.Serialize(Markdown);
-
-			Markdown.AppendLine();
-			Markdown.AppendLine("```");
-
-			await this.ExecuteSendMessage(string.Empty, Markdown.ToString());
+			await this.ExecuteSendMessage(string.Empty, TokenShareFormatter.ToChatMarkdown(Selected.Token));
 		}
 
 		private bool CanExecuteEmbedThing()
@@ -1418,12 +1413,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 								if (ParsedToken is null)
 									throw new Exception(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
 
-								if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, ParsedToken.TokenId, out NotificationEvent[]? Events))
-									Events = [];
-
-								TokenDetailsNavigationArgs Args = new(new TokenItem(ParsedToken, Events));
-
-								await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+								// A shared copy is only shown as genuine after it has been checked with the token's Neuron.
+								await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(ParsedToken.TokenId, ParsedToken);
 								break;
 
 							default:

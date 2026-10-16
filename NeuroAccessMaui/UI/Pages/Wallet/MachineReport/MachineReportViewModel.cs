@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
+using NeuroFeatures.EventArguments;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 {
@@ -11,9 +13,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 	{
 		private bool isDisposed;
 
-		[ObservableProperty]
-		private bool loaded = false;
-
 		/// <summary>
 		/// The view model to bind to for when displaying information about the current state of a state-machine.
 		/// </summary>
@@ -22,7 +21,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			: base()
 		{
 			this.TokenReport = Args?.Report;
-			this.Loaded = false;
 		}
 
 		/// <inheritdoc/>
@@ -35,12 +33,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			else
 			{
 				this.Title = await this.TokenReport.GetTitle();
-
-				await this.TokenReport.GenerateReportMaui(this);
-				//await this.TokenReport.GenerateReport(this);
-
-				MainThread.BeginInvokeOnMainThread(() =>
-					this.Loaded = true);
+				this.ReportTask.Load(this.LoadReportAsync);
 			}
 
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;
@@ -53,45 +46,66 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_VariablesUpdated;
 			ServiceRef.XmppService.NeuroFeatureStateUpdated -= this.Wallet_StateUpdated;
 
-			this.DeleteTemporaryFiles();
+			this.TokenReport?.StopTimer();
 
 			return base.OnDisposeAsync();
 		}
 
-		private Task Wallet_StateUpdated(object? Sender, NeuroFeatures.EventArguments.NewStateEventArgs e)
+		private Task LoadReportAsync(TaskContext<int> Context)
 		{
-			return this.UpdateReport();
+			if (this.TokenReport is null)
+				return Task.CompletedTask;
+
+			return this.TokenReport.GenerateReportMaui(this);
 		}
 
-		private Task Wallet_VariablesUpdated(object? Sender, NeuroFeatures.EventArguments.VariablesUpdatedEventArgs e)
+		private bool IsForThisToken(StateMachineEventArgs e)
 		{
-			return this.UpdateReport();
+			return this.TokenReport is not null && string.Equals(e.TokenId, this.TokenReport.TokenId, StringComparison.OrdinalIgnoreCase);
 		}
 
-		private Task UpdateReport()
+		private Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
 		{
-			return this.TokenReport?.GenerateReport(this) ?? Task.CompletedTask;
+			if (!this.IsForThisToken(e))
+				return Task.CompletedTask;
+
+			return this.TokenReport!.OnNewState(Sender, e);
+		}
+
+		private Task Wallet_VariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
+		{
+			if (!this.IsForThisToken(e))
+				return Task.CompletedTask;
+
+			return this.TokenReport!.OnVariablesUpdated(Sender, e);
 		}
 
 		#region Properties
 
 		/// <summary>
-		/// Parsed report from state-machine.
+		/// Loads the report, and exposes its loading, error and loaded states.
+		/// </summary>
+		public ObservableTask ReportTask { get; } = new();
+
+		/// <summary>
+		/// Title of the report.
 		/// </summary>
 		[ObservableProperty]
 		private string? title;
 
 		/// <summary>
-		/// Parsed report from state-machine.
+		/// Rendered report from state-machine.
 		/// </summary>
 		[ObservableProperty]
 		private object? report;
 
 		/// <summary>
-		/// Parsed report from state-machine.
+		/// Report being displayed.
 		/// </summary>
 		[ObservableProperty]
 		private TokenReport? tokenReport;
+
+		#endregion
 
 		/// <summary>
 		/// <see cref="IDisposable.Dispose"/>
@@ -111,17 +125,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 				return;
 
 			if (Disposing)
-				this.DeleteTemporaryFiles();
+			{
+				this.TokenReport?.Dispose();
+				this.ReportTask.Dispose();
+			}
 
 			this.isDisposed = true;
 		}
-
-		private void DeleteTemporaryFiles()
-		{
-			this.TokenReport?.DeleteTemporaryFiles();
-		}
-
-		#endregion
-
 	}
 }

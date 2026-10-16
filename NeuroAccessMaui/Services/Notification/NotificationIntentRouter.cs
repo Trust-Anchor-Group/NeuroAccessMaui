@@ -64,7 +64,7 @@ namespace NeuroAccessMaui.Services.Notification
 					case NotificationAction.OpenContract:
 						return this.RouteContractAsync(Intent, CancellationToken);
 					case NotificationAction.OpenToken:
-						return this.RouteTokenAsync(CancellationToken);
+						return this.RouteTokenAsync(Intent, CancellationToken);
 					case NotificationAction.OpenBalance:
 						return this.RouteBalanceAsync(CancellationToken);
 					case NotificationAction.OpenPetition:
@@ -187,9 +187,13 @@ namespace NeuroAccessMaui.Services.Notification
 			return ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), new MyContractsNavigationArgs(ContractsListMode.Contracts));
 		}
 
-		private async Task<NotificationRouteResult> RouteTokenAsync(CancellationToken CancellationToken)
+		private async Task<NotificationRouteResult> RouteTokenAsync(NotificationIntent Intent, CancellationToken CancellationToken)
 		{
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage));
+			string? TokenId = Intent.EntityId;
+			if (string.IsNullOrEmpty(TokenId))
+				TokenId = GetExtra(Intent.Extras, "tokenId");
+
+			await ServiceRef.NeuroWalletOrchestratorService.OpenTokenFromNotificationAsync(TokenId);
 			return NotificationRouteResult.Success;
 		}
 

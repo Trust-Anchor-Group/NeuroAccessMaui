@@ -3,12 +3,12 @@ using NeuroFeatures.Events;
 using System.Text;
 using System.Windows.Input;
 using Waher.Content;
-using Waher.Networking.XMPP.HttpFileUpload;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
@@ -82,7 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			this.ViewContractCommand = new Command(async P => await ViewContract((string)P));
 			this.ViewSourceCommand = new Command(async P => await this.ViewSource((string)P));
 			this.CopyToClipboardCommand = new Command(async P => await CopyToClipboard((string)P));
-			this.ViewXmlInBrowserCommand = new Command(async P => await ViewXmlInBrowser((string)P));
+			this.ViewXmlCommand = new Command(async P => await ViewXml((string)P));
 		}
 
 		/// <summary>
@@ -141,9 +141,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public ICommand CopyToClipboardCommand { get; }
 
 		/// <summary>
-		/// Command executed when the user wants to view an XML note in the browser
+		/// Command executed when the user wants to view an XML note
 		/// </summary>
-		public ICommand ViewXmlInBrowserCommand { get; }
+		public ICommand ViewXmlCommand { get; }
 
 		/// <summary>
 		/// Creates an Event Item view model for a token event.
@@ -223,23 +223,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		}
 
 		/// <summary>
-		/// Displays XML in a browser.
+		/// Shows the XML of a note in the app.
 		/// </summary>
-		/// <param name="Xml">XML to display.</param>
-		public static async Task ViewXmlInBrowser(string Xml)
+		/// <param name="Xml">XML to show.</param>
+		public static async Task ViewXml(string Xml)
 		{
 			try
 			{
-				byte[] Bin = Encoding.UTF8.GetBytes(Xml);
-				HttpFileUploadEventArgs e = await ServiceRef.XmppService.RequestUploadSlotAsync("Note.xml", "text/xml; charset=utf-8", Bin.Length);
-
-				if (e.Ok)
-				{
-					await e.PUT(Bin, "text/xml", (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
-					await App.OpenUrlAsync(e.GetUrl);
-				}
-				else
-					await ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
+				XmlViewerNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.XmlNote)], Xml);
+				await ServiceRef.NavigationService.GoToAsync(nameof(XmlViewerPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{

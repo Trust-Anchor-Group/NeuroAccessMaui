@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
-using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
@@ -22,17 +21,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 	{
 		private readonly Token token;
 		private readonly TaskCompletionSource<TokenItem?>? selected;
-		private bool? @new;
-		private int nrEvents;
-		private NotificationEvent[] notificationEvents;
 
 		/// <summary>
 		/// Encapsulates a <see cref="Token"/> object.
 		/// </summary>
 		/// <param name="Token">Token</param>
-		/// <param name="NotificationEvents">Notification events.</param>
-		public TokenItem(Token Token, NotificationEvent[] NotificationEvents)
-			: this(Token, null, NotificationEvents)
+		public TokenItem(Token Token)
+			: this(Token, null)
 		{
 		}
 
@@ -41,36 +36,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		/// </summary>
 		/// <param name="Token">Token</param>
 		/// <param name="Selected">Asynchronous task completion source, waiting for the user to select a token.</param>
-		/// <param name="NotificationEvents">Notification events.</param>
-		public TokenItem(Token Token, TaskCompletionSource<TokenItem?>? Selected, NotificationEvent[] NotificationEvents)
+		public TokenItem(Token Token, TaskCompletionSource<TokenItem?>? Selected)
 		{
 			this.token = Token;
 			this.selected = Selected;
-			this.notificationEvents = NotificationEvents;
+			this.GlyphWidth = TokenGlyph.ListBoxSize;
+			this.GlyphHeight = TokenGlyph.ListBoxSize;
 
-			if (this.Glyph is not null && this.GlyphContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-			{
-				this.GlyphImage = ImageSource.FromStream(() => new MemoryStream(this.Glyph));
-				this.HasGlyphImage = true;
-
-				double s = 32.0 / this.token.GlyphWidth;
-				double s2 = 32.0 / this.token.GlyphHeight;
-
-				if (s2 < s)
-					s = s2;
-				else if (s > 1)
-					s = 1;
-
-				this.GlyphWidth = (int)(this.token.GlyphWidth * s + 0.5);
-				this.GlyphHeight = (int)(this.token.GlyphHeight * s + 0.5);
-			}
-			else
-			{
-				this.GlyphImage = null;
-				this.HasGlyphImage = false;
-				this.GlyphWidth = 0;
-				this.GlyphHeight = 0;
-			}
+			_ = this.LoadGlyphAsync();
 		}
 
 		/// <summary>
@@ -324,77 +297,74 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		private bool hasGlyphImage;
 
 		/// <summary>
-		/// Gets or sets the value representing the width of the glyph.
+		/// If the token placeholder is shown, because the token has no glyph, or its glyph can't be read.
 		/// </summary>
 		[ObservableProperty]
-		private int glyphWidth;
+		private bool showGlyphPlaceholder;
 
 		/// <summary>
-		/// Gets or sets the value representing the height of the glyph.
+		/// Display width of the glyph.
 		/// </summary>
 		[ObservableProperty]
-		private int glyphHeight;
+		private double glyphWidth;
 
 		/// <summary>
-		/// Associated notification events
+		/// Display height of the glyph.
 		/// </summary>
-		public NotificationEvent[] NotificationEvents => this.notificationEvents;
+		[ObservableProperty]
+		private double glyphHeight;
 
 		/// <summary>
-		/// Number of notification events recorded for the item.
+		/// Number of unread notifications about the token.
 		/// </summary>
-		public int NrEvents
-		{
-			get
-			{
-				this.CheckEvents();
-
-				return this.nrEvents;
-			}
-		}
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasUnread))]
+		private int unreadCount;
 
 		/// <summary>
-		/// If the event item is new or not.
+		/// If there are unread notifications about the token.
 		/// </summary>
-		public bool New
+		public bool HasUnread => this.UnreadCount > 0;
+
+		/// <summary>
+		/// Loads the glyph shown in token lists.
+		/// </summary>
+		private async Task LoadGlyphAsync()
 		{
-			get
+			try
 			{
-				this.CheckEvents();
+				TokenGlyph Glyph = await TokenGlyph.CreateAsync(this.token, TokenGlyph.ListBoxSize);
 
-				return this.@new ?? false;
-			}
-		}
-
-		private void CheckEvents()
-		{
-			if (!this.@new.HasValue)
-			{
-				this.nrEvents = this.notificationEvents.Length;
-				this.@new = this.nrEvents > 0;
-
-				if (this.@new.Value)
+				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					NotificationEvent[] ToDelete = this.notificationEvents;
-
-					this.notificationEvents = [];
-
-					Task.Run(() => ServiceRef.NotificationService.DeleteEvents(ToDelete));
-				}
+					this.GlyphImage = Glyph.Image;
+					this.HasGlyphImage = !Glyph.IsPlaceholder;
+					this.ShowGlyphPlaceholder = Glyph.IsPlaceholder;
+					this.GlyphWidth = Glyph.Width;
+					this.GlyphHeight = Glyph.Height;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
-		public async Task<ImageSource?> RenderEmbeddedLayout()
+		/// <summary>
+		/// Renders the token's embedded layout to PNG bytes. Rendering runs off the UI thread.
+		/// </summary>
+		/// <returns>PNG bytes, or null if the token has no embedded layout.</returns>
+		public Task<byte[]?> RenderEmbeddedLayoutPngAsync()
 		{
-			if (!this.Token.HasEmbeddedLayout)
-				return null;
+			if (!this.token.HasEmbeddedLayout)
+				return Task.FromResult<byte[]?>(null);
 
-			SkiaSharp.SKImage Img = await this.Token.RenderEmbeddedLayout();
-
-			return ImageSource.FromStream(() =>
+			return Task.Run(async () =>
 			{
-				SKData Data = Img.Encode(SKEncodedImageFormat.Png, 100);
-				return Data.AsStream();
+				using SKImage Img = await this.token.RenderEmbeddedLayout();
+				using SKData Data = Img.Encode(SKEncodedImageFormat.Png, 100);
+
+				return (byte[]?)Data.ToArray();
 			});
 		}
 

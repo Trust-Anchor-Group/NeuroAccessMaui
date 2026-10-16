@@ -4616,4 +4616,79 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="InviteRequestIdentityHint" xml:space="preserve">
     <value>Solicita su identidad para invitarlos.</value>
   </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Intentar de nuevo</value>
+  </data>
+  <data name="TokenOrdinalOfBatch" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="TokenNoLongerInWallet" xml:space="preserve">
+    <value>Este token ya no está en tu billetera.</value>
+  </data>
+  <data name="TokenUnverifiedCopy" xml:space="preserve">
+    <value>Copia no verificada. No se pudo comprobar este token con su Neuron.</value>
+  </data>
+  <data name="TokenChangedSinceShared" xml:space="preserve">
+    <value>Este token ha cambiado desde que se compartió.</value>
+  </data>
+  <data name="TokenShareNotPublic" xml:space="preserve">
+    <value>Este token no es público, así que es posible que {0} no pueda abrirlo.</value>
+  </data>
+  <data name="ViewDefinition" xml:space="preserve">
+    <value>Ver definición</value>
+  </data>
+  <data name="ViewXml" xml:space="preserve">
+    <value>Ver XML</value>
+  </data>
+  <data name="TokenStateBody" xml:space="preserve">
+    <value>Estado: {0}</value>
+  </data>
+  <data name="TokenStateEnded" xml:space="preserve">
+    <value>La máquina de estados ha finalizado.</value>
+  </data>
+  <data name="NotAllowedForToken" xml:space="preserve">
+    <value>No tienes permiso para hacer esto con este token.</value>
+  </data>
+  <data name="TokenNotFound" xml:space="preserve">
+    <value>No se pudo encontrar este token.</value>
+  </data>
+  <data name="TokenNeuronUnreachable" xml:space="preserve">
+    <value>No se puede contactar con el Neuron del token en este momento.</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="Destroyed" xml:space="preserve">
+    <value>Destruido</value>
+  </data>
+  <data name="Transferred" xml:space="preserve">
+    <value>Transferido</value>
+  </data>
+  <data name="Donated" xml:space="preserve">
+    <value>Donado</value>
+  </data>
+  <data name="Seller" xml:space="preserve">
+    <value>Vendedor</value>
+  </data>
+  <data name="Donor" xml:space="preserve">
+    <value>Donante</value>
+  </data>
+  <data name="NoteIsPersonal" xml:space="preserve">
+    <value>Personal</value>
+  </data>
+  <data name="EmbeddedLayout" xml:space="preserve">
+    <value>Diseño incrustado</value>
+  </data>
+  <data name="ViewEmbeddedLayout" xml:space="preserve">
+    <value>Ver diseño incrustado</value>
+  </data>
+  <data name="Killed" xml:space="preserve">
+    <value>Terminada</value>
+  </data>
+  <data name="KillerUser" xml:space="preserve">
+    <value>Terminada por</value>
+  </data>
+  <data name="KillerId" xml:space="preserve">
+    <value>ID de quien la terminó</value>
+  </data>
 </root>

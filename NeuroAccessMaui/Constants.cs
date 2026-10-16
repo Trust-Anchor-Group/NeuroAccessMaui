@@ -1127,6 +1127,11 @@ namespace NeuroAccessMaui
 			/// Transfer ID code
 			/// </summary>
 			public const string TransferIdCodeSent = "TransferId.CodesSent";
+
+			/// <summary>
+			/// If token notification events stored by earlier versions of the app have been deleted.
+			/// </summary>
+			public const string LegacyTokenEventsDeleted = "WALLET.LEGACY_TOKEN_EVENTS_DELETED";
 		}
 
 		/// <summary>

@@ -14,6 +14,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 	/// <summary>
 	/// Abstract base class for token notification events.
 	/// </summary>
+	[Obsolete("Token notifications are stored as notification records. Kept so that events stored by earlier versions can be loaded and deleted. Remove in a later release.")]
 	public abstract class TokenNotificationEvent : WalletNotificationEvent
 	{
 		private Token? token;
@@ -168,22 +169,8 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 			if (string.IsNullOrEmpty(this.TokenId))
 				return;
 
-			Token? Token = await this.GetTokenAsync();
-			if (Token is null)
-			{
-				Token = await ServiceRef.XmppService.GetNeuroFeature(this.TokenId);
-				this.token = Token;
-			}
-
-			if (Token is null)
-				return;
-
-			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, this.TokenId, out NotificationEvent[]? Events))
-				Events = [];
-
-			TokenDetailsNavigationArgs Args = new(new TokenItem(Token, Events));
-
-			await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+			Token? StoredCopy = await this.GetTokenAsync();
+			await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(this.TokenId, StoredCopy);
 		}
 	}
 }

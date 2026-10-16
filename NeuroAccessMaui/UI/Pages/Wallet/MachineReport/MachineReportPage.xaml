@@ -22,11 +22,18 @@
 			<Label Grid.Column="2" Text="{Binding Title}" Style="{DynamicResource PageTitleLabel}"/>
 		</Grid>
 
-		<controls:ConditionView Grid.Row="1" Condition="{Binding Loaded}">
-			<controls:ConditionView.False>
+		<controls:TaskView Grid.Row="1" Task="{Binding ReportTask}">
+			<controls:TaskView.RunningView>
 				<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center" VerticalOptions="Center"/>
-			</controls:ConditionView.False>
-			<controls:ConditionView.True>
+			</controls:TaskView.RunningView>
+			<controls:TaskView.ErrorView>
+				<VerticalStackLayout Padding="16" Spacing="{DynamicResource MediumSpacing}" VerticalOptions="Center">
+					<Label Text="{l:Localize SomethingWentWrong}" Style="{DynamicResource SectionTitleLabel}" HorizontalTextAlignment="Center"/>
+					<controls:TextButton LabelData="{l:Localize TryAgain}" Command="{Binding ReportTask.ReloadCommand}"
+										 Style="{DynamicResource FilledTextButton}" HorizontalOptions="Center"/>
+				</VerticalStackLayout>
+			</controls:TaskView.ErrorView>
+			<controls:TaskView.SucceededView>
 				<ScrollView>
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Border Style="{DynamicResource BorderSet}">
@@ -36,7 +43,7 @@
 						</Border>
 					</VerticalStackLayout>
 				</ScrollView>
-			</controls:ConditionView.True>
-		</controls:ConditionView>
+			</controls:TaskView.SucceededView>
+		</controls:TaskView>
 	</Grid>
 </base:BaseContentPage>

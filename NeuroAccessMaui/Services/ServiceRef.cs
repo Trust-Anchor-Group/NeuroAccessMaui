@@ -30,6 +30,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.Services.Xml;
 using ZXing;
@@ -59,6 +60,8 @@ namespace NeuroAccessMaui.Services
 		private static IContractSyncService? contractSyncService;
 		private static IThingRegistryOrchestratorService? thingRegistryOrchestratorService;
 		private static INeuroWalletOrchestratorService? neuroWalletOrchestratorService;
+		private static ITokenUnreadTracker? tokenUnreadTracker;
+		private static TokenNameCache? tokenNameCache;
 		private static IIdentityApplicationGateService? identityApplicationGateService;
 		private static IAttachmentCacheService? attachmentCacheService;
 		private static ICryptoService? cryptoService;
@@ -255,6 +258,30 @@ namespace NeuroAccessMaui.Services
 			{
 				neuroWalletOrchestratorService ??= Provider.GetRequiredService<INeuroWalletOrchestratorService>();
 				return neuroWalletOrchestratorService;
+			}
+		}
+
+		/// <summary>
+		/// Counts unread notifications per token.
+		/// </summary>
+		public static ITokenUnreadTracker TokenUnreadTracker
+		{
+			get
+			{
+				tokenUnreadTracker ??= Provider.GetRequiredService<ITokenUnreadTracker>();
+				return tokenUnreadTracker;
+			}
+		}
+
+		/// <summary>
+		/// Remembers token names for notifications.
+		/// </summary>
+		public static TokenNameCache TokenNameCache
+		{
+			get
+			{
+				tokenNameCache ??= Provider.GetRequiredService<TokenNameCache>();
+				return tokenNameCache;
 			}
 		}
 
