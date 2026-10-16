@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data xml:space="preserve" name="PlatformTitle">
+    <value>Dev Test Platform</value>
+  </data>
+  <data xml:space="preserve" name="Screens">
+    <value>Skärmar</value>
+  </data>
+  <data xml:space="preserve" name="Components">
+    <value>Komponenter</value>
+  </data>
+  <data xml:space="preserve" name="Scenarios">
+    <value>Scenarier</value>
+  </data>
+  <data xml:space="preserve" name="Section">
+    <value>Katalog</value>
+  </data>
+  <data xml:space="preserve" name="Category">
+    <value>Scenariokategori</value>
+  </data>
+  <data xml:space="preserve" name="All">
+    <value>Alla</value>
+  </data>
+  <data xml:space="preserve" name="Onboarding">
+    <value>Registrering</value>
+  </data>
+  <data xml:space="preserve" name="Buttons">
+    <value>Knappar</value>
+  </data>
+  <data xml:space="preserve" name="Inputs">
+    <value>Inmatning</value>
+  </data>
+  <data xml:space="preserve" name="Default">
+    <value>Standard</value>
+  </data>
+  <data xml:space="preserve" name="Empty">
+    <value>Tom</value>
+  </data>
+  <data xml:space="preserve" name="Valid">
+    <value>Giltig</value>
+  </data>
+  <data xml:space="preserve" name="Invalid">
+    <value>Ogiltig</value>
+  </data>
+  <data xml:space="preserve" name="HappyPaths">
+    <value>Lyckade flöden</value>
+  </data>
+  <data xml:space="preserve" name="Validation">
+    <value>Validering</value>
+  </data>
+  <data xml:space="preserve" name="Loading">
+    <value>Laddar</value>
+  </data>
+  <data xml:space="preserve" name="Errors">
+    <value>Fel</value>
+  </data>
+  <data xml:space="preserve" name="EdgeCases">
+    <value>Specialfall</value>
+  </data>
+  <data xml:space="preserve" name="Provider">
+    <value>ID-leverantör</value>
+  </data>
+  <data xml:space="preserve" name="Phone">
+    <value>Telefonverifiering</value>
+  </data>
+  <data xml:space="preserve" name="PhoneCode">
+    <value>Verifiera telefonkod</value>
+  </data>
+  <data xml:space="preserve" name="Email">
+    <value>E-postverifiering</value>
+  </data>
+  <data xml:space="preserve" name="EmailCode">
+    <value>Verifiera e-postkod</value>
+  </data>
+  <data xml:space="preserve" name="Username">
+    <value>Användarnamn</value>
+  </data>
+  <data xml:space="preserve" name="Account">
+    <value>Skapa konto</value>
+  </data>
+  <data xml:space="preserve" name="Pin">
+    <value>Skapa PIN</value>
+  </data>
+  <data xml:space="preserve" name="Biometrics">
+    <value>Biometri</value>
+  </data>
+  <data xml:space="preserve" name="Success">
+    <value>Klart</value>
+  </data>
+  <data xml:space="preserve" name="TextButton">
+    <value>Produktionsknapp</value>
+  </data>
+  <data xml:space="preserve" name="CompositeEntry">
+    <value>Produktionsinmatning</value>
+  </data>
+  <data xml:space="preserve" name="CodeSent">
+    <value>Kod skickad</value>
+  </data>
+  <data xml:space="preserve" name="BackendError">
+    <value>Backendfel</value>
+  </data>
+  <data xml:space="preserve" name="NetworkError">
+    <value>Nätverksfel</value>
+  </data>
+  <data xml:space="preserve" name="UnitedStates">
+    <value>USA</value>
+  </data>
+  <data xml:space="preserve" name="Sweden">
+    <value>Sverige</value>
+  </data>
+  <data xml:space="preserve" name="ReadOnly">
+    <value>Skrivskyddad förhandsvisning</value>
+  </data>
+  <data xml:space="preserve" name="Verifying">
+    <value>Verifierar</value>
+  </data>
+  <data xml:space="preserve" name="Verified">
+    <value>Verifierad</value>
+  </data>
+  <data xml:space="preserve" name="Expired">
+    <value>Utgången kod</value>
+  </data>
+  <data xml:space="preserve" name="Suggestion">
+    <value>Ogiltig med förslag</value>
+  </data>
+  <data xml:space="preserve" name="CreatingIdentity">
+    <value>Skapar identitet</value>
+  </data>
+  <data xml:space="preserve" name="Matching">
+    <value>Matchande PIN</value>
+  </data>
+  <data xml:space="preserve" name="Mismatch">
+    <value>Bekräftelsen skiljer sig</value>
+  </data>
+  <data xml:space="preserve" name="Enabled">
+    <value>Aktiverad</value>
+  </data>
+  <data xml:space="preserve" name="Disabled">
+    <value>Inaktiverad</value>
+  </data>
+  <data xml:space="preserve" name="Focused">
+    <value>Fokuserad</value>
+  </data>
+  <data xml:space="preserve" name="Search">
+    <value>Sök skärmar, scenarier, komponenter eller taggar</value>
+  </data>
+  <data xml:space="preserve" name="NoResults">
+    <value>Inga matchande scenarier.</value>
+  </data>
+  <data xml:space="preserve" name="Fullscreen">
+    <value>Helskärm</value>
+  </data>
+  <data xml:space="preserve" name="Back">
+    <value>Tillbaka</value>
+  </data>
+  <data xml:space="preserve" name="Simulate">
+    <value>Simulera resultat</value>
+  </data>
+  <data xml:space="preserve" name="VisualNotice">
+    <value>Aktuell produktionsvy och ViewModel. Skrivskyddad förhandsvisning; produktionsflöden och backendanrop startas inte.</value>
+  </data>
+  <data xml:space="preserve" name="ComponentNotice">
+    <value>Aktuell återanvändbar produktionskomponent. Endast lokal interaktion.</value>
+  </data>
+  <data xml:space="preserve" name="RenderFailure">
+    <value>Förhandsvisning kunde inte visas.</value>
+  </data>
+  <data xml:space="preserve" name="Pending">
+    <value>Simulerad operation pågår tills förhandsvisningen stängs.</value>
+  </data>
+  <data xml:space="preserve" name="Sent">
+    <value>Simulerat resultat: verifieringskod skickad.</value>
+  </data>
+  <data xml:space="preserve" name="Accepted">
+    <value>Simulerat resultat: verifiering godkänd. Ingen backendverifiering körs.</value>
+  </data>
+  <data xml:space="preserve" name="BackendFailure">
+    <value>Simulerat resultat: backend avvisade operationen.</value>
+  </data>
+  <data xml:space="preserve" name="NetworkFailure">
+    <value>Simulerat resultat: nätverk saknas.</value>
+  </data>
+  <data xml:space="preserve" name="ExpiredFailure">
+    <value>Simulerat resultat: verifieringskoden har gått ut.</value>
+  </data>
+  <data xml:space="preserve" name="SimulationComplete">
+    <value>Lokal simulering klar.</value>
+  </data>
+  <data xml:space="preserve" name="Area">
+    <value>Appområde</value>
+  </data>
+  <data xml:space="preserve" name="Subject">
+    <value>Skärm eller komponent</value>
+  </data>
+</root>

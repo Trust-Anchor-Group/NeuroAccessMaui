@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage
     x:Class="NeuroAccessMaui.UI.Pages.Identity.ViewIdentity.ViewIdentityPage"
+    AutomationId="{x:Static automation:AutomationIds.ScreenIdentityCard}"
+    xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
@@ -195,6 +197,7 @@
                 <Label
                     Grid.Row="0"
                     Grid.Column="0"
+                    AutomationId="{Binding Key, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.LabelIdentityCardFieldname}}}"
                     Style="{DynamicResource FieldKeyLabel}"
                     Text="{Binding Label}" />
                 <controls:SvgView
@@ -208,6 +211,7 @@
                 <Label
                     Grid.Row="1"
                     Grid.ColumnSpan="2"
+                    AutomationId="{Binding Key, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.LabelIdentityCardFieldvalue}}}"
                     Style="{DynamicResource FieldValueLabel}"
                     Text="{Binding Value}"
                     TextColor="{DynamicResource ContentLinkWL}" />
@@ -298,6 +302,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Command="{Binding GoBackCommand}"
+                AutomationId="{x:Static automation:AutomationIds.ButtonIdentityCardBack}"
                 Style="{DynamicResource IconButton}"
                 SvgSource="close.svg" />
 
@@ -375,6 +380,7 @@
                             Margin="4,2"
                             HorizontalOptions="Center"
                             Style="{DynamicResource StatusPillLabel}"
+                            AutomationId="{x:Static automation:AutomationIds.LabelIdentityCardState}"
                             VerticalOptions="Center" />
                     </Border>
                 </Grid>
@@ -454,7 +460,7 @@
 
                 </Grid>
 
-                <Label Style="{DynamicResource FriendlyNameLabel}" Text="{Binding FriendlyName}" />
+                <Label Style="{DynamicResource FriendlyNameLabel}" Text="{Binding FriendlyName}" AutomationId="{x:Static automation:AutomationIds.LabelIdentityCardName}" />
                 <Label Style="{DynamicResource SubTextLabel}" Text="{Binding SubText}" />
 
             </VerticalStackLayout>
@@ -480,6 +486,7 @@
             <Image
                 HorizontalOptions="Center"
                 Source="{Binding QrCode}"
+                AutomationId="{x:Static automation:AutomationIds.ImageIdentityCardQr}"
                 TranslationX="0">
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
@@ -514,17 +521,19 @@
                             HorizontalOptions="Center"
                             HorizontalTextAlignment="Center"
                             Text="{l:Localize SwipeForDetails}"
+                            AutomationId="{x:Static automation:AutomationIds.LabelIdentityCardDetails}"
 							   TextColor="{DynamicResource ContentAccessWL}"
 							   Margin="{ext:SafeInsets Type=Bottom}" />
                     </VerticalStackLayout>
                 </controls:BottomSheetView.HeaderContent>
                 <controls:BottomSheetView.MainContent>
                     <ContentView>
-                        <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+                        <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill" AutomationId="{x:Static automation:AutomationIds.ControlIdentityCardScroll}">
                             <VerticalStackLayout Background="{DynamicResource SurfaceElevation1WL}">
                                 <controls:TextButton
                                     Margin="16"
                                     Command="{Binding AddContactCommand}"
+                                    AutomationId="{x:Static automation:AutomationIds.ButtonIdentityCardAddcontact}"
                                     HorizontalOptions="Fill"
                                     IsVisible="{Binding CanAddContact}"
                                     LabelData="{l:Localize AddContact}"
@@ -533,6 +542,7 @@
                                 <controls:TextButton
                                     Margin="16"
                                     Command="{Binding RemoveContactCommand}"
+                                    AutomationId="{x:Static automation:AutomationIds.ButtonIdentityCardRemovecontact}"
                                     HorizontalOptions="Fill"
                                     IsVisible="{Binding CanRemoveContact}"
                                     LabelData="{l:Localize RemoveContact}"
@@ -541,6 +551,7 @@
 								<controls:TextButton
 									Margin="16,0,16,8"
 									Command="{Binding OpenChatCommand}"
+                                    AutomationId="{x:Static automation:AutomationIds.ButtonIdentityCardChat}"
 									IsVisible="{Binding IsThirdPartyIdentity}"
 									HorizontalOptions="Fill"
 									LabelData="{l:Localize Chat}"

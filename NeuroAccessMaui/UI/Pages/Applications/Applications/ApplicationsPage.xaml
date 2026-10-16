@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
+                         AutomationId="{x:Static automation:AutomationIds.ScreenApplicationsCatalog}"
+                         xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 							 x:Class="NeuroAccessMaui.UI.Pages.Applications.Applications.ApplicationsPage"
 							 x:DataType="viewmodel:ApplicationsViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -40,10 +42,10 @@
 								HorizontalOptions="Start"
 								Grid.Column="0"/>
 
-			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End" Grid.Column="2"/>
+            <Label AutomationId="{x:Static automation:AutomationIds.LabelApplicationsCatalogTitle}" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End" Grid.Column="2"/>
 			
 			<Grid Grid.ColumnSpan="3" Grid.Row="1">
-				<CollectionView ItemsSource="{Binding AvailableApplications}"
+                <CollectionView AutomationId="{x:Static automation:AutomationIds.ControlApplicationsCatalogScroll}" ItemsSource="{Binding AvailableApplications}"
 								SelectionMode="None"
 								Margin="0">
 					<CollectionView.ItemsLayout>
@@ -59,7 +61,7 @@
 								   FontSize="{StaticResource FontSizeLg}"
 								   FontFamily="SpaceGroteskBold"
 								   IsVisible="{Binding HasCurrentApplication}" />
-							<controls:TemplatedButton Command="{Binding OpenApplicationCommand}"
+                            <controls:TemplatedButton AutomationId="{x:Static automation:AutomationIds.ButtonApplicationsCatalogCurrent}" Command="{Binding OpenApplicationCommand}"
 													  IsVisible="{Binding HasCurrentApplication}"
 													  CommandParameter="{Binding CurrentApplication}"
 													  Margin="0"
@@ -213,7 +215,8 @@
 													</Border.Triggers>
 													<Label FontSize="{StaticResource FontSizeXs}"
 														   FontFamily="SpaceGroteskBold"
-														   Text="{l:Localize InProgress}"
+                                                    AutomationId="{x:Static automation:AutomationIds.LabelApplicationsCatalogCurrentstate}"
+                                                    Text="{l:Localize InProgress}"
 														   TextColor="{DynamicResource TnPWarningContentWL}">
 														<Label.Triggers>
 															<DataTrigger TargetType="Label"
@@ -303,7 +306,7 @@
 					</CollectionView.EmptyView>
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="service:KycApplicationTemplate">
-							<controls:TemplatedButton Margin="0"
+                            <controls:TemplatedButton AutomationId="{Binding Source.ItemId, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.ItemApplicationsCatalogTemplate}}}" Margin="0"
 													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}, x:DataType=viewmodel:ApplicationsViewModel}"
 													  CommandParameter="{Binding .}">
 								<Border Style="{DynamicResource BorderSet}"
@@ -327,12 +330,12 @@
 											  Grid.Column="1"
 											  ColumnDefinitions="*"
 											  VerticalOptions="Center">
-											<Label Text="{Binding DisplayName}"
+                                            <Label AutomationId="{Binding Source.ItemId, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.LabelApplicationsCatalogTemplatename}}}" Text="{Binding DisplayName}"
 												   Style="{DynamicResource CardTitleLabel}"
 												   Grid.Row="0"
 												   LineBreakMode="TailTruncation"
 												   MaxLines="1" />
-											<Label Text="{l:Localize IdentityApplication}"
+                                            <Label AutomationId="{Binding Source.ItemId, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.LabelApplicationsCatalogTemplatetype}}}" Text="{l:Localize IdentityApplication}"
 												   Style="{DynamicResource CardSubtitleLabel}"
 												   Grid.Row="1"
 												   LineBreakMode="TailTruncation"

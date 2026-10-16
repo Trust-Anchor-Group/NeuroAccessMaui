@@ -1,0 +1,21 @@
+android_versions:
+  android_11:
+    api: 30
+
+  android_12:
+    api: 31
+
+  android_12l:
+    api: 32
+
+  android_13:
+    api: 33
+
+  android_14:
+    api: 34
+
+  android_15:
+    api: 35
+
+  android_16:
+    api: 36

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.FinalizeStepView"
+                               AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingFinalize}"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -16,7 +17,7 @@
                                  VerticalOptions="Center"
                                  Spacing="{DynamicResource LargeSpacing}">
                 <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-                    <Label Style="{DynamicResource PageTitleLabel}"
+                    <Label Style="{DynamicResource PageTitleLabel}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingFinalizeTitle}"
                            Text="{l:Localize OnboardingFinalizePageTitle}"
                            HorizontalTextAlignment="Center" />
 
@@ -38,7 +39,7 @@
             </VerticalStackLayout>
         </Grid>
 
-        <controls:TextButton Grid.Row="1"
+        <controls:TextButton Grid.Row="1" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingFinalizeContinue}"
                              VerticalOptions="End"
                              Command="{Binding ContinueCommand}"
                              Style="{DynamicResource FilledTextButton}"

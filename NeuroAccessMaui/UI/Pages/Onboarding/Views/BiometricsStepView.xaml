@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.BiometricsStepView"
+                               AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingBiometrics}"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -12,7 +13,7 @@
         <VerticalStackLayout Grid.Row="0"
                              VerticalOptions="Center"
                              Spacing="{DynamicResource LargeSpacing}">
-            <Label Style="{DynamicResource PageTitleLabel}"
+            <Label Style="{DynamicResource PageTitleLabel}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingBiometricsTitle}"
                    Text="{l:Localize OnboardingBiometricsPageTitle}"
                    HorizontalTextAlignment="Center"
                    Margin="{DynamicResource LargeBottomMargins}" />
@@ -93,7 +94,7 @@
 
             <controls:TemplatedButton Grid.Row="1"
                                       Grid.Column="0"
-                                      Command="{Binding LaterCommand}"
+                                      Command="{Binding LaterCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingBiometricsLater}"
                                       VerticalOptions="End">
                 <Border Style="{DynamicResource TransparentTemplateButtonBorder}"
                         InputTransparent="True"
@@ -106,7 +107,7 @@
 
             <controls:TemplatedButton Grid.Row="1"
                                       Grid.Column="1"
-                                      Command="{Binding EnableCommand}"
+                                      Command="{Binding EnableCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingBiometricsEnable}"
                                       VerticalOptions="End">
                 <Border Style="{DynamicResource FilledTemplateButtonBorder}"
                         InputTransparent="True"
