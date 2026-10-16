@@ -87,6 +87,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public string Name => this.Role.Name;
 
 		/// <summary>
+		/// The name of the contract, passed to the parts for the purpose of identity requests.
+		/// </summary>
+		public string? ContractName
+		{
+			get => this.contractName;
+			set
+			{
+				this.contractName = value;
+
+				foreach (ObservablePart Part in this.Parts)
+					Part.ContractName = value;
+			}
+		}
+		private string? contractName;
+
+		/// <summary>
 		/// The localized description of the role
 		/// Has to be initialized with <see cref="InitializeAsync"/>
 		/// </summary>
@@ -192,11 +208,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		/// <param name="LegalId">The identity to include in the role.</param>
 		/// <param name="Notify">Whether to notify observers that the parts collection changed.</param>
-		/// <param name="AutoPetition">Whether to request access to a protected identity.</param>
 		/// <param name="PresetFromArgs">Whether the participant was preset by navigation arguments.</param>
 		/// <param name="PreparedIdentity">The identity already looked up by the scanner, if any.</param>
-		/// <returns>A task representing participant initialization.</returns>
-		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true, bool PresetFromArgs = false,
+		/// <returns>A task representing participant initialization. No identity petition is sent.</returns>
+		public async Task AddPart(string LegalId, bool Notify = true, bool PresetFromArgs = false,
 			IdentityReference? PreparedIdentity = null)
 		{
 			//Check if Part Exists
@@ -207,9 +222,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			Part Part = new() { LegalId = LegalId, Role = this.Name };
 			ObservablePart ObservablePart = new ObservablePart(Part)
 			{
-				IsPresetFromArgs = PresetFromArgs
+				IsPresetFromArgs = PresetFromArgs,
+				ContractName = this.ContractName
 			};
-			await ObservablePart.InitializeAsync(AutoPetition, PreparedIdentity);
+			await ObservablePart.InitializeAsync(PreparedIdentity);
 
 			//Notify changes
 			TaskCompletionSource TaskCompletionSource = new();
@@ -239,7 +255,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		public async Task AddPart(ClientSignature signature)
 		{
-			await this.AddPart(signature.LegalId, true, false);
+			await this.AddPart(signature.LegalId, true);
 			ObservablePart? Found = this.Parts.FirstOrDefault(p => p.LegalId == signature.LegalId);
 			if (Found is not null)
 			{
@@ -247,7 +263,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					Found.Signature = signature;
 				});
-				await Found.InitializeAsync(false);
+				await Found.InitializeAsync();
 			}
 		}
 
@@ -262,6 +278,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.Parts.Remove(Part);
+					Part.Dispose();
 					this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 					this.OnPropertyChanged(nameof(this.HasReachedMinCount));
 					this.OnPropertyChanged(nameof(this.IsSelectedByMe));

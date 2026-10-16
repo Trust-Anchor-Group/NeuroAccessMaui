@@ -12,6 +12,27 @@
 									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
 	<ContentView.Resources>
+		<!-- A protected value that can't be shown says why: encrypted for others, still loading, or never stored. -->
+		<DataTemplate x:Key="ViewProtectedParameterTemplate"
+						  x:DataType="objectModel:ObservableParameter">
+			<Border Style="{DynamicResource BorderSet}"
+					  Margin="{DynamicResource MediumLeftRightMargins}">
+				<Grid RowDefinitions="Auto,Auto"
+						ColumnSpacing="{DynamicResource SmallSpacing}">
+					<Label Grid.Row="0"
+							 Text="{Binding Label}"
+							 Style="{DynamicResource ParameterItemTitleLabel}"
+							 HorizontalTextAlignment="Start" />
+					<controls:ParameterProtectionIndicator Grid.Row="1"
+																		IsTransient="{Binding IsTransient}"
+																		IsEncrypted="{Binding IsEncrypted}"
+																		TransientText="{l:Localize ParameterNotStored}"
+																		EncryptedText="{Binding EncryptedValueText, Mode=OneWay}"
+																		IsVisible="{Binding IsProtected}" />
+				</Grid>
+			</Border>
+		</DataTemplate>
+
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 															BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
 															DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
@@ -20,7 +41,7 @@
 															StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 															TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
 															DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
-															ProtectedTemplate="{StaticResource ProtectedParameterTemplate}"
+															ProtectedTemplate="{StaticResource ViewProtectedParameterTemplate}"
 															CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
 															ContractReferenceTemplate="{StaticResource ContractReferenceParameterReadOnlyTemplate}"
 															GeoTemplate="{StaticResource GeoParameterReadOnlyTemplate}"
@@ -40,7 +61,9 @@
 											 ItemSpacing="16" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.EmptyView>
-				<Label Text="{l:Localize SomethingWentWrong}" />
+				<Label Text="{l:Localize ContractHasNoParameters}"
+						 Style="{DynamicResource InfoLabel}"
+						 HorizontalOptions="Center" />
 			</CollectionView.EmptyView>
 		</CollectionView>
 	</Grid>

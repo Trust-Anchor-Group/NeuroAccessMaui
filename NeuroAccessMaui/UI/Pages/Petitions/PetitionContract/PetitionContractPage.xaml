@@ -32,10 +32,13 @@
 						<Label HorizontalOptions="Center" VerticalOptions="Center" Text="{l:Localize PetitionContractInformationText}"
 								 Style="{DynamicResource InfoLabel}" />
 
+						<Label HorizontalOptions="Center" Style="{DynamicResource BoldItemTitleLabel}" Text="{Binding RequestorName}"
+								 IsVisible="{Binding RequestorName, Converter={converters:OnlyShowNonEmpty}}" />
+
 						<Label HorizontalOptions="Center" VerticalOptions="Center" FontSize="Large" Text="{l:Localize Purpose}"
 								 Style="{DynamicResource SectionTitleLabel}" />
 
-						<Label Style="{DynamicResource InfoLabel}" Text="{Binding Path=Purpose}" />
+						<Label Style="{DynamicResource InfoLabel}" Text="{Binding Path=Purpose}" TextType="Text" />
 
 						<Label HorizontalOptions="Center" VerticalOptions="Center" FontSize="Large" Text="{l:Localize LegalId}"
 								 Style="{DynamicResource SectionTitleLabel}" />
@@ -60,6 +63,17 @@
 
 							<Label Style="{DynamicResource ValueLabel}" Text="{Binding State, Converter={converters:LocalizedState}}" />
 						</HorizontalStackLayout>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Requested contract -->
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize RequestedContract}"/>
+						<Label Style="{DynamicResource BoldItemTitleLabel}" Text="{Binding ContractName}" />
+						<Label Style="{DynamicResource InfoLabel}" Text="{l:Localize PetitionContractNotLoaded}" IsVisible="{Binding IsContractMissing}" />
+						<controls:TextButton LabelData="{l:Localize ViewContract}" Command="{Binding ViewContractCommand}"
+													Style="{DynamicResource SecondaryButton}" IsVisible="{Binding HasContract}" />
 					</VerticalStackLayout>
 				</Border>
 

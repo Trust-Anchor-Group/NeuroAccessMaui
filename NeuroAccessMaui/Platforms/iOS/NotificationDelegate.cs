@@ -183,8 +183,12 @@ namespace NeuroAccessMaui
 					intent.Extras[k] = v;
 				}
 
-				if (intent.Extras.TryGetValue("action", out string? action) && Enum.TryParse(action, out NotificationAction parsed))
+				// The broker names the action "actionType".
+				if ((intent.Extras.TryGetValue("action", out string? action) || intent.Extras.TryGetValue("actionType", out action)) &&
+					Enum.TryParse(action, out NotificationAction parsed))
+				{
 					intent.Action = parsed;
+				}
 
 				if (intent.Extras.TryGetValue("entityId", out string? entityId))
 					intent.EntityId = entityId;

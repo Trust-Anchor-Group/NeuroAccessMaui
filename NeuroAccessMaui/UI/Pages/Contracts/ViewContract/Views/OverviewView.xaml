@@ -202,6 +202,54 @@
 						Padding="{DynamicResource MediumBottomMargins}">
 				<VerticalStackLayout Padding="{DynamicResource MediumLeftRightMargins}"
 									 Spacing="{DynamicResource MediumSpacing}">
+					<!-- Status banner: deleted on the server, or no access -->
+					<Border Style="{DynamicResource AccentInfoBorder}"
+							BackgroundColor="{DynamicResource TnPDangerbgWL}"
+							Padding="{DynamicResource SmallMargins}"
+							IsVisible="{Binding HasStatusBanner}">
+						<Grid ColumnDefinitions="auto, *"
+							  RowDefinitions="auto, auto, auto, auto"
+							  RowSpacing="{DynamicResource SmallSpacing}">
+							<Path Grid.Column="0"
+								  Grid.Row="0"
+								  HorizontalOptions="Center"
+								  VerticalOptions="Start"
+								  Data="{x:Static ui:Geometries.InfoCirclePath}"
+								  HeightRequest="16"
+								  WidthRequest="16"
+								  Aspect="Uniform"
+								  Fill="{DynamicResource TnPDangerContentWL}" />
+							<Label Grid.Column="1"
+								   Grid.Row="0"
+								   Style="{DynamicResource AccentInfoLabel}"
+								   TextColor="{DynamicResource TnPDangerContentWL}"
+								   Margin="{DynamicResource SmallLeftMargins}"
+								   Text="{l:Localize ContractDeletedBanner}"
+								   IsVisible="{Binding IsDeletedOnServer}" />
+							<Label Grid.Column="1"
+								   Grid.Row="1"
+								   Style="{DynamicResource AccentInfoLabel}"
+								   TextColor="{DynamicResource TnPDangerContentWL}"
+								   Margin="{DynamicResource SmallLeftMargins}"
+								   Text="{l:Localize ContractAccessDeniedBanner}"
+								   IsVisible="{Binding IsAccessDenied}" />
+							<Label Grid.Column="1"
+								   Grid.Row="2"
+								   Style="{DynamicResource AccentInfoLabel}"
+								   TextColor="{DynamicResource TnPDangerContentWL}"
+								   Margin="{DynamicResource SmallLeftMargins}"
+								   Text="{l:Localize ContractAccessAskSender}"
+								   IsVisible="{Binding ShowAskSenderHint}" />
+							<controls:TextButton Grid.Column="0"
+												 Grid.ColumnSpan="2"
+												 Grid.Row="3"
+												 LabelData="{l:Localize AskForAccess}"
+												 Style="{DynamicResource OutlinedTextButton}"
+												 Command="{Binding RequestAccessCommand}"
+												 IsVisible="{Binding ShowRequestAccess}" />
+						</Grid>
+					</Border>
+
 					<!-- TOP Set, name of contract etc -->
 					<Border Style="{DynamicResource BorderSet}"
 							Margin="0">
@@ -261,6 +309,12 @@
 											   Text="{Binding Path=ProposalMessage,Converter={converters:HyphenIfEmpty}}"
 											   Style="{DynamicResource ItemValueLabel}" />
 									</Grid>
+
+									<controls:TextButton LabelData="{l:Localize DeclineInvitation}"
+														 Style="{DynamicResource OutlinedTextButton}"
+														 Command="{Binding DeclineInvitationCommand}"
+														 IsVisible="{Binding CanDeclineInvitation}"
+														 Margin="{DynamicResource SmallTopMargins}" />
 								</VerticalStackLayout>
 
 							</Border>
@@ -338,6 +392,11 @@
 											  BottomLabelText="{l:Localize ServerSignatureButtonDescription}"
 											  Command="{Binding OpenServerSignatureCommand}" />
 
+					<controls:TextButton LabelData="{l:Localize InviteToSign}"
+										 Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
+										 Command="{Binding Path=InvitePartsCommand}"
+										 IsVisible="{Binding Path=CanInviteParts}"
+										 Margin="{DynamicResource SmallTopMargins}" />
 					<controls:TextButton LabelData="{l:Localize WithdrawContract}"
 										 Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
 										 Command="{Binding Path=WithdrawContractCommand}"
@@ -347,6 +406,11 @@
 										 Style="{DynamicResource FilledTextButtonDecline}"
 										 Command="{Binding Path=DeleteContractCommand}"
 										 IsVisible="{Binding Path=CanDeleteContract}"
+										 Margin="{DynamicResource SmallBottomMargins}" />
+					<controls:TextButton LabelData="{l:Localize RemoveFromList}"
+										 Style="{DynamicResource OutlinedTextButton}"
+										 Command="{Binding Path=RemoveFromListCommand}"
+										 IsVisible="{Binding Path=CanRemoveFromList}"
 										 Margin="{DynamicResource SmallBottomMargins}" />
 
 				</VerticalStackLayout>

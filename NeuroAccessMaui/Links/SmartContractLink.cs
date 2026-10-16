@@ -1,8 +1,8 @@
 ﻿using System.Collections.Specialized;
 using System.Web;
 using NeuroAccessMaui.Models;
-using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contracts;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
@@ -43,10 +43,16 @@ namespace NeuroAccessMaui.Links
 				return null;
 
 			// The contract read during preparation is opened as it is, so it is not downloaded again. A protected contract
-			// could not be read, so opening it sends the access petition instead.
+			// could not be read, so it is opened by ID: a saved copy is shown if there is one, and otherwise the user is
+			// asked whether to request access.
+			ContractOpenOptions Options = new()
+			{
+				ParameterValues = Data.Parameters
+			};
+
 			return new PreparedLink(Link, () => Data.Contract is not null
-				? ServiceRef.ContractOrchestratorService.OpenContract(Data.Contract, Data.Parameters)
-				: ServiceRef.ContractOrchestratorService.PetitionContract(Data.Identifier, ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]));
+				? ServiceRef.ContractOrchestratorService.OpenContractAsync(Data.Contract, Options)
+				: ServiceRef.ContractOrchestratorService.OpenContractAsync(Data.Identifier, Options));
 		}
 
 		/// <summary>

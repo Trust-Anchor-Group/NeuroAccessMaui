@@ -261,6 +261,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		/// 
 		public bool CanReadValue => this.IsProtected ? this.Parameter.ObjectValue is not null : this.Parameter.CanSerializeValue;
+
+		/// <summary>
+		/// If the value may still arrive, because the contract page is showing a saved copy while it reads the current one.
+		/// </summary>
+		public bool IsLoadingValue
+		{
+			get => this.isLoadingValue;
+			set
+			{
+				if (this.SetProperty(ref this.isLoadingValue, value))
+					this.OnPropertyChanged(nameof(this.EncryptedValueText));
+			}
+		}
+		private bool isLoadingValue;
+
+		/// <summary>
+		/// What to show instead of an encrypted value that can't be read.
+		/// </summary>
+		public string EncryptedValueText => this.IsLoadingValue
+			? ServiceRef.Localizer[nameof(AppResources.ParameterLoadingValue)]
+			: ServiceRef.Localizer[nameof(AppResources.ParameterEncryptedNotAvailable)];
 		#endregion
 
 		public bool CanShowError => !string.IsNullOrEmpty(this.ValidationText);
@@ -668,7 +689,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 			try
 			{
-				await ServiceRef.ContractOrchestratorService.OpenContract(this.ContractReferenceValue, ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)], null);
+				await ServiceRef.ContractOrchestratorService.OpenContractAsync(this.ContractReferenceValue, null);
 			}
 			catch (Exception Ex)
 			{

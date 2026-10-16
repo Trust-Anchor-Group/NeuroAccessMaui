@@ -12,12 +12,9 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
-using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 
@@ -28,52 +25,60 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public ObservablePart(Part part)
 		{
 			this.Part = part;
-			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_OnPetitionedIdentityResponseReceived;
 		}
 
 		public ObservablePart(Part part, ClientSignature signature)
 		{
 			this.Part = part;
-			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_OnPetitionedIdentityResponseReceived;
 			this.Signature = signature;
-
 		}
+
 		/// <summary>
-		/// Initializes the part, setting properties which needs to be set asynchronosly
+		/// Initializes the part, setting properties which needs to be set asynchronosly. No identity petition is sent. When the
+		/// identity is protected, the user can request it with <see cref="RequestIdentityCommand"/>.
 		/// </summary>
-		/// <param name="sendPetition">Whether to request access to the identity when it is protected.</param>
 		/// <param name="PreparedIdentity">The identity already looked up by the scanner, or <c>null</c> to look it up here.</param>
 		/// <returns>A task representing part initialization.</returns>
-		public async Task InitializeAsync(bool sendPetition = true, IdentityReference? PreparedIdentity = null)
+		public async Task InitializeAsync(IdentityReference? PreparedIdentity = null)
 		{
 			try
 			{
 				// Set Friendly name before anything can go wrong
 				this.FriendlyName = await this.GetFriendlyNameAsync();
-				if (PreparedIdentity is not null)
-					await this.ApplyPreparedIdentityAsync(PreparedIdentity, sendPetition);
-				else if (sendPetition)
-					await this.PetitionIdentityAsync();
-				else
+
+				LegalIdentity? Identity = this.identity;
+
+				if (Identity is null)
 				{
-					try
-					{
-						LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.LegalId);
-						this.identity = Identity;
-
-						string FriendlyName = await this.GetFriendlyNameAsync();
-
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							this.OnPropertyChanged(nameof(this.HasIdentity));
-							this.FriendlyName = FriendlyName;
-						});
-					}
-					catch (Exception)
-					{
-						//Ignore, OK if forbidden or network error
-					}
+					if (this.IsMe)
+						Identity = ServiceRef.TagProfile.LegalIdentity;
+					else if (PreparedIdentity is not null)
+						Identity = PreparedIdentity.Identity;
+					else
+						Identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(this.LegalId, string.Empty);
 				}
+
+				// A protected identity may still be known from the contact list.
+				if (Identity is null)
+				{
+					ContactInfo? Info = await ContactInfo.FindByLegalId(this.LegalId);
+					Identity = Info?.LegalIdentity;
+				}
+
+				this.identity = Identity;
+				string FriendlyName = await this.GetFriendlyNameAsync();
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.FriendlyName = FriendlyName;
+
+					if (this.identity is not null)
+						this.IdentityState = PartIdentityState.Visible;
+					else if (this.IdentityState == PartIdentityState.Visible)
+						this.IdentityState = PartIdentityState.NotVisible;
+					else
+						this.NotifyIdentityChanged();
+				});
 			}
 			catch (Exception E)
 			{
@@ -81,76 +86,42 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 		}
 
-		private async Task XmppService_OnPetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
-		{
-			if (e.RequestedIdentity is not null && e.RequestedIdentity.Id == this.LegalId)
-			{
-				this.identity = e.RequestedIdentity;
-				string FriendlyName = await this.GetFriendlyNameAsync();
-
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.FriendlyName = FriendlyName;
-					this.HasSentPetition = false;
-					this.OnPropertyChanged(nameof(this.HasIdentity));
-					this.OnPropertyChanged(nameof(this.CanSendProposal));
-					this.OnPropertyChanged(nameof(this.HasSentPetition));
-				});
-			}
-		}
-
 		/// <summary>
-		/// Uses an identity the scanner has already looked up, so it is not requested from the server a second time.
+		/// Shows the answer to an identity request on this part.
 		/// </summary>
-		/// <param name="PreparedIdentity">The scanned identity. Its <see cref="IdentityReference.Identity"/> is <c>null</c> when
-		/// the identity is protected.</param>
-		/// <param name="SendPetition">Whether to request access to a protected identity.</param>
-		/// <returns>A task that completes when the part reflects the identity.</returns>
-		private async Task ApplyPreparedIdentityAsync(IdentityReference PreparedIdentity, bool SendPetition)
+		/// <param name="e">The answer.</param>
+		/// <returns>If the answer was for this part.</returns>
+		public async Task<bool> ApplyIdentityAnswerAsync(IdentityPetitionAnsweredEventArgs e)
 		{
-			bool PetitionSent = false;
+			if (!string.Equals(e.LegalId, this.LegalId, StringComparison.OrdinalIgnoreCase))
+				return false;
 
-			if (PreparedIdentity.Identity is not null)
-				this.identity = PreparedIdentity.Identity;
-			else if (SendPetition)
-			{
-				// The scanner was refused access, so ask the owner directly instead of being refused again first.
-				await ServiceRef.XmppService.PetitionIdentity(this.LegalId, Guid.NewGuid().ToString(),
-					ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
-				PetitionSent = true;
-			}
+			if (e.Accepted && e.Identity is not null)
+				this.identity = e.Identity;
 
 			string FriendlyName = await this.GetFriendlyNameAsync();
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				if (PetitionSent)
-					this.HasSentPetition = true;
-				this.OnPropertyChanged(nameof(this.HasIdentity));
-				this.OnPropertyChanged(nameof(this.CanSendProposal));
-				this.OnPropertyChanged(nameof(this.HasSentPetition));
 				this.FriendlyName = FriendlyName;
+
+				if (this.identity is not null)
+					this.IdentityState = PartIdentityState.Visible;
+				else
+					this.IdentityState = e.Accepted ? PartIdentityState.NotVisible : PartIdentityState.Declined;
 			});
+
+			return true;
 		}
 
-		private async Task PetitionIdentityAsync()
+		private void NotifyIdentityChanged()
 		{
-			this.identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(this.LegalId,
-							ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
-
-			string FriendlyName = await this.GetFriendlyNameAsync();
-
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-
-				if (this.identity is null)
-					this.HasSentPetition = true;
-				this.OnPropertyChanged(nameof(this.HasIdentity));
-				this.OnPropertyChanged(nameof(this.CanSendProposal));
-				this.OnPropertyChanged(nameof(this.HasSentPetition));
-				this.FriendlyName = FriendlyName;
-			});
-
+			this.OnPropertyChanged(nameof(this.HasIdentity));
+			this.OnPropertyChanged(nameof(this.HasSentPetition));
+			this.OnPropertyChanged(nameof(this.IsIdentityRequested));
+			this.OnPropertyChanged(nameof(this.IsIdentityDeclined));
+			this.OnPropertyChanged(nameof(this.CanRequestIdentity));
+			this.OnPropertyChanged(nameof(this.CanSendProposal));
 		}
 
 		private async Task<string> GetFriendlyNameAsync()
@@ -225,15 +196,44 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 		private string? friendlyName = string.Empty;
 
-		public bool HasSentPetition
+		/// <summary>
+		/// If the user can see the part's identity, has asked to see it, or was refused.
+		/// </summary>
+		public PartIdentityState IdentityState
 		{
-			get => this.hasSentPetition && !this.HasIdentity;
+			get => this.identityState;
 			private set
 			{
-				this.SetProperty(ref this.hasSentPetition, value);
+				if (this.SetProperty(ref this.identityState, value))
+					this.NotifyIdentityChanged();
 			}
 		}
-		private bool hasSentPetition = false;
+		private PartIdentityState identityState = PartIdentityState.NotVisible;
+
+		/// <summary>
+		/// The name of the contract, used in the purpose of an identity request.
+		/// </summary>
+		public string? ContractName { get; set; }
+
+		/// <summary>
+		/// If an identity request has been sent and not yet answered.
+		/// </summary>
+		public bool HasSentPetition => this.IsIdentityRequested;
+
+		/// <summary>
+		/// If an identity request has been sent and not yet answered.
+		/// </summary>
+		public bool IsIdentityRequested => this.IdentityState == PartIdentityState.Requested && !this.HasIdentity;
+
+		/// <summary>
+		/// If the owner declined to show their identity.
+		/// </summary>
+		public bool IsIdentityDeclined => this.IdentityState == PartIdentityState.Declined && !this.HasIdentity;
+
+		/// <summary>
+		/// If "Request identity" is offered for this part.
+		/// </summary>
+		public bool CanRequestIdentity => this.IsThirdParty && !this.HasIdentity && this.IdentityState != PartIdentityState.Requested;
 
 		public bool IsMe => this.Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id;
 		public bool IsThirdParty => !this.IsMe;
@@ -292,22 +292,51 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task OpenIdentityAsync()
 		{
-			if (this.identity is null)
-			{
-				try
-				{
-					await this.PetitionIdentityAsync();
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Petition)], ServiceRef.Localizer[nameof(AppResources.PetitionIdentitySent)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				}
-				catch (Exception)
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Error)], ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				}
-			}
-			else
+			if (this.identity is not null)
 			{
 				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(this.identity), Services.UI.BackMethod.Pop);
+				return;
 			}
+
+			if (!this.CanRequestIdentity)
+				return;
+
+			bool Request = await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.IdentityNotVisible)],
+				ServiceRef.Localizer[nameof(AppResources.IdentityNotVisibleAskRequest), this.FriendlyName ?? this.LegalId],
+				ServiceRef.Localizer[nameof(AppResources.RequestIdentity)],
+				ServiceRef.Localizer[nameof(AppResources.Cancel)]);
+
+			if (Request)
+				await this.RequestIdentityAsync();
+		}
+
+		/// <summary>
+		/// Asks the owner of the part's identity to show it. The answer updates the part when it arrives.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task RequestIdentityAsync()
+		{
+			if (!this.CanRequestIdentity)
+				return;
+
+			string Purpose = string.IsNullOrEmpty(this.ContractName)
+				? ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]
+				: ServiceRef.Localizer[nameof(AppResources.IdentityRequestPurpose), this.ContractName];
+
+			string? PetitionId = await ServiceRef.ContractOrchestratorService.RequestIdentityAsync(this.LegalId, Purpose);
+			if (PetitionId is null)
+				return;
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.IdentityState = PartIdentityState.Requested;
+			});
+
+			await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.Petition)],
+				ServiceRef.Localizer[nameof(AppResources.PetitionIdentitySent)],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(HasSigned))]
@@ -335,12 +364,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			if (this.disposed)
 				return;
-
-			if (disposing)
-			{
-				// Unsubscribe from the event to prevent memory leaks
-				ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.XmppService_OnPetitionedIdentityResponseReceived;
-			}
 
 			this.disposed = true;
 		}

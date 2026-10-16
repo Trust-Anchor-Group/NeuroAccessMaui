@@ -11,16 +11,14 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Contracts.EventArguments;
-using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
-using Waher.Persistence.Filters;
 using Waher.Script;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
@@ -42,6 +40,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool refreshQueued;
 		private Contract? pendingContractForRefresh;
 		private bool initialized;
+
+		// The contract shown is a saved copy whose encrypted values can't be read until the current version arrives.
+		private bool showingSavedCopy;
+
+		// The next refresh was asked for by the user, so a failure is shown.
+		private bool userRequestedRefresh;
 
 		// Awaiting post-create completion flag (bindable)
 		[ObservableProperty]
@@ -69,9 +73,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.IotDiscoUriClicked = this.CreateUriCommand(UriScheme.IotDisco);
 			this.EDalerUriClicked = this.CreateUriCommand(UriScheme.EDaler);
 			this.HyperlinkClicked = new Command(async p => await this.ExecuteHyperlinkClicked(p));
-
-			this.contractSignedHandler = new EventHandlerAsync<ContractSignedEventArgs>(this.OnContractSignedAsync);
-			this.contractUpdatedHandler = new EventHandlerAsync<ContractReferenceEventArgs>(this.OnContractUpdatedAsync);
 		}
 
 		#endregion
@@ -223,6 +224,65 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[ObservableProperty]
 		private bool canWithdrawContract;
 
+		/// <summary>
+		/// If the contract was deleted on the server. The page shows the saved copy.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasStatusBanner))]
+		[NotifyPropertyChangedFor(nameof(CanSign))]
+		[NotifyPropertyChangedFor(nameof(CanShowSignBar))]
+		private bool isDeletedOnServer;
+
+		/// <summary>
+		/// If the server no longer lets the user read the contract. The page shows the saved copy.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasStatusBanner))]
+		[NotifyPropertyChangedFor(nameof(ShowRequestAccess))]
+		[NotifyPropertyChangedFor(nameof(ShowAskSenderHint))]
+		private bool isAccessDenied;
+
+		/// <summary>
+		/// If access can be asked for. Only people who signed receive the request, so the saved copy must show signatures.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowRequestAccess))]
+		[NotifyPropertyChangedFor(nameof(ShowAskSenderHint))]
+		private bool canRequestAccess;
+
+		/// <summary>
+		/// If the contract can be removed from the user's list of contracts.
+		/// </summary>
+		[ObservableProperty]
+		private bool canRemoveFromList;
+
+		/// <summary>
+		/// If the open invitation to sign can be declined.
+		/// </summary>
+		[ObservableProperty]
+		private bool canDeclineInvitation;
+
+		/// <summary>
+		/// If Invite is offered.
+		/// </summary>
+		[ObservableProperty]
+		private bool canInviteParts;
+
+		/// <summary>
+		/// If the deleted or access-denied banner is shown.
+		/// </summary>
+		public bool HasStatusBanner => this.IsDeletedOnServer || this.IsAccessDenied;
+
+		/// <summary>
+		/// If "Ask for access" is offered.
+		/// </summary>
+		public bool ShowRequestAccess => this.IsAccessDenied && this.CanRequestAccess;
+
+		/// <summary>
+		/// If the page says to ask the sender to share the contract again.
+		/// </summary>
+		public bool ShowAskSenderHint => this.IsAccessDenied && !this.CanRequestAccess;
+
 		#endregion
 
 		#region Signing
@@ -238,6 +298,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public bool CanSign =>
 			this.HasSignableRoles &&
 			!this.AlreadySigned &&
+			!this.IsDeletedOnServer &&
 			this.Contract is not null &&
 			ContractActionRules.CanSign(this.Contract.Contract, ServiceRef.TagProfile.LegalIdentity?.Id, DateTime.UtcNow);
 
@@ -427,6 +488,103 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					BareJid,
 					Proposal);
 			});
+		}
+
+		/// <summary>
+		/// Opens the Invite sheet, which invites everyone who hasn't signed with one message.
+		/// </summary>
+		/// <returns>A task that completes when the sheet has closed.</returns>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private Task InvitePartsAsync()
+		{
+			return this.RunContractActionAsync(async () =>
+			{
+				if (this.Contract is null)
+					return;
+
+				IReadOnlyList<InviteRecipient> Recipients = await InvitePartsViewModel.GetRecipientsAsync(this.Contract, null, true);
+				if (Recipients.Count == 0)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.NetworkAddressOfContactUnknown)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
+				await InvitePartsViewModel.ShowAsync(this.Contract.Contract, Recipients);
+			});
+		}
+
+		/// <summary>
+		/// Declines the invitation to sign, after the user confirms. The contract and its notifications are removed.
+		/// </summary>
+		/// <returns>A task that completes when the invitation has been declined or the user cancelled.</returns>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private Task DeclineInvitationAsync()
+		{
+			return this.RunContractActionAsync(async () =>
+			{
+				if (this.Contract is null)
+					return;
+
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.DeclineInvitationConfirm)]))
+					return;
+
+				await ServiceRef.ContractOrchestratorService.DeclineInvitationAsync(this.Contract.ContractId);
+				await base.GoBack();
+			});
+		}
+
+		/// <summary>
+		/// Removes a contract that has ended or was deleted from the user's list, after the user confirms.
+		/// </summary>
+		/// <returns>A task that completes when the contract has been removed or the user cancelled.</returns>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private Task RemoveFromListAsync()
+		{
+			return this.RunContractActionAsync(async () =>
+			{
+				if (this.Contract is null)
+					return;
+
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.RemoveFromListConfirm)]))
+					return;
+
+				await ServiceRef.ContractOrchestratorService.DeclineInvitationAsync(this.Contract.ContractId);
+				await base.GoBack();
+			});
+		}
+
+		/// <summary>
+		/// Asks the people who signed the contract to let the user see it again.
+		/// </summary>
+		/// <returns>A task that completes when the request has been sent or the user cancelled.</returns>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private Task RequestAccessAsync()
+		{
+			return this.RunContractActionAsync(async () =>
+			{
+				if (this.Contract is not null)
+					await ServiceRef.ContractOrchestratorService.RequestContractAccessAsync(this.Contract.ContractId);
+			});
+		}
+
+		/// <summary>
+		/// Shows a contract the user has just been given access to.
+		/// </summary>
+		/// <param name="Contract">The contract, as read from the server.</param>
+		/// <returns>A task that completes when the refresh has been queued.</returns>
+		public Task ShowAccessGrantedContractAsync(Contract Contract)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.IsAccessDenied = false;
+				this.CanRequestAccess = false;
+			});
+
+			this.RequestRefresh(Contract);
+			return Task.CompletedTask;
 		}
 
 		#endregion
@@ -660,20 +818,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		#endregion
 
 		#region Event Wiring
-		private readonly EventHandlerAsync<ContractReferenceEventArgs> contractUpdatedHandler;
-		private readonly EventHandlerAsync<ContractSignedEventArgs> contractSignedHandler;
 
 		private void SubscribeToEvents()
 		{
-			ServiceRef.XmppService.ContractUpdated += this.contractUpdatedHandler;
-			ServiceRef.XmppService.ContractSigned += this.contractSignedHandler;
+			ServiceRef.ContractStore.ContractChanged += this.ContractStore_ContractChanged;
+			ServiceRef.ContractOrchestratorService.IdentityPetitionAnswered += this.OrchestratorService_IdentityPetitionAnswered;
 			this.SignableRoles.CollectionChanged += this.OnSignableRolesChanged;
 		}
 
 		private void UnsubscribeFromEvents()
 		{
-			ServiceRef.XmppService.ContractUpdated -= this.contractUpdatedHandler;
-			ServiceRef.XmppService.ContractSigned -= this.contractSignedHandler;
+			ServiceRef.ContractStore.ContractChanged -= this.ContractStore_ContractChanged;
+			ServiceRef.ContractOrchestratorService.IdentityPetitionAnswered -= this.OrchestratorService_IdentityPetitionAnswered;
 			this.SignableRoles.CollectionChanged -= this.OnSignableRolesChanged;
 		}
 
@@ -684,51 +840,91 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.OnPropertyChanged(nameof(this.CanShowSignBar));
 			});
 
-		private async Task OnContractSignedAsync(object? sender, ContractSignedEventArgs e)
+		/// <summary>
+		/// Shows changes the store saves for this contract, whether they come from the server, a sync or the user. Contracts
+		/// in store events come from decrypting calls, so they can replace a saved copy.
+		/// </summary>
+		private Task ContractStore_ContractChanged(object? Sender, ContractChangedEventArgs e)
 		{
-			if (e.ContractId != this.Contract?.ContractId || e.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
-				return;
+			if (this.Contract is null || !e.IsFor(this.Contract.ContractId))
+				return Task.CompletedTask;
 
-			// Prefer incoming contract if it's newer than what we have locally
-			Contract? Current = this.Contract?.Contract;
-			Contract? Incoming = e.Contract;
-			if (Current is null || Incoming is null)
-				return;
-
-			bool UseIncoming = false;
-			DateTime? CurrentTs = Current.ServerSignature?.Timestamp;
-			DateTime? IncomingTs = Incoming.ServerSignature?.Timestamp;
-
-			if (IncomingTs.HasValue && CurrentTs.HasValue)
+			switch (e.Kind)
 			{
-				UseIncoming = IncomingTs.Value > CurrentTs.Value;
-			}
-			else
-			{
-				DateTime? CurrentUpdated = Current.Updated;
-				DateTime? IncomingUpdated = Incoming.Updated;
-				if (IncomingUpdated.HasValue && CurrentUpdated.HasValue)
-					UseIncoming = IncomingUpdated.Value > CurrentUpdated.Value;
-				else if (IncomingUpdated.HasValue && !CurrentUpdated.HasValue)
-					UseIncoming = true; // Prefer newer info if local timestamp missing
-				else
-					UseIncoming = true; // If we can't compare reliably, accept incoming to be safe
+				case ContractChangeKind.Added:
+				case ContractChangeKind.Updated:
+					if (e.Contract is not null)
+						this.RequestRefresh(e.Contract);
+					break;
+
+				case ContractChangeKind.Deleted:
+					bool KeptCopy = e.Reference is not null;
+					MainThread.BeginInvokeOnMainThread(() => this.ShowDeleted(KeptCopy));
+					break;
 			}
 
-			if (UseIncoming)
-				this.RequestRefresh(Incoming);
-
-			await Task.CompletedTask;
+			return Task.CompletedTask;
 		}
 
-		private async Task OnContractUpdatedAsync(object? sender, ContractReferenceEventArgs e)
+		/// <summary>
+		/// Shows the answer to an identity request on the part it was sent for.
+		/// </summary>
+		private async Task OrchestratorService_IdentityPetitionAnswered(object? Sender, IdentityPetitionAnsweredEventArgs e)
 		{
-			if (e.ContractId != this.Contract?.ContractId)
-				return;
+			try
+			{
+				if (this.Contract is not null && await this.Contract.ApplyIdentityAnswerAsync(e))
+					_ = this.PreparePropertiesAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
-			// Coalesce refresh requests
-			this.RequestRefresh(null);
-			await Task.CompletedTask;
+		/// <summary>
+		/// Shows that the contract was deleted on the server, and offers only what can still be done.
+		/// </summary>
+		/// <param name="KeptCopy">If a read-only copy is kept, which the user can remove.</param>
+		private void ShowDeleted(bool KeptCopy)
+		{
+			this.IsDeletedOnServer = true;
+			this.IsAccessDenied = false;
+			this.CanRemoveFromList = KeptCopy;
+			this.CanDeleteContract = false;
+			this.CanWithdrawContract = false;
+			this.CanInviteParts = false;
+			this.CanDeclineInvitation = false;
+		}
+
+		/// <summary>
+		/// Shows that the server no longer lets the user read the contract.
+		/// </summary>
+		private Task ShowAccessDeniedAsync()
+		{
+			bool HasSignatures = (this.Contract?.Contract.ClientSignatures?.Length ?? 0) > 0;
+
+			return MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.IsAccessDenied = true;
+				this.CanRequestAccess = HasSignatures;
+				this.CanInviteParts = false;
+			});
+		}
+
+		/// <summary>
+		/// Marks the contract as seen, so the list shows it as read.
+		/// </summary>
+		private async Task MarkViewedAsync(CaseInsensitiveString ContractId)
+		{
+			try
+			{
+				await ServiceRef.ContractStore.MarkViewedAsync(ContractId);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		#endregion
@@ -805,54 +1001,71 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Loads the contract from the navigation arguments, the saved copy or the server.
+		/// Loads the contract from the navigation arguments, the saved copy or the server. A saved copy is shown at once, and
+		/// the current version is read in the background.
 		/// </summary>
 		/// <returns>true if the contract was loaded. When false, the user has been told why and the page has already gone back.</returns>
 		private async Task<bool> LoadContractAsync()
 		{
-			if (this.args!.ContractRef is null)
-			{
-				this.Contract = await ObservableContract.CreateAsync(this.args.Contract!);
-				return true;
-			}
+			Contract? Contract = this.args!.Contract;
+			CaseInsensitiveString? ContractId = this.args.ContractRef?.ContractId;
 
-			if (this.args.ContractRef.ContractId is not CaseInsensitiveString ContractId || CaseInsensitiveString.IsNullOrEmpty(ContractId))
+			if (Contract is null && this.args.ContractRef is not null)
 			{
-				await this.GoBack();
-				return false;
-			}
-
-			Contract? Contract;
-			try
-			{
-				Contract = await this.args.ContractRef.GetContract();
-				Contract ??= await ServiceRef.XmppService.GetContract(ContractId);
-			}
-			catch (ItemNotFoundException)
-			{
-				if (await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
-					ServiceRef.Localizer[nameof(AppResources.Yes)],
-					ServiceRef.Localizer[nameof(AppResources.No)]))
+				try
 				{
-					await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", ContractId));
+					Contract = await this.args.ContractRef.GetContract();
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
+
+			if (Contract is null)
+			{
+				if (ContractId is null || CaseInsensitiveString.IsNullOrEmpty(ContractId))
+				{
+					await this.GoBack();
+					return false;
 				}
 
-				await this.GoBack();
-				return false;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ContractErrorMessages.GetMessage(Ex),
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				ContractRefreshResult Result = await ServiceRef.ContractSyncService.RefreshAsync(ContractId, ContractOrigin.Opened, false, CancellationToken.None);
+				if (Result.Contract is null)
+				{
+					string Message = Result.Status switch
+					{
+						ContractRefreshStatus.Deleted => ServiceRef.Localizer[nameof(AppResources.ContractWasDeleted)],
+						ContractRefreshStatus.Offline => ServiceRef.Localizer[nameof(AppResources.AppNotConnected)],
+						_ => ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeOpened)]
+					};
 
-				await this.GoBack();
-				return false;
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+
+					await this.GoBack();
+					return false;
+				}
+
+				Contract = Result.Contract;
 			}
 
 			this.Contract = await ObservableContract.CreateAsync(Contract);
+
+			// A saved copy keeps encrypted values in their protected form. They show "Loading…" until the current version arrives.
+			ObservableParameter[] Unreadable = [.. this.Contract.Parameters.Where(Parameter => Parameter.IsEncrypted && !Parameter.CanReadValue)];
+			this.showingSavedCopy = Unreadable.Length > 0;
+
+			if (this.args.ContractRef is not null || this.showingSavedCopy)
+			{
+				foreach (ObservableParameter Parameter in Unreadable)
+					Parameter.IsLoadingValue = true;
+
+				this.RequestRefresh(null);
+			}
+
+			_ = this.MarkViewedAsync(Contract.ContractId);
 			return true;
 		}
 
@@ -884,21 +1097,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			});
 		}
 
+		/// <summary>
+		/// Gets the name of the person who sent the invitation, or their address and that they aren't a contact.
+		/// </summary>
 		private async Task<string> ResolveProposalFriendlyNameAsync()
 		{
-			if (string.IsNullOrEmpty(this.args!.Proposal) || string.IsNullOrEmpty(this.args.FromJID))
+			string? FromJid = this.args!.FromJID;
+			if (string.IsNullOrEmpty(FromJid))
 				return string.Empty;
 
 			try
 			{
-				ContactInfo Info = await ContactInfo.FindByBareJid(this.args.FromJID);
-				return !string.IsNullOrEmpty(Info?.FriendlyName)
-					? Info.FriendlyName
-					: this.args.FromJID;
+				ContactInfo? Info = await ContactInfo.FindByBareJid(FromJid);
+				if (Info is null)
+					return ServiceRef.Localizer[nameof(AppResources.InvitationSenderNotContact), FromJid];
+
+				return string.IsNullOrEmpty(Info.FriendlyName) ? FromJid : Info.FriendlyName;
 			}
-			catch
+			catch (Exception Ex)
 			{
-				return string.Empty;
+				ServiceRef.LogService.LogException(Ex);
+				return FromJid;
 			}
 		}
 
@@ -966,7 +1185,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Decides which contract actions to offer, using <see cref="ContractActionRules"/>.
+		/// Decides which contract actions to offer, using <see cref="ContractActionRules"/> and the saved contract.
 		/// When something can't be checked, the action is not offered.
 		/// </summary>
 		private async Task PreparePropertiesAsync()
@@ -977,13 +1196,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					return;
 
 				Contract Current = this.Contract.Contract;
+				ContractReference? Row = null;
 				bool IsCreator = false;
 				bool BindingNow = true;
 				bool BindingIgnoringTime = true;
 
 				try
 				{
-					IsCreator = await ServiceRef.XmppService.IsContractCreatorAsync(Current.ContractId);
+					Row = await ServiceRef.ContractStore.GetAsync(Current.ContractId);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+
+				try
+				{
+					IsCreator = Row?.IsCreator == true || await ServiceRef.XmppService.IsContractCreatorAsync(Current.ContractId);
 					BindingNow = await Current.IsLegallyBinding(true, ServiceRef.XmppService.ContractsClient);
 					BindingIgnoringTime = BindingNow || await Current.IsLegallyBinding(false, ServiceRef.XmppService.ContractsClient);
 				}
@@ -992,11 +1221,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					ServiceRef.LogService.LogException(Ex);
 				}
 
+				string? MyLegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 				bool ReadOnly = this.args?.IsReadOnly ?? false;
 				DateTime UtcNow = DateTime.UtcNow;
-				bool CanDelete = !ReadOnly && ContractActionRules.CanDelete(Current, IsCreator, BindingIgnoringTime, UtcNow);
-				bool CanWithdraw = !ReadOnly && ContractActionRules.CanWithdraw(Current, IsCreator, BindingNow,
-					ServiceRef.TagProfile.LegalIdentity?.Id, ServiceRef.XmppService.BareJid);
+				bool DeletedOnServer = this.IsDeletedOnServer || Row?.IsDeletedOnServer == true;
+				bool Ended = DeletedOnServer || Current.State is ContractState.Obsoleted or ContractState.Deleted or ContractState.Rejected or ContractState.Failed;
+				bool HasSigned = Row?.HasSigned == true || Current.ClientSignatures?.Any(Signature => Signature.LegalId == MyLegalId) == true;
+
+				bool CanDelete = !ReadOnly && !DeletedOnServer && ContractActionRules.CanDelete(Current, IsCreator, BindingIgnoringTime, UtcNow);
+				bool CanWithdraw = !ReadOnly && !DeletedOnServer && ContractActionRules.CanWithdraw(Current, IsCreator, BindingNow,
+					MyLegalId, ServiceRef.XmppService.BareJid);
+
+				// Contracts the user created or signed come back with the next sync, so only others can be removed.
+				bool CanRemove = Row is not null && (DeletedOnServer || (Ended && !IsCreator && !HasSigned));
+				bool CanDecline = !ReadOnly && !Ended && Row?.HasOpenInvitation == true;
+				bool CanInvite = !ReadOnly && !Ended && !this.IsAccessDenied &&
+					Current.State is ContractState.Proposed or ContractState.Approved or ContractState.BeingSigned &&
+					this.Contract.Roles.ToArray().Any(Role => Role.Parts.ToArray().Any(Part => Part.IsThirdParty && !Part.HasSigned && Part.Role != "TrustProvider"));
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
@@ -1005,6 +1246,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 					this.CanDeleteContract = CanDelete;
 					this.CanWithdrawContract = CanWithdraw;
+					this.CanRemoveFromList = CanRemove;
+					this.CanDeclineInvitation = CanDecline;
+					this.CanInviteParts = CanInvite;
+
+					if (DeletedOnServer && !this.IsDeletedOnServer)
+						this.ShowDeleted(Row is not null);
 				});
 			}
 			catch (Exception Ex)
@@ -1022,6 +1269,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.suppressNextRefreshCommand = false;
 				return Task.CompletedTask;
 			}
+
+			// Pull to refresh passes no contract. Its failures are shown.
+			if (newContract is null)
+				this.userRequestedRefresh = true;
 
 			this.RequestRefresh(newContract);
 			return Task.CompletedTask;
@@ -1107,48 +1358,60 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					}
 				});
 
-				try
+				bool UserRequested = this.userRequestedRefresh;
+				this.userRequestedRefresh = false;
+
+				if (NewContract is null)
 				{
-					NewContract ??= await ServiceRef.XmppService.GetContract(this.Contract.ContractId);
-				}
-				catch (ForbiddenException)
-				{
-					if (await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.RefreshContract_Forbidden_Title)],
-						ServiceRef.Localizer[nameof(AppResources.RefreshContract_Forbidden_Description)],
-						ServiceRef.Localizer[nameof(AppResources.Yes)],
-						ServiceRef.Localizer[nameof(AppResources.No)]))
+					// The sync service stores the contract, and decrypts it when a key is known.
+					ContractRefreshResult Result = await ServiceRef.ContractSyncService.RefreshAsync(this.Contract.ContractId,
+						ContractOrigin.Opened, false, CancellationToken.None);
+
+					switch (Result.Status)
 					{
-						await ServiceRef.NetworkService.TryRequest(
-							() => ServiceRef.XmppService.PetitionContract(
-								this.Contract.ContractId,
-								Guid.NewGuid().ToString(),
-								ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)]));
+						case ContractRefreshStatus.Updated:
+						case ContractRefreshStatus.Unchanged:
+							NewContract = Result.Contract;
+							if (this.IsAccessDenied)
+								await MainThread.InvokeOnMainThreadAsync(() => this.IsAccessDenied = false);
+							break;
+
+						case ContractRefreshStatus.Forbidden:
+							await this.ShowAccessDeniedAsync();
+							return;
+
+						case ContractRefreshStatus.Deleted:
+							bool KeptCopy = Result.Reference is not null;
+							await MainThread.InvokeOnMainThreadAsync(() => this.ShowDeleted(KeptCopy));
+							return;
+
+						case ContractRefreshStatus.Offline:
+							if (UserRequested)
+							{
+								await ServiceRef.UiService.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.AppNotConnected)],
+									ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)],
+									ServiceRef.Localizer[nameof(AppResources.Ok)]);
+							}
+							return; // Keep showing what we have.
+
+						default:
+							if (UserRequested)
+							{
+								await ServiceRef.UiService.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+									ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+									ServiceRef.Localizer[nameof(AppResources.Ok)]);
+							}
+							return;
 					}
-
-					return;
-				}
-				catch (ItemNotFoundException)
-				{
-					if (await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
-						ServiceRef.Localizer[nameof(AppResources.Yes)],
-						ServiceRef.Localizer[nameof(AppResources.No)]))
-					{
-						await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", this.Contract.ContractId));
-					}
-
-					return;
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-					return; // Offline or similar: keep showing what we have.
 				}
 
+				// A saved copy is always replaced, since only the current version has readable encrypted values.
 				Contract Shown = this.Contract.Contract;
 				if (NewContract is null ||
-					(NewContract.ServerSignature?.Timestamp == Shown.ServerSignature?.Timestamp &&
+					(!this.showingSavedCopy &&
+					NewContract.ServerSignature?.Timestamp == Shown.ServerSignature?.Timestamp &&
 					NewContract.State == Shown.State &&
 					NewContract.Updated == Shown.Updated))
 				{
@@ -1156,6 +1419,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					return;
 				}
 
+				ObservableContract Previous = this.Contract;
 				ObservableContract Wrapper = new ObservableContract(NewContract);
 				ViewContractStep CurrentStep = Enum.Parse<ViewContractStep>(this.CurrentState);
 
@@ -1166,6 +1430,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					await this.Contract.InitializeAsync();
 				});
 
+				this.showingSavedCopy = false;
+				Previous.Dispose();
+
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
 					this.PrepareDisplayableParameters();
@@ -1175,14 +1442,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					this.OnPropertyChanged(nameof(this.CanShowSignBar));
 				});
 
-				ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
-					new FilterFieldEqualTo("ContractId", this.Contract.ContractId));
-
-				if (Ref is not null)
-				{
-					await Ref.SetContract(NewContract);
-					await Database.Update(Ref);
-				}
+				_ = this.MarkViewedAsync(NewContract.ContractId);
 
 				StepToRestore = CurrentStep;
 				ServiceRef.LogService.LogDebug($"RefreshContractAsync completed for {this.Contract.ContractId}");
@@ -1197,7 +1457,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (PreviousStateChange)
 					await this.SetCanStateChangeOnMainThreadAsync(true);
 
-				await MainThread.InvokeOnMainThreadAsync(() => this.IsRefreshing = false);
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.IsRefreshing = false;
+
+					// When the saved copy stays, its encrypted values won't arrive now.
+					if (this.Contract is not null)
+					{
+						foreach (ObservableParameter Parameter in this.Contract.Parameters)
+							Parameter.IsLoadingValue = false;
+					}
+				});
 			}
 
 			if (StepToRestore.HasValue)

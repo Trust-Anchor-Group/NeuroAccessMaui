@@ -4394,4 +4394,166 @@ Document read. You can move your iPhone.</value>
   <data name="ContractWizardStepReview" xml:space="preserve">
     <value>Review</value>
   </data>
+  <data name="AskForAccess" xml:space="preserve">
+    <value>Ask for access</value>
+  </data>
+  <data name="ContractAccessAskSender" xml:space="preserve">
+    <value>Ask the person who invited you to invite you again.</value>
+  </data>
+  <data name="ContractAccessDeniedBanner" xml:space="preserve">
+    <value>You don't have access to the current version of this contract. This is the copy saved on this device.</value>
+  </data>
+  <data name="ContractAccessNoSignatures" xml:space="preserve">
+    <value>Nobody has signed this contract yet, so there is no one to ask. Ask the person who invited you to invite you again.</value>
+  </data>
+  <data name="ContractAccessPurposeDefault" xml:space="preserve">
+    <value>I would like to see this contract</value>
+  </data>
+  <data name="ContractAccessPurposePrompt" xml:space="preserve">
+    <value>Only the people who signed the contract receive the request. Tell them why you want to see it.</value>
+  </data>
+  <data name="ContractAccessRequestSent" xml:space="preserve">
+    <value>Your request was sent to the people who signed the contract. You'll be notified when someone answers.</value>
+  </data>
+  <data name="ContractCantBeRead" xml:space="preserve">
+    <value>Can't read the contract</value>
+  </data>
+  <data name="ContractCouldNotBeOpened" xml:space="preserve">
+    <value>The contract couldn't be opened. Please try again later.</value>
+  </data>
+  <data name="ContractDeletedBanner" xml:space="preserve">
+    <value>Deleted from the server. This is a read-only copy saved on this device.</value>
+  </data>
+  <data name="ContractForbiddenAskAccess" xml:space="preserve">
+    <value>You don't have access to this contract. Do you want to ask the people who signed it for access?</value>
+  </data>
+  <data name="ContractHasNoParameters" xml:space="preserve">
+    <value>This contract has no parameters.</value>
+  </data>
+  <data name="ContractWasDeleted" xml:space="preserve">
+    <value>This contract was deleted.</value>
+  </data>
+  <data name="DeclineInvitation" xml:space="preserve">
+    <value>Decline</value>
+  </data>
+  <data name="DeclineInvitationConfirm" xml:space="preserve">
+    <value>Decline this invitation? The contract is removed from your list.</value>
+  </data>
+  <data name="IdentityDeclined" xml:space="preserve">
+    <value>Request declined</value>
+  </data>
+  <data name="IdentityNotVisible" xml:space="preserve">
+    <value>Identity not visible</value>
+  </data>
+  <data name="IdentityNotVisibleAskRequest" xml:space="preserve">
+    <value>You can't see the identity of {0}. Do you want to ask them to show it to you?</value>
+  </data>
+  <data name="IdentityRequestDeclined" xml:space="preserve">
+    <value>Identity request declined</value>
+  </data>
+  <data name="IdentityRequestDeclinedText" xml:space="preserve">
+    <value>The person declined to show you their identity.</value>
+  </data>
+  <data name="IdentityRequestPurpose" xml:space="preserve">
+    <value>To see who takes part in the contract {0}.</value>
+  </data>
+  <data name="InvitationSenderNotContact" xml:space="preserve">
+    <value>{0} (not in your contacts)</value>
+  </data>
+  <data name="InvitationUnreadable" xml:space="preserve">
+    <value>{0} invited you to sign this contract, but it can't be read on this device. Ask {0} to invite you again, or decline the invitation.</value>
+  </data>
+  <data name="InviteStatusNoEncryption" xml:space="preserve">
+    <value>End-to-end encryption is off</value>
+  </data>
+  <data name="InviteStatusNotMutualContact" xml:space="preserve">
+    <value>Not a mutual contact</value>
+  </data>
+  <data name="InviteStatusOffline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="InviteStatusSent" xml:space="preserve">
+    <value>Sent</value>
+  </data>
+  <data name="InviteToSign" xml:space="preserve">
+    <value>Invite to sign</value>
+  </data>
+  <data name="InviteToSignInfo" xml:space="preserve">
+    <value>Choose who to invite. Everyone gets the same message, and can read the contract once it's sent.</value>
+  </data>
+  <data name="NotificationContractAccessGrantedBody" xml:space="preserve">
+    <value>Your request to see the contract was accepted.</value>
+  </data>
+  <data name="NotificationContractAccessGrantedTitle" xml:space="preserve">
+    <value>You can now see {0}</value>
+  </data>
+  <data name="NotificationContractPetitionTitle" xml:space="preserve">
+    <value>{0} asks to see {1}</value>
+  </data>
+  <data name="NotificationContractSignedByBody" xml:space="preserve">
+    <value>{0} signed as {1}.</value>
+  </data>
+  <data name="NotificationContractSignedByBodyNoRole" xml:space="preserve">
+    <value>{0} signed.</value>
+  </data>
+  <data name="NotificationContractWasDeletedTitle" xml:space="preserve">
+    <value>{0} was deleted</value>
+  </data>
+  <data name="NotificationContractWasSignedTitle" xml:space="preserve">
+    <value>{0} was signed</value>
+  </data>
+  <data name="NotificationContractWasUpdatedTitle" xml:space="preserve">
+    <value>{0} was updated</value>
+  </data>
+  <data name="NotificationContractWasWithdrawnTitle" xml:space="preserve">
+    <value>{0} was withdrawn</value>
+  </data>
+  <data name="NotificationInvitationBody" xml:space="preserve">
+    <value>{0} invites you to sign as {1}.</value>
+  </data>
+  <data name="NotificationInvitationBodyNoRole" xml:space="preserve">
+    <value>{0} invites you to sign.</value>
+  </data>
+  <data name="NotificationInvitationTitle" xml:space="preserve">
+    <value>Invitation to sign {0}</value>
+  </data>
+  <data name="NotificationInvitationTitleUnnamed" xml:space="preserve">
+    <value>Invitation to sign a contract</value>
+  </data>
+  <data name="ParameterEncryptedNotAvailable" xml:space="preserve">
+    <value>Encrypted, not available on this device</value>
+  </data>
+  <data name="ParameterLoadingValue" xml:space="preserve">
+    <value>Loading…</value>
+  </data>
+  <data name="ParameterNotStored" xml:space="preserve">
+    <value>Not stored</value>
+  </data>
+  <data name="PetitionContractNotLoaded" xml:space="preserve">
+    <value>The contract couldn't be loaded. You can still accept or decline the request.</value>
+  </data>
+  <data name="RemoveFromList" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="RemoveFromListConfirm" xml:space="preserve">
+    <value>Remove this contract from your list? It's only removed from this device.</value>
+  </data>
+  <data name="RequestIdentity" xml:space="preserve">
+    <value>Request identity</value>
+  </data>
+  <data name="RequestedContract" xml:space="preserve">
+    <value>Requested contract</value>
+  </data>
+  <data name="SignatureRequestAccepted" xml:space="preserve">
+    <value>Signature request accepted</value>
+  </data>
+  <data name="SignatureRequestAcceptedText" xml:space="preserve">
+    <value>{0} signed your request.</value>
+  </data>
+  <data name="SignatureRequestDeclined" xml:space="preserve">
+    <value>Signature request declined</value>
+  </data>
+  <data name="SignatureRequestDeclinedText" xml:space="preserve">
+    <value>The person declined to sign your request.</value>
+  </data>
 </root>

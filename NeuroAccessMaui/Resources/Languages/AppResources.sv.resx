@@ -4244,4 +4244,166 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ContractWizardStepReview" xml:space="preserve">
     <value>Granska</value>
   </data>
+  <data name="AskForAccess" xml:space="preserve">
+    <value>Be om åtkomst</value>
+  </data>
+  <data name="ContractAccessAskSender" xml:space="preserve">
+    <value>Be personen som bjöd in dig att bjuda in dig igen.</value>
+  </data>
+  <data name="ContractAccessDeniedBanner" xml:space="preserve">
+    <value>Du har inte åtkomst till den aktuella versionen av kontraktet. Det här är kopian som är sparad på enheten.</value>
+  </data>
+  <data name="ContractAccessNoSignatures" xml:space="preserve">
+    <value>Ingen har signerat kontraktet än, så det finns ingen att fråga. Be personen som bjöd in dig att bjuda in dig igen.</value>
+  </data>
+  <data name="ContractAccessPurposeDefault" xml:space="preserve">
+    <value>Jag skulle vilja se det här kontraktet</value>
+  </data>
+  <data name="ContractAccessPurposePrompt" xml:space="preserve">
+    <value>Bara de som har signerat kontraktet får förfrågan. Berätta varför du vill se det.</value>
+  </data>
+  <data name="ContractAccessRequestSent" xml:space="preserve">
+    <value>Din förfrågan har skickats till de som har signerat kontraktet. Du får ett meddelande när någon svarar.</value>
+  </data>
+  <data name="ContractCantBeRead" xml:space="preserve">
+    <value>Kontraktet kan inte läsas</value>
+  </data>
+  <data name="ContractCouldNotBeOpened" xml:space="preserve">
+    <value>Kontraktet kunde inte öppnas. Försök igen senare.</value>
+  </data>
+  <data name="ContractDeletedBanner" xml:space="preserve">
+    <value>Borttaget från servern. Det här är en skrivskyddad kopia som är sparad på enheten.</value>
+  </data>
+  <data name="ContractForbiddenAskAccess" xml:space="preserve">
+    <value>Du har inte åtkomst till kontraktet. Vill du be de som har signerat det om åtkomst?</value>
+  </data>
+  <data name="ContractHasNoParameters" xml:space="preserve">
+    <value>Kontraktet har inga parametrar.</value>
+  </data>
+  <data name="ContractWasDeleted" xml:space="preserve">
+    <value>Kontraktet har tagits bort.</value>
+  </data>
+  <data name="DeclineInvitation" xml:space="preserve">
+    <value>Avböj</value>
+  </data>
+  <data name="DeclineInvitationConfirm" xml:space="preserve">
+    <value>Vill du avböja inbjudan? Kontraktet tas bort från din lista.</value>
+  </data>
+  <data name="IdentityDeclined" xml:space="preserve">
+    <value>Förfrågan avböjd</value>
+  </data>
+  <data name="IdentityNotVisible" xml:space="preserve">
+    <value>Identiteten syns inte</value>
+  </data>
+  <data name="IdentityNotVisibleAskRequest" xml:space="preserve">
+    <value>Du kan inte se identiteten för {0}. Vill du be om att få se den?</value>
+  </data>
+  <data name="IdentityRequestDeclined" xml:space="preserve">
+    <value>Identitetsförfrågan avböjd</value>
+  </data>
+  <data name="IdentityRequestDeclinedText" xml:space="preserve">
+    <value>Personen har avböjt att visa sin identitet för dig.</value>
+  </data>
+  <data name="IdentityRequestPurpose" xml:space="preserve">
+    <value>För att se vem som deltar i kontraktet {0}.</value>
+  </data>
+  <data name="InvitationSenderNotContact" xml:space="preserve">
+    <value>{0} (inte bland dina kontakter)</value>
+  </data>
+  <data name="InvitationUnreadable" xml:space="preserve">
+    <value>{0} har bjudit in dig att signera kontraktet, men det kan inte läsas på enheten. Be {0} att bjuda in dig igen, eller avböj inbjudan.</value>
+  </data>
+  <data name="InviteStatusNoEncryption" xml:space="preserve">
+    <value>Totalsträckskryptering är avstängd</value>
+  </data>
+  <data name="InviteStatusNotMutualContact" xml:space="preserve">
+    <value>Inte en ömsesidig kontakt</value>
+  </data>
+  <data name="InviteStatusOffline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="InviteStatusSent" xml:space="preserve">
+    <value>Skickad</value>
+  </data>
+  <data name="InviteToSign" xml:space="preserve">
+    <value>Bjud in att signera</value>
+  </data>
+  <data name="InviteToSignInfo" xml:space="preserve">
+    <value>Välj vilka du vill bjuda in. Alla får samma meddelande och kan läsa kontraktet när det har skickats.</value>
+  </data>
+  <data name="NotificationContractAccessGrantedBody" xml:space="preserve">
+    <value>Din förfrågan om att se kontraktet har godkänts.</value>
+  </data>
+  <data name="NotificationContractAccessGrantedTitle" xml:space="preserve">
+    <value>Nu kan du se {0}</value>
+  </data>
+  <data name="NotificationContractPetitionTitle" xml:space="preserve">
+    <value>{0} vill se {1}</value>
+  </data>
+  <data name="NotificationContractSignedByBody" xml:space="preserve">
+    <value>{0} signerade som {1}.</value>
+  </data>
+  <data name="NotificationContractSignedByBodyNoRole" xml:space="preserve">
+    <value>{0} signerade.</value>
+  </data>
+  <data name="NotificationContractWasDeletedTitle" xml:space="preserve">
+    <value>{0} har tagits bort</value>
+  </data>
+  <data name="NotificationContractWasSignedTitle" xml:space="preserve">
+    <value>{0} har signerats</value>
+  </data>
+  <data name="NotificationContractWasUpdatedTitle" xml:space="preserve">
+    <value>{0} har uppdaterats</value>
+  </data>
+  <data name="NotificationContractWasWithdrawnTitle" xml:space="preserve">
+    <value>{0} har dragits tillbaka</value>
+  </data>
+  <data name="NotificationInvitationBody" xml:space="preserve">
+    <value>{0} bjuder in dig att signera som {1}.</value>
+  </data>
+  <data name="NotificationInvitationBodyNoRole" xml:space="preserve">
+    <value>{0} bjuder in dig att signera.</value>
+  </data>
+  <data name="NotificationInvitationTitle" xml:space="preserve">
+    <value>Inbjudan att signera {0}</value>
+  </data>
+  <data name="NotificationInvitationTitleUnnamed" xml:space="preserve">
+    <value>Inbjudan att signera ett kontrakt</value>
+  </data>
+  <data name="ParameterEncryptedNotAvailable" xml:space="preserve">
+    <value>Krypterat, inte tillgängligt på enheten</value>
+  </data>
+  <data name="ParameterLoadingValue" xml:space="preserve">
+    <value>Laddar…</value>
+  </data>
+  <data name="ParameterNotStored" xml:space="preserve">
+    <value>Inte sparat</value>
+  </data>
+  <data name="PetitionContractNotLoaded" xml:space="preserve">
+    <value>Kontraktet kunde inte laddas. Du kan ändå godkänna eller avböja förfrågan.</value>
+  </data>
+  <data name="RemoveFromList" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="RemoveFromListConfirm" xml:space="preserve">
+    <value>Vill du ta bort kontraktet från din lista? Det tas bara bort från den här enheten.</value>
+  </data>
+  <data name="RequestIdentity" xml:space="preserve">
+    <value>Begär identitet</value>
+  </data>
+  <data name="RequestedContract" xml:space="preserve">
+    <value>Begärt kontrakt</value>
+  </data>
+  <data name="SignatureRequestAccepted" xml:space="preserve">
+    <value>Signaturförfrågan godkänd</value>
+  </data>
+  <data name="SignatureRequestAcceptedText" xml:space="preserve">
+    <value>{0} har signerat din förfrågan.</value>
+  </data>
+  <data name="SignatureRequestDeclined" xml:space="preserve">
+    <value>Signaturförfrågan avböjd</value>
+  </data>
+  <data name="SignatureRequestDeclinedText" xml:space="preserve">
+    <value>Personen har avböjt att signera din förfrågan.</value>
+  </data>
 </root>

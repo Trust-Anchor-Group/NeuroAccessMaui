@@ -824,6 +824,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		event EventHandlerAsync<ContractSignedEventArgs> ContractSigned;
 
 		/// <summary>
+		/// Event raised when a contract was created by the user's account, for example on another device.
+		/// </summary>
+		event EventHandlerAsync<ContractReferenceEventArgs> ContractCreated;
+
+		/// <summary>
+		/// Event raised when a contract was deleted on the server.
+		/// </summary>
+		event EventHandlerAsync<ContractReferenceEventArgs> ContractDeleted;
+
+		/// <summary>
 		/// An event that fires when a petition for a contract is received.
 		/// </summary>
 		event EventHandlerAsync<ContractPetitionEventArgs> PetitionForContractReceived;
@@ -832,13 +842,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// An event that fires when a petitioned contract response is received.
 		/// </summary>
 		event EventHandlerAsync<ContractPetitionResponseEventArgs> PetitionedContractResponseReceived;
-
-		/// <summary>
-		/// Gets the timestamp of the last event received for a given contract ID.
-		/// </summary>
-		/// <param name="ContractId">Contract ID</param>
-		/// <returns>Timestamp</returns>
-		DateTime GetTimeOfLastContractEvent(CaseInsensitiveString ContractId);
 
 		/// <summary>
 		/// Sends a contract proposal to a recipient.

@@ -99,7 +99,7 @@
 																  Padding="{DynamicResource SmallLeftRightMargins}"
 																  Style="{DynamicResource RoundedBorder}"
 																  BackgroundColor="{DynamicResource TnPWarningbgWL}"
-																  IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
+																  IsVisible="{Binding HasSentPetition}">
 															<Label Style="{DynamicResource RoleDescriptionLabel}"
 																	 Text="{l:Localize IDRequestSent}"
 																	 TextColor="{DynamicResource TnPWarningContentWL}"

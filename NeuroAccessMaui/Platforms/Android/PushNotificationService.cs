@@ -52,8 +52,16 @@ namespace NeuroAccessMaui.Platforms.Android
 					Presentation = this.ResolvePresentation(Data, NotificationPresentation.RenderAndStore)
 				};
 
-				if (Data.TryGetValue("action", out string? ActionValue) && Enum.TryParse(ActionValue, out NotificationAction ParsedAction))
+				// The broker sends custom data and context as top-level keys, as on iOS.
+				foreach (KeyValuePair<string, string> Item in Data)
+					Intent.Extras[Item.Key] = Item.Value;
+
+				// The broker names the action "actionType".
+				if ((Data.TryGetValue("action", out string? ActionValue) || Data.TryGetValue("actionType", out ActionValue)) &&
+					Enum.TryParse(ActionValue, out NotificationAction ParsedAction))
+				{
 					Intent.Action = ParsedAction;
+				}
 
 				if (Data.TryGetValue("entityId", out string? EntityId))
 					Intent.EntityId = EntityId;

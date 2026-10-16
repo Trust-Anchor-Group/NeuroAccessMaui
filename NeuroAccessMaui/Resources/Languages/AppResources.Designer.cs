@@ -13178,5 +13178,491 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("ContractWizardStepReview", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ask for access.
+        /// </summary>
+        public static string AskForAccess {
+            get {
+                return ResourceManager.GetString("AskForAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ask the person who invited you to invite you again..
+        /// </summary>
+        public static string ContractAccessAskSender {
+            get {
+                return ResourceManager.GetString("ContractAccessAskSender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don't have access to the current version of this contract. This is the copy saved on this device..
+        /// </summary>
+        public static string ContractAccessDeniedBanner {
+            get {
+                return ResourceManager.GetString("ContractAccessDeniedBanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nobody has signed this contract yet, so there is no one to ask. Ask the person who invited you to invite you again..
+        /// </summary>
+        public static string ContractAccessNoSignatures {
+            get {
+                return ResourceManager.GetString("ContractAccessNoSignatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I would like to see this contract.
+        /// </summary>
+        public static string ContractAccessPurposeDefault {
+            get {
+                return ResourceManager.GetString("ContractAccessPurposeDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the people who signed the contract receive the request. Tell them why you want to see it..
+        /// </summary>
+        public static string ContractAccessPurposePrompt {
+            get {
+                return ResourceManager.GetString("ContractAccessPurposePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your request was sent to the people who signed the contract. You'll be notified when someone answers..
+        /// </summary>
+        public static string ContractAccessRequestSent {
+            get {
+                return ResourceManager.GetString("ContractAccessRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can't read the contract.
+        /// </summary>
+        public static string ContractCantBeRead {
+            get {
+                return ResourceManager.GetString("ContractCantBeRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The contract couldn't be opened. Please try again later..
+        /// </summary>
+        public static string ContractCouldNotBeOpened {
+            get {
+                return ResourceManager.GetString("ContractCouldNotBeOpened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted from the server. This is a read-only copy saved on this device..
+        /// </summary>
+        public static string ContractDeletedBanner {
+            get {
+                return ResourceManager.GetString("ContractDeletedBanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don't have access to this contract. Do you want to ask the people who signed it for access?.
+        /// </summary>
+        public static string ContractForbiddenAskAccess {
+            get {
+                return ResourceManager.GetString("ContractForbiddenAskAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract has no parameters..
+        /// </summary>
+        public static string ContractHasNoParameters {
+            get {
+                return ResourceManager.GetString("ContractHasNoParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contract was deleted..
+        /// </summary>
+        public static string ContractWasDeleted {
+            get {
+                return ResourceManager.GetString("ContractWasDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline.
+        /// </summary>
+        public static string DeclineInvitation {
+            get {
+                return ResourceManager.GetString("DeclineInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline this invitation? The contract is removed from your list..
+        /// </summary>
+        public static string DeclineInvitationConfirm {
+            get {
+                return ResourceManager.GetString("DeclineInvitationConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request declined.
+        /// </summary>
+        public static string IdentityDeclined {
+            get {
+                return ResourceManager.GetString("IdentityDeclined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity not visible.
+        /// </summary>
+        public static string IdentityNotVisible {
+            get {
+                return ResourceManager.GetString("IdentityNotVisible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can't see the identity of {0}. Do you want to ask them to show it to you?.
+        /// </summary>
+        public static string IdentityNotVisibleAskRequest {
+            get {
+                return ResourceManager.GetString("IdentityNotVisibleAskRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity request declined.
+        /// </summary>
+        public static string IdentityRequestDeclined {
+            get {
+                return ResourceManager.GetString("IdentityRequestDeclined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The person declined to show you their identity..
+        /// </summary>
+        public static string IdentityRequestDeclinedText {
+            get {
+                return ResourceManager.GetString("IdentityRequestDeclinedText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To see who takes part in the contract {0}..
+        /// </summary>
+        public static string IdentityRequestPurpose {
+            get {
+                return ResourceManager.GetString("IdentityRequestPurpose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (not in your contacts).
+        /// </summary>
+        public static string InvitationSenderNotContact {
+            get {
+                return ResourceManager.GetString("InvitationSenderNotContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} invited you to sign this contract, but it can't be read on this device. Ask {0} to invite you again, or decline the invitation..
+        /// </summary>
+        public static string InvitationUnreadable {
+            get {
+                return ResourceManager.GetString("InvitationUnreadable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End-to-end encryption is off.
+        /// </summary>
+        public static string InviteStatusNoEncryption {
+            get {
+                return ResourceManager.GetString("InviteStatusNoEncryption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a mutual contact.
+        /// </summary>
+        public static string InviteStatusNotMutualContact {
+            get {
+                return ResourceManager.GetString("InviteStatusNotMutualContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Offline.
+        /// </summary>
+        public static string InviteStatusOffline {
+            get {
+                return ResourceManager.GetString("InviteStatusOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sent.
+        /// </summary>
+        public static string InviteStatusSent {
+            get {
+                return ResourceManager.GetString("InviteStatusSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite to sign.
+        /// </summary>
+        public static string InviteToSign {
+            get {
+                return ResourceManager.GetString("InviteToSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose who to invite. Everyone gets the same message, and can read the contract once it's sent..
+        /// </summary>
+        public static string InviteToSignInfo {
+            get {
+                return ResourceManager.GetString("InviteToSignInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your request to see the contract was accepted..
+        /// </summary>
+        public static string NotificationContractAccessGrantedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractAccessGrantedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now see {0}.
+        /// </summary>
+        public static string NotificationContractAccessGrantedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractAccessGrantedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} asks to see {1}.
+        /// </summary>
+        public static string NotificationContractPetitionTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractPetitionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} signed as {1}..
+        /// </summary>
+        public static string NotificationContractSignedByBody {
+            get {
+                return ResourceManager.GetString("NotificationContractSignedByBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} signed..
+        /// </summary>
+        public static string NotificationContractSignedByBodyNoRole {
+            get {
+                return ResourceManager.GetString("NotificationContractSignedByBodyNoRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was deleted.
+        /// </summary>
+        public static string NotificationContractWasDeletedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractWasDeletedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was signed.
+        /// </summary>
+        public static string NotificationContractWasSignedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractWasSignedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was updated.
+        /// </summary>
+        public static string NotificationContractWasUpdatedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractWasUpdatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was withdrawn.
+        /// </summary>
+        public static string NotificationContractWasWithdrawnTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractWasWithdrawnTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} invites you to sign as {1}..
+        /// </summary>
+        public static string NotificationInvitationBody {
+            get {
+                return ResourceManager.GetString("NotificationInvitationBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} invites you to sign..
+        /// </summary>
+        public static string NotificationInvitationBodyNoRole {
+            get {
+                return ResourceManager.GetString("NotificationInvitationBodyNoRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invitation to sign {0}.
+        /// </summary>
+        public static string NotificationInvitationTitle {
+            get {
+                return ResourceManager.GetString("NotificationInvitationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invitation to sign a contract.
+        /// </summary>
+        public static string NotificationInvitationTitleUnnamed {
+            get {
+                return ResourceManager.GetString("NotificationInvitationTitleUnnamed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encrypted, not available on this device.
+        /// </summary>
+        public static string ParameterEncryptedNotAvailable {
+            get {
+                return ResourceManager.GetString("ParameterEncryptedNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading….
+        /// </summary>
+        public static string ParameterLoadingValue {
+            get {
+                return ResourceManager.GetString("ParameterLoadingValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not stored.
+        /// </summary>
+        public static string ParameterNotStored {
+            get {
+                return ResourceManager.GetString("ParameterNotStored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The contract couldn't be loaded. You can still accept or decline the request..
+        /// </summary>
+        public static string PetitionContractNotLoaded {
+            get {
+                return ResourceManager.GetString("PetitionContractNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string RemoveFromList {
+            get {
+                return ResourceManager.GetString("RemoveFromList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove this contract from your list? It's only removed from this device..
+        /// </summary>
+        public static string RemoveFromListConfirm {
+            get {
+                return ResourceManager.GetString("RemoveFromListConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request identity.
+        /// </summary>
+        public static string RequestIdentity {
+            get {
+                return ResourceManager.GetString("RequestIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested contract.
+        /// </summary>
+        public static string RequestedContract {
+            get {
+                return ResourceManager.GetString("RequestedContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature request accepted.
+        /// </summary>
+        public static string SignatureRequestAccepted {
+            get {
+                return ResourceManager.GetString("SignatureRequestAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} signed your request..
+        /// </summary>
+        public static string SignatureRequestAcceptedText {
+            get {
+                return ResourceManager.GetString("SignatureRequestAcceptedText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature request declined.
+        /// </summary>
+        public static string SignatureRequestDeclined {
+            get {
+                return ResourceManager.GetString("SignatureRequestDeclined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The person declined to sign your request..
+        /// </summary>
+        public static string SignatureRequestDeclinedText {
+            get {
+                return ResourceManager.GetString("SignatureRequestDeclinedText", resourceCulture);
+            }
+        }
     }
 }

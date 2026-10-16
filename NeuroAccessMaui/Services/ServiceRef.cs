@@ -55,6 +55,8 @@ namespace NeuroAccessMaui.Services
 		private static ILogService? logService;
 		private static INetworkService? networkService;
 		private static IContractOrchestratorService? contractOrchestratorService;
+		private static IContractStore? contractStore;
+		private static IContractSyncService? contractSyncService;
 		private static IThingRegistryOrchestratorService? thingRegistryOrchestratorService;
 		private static INeuroWalletOrchestratorService? neuroWalletOrchestratorService;
 		private static IIdentityApplicationGateService? identityApplicationGateService;
@@ -205,6 +207,30 @@ namespace NeuroAccessMaui.Services
 			{
 				contractOrchestratorService ??= Provider.GetRequiredService<IContractOrchestratorService>();
 				return contractOrchestratorService;
+			}
+		}
+
+		/// <summary>
+		/// Contract store, the only writer of stored contracts.
+		/// </summary>
+		public static IContractStore ContractStore
+		{
+			get
+			{
+				contractStore ??= Provider.GetRequiredService<IContractStore>();
+				return contractStore;
+			}
+		}
+
+		/// <summary>
+		/// Contract sync service, which reads contracts from the server and stores them.
+		/// </summary>
+		public static IContractSyncService ContractSyncService
+		{
+			get
+			{
+				contractSyncService ??= Provider.GetRequiredService<IContractSyncService>();
+				return contractSyncService;
 			}
 		}
 

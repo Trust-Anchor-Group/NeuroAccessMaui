@@ -1,6 +1,8 @@
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -17,6 +19,7 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Security;
 
@@ -151,25 +154,37 @@ namespace NeuroAccessMaui.Services.Notification
 
 		private async Task<NotificationRouteResult> RouteContractAsync(NotificationIntent Intent, CancellationToken CancellationToken)
 		{
-			if (string.IsNullOrEmpty(Intent.EntityId))
+			string? ContractId = Intent.EntityId;
+			if (string.IsNullOrEmpty(ContractId))
+				ContractId = GetExtra(Intent.Extras, "contractId");
+
+			if (string.IsNullOrEmpty(ContractId))
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage));
+				await GoToMyContractsAsync();
 				return NotificationRouteResult.Success;
 			}
 
-			try
+			ContractOpenOptions? Options = null;
+			if (string.Equals(GetExtra(Intent.Extras, "kind"), "invitation", StringComparison.OrdinalIgnoreCase))
 			{
-				Contract contract = await ServiceRef.XmppService.GetContract(Intent.EntityId);
-				ViewContractNavigationArgs args = new(contract, false);
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), args);
-				return NotificationRouteResult.Success;
+				Options = new ContractOpenOptions()
+				{
+					InvitedRole = GetExtra(Intent.Extras, "role"),
+					InvitedBy = GetExtra(Intent.Extras, "fromJid"),
+					InvitationMessage = GetExtra(Intent.Extras, "message")
+				};
 			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage));
-				return NotificationRouteResult.Success;
-			}
+
+			// When the contract can't be opened, the user has been told why, and lands in the list of contracts.
+			if (!await ServiceRef.ContractOrchestratorService.OpenContractAsync(ContractId, Options))
+				await GoToMyContractsAsync();
+
+			return NotificationRouteResult.Success;
+		}
+
+		private static Task GoToMyContractsAsync()
+		{
+			return ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), new MyContractsNavigationArgs(ContractsListMode.Contracts));
 		}
 
 		private async Task<NotificationRouteResult> RouteTokenAsync(CancellationToken CancellationToken)
@@ -193,42 +208,30 @@ namespace NeuroAccessMaui.Services.Notification
 		{
 			try
 			{
-				if (Intent.Extras.TryGetValue("requestedIdentityId", out string? RequestedIdentityId))
+				// A push carries less than the XMPP message. Details from a stored XMPP notification with the same petition ID come first.
+				(Dictionary<string, string> Extras, string? IdentityXml) = await GetPetitionDetailsAsync(Intent, CancellationToken);
+				string? PetitionId = GetExtra(Extras, "petitionId") ?? Intent.CorrelationId;
+				string? RequestorFullJid = !string.IsNullOrEmpty(Intent.EntityId) ? Intent.EntityId : GetExtra(Extras, "from");
+
+				string? RequestedIdentityId = GetExtra(Extras, "requestedIdentityId");
+				if (!string.IsNullOrEmpty(RequestedIdentityId))
 				{
-					LegalIdentity? RequestorIdentity = null;
-					if (!string.IsNullOrEmpty(Intent.EntityId))
-					{
-						ContactInfo? Info = await ContactInfo.FindByBareJid(Intent.EntityId);
-						RequestorIdentity = Info?.LegalIdentity;
-					}
+					if (string.IsNullOrEmpty(PetitionId) || string.IsNullOrEmpty(RequestorFullJid))
+						return await ShowPetitionNoLongerAvailableAsync();
 
-					(bool Succeeded, LegalIdentity? RequestedIdentity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(RequestedIdentityId));
-					if (!Succeeded || RequestedIdentity is null)
-					{
-						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
-						string Message = ServiceRef.Localizer[nameof(AppResources.PetitionNoLongerAvailable)];
-						await ServiceRef.UiService.DisplayAlert(Title, Message);
-						return NotificationRouteResult.Failed;
-					}
-					else
-					{
-						RequestorIdentity = RequestedIdentity;
-					}
-
-					string? PetitionId = Intent.Extras.TryGetValue("petitionId", out string? pid) ? pid : null;
-					PetitionIdentityNavigationArgs Args = new(RequestorIdentity, Intent.EntityId, RequestedIdentityId, PetitionId, Intent.Body);
+					LegalIdentity? RequestorIdentity = await GetRequestorIdentityAsync(IdentityXml, GetExtra(Extras, "requestorIdentityId"), RequestorFullJid);
+					PetitionIdentityNavigationArgs Args = new(RequestorIdentity, RequestorFullJid, RequestedIdentityId, PetitionId, GetExtra(Extras, "purpose"));
 					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), Args);
 					return NotificationRouteResult.Success;
 				}
 
-				if (Intent.Extras.TryGetValue("signatoryId", out string? SignatoryIdentityId) &&
-					Intent.Extras.TryGetValue("contentToSign", out string? ContentToSignBase64) &&
+				if (Extras.TryGetValue("signatoryId", out string? SignatoryIdentityId) &&
+					Extras.TryGetValue("contentToSign", out string? ContentToSignBase64) &&
 					!string.IsNullOrEmpty(SignatoryIdentityId) &&
 					!string.IsNullOrEmpty(ContentToSignBase64))
 				{
 					LegalIdentity? RequestorIdentity = null;
-					string? RequestorFullJid = Intent.EntityId;
-					if (Intent.Extras.TryGetValue("requestorIdentityId", out string? RequestorIdentityId) &&
+					if (Extras.TryGetValue("requestorIdentityId", out string? RequestorIdentityId) &&
 						!string.IsNullOrEmpty(RequestorIdentityId))
 					{
 						(bool Succeeded, LegalIdentity? LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(RequestorIdentityId));
@@ -264,33 +267,27 @@ namespace NeuroAccessMaui.Services.Notification
 						return NotificationRouteResult.Failed;
 					}
 
-					string Purpose = Intent.Extras.TryGetValue("purpose", out string? PurposeValue)
+					string Purpose = Extras.TryGetValue("purpose", out string? PurposeValue)
 						? PurposeValue ?? string.Empty
-						: string.Empty;
-					string PetitionId = Intent.Extras.TryGetValue("petitionId", out string? Pid)
-						? Pid ?? string.Empty
 						: string.Empty;
 
 					PetitionSignatureNavigationArgs Args = new(RequestorIdentity, RequestorFullJid, SignatoryIdentityId,
-						ContentToSign, PetitionId, Purpose);
+						ContentToSign, PetitionId ?? string.Empty, Purpose);
 					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionSignaturePage), Args);
 					return NotificationRouteResult.Success;
 				}
 
-				if (Intent.Extras.TryGetValue("contractId", out string? contractId))
+				string? ContractId = GetExtra(Extras, "contractId");
+				if (!string.IsNullOrEmpty(ContractId))
 				{
-					Contract? Contract = null;
-					try
-					{
-						Contract = await ServiceRef.XmppService.GetContract(contractId);
-					}
-					catch (Exception Ex)
-					{
-						ServiceRef.LogService.LogException(Ex);
-					}
+					if (string.IsNullOrEmpty(PetitionId) || string.IsNullOrEmpty(RequestorFullJid))
+						return await ShowPetitionNoLongerAvailableAsync();
 
-					string? PetitionId = Intent.Extras.TryGetValue("petitionId", out string? Pid) ? Pid : null;
-					PetitionContractNavigationArgs Args = new(null, Intent.EntityId, Contract, PetitionId, Intent.Body);
+					LegalIdentity? RequestorIdentity = await GetRequestorIdentityAsync(IdentityXml, GetExtra(Extras, "requestorIdentityId"), RequestorFullJid);
+					Contract? RequestedContract = await GetRequestedContractAsync(ContractId);
+
+					ContractPetitionRequest Request = new(ContractId, PetitionId, RequestorFullJid, RequestorIdentity, GetExtra(Extras, "purpose"));
+					PetitionContractNavigationArgs Args = new(Request, RequestedContract);
 					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionContractPage), Args);
 					return NotificationRouteResult.Success;
 				}
@@ -303,6 +300,134 @@ namespace NeuroAccessMaui.Services.Notification
 				ServiceRef.LogService.LogException(Ex);
 				return NotificationRouteResult.Failed;
 			}
+		}
+
+		/// <summary>
+		/// Gets the extras of a petition notification, completed with those of stored notifications for the same petition,
+		/// and the requestor's identity XML that the XMPP notification keeps as its raw payload.
+		/// </summary>
+		private static async Task<(Dictionary<string, string> Extras, string? IdentityXml)> GetPetitionDetailsAsync(NotificationIntent Intent,
+			CancellationToken CancellationToken)
+		{
+			Dictionary<string, string> Extras = new(Intent.Extras, StringComparer.OrdinalIgnoreCase);
+			string? PetitionId = GetExtra(Extras, "petitionId") ?? Intent.CorrelationId;
+			string? IdentityXml = null;
+
+			if (string.IsNullOrEmpty(PetitionId))
+				return (Extras, IdentityXml);
+
+			try
+			{
+				INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				IReadOnlyList<NotificationRecord> Records = await NotificationService.GetAsync(new NotificationQuery()
+				{
+					Channels = [Constants.PushChannels.Petitions]
+				}, CancellationToken);
+
+				foreach (NotificationRecord Record in Records)
+				{
+					if (!string.Equals(Record.CorrelationId, PetitionId, StringComparison.Ordinal))
+						continue;
+
+					Dictionary<string, string>? Stored = null;
+					try
+					{
+						Stored = JsonSerializer.Deserialize<Dictionary<string, string>>(Record.ExtrasJson);
+					}
+					catch (JsonException)
+					{
+						// Ignore extras that can't be read.
+					}
+
+					if (Stored is not null)
+					{
+						foreach (KeyValuePair<string, string> Item in Stored)
+						{
+							if (string.IsNullOrEmpty(GetExtra(Extras, Item.Key)))
+								Extras[Item.Key] = Item.Value;
+						}
+					}
+
+					if (IdentityXml is null && Record.RawPayload?.TrimStart().StartsWith('<') == true)
+						IdentityXml = Record.RawPayload;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return (Extras, IdentityXml);
+		}
+
+		/// <summary>
+		/// Gets the identity of the person who sent a petition: from the stored notification, from the server, or from the
+		/// contact list. Returns null when none is available. The petition can still be answered.
+		/// </summary>
+		private static async Task<LegalIdentity?> GetRequestorIdentityAsync(string? IdentityXml, string? RequestorIdentityId, string RequestorFullJid)
+		{
+			if (!string.IsNullOrEmpty(IdentityXml))
+			{
+				try
+				{
+					return LegalIdentity.Parse(IdentityXml);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
+
+			if (!string.IsNullOrEmpty(RequestorIdentityId))
+			{
+				(bool Succeeded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(RequestorIdentityId));
+				if (Succeeded && Identity is not null)
+					return Identity;
+			}
+
+			ContactInfo? Info = await ContactInfo.FindByBareJid(XmppClient.GetBareJID(RequestorFullJid));
+			return Info?.LegalIdentity;
+		}
+
+		/// <summary>
+		/// Gets a contract someone asks to see, from the server or the saved copy. Returns null when neither can be read.
+		/// </summary>
+		private static async Task<Contract?> GetRequestedContractAsync(string ContractId)
+		{
+			try
+			{
+				return await ServiceRef.XmppService.GetContract(ContractId);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			try
+			{
+				ContractReference? Ref = await ServiceRef.ContractStore.GetAsync(ContractId);
+				if (Ref?.ContractLoaded == true)
+					return await Ref.GetContract();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return null;
+		}
+
+		private static async Task<NotificationRouteResult> ShowPetitionNoLongerAvailableAsync()
+		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+			string Message = ServiceRef.Localizer[nameof(AppResources.PetitionNoLongerAvailable)];
+			await ServiceRef.UiService.DisplayAlert(Title, Message);
+			return NotificationRouteResult.Failed;
+		}
+
+		private static string? GetExtra(IReadOnlyDictionary<string, string> Extras, string Key)
+		{
+			return Extras.TryGetValue(Key, out string? Value) && !string.IsNullOrEmpty(Value) ? Value : null;
 		}
 
 		private async Task<NotificationRouteResult> RouteSettingsAsync(CancellationToken CancellationToken)

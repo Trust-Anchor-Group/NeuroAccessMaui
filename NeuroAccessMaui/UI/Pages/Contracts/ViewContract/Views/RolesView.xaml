@@ -86,6 +86,20 @@
 															</Border>
 														</Grid>
 
+														<!-- "Identity request declined" -->
+														<Grid ColumnDefinitions="auto"
+																IsVisible="{Binding IsIdentityDeclined}">
+															<Border Padding="{DynamicResource SmallLeftRightMargins}"
+																	  Style="{DynamicResource RoundedBorder}"
+																	  Stroke="Transparent"
+																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20}">
+																<Label Style="{DynamicResource RoleDescriptionLabel}"
+																		 Text="{l:Localize IdentityDeclined}"
+																		 TextColor="{DynamicResource BrandColorsNeuroOrange}"
+																		 VerticalOptions="Center" />
+															</Border>
+														</Grid>
+
 														<!-- Pending signature (if not signed) -->
 														<Grid ColumnDefinitions="auto"
 																IsVisible="{Binding HasSigned, Converter={StaticResource InvertedBoolConverter}}">
@@ -107,6 +121,20 @@
 												<VerticalStackLayout Grid.Column="1"
 																		HorizontalOptions="End"
 																		Spacing="{DynamicResource SmallSpacing}">
+													<!-- Request identity (if hidden) -->
+													<controls:TemplatedButton Command="{Binding RequestIdentityCommand}"
+																				IsVisible="{Binding CanRequestIdentity}"
+																				VerticalOptions="End"
+																				HorizontalOptions="End">
+														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
+																  Margin="0">
+															<Label Text="{l:Localize RequestIdentity}"
+																	 Style="{DynamicResource FilledTemplateButtonLabel}"
+																	 HorizontalTextAlignment="Center"
+																	 VerticalTextAlignment="Center" />
+														</Border>
+													</controls:TemplatedButton>
+
 													<controls:TemplatedButton Command="{Binding SendProposalToPartCommand, Source={RelativeSource AncestorType={x:Type base:ViewContractViewModel}}, x:DataType=base:ViewContractViewModel}"
 																				CommandParameter="{Binding .}"
 																				IsVisible="{Binding CanSendProposal}"

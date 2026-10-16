@@ -240,7 +240,7 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 			try
 			{
-				await ServiceRef.ContractOrchestratorService.OpenContract(Entry.EntryData, ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)], null);
+				await ServiceRef.ContractOrchestratorService.OpenContractAsync(Entry.EntryData, null);
 			}
 			catch (Exception Ex)
 			{

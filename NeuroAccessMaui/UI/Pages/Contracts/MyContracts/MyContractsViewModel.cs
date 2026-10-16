@@ -1,5 +1,4 @@
 ﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
 using Waher.Networking.XMPP.Contracts;
@@ -35,8 +34,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		public event Action<SelectableTag>? TagSelected;
 
+		private const int ReloadDelayMs = 300;
+
 		private readonly string AllCategory = ServiceRef.Localizer[nameof(AppResources.All)];
 		private readonly int contractBatchSize = 10;
+
+		private readonly SemaphoreSlim loadLock = new(1, 1);
+		private CancellationTokenSource? reloadCancellation;
+		private bool isSyncRefreshRunning;
+		private bool isSubscribed;
 
 		private int loadedContracts;
 		private string currentCategory;
@@ -57,6 +63,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		[ObservableProperty]
 		private bool canShareTemplate;
+
+		/// <summary>
+		/// If the list is being refreshed with a pull to refresh.
+		/// </summary>
+		[ObservableProperty]
+		private bool isRefreshing;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyContractsViewModel"/> class.
@@ -130,6 +142,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			await this.LoadContracts();
 
 			this.ShowContractsMissing = this.Contracts.Count < 1;
+
+			if (!this.isSubscribed)
+			{
+				ServiceRef.ContractStore.ContractChanged += this.ContractStore_ContractChanged;
+				this.isSubscribed = true;
+			}
 		}
 
 		/// <inheritdoc/>
@@ -147,6 +165,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
+			if (this.isSubscribed)
+			{
+				ServiceRef.ContractStore.ContractChanged -= this.ContractStore_ContractChanged;
+				this.isSubscribed = false;
+			}
+
+			this.reloadCancellation?.Cancel();
+
 			if (this.Action != SelectContractAction.Select)
 			{
 				this.ShowContractsMissing = false;
@@ -308,14 +334,116 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		private async Task ApplySearchFilter()
 		{
-			await MainThread.InvokeOnMainThreadAsync(async () =>
+			await this.loadLock.WaitAsync();
+			try
 			{
-				this.Contracts.Clear();
-				this.loadedContracts = 0;
-				this.HasMore = 0;
-			});
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.Contracts.Clear();
+					this.loadedContracts = 0;
+					this.HasMore = 0;
+				});
 
-			await this.LoadContracts();
+				await this.LoadContractsLockedAsync();
+			}
+			finally
+			{
+				this.loadLock.Release();
+			}
+		}
+
+		/// <summary>
+		/// Reloads the list when a stored contract changes. Changes that arrive close together cause one reload.
+		/// </summary>
+		private Task ContractStore_ContractChanged(object? Sender, ContractChangedEventArgs e)
+		{
+			if (e.Kind == ContractChangeKind.Viewed)
+				return Task.CompletedTask;
+
+			if (e.Kind == ContractChangeKind.SyncCompleted && this.isSyncRefreshRunning)
+				return Task.CompletedTask;   // The pull to refresh reloads the list itself.
+
+			if (e.Reference is not null && e.Reference.IsTemplate != (this.contractsListMode != ContractsListMode.Contracts))
+				return Task.CompletedTask;
+
+			CancellationTokenSource Cancellation = new();
+			CancellationTokenSource? Previous = Interlocked.Exchange(ref this.reloadCancellation, Cancellation);
+			Previous?.Cancel();
+
+			_ = this.ReloadAfterDelayAsync(Cancellation.Token);
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Waits briefly, so changes that arrive close together cause one reload, and then reloads the list.
+		/// </summary>
+		/// <param name="CancellationToken">Cancelled when a newer change arrives.</param>
+		private async Task ReloadAfterDelayAsync(CancellationToken CancellationToken)
+		{
+			try
+			{
+				await Task.Delay(ReloadDelayMs, CancellationToken);
+				await this.ReloadAsync();
+			}
+			catch (OperationCanceledException)
+			{
+				// A newer change will reload the list.
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Reloads the categories and the list from the stored contracts.
+		/// </summary>
+		private async Task ReloadAsync()
+		{
+			await this.LoadCategories();
+			await this.ApplySearchFilter();
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.ShowContractsMissing = this.Contracts.Count < 1;
+			});
+		}
+
+		/// <summary>
+		/// Pull to refresh. In the contracts list, reads every contract from the server first.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task RefreshContractsAsync()
+		{
+			try
+			{
+				if (this.contractsListMode == ContractsListMode.Contracts)
+				{
+					this.isSyncRefreshRunning = true;
+					try
+					{
+						await ServiceRef.ContractSyncService.SyncAsync(true, CancellationToken.None);
+					}
+					finally
+					{
+						this.isSyncRefreshRunning = false;
+					}
+				}
+
+				await this.ReloadAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.IsRefreshing = false;
+				});
+			}
 		}
 
 		/// <summary>
@@ -327,35 +455,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			{
 				ContractReference Ref = Model.ContractRef;
 
-				if (Ref.ContractId is null)
+				if (string.IsNullOrEmpty(Ref.ContractId?.Value))
 				{
-					bool Delete = await MainThread.InvokeOnMainThreadAsync(async () =>
+					bool Remove = await MainThread.InvokeOnMainThreadAsync(async () =>
 						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
 							ServiceRef.Localizer[nameof(AppResources.Yes)],
 							ServiceRef.Localizer[nameof(AppResources.No)]));
 
-					if (Delete)
+					if (Remove)
 					{
-						await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", Ref.ContractId)).ConfigureAwait(false);
-						await this.LoadContracts();
+						await ServiceRef.ContractStore.RemoveAsync(Ref.ContractId!);	// Removes the rows with the same missing ID.
+						await this.ReloadAsync();
 					}
+
+					return;
 				}
 
 				switch (this.Action)
 				{
 					case SelectContractAction.ViewContract:
-						if (this.contractsListMode == ContractsListMode.Contracts)
-						{
-							ViewContractNavigationArgs Args = new(Ref, false);
-							await MainThread.InvokeOnMainThreadAsync(async () =>
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop));
-						}
-						else
-						{
-							await ServiceRef.ContractOrchestratorService.OpenContract(Ref.ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null).ConfigureAwait(false);
-						}
+						await ServiceRef.ContractOrchestratorService.OpenContractAsync(Ref.ContractId!, null);
 						break;
 
 					case SelectContractAction.Select:
@@ -463,6 +584,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		private async Task LoadContracts()
 		{
+			await this.loadLock.WaitAsync();
+			try
+			{
+				await this.LoadContractsLockedAsync();
+			}
+			finally
+			{
+				this.loadLock.Release();
+			}
+		}
+
+		/// <summary>
+		/// Loads a batch of contracts from the database and adds them to the visible list. The caller holds the load lock.
+		/// </summary>
+		private async Task LoadContractsLockedAsync()
+		{
 			try
 			{
 				IEnumerable<ContractReference>? ContractReferences = await this.LoadFromDatabase();
@@ -492,33 +629,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				{
 					foreach (string TokenTemplateId in Constants.ContractTemplates.TokenCreationTemplates)
 					{
-						ContractReference? Existing = await Database.FindFirstDeleteRest<ContractReference>(new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true),
-							new FilterFieldEqualTo("ContractId", TokenTemplateId)
-						));
-
-						if (Existing is null)
+						try
 						{
-							Contract? Contract = await ServiceRef.XmppService.GetContract(TokenTemplateId);
-							if (Contract is not null)
+							ContractReference? Existing = await ServiceRef.ContractStore.GetAsync(TokenTemplateId);
+
+							if (Existing is null || !Existing.IsTemplate || !Existing.ContractLoaded)
 							{
-								ContractReference Ref = new()
-								{
-									ContractId = Contract.ContractId
-								};
-
-								await Ref.SetContract(Contract);
-								await Database.Insert(Ref);
-
-								ContractModel Item = new ContractModel(Ref, []);
-
-								MainThread.BeginInvokeOnMainThread(() =>
-								{
-									this.Contracts.Add(Item);
-									this.OnPropertyChanged(nameof(this.ShowContractsMissing));
-								});
+								// The store raises a change for the new row, and the list reloads with it.
+								Contract? Contract = await ServiceRef.XmppService.GetContract(TokenTemplateId);
+								if (Contract is not null)
+									await ServiceRef.ContractStore.UpsertAsync(Contract, ContractOrigin.Opened);
 							}
+						}
+						catch (Exception Ex)
+						{
+							ServiceRef.LogService.LogException(Ex);
 						}
 					}
 				}
@@ -538,9 +663,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				switch (this.contractsListMode)
 				{
 					case ContractsListMode.Contracts:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", false),
-							new FilterFieldEqualTo("ContractLoaded", true)));
+						// Invitations whose contract can't be read yet are listed too.
+						ContractReferences = await ServiceRef.ContractStore.QueryAsync(new ContractListQuery()
+						{
+							IsTemplate = false,
+							Offset = this.loadedContracts,
+							MaxCount = this.contractBatchSize
+						});
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
@@ -576,7 +705,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", false),
 							new FilterFieldEqualTo("ContractLoaded", true),
-							new FilterFieldEqualTo("Category", this.currentCategory)));
+							new FilterFieldEqualTo("Category", this.currentCategory)), "-LastChanged");
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;

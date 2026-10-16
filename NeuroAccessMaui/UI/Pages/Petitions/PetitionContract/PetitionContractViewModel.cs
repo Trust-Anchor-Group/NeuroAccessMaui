@@ -5,8 +5,11 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using System.Collections.ObjectModel;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Security;
 
@@ -19,8 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 	{
 		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 
-		private readonly string? requestorFullJid;
-		private readonly string? petitionId;
+		private readonly ContractPetitionRequest? request;
 		private readonly PhotosLoader photosLoader;
 
 		/// <summary>
@@ -32,14 +34,17 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);
 
-			if (Args is not null)
+			if (Args?.Request is not null)
 			{
-				this.RequestorIdentity = Args.RequestorIdentity;
-				this.requestorFullJid = Args.RequestorFullJid;
+				this.request = Args.Request;
+				this.RequestorIdentity = Args.Request.RequestorIdentity;
 				this.RequestedContract = Args.RequestedContract;
-				this.petitionId = Args.PetitionId;
-				this.Purpose = Args.Purpose;
+				this.Purpose = Args.Request.Purpose;
 			}
+
+			this.HasContract = this.RequestedContract is not null;
+			this.IsContractMissing = !this.HasContract;
+			this.ContractName = this.request?.ContractId;
 		}
 
 		/// <inheritdoc/>
@@ -51,6 +56,39 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 
 			if (this.RequestorIdentity?.Attachments is not null)
 				this.LoadPhotos();
+
+			await this.LoadNamesAsync();
+		}
+
+		/// <summary>
+		/// Shows who sent the request, and which contract it is about, with the names the user knows them by.
+		/// </summary>
+		private async Task LoadNamesAsync()
+		{
+			try
+			{
+				string? RequestorName = null;
+
+				if (this.RequestorIdentity is not null)
+					RequestorName = ContactInfo.GetFriendlyName(this.RequestorIdentity);
+
+				if (string.IsNullOrEmpty(RequestorName) && !string.IsNullOrEmpty(this.request?.RequestorFullJid))
+					RequestorName = await ContactInfo.GetFriendlyName(XmppClient.GetBareJID(this.request.RequestorFullJid));
+
+				string? ContractName = this.RequestedContract is not null ? await ContractModel.GetCategory(this.RequestedContract) : null;
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.RequestorName = RequestorName;
+
+					if (!string.IsNullOrEmpty(ContractName))
+						this.ContractName = ContractName;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		private async void LoadPhotos()
@@ -100,11 +138,15 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		[RelayCommand]
 		private async Task Accept()
 		{
+			if (this.request is null)
+				return;
+
 			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest, true))
 				return;
 
-			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionContractResponse(
-				this.RequestedContract!.ContractId, this.petitionId!, this.requestorFullJid!, true));
+			ContractPetitionRequest Request = this.request;
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+				ServiceRef.ContractOrchestratorService.RespondToContractPetitionAsync(Request, true));
 
 			if (Succeeded)
 				await this.GoBack();
@@ -116,11 +158,30 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		[RelayCommand]
 		private async Task Decline()
 		{
-			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionContractResponse(
-				this.RequestedContract!.ContractId, this.petitionId!, this.requestorFullJid!, false));
+			if (this.request is null)
+				return;
 
-			if (succeeded)
+			ContractPetitionRequest Request = this.request;
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+				ServiceRef.ContractOrchestratorService.RespondToContractPetitionAsync(Request, false));
+
+			if (Succeeded)
 				await this.GoBack();
+		}
+
+		/// <summary>
+		/// Opens the requested contract, read-only, so the user can see what they are asked to share.
+		/// </summary>
+		[RelayCommand]
+		private async Task ViewContract()
+		{
+			if (this.RequestedContract is null)
+				return;
+
+			await ServiceRef.ContractOrchestratorService.OpenContractAsync(this.RequestedContract, new ContractOpenOptions()
+			{
+				IsReadOnly = true
+			});
 		}
 
 		/// <summary>
@@ -379,6 +440,30 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// </summary>
 		[ObservableProperty]
 		private string? purpose;
+
+		/// <summary>
+		/// The name of the person who sent the request.
+		/// </summary>
+		[ObservableProperty]
+		private string? requestorName;
+
+		/// <summary>
+		/// The name of the requested contract, or its ID until the name is known.
+		/// </summary>
+		[ObservableProperty]
+		private string? contractName;
+
+		/// <summary>
+		/// If the requested contract could be read.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasContract;
+
+		/// <summary>
+		/// If the requested contract couldn't be read.
+		/// </summary>
+		[ObservableProperty]
+		private bool isContractMissing;
 
 		/// <summary>
 		/// Image source of the first photo in the identity of the requestor.

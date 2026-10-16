@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using Waher.Networking.XMPP.Contracts;
 
@@ -54,7 +55,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			foreach (Role Role in this.Contract.Roles ?? Enumerable.Empty<Role>())
 			{
-				ObservableRole ObservableRole = new(Role);
+				ObservableRole ObservableRole = new(Role)
+				{
+					ContractName = this.Category
+				};
 				await ObservableRole.InitializeAsync(this.Contract);
 				this.Roles.Add(ObservableRole);
 			}
@@ -77,6 +81,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				}
 			}
 
+		}
+
+		/// <summary>
+		/// Shows the answer to an identity request on the parts it concerns.
+		/// </summary>
+		/// <param name="e">The answer.</param>
+		/// <returns>If any part showed the answer.</returns>
+		public async Task<bool> ApplyIdentityAnswerAsync(IdentityPetitionAnsweredEventArgs e)
+		{
+			bool Applied = false;
+
+			foreach (ObservableRole Role in this.Roles.ToArray())
+			{
+				foreach (ObservablePart Part in Role.Parts.ToArray())
+				{
+					if (await Part.ApplyIdentityAnswerAsync(e))
+						Applied = true;
+				}
+			}
+
+			return Applied;
 		}
 
 		#endregion
@@ -232,6 +257,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				// Unsubscribe from the event to prevent memory leaks
 				this.Parameters.CollectionChanged -= this.Parameters_CollectionChanged;
 				this.Roles.CollectionChanged -= this.Roles_CollectionChanged;
+
+				foreach (ObservableRole Role in this.Roles)
+				{
+					Role.PropertyChanged -= this.Role_OnPropertyChanged;
+					Role.Parts.CollectionChanged -= this.Parts_CollectionChanged;
+
+					foreach (ObservablePart Part in Role.Parts)
+						Part.Dispose();
+				}
 			}
 
 			this.disposed = true;

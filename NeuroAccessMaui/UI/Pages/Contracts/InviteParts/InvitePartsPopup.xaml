@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Pages.Contracts.InviteParts.InvitePartsPopup"
+					 x:Name="ThisPopup"
+					 x:DataType="viewmodel:InvitePartsViewModel"
+					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.InviteParts">
+	<ScrollView VerticalOptions="Center">
+		<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+			<Label HorizontalTextAlignment="Center"
+					 Style="{DynamicResource PageTitleLabel}"
+					 Text="{l:Localize InviteToSign}" />
+
+			<Label Style="{DynamicResource InfoLabel}"
+					 Text="{l:Localize InviteToSignInfo}" />
+
+			<!-- Recipients -->
+			<VerticalStackLayout BindableLayout.ItemsSource="{Binding Recipients}"
+										Spacing="{DynamicResource SmallSpacing}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate x:DataType="viewmodel:InviteRecipient">
+						<Grid ColumnDefinitions="Auto,*"
+								ColumnSpacing="{DynamicResource SmallSpacing}">
+							<CheckBox Grid.Column="0"
+										 IsChecked="{Binding IsSelected}"
+										 IsEnabled="{Binding CanChange}"
+										 VerticalOptions="Center" />
+							<VerticalStackLayout Grid.Column="1"
+														VerticalOptions="Center">
+								<Label Style="{DynamicResource BoldItemTitleLabel}"
+										 Text="{Binding FriendlyName}"
+										 HorizontalTextAlignment="Start" />
+								<Label Style="{DynamicResource InfoLabel}"
+										 Text="{Binding Role}"
+										 HorizontalTextAlignment="Start" />
+								<Label Style="{DynamicResource InfoLabel}"
+										 Text="{Binding StatusText}"
+										 IsVisible="{Binding HasStatus}"
+										 FontAttributes="Bold"
+										 HorizontalTextAlignment="Start" />
+							</VerticalStackLayout>
+						</Grid>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+			</VerticalStackLayout>
+
+			<!-- One message for everyone -->
+			<Label Style="{DynamicResource SectionTitleLabel}"
+					 Text="{l:Localize Message}" />
+			<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+											 EntryData="{Binding Message}"
+											 IsEnabled="{Binding HasNotSent}" />
+
+			<ActivityIndicator IsRunning="{Binding IsSending}"
+									 IsVisible="{Binding IsSending}"
+									 HorizontalOptions="Center" />
+
+			<controls:TextButton Command="{Binding SendCommand}"
+										Style="{DynamicResource FilledTextButton}"
+										LabelData="{l:Localize Send}"
+										IsVisible="{Binding CanSend}" />
+			<controls:TextButton Command="{Binding CloseCommand}"
+										Style="{DynamicResource OutlinedTextButton}"
+										LabelData="{l:Localize Cancel}"
+										IsVisible="{Binding HasNotSent}" />
+			<controls:TextButton Command="{Binding CloseCommand}"
+										Style="{DynamicResource OutlinedTextButton}"
+										LabelData="{l:Localize Close}"
+										IsVisible="{Binding HasSent}" />
+		</VerticalStackLayout>
+	</ScrollView>
+</base:BasePopup>

@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services.UI;
+﻿using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.UI;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
@@ -16,44 +17,22 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// <summary>
 		/// Creates an instance of the <see cref="PetitionContractNavigationArgs"/> class.
 		/// </summary>
-		/// <param name="RequestorIdentity">The identity of the requestor</param>
-		/// <param name="RequestorFullJid">The identity of the requestor</param>
-		/// <param name="RequestedContract">The identity of the requestor</param>
-		/// <param name="PetitionId">The petition id.</param>
-		/// <param name="Purpose">The purpose of the petition.</param>
-		public PetitionContractNavigationArgs(LegalIdentity? RequestorIdentity, string? RequestorFullJid, Contract? RequestedContract,
-				string? PetitionId, string? Purpose)
+		/// <param name="Request">The request to see the contract.</param>
+		/// <param name="RequestedContract">The requested contract, or null if it couldn't be read.</param>
+		public PetitionContractNavigationArgs(ContractPetitionRequest Request, Contract? RequestedContract)
 		{
-			this.RequestorIdentity = RequestorIdentity;
-			this.RequestorFullJid = RequestorFullJid;
+			this.Request = Request;
 			this.RequestedContract = RequestedContract;
-			this.PetitionId = PetitionId;
-			this.Purpose = Purpose;
 		}
 
 		/// <summary>
-		/// The identity of the requestor.
+		/// The request to see the contract.
 		/// </summary>
-		public LegalIdentity? RequestorIdentity { get; }
+		public ContractPetitionRequest? Request { get; }
 
 		/// <summary>
-		/// The identity of the requestor.
-		/// </summary>
-		public string? RequestorFullJid { get; }
-
-		/// <summary>
-		/// The identity of the requestor.
+		/// The requested contract, or null if it couldn't be read.
 		/// </summary>
 		public Contract? RequestedContract { get; }
-
-		/// <summary>
-		/// The petition id.
-		/// </summary>
-		public string? PetitionId { get; }
-
-		/// <summary>
-		/// The purpose of the petition.
-		/// </summary>
-		public string? Purpose { get; }
 	}
 }

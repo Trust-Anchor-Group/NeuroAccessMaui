@@ -7,6 +7,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
@@ -260,6 +261,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
+				ServiceRef.ContractOrchestratorService.IdentityPetitionAnswered += this.OrchestratorService_IdentityPetitionAnswered;
 				this.Contract.PartChanged += (_, __) =>
 				{
 					this.OnPropertyChanged(nameof(this.HasSelectedRoles));
@@ -355,7 +357,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.Contract.ParameterChanged -= this.Parameter_PropertyChanged;
 			}
+			ServiceRef.ContractOrchestratorService.IdentityPetitionAnswered -= this.OrchestratorService_IdentityPetitionAnswered;
 			await base.OnDisposeAsync();
+		}
+
+		/// <summary>
+		/// Shows the answer to an identity request on the part it was sent for.
+		/// </summary>
+		private async Task OrchestratorService_IdentityPetitionAnswered(object? Sender, IdentityPetitionAnsweredEventArgs e)
+		{
+			try
+			{
+				if (this.Contract is not null)
+					await this.Contract.ApplyIdentityAnswerAsync(e);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		/// <summary>
@@ -906,44 +925,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					}
 				}
 
-				foreach (Part Part in Parts)
-				{
-					if (this.args?.SuppressedProposalLegalIds is not null && Array.IndexOf<CaseInsensitiveString>(this.args.SuppressedProposalLegalIds, Part.LegalId) >= 0)
-						continue;
+				// One sheet invites everyone, with one message. Access is only granted to those the user sends to.
+				IReadOnlyList<InviteRecipient> Recipients = await InvitePartsViewModel.GetRecipientsAsync(this.Contract,
+					this.args?.SuppressedProposalLegalIds, false);
 
-					if (Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
-						continue;
-
-					ContactInfo? Info = await ContactInfo.FindByLegalId(Part.LegalId);
-					ObservablePart? Participant = this.Contract.Roles
-						.SelectMany(Role => Role.Parts)
-						.FirstOrDefault(Candidate => Candidate.LegalId == Part.LegalId && Candidate.Role == Part.Role);
-					string? BareJid = Info?.BareJid;
-					if (string.IsNullOrWhiteSpace(BareJid))
-						BareJid = Participant?.GetJid();
-
-					if (string.IsNullOrWhiteSpace(BareJid))
-						continue;
-
-					string? FriendlyTarget = Info?.FriendlyName;
-					if (string.IsNullOrWhiteSpace(FriendlyTarget))
-						FriendlyTarget = Participant?.FriendlyName;
-					if (string.IsNullOrWhiteSpace(FriendlyTarget))
-						FriendlyTarget = BareJid;
-
-					string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
-						ServiceRef.Localizer[nameof(AppResources.EnterProposalMessage), FriendlyTarget],
-						ServiceRef.Localizer[nameof(AppResources.Send)],
-						ServiceRef.Localizer[nameof(AppResources.Cancel)]);
-
-					if (Proposal is null) // Cancelled: skip this part, grant no access and send nothing
-						continue;
-					if (string.IsNullOrEmpty(Proposal)) // Use default if empty
-						Proposal = ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)];
-
-					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, BareJid, true);
-					await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, BareJid, Proposal);
-				}
+				if (Recipients.Count > 0)
+					await InvitePartsViewModel.ShowAsync(CreatedContract, Recipients);
 			}
 			catch (Exception Ex)
 			{

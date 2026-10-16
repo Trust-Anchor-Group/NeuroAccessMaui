@@ -14,6 +14,7 @@ namespace NeuroAccessMaui.Services.Contracts
 	[CollectionName("ContractReferences")]
 	[Index("ContractId")]
 	[Index("IsTemplate", "ContractLoaded", "Category", "Name", "Created")]
+	[Index("IsTemplate", "ListGroup", "-LastChanged")]
 	public class ContractReference
 	{
 		private Contract? contract;
@@ -88,6 +89,102 @@ namespace NeuroAccessMaui.Services.Contracts
 		public ContractState State { get; set; }
 
 		/// <summary>
+		/// If the user's account created the contract.
+		/// </summary>
+		public bool IsCreator { get; set; }
+
+		/// <summary>
+		/// The user's legal IDs that appear as parts or signatures in the contract.
+		/// </summary>
+		public string[]? MyLegalIds { get; set; }
+
+		/// <summary>
+		/// The roles the user is listed in, or has signed.
+		/// </summary>
+		public string[]? MyRoles { get; set; }
+
+		/// <summary>
+		/// If the user has signed the contract.
+		/// </summary>
+		public bool HasSigned { get; set; }
+
+		/// <summary>
+		/// Bare JID of the sender of an invitation to sign the contract.
+		/// </summary>
+		public string? InvitedBy { get; set; }
+
+		/// <summary>
+		/// The role proposed in the invitation.
+		/// </summary>
+		public string? InvitedRole { get; set; }
+
+		/// <summary>
+		/// The message sent with the invitation. Plain text.
+		/// </summary>
+		public string? InvitationMessage { get; set; }
+
+		/// <summary>
+		/// When the invitation arrived (UTC).
+		/// </summary>
+		public DateTime? InvitedAt { get; set; }
+
+		/// <summary>
+		/// The group the contract is listed under in My contracts.
+		/// </summary>
+		public ContractListGroup ListGroup { get; set; } = ContractListGroup.InProgress;
+
+		/// <summary>
+		/// The latest of the contract's update, its last signature and the invitation (UTC).
+		/// </summary>
+		public DateTime LastChanged { get; set; }
+
+		/// <summary>
+		/// When the user last opened the contract (UTC).
+		/// </summary>
+		public DateTime LastViewed { get; set; }
+
+		/// <summary>
+		/// Display names of the other parties.
+		/// </summary>
+		public string? PartyNames { get; set; }
+
+		/// <summary>
+		/// Lower-case text that the list searches: name, category, party names and contract ID.
+		/// </summary>
+		public string? SearchText { get; set; }
+
+		/// <summary>
+		/// If new contracts can be created from the contract.
+		/// </summary>
+		public bool CanActAsTemplate { get; set; }
+
+		/// <summary>
+		/// If the contract was deleted on the server, and this row is a read-only copy.
+		/// </summary>
+		public bool IsDeletedOnServer { get; set; }
+
+		/// <summary>
+		/// When signing closes (UTC), if the contract has a signing window.
+		/// </summary>
+		public DateTime? SignBefore { get; set; }
+
+		/// <summary>
+		/// If the contract changed since the user last opened it.
+		/// </summary>
+		[IgnoreMember]
+		public bool IsUnread => this.LastViewed < this.LastChanged;
+
+		/// <summary>
+		/// If the row holds an invitation the user hasn't signed or declined.
+		/// </summary>
+		[IgnoreMember]
+		public bool HasOpenInvitation =>
+			!string.IsNullOrEmpty(this.InvitedBy) &&
+			!this.HasSigned &&
+			!this.IsDeletedOnServer &&
+			this.State is not (ContractState.Obsoleted or ContractState.Deleted or ContractState.Failed or ContractState.Rejected);
+
+		/// <summary>
 		/// Gets a parsed contract.
 		/// </summary>
 		/// <returns>Parsed contract</returns>
@@ -139,6 +236,8 @@ namespace NeuroAccessMaui.Services.Contracts
 				this.Created = Contract.Created;
 				this.Updated = Contract.Updated;
 				this.Loaded = DateTime.UtcNow;
+				this.CanActAsTemplate = Contract.CanActAsTemplate;
+				this.SignBefore = Contract.SignBefore;
 
 				this.IsTokenCreationTemplate =
 					this.IsTemplate &&

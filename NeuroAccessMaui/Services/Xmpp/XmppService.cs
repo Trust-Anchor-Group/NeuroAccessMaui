@@ -3719,8 +3719,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
 			Intent.Extras["requestedIdentityId"] = e.RequestedIdentityId ?? string.Empty;
 			Intent.Extras["requestorIdentityId"] = e.RequestorIdentity?.Id ?? string.Empty;
+			Intent.Extras["purpose"] = e.Purpose ?? string.Empty;
 
-			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, SerializeIdentity(e.RequestorIdentity));
 			await this.PetitionForIdentityReceived.Raise(this, e);
 		}
 
@@ -3777,8 +3778,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Smart Contracts
 
-		private readonly Dictionary<CaseInsensitiveString, DateTime> lastContractEvent = [];
-
 		/// <summary>
 		/// Reference to contracts client, with a check that one is created.
 		/// Note: Do not make public. Reference only from inside the XmppService class.
@@ -3811,6 +3810,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.ContractsClient.ContractProposalReceived += this.ContractsClient_ContractProposalReceived;
 			this.ContractsClient.ContractUpdated += this.ContractsClient_ContractUpdated;
 			this.ContractsClient.ContractSigned += this.ContractsClient_ContractSigned;
+			this.ContractsClient.ContractCreated += this.ContractsClient_ContractCreated;
+			this.ContractsClient.ContractDeleted += this.ContractsClient_ContractDeleted;
 			this.ContractsClient.ClientMessage += this.ContractsClient_ClientMessage;
 		}
 
@@ -3893,7 +3894,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 
 			Contract Result = await this.ContractsClient.SignContractAsync(Contract, Role, Transferable);
-			await UpdateContractReference(Result);
+			await ServiceRef.ContractStore.UpsertAsync(Result, ContractOrigin.Signed);
 			return Result;
 		}
 
@@ -3905,7 +3906,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<Contract> ObsoleteContract(CaseInsensitiveString ContractId)
 		{
 			Contract Result = await this.ContractsClient.ObsoleteContractAsync(ContractId);
-			await UpdateContractReference(Result);
+			await ServiceRef.ContractStore.UpsertAsync(Result, ContractOrigin.Opened);
 			return Result;
 		}
 
@@ -3938,7 +3939,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			bool CanActAsTemplate)
 		{
 			Contract Result = await this.ContractsClient.CreateContractAsync(TemplateId, Parts, Parameters, Visibility, PartsMode, Duration, ArchiveRequired, ArchiveOptional, SignAfter, SignBefore, CanActAsTemplate);
-			await UpdateContractReference(Result);
+			await ServiceRef.ContractStore.UpsertAsync(Result, ContractOrigin.Created, true);
 			await this.RememberCreatedContractAsync(Result.ContractId);
 			return Result;
 		}
@@ -4002,7 +4003,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<Contract> DeleteContract(CaseInsensitiveString ContractId)
 		{
 			Contract Contract = await this.ContractsClient.DeleteContractAsync(ContractId);
-			await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", Contract.ContractId));
+			await ServiceRef.ContractStore.RemoveAsync(ContractId);
 			return Contract;
 		}
 
@@ -4037,24 +4038,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForContractReceived(object? Sender, ContractPetitionEventArgs e)
 		{
-			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractTitle), ToBareJid(e.RequestorFullJid)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractBody)];
-
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Petitions,
-				Title = Title,
-				Body = Body,
-				Action = NotificationAction.OpenPetition,
-				EntityId = e.RequestorFullJid,
-				CorrelationId = e.PetitionId,
-				Presentation = NotificationPresentation.StoreOnly
-			};
-
-			Intent.Extras["contractId"] = e.RequestedContractId ?? string.Empty;
-			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
-
-			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.PetitionForContractReceived.Raise(this, e);
 		}
 
@@ -4073,48 +4056,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
 			}
-		}
-
-		/// <summary>
-		/// Gets the timestamp of the last event received for a given contract ID.
-		/// </summary>
-		/// <param name="ContractId">Contract ID</param>
-		/// <returns>Timestamp</returns>
-		public DateTime GetTimeOfLastContractEvent(CaseInsensitiveString ContractId)
-		{
-			lock (this.lastContractEvent)
-			{
-				if (this.lastContractEvent.TryGetValue(ContractId, out DateTime TP))
-					return TP;
-				else
-					return DateTime.MinValue;
-			}
-		}
-
-		private static async Task UpdateContractReference(Contract Contract)
-		{
-			ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
-				new FilterFieldEqualTo("ContractId", Contract.ContractId));
-
-			if (Ref is null)
-			{
-				Ref = new ContractReference()
-				{
-					ContractId = Contract.ContractId
-				};
-
-				await Ref.SetContract(Contract);
-				await Database.Insert(Ref);
-			}
-			else
-			{
-				await Ref.SetContract(Contract);
-				await Database.Update(Ref);
-			}
-
-			ServiceRef.TagProfile.CheckContractReference(Ref);
 		}
 
 		/// <summary>
@@ -4124,24 +4066,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_ContractProposalReceived(object? Sender, ContractProposalEventArgs e)
 		{
-			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalTitle)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalBody)];
-
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Contracts,
-				Title = Title,
-				Body = Body,
-				Action = NotificationAction.OpenContract,
-				EntityId = e.ContractId,
-				CorrelationId = e.ContractId,
-				Presentation = NotificationPresentation.StoreOnly
-			};
-
-			Intent.Extras["role"] = e.Role ?? string.Empty;
-			Intent.Extras["fromJid"] = e.FromBareJID ?? string.Empty;
-
-			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.ContractProposalReceived.Raise(this, e);
 		}
 
@@ -4152,34 +4076,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_ContractUpdated(object? Sender, ContractReferenceEventArgs e)
 		{
-			await this.ContractUpdatedOrSigned(e);
-
-			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedTitle)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedBody)];
-
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Contracts,
-				Title = Title,
-				Body = Body,
-				Action = NotificationAction.OpenContract,
-				EntityId = e.ContractId,
-				CorrelationId = e.ContractId,
-				Presentation = NotificationPresentation.StoreOnly
-			};
-
-			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.ContractUpdated.Raise(this, e);
-		}
-
-		private Task ContractUpdatedOrSigned(ContractReferenceEventArgs e)
-		{
-			lock (this.lastContractEvent)
-			{
-				this.lastContractEvent[e.ContractId] = DateTime.Now;
-			}
-
-			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -4189,24 +4086,28 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_ContractSigned(object? Sender, ContractSignedEventArgs e)
 		{
-			await this.ContractUpdatedOrSigned(e);
-
-			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedTitle)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedBody)];
-
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Contracts,
-				Title = Title,
-				Body = Body,
-				Action = NotificationAction.OpenContract,
-				EntityId = e.ContractId,
-				CorrelationId = e.ContractId,
-				Presentation = NotificationPresentation.StoreOnly
-			};
-
-			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.ContractSigned.Raise(this, e);
+		}
+
+		/// <summary>
+		/// Event raised when a contract was created by the user's account, for example on another device.
+		/// </summary>
+		public event EventHandlerAsync<ContractReferenceEventArgs>? ContractCreated;
+
+		private async Task ContractsClient_ContractCreated(object? Sender, ContractReferenceEventArgs e)
+		{
+			await this.RememberCreatedContractAsync(e.ContractId);
+			await this.ContractCreated.Raise(this, e);
+		}
+
+		/// <summary>
+		/// Event raised when a contract was deleted on the server.
+		/// </summary>
+		public event EventHandlerAsync<ContractReferenceEventArgs>? ContractDeleted;
+
+		private async Task ContractsClient_ContractDeleted(object? Sender, ContractReferenceEventArgs e)
+		{
+			await this.ContractDeleted.Raise(this, e);
 		}
 
 		/// <summary>
@@ -6429,6 +6330,29 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#endregion
 
 		#region Helpers
+		/// <summary>
+		/// Serializes a legal identity, so a notification can keep it as its raw payload.
+		/// </summary>
+		/// <param name="Identity">The identity, if any.</param>
+		/// <returns>The identity's XML, or null.</returns>
+		internal static string? SerializeIdentity(LegalIdentity? Identity)
+		{
+			if (Identity is null)
+				return null;
+
+			try
+			{
+				StringBuilder Xml = new();
+				Identity.Serialize(Xml, true, true, true, true, true, true, true);
+				return Xml.ToString();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return null;
+			}
+		}
+
 		private static async Task AddNotificationAsync(NotificationIntent Intent, NotificationSource Source, string? RawPayload)
 		{
 			try

@@ -4259,4 +4259,166 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="ContractWizardStepReview" xml:space="preserve">
     <value>Revisar</value>
   </data>
+  <data name="AskForAccess" xml:space="preserve">
+    <value>Pedir acesso</value>
+  </data>
+  <data name="ContractAccessAskSender" xml:space="preserve">
+    <value>Peça à pessoa que te convidou para convidar você novamente.</value>
+  </data>
+  <data name="ContractAccessDeniedBanner" xml:space="preserve">
+    <value>Você não tem acesso à versão atual deste contrato. Esta é a cópia salva neste dispositivo.</value>
+  </data>
+  <data name="ContractAccessNoSignatures" xml:space="preserve">
+    <value>Ninguém assinou este contrato ainda, então não há a quem pedir. Peça à pessoa que te convidou para convidar você novamente.</value>
+  </data>
+  <data name="ContractAccessPurposeDefault" xml:space="preserve">
+    <value>Eu gostaria de ver este contrato</value>
+  </data>
+  <data name="ContractAccessPurposePrompt" xml:space="preserve">
+    <value>Somente as pessoas que assinaram o contrato recebem a solicitação. Diga a elas por que você quer vê-lo.</value>
+  </data>
+  <data name="ContractAccessRequestSent" xml:space="preserve">
+    <value>Sua solicitação foi enviada às pessoas que assinaram o contrato. Você será notificado quando alguém responder.</value>
+  </data>
+  <data name="ContractCantBeRead" xml:space="preserve">
+    <value>Não é possível ler o contrato</value>
+  </data>
+  <data name="ContractCouldNotBeOpened" xml:space="preserve">
+    <value>Não foi possível abrir o contrato. Tente novamente mais tarde.</value>
+  </data>
+  <data name="ContractDeletedBanner" xml:space="preserve">
+    <value>Excluído do servidor. Esta é uma cópia somente leitura salva neste dispositivo.</value>
+  </data>
+  <data name="ContractForbiddenAskAccess" xml:space="preserve">
+    <value>Você não tem acesso a este contrato. Quer pedir acesso às pessoas que o assinaram?</value>
+  </data>
+  <data name="ContractHasNoParameters" xml:space="preserve">
+    <value>Este contrato não tem parâmetros.</value>
+  </data>
+  <data name="ContractWasDeleted" xml:space="preserve">
+    <value>Este contrato foi excluído.</value>
+  </data>
+  <data name="DeclineInvitation" xml:space="preserve">
+    <value>Recusar</value>
+  </data>
+  <data name="DeclineInvitationConfirm" xml:space="preserve">
+    <value>Quer recusar este convite? O contrato será removido da sua lista.</value>
+  </data>
+  <data name="IdentityDeclined" xml:space="preserve">
+    <value>Solicitação recusada</value>
+  </data>
+  <data name="IdentityNotVisible" xml:space="preserve">
+    <value>Identidade não visível</value>
+  </data>
+  <data name="IdentityNotVisibleAskRequest" xml:space="preserve">
+    <value>Você não pode ver a identidade de {0}. Quer pedir para que ela seja mostrada a você?</value>
+  </data>
+  <data name="IdentityRequestDeclined" xml:space="preserve">
+    <value>Solicitação de identidade recusada</value>
+  </data>
+  <data name="IdentityRequestDeclinedText" xml:space="preserve">
+    <value>A pessoa recusou mostrar a identidade dela a você.</value>
+  </data>
+  <data name="IdentityRequestPurpose" xml:space="preserve">
+    <value>Para ver quem participa do contrato {0}.</value>
+  </data>
+  <data name="InvitationSenderNotContact" xml:space="preserve">
+    <value>{0} (não está nos seus contatos)</value>
+  </data>
+  <data name="InvitationUnreadable" xml:space="preserve">
+    <value>{0} convidou você para assinar este contrato, mas ele não pode ser lido neste dispositivo. Peça a {0} para convidar você novamente, ou recuse o convite.</value>
+  </data>
+  <data name="InviteStatusNoEncryption" xml:space="preserve">
+    <value>A criptografia de ponta a ponta está desativada</value>
+  </data>
+  <data name="InviteStatusNotMutualContact" xml:space="preserve">
+    <value>Não é um contato mútuo</value>
+  </data>
+  <data name="InviteStatusOffline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="InviteStatusSent" xml:space="preserve">
+    <value>Enviado</value>
+  </data>
+  <data name="InviteToSign" xml:space="preserve">
+    <value>Convidar para assinar</value>
+  </data>
+  <data name="InviteToSignInfo" xml:space="preserve">
+    <value>Escolha quem convidar. Todos recebem a mesma mensagem e podem ler o contrato depois do envio.</value>
+  </data>
+  <data name="NotificationContractAccessGrantedBody" xml:space="preserve">
+    <value>Sua solicitação para ver o contrato foi aceita.</value>
+  </data>
+  <data name="NotificationContractAccessGrantedTitle" xml:space="preserve">
+    <value>Agora você pode ver {0}</value>
+  </data>
+  <data name="NotificationContractPetitionTitle" xml:space="preserve">
+    <value>{0} pede para ver {1}</value>
+  </data>
+  <data name="NotificationContractSignedByBody" xml:space="preserve">
+    <value>{0} assinou como {1}.</value>
+  </data>
+  <data name="NotificationContractSignedByBodyNoRole" xml:space="preserve">
+    <value>{0} assinou.</value>
+  </data>
+  <data name="NotificationContractWasDeletedTitle" xml:space="preserve">
+    <value>{0} foi excluído</value>
+  </data>
+  <data name="NotificationContractWasSignedTitle" xml:space="preserve">
+    <value>{0} foi assinado</value>
+  </data>
+  <data name="NotificationContractWasUpdatedTitle" xml:space="preserve">
+    <value>{0} foi atualizado</value>
+  </data>
+  <data name="NotificationContractWasWithdrawnTitle" xml:space="preserve">
+    <value>{0} foi retirado</value>
+  </data>
+  <data name="NotificationInvitationBody" xml:space="preserve">
+    <value>{0} convida você para assinar como {1}.</value>
+  </data>
+  <data name="NotificationInvitationBodyNoRole" xml:space="preserve">
+    <value>{0} convida você para assinar.</value>
+  </data>
+  <data name="NotificationInvitationTitle" xml:space="preserve">
+    <value>Convite para assinar {0}</value>
+  </data>
+  <data name="NotificationInvitationTitleUnnamed" xml:space="preserve">
+    <value>Convite para assinar um contrato</value>
+  </data>
+  <data name="ParameterEncryptedNotAvailable" xml:space="preserve">
+    <value>Criptografado, não disponível neste dispositivo</value>
+  </data>
+  <data name="ParameterLoadingValue" xml:space="preserve">
+    <value>Carregando…</value>
+  </data>
+  <data name="ParameterNotStored" xml:space="preserve">
+    <value>Não armazenado</value>
+  </data>
+  <data name="PetitionContractNotLoaded" xml:space="preserve">
+    <value>Não foi possível carregar o contrato. Você ainda pode aceitar ou recusar a solicitação.</value>
+  </data>
+  <data name="RemoveFromList" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="RemoveFromListConfirm" xml:space="preserve">
+    <value>Quer remover este contrato da sua lista? Ele só é removido deste dispositivo.</value>
+  </data>
+  <data name="RequestIdentity" xml:space="preserve">
+    <value>Solicitar identidade</value>
+  </data>
+  <data name="RequestedContract" xml:space="preserve">
+    <value>Contrato solicitado</value>
+  </data>
+  <data name="SignatureRequestAccepted" xml:space="preserve">
+    <value>Solicitação de assinatura aceita</value>
+  </data>
+  <data name="SignatureRequestAcceptedText" xml:space="preserve">
+    <value>{0} assinou sua solicitação.</value>
+  </data>
+  <data name="SignatureRequestDeclined" xml:space="preserve">
+    <value>Solicitação de assinatura recusada</value>
+  </data>
+  <data name="SignatureRequestDeclinedText" xml:space="preserve">
+    <value>A pessoa recusou assinar sua solicitação.</value>
+  </data>
 </root>

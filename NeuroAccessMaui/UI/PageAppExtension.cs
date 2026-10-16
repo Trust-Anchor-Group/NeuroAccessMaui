@@ -35,6 +35,7 @@ using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
+using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
@@ -153,6 +154,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<IAttachmentCacheService, AttachmentCacheService>();
 			Builder.Services.AddSingleton<IInternetCacheService, InternetCacheService>();
 			Builder.Services.AddSingleton<ICacheInvalidationService, CacheInvalidationService>();
+			Builder.Services.AddSingleton<IContractStore, ContractStore>();
+			Builder.Services.AddSingleton<IContractSyncService, ContractSyncService>();
 			Builder.Services.AddSingleton<IContractOrchestratorService, ContractOrchestratorService>();
 			Builder.Services.AddSingleton<IThingRegistryOrchestratorService, ThingRegistryOrchestratorService>();
 			Builder.Services.AddSingleton<INeuroWalletOrchestratorService, NeuroWalletOrchestratorService>();
@@ -325,6 +328,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<OnboardingHelpViewModel>();
 			Builder.Services.AddTransient<SelectLanguagePopup>();
 			Builder.Services.AddTransient<SelectLanguagePopupViewModel>();
+			Builder.Services.AddTransient<InvitePartsPopup>();
 
 			// Xmpp
 			Builder.Services.AddTransient<RemoveSubscriptionPopup>();
