@@ -6,6 +6,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -50,6 +51,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private string? machineId;
 		private string? machineState;
 		private int noteCommandsVersion;
+		private int noteCommandCandidateCount;
+		private bool noteCommandsLoaded;
+		private bool machineStateFailed;
 		private bool historyAvailable;
 		private bool hasTransferTemplate;
 		private bool hasConsignmentTemplate;
@@ -182,7 +186,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.BuildTags(Item);
 			await this.BuildTechnicalPropertiesAsync(Item);
 
+			// Until the templates are known, the buttons that need them keep their place, disabled.
+			this.IsLoadingTemplates = this.IsVerified;
 			this.UpdateActions();
+			this.UpdateStateMachineSections();
 
 			if (this.IsVerified)
 				_ = this.LoadTemplateAvailabilityAsync();
@@ -608,6 +615,17 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			if (!this.CanSell)
 				this.IsSellOptionsVisible = false;
 
+			// Give and the footer's main action depend on templates. While those load, they are shown disabled, so the
+			// page doesn't move when they arrive.
+			bool MayChangeOwner = CanChangeOwner && this.IsLoadingTemplates;
+
+			this.ShowGive = this.CanGive || (MayChangeOwner && this.IsMyToken);
+			this.CanRunMainAction = this.CanSell || this.CanOfferToBuy;
+			this.ShowMainAction = this.CanRunMainAction || MayChangeOwner;
+			this.MainActionText = this.IsMyToken
+				? ServiceRef.Localizer[nameof(AppResources.Sell)]
+				: ServiceRef.Localizer[nameof(AppResources.OfferToBuy)];
+
 			this.UpdateNoteCommands();
 		}
 
@@ -633,12 +651,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 					this.hasConsignmentTemplate = Consignment.Result;
 					this.hasDonationTemplate = Donation.Result;
 					this.hasDestructionTemplate = Destruction.Result;
+					this.IsLoadingTemplates = false;
 					this.UpdateActions();
 				});
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.IsLoadingTemplates = false;
+					this.UpdateActions();
+				});
 			}
 		}
 
@@ -743,6 +768,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			if (string.IsNullOrEmpty(TokenId))
 				return;
 
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.machineStateFailed = false;
+				this.UpdateStateMachineSections();
+			});
+
 			try
 			{
 				CurrentStateEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureCurrentState(TokenId);
@@ -757,7 +788,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 					if (e.Variables is not null)
 					{
 						foreach (Waher.Script.Variable Variable in e.Variables)
-							this.SetVariable(Variable.Name, Variable.ValueObject);
+							this.SetVariable(Variable.Name, Variable.ValueObject, false);
 					}
 
 					this.SetMachineState(e.CurrentState, e.Ended);
@@ -766,7 +797,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			catch (Exception Ex)
 			{
 				await MainThread.InvokeOnMainThreadAsync(() =>
-					this.MachineStateErrorText = TokenErrors.ToMessage(Ex) ?? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
+				{
+					this.MachineStateErrorText = TokenErrors.ToMessage(Ex) ?? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)];
+					this.machineStateFailed = true;
+					this.UpdateStateMachineSections();
+				});
 				throw;
 			}
 		}
@@ -781,8 +816,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.MachineEnded = Ended || string.IsNullOrEmpty(State);
 			this.machineState = this.MachineEnded ? null : State;
 			this.MachineStateText = this.MachineEnded
+				? ServiceRef.Localizer[nameof(AppResources.StateEnded)]
+				: State;
+			this.MachineStateDescription = this.MachineEnded
 				? ServiceRef.Localizer[nameof(AppResources.TokenStateEnded)]
 				: ServiceRef.Localizer[nameof(AppResources.TokenStateBody), State ?? string.Empty];
+			this.IsMachineStateKnown = true;
 
 			this.UpdateNoteCommands();
 		}
@@ -816,25 +855,33 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.noteCommands = [.. Items];
+					this.noteCommandsLoaded = true;
 					this.UpdateNoteCommands();
 				});
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.noteCommandsLoaded = true;
+					this.UpdateNoteCommands();
+				});
 			}
 		}
 
 		/// <summary>
-		/// Shows the note commands the user can run: owner commands for the owner, and external commands for others, while
-		/// the state machine runs, and only those whose condition holds in the current state. The conditions run in the
-		/// background, and the commands change when they are done. Called on the main thread.
+		/// Shows the note commands the user can run: owner commands for the owner, and external commands for others, once
+		/// the current state has loaded and while the state machine runs, and only those whose condition holds in the
+		/// current state. The conditions run in the background, and the commands change when they are done. Called on the
+		/// main thread.
 		/// </summary>
 		private void UpdateNoteCommands()
 		{
 			List<NoteCommandItem> Candidates = [];
 
-			if (this.HasStateMachine && !this.MachineEnded)
+			if (this.HasStateMachine && this.IsMachineStateKnown && !this.MachineEnded)
 			{
 				foreach (NoteCommandItem Item in this.noteCommands)
 				{
@@ -880,9 +927,32 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (Version != this.noteCommandsVersion)
 					return;
 
-				SetItems(this.NoteCommands, Visible);
+				// The rows are only rebuilt when the commands that apply change, so they don't flicker on every update.
+				if (!this.NoteCommands.SequenceEqual(Visible))
+					SetItems(this.NoteCommands, Visible);
+
+				this.noteCommandCandidateCount = Candidates.Count;
 				this.HasNoteCommands = this.NoteCommands.Count > 0;
+				this.UpdateStateMachineSections();
 			});
+		}
+
+		/// <summary>
+		/// Works out which parts of the State and Actions sections are shown: placeholders while the state and the
+		/// commands load, the commands that apply, or a note when none do. Called on the main thread.
+		/// </summary>
+		private void UpdateStateMachineSections()
+		{
+			bool Ready = this.noteCommandsLoaded && this.IsMachineStateKnown;
+
+			this.ShowStateSection = this.HasStateMachine && (!this.IsMachineStateKnown || this.HasVariables);
+			this.IsLoadingNoteCommands = this.HasStateMachine && !Ready && !this.machineStateFailed;
+			this.ShowNoActions = this.HasStateMachine && Ready && !this.HasNoteCommands &&
+				(this.MachineEnded || this.noteCommandCandidateCount > 0);
+			this.NoActionsText = this.MachineEnded
+				? ServiceRef.Localizer[nameof(AppResources.NoActionsEnded), this.FriendlyName ?? string.Empty]
+				: ServiceRef.Localizer[nameof(AppResources.NoActionsInState)];
+			this.ShowActionsSection = this.IsLoadingNoteCommands || this.HasNoteCommands || this.ShowNoActions;
 		}
 
 		/// <summary>
@@ -933,26 +1003,34 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		/// <param name="Name">Variable name.</param>
 		/// <param name="Value">Variable value.</param>
-		private void SetVariable(string Name, object Value)
+		/// <param name="ShowChange">If a row whose value changes is tinted for a moment, with the value before.</param>
+		private void SetVariable(string Name, object Value, bool ShowChange)
 		{
 			this.machineVariables[Name] = Value;
 
 			bool Found = false;
 
-			foreach (VariableModel Model in this.Variables)
+			foreach (TokenVariableItem Model in this.Variables)
 			{
 				if (Model.Name == Name)
 				{
-					Model.UpdateValue(Value);
+					Model.ChangeValue(Value, ShowChange);
 					Found = true;
 					break;
 				}
 			}
 
 			if (!Found && this.Variables.Count < MaxInlineVariables)
-				this.Variables.Add(new VariableModel(Name, Value));
+			{
+				// The card always ends with the row that opens all variables, so the variables are its first and middle rows.
+				this.Variables.Add(new TokenVariableItem(Name, Value)
+				{
+					CardPosition = this.Variables.Count == 0 ? ListCardPosition.First : ListCardPosition.Middle
+				});
+			}
 
 			this.HasVariables = this.machineVariables.Count > 0;
+			this.AllVariablesText = ServiceRef.Localizer[nameof(AppResources.AllVariables), this.machineVariables.Count];
 		}
 
 		private Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
@@ -973,7 +1051,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				foreach (Waher.Script.Variable Variable in e.Variables)
-					this.SetVariable(Variable.Name, Variable.ValueObject);
+					this.SetVariable(Variable.Name, Variable.ValueObject, true);
 
 				this.UpdateNoteCommands();
 			});
@@ -1038,7 +1116,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <summary>
 		/// The first state-machine variables, shown inline.
 		/// </summary>
-		public ObservableCollection<VariableModel> Variables { get; } = [];
+		public ObservableCollection<TokenVariableItem> Variables { get; } = [];
 
 		/// <summary>
 		/// Loads the description, and exposes its loading and loaded states.
@@ -1390,13 +1468,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// If the token is associated with a state-machine.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasTechnicalLinks))]
 		private bool hasStateMachine;
 
 		/// <summary>
 		/// If the token have an embedded layout.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasTechnicalLinks))]
 		private bool hasEmbeddedLayout;
+
+		/// <summary>
+		/// If Technical details links to the profiling report or the embedded layout.
+		/// </summary>
+		public bool HasTechnicalLinks => this.HasStateMachine || this.HasEmbeddedLayout;
 
 		/// <summary>
 		/// If the token comes from the wallet or was fetched from its Neuron, and can be trusted.
@@ -1512,6 +1597,91 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		[ObservableProperty]
 		private string? machineStateErrorText;
 
+		/// <summary>
+		/// What screen readers say about the state chip, such as "State: Calculating".
+		/// </summary>
+		[ObservableProperty]
+		private string? machineStateDescription;
+
+		/// <summary>
+		/// If the current state of the state machine has loaded.
+		/// </summary>
+		[ObservableProperty]
+		private bool isMachineStateKnown;
+
+		/// <summary>
+		/// The last row of the State card, such as "All 3 variables".
+		/// </summary>
+		[ObservableProperty]
+		private string? allVariablesText;
+
+		/// <summary>
+		/// If the State section is shown: while the state loads, when it couldn't load, and when there are variables.
+		/// </summary>
+		[ObservableProperty]
+		private bool showStateSection;
+
+		/// <summary>
+		/// If the Actions section is shown: while the commands load, when commands apply, or with a note saying why none do.
+		/// </summary>
+		[ObservableProperty]
+		private bool showActionsSection;
+
+		/// <summary>
+		/// If the state and the note commands are still loading.
+		/// </summary>
+		[ObservableProperty]
+		private bool isLoadingNoteCommands;
+
+		/// <summary>
+		/// If the Actions section says that nothing can be run now.
+		/// </summary>
+		[ObservableProperty]
+		private bool showNoActions;
+
+		/// <summary>
+		/// Why nothing can be run now.
+		/// </summary>
+		[ObservableProperty]
+		private string? noActionsText;
+
+		/// <summary>
+		/// If the contract templates for the token actions are still being looked up.
+		/// </summary>
+		[ObservableProperty]
+		private bool isLoadingTemplates;
+
+		/// <summary>
+		/// If the Give tile is shown. It is disabled until the templates are known.
+		/// </summary>
+		[ObservableProperty]
+		private bool showGive;
+
+		/// <summary>
+		/// If the sticky footer with the main action is shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool showMainAction;
+
+		/// <summary>
+		/// The main action: Sell for the owner, and Offer to buy for others.
+		/// </summary>
+		[ObservableProperty]
+		private string? mainActionText;
+
+		/// <summary>
+		/// If the main action can be used.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(MainActionCommand))]
+		private bool canRunMainAction;
+
+		/// <summary>
+		/// If the actions under More are shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool isMoreVisible;
+
 		#endregion
 
 		#region Commands
@@ -1523,6 +1693,24 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private void ToggleTechnicalDetails()
 		{
 			this.IsTechnicalDetailsExpanded = !this.IsTechnicalDetailsExpanded;
+		}
+
+		/// <summary>
+		/// Shows or hides the actions under More.
+		/// </summary>
+		[RelayCommand]
+		private void ToggleMore()
+		{
+			this.IsMoreVisible = !this.IsMoreVisible;
+		}
+
+		/// <summary>
+		/// The main action in the footer: sells the token when it is the user's, and offers to buy it otherwise.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanRunMainAction))]
+		private Task MainAction()
+		{
+			return this.IsMyToken ? this.Sell() : this.OfferToBuy();
 		}
 
 		/// <summary>

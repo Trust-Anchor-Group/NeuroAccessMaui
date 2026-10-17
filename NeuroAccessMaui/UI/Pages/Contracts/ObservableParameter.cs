@@ -86,14 +86,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		/// <summary>
 		/// Creates a new instance of <see cref="ObservableParameter"/> for a parameter that isn't part of a contract, such
-		/// as a parameter of a token's note command. Without a contract there is no description, so the label is the
-		/// parameter's guide, or its name.
+		/// as a parameter of a token's note command. The label is the parameter's description in the user's language,
+		/// without the colon desktop clients put at the end. When it has none, the label is the parameter's guide, or its
+		/// name.
 		/// </summary>
 		/// <param name="parameter">The parameter object to wrap</param>
 		/// <returns>The wrapped parameter.</returns>
-		public static Task<ObservableParameter> CreateAsync(Parameter parameter)
+		public static async Task<ObservableParameter> CreateAsync(Parameter parameter)
 		{
-			return Task.FromResult(Wrap(parameter));
+			ObservableParameter ParameterInfo = Wrap(parameter);
+
+			if (parameter.Descriptions is not null && parameter.Descriptions.Length > 0)
+			{
+				try
+				{
+					// There is no contract, so the description is rendered with an empty one.
+					string? UntrimmedDescription = await new Contract().ToPlainText(parameter.Descriptions,
+						CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+
+					ParameterInfo.Description = (UntrimmedDescription ?? string.Empty).Trim().TrimEnd(':').TrimEnd();
+				}
+				catch (Exception E)
+				{
+					ServiceRef.LogService.LogException(E);
+				}
+			}
+
+			return ParameterInfo;
 		}
 
 		/// <summary>

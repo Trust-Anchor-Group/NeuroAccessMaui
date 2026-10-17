@@ -1,8 +1,8 @@
 ﻿namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 {
 	/// <summary>
-	/// A tag the token's creator attached to the token, or its reference. Web addresses can be opened, and every value
-	/// can be copied.
+	/// A tag the token's creator attached to the token, or its reference. Web addresses open on a tap, and every value
+	/// is copied on a long press.
 	/// </summary>
 	/// <param name="Name">Name of the tag.</param>
 	/// <param name="Value">Value of the tag.</param>

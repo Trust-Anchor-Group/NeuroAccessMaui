@@ -63,6 +63,20 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		}
 
 		/// <summary>
+		/// Gets the title of a command in the user's language, without the "..." that desktop clients put after titles of
+		/// commands that ask for values. The command's ID is used when it has no title.
+		/// </summary>
+		/// <param name="Command">The note command.</param>
+		/// <returns>The title.</returns>
+		public static string GetTitle(NoteCommand Command)
+		{
+			string Title = SelectText(Command.Title) ?? Command.Id ?? string.Empty;
+			string Trimmed = Title.TrimEnd('.', '…', ' ');
+
+			return string.IsNullOrEmpty(Trimmed) ? Title : Trimmed;
+		}
+
+		/// <summary>
 		/// Checks if the app may run a command: it has a note generation script, and that script and the parameters'
 		/// validation scripts parse and pass <see cref="NoteScriptValidator"/>. The command's condition, its note context
 		/// script, must parse. It is checked with the state machine's variables by <see cref="IsAvailableAsync"/>.
@@ -253,7 +267,7 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		/// <returns>If the note was added.</returns>
 		public static async Task<bool> RunAsync(NoteCommand Command, string TokenId, string[] AssignedNames, Func<Task<bool>>? IsAvailable)
 		{
-			string Title = SelectText(Command.Title) ?? Command.Id ?? string.Empty;
+			string Title = GetTitle(Command);
 			string? Confirmation = SelectText(Command.Confirmation);
 
 			if (Confirmation is not null &&
@@ -313,7 +327,7 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 				return false;
 			}
 
-			await ServiceRef.ToastService.ShowTextAsync(SelectText(Command.Success) ?? ServiceRef.Localizer[nameof(AppResources.NoteCommandSent)]);
+			await ServiceRef.ToastService.ShowTextAsync(SelectText(Command.Success) ?? ServiceRef.Localizer[nameof(AppResources.NoteCommandSent), Title]);
 			return true;
 		}
 

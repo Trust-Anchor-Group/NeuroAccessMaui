@@ -4800,7 +4800,7 @@ Documento leído. Ya puedes mover tu iPhone.</value>
     <value>El comando no funcionó. Inténtalo de nuevo.</value>
   </data>
   <data name="NoteCommandSent" xml:space="preserve">
-    <value>Nota enviada.</value>
+    <value>Se envió {0}</value>
   </data>
   <data name="ContactHasNoLegalId" xml:space="preserve">
     <value>Este contacto no ha compartido su identidad contigo.</value>
@@ -4900,5 +4900,50 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   </data>
   <data name="TokensEmptyHint" xml:space="preserve">
     <value>Crea uno a partir de una plantilla o pide a alguien que te envíe uno.</value>
+  </data>
+  <data name="StateEnded" xml:space="preserve">
+    <value>Finalizado</value>
+  </data>
+  <data name="AllVariables" xml:space="preserve">
+    <value>Las {0} variables</value>
+  </data>
+  <data name="NoActionsNow" xml:space="preserve">
+    <value>No hay acciones ahora</value>
+  </data>
+  <data name="NoActionsEnded" xml:space="preserve">
+    <value>{0} ha finalizado, así que no queda nada por ejecutar. Su historial sigue aquí.</value>
+  </data>
+  <data name="NoActionsInState" xml:space="preserve">
+    <value>Ninguna de sus acciones se puede ejecutar en el estado actual.</value>
+  </data>
+  <data name="PresentReportDescription" xml:space="preserve">
+    <value>Los valores tal como el token los describe ahora</value>
+  </data>
+  <data name="HistoryReportDescription" xml:space="preserve">
+    <value>Cómo han cambiado los valores con el tiempo</value>
+  </data>
+  <data name="StatesReportDescription" xml:space="preserve">
+    <value>Los estados y cómo se conectan</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Más</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Ejecutar</value>
+  </data>
+  <data name="NoteCommandAsksForValues" xml:space="preserve">
+    <value>Pide valores.</value>
+  </data>
+  <data name="ValueWas" xml:space="preserve">
+    <value>era {0}</value>
+  </data>
+  <data name="TapToOpenLongPressToCopy" xml:space="preserve">
+    <value>Toca para abrir o mantén pulsado para copiar.</value>
+  </data>
+  <data name="LongPressToCopy" xml:space="preserve">
+    <value>Mantén pulsado para copiar.</value>
+  </data>
+  <data name="DestroyToken" xml:space="preserve">
+    <value>Destruir token</value>
   </data>
 </root>

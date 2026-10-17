@@ -1,8 +1,8 @@
 ﻿namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.Views
 {
 	/// <summary>
-	/// The state machine section of token details: the current state, the first few variables, the note commands
-	/// the user can run, and the reports.
+	/// The state machine sections of token details: the first few variables, the note commands that apply now, and the
+	/// reports. The current state is a chip in the hero.
 	/// The binding context is the <see cref="TokenDetailsViewModel"/>.
 	/// </summary>
 	[XamlCompilation(XamlCompilationOptions.Compile)]

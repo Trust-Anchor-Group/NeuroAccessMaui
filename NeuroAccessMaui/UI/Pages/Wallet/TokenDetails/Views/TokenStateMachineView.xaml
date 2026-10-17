@@ -5,136 +5,324 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 			 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-			 xmlns:variables="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineVariables"
 			 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails">
-	<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="16">
-		<VerticalStackLayout Spacing="8">
-			<Label Text="{l:Localize StateMachine}"
-				   Style="{DynamicResource SectionTitleLabel}"
-				   SemanticProperties.HeadingLevel="Level2" />
+	<!-- The state machine's sections: its variables, the commands that apply now, and its reports. The current state
+		 itself is a chip in the hero. -->
+	<VerticalStackLayout>
 
-			<!-- Current state and the first few variables -->
+		<!-- State: the first few variables, and a row that opens all of them -->
+		<VerticalStackLayout IsVisible="{Binding ShowStateSection}">
+			<Label Text="{l:Localize State}"
+				   Style="{DynamicResource ListCardSectionLabel}" />
+
 			<controls:TaskView Task="{Binding MachineStateTask}">
 				<controls:TaskView.RunningView>
-					<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center" />
+					<!-- Rows shaped like variables while the state loads -->
+					<Border Style="{DynamicResource ListCardBorder}"
+							AutomationProperties.IsInAccessibleTree="False">
+						<Grid>
+							<VerticalStackLayout>
+								<Grid ColumnDefinitions="*,Auto"
+									  Padding="16,0"
+									  HeightRequest="52">
+									<Grid ColumnDefinitions="40*,60*"
+										  VerticalOptions="Center">
+										<BoxView Style="{DynamicResource ListCardPlaceholderTitle}" />
+									</Grid>
+									<BoxView Grid.Column="1"
+											 Style="{DynamicResource ListCardPlaceholderValue}"
+											 WidthRequest="36" />
+								</Grid>
+								<BoxView Style="{DynamicResource ListCardRowDivider}" />
+								<Grid ColumnDefinitions="*,Auto"
+									  Padding="16,0"
+									  HeightRequest="52"
+									  Opacity="0.6">
+									<Grid ColumnDefinitions="30*,70*"
+										  VerticalOptions="Center">
+										<BoxView Style="{DynamicResource ListCardPlaceholderTitle}" />
+									</Grid>
+									<BoxView Grid.Column="1"
+											 Style="{DynamicResource ListCardPlaceholderValue}"
+											 WidthRequest="28" />
+								</Grid>
+							</VerticalStackLayout>
+							<controls:IndeterminateProgressLine IsRunning="{Binding MachineStateTask.IsRunning}"
+																Color="{DynamicResource ContentAccessWL}" />
+						</Grid>
+					</Border>
 				</controls:TaskView.RunningView>
 
 				<controls:TaskView.ErrorView>
-					<VerticalStackLayout Spacing="8">
-						<Label Text="{Binding MachineStateErrorText}"
-							   Style="{DynamicResource ItemDescriptionLabel}"
-							   TextColor="{DynamicResource ContentSecondaryWL}"
-							   HorizontalTextAlignment="Center" />
-						<controls:TextButton LabelData="{l:Localize TryAgain}"
-											 Command="{Binding MachineStateTask.ReloadCommand}"
-											 Style="{DynamicResource OutlinedTextButton}"
-											 HorizontalOptions="Center" />
-					</VerticalStackLayout>
+					<Border Style="{DynamicResource IdentityFlowCard}">
+						<VerticalStackLayout Spacing="12">
+							<Label Text="{Binding MachineStateErrorText}"
+								   Style="{DynamicResource IdentityFlowCaptionLabel}" />
+							<controls:TextButton LabelData="{l:Localize TryAgain}"
+												 Command="{Binding MachineStateTask.ReloadCommand}"
+												 Style="{DynamicResource OutlinedTextButton}"
+												 HorizontalOptions="Start" />
+						</VerticalStackLayout>
+					</Border>
 				</controls:TaskView.ErrorView>
 
 				<controls:TaskView.SucceededView>
-					<VerticalStackLayout Spacing="8">
-						<Border StrokeShape="RoundRectangle 12"
-								StrokeThickness="0"
-								Padding="8,2"
-								HorizontalOptions="Start"
-								BackgroundColor="{DynamicResource TnPInfobgWL}">
-							<Border.Triggers>
-								<DataTrigger TargetType="Border" Binding="{Binding MachineEnded}" Value="True">
-									<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation1WL}" />
-								</DataTrigger>
-							</Border.Triggers>
-							<Label Text="{Binding MachineStateText}"
-								   FontSize="{StaticResource FontSizeSm}"
-								   TextColor="{DynamicResource TnPInfoContentWL}">
-								<Label.Triggers>
-									<DataTrigger TargetType="Label" Binding="{Binding MachineEnded}" Value="True">
-										<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
-									</DataTrigger>
-								</Label.Triggers>
-							</Label>
-						</Border>
-
+					<VerticalStackLayout>
 						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Variables}">
 							<BindableLayout.ItemTemplate>
-								<DataTemplate x:DataType="variables:VariableModel">
-									<Grid ColumnDefinitions="*,auto" ColumnSpacing="8" Padding="0,4">
-										<VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
-											<Label Text="{Binding Name}"
-												   Style="{DynamicResource ItemDescriptionLabel}"
-												   FontSize="{StaticResource FontSizeXs}"
-												   TextColor="{DynamicResource ContentSecondaryWL}" />
-											<Label Text="{Binding AsScript}"
-												   Style="{DynamicResource ItemDescriptionLabel}"
-												   TextColor="{DynamicResource ContentPrimaryWL}"
-												   LineBreakMode="TailTruncation"
-												   MaxLines="3" />
-										</VerticalStackLayout>
-										<controls:SvgButton Grid.Column="1"
-															SvgSource="content_copy.svg"
-															Style="{DynamicResource IconButtonOnBackground}"
-															Command="{Binding CopyToClipboardCommand}"
-															VerticalOptions="Center"
-															SemanticProperties.Description="{l:Localize CopyToClipboard}" />
+								<DataTemplate x:DataType="viewmodel:TokenVariableItem">
+									<!-- A value that changed a moment ago is tinted, with the value it had before -->
+									<Grid SemanticProperties.Description="{Binding AccessibleDescription}">
+										<controls:ListCardSegment Position="{Binding CardPosition}"
+																  FillColor="{DynamicResource SurfaceElevation1WL}"
+																  StrokeColor="{DynamicResource SurfaceDividerWL}"
+																  DividerInset="16">
+											<controls:ListCardSegment.Triggers>
+												<DataTrigger TargetType="controls:ListCardSegment"
+															 Binding="{Binding IsChanged}"
+															 Value="True">
+													<Setter Property="FillColor"
+															Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+											</controls:ListCardSegment.Triggers>
+										</controls:ListCardSegment>
+										<Grid ColumnDefinitions="*,Auto,Auto"
+											  ColumnSpacing="12"
+											  Padding="16,0"
+											  MinimumHeightRequest="52">
+											<Label Grid.Column="0"
+												   Text="{Binding Name}"
+												   Style="{DynamicResource ListCardRowKeyLabel}" />
+											<Label Grid.Column="1"
+												   Text="{Binding PreviousValueText}"
+												   IsVisible="{Binding IsChanged}"
+												   Style="{DynamicResource ListCardRowDetailLabel}" />
+											<Label Grid.Column="2"
+												   Text="{Binding AsScript}"
+												   Style="{DynamicResource ListCardRowTitleLabel}"
+												   MaximumWidthRequest="180"
+												   HorizontalTextAlignment="End" />
+										</Grid>
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
 
-						<controls:TextButton LabelData="{l:Localize SeeAll}"
-											 Command="{Binding VariablesReportCommand}"
-											 IsVisible="{Binding HasVariables}"
-											 Style="{DynamicResource TransparentTextButton}"
-											 HorizontalOptions="Start" />
+						<Grid IsVisible="{Binding HasVariables}">
+							<controls:ListCardSegment Position="Last"
+													  FillColor="{DynamicResource SurfaceElevation1WL}"
+													  StrokeColor="{DynamicResource SurfaceDividerWL}"
+													  DividerInset="16" />
+							<controls:TemplatedButton Command="{Binding VariablesReportCommand}"
+													  SemanticProperties.Description="{Binding AllVariablesText}">
+								<Grid ColumnDefinitions="*,Auto"
+									  ColumnSpacing="12"
+									  Padding="16,0"
+									  MinimumHeightRequest="52">
+									<Label Grid.Column="0"
+										   Text="{Binding AllVariablesText}"
+										   Style="{DynamicResource ListCardRowLinkLabel}" />
+									<controls:SvgView Grid.Column="1"
+													  Source="arrow_forward_ios.svg"
+													  WidthRequest="14"
+													  HeightRequest="14"
+													  VerticalOptions="Center"
+													  TintColor="{DynamicResource ContentSecondaryWL}"
+													  AutomationProperties.IsInAccessibleTree="False" />
+								</Grid>
+							</controls:TemplatedButton>
+						</Grid>
 					</VerticalStackLayout>
 				</controls:TaskView.SucceededView>
 			</controls:TaskView>
+		</VerticalStackLayout>
 
-			<!-- Note commands the user can run -->
-			<VerticalStackLayout IsVisible="{Binding HasNoteCommands}">
-				<Label Text="{l:Localize Actions}"
-					   Style="{DynamicResource ItemDescriptionLabel}"
-					   TextColor="{DynamicResource ContentSecondaryWL}"
-					   Margin="0,8,0,0"
-					   SemanticProperties.HeadingLevel="Level3" />
-				<FlexLayout Direction="Row" Wrap="Wrap" JustifyContent="Start" AlignItems="Center"
-							BindableLayout.ItemsSource="{Binding NoteCommands}">
-					<BindableLayout.ItemTemplate>
-						<DataTemplate x:DataType="viewmodel:NoteCommandItem">
-							<controls:TextButton LabelData="{Binding Title}"
-												 Command="{Binding RunCommand}"
-												 Style="{DynamicResource FilledTextButton}"
-												 SemanticProperties.Hint="{Binding ToolTip}"
-												 Margin="0,8,8,0" />
-						</DataTemplate>
-					</BindableLayout.ItemTemplate>
-				</FlexLayout>
+		<!-- Actions: the note commands that apply now -->
+		<VerticalStackLayout IsVisible="{Binding ShowActionsSection}">
+			<Label Text="{l:Localize Actions}"
+				   Style="{DynamicResource ListCardSectionLabel}" />
+
+			<!-- Rows shaped like commands while the state and the commands load -->
+			<controls:ListCardPlaceholder IsVisible="{Binding IsLoadingNoteCommands}" />
+
+			<VerticalStackLayout IsVisible="False"
+								 controls:Reveal.IsShown="{Binding HasNoteCommands}"
+								 controls:ListCard.IsEnabled="True"
+								 BindableLayout.ItemsSource="{Binding NoteCommands}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate x:DataType="viewmodel:NoteCommandItem">
+						<Grid>
+							<controls:ListCardSegment Position="{Binding CardPosition}"
+													  FillColor="{DynamicResource SurfaceElevation1WL}"
+													  StrokeColor="{DynamicResource SurfaceDividerWL}" />
+							<!-- A command that asks for values ends with a chevron. One that runs at once ends with "Run". -->
+							<controls:TemplatedButton Command="{Binding RunCommand}"
+													  SemanticProperties.Description="{Binding AccessibleDescription}">
+								<Grid ColumnDefinitions="44,*,40"
+									  ColumnSpacing="14"
+									  Padding="16,12,8,12"
+									  MinimumHeightRequest="68">
+									<Grid.Triggers>
+										<DataTrigger TargetType="Grid"
+													 Binding="{Binding IsRunning}"
+													 Value="True">
+											<Setter Property="Opacity"
+													Value="0.5" />
+										</DataTrigger>
+									</Grid.Triggers>
+									<Border Grid.Column="0"
+											Style="{DynamicResource ListCardTileBorder}"
+											AutomationProperties.IsInAccessibleTree="False">
+										<Label Text="{Binding Monogram}"
+											   Style="{DynamicResource ListCardMonogramLabel}" />
+									</Border>
+									<VerticalStackLayout Grid.Column="1"
+														 Spacing="3"
+														 VerticalOptions="Center">
+										<Label Text="{Binding Title}"
+											   Style="{DynamicResource ListCardRowTitleLabel}" />
+										<Label Text="{Binding ToolTip}"
+											   IsVisible="{Binding HasToolTip}"
+											   Style="{DynamicResource ListCardRowDetailLabel}"
+											   MaxLines="2" />
+									</VerticalStackLayout>
+									<controls:SvgView Grid.Column="2"
+													  Source="arrow_forward_ios.svg"
+													  IsVisible="{Binding HasParameters}"
+													  WidthRequest="14"
+													  HeightRequest="14"
+													  HorizontalOptions="Center"
+													  VerticalOptions="Center"
+													  TintColor="{DynamicResource ContentSecondaryWL}"
+													  AutomationProperties.IsInAccessibleTree="False" />
+									<Label Grid.Column="2"
+										   Text="{l:Localize Run}"
+										   IsVisible="{Binding RunsAtOnce}"
+										   FontFamily="SpaceGroteskBold"
+										   FontSize="{StaticResource FontSizeSm}"
+										   TextColor="{DynamicResource ContentAccessWL}"
+										   HorizontalOptions="Center"
+										   VerticalOptions="Center"
+										   AutomationProperties.IsInAccessibleTree="False" />
+								</Grid>
+							</controls:TemplatedButton>
+						</Grid>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
 			</VerticalStackLayout>
 
-			<!-- Reports -->
-			<Label Text="{l:Localize Reports}"
-				   Style="{DynamicResource ItemDescriptionLabel}"
-				   TextColor="{DynamicResource ContentSecondaryWL}"
-				   Margin="0,8,0,0"
-				   SemanticProperties.HeadingLevel="Level3" />
-			<FlexLayout Direction="Row" Wrap="Wrap" JustifyContent="Start" AlignItems="Center">
-				<controls:TextButton LabelData="{l:Localize Present}"
-									 Command="{Binding PresentReportCommand}"
-									 Style="{DynamicResource OutlinedTextButton}"
-									 Margin="0,0,8,8" />
-				<controls:TextButton LabelData="{l:Localize History}"
-									 Command="{Binding HistoryReportCommand}"
-									 Style="{DynamicResource OutlinedTextButton}"
-									 Margin="0,0,8,8" />
-				<controls:TextButton LabelData="{l:Localize States}"
-									 Command="{Binding StatesReportCommand}"
-									 Style="{DynamicResource OutlinedTextButton}"
-									 Margin="0,0,8,8" />
-				<controls:TextButton LabelData="{l:Localize Profiling}"
-									 Command="{Binding ProfilingReportCommand}"
-									 Style="{DynamicResource OutlinedTextButton}"
-									 Margin="0,0,8,8" />
-			</FlexLayout>
+			<!-- Nothing can be run now: the machine has ended, or no command applies in the current state -->
+			<Border Style="{DynamicResource IdentityFlowCard}"
+					IsVisible="False"
+					controls:Reveal.IsShown="{Binding ShowNoActions}">
+				<Grid ColumnDefinitions="44,*"
+					  ColumnSpacing="14">
+					<Border Grid.Column="0"
+							Style="{DynamicResource ListCardTileBorder}"
+							BackgroundColor="{DynamicResource SurfaceDividerWL}"
+							AutomationProperties.IsInAccessibleTree="False">
+						<Path Data="M10,3.5 A6.5,6.5 0 1 1 9.99,3.5 M8,7.5 L8,12.5 M12,7.5 L12,12.5"
+							  Stroke="{DynamicResource ContentSecondaryWL}"
+							  StrokeThickness="1.8"
+							  StrokeLineCap="Round"
+							  Aspect="None"
+							  WidthRequest="20"
+							  HeightRequest="20"
+							  HorizontalOptions="Center"
+							  VerticalOptions="Center" />
+					</Border>
+					<VerticalStackLayout Grid.Column="1"
+										 Spacing="3"
+										 VerticalOptions="Center">
+						<Label Text="{l:Localize NoActionsNow}"
+							   Style="{DynamicResource ListCardRowTitleLabel}" />
+						<Label Text="{Binding NoActionsText}"
+							   Style="{DynamicResource IdentityFlowCaptionLabel}" />
+					</VerticalStackLayout>
+				</Grid>
+			</Border>
 		</VerticalStackLayout>
-	</Border>
+
+		<!-- Reports. Profiling is under Technical details. -->
+		<Label Text="{l:Localize Reports}"
+			   Style="{DynamicResource ListCardSectionLabel}" />
+		<Border Style="{DynamicResource ListCardBorder}">
+			<VerticalStackLayout>
+				<controls:TemplatedButton Command="{Binding PresentReportCommand}"
+										  SemanticProperties.Description="{l:Localize Present}"
+										  SemanticProperties.Hint="{l:Localize PresentReportDescription}">
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="12"
+						  Padding="16,10"
+						  MinimumHeightRequest="64">
+						<VerticalStackLayout Grid.Column="0"
+											 Spacing="3"
+											 VerticalOptions="Center">
+							<Label Text="{l:Localize Present}"
+								   Style="{DynamicResource ListCardRowTitleLabel}" />
+							<Label Text="{l:Localize PresentReportDescription}"
+								   Style="{DynamicResource ListCardRowDetailLabel}" />
+						</VerticalStackLayout>
+						<controls:SvgView Grid.Column="1"
+										  Source="arrow_forward_ios.svg"
+										  WidthRequest="14"
+										  HeightRequest="14"
+										  VerticalOptions="Center"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+					</Grid>
+				</controls:TemplatedButton>
+				<BoxView Style="{DynamicResource ListCardRowDivider}" />
+				<controls:TemplatedButton Command="{Binding HistoryReportCommand}"
+										  SemanticProperties.Description="{l:Localize History}"
+										  SemanticProperties.Hint="{l:Localize HistoryReportDescription}">
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="12"
+						  Padding="16,10"
+						  MinimumHeightRequest="64">
+						<VerticalStackLayout Grid.Column="0"
+											 Spacing="3"
+											 VerticalOptions="Center">
+							<Label Text="{l:Localize History}"
+								   Style="{DynamicResource ListCardRowTitleLabel}" />
+							<Label Text="{l:Localize HistoryReportDescription}"
+								   Style="{DynamicResource ListCardRowDetailLabel}" />
+						</VerticalStackLayout>
+						<controls:SvgView Grid.Column="1"
+										  Source="arrow_forward_ios.svg"
+										  WidthRequest="14"
+										  HeightRequest="14"
+										  VerticalOptions="Center"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+					</Grid>
+				</controls:TemplatedButton>
+				<BoxView Style="{DynamicResource ListCardRowDivider}" />
+				<controls:TemplatedButton Command="{Binding StatesReportCommand}"
+										  SemanticProperties.Description="{l:Localize StateDiagram}"
+										  SemanticProperties.Hint="{l:Localize StatesReportDescription}">
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="12"
+						  Padding="16,10"
+						  MinimumHeightRequest="64">
+						<VerticalStackLayout Grid.Column="0"
+											 Spacing="3"
+											 VerticalOptions="Center">
+							<Label Text="{l:Localize StateDiagram}"
+								   Style="{DynamicResource ListCardRowTitleLabel}" />
+							<Label Text="{l:Localize StatesReportDescription}"
+								   Style="{DynamicResource ListCardRowDetailLabel}" />
+						</VerticalStackLayout>
+						<controls:SvgView Grid.Column="1"
+										  Source="arrow_forward_ios.svg"
+										  WidthRequest="14"
+										  HeightRequest="14"
+										  VerticalOptions="Center"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+					</Grid>
+				</controls:TemplatedButton>
+			</VerticalStackLayout>
+		</Border>
+	</VerticalStackLayout>
 </ContentView>

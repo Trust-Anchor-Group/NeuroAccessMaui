@@ -4785,7 +4785,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Kommandot fungerade inte. Försök igen.</value>
   </data>
   <data name="NoteCommandSent" xml:space="preserve">
-    <value>Anteckningen har skickats.</value>
+    <value>{0} har skickats</value>
   </data>
   <data name="ContactHasNoLegalId" xml:space="preserve">
     <value>Den här kontakten har inte delat sin identitet med dig.</value>
@@ -4885,5 +4885,50 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="TokensEmptyHint" xml:space="preserve">
     <value>Skapa en från en mall, eller be någon skicka en till dig.</value>
+  </data>
+  <data name="StateEnded" xml:space="preserve">
+    <value>Avslutad</value>
+  </data>
+  <data name="AllVariables" xml:space="preserve">
+    <value>Alla {0} variabler</value>
+  </data>
+  <data name="NoActionsNow" xml:space="preserve">
+    <value>Inga åtgärder just nu</value>
+  </data>
+  <data name="NoActionsEnded" xml:space="preserve">
+    <value>{0} har avslutats, så det finns inget mer att köra. Historiken finns kvar här.</value>
+  </data>
+  <data name="NoActionsInState" xml:space="preserve">
+    <value>Inga av dess åtgärder kan köras i det nuvarande tillståndet.</value>
+  </data>
+  <data name="PresentReportDescription" xml:space="preserve">
+    <value>Värdena så som token beskriver dem nu</value>
+  </data>
+  <data name="HistoryReportDescription" xml:space="preserve">
+    <value>Hur värdena har ändrats över tid</value>
+  </data>
+  <data name="StatesReportDescription" xml:space="preserve">
+    <value>Tillstånden och hur de hänger ihop</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Mer</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Kör</value>
+  </data>
+  <data name="NoteCommandAsksForValues" xml:space="preserve">
+    <value>Frågar efter värden.</value>
+  </data>
+  <data name="ValueWas" xml:space="preserve">
+    <value>var {0}</value>
+  </data>
+  <data name="TapToOpenLongPressToCopy" xml:space="preserve">
+    <value>Tryck för att öppna, eller tryck länge för att kopiera.</value>
+  </data>
+  <data name="LongPressToCopy" xml:space="preserve">
+    <value>Tryck länge för att kopiera.</value>
+  </data>
+  <data name="DestroyToken" xml:space="preserve">
+    <value>Förstör token</value>
   </data>
 </root>

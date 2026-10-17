@@ -14755,7 +14755,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Note sent..
+        ///   Looks up a localized string similar to {0} sent.
         /// </summary>
         public static string NoteCommandSent {
             get {
@@ -15057,6 +15057,141 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string TokensEmptyHint {
             get {
                 return ResourceManager.GetString("TokensEmptyHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ended.
+        /// </summary>
+        public static string StateEnded {
+            get {
+                return ResourceManager.GetString("StateEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All {0} variables.
+        /// </summary>
+        public static string AllVariables {
+            get {
+                return ResourceManager.GetString("AllVariables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No actions now.
+        /// </summary>
+        public static string NoActionsNow {
+            get {
+                return ResourceManager.GetString("NoActionsNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} has ended, so there is nothing more to run. Its history is still here..
+        /// </summary>
+        public static string NoActionsEnded {
+            get {
+                return ResourceManager.GetString("NoActionsEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of its actions can be run in the current state..
+        /// </summary>
+        public static string NoActionsInState {
+            get {
+                return ResourceManager.GetString("NoActionsInState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The values as the token describes them now.
+        /// </summary>
+        public static string PresentReportDescription {
+            get {
+                return ResourceManager.GetString("PresentReportDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How the values changed over time.
+        /// </summary>
+        public static string HistoryReportDescription {
+            get {
+                return ResourceManager.GetString("HistoryReportDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The states and how they connect.
+        /// </summary>
+        public static string StatesReportDescription {
+            get {
+                return ResourceManager.GetString("StatesReportDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More.
+        /// </summary>
+        public static string More {
+            get {
+                return ResourceManager.GetString("More", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        public static string Run {
+            get {
+                return ResourceManager.GetString("Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Asks for values..
+        /// </summary>
+        public static string NoteCommandAsksForValues {
+            get {
+                return ResourceManager.GetString("NoteCommandAsksForValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to was {0}.
+        /// </summary>
+        public static string ValueWas {
+            get {
+                return ResourceManager.GetString("ValueWas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to open, or long press to copy..
+        /// </summary>
+        public static string TapToOpenLongPressToCopy {
+            get {
+                return ResourceManager.GetString("TapToOpenLongPressToCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Long press to copy..
+        /// </summary>
+        public static string LongPressToCopy {
+            get {
+                return ResourceManager.GetString("LongPressToCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destroy token.
+        /// </summary>
+        public static string DestroyToken {
+            get {
+                return ResourceManager.GetString("DestroyToken", resourceCulture);
             }
         }
     }

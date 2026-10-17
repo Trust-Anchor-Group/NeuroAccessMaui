@@ -4,6 +4,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
@@ -40,9 +41,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 	}
 
 	/// <summary>
-	/// A labeled value shown in token details. It opens and copies its value according to its <see cref="Kind"/>.
+	/// A labeled value shown as a row in token details. A tap opens the value according to its <see cref="Kind"/>, and a
+	/// long press copies it.
 	/// </summary>
-	public partial class TokenPropertyItem : ObservableObject
+	public partial class TokenPropertyItem : ObservableObject, IListCardItem
 	{
 		/// <summary>
 		/// Creates a property row that opens and copies its shown value.
@@ -116,11 +118,33 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		public bool IsActionable => this.Kind != TokenPropertyKind.Text;
 
 		/// <summary>
-		/// Opens the value according to its kind.
+		/// What screen readers say about the row: the label and the value.
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsActionable))]
+		public string AccessibleDescription => this.Label + ", " + this.Value;
+
+		/// <summary>
+		/// What screen readers say the row does.
+		/// </summary>
+		public string AccessibleHint => this.IsActionable
+			? ServiceRef.Localizer[nameof(AppResources.TapToOpenLongPressToCopy)]
+			: ServiceRef.Localizer[nameof(AppResources.LongPressToCopy)];
+
+		/// <summary>
+		/// Where the row sits in its card.
+		/// </summary>
+		[ObservableProperty]
+		private ListCardPosition cardPosition;
+
+		/// <summary>
+		/// Opens the value according to its kind. Plain text isn't opened. The command can always run, so the row keeps
+		/// taking the long press that copies it.
+		/// </summary>
+		[RelayCommand]
 		private async Task Open()
 		{
+			if (!this.IsActionable)
+				return;
+
 			try
 			{
 				switch (this.Kind)

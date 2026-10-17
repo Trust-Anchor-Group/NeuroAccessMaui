@@ -4920,7 +4920,7 @@ Document read. You can move your iPhone.</value>
     <value>The command didn't work. Please try again.</value>
   </data>
   <data name="NoteCommandSent" xml:space="preserve">
-    <value>Note sent.</value>
+    <value>{0} sent</value>
   </data>
   <data name="ContactHasNoLegalId" xml:space="preserve">
     <value>This contact hasn't shared their identity with you.</value>
@@ -5020,5 +5020,50 @@ Document read. You can move your iPhone.</value>
   </data>
   <data name="TokensEmptyHint" xml:space="preserve">
     <value>Create one from a template, or ask someone to send you one.</value>
+  </data>
+  <data name="StateEnded" xml:space="preserve">
+    <value>Ended</value>
+  </data>
+  <data name="AllVariables" xml:space="preserve">
+    <value>All {0} variables</value>
+  </data>
+  <data name="NoActionsNow" xml:space="preserve">
+    <value>No actions now</value>
+  </data>
+  <data name="NoActionsEnded" xml:space="preserve">
+    <value>{0} has ended, so there is nothing more to run. Its history is still here.</value>
+  </data>
+  <data name="NoActionsInState" xml:space="preserve">
+    <value>None of its actions can be run in the current state.</value>
+  </data>
+  <data name="PresentReportDescription" xml:space="preserve">
+    <value>The values as the token describes them now</value>
+  </data>
+  <data name="HistoryReportDescription" xml:space="preserve">
+    <value>How the values changed over time</value>
+  </data>
+  <data name="StatesReportDescription" xml:space="preserve">
+    <value>The states and how they connect</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>More</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="NoteCommandAsksForValues" xml:space="preserve">
+    <value>Asks for values.</value>
+  </data>
+  <data name="ValueWas" xml:space="preserve">
+    <value>was {0}</value>
+  </data>
+  <data name="TapToOpenLongPressToCopy" xml:space="preserve">
+    <value>Tap to open, or long press to copy.</value>
+  </data>
+  <data name="LongPressToCopy" xml:space="preserve">
+    <value>Long press to copy.</value>
+  </data>
+  <data name="DestroyToken" xml:space="preserve">
+    <value>Destroy token</value>
   </data>
 </root>

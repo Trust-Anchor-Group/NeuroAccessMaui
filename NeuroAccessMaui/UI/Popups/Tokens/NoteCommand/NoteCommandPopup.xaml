@@ -7,8 +7,25 @@
                 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Tokens.NoteCommand">
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Tokens.NoteCommand"
+                Placement="Bottom"
+                PopupMargin="0"
+                CardWidthFraction="1"
+                CardMaxHeightFraction="0.9"
+                CardPadding="16,10,16,28"
+                CardStyle="{DynamicResource NoteCommandSheetBorder}">
     <base:BasePopup.Resources>
+        <!-- A sheet that rises from the bottom edge, named after the command -->
+        <Style x:Key="NoteCommandSheetBorder"
+               TargetType="Border">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource SurfaceBackgroundWL}" />
+            <Setter Property="StrokeThickness"
+                    Value="0" />
+            <Setter Property="StrokeShape"
+                    Value="RoundRectangle 20,20,0,0" />
+        </Style>
+
         <!-- The same editors as in contracts, for the seven parameter types a note command can have -->
         <objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
                                                BooleanTemplate="{StaticResource BooleanParameterTemplate}"
@@ -21,27 +38,52 @@
                                                DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
     </base:BasePopup.Resources>
 
-    <ScrollView VerticalOptions="Center">
-        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-            <Label Text="{Binding Title}"
-                   Style="{DynamicResource SectionTitleLabel}"
-                   SemanticProperties.HeadingLevel="Level1" />
-            <Label Text="{Binding ToolTip}"
-                   IsVisible="{Binding HasToolTip}"
-                   Style="{DynamicResource ItemDescriptionLabel}"
-                   TextColor="{DynamicResource ContentSecondaryWL}" />
+    <ScrollView>
+        <VerticalStackLayout Spacing="18">
+            <BoxView WidthRequest="36"
+                     HeightRequest="4"
+                     CornerRadius="2"
+                     Color="{DynamicResource SurfaceDividerWL}"
+                     HorizontalOptions="Center"
+                     AutomationProperties.IsInAccessibleTree="False" />
+
+            <!-- The command's name and what it does, with a close button -->
+            <Grid ColumnDefinitions="*,44"
+                  ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0"
+                                     Spacing="4"
+                                     Padding="0,4,0,0">
+                    <Label Text="{Binding Title}"
+                           FontFamily="SpaceGroteskBold"
+                           FontSize="{StaticResource FontSize4xl}"
+                           TextColor="{DynamicResource ContentPrimaryWL}"
+                           LineBreakMode="WordWrap"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Text="{Binding ToolTip}"
+                           IsVisible="{Binding HasToolTip}"
+                           FontSize="{StaticResource FontSizeMd}"
+                           TextColor="{DynamicResource ContentSecondaryWL}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+                <controls:SvgButton Grid.Column="1"
+                                    SvgSource="close.svg"
+                                    Style="{DynamicResource IconButton}"
+                                    Command="{Binding CancelCommand}"
+                                    WidthRequest="44"
+                                    HeightRequest="44"
+                                    VerticalOptions="Start"
+                                    SemanticProperties.Description="{l:Localize Cancel}" />
+            </Grid>
 
             <!-- Parameters -->
             <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
                                  BindableLayout.ItemsSource="{Binding Parameters}"
                                  BindableLayout.ItemTemplateSelector="{StaticResource ParameterTemplateSelector}" />
 
+            <!-- The button runs the command, so it carries the command's name -->
             <controls:TextButton Command="{Binding SendCommand}"
                                  Style="{DynamicResource FilledTextButton}"
-                                 LabelData="{l:Localize Send}" />
-            <controls:TextButton Command="{Binding CancelCommand}"
-                                 Style="{DynamicResource OutlinedTextButton}"
-                                 LabelData="{l:Localize Cancel}" />
+                                 LabelData="{Binding Title}" />
         </VerticalStackLayout>
     </ScrollView>
 </base:BasePopup>

@@ -278,4 +278,140 @@
 				Value="{DynamicResource SurfaceDividerWL}" />
 	</Style>
 
+	<!-- Token details: section headings, tiles for quick actions, chips in the hero, and plain rows in a card -->
+	<Style x:Key="ListCardSectionLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeMd}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentSecondaryWL}" />
+		<Setter Property="Margin"
+				Value="8,20,8,8" />
+		<Setter Property="SemanticProperties.HeadingLevel"
+				Value="Level2" />
+	</Style>
+
+	<Style x:Key="ListCardActionTileBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="HeightRequest"
+				Value="68" />
+		<Setter Property="Padding"
+				Value="4,0" />
+		<Setter Property="BackgroundColor"
+				Value="{DynamicResource SurfaceElevation1WL}" />
+		<Setter Property="Stroke"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="StrokeThickness"
+				Value="1" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 12" />
+	</Style>
+
+	<Style x:Key="ListCardActionTileLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskSemiBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeSm}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentPrimaryWL}" />
+		<Setter Property="HorizontalOptions"
+				Value="Center" />
+		<Setter Property="HorizontalTextAlignment"
+				Value="Center" />
+		<Setter Property="LineBreakMode"
+				Value="TailTruncation" />
+		<Setter Property="MaxLines"
+				Value="1" />
+	</Style>
+
+	<Style x:Key="ListCardHeroChipBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="HeightRequest"
+				Value="24" />
+		<Setter Property="Padding"
+				Value="10,0" />
+		<Setter Property="Margin"
+				Value="0,0,8,8" />
+		<Setter Property="BackgroundColor"
+				Value="{DynamicResource TnPSuccessbgWL}" />
+		<Setter Property="StrokeThickness"
+				Value="0" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 12" />
+	</Style>
+
+	<Style x:Key="ListCardHeroChipLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeSm}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentAccessWL}" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+		<Setter Property="VerticalTextAlignment"
+				Value="Center" />
+		<Setter Property="LineBreakMode"
+				Value="TailTruncation" />
+		<Setter Property="MaxLines"
+				Value="1" />
+	</Style>
+
+	<Style x:Key="ListCardRowKeyLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeMd}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentSecondaryWL}" />
+		<Setter Property="LineBreakMode"
+				Value="TailTruncation" />
+		<Setter Property="MaxLines"
+				Value="1" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<Style x:Key="ListCardRowLinkLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskSemiBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeMd}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentAccessWL}" />
+		<Setter Property="LineBreakMode"
+				Value="TailTruncation" />
+		<Setter Property="MaxLines"
+				Value="1" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<!-- A thin line between rows of a card that isn't drawn with list card segments -->
+	<Style x:Key="ListCardRowDivider"
+		   ApplyToDerivedTypes="False"
+		   TargetType="BoxView">
+		<Setter Property="HeightRequest"
+				Value="1" />
+		<Setter Property="Margin"
+				Value="16,0,0,0" />
+		<Setter Property="VerticalOptions"
+				Value="Start" />
+		<Setter Property="Color"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="InputTransparent"
+				Value="True" />
+	</Style>
+
 </ResourceDictionary>
