@@ -59,6 +59,7 @@ using Waher.Networking.XMPP.Abuse;
 using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
+using Waher.Networking.XMPP.Contracts.Search;
 using Waher.Networking.XMPP.Control;
 using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.Events;
@@ -3823,6 +3824,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public Task<Contract> GetContract(CaseInsensitiveString ContractId)
 		{
 			return this.ContractsClient.GetContractAsync(ContractId);
+		}
+
+		/// <summary>
+		/// Searches the public contracts of the Neuron's contracts service, one page at a time.
+		/// </summary>
+		/// <param name="Filter">Search filters. Only contracts that match every filter are returned.</param>
+		/// <param name="Offset">Number of matching contracts to skip.</param>
+		/// <param name="MaxCount">Maximum number of contracts to return.</param>
+		/// <returns>The IDs of the matching contracts, and if there are more.</returns>
+		public async Task<Waher.Networking.XMPP.Contracts.EventArguments.SearchResultEventArgs> SearchPublicContracts(SearchFilter[] Filter, int Offset, int MaxCount)
+		{
+			ContractsClient Client = this.ContractsClient;
+			Waher.Networking.XMPP.Contracts.EventArguments.SearchResultEventArgs e = await Client.SearchAsync(Client.ComponentAddress, Offset, MaxCount, Filter);
+
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(e.ErrorText);
+
+			return e;
 		}
 
 		/// <summary>

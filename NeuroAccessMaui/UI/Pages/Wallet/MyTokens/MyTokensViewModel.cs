@@ -513,6 +513,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			: ServiceRef.Localizer[nameof(AppResources.ChooseAToken)];
 
 		/// <summary>
+		/// If the user can create tokens from here. Not while choosing a token.
+		/// </summary>
+		public bool CanCreateToken => this.navigationArgs is null;
+
+		/// <summary>
 		/// Text shown when the tokens couldn't be loaded.
 		/// </summary>
 		[ObservableProperty]
@@ -656,6 +661,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		/// <summary>
+		/// Creates tokens from a token creation template.
+		/// </summary>
+		[RelayCommand]
+		private Task CreateToken()
+		{
+			return ServiceRef.NeuroWalletOrchestratorService.CreateTokenAsync();
 		}
 
 		/// <summary>

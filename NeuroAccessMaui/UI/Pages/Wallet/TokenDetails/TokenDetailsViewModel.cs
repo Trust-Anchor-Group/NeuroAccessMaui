@@ -18,14 +18,15 @@ using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
+using NeuroAccessMaui.UI.Popups.Tokens.NoteCommand;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
+using NeuroFeatures.NoteCommands;
 using NeuroFeatures.Tags;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Web;
-using System.Xml;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -48,6 +49,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private readonly Dictionary<string, object> machineVariables = [];
 		private string? machineId;
 		private bool historyAvailable;
+		private bool hasTransferTemplate;
+		private bool hasConsignmentTemplate;
+		private bool hasDonationTemplate;
+		private bool hasDestructionTemplate;
+		private NoteCommandItem[] noteCommands = [];
 
 		/// <inheritdoc/>
 		public override async Task OnInitializeAsync()
@@ -152,6 +158,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.HasEmbeddedLayout = this.IsVerified && Item.HasEmbeddedLayout;
 			this.OrdinalText = ServiceRef.Localizer[nameof(AppResources.TokenOrdinalOfBatch), this.Ordinal ?? 0, this.BatchSize ?? 0];
 			this.DefinitionSchemaUrl = GetSchemaUrl(this.TokenId, this.DefinitionNamespace, this.DefinitionSchemaDigest);
+			this.WebUrl = this.HasStateMachine && TokenShareFormatter.IsPublic(Item.Token) ? GetWebUrl(this.TokenId) : null;
+			this.HasWebUrl = this.WebUrl is not null;
 			this.UpdateOwnershipText();
 
 			string? RawDescription = Item.Description;
@@ -174,8 +182,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			this.UpdateActions();
 
+			if (this.IsVerified)
+				_ = this.LoadTemplateAvailabilityAsync();
+
 			if (this.HasStateMachine)
+			{
 				this.MachineStateTask.Load(this.LoadMachineStateAsync);
+				_ = this.LoadNoteCommandsAsync(Item.Token);
+			}
 
 			if (this.IsVerified && !this.IsMyToken)
 				_ = this.ProbeHistoryAsync();
@@ -486,20 +500,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <returns>The address, or null when it can't be known.</returns>
 		private static string? GetSchemaUrl(string? TokenId, string? Namespace, byte[]? Digest)
 		{
-			if (string.IsNullOrEmpty(TokenId) || string.IsNullOrEmpty(Namespace) || Digest is null || Digest.Length == 0)
+			if (string.IsNullOrEmpty(Namespace) || Digest is null || Digest.Length == 0)
 				return null;
 
-			int i = TokenId.IndexOf('@');
-			if (i < 0)
+			string? Host = GetNeuronHost(TokenId);
+			if (Host is null)
 				return null;
-
-			string Domain = TokenId[(i + 1)..];
-
-			i = Domain.IndexOf('.');
-			if (i <= 0 || i >= Domain.Length - 1)
-				return null;
-
-			string Host = Domain[(i + 1)..];
 
 			StringBuilder sb = new();
 
@@ -512,6 +518,51 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			sb.Append("&Download=1");
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Gets the web address of the token's public page on the Neuron that hosts it. Only public tokens with a state
+		/// machine have one.
+		/// </summary>
+		/// <param name="TokenId">Token ID.</param>
+		/// <returns>The address, or null when the token ID doesn't have the expected form.</returns>
+		private static string? GetWebUrl(string? TokenId)
+		{
+			string? Host = GetNeuronHost(TokenId);
+			if (Host is null || TokenId is null)
+				return null;
+
+			int i = TokenId.IndexOf('@');
+			if (!Guid.TryParse(TokenId[..i], out _))
+				return null;
+
+			return "https://" + Host + "/NF/" + TokenId;
+		}
+
+		/// <summary>
+		/// Gets the host name of the Neuron that hosts a token: the token ID's domain, without the label of the component
+		/// hosting tokens.
+		/// </summary>
+		/// <param name="TokenId">Token ID.</param>
+		/// <returns>The host name, or null when it can't be known.</returns>
+		private static string? GetNeuronHost(string? TokenId)
+		{
+			if (string.IsNullOrEmpty(TokenId))
+				return null;
+
+			int i = TokenId.IndexOf('@');
+			if (i <= 0)
+				return null;
+
+			string Domain = TokenId[(i + 1)..];
+
+			i = Domain.IndexOf('.');
+			if (i <= 0 || i >= Domain.Length - 1)
+				return null;
+
+			string Host = Domain[(i + 1)..];
+
+			return Uri.CheckHostName(Host) == UriHostNameType.Dns ? Host : null;
 		}
 
 		#endregion
@@ -530,18 +581,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 		/// <summary>
 		/// Works out which actions are offered, from where the token comes from, who owns it, if it has expired, and which
-		/// templates are available.
+		/// templates are available. Expired tokens can't be sold, given or destroyed.
 		/// </summary>
 		private void UpdateActions()
 		{
 			bool CanChangeOwner = this.IsVerified && !this.IsExpired && !this.HasLeftWallet;
-			bool HasTransferTemplate = !string.IsNullOrEmpty(Constants.ContractTemplates.TransferTokenTemplate);
-			bool HasConsignmentTemplate = !string.IsNullOrEmpty(Constants.ContractTemplates.TokenConsignmentTemplate);
 
-			this.CanOfferToSell = CanChangeOwner && this.IsMyToken && HasTransferTemplate;
-			this.CanConsign = CanChangeOwner && this.IsMyToken && HasConsignmentTemplate;
+			this.CanOfferToSell = CanChangeOwner && this.IsMyToken && this.hasTransferTemplate;
+			this.CanConsign = CanChangeOwner && this.IsMyToken && this.hasConsignmentTemplate;
 			this.CanSell = this.CanOfferToSell || this.CanConsign;
-			this.CanOfferToBuy = CanChangeOwner && !this.IsMyToken && HasTransferTemplate;
+			this.CanOfferToBuy = CanChangeOwner && !this.IsMyToken && this.hasTransferTemplate;
+			this.CanGive = CanChangeOwner && this.IsMyToken && this.hasDonationTemplate;
+			this.CanDestroy = CanChangeOwner && this.IsMyToken && this.OwnerCanDestroyIndividual && this.hasDestructionTemplate;
 			this.CanViewHistory = this.IsVerified && (this.IsMyToken || this.historyAvailable);
 			this.HistoryLabel = this.IsMyToken
 				? ServiceRef.Localizer[nameof(AppResources.NotesAndHistory)]
@@ -554,6 +605,79 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			if (!this.CanSell)
 				this.IsSellOptionsVisible = false;
+
+			this.UpdateNoteCommands();
+		}
+
+		/// <summary>
+		/// Finds out which token actions have a contract template on the Neuron, and updates the actions.
+		/// </summary>
+		private async Task LoadTemplateAvailabilityAsync()
+		{
+			try
+			{
+				ITokenTemplateService Templates = ServiceRef.TokenTemplateService;
+
+				Task<bool> Transfer = Templates.HasTemplateAsync(TokenAction.Sell);
+				Task<bool> Consignment = Templates.HasTemplateAsync(TokenAction.Consign);
+				Task<bool> Donation = Templates.HasTemplateAsync(TokenAction.Give);
+				Task<bool> Destruction = Templates.HasTemplateAsync(TokenAction.Destroy);
+
+				await Task.WhenAll(Transfer, Consignment, Donation, Destruction);
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.hasTransferTemplate = Transfer.Result;
+					this.hasConsignmentTemplate = Consignment.Result;
+					this.hasDonationTemplate = Donation.Result;
+					this.hasDestructionTemplate = Destruction.Result;
+					this.UpdateActions();
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Fills in a contract template for a token action, and opens it for review.
+		/// </summary>
+		/// <param name="Action">The token action.</param>
+		/// <param name="RecipientLegalId">Legal ID of the person a token is given to, if any.</param>
+		private async Task PrepareContractAsync(TokenAction Action, string? RecipientLegalId)
+		{
+			try
+			{
+				Contract? Template = await ServiceRef.TokenTemplateService.GetTemplateAsync(Action);
+				if (Template is null)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
+				TokenContractContext Context = new()
+				{
+					TokenId = this.TokenId,
+					OwnershipContract = this.OwnershipContract,
+					OwnerLegalId = this.Owner,
+					RecipientLegalId = RecipientLegalId,
+					Category = this.Category,
+					FriendlyName = this.FriendlyName
+				};
+
+				NewContractNavigationArgs Args = await ServiceRef.TokenTemplateService.PrepareAsync(Action, Template, Context);
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await TokenErrors.ShowAsync(Ex);
+			}
 		}
 
 		private bool IsThisToken(string? TokenId)
@@ -656,6 +780,89 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.MachineStateText = this.MachineEnded
 				? ServiceRef.Localizer[nameof(AppResources.TokenStateEnded)]
 				: ServiceRef.Localizer[nameof(AppResources.TokenStateBody), State ?? string.Empty];
+
+			this.UpdateNoteCommands();
+		}
+
+		/// <summary>
+		/// Loads the note commands of the token's state machine, keeping those the app may run.
+		/// </summary>
+		/// <param name="Token">The token.</param>
+		private async Task LoadNoteCommandsAsync(Token Token)
+		{
+			try
+			{
+				NoteCommand[] Commands = await Token.GetNoteCommands();
+				List<NoteCommandItem> Items = [];
+
+				foreach (NoteCommand Command in Commands)
+				{
+					if (!Command.OwnerNote && !Command.ExternalNote)
+						continue;
+
+					if (!NoteCommandRunner.CanRun(Command, out string[] AssignedNames))
+					{
+						ServiceRef.LogService.LogWarning("Note command " + Command.Id + " of token " + Token.TokenId +
+							" was not shown, since its scripts aren't allowed in the app.");
+						continue;
+					}
+
+					Items.Add(new NoteCommandItem(Command, AssignedNames, this.RunNoteCommandAsync));
+				}
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.noteCommands = [.. Items];
+					this.UpdateNoteCommands();
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Shows the note commands the user can run: owner commands for the owner, and external commands for others, while
+		/// the state machine runs. Called on the main thread.
+		/// </summary>
+		private void UpdateNoteCommands()
+		{
+			List<NoteCommandItem> Visible = [];
+
+			if (this.HasStateMachine && !this.MachineEnded)
+			{
+				foreach (NoteCommandItem Item in this.noteCommands)
+				{
+					if (this.IsMyToken ? Item.Command.OwnerNote : Item.Command.ExternalNote)
+						Visible.Add(Item);
+				}
+			}
+
+			SetItems(this.NoteCommands, Visible);
+			this.HasNoteCommands = this.NoteCommands.Count > 0;
+		}
+
+		/// <summary>
+		/// Runs a note command. Commands with parameters ask for their values first.
+		/// </summary>
+		/// <param name="Item">The note command.</param>
+		private async Task RunNoteCommandAsync(NoteCommandItem Item)
+		{
+			string? TokenId = this.TokenId;
+			if (string.IsNullOrEmpty(TokenId))
+				return;
+
+			if (!Item.HasParameters)
+			{
+				await NoteCommandRunner.RunAsync(Item.Command, TokenId, Item.AssignedNames);
+				return;
+			}
+
+			NoteCommandViewModel ViewModel = new(Item, TokenId);
+			await ViewModel.LoadAsync();
+			await ServiceRef.PopupService.PushAsync(new NoteCommandPopup(ViewModel));
+			await ViewModel.Result;
 		}
 
 		/// <summary>
@@ -717,6 +924,41 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// Rows in "Ownership and dates".
 		/// </summary>
 		public ObservableCollection<TokenPropertyItem> OwnershipProperties { get; } = [];
+
+		/// <summary>
+		/// The note commands the user can run.
+		/// </summary>
+		public ObservableCollection<NoteCommandItem> NoteCommands { get; } = [];
+
+		/// <summary>
+		/// If there are note commands the user can run.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasNoteCommands;
+
+		/// <summary>
+		/// If the owner can give the token to someone.
+		/// </summary>
+		[ObservableProperty]
+		private bool canGive;
+
+		/// <summary>
+		/// If the owner can destroy the token.
+		/// </summary>
+		[ObservableProperty]
+		private bool canDestroy;
+
+		/// <summary>
+		/// The web address of the token's public page, if it has one.
+		/// </summary>
+		[ObservableProperty]
+		private string? webUrl;
+
+		/// <summary>
+		/// If the token has a public web page.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasWebUrl;
 
 		/// <summary>
 		/// Rows in "Technical details".
@@ -1313,248 +1555,128 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// Command to consign the token to an auction on the marketplace.
 		/// </summary>
 		[RelayCommand]
-		private async Task PublishMarketplace()
+		private Task PublishMarketplace()
 		{
-			try
-			{
-				CreationAttributesEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-				Contract Template = await ServiceRef.XmppService.GetContract(Constants.ContractTemplates.TokenConsignmentTemplate);
-				Template.Visibility = ContractVisibility.Public;
-				NewContractNavigationArgs NewContractArgs = new(Template, true,
-					new Dictionary<CaseInsensitiveString, object>()
-					{
-						{ "TokenID", this.TokenId ?? string.Empty },
-						{ "Category", this.Category ?? string.Empty },
-						{ "FriendlyName", this.FriendlyName ?? string.Empty },
-						{ "CommissionPercent", e.Commission },
-						{ "Currency", e.Currency }
-					});
-
-				Template.Parts =
-				[
-					new()
-					{
-						Role = "Seller",
-						LegalId = ServiceRef.TagProfile.LegalIdentity?.Id
-					},
-					new()
-					{
-						Role = "Auctioneer",
-						LegalId = e.TrustProviderId
-					}
-				];
-
-				NewContractArgs.SuppressProposal(e.TrustProviderId);
-
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
-			}
-			catch (Exception ex)
-			{
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			return this.PrepareContractAsync(TokenAction.Consign, null);
 		}
 
 		/// <summary>
 		/// Command to offer the token for sale.
 		/// </summary>
 		[RelayCommand]
-		private async Task OfferToSell()
+		private Task OfferToSell()
 		{
-			try
-			{
-				Dictionary<CaseInsensitiveString, object> Parameters = [];
-				string? TrustProviderId = null;
-				Contract Template = await ServiceRef.XmppService.GetContract(Constants.ContractTemplates.TransferTokenTemplate);
-				Template.Visibility = ContractVisibility.Public;
-
-				if (Template.ForMachinesLocalName == "Transfer" && Template.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures)
-				{
-					CreationAttributesEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-					XmlDocument Doc = new()
-					{
-						PreserveWhitespace = true
-					};
-					Doc.LoadXml(Template.ForMachines.OuterXml);
-
-					TrustProviderId = e.TrustProviderId;
-
-					XmlNamespaceManager NamespaceManager = new(Doc.NameTable);
-					NamespaceManager.AddNamespace("nft", NeuroFeaturesClient.NamespaceNeuroFeatures);
-
-					string? SellerRole = Doc.SelectSingleNode("/nft:Transfer/nft:Seller/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? TrustProviderRole = Doc.SelectSingleNode("/nft:Transfer/nft:TrustProvider/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? TokenIdParameter = Doc.SelectSingleNode("/nft:Transfer/nft:TokenID/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-					string? CurrencyParameter = Doc.SelectSingleNode("/nft:Transfer/nft:Currency/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-					string? CommissionParameter = Doc.SelectSingleNode("/nft:Transfer/nft:CommissionPercent/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-					string? OwnershipContractParameter = Doc.SelectSingleNode("/nft:Transfer/nft:OwnershipContract/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-
-					if (Template.Parts is null)
-					{
-						List<Part> Parts = [];
-
-						if (!string.IsNullOrEmpty(SellerRole))
-						{
-							Parts.Add(new Part()
-							{
-								LegalId = ServiceRef.TagProfile.LegalIdentity?.Id,
-								Role = SellerRole
-							});
-						}
-
-						if (!string.IsNullOrEmpty(TrustProviderRole))
-						{
-							Parts.Add(new Part()
-							{
-								LegalId = e.TrustProviderId,
-								Role = TrustProviderRole
-							});
-						}
-
-						Template.Parts = [.. Parts];
-						Template.PartsMode = ContractParts.ExplicitlyDefined;
-					}
-					else
-					{
-						foreach (Part Part in Template.Parts)
-						{
-							if (Part.Role == SellerRole)
-								Part.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
-							else if (Part.Role == TrustProviderRole)
-								Part.LegalId = e.TrustProviderId;
-						}
-					}
-
-					if (!string.IsNullOrEmpty(TokenIdParameter))
-						Parameters[TokenIdParameter] = this.TokenId ?? string.Empty;
-
-					if (!string.IsNullOrEmpty(CurrencyParameter))
-						Parameters[CurrencyParameter] = e.Currency;
-
-					if (!string.IsNullOrEmpty(CommissionParameter))
-						Parameters[CommissionParameter] = e.Commission;
-
-					if (!string.IsNullOrEmpty(OwnershipContractParameter))
-						Parameters[OwnershipContractParameter] = this.OwnershipContract ?? string.Empty;
-				}
-
-				NewContractNavigationArgs NewContractArgs = new(Template, true, Parameters);
-
-				if (!string.IsNullOrEmpty(TrustProviderId))
-					NewContractArgs.SuppressProposal(TrustProviderId);
-
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
-			}
-			catch (Exception ex)
-			{
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			return this.PrepareContractAsync(TokenAction.Sell, null);
 		}
 
 		/// <summary>
 		/// Command to offer to buy the token.
 		/// </summary>
 		[RelayCommand]
-		private async Task OfferToBuy()
+		private Task OfferToBuy()
+		{
+			return this.PrepareContractAsync(TokenAction.Buy, null);
+		}
+
+		/// <summary>
+		/// Command to give the token to a contact, or to someone whose identity is scanned. The recipient must have a legal
+		/// identity, since the donation contract names them.
+		/// </summary>
+		[RelayCommand]
+		private async Task Give()
 		{
 			try
 			{
-				Dictionary<CaseInsensitiveString, object> Parameters = [];
-				string? TrustProviderId = null;
-				Contract Template = await ServiceRef.XmppService.GetContract(Constants.ContractTemplates.TransferTokenTemplate);
-				Template.Visibility = ContractVisibility.Public;
-
-				if (Template.ForMachinesLocalName == "Transfer" && Template.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures)
+				TaskCompletionSource<ContactInfoModel?> Selected = new();
+				ContactListNavigationArgs ContactListArgs = new(ServiceRef.Localizer[nameof(AppResources.ChooseTokenRecipient)], Selected)
 				{
-					CreationAttributesEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-					XmlDocument Doc = new()
-					{
-						PreserveWhitespace = true
-					};
-					Doc.LoadXml(Template.ForMachines.OuterXml);
+					CanScanQrCode = true,
+				};
 
-					TrustProviderId = e.TrustProviderId;
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
 
-					XmlNamespaceManager NamespaceManager = new(Doc.NameTable);
-					NamespaceManager.AddNamespace("nft", NeuroFeaturesClient.NamespaceNeuroFeatures);
+				ContactInfoModel? Contact = await Selected.Task;
+				if (Contact is null)
+					return;
 
-					string? BuyerRole = Doc.SelectSingleNode("/nft:Transfer/nft:Buyer/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? SellerRole = Doc.SelectSingleNode("/nft:Transfer/nft:Seller/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? TrustProviderRole = Doc.SelectSingleNode("/nft:Transfer/nft:TrustProvider/nft:RoleReference/@role", NamespaceManager)?.Value;
-					string? TokenIdParameter = Doc.SelectSingleNode("/nft:Transfer/nft:TokenID/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-					string? CurrencyParameter = Doc.SelectSingleNode("/nft:Transfer/nft:Currency/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-					string? CommissionParameter = Doc.SelectSingleNode("/nft:Transfer/nft:CommissionPercent/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-					string? OwnershipContractParameter = Doc.SelectSingleNode("/nft:Transfer/nft:OwnershipContract/nft:ParameterReference/@parameter", NamespaceManager)?.Value;
-
-					if (Template.Parts is null)
-					{
-						List<Part> Parts = [];
-
-						if (!string.IsNullOrEmpty(BuyerRole))
-						{
-							Parts.Add(new Part()
-							{
-								LegalId = ServiceRef.TagProfile.LegalIdentity?.Id,
-								Role = BuyerRole
-							});
-						}
-
-						if (!string.IsNullOrEmpty(SellerRole))
-						{
-							Parts.Add(new Part()
-							{
-								LegalId = this.Owner,
-								Role = SellerRole
-							});
-						}
-
-						if (!string.IsNullOrEmpty(TrustProviderRole))
-						{
-							Parts.Add(new Part()
-							{
-								LegalId = e.TrustProviderId,
-								Role = TrustProviderRole
-							});
-						}
-
-						Template.Parts = [.. Parts];
-						Template.PartsMode = ContractParts.ExplicitlyDefined;
-					}
-					else
-					{
-						foreach (Part Part in Template.Parts)
-						{
-							if (Part.Role == BuyerRole)
-								Part.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
-							else if (Part.Role == SellerRole)
-								Part.LegalId = this.Owner;
-							else if (Part.Role == TrustProviderRole)
-								Part.LegalId = e.TrustProviderId;
-						}
-					}
-
-					if (!string.IsNullOrEmpty(TokenIdParameter))
-						Parameters[TokenIdParameter] = this.TokenId ?? string.Empty;
-
-					if (!string.IsNullOrEmpty(CurrencyParameter))
-						Parameters[CurrencyParameter] = e.Currency;
-
-					if (!string.IsNullOrEmpty(CommissionParameter))
-						Parameters[CommissionParameter] = e.Commission;
-
-					if (!string.IsNullOrEmpty(OwnershipContractParameter))
-						Parameters[OwnershipContractParameter] = this.OwnershipContract ?? string.Empty;
+				string? LegalId = Contact.LegalId?.Value;
+				if (string.IsNullOrEmpty(LegalId))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.Give)],
+						ServiceRef.Localizer[nameof(AppResources.ContactHasNoLegalId)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
 				}
 
-				NewContractNavigationArgs NewContractArgs = new(Template, true, Parameters);
-
-				if (!string.IsNullOrEmpty(TrustProviderId))
-					NewContractArgs.SuppressProposal(TrustProviderId);
-
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await this.PrepareContractAsync(TokenAction.Give, LegalId);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Command to destroy the token. The user confirms first, and then reviews the destruction contract.
+		/// </summary>
+		[RelayCommand]
+		private async Task Destroy()
+		{
+			string Name = string.IsNullOrWhiteSpace(this.FriendlyName) ? this.ShortTokenId ?? this.TokenId ?? string.Empty : this.FriendlyName;
+
+			bool Confirmed = await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.Destroy)],
+				ServiceRef.Localizer[nameof(AppResources.DestroyTokenConfirm), Name],
+				ServiceRef.Localizer[nameof(AppResources.Destroy)],
+				ServiceRef.Localizer[nameof(AppResources.Cancel)]);
+
+			if (Confirmed)
+				await this.PrepareContractAsync(TokenAction.Destroy, null);
+		}
+
+		/// <summary>
+		/// Command to open the token's public page in the browser.
+		/// </summary>
+		[RelayCommand]
+		private async Task OpenOnWeb()
+		{
+			if (this.WebUrl is null)
+				return;
+
+			try
+			{
+				await App.OpenUrlAsync(this.WebUrl);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Command to share the address of the token's public page with other apps.
+		/// </summary>
+		[RelayCommand]
+		private async Task ShareLink()
+		{
+			if (this.WebUrl is null)
+				return;
+
+			try
+			{
+				await Microsoft.Maui.ApplicationModel.DataTransfer.Share.Default.RequestAsync(new ShareTextRequest()
+				{
+					Title = this.FriendlyName,
+					Uri = this.WebUrl
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 

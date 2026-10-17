@@ -157,7 +157,7 @@
 		<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Padding="16,16,16,0" Margin="16,16,16,0">
 			<VerticalStackLayout>
 				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-					   VerticalOptions="Center" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" Margin="0,40,0,0"/>
+					   VerticalOptions="Center" IsVisible="{Binding Path=ShowContractsMissing}" Text="{Binding EmptyText}" Margin="0,40,0,0"/>
 
 				<Grid ColumnDefinitions="*, auto"
 					  Margin="0,0,0,16"

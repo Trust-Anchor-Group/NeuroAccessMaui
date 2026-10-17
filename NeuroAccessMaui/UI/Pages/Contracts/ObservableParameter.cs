@@ -64,21 +64,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <returns></returns>
 		public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
 		{
-			ObservableParameter ParameterInfo = parameter switch
-			{
-				BooleanParameter BooleanParameter => new ObservableBooleanParameter(BooleanParameter),
-				DateParameter DateParameter => new ObservableDateParameter(DateParameter),
-				DateTimeParameter DateTimeParameter => new ObservableDateTimeParameter(DateTimeParameter),
-				NumericalParameter NumericalParameter => new ObservableNumericalParameter(NumericalParameter),
-				StringParameter StringParameter => new ObservableStringParameter(StringParameter),
-				TimeParameter TimeParameter => new ObservableTimeParameter(TimeParameter),
-				DurationParameter DurationParameter => new ObservableDurationParameter(DurationParameter),
-				RoleParameter RoleParameter => new ObservableRoleParameter(RoleParameter),
-				CalcParameter CalcParameter => new ObservableCalcParameter(CalcParameter),
-				ContractReferenceParameter ContractReferenceParameter => new ObservableContractReferenceParameter(ContractReferenceParameter),
-				GeoParameter GeoParameter => new ObservableGeoParameter(GeoParameter),
-				_ => new ObservableParameter(parameter)
-			};
+			ObservableParameter ParameterInfo = Wrap(parameter);
 
 			await ParameterInfo.InitializeAsync(contract);
 
@@ -96,6 +82,42 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 
 			return ParameterInfo;
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="ObservableParameter"/> for a parameter that isn't part of a contract, such
+		/// as a parameter of a token's note command. Without a contract there is no description, so the label is the
+		/// parameter's guide, or its name.
+		/// </summary>
+		/// <param name="parameter">The parameter object to wrap</param>
+		/// <returns>The wrapped parameter.</returns>
+		public static Task<ObservableParameter> CreateAsync(Parameter parameter)
+		{
+			return Task.FromResult(Wrap(parameter));
+		}
+
+		/// <summary>
+		/// Wraps a parameter in the observable type that matches its type.
+		/// </summary>
+		/// <param name="parameter">The parameter object to wrap</param>
+		/// <returns>The wrapped parameter.</returns>
+		private static ObservableParameter Wrap(Parameter parameter)
+		{
+			return parameter switch
+			{
+				BooleanParameter BooleanParameter => new ObservableBooleanParameter(BooleanParameter),
+				DateParameter DateParameter => new ObservableDateParameter(DateParameter),
+				DateTimeParameter DateTimeParameter => new ObservableDateTimeParameter(DateTimeParameter),
+				NumericalParameter NumericalParameter => new ObservableNumericalParameter(NumericalParameter),
+				StringParameter StringParameter => new ObservableStringParameter(StringParameter),
+				TimeParameter TimeParameter => new ObservableTimeParameter(TimeParameter),
+				DurationParameter DurationParameter => new ObservableDurationParameter(DurationParameter),
+				RoleParameter RoleParameter => new ObservableRoleParameter(RoleParameter),
+				CalcParameter CalcParameter => new ObservableCalcParameter(CalcParameter),
+				ContractReferenceParameter ContractReferenceParameter => new ObservableContractReferenceParameter(ContractReferenceParameter),
+				GeoParameter GeoParameter => new ObservableGeoParameter(GeoParameter),
+				_ => new ObservableParameter(parameter)
+			};
 		}
 		#endregion
 

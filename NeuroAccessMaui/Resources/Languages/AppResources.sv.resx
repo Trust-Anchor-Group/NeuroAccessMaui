@@ -4763,4 +4763,46 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="NoEventsYet" xml:space="preserve">
     <value>Inga händelser än.</value>
   </data>
+  <data name="CreateToken" xml:space="preserve">
+    <value>Skapa token</value>
+  </data>
+  <data name="OpenOnWeb" xml:space="preserve">
+    <value>Öppna på webben</value>
+  </data>
+  <data name="ShareLink" xml:space="preserve">
+    <value>Dela länk</value>
+  </data>
+  <data name="Give" xml:space="preserve">
+    <value>Ge bort</value>
+  </data>
+  <data name="Destroy" xml:space="preserve">
+    <value>Förstör</value>
+  </data>
+  <data name="DestroyTokenConfirm" xml:space="preserve">
+    <value>Vill du förstöra {0}? Det går inte att ångra.</value>
+  </data>
+  <data name="NoteCommandFailed" xml:space="preserve">
+    <value>Kommandot fungerade inte. Försök igen.</value>
+  </data>
+  <data name="NoteCommandSent" xml:space="preserve">
+    <value>Anteckningen har skickats.</value>
+  </data>
+  <data name="ContactHasNoLegalId" xml:space="preserve">
+    <value>Den här kontakten har inte delat sin identitet med dig.</value>
+  </data>
+  <data name="ChooseTokenRecipient" xml:space="preserve">
+    <value>Välj vem du vill ge token till</value>
+  </data>
+  <data name="NoCreationTemplates" xml:space="preserve">
+    <value>Skanna QR-koden för en tokenmall, eller be din leverantör om en.</value>
+  </data>
+  <data name="TokenCreated" xml:space="preserve">
+    <value>Token skapad</value>
+  </data>
+  <data name="TokensCreatedCount" xml:space="preserve">
+    <value>{0} token skapade</value>
+  </data>
+  <data name="TokensCreatedByContract" xml:space="preserve">
+    <value>Token som kontraktet skapade</value>
+  </data>
 </root>

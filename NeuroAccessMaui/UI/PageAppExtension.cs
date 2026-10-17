@@ -163,6 +163,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<INeuroWalletOrchestratorService, NeuroWalletOrchestratorService>();
 			Builder.Services.AddSingleton<ITokenUnreadTracker, TokenUnreadTracker>();
 			Builder.Services.AddSingleton<TokenNameCache>();
+			Builder.Services.AddSingleton<ITokenTemplateService, TokenTemplateService>();
 			Builder.Services.AddSingleton<IIdentityApplicationGateService, IdentityApplicationGateService>();
 			Builder.Services.AddSingleton<IKycService, KycService>();
 			Builder.Services.AddSingleton<KycEvidenceValidationService>();

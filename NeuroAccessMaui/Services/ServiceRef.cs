@@ -62,6 +62,7 @@ namespace NeuroAccessMaui.Services
 		private static INeuroWalletOrchestratorService? neuroWalletOrchestratorService;
 		private static ITokenUnreadTracker? tokenUnreadTracker;
 		private static TokenNameCache? tokenNameCache;
+		private static ITokenTemplateService? tokenTemplateService;
 		private static IIdentityApplicationGateService? identityApplicationGateService;
 		private static IAttachmentCacheService? attachmentCacheService;
 		private static ICryptoService? cryptoService;
@@ -282,6 +283,18 @@ namespace NeuroAccessMaui.Services
 			{
 				tokenNameCache ??= Provider.GetRequiredService<TokenNameCache>();
 				return tokenNameCache;
+			}
+		}
+
+		/// <summary>
+		/// Finds the contract templates for token actions, and prepares contracts from them.
+		/// </summary>
+		public static ITokenTemplateService TokenTemplateService
+		{
+			get
+			{
+				tokenTemplateService ??= Provider.GetRequiredService<ITokenTemplateService>();
+				return tokenTemplateService;
 			}
 		}
 

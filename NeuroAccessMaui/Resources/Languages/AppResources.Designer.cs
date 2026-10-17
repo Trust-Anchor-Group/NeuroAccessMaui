@@ -14690,5 +14690,131 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("NoEventsYet", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create token.
+        /// </summary>
+        public static string CreateToken {
+            get {
+                return ResourceManager.GetString("CreateToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open on web.
+        /// </summary>
+        public static string OpenOnWeb {
+            get {
+                return ResourceManager.GetString("OpenOnWeb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share link.
+        /// </summary>
+        public static string ShareLink {
+            get {
+                return ResourceManager.GetString("ShareLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Give.
+        /// </summary>
+        public static string Give {
+            get {
+                return ResourceManager.GetString("Give", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destroy.
+        /// </summary>
+        public static string Destroy {
+            get {
+                return ResourceManager.GetString("Destroy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destroy {0}? This can't be undone..
+        /// </summary>
+        public static string DestroyTokenConfirm {
+            get {
+                return ResourceManager.GetString("DestroyTokenConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The command didn't work. Please try again..
+        /// </summary>
+        public static string NoteCommandFailed {
+            get {
+                return ResourceManager.GetString("NoteCommandFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note sent..
+        /// </summary>
+        public static string NoteCommandSent {
+            get {
+                return ResourceManager.GetString("NoteCommandSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This contact hasn't shared their identity with you..
+        /// </summary>
+        public static string ContactHasNoLegalId {
+            get {
+                return ResourceManager.GetString("ContactHasNoLegalId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose who to give the token to.
+        /// </summary>
+        public static string ChooseTokenRecipient {
+            get {
+                return ResourceManager.GetString("ChooseTokenRecipient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan a token template's QR code, or ask your provider for one..
+        /// </summary>
+        public static string NoCreationTemplates {
+            get {
+                return ResourceManager.GetString("NoCreationTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token created.
+        /// </summary>
+        public static string TokenCreated {
+            get {
+                return ResourceManager.GetString("TokenCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} tokens created.
+        /// </summary>
+        public static string TokensCreatedCount {
+            get {
+                return ResourceManager.GetString("TokensCreatedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tokens this contract created.
+        /// </summary>
+        public static string TokensCreatedByContract {
+            get {
+                return ResourceManager.GetString("TokensCreatedByContract", resourceCulture);
+            }
+        }
     }
 }

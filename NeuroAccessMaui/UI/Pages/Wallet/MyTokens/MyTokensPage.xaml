@@ -125,13 +125,21 @@
 								</CollectionView.Footer>
 							</controls:LoadingCollectionView>
 
-							<!-- An empty wallet -->
+							<!-- An empty wallet. Only the button takes taps, so the list can still be pulled to refresh. -->
 							<VerticalStackLayout IsVisible="{Binding ShowNoTokens}" Padding="32" Spacing="12"
-												 HorizontalOptions="Center" VerticalOptions="Start" InputTransparent="True">
+												 HorizontalOptions="Center" VerticalOptions="Start"
+												 InputTransparent="True" CascadeInputTransparent="False">
 								<controls:SvgView Source="wallet.svg" HeightRequest="64" WidthRequest="64"
 												  TintColor="{DynamicResource ContentSecondaryWL}"
+												  InputTransparent="True"
 												  AutomationProperties.IsInAccessibleTree="False" />
-								<Label Text="{l:Localize NoTokensYet}" Style="{DynamicResource InfoLabel}" HorizontalTextAlignment="Center" />
+								<Label Text="{l:Localize NoTokensYet}" Style="{DynamicResource InfoLabel}" HorizontalTextAlignment="Center"
+									   InputTransparent="True" />
+								<controls:TextButton LabelData="{l:Localize CreateToken}"
+													 Command="{Binding CreateTokenCommand}"
+													 IsVisible="{Binding CanCreateToken}"
+													 Style="{DynamicResource FilledTextButton}"
+													 HorizontalOptions="Center" />
 							</VerticalStackLayout>
 
 							<!-- A search or filter that matched nothing -->

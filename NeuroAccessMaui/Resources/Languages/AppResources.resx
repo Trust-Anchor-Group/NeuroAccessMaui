@@ -4898,4 +4898,46 @@ Document read. You can move your iPhone.</value>
   <data name="NoEventsYet" xml:space="preserve">
     <value>No events yet.</value>
   </data>
+  <data name="CreateToken" xml:space="preserve">
+    <value>Create token</value>
+  </data>
+  <data name="OpenOnWeb" xml:space="preserve">
+    <value>Open on web</value>
+  </data>
+  <data name="ShareLink" xml:space="preserve">
+    <value>Share link</value>
+  </data>
+  <data name="Give" xml:space="preserve">
+    <value>Give</value>
+  </data>
+  <data name="Destroy" xml:space="preserve">
+    <value>Destroy</value>
+  </data>
+  <data name="DestroyTokenConfirm" xml:space="preserve">
+    <value>Destroy {0}? This can't be undone.</value>
+  </data>
+  <data name="NoteCommandFailed" xml:space="preserve">
+    <value>The command didn't work. Please try again.</value>
+  </data>
+  <data name="NoteCommandSent" xml:space="preserve">
+    <value>Note sent.</value>
+  </data>
+  <data name="ContactHasNoLegalId" xml:space="preserve">
+    <value>This contact hasn't shared their identity with you.</value>
+  </data>
+  <data name="ChooseTokenRecipient" xml:space="preserve">
+    <value>Choose who to give the token to</value>
+  </data>
+  <data name="NoCreationTemplates" xml:space="preserve">
+    <value>Scan a token template's QR code, or ask your provider for one.</value>
+  </data>
+  <data name="TokenCreated" xml:space="preserve">
+    <value>Token created</value>
+  </data>
+  <data name="TokensCreatedCount" xml:space="preserve">
+    <value>{0} tokens created</value>
+  </data>
+  <data name="TokensCreatedByContract" xml:space="preserve">
+    <value>Tokens this contract created</value>
+  </data>
 </root>

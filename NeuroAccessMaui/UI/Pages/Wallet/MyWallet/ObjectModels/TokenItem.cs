@@ -61,6 +61,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		public string UniqueName => this.token.TokenId;
 
 		/// <summary>
+		/// Opens the token when it is tapped. When null, a tap opens token details with this copy of the token, or
+		/// completes the selection the item was created for.
+		/// </summary>
+		public Func<TokenItem, Task>? Open { get; init; }
+
+		/// <summary>
 		/// When token was created.
 		/// </summary>
 		public DateTime Created => this.token.Created;
@@ -450,6 +456,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		[RelayCommand]
 		private async Task Clicked()
 		{
+			if (this.Open is not null)
+			{
+				await this.Open(this);
+				return;
+			}
+
 			if (this.selected is null)
 			{
 				TokenDetailsNavigationArgs Args = new(this);

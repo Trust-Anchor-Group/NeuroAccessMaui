@@ -17,6 +17,7 @@ using Waher.Networking.Sniffers;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
+using Waher.Networking.XMPP.Contracts.Search;
 using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.Events;
 using Waher.Networking.XMPP.HttpFileUpload;
@@ -719,6 +720,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="ContractId">The contract id.</param>
 		/// <returns>Smart Contract</returns>
 		Task<Contract> GetContract(CaseInsensitiveString ContractId);
+
+		/// <summary>
+		/// Searches the public contracts of the Neuron's contracts service, one page at a time.
+		/// </summary>
+		/// <param name="Filter">Search filters. Only contracts that match every filter are returned.</param>
+		/// <param name="Offset">Number of matching contracts to skip.</param>
+		/// <param name="MaxCount">Maximum number of contracts to return.</param>
+		/// <returns>The IDs of the matching contracts, and if there are more.</returns>
+		Task<Waher.Networking.XMPP.Contracts.EventArguments.SearchResultEventArgs> SearchPublicContracts(SearchFilter[] Filter, int Offset, int MaxCount);
 
 		/// <summary>
 		/// Gets references to created contracts.

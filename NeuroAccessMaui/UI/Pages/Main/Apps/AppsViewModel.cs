@@ -175,10 +175,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 					this.BetaFeaturePressed = false;
 				}
 				else
-				{
-					MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
-					await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
-				}
+					await ServiceRef.NeuroWalletOrchestratorService.CreateTokenAsync();
 			}
 			catch (Exception Ex)
 			{

@@ -497,8 +497,8 @@
 										 IsVisible="{Binding Path=CanRemoveFromList}"
 										 Margin="{DynamicResource SmallBottomMargins}" />
 
-					<!-- Slot for the tokens a contract created (ContractTokensView in the Tokens plan) -->
-					<ContentView x:Name="ContractTokensSlot" />
+					<!-- Tokens the contract created, shown for signed token-creation contracts -->
+					<views:ContractTokensView ContractId="{Binding CreatedTokensContractId}" />
 
 					<!-- Technical details, collapsed -->
 					<Border Style="{DynamicResource BorderSet}"

@@ -454,6 +454,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		}
 
 		/// <summary>
+		/// Creates tokens from a token creation template.
+		/// </summary>
+		[RelayCommand]
+		private Task CreateToken()
+		{
+			return ServiceRef.NeuroWalletOrchestratorService.CreateTokenAsync();
+		}
+
+		/// <summary>
 		/// Opens the full list of tokens.
 		/// </summary>
 		[RelayCommand]

@@ -297,6 +297,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		public bool UsesCategoryTags => this.contractsListMode != ContractsListMode.Contracts;
 
 		/// <summary>
+		/// What the list says when it is empty. An empty list of token creation templates says how to get one.
+		/// </summary>
+		public string EmptyText => this.contractsListMode == ContractsListMode.TokenCreationTemplates
+			? ServiceRef.Localizer[nameof(AppResources.NoCreationTemplates)]
+			: ServiceRef.Localizer[nameof(AppResources.NoContractsFound)];
+
+		/// <summary>
 		/// Holds the flat list of contracts to display.
 		/// </summary>
 		public ObservableCollection<ContractModel> Contracts { get; } = [];
@@ -1067,7 +1074,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			try
 			{
-				object Categories = await Expression.EvalAsync($"select distinct Category from NeuroAccessMaui.Services.Contracts.ContractReference where IsTemplate={this.contractsListMode != ContractsListMode.Contracts}");
+				string Filter = this.contractsListMode == ContractsListMode.TokenCreationTemplates
+					? "IsTemplate=true and IsTokenCreationTemplate=true"
+					: $"IsTemplate={this.contractsListMode != ContractsListMode.Contracts}";
+
+				object Categories = await Expression.EvalAsync("select distinct Category from NeuroAccessMaui.Services.Contracts.ContractReference where " + Filter);
 
 				if (Categories is not object[] Items)
 					return;
@@ -1151,7 +1162,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 				if (this.HasMore == -1 && this.contractsListMode == ContractsListMode.TokenCreationTemplates)
 				{
-					foreach (string TokenTemplateId in Constants.ContractTemplates.TokenCreationTemplates)
+					// Templates found on the Neuron, or known for its domain, are added to the list when they are missing.
+					foreach (string TokenTemplateId in await ServiceRef.TokenTemplateService.GetCreationTemplatesAsync())
 					{
 						try
 						{
@@ -1223,6 +1235,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.TokenCreationTemplates:
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
+							new FilterFieldEqualTo("IsTokenCreationTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)));
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
@@ -1250,6 +1263,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.TokenCreationTemplates:
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
+							new FilterFieldEqualTo("IsTokenCreationTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true),
 							new FilterFieldEqualTo("Category", this.currentCategory)));
 

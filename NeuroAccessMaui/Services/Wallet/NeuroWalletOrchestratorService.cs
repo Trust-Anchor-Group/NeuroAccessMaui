@@ -8,6 +8,8 @@ using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
+using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
@@ -17,6 +19,8 @@ using NeuroAccessMaui.UI.Pages.Wallet.Payment;
 using NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
+using NeuroFeatures.EventArguments;
+using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -26,6 +30,20 @@ namespace NeuroAccessMaui.Services.Wallet
 	[Singleton]
 	internal class NeuroWalletOrchestratorService : LoadableService, INeuroWalletOrchestratorService
 	{
+		/// <summary>
+		/// How long after the user starts creating tokens that new tokens they created are reported.
+		/// </summary>
+		private static readonly TimeSpan creationWatchDuration = TimeSpan.FromMinutes(30);
+
+		/// <summary>
+		/// How long to wait for more created tokens before reporting them, since one contract can create several.
+		/// </summary>
+		private const int CreationReportDelayMs = 3000;
+
+		private readonly object creationSynch = new();
+		private readonly List<Token> createdTokens = [];
+		private DateTime creationWatchStarted = DateTime.MinValue;
+		private int creationBatch;
 		private bool legacyCleanupStarted;
 
 		public NeuroWalletOrchestratorService()
@@ -42,6 +60,7 @@ namespace NeuroAccessMaui.Services.Wallet
 			if (this.BeginLoad(isResuming, CancellationToken))
 			{
 				ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
+				ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
 
 				this.EndLoad(true);
 
@@ -62,6 +81,7 @@ namespace NeuroAccessMaui.Services.Wallet
 			if (this.IsLoading || this.BeginUnload())
 			{
 				ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
+				ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 
 				this.IsLoading = false;
 				this.EndUnload();
@@ -92,7 +112,115 @@ namespace NeuroAccessMaui.Services.Wallet
 			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 		}
 
+		/// <summary>
+		/// Collects the tokens the user created, while the user is creating tokens.
+		/// </summary>
+		private Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
+		{
+			Token? Token = e.Token;
+			if (Token is null)
+				return Task.CompletedTask;
+
+			int Batch;
+
+			lock (this.creationSynch)
+			{
+				DateTime Started = this.creationWatchStarted;
+
+				if (Started == DateTime.MinValue || DateTime.UtcNow - Started > creationWatchDuration)
+					return Task.CompletedTask;
+
+				// Tokens created earlier, that come back to the user, aren't reported.
+				if (!string.Equals(Token.CreatorJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase) ||
+					Token.Created.ToUniversalTime() < Started.AddMinutes(-5))
+				{
+					return Task.CompletedTask;
+				}
+
+				this.createdTokens.Add(Token);
+				Batch = ++this.creationBatch;
+			}
+
+			_ = this.ReportCreatedTokensAsync(Batch);
+
+			return Task.CompletedTask;
+		}
+
 		#endregion
+
+		/// <inheritdoc/>
+		public async Task CreateTokenAsync()
+		{
+			try
+			{
+				TaskCompletionSource<Contract?> TemplateSelection = new();
+				MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates, TemplateSelection);
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+
+				Contract? Template = await TemplateSelection.Task;
+				if (Template is null)
+					return;
+
+				NewContractNavigationArgs NewContractArgs = await ServiceRef.TokenTemplateService.PrepareAsync(TokenAction.Create,
+					Template, new TokenContractContext());
+
+				lock (this.creationSynch)
+				{
+					this.creationWatchStarted = DateTime.UtcNow;
+					this.createdTokens.Clear();
+				}
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await TokenErrors.ShowAsync(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Reports the tokens the user created, once no more have arrived for a moment. A single token opens when the toast
+		/// is tapped, and several open My Tokens.
+		/// </summary>
+		/// <param name="Batch">The arrival that started this report. Later arrivals report instead.</param>
+		private async Task ReportCreatedTokensAsync(int Batch)
+		{
+			try
+			{
+				await Task.Delay(CreationReportDelayMs);
+
+				Token[] Created;
+
+				lock (this.creationSynch)
+				{
+					if (Batch != this.creationBatch)
+						return;
+
+					Created = [.. this.createdTokens];
+					this.createdTokens.Clear();
+					this.creationWatchStarted = DateTime.MinValue;
+				}
+
+				if (Created.Length == 1)
+				{
+					string TokenId = Created[0].TokenId;
+
+					await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.TokenCreated)],
+						() => this.OpenTokenAsync(TokenId, null));
+				}
+				else if (Created.Length > 1)
+				{
+					await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.TokensCreatedCount), Created.Length],
+						() => GoToMyTokensAsync(null));
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		/// <summary>
 		/// Deletes the token notification events that earlier versions of the app stored, once. Token notifications are

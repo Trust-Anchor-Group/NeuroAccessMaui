@@ -136,6 +136,7 @@ namespace NeuroAccessMaui.Services.Startup
 				typeof(XmppServerlessMessaging).Assembly,
 				typeof(HttpxClient).Assembly,
 				typeof(Waher.Script.Persistence.SQL.Select).Assembly,
+				typeof(Waher.Script.Xml.XmlParser).Assembly,
 				typeof(Waher.Layout.Layout2D.Layout2DDocument).Assembly,
 				typeof(IPaceProtocol).Assembly,
 				typeof(ISignatureAlgorithm).Assembly,

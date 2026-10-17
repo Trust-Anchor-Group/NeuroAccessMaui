@@ -11,6 +11,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -351,6 +352,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.Contract?.ContractState is ContractState.Rejected or ContractState.Failed or ContractState.Obsoleted or ContractState.Deleted;
 
 		/// <summary>
+		/// ID of the contract when it is a signed contract that creates tokens, so the overview can list the tokens it
+		/// created. Null for every other contract.
+		/// </summary>
+		public string? CreatedTokensContractId
+		{
+			get
+			{
+				Contract? Current = this.Contract?.Contract;
+
+				if (Current is null || this.IsDeletedOnServer ||
+					this.Contract?.ContractState is not (ContractState.Signed or ContractState.Obsoleted))
+				{
+					return null;
+				}
+
+				if (Current.ForMachinesNamespace != TokenTemplateService.GetNamespace(TokenAction.Create) ||
+					Current.ForMachinesLocalName != TokenTemplateService.GetLocalName(TokenAction.Create))
+				{
+					return null;
+				}
+
+				return Current.ContractId;
+			}
+		}
+
+		/// <summary>
 		/// The signing window, in local time, or an empty string if signatures are accepted at any time.
 		/// </summary>
 		public string SigningWindowText
@@ -596,6 +623,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.OnPropertyChanged(nameof(this.StateText));
 			this.OnPropertyChanged(nameof(this.IsStateSuccess));
 			this.OnPropertyChanged(nameof(this.IsStateDanger));
+			this.OnPropertyChanged(nameof(this.CreatedTokensContractId));
 			this.OnPropertyChanged(nameof(this.SigningWindowText));
 			this.OnPropertyChanged(nameof(this.HasSigningWindow));
 			this.OnPropertyChanged(nameof(this.ValidFromText));

@@ -203,6 +203,11 @@
 											 IsVisible="{Binding CanOfferToBuy}"
 											 Style="{DynamicResource FilledTextButton}"
 											 Margin="4" />
+						<controls:TextButton LabelData="{l:Localize Give}"
+											 Command="{Binding GiveCommand}"
+											 IsVisible="{Binding CanGive}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 Margin="4" />
 						<controls:TextButton LabelData="{Binding HistoryLabel}"
 											 Command="{Binding ViewEventsCommand}"
 											 IsVisible="{Binding CanViewHistory}"
@@ -214,6 +219,16 @@
 											 Margin="4" />
 						<controls:TextButton LabelData="{l:Localize SendToContact}"
 											 Command="{Binding SendToContactCommand}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 Margin="4" />
+						<controls:TextButton LabelData="{l:Localize OpenOnWeb}"
+											 Command="{Binding OpenOnWebCommand}"
+											 IsVisible="{Binding HasWebUrl}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 Margin="4" />
+						<controls:TextButton LabelData="{l:Localize ShareLink}"
+											 Command="{Binding ShareLinkCommand}"
+											 IsVisible="{Binding HasWebUrl}"
 											 Style="{DynamicResource OutlinedTextButton}"
 											 Margin="4" />
 					</FlexLayout>
@@ -323,6 +338,13 @@
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 					</Border>
+
+					<!-- Destroying can't be undone, so it is kept apart from the other actions, at the end -->
+					<controls:TextButton LabelData="{l:Localize Destroy}"
+										 Command="{Binding DestroyCommand}"
+										 IsVisible="{Binding CanDestroy}"
+										 Style="{DynamicResource FilledTextButtonDecline}"
+										 HorizontalOptions="Center" />
 				</VerticalStackLayout>
 			</ScrollView>
 		</Grid>

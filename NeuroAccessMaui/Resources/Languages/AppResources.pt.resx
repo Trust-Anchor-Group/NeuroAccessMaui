@@ -4778,4 +4778,46 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="NoEventsYet" xml:space="preserve">
     <value>Ainda não há eventos.</value>
   </data>
+  <data name="CreateToken" xml:space="preserve">
+    <value>Criar token</value>
+  </data>
+  <data name="OpenOnWeb" xml:space="preserve">
+    <value>Abrir na web</value>
+  </data>
+  <data name="ShareLink" xml:space="preserve">
+    <value>Compartilhar link</value>
+  </data>
+  <data name="Give" xml:space="preserve">
+    <value>Doar</value>
+  </data>
+  <data name="Destroy" xml:space="preserve">
+    <value>Destruir</value>
+  </data>
+  <data name="DestroyTokenConfirm" xml:space="preserve">
+    <value>Quer destruir {0}? Isso não pode ser desfeito.</value>
+  </data>
+  <data name="NoteCommandFailed" xml:space="preserve">
+    <value>O comando não funcionou. Tente novamente.</value>
+  </data>
+  <data name="NoteCommandSent" xml:space="preserve">
+    <value>Nota enviada.</value>
+  </data>
+  <data name="ContactHasNoLegalId" xml:space="preserve">
+    <value>Este contato ainda não compartilhou uma identidade com você.</value>
+  </data>
+  <data name="ChooseTokenRecipient" xml:space="preserve">
+    <value>Escolha para quem doar o token</value>
+  </data>
+  <data name="NoCreationTemplates" xml:space="preserve">
+    <value>Escaneie o código QR de um modelo de token ou peça um ao seu provedor.</value>
+  </data>
+  <data name="TokenCreated" xml:space="preserve">
+    <value>Token criado</value>
+  </data>
+  <data name="TokensCreatedCount" xml:space="preserve">
+    <value>{0} tokens criados</value>
+  </data>
+  <data name="TokensCreatedByContract" xml:space="preserve">
+    <value>Tokens criados por este contrato</value>
+  </data>
 </root>

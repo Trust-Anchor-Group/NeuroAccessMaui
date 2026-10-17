@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Tokens.NoteCommand.NoteCommandPopup"
+                x:DataType="viewmodel:NoteCommandViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Tokens.NoteCommand">
+    <base:BasePopup.Resources>
+        <!-- The same editors as in contracts, for the seven parameter types a note command can have -->
+        <objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
+                                               BooleanTemplate="{StaticResource BooleanParameterTemplate}"
+                                               DateTemplate="{StaticResource DateParameterTemplate}"
+                                               DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
+                                               NumericalTemplate="{StaticResource NumericalParameterTemplate}"
+                                               StringTemplate="{StaticResource StringParameterTemplate}"
+                                               TimeTemplate="{StaticResource TimeParameterTemplate}"
+                                               DurationTemplate="{StaticResource DurationParameterTemplate}"
+                                               DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+    </base:BasePopup.Resources>
+
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{Binding Title}"
+                   Style="{DynamicResource SectionTitleLabel}"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="{Binding ToolTip}"
+                   IsVisible="{Binding HasToolTip}"
+                   Style="{DynamicResource ItemDescriptionLabel}"
+                   TextColor="{DynamicResource ContentSecondaryWL}" />
+
+            <!-- Parameters -->
+            <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+                                 BindableLayout.ItemsSource="{Binding Parameters}"
+                                 BindableLayout.ItemTemplateSelector="{StaticResource ParameterTemplateSelector}" />
+
+            <controls:TextButton Command="{Binding SendCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{l:Localize Send}" />
+            <controls:TextButton Command="{Binding CancelCommand}"
+                                 Style="{DynamicResource OutlinedTextButton}"
+                                 LabelData="{l:Localize Cancel}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</base:BasePopup>

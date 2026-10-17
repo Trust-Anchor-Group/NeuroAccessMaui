@@ -47,5 +47,12 @@ namespace NeuroAccessMaui.Services.Wallet
         /// </summary>
         /// <param name="TokenId">Token ID, if the notification has one.</param>
         Task OpenTokenFromNotificationAsync(string? TokenId);
+
+        /// <summary>
+        /// Creates tokens. The user picks a token creation template, and reviews a contract filled in with their roles, the
+        /// trust provider, the currency and the commission. When the tokens arrive, a toast says so: a single token opens
+        /// when the toast is tapped, and several open My Tokens.
+        /// </summary>
+        Task CreateTokenAsync();
     }
 }

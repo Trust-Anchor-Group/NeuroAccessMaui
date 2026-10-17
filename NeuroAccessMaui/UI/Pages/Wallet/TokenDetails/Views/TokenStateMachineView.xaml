@@ -90,6 +90,27 @@
 				</controls:TaskView.SucceededView>
 			</controls:TaskView>
 
+			<!-- Note commands the user can run -->
+			<VerticalStackLayout IsVisible="{Binding HasNoteCommands}">
+				<Label Text="{l:Localize Actions}"
+					   Style="{DynamicResource ItemDescriptionLabel}"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   Margin="0,8,0,0"
+					   SemanticProperties.HeadingLevel="Level3" />
+				<FlexLayout Direction="Row" Wrap="Wrap" JustifyContent="Start" AlignItems="Center"
+							BindableLayout.ItemsSource="{Binding NoteCommands}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="viewmodel:NoteCommandItem">
+							<controls:TextButton LabelData="{Binding Title}"
+												 Command="{Binding RunCommand}"
+												 Style="{DynamicResource FilledTextButton}"
+												 SemanticProperties.Hint="{Binding ToolTip}"
+												 Margin="0,8,8,0" />
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</FlexLayout>
+			</VerticalStackLayout>
+
 			<!-- Reports -->
 			<Label Text="{l:Localize Reports}"
 				   Style="{DynamicResource ItemDescriptionLabel}"

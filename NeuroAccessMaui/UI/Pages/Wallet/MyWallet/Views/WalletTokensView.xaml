@@ -74,6 +74,11 @@
 						   TextColor="{DynamicResource ContentSecondaryWL}"
 						   HorizontalTextAlignment="Center"
 						   Margin="0,8" />
+					<controls:TextButton LabelData="{l:Localize CreateToken}"
+										 Command="{Binding CreateTokenCommand}"
+										 IsVisible="{Binding HasNoTokens}"
+										 Style="{DynamicResource OutlinedTextButton}"
+										 HorizontalOptions="Center" />
 				</VerticalStackLayout>
 			</controls:TaskView.SucceededView>
 		</controls:TaskView>
