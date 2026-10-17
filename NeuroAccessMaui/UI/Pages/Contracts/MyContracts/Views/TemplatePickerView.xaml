@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="NeuroAccessMaui.UI.Pages.Contracts.MyContracts.Views.TemplatePickerView"
+			 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+			 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+			 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+			 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts"
+			 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels"
+			 x:DataType="viewmodel:MyContractsViewModel">
+	<!-- The template picker, built like the identity flow: a heading, the search, one card with the templates, and a sticky
+		 footer. Templates on the phone show at once, while templates that are missing are looked for. -->
+	<controls:IdentityFlowShell Title="{Binding Title}"
+								ShowLeadingAction="True"
+								LeadingActionCommand="{Binding GoBackCommand}"
+								LeadingActionDescription="{l:Localize Close}"
+								ShowStickyFooter="True">
+		<controls:IdentityFlowShell.BodyContent>
+			<Grid RowDefinitions="Auto,Auto,Auto,*">
+				<VerticalStackLayout Grid.Row="0"
+									 Padding="24,12,24,0"
+									 Spacing="6">
+					<Label Style="{DynamicResource IdentityFlowTitleLabel}"
+						   Text="{Binding TemplateHeadingText}" />
+					<Label Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
+						   Text="{Binding TemplateDescriptionText}" />
+				</VerticalStackLayout>
+
+				<controls:CompositeEntry Grid.Row="1"
+										 Margin="16,20,16,0"
+										 Style="{DynamicResource RegularCompositeEntry}"
+										 Placeholder="{l:Localize SearchTemplates}"
+										 EntryData="{Binding TemplateSearchText}"
+										 IsVisible="{Binding ShowTemplateSearch}">
+					<controls:CompositeEntry.LeftView>
+						<controls:SvgView Source="search.svg"
+										  WidthRequest="20"
+										  HeightRequest="20"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+					</controls:CompositeEntry.LeftView>
+				</controls:CompositeEntry>
+
+				<!-- What the list is doing: looking for templates, checking for new ones, or up to date -->
+				<Label Grid.Row="2"
+					   Margin="20,16,20,0"
+					   Style="{DynamicResource ListCardStatusLabel}"
+					   Text="{Binding TemplateStatusText}"
+					   IsVisible="{Binding ShowTemplateStatus}"
+					   SemanticProperties.HeadingLevel="None" />
+
+				<ScrollView Grid.Row="3"
+							Margin="0,12,0,0"
+							VerticalScrollBarVisibility="Never">
+					<Grid Padding="16,0,16,16">
+						<controls:ListCardPlaceholder VerticalOptions="Start"
+													  IsVisible="{Binding ShowTemplatePlaceholder}" />
+
+						<Grid VerticalOptions="Start">
+							<VerticalStackLayout IsVisible="False"
+												 controls:Reveal.IsShown="{Binding ShowTemplateList}"
+												 controls:ListCard.IsEnabled="True"
+												 BindableLayout.ItemsSource="{Binding Templates}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="objectmodel:TemplateGroupModel">
+										<Grid>
+											<controls:ListCardSegment Position="{Binding CardPosition}"
+																	  FillColor="{DynamicResource SurfaceElevation1WL}"
+																	  StrokeColor="{DynamicResource SurfaceDividerWL}" />
+											<VerticalStackLayout>
+												<!-- The template. A tap uses its newest version. -->
+												<Grid ColumnDefinitions="44,*,44"
+													  ColumnSpacing="14"
+													  Padding="16,14,6,14"
+													  MinimumHeightRequest="76"
+													  SemanticProperties.Description="{Binding AccessibleDescription}">
+													<Grid.GestureRecognizers>
+														<TapGestureRecognizer Command="{Binding TemplateSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+																			  CommandParameter="{Binding .}" />
+													</Grid.GestureRecognizers>
+
+													<Border Grid.Column="0"
+															Style="{DynamicResource ListCardTileBorder}"
+															InputTransparent="True">
+														<Label Text="{Binding Monogram}"
+															   Style="{DynamicResource ListCardMonogramLabel}" />
+													</Border>
+
+													<VerticalStackLayout Grid.Column="1"
+																		 Spacing="4"
+																		 VerticalOptions="Center">
+														<Label Text="{Binding Title}"
+															   Style="{DynamicResource ListCardRowTitleLabel}" />
+														<HorizontalStackLayout Spacing="6">
+															<!-- Shows or hides the older versions -->
+															<controls:TemplatedButton IsVisible="{Binding HasVersions}"
+																					  Padding="0,8"
+																					  Margin="0,-8"
+																					  VerticalOptions="Center"
+																					  Command="{Binding ToggleVersionsCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+																					  CommandParameter="{Binding .}"
+																					  SemanticProperties.Description="{Binding ToggleDescription}">
+																<Border Style="{DynamicResource ListCardPillBorder}"
+																		HeightRequest="22"
+																		Padding="9,0,6,0"
+																		BackgroundColor="{DynamicResource TnPInfobgWL}">
+																	<Border.Triggers>
+																		<DataTrigger TargetType="Border"
+																					 Binding="{Binding IsExpanded}"
+																					 Value="True">
+																			<Setter Property="BackgroundColor"
+																					Value="{DynamicResource ContentPrimaryWL}" />
+																		</DataTrigger>
+																	</Border.Triggers>
+																	<HorizontalStackLayout Spacing="4">
+																		<Label Text="{Binding VersionsText}"
+																			   Style="{DynamicResource ListCardPillLabel}"
+																			   TextColor="{DynamicResource ContentPrimaryWL}">
+																			<Label.Triggers>
+																				<DataTrigger TargetType="Label"
+																							 Binding="{Binding IsExpanded}"
+																							 Value="True">
+																					<Setter Property="TextColor"
+																							Value="{DynamicResource ContentPrimaryInverted}" />
+																				</DataTrigger>
+																			</Label.Triggers>
+																		</Label>
+																		<controls:SvgView Source="arrow_forward_ios.svg"
+																						  WidthRequest="10"
+																						  HeightRequest="10"
+																						  Rotation="90"
+																						  VerticalOptions="Center"
+																						  TintColor="{DynamicResource ContentPrimaryWL}"
+																						  AutomationProperties.IsInAccessibleTree="False">
+																			<controls:SvgView.Triggers>
+																				<DataTrigger TargetType="controls:SvgView"
+																							 Binding="{Binding IsExpanded}"
+																							 Value="True">
+																					<Setter Property="Rotation"
+																							Value="-90" />
+																					<Setter Property="TintColor"
+																							Value="{DynamicResource ContentPrimaryInverted}" />
+																				</DataTrigger>
+																			</controls:SvgView.Triggers>
+																		</controls:SvgView>
+																	</HorizontalStackLayout>
+																</Border>
+															</controls:TemplatedButton>
+
+															<Border Style="{DynamicResource ListCardPillBorder}"
+																	IsVisible="{Binding IsNew}"
+																	InputTransparent="True">
+																<Label Text="{l:Localize TemplateNew}"
+																	   Style="{DynamicResource ListCardPillLabel}" />
+															</Border>
+
+															<Label Text="{Binding DetailText}"
+																   Style="{DynamicResource ListCardRowDetailLabel}"
+																   InputTransparent="True" />
+														</HorizontalStackLayout>
+													</VerticalStackLayout>
+
+													<controls:SvgButton Grid.Column="2"
+																		SvgSource="share.svg"
+																		Style="{DynamicResource IconButtonSmall}"
+																		WidthRequest="44"
+																		HeightRequest="44"
+																		VerticalOptions="Center"
+																		Command="{Binding ShareTemplateQRCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+																		CommandParameter="{Binding .}"
+																		IsVisible="{Binding CanShareTemplate, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+																		SemanticProperties.Description="{Binding ShareDescription}" />
+												</Grid>
+
+												<!-- The versions, newest first. A tap uses that version. -->
+												<VerticalStackLayout IsVisible="{Binding IsExpanded}"
+																	 Padding="0,0,0,6"
+																	 BindableLayout.ItemsSource="{Binding Versions}">
+													<BindableLayout.ItemTemplate>
+														<DataTemplate x:DataType="objectmodel:TemplateVersionModel">
+															<Grid RowDefinitions="Auto,Auto">
+																<BoxView Grid.Row="0"
+																		 HeightRequest="1"
+																		 Margin="74,0,1,0"
+																		 Color="{DynamicResource SurfaceDividerWL}"
+																		 IsVisible="{Binding ShowsDivider}" />
+																<Grid Grid.Row="1"
+																	  ColumnDefinitions="*,Auto,Auto"
+																	  ColumnSpacing="10"
+																	  Padding="74,0,18,0"
+																	  MinimumHeightRequest="48"
+																	  SemanticProperties.Description="{Binding AccessibleDescription}">
+																	<Grid.GestureRecognizers>
+																		<TapGestureRecognizer Command="{Binding TemplateSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+																							  CommandParameter="{Binding .}" />
+																	</Grid.GestureRecognizers>
+																	<Label Grid.Column="0"
+																		   VerticalOptions="Center"
+																		   FontSize="{StaticResource FontSizeMd}"
+																		   TextColor="{DynamicResource ContentPrimaryWL}"
+																		   LineBreakMode="TailTruncation"
+																		   MaxLines="1">
+																		<Label.FormattedText>
+																			<FormattedString>
+																				<Span Text="{Binding DateText}" />
+																				<Span Text=" " />
+																				<Span Text="{Binding TimeText}"
+																					  TextColor="{DynamicResource ContentSecondaryWL}" />
+																			</FormattedString>
+																		</Label.FormattedText>
+																	</Label>
+																	<Border Grid.Column="1"
+																			Style="{DynamicResource ListCardPillBorder}"
+																			IsVisible="{Binding IsNewest}">
+																		<Label Text="{l:Localize TemplateVersionNewest}"
+																			   Style="{DynamicResource ListCardPillLabel}" />
+																	</Border>
+																	<controls:SvgView Grid.Column="2"
+																					  Source="arrow_forward_ios.svg"
+																					  WidthRequest="12"
+																					  HeightRequest="12"
+																					  VerticalOptions="Center"
+																					  TintColor="{DynamicResource ContentSecondaryWL}"
+																					  AutomationProperties.IsInAccessibleTree="False" />
+																</Grid>
+															</Grid>
+														</DataTemplate>
+													</BindableLayout.ItemTemplate>
+												</VerticalStackLayout>
+											</VerticalStackLayout>
+										</Grid>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+
+							<!-- Runs along the top edge of the card while missing templates are looked for -->
+							<controls:IndeterminateProgressLine IsRunning="{Binding ShowTemplateCheckLine}"
+																IsVisible="{Binding ShowTemplateCheckLine}"
+																Color="{DynamicResource ContentAccessWL}" />
+						</Grid>
+
+						<!-- No templates at all -->
+						<Border Style="{DynamicResource ListCardEmptyBorder}"
+								Margin="0,12,0,0"
+								VerticalOptions="Start"
+								IsVisible="{Binding ShowNoTemplates}">
+							<Grid ColumnDefinitions="44,*"
+								  ColumnSpacing="14">
+								<Border Grid.Column="0"
+										Style="{DynamicResource ListCardEmptyTileBorder}"
+										AutomationProperties.IsInAccessibleTree="False" />
+								<Label Grid.Column="1"
+									   Style="{DynamicResource IdentityFlowCaptionLabel}"
+									   VerticalOptions="Center"
+									   Text="{l:Localize TemplatesNoneHint}" />
+							</Grid>
+						</Border>
+
+						<!-- A search that matched nothing -->
+						<Label Margin="4,8,4,0"
+							   VerticalOptions="Start"
+							   Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
+							   Text="{l:Localize NoMatchingTemplates}"
+							   IsVisible="{Binding ShowNoTemplateMatches}" />
+					</Grid>
+				</ScrollView>
+			</Grid>
+		</controls:IdentityFlowShell.BodyContent>
+
+		<controls:IdentityFlowShell.StickyFooterContent>
+			<VerticalStackLayout Spacing="8"
+								 MaximumWidthRequest="560"
+								 HorizontalOptions="Fill">
+				<!-- Scanning is the main action only when there is nothing to pick -->
+				<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize ScanQR}"
+									 Command="{Binding ScanTemplateQrCommand}"
+									 IsVisible="{Binding ShowNoTemplates, Converter={mct:InvertedBoolConverter}}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize ScanQR}"
+									 Command="{Binding ScanTemplateQrCommand}"
+									 IsVisible="{Binding ShowNoTemplates}" />
+				<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+									 LabelData="{l:Localize SearchAgain}"
+									 Command="{Binding SearchTemplatesAgainCommand}"
+									 IsVisible="{Binding CanSearchTemplatesAgain}" />
+			</VerticalStackLayout>
+		</controls:IdentityFlowShell.StickyFooterContent>
+	</controls:IdentityFlowShell>
+</ContentView>

@@ -48,6 +48,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private readonly TokenDetailsNavigationArgs? navigationArguments = Args;
 		private readonly Dictionary<string, object> machineVariables = [];
 		private string? machineId;
+		private string? machineState;
+		private int noteCommandsVersion;
 		private bool historyAvailable;
 		private bool hasTransferTemplate;
 		private bool hasConsignmentTemplate;
@@ -777,6 +779,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private void SetMachineState(string? State, bool Ended)
 		{
 			this.MachineEnded = Ended || string.IsNullOrEmpty(State);
+			this.machineState = this.MachineEnded ? null : State;
 			this.MachineStateText = this.MachineEnded
 				? ServiceRef.Localizer[nameof(AppResources.TokenStateEnded)]
 				: ServiceRef.Localizer[nameof(AppResources.TokenStateBody), State ?? string.Empty];
@@ -807,7 +810,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 						continue;
 					}
 
-					Items.Add(new NoteCommandItem(Command, AssignedNames, this.RunNoteCommandAsync));
+					Items.Add(new NoteCommandItem(Command, AssignedNames, this.RunNoteCommandAsync, this.IsNoteCommandAvailableAsync));
 				}
 
 				MainThread.BeginInvokeOnMainThread(() =>
@@ -824,23 +827,83 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 		/// <summary>
 		/// Shows the note commands the user can run: owner commands for the owner, and external commands for others, while
-		/// the state machine runs. Called on the main thread.
+		/// the state machine runs, and only those whose condition holds in the current state. The conditions run in the
+		/// background, and the commands change when they are done. Called on the main thread.
 		/// </summary>
 		private void UpdateNoteCommands()
 		{
-			List<NoteCommandItem> Visible = [];
+			List<NoteCommandItem> Candidates = [];
 
 			if (this.HasStateMachine && !this.MachineEnded)
 			{
 				foreach (NoteCommandItem Item in this.noteCommands)
 				{
 					if (this.IsMyToken ? Item.Command.OwnerNote : Item.Command.ExternalNote)
-						Visible.Add(Item);
+						Candidates.Add(Item);
 				}
 			}
 
-			SetItems(this.NoteCommands, Visible);
-			this.HasNoteCommands = this.NoteCommands.Count > 0;
+			int Version = ++this.noteCommandsVersion;
+			_ = this.ShowAvailableNoteCommandsAsync(Candidates, this.machineState, new Dictionary<string, object>(this.machineVariables), Version);
+		}
+
+		/// <summary>
+		/// Checks the conditions of note commands, and shows the commands that apply, unless a newer check has started.
+		/// </summary>
+		/// <param name="Candidates">The commands the user may run.</param>
+		/// <param name="State">The current state, or null when it isn't known.</param>
+		/// <param name="MachineVariables">A copy of the state machine's variables.</param>
+		/// <param name="Version">Identifies the check.</param>
+		private async Task ShowAvailableNoteCommandsAsync(List<NoteCommandItem> Candidates, string? State,
+			Dictionary<string, object> MachineVariables, int Version)
+		{
+			List<NoteCommandItem> Visible = [];
+
+			try
+			{
+				Task<bool>[] Checks = [.. Candidates.Select(Item => NoteCommandRunner.IsAvailableAsync(Item.Command, State, MachineVariables))];
+				bool[] Applies = await Task.WhenAll(Checks);
+
+				for (int i = 0; i < Candidates.Count; i++)
+				{
+					if (Applies[i])
+						Visible.Add(Candidates[i]);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (Version != this.noteCommandsVersion)
+					return;
+
+				SetItems(this.NoteCommands, Visible);
+				this.HasNoteCommands = this.NoteCommands.Count > 0;
+			});
+		}
+
+		/// <summary>
+		/// Checks if a note command applies, with the latest state and variables of the token's state machine.
+		/// </summary>
+		/// <param name="Item">The note command.</param>
+		/// <returns>If the command applies.</returns>
+		private async Task<bool> IsNoteCommandAvailableAsync(NoteCommandItem Item)
+		{
+			try
+			{
+				(bool Running, string? State, Dictionary<string, object> MachineVariables) = await MainThread.InvokeOnMainThreadAsync(() =>
+					(this.HasStateMachine && !this.MachineEnded, this.machineState, new Dictionary<string, object>(this.machineVariables)));
+
+				return Running && await NoteCommandRunner.IsAvailableAsync(Item.Command, State, MachineVariables);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -855,7 +918,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			if (!Item.HasParameters)
 			{
-				await NoteCommandRunner.RunAsync(Item.Command, TokenId, Item.AssignedNames);
+				await NoteCommandRunner.RunAsync(Item.Command, TokenId, Item.AssignedNames, Item.IsAvailableAsync);
 				return;
 			}
 
@@ -911,6 +974,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			{
 				foreach (Waher.Script.Variable Variable in e.Variables)
 					this.SetVariable(Variable.Name, Variable.ValueObject);
+
+				this.UpdateNoteCommands();
 			});
 
 			return Task.CompletedTask;

@@ -12,18 +12,22 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 	public partial class NoteCommandItem : ObservableObject
 	{
 		private readonly Func<NoteCommandItem, Task> run;
+		private readonly Func<NoteCommandItem, Task<bool>> isAvailable;
 
 		/// <summary>
 		/// A note command of a token's state machine, shown as a button in token details.
 		/// </summary>
-		/// <param name="Command">The note command. Its scripts have passed <see cref="NoteScriptValidator"/>.</param>
+		/// <param name="Command">The note command. It has passed <see cref="NoteCommandRunner.CanRun"/>.</param>
 		/// <param name="AssignedNames">Names the command's scripts assign that aren't parameters.</param>
 		/// <param name="Run">Runs the command when the button is tapped.</param>
-		public NoteCommandItem(NoteCommand Command, string[] AssignedNames, Func<NoteCommandItem, Task> Run)
+		/// <param name="IsAvailable">Checks if the command applies in the token's current state.</param>
+		public NoteCommandItem(NoteCommand Command, string[] AssignedNames, Func<NoteCommandItem, Task> Run,
+			Func<NoteCommandItem, Task<bool>> IsAvailable)
 		{
 			this.Command = Command;
 			this.AssignedNames = AssignedNames;
 			this.run = Run;
+			this.isAvailable = IsAvailable;
 			this.Title = NoteCommandRunner.SelectText(Command.Title) ?? Command.Id ?? string.Empty;
 			this.ToolTip = NoteCommandRunner.SelectText(Command.ToolTip);
 		}
@@ -69,6 +73,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// If the command can be run now.
 		/// </summary>
 		public bool CanRun => !this.IsRunning;
+
+		/// <summary>
+		/// Checks if the command applies in the token's current state.
+		/// </summary>
+		/// <returns>If the command applies.</returns>
+		public Task<bool> IsAvailableAsync()
+		{
+			return this.isAvailable(this);
+		}
 
 		/// <summary>
 		/// Runs the command.

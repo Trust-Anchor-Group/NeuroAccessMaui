@@ -173,7 +173,7 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.NoteCommand
 
 			try
 			{
-				Sent = await NoteCommandRunner.RunAsync(this.item.Command, this.tokenId, this.item.AssignedNames);
+				Sent = await NoteCommandRunner.RunAsync(this.item.Command, this.tokenId, this.item.AssignedNames, this.item.IsAvailableAsync);
 			}
 			catch (Exception Ex)
 			{

@@ -14816,5 +14816,248 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("TokensCreatedByContract", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This action isn&apos;t available right now..
+        /// </summary>
+        public static string NoteCommandNotAvailable {
+            get {
+                return ResourceManager.GetString("NoteCommandNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No templates match your search..
+        /// </summary>
+        public static string NoMatchingTemplates {
+            get {
+                return ResourceManager.GetString("NoMatchingTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan QR.
+        /// </summary>
+        public static string ScanQR {
+            get {
+                return ResourceManager.GetString("ScanQR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search again.
+        /// </summary>
+        public static string SearchAgain {
+            get {
+                return ResourceManager.GetString("SearchAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search templates.
+        /// </summary>
+        public static string SearchTemplates {
+            get {
+                return ResourceManager.GetString("SearchTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created {0}.
+        /// </summary>
+        public static string TemplateCreatedOn {
+            get {
+                return ResourceManager.GetString("TemplateCreatedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide versions of {0}.
+        /// </summary>
+        public static string TemplateHideVersions {
+            get {
+                return ResourceManager.GetString("TemplateHideVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string TemplateNew {
+            get {
+                return ResourceManager.GetString("TemplateNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to newest {0}.
+        /// </summary>
+        public static string TemplateNewestOn {
+            get {
+                return ResourceManager.GetString("TemplateNewestOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You fill in the details on the next step..
+        /// </summary>
+        public static string TemplatePickerDescription {
+            get {
+                return ResourceManager.GetString("TemplatePickerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick a template.
+        /// </summary>
+        public static string TemplatePickerHeading {
+            get {
+                return ResourceManager.GetString("TemplatePickerHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This QR code isn&apos;t a template you can use here..
+        /// </summary>
+        public static string TemplateQrNotUsable {
+            get {
+                return ResourceManager.GetString("TemplateQrNotUsable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share the QR code for {0}.
+        /// </summary>
+        public static string TemplateShareDescription {
+            get {
+                return ResourceManager.GetString("TemplateShareDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show versions of {0}.
+        /// </summary>
+        public static string TemplateShowVersions {
+            get {
+                return ResourceManager.GetString("TemplateShowVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the version from {0}.
+        /// </summary>
+        public static string TemplateUseVersion {
+            get {
+                return ResourceManager.GetString("TemplateUseVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} versions.
+        /// </summary>
+        public static string TemplateVersionCount {
+            get {
+                return ResourceManager.GetString("TemplateVersionCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Newest.
+        /// </summary>
+        public static string TemplateVersionNewest {
+            get {
+                return ResourceManager.GetString("TemplateVersionNewest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking for new templates.
+        /// </summary>
+        public static string TemplatesChecking {
+            get {
+                return ResourceManager.GetString("TemplatesChecking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Looking for templates.
+        /// </summary>
+        public static string TemplatesLooking {
+            get {
+                return ResourceManager.GetString("TemplatesLooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are none available to you right now..
+        /// </summary>
+        public static string TemplatesNoneDescription {
+            get {
+                return ResourceManager.GetString("TemplatesNoneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No templates yet.
+        /// </summary>
+        public static string TemplatesNoneHeading {
+            get {
+                return ResourceManager.GetString("TemplatesNoneHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When someone shares a template with you, it shows up here. You can also scan its QR code..
+        /// </summary>
+        public static string TemplatesNoneHint {
+            get {
+                return ResourceManager.GetString("TemplatesNoneHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up to date.
+        /// </summary>
+        public static string TemplatesUpToDate {
+            get {
+                return ResourceManager.GetString("TemplatesUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading your tokens.
+        /// </summary>
+        public static string TokensLoading {
+            get {
+                return ResourceManager.GetString("TokensLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No tokens yet.
+        /// </summary>
+        public static string TokensEmptyHeading {
+            get {
+                return ResourceManager.GetString("TokensEmptyHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tokens you create or receive show up here..
+        /// </summary>
+        public static string TokensEmptyDescription {
+            get {
+                return ResourceManager.GetString("TokensEmptyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create one from a template, or ask someone to send you one..
+        /// </summary>
+        public static string TokensEmptyHint {
+            get {
+                return ResourceManager.GetString("TokensEmptyHint", resourceCulture);
+            }
+        }
     }
 }

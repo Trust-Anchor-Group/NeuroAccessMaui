@@ -6,150 +6,225 @@
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens.Views"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto,*">
-		<!-- Top Bar -->
-		<Grid ColumnDefinitions="auto,*" Margin="16,8,16,8" RowSpacing="0" ColumnSpacing="8">
-			<controls:SvgButton Grid.Column="0"
-								HorizontalOptions="Start"
-								Command="{Binding GoBackCommand}"
-								Style="{DynamicResource IconButton}"
-								SvgSource="close.svg"
-								SemanticProperties.Description="{l:Localize Close}" />
-			<Label Grid.Column="1" Text="{Binding PageTitle}" Style="{DynamicResource PageTitleLabel}" HorizontalOptions="End" />
-		</Grid>
+	<!-- Built like the identity flow: the search, category chips, one card with the tokens, and a sticky footer. -->
+	<controls:IdentityFlowShell Title="{Binding PageTitle}"
+								ShowLeadingAction="True"
+								LeadingActionCommand="{Binding GoBackCommand}"
+								LeadingActionDescription="{l:Localize Close}"
+								ShowStickyFooter="{Binding CanCreateToken}">
+		<controls:IdentityFlowShell.BodyContent>
+			<Grid RowDefinitions="Auto,Auto,Auto,*">
+				<!-- Search. Shown while loading so the page keeps its shape, but usable once the tokens are in. -->
+				<controls:CompositeEntry Grid.Row="0"
+										 Margin="16,12,16,0"
+										 Style="{DynamicResource RegularCompositeEntry}"
+										 Placeholder="{l:Localize SearchTokens}"
+										 EntryData="{Binding SearchText}"
+										 IsVisible="{Binding ShowSearch}"
+										 IsEnabled="{Binding IsLoaded}">
+					<controls:CompositeEntry.LeftView>
+						<controls:SvgView Source="search.svg"
+										  WidthRequest="20"
+										  HeightRequest="20"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+					</controls:CompositeEntry.LeftView>
+				</controls:CompositeEntry>
 
-		<!-- Content -->
-		<controls:TaskView Grid.Row="1" Task="{Binding LoadTask}">
-			<controls:TaskView.RunningView>
-				<ActivityIndicator IsRunning="True"
-								   Color="{DynamicResource PrimaryWL}"
-								   HorizontalOptions="Center"
-								   VerticalOptions="Center" />
-			</controls:TaskView.RunningView>
+				<!-- Category filter. "All" removes the filter. -->
+				<ScrollView Grid.Row="1"
+							Margin="0,12,0,0"
+							Orientation="Horizontal"
+							HorizontalScrollBarVisibility="Never"
+							IsVisible="{Binding HasCategories}">
+					<HorizontalStackLayout Spacing="8"
+										   Padding="16,0">
+						<controls:TemplatedButton Command="{Binding SelectAllCategoriesCommand}"
+												  SemanticProperties.Description="{l:Localize All}">
+							<Border Style="{DynamicResource ListCardChipBorder}">
+								<Border.Triggers>
+									<DataTrigger TargetType="Border"
+												 Binding="{Binding IsAllCategoriesSelected}"
+												 Value="True">
+										<Setter Property="BackgroundColor"
+												Value="{DynamicResource ContentPrimaryWL}" />
+										<Setter Property="Stroke"
+												Value="{DynamicResource ContentPrimaryWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+								<Label Text="{l:Localize All}"
+									   Style="{DynamicResource ListCardChipLabel}">
+									<Label.Triggers>
+										<DataTrigger TargetType="Label"
+													 Binding="{Binding IsAllCategoriesSelected}"
+													 Value="True">
+											<Setter Property="TextColor"
+													Value="{DynamicResource ContentPrimaryInverted}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+							</Border>
+						</controls:TemplatedButton>
 
-			<controls:TaskView.ErrorView>
-				<VerticalStackLayout Padding="32" Spacing="16" HorizontalOptions="Center" VerticalOptions="Center">
-					<Label Text="{Binding LoadErrorText}" Style="{DynamicResource InfoLabel}" HorizontalTextAlignment="Center" />
-					<controls:TextButton LabelData="{l:Localize TryAgain}"
-										 Command="{Binding LoadTask.ReloadCommand}"
-										 Style="{DynamicResource OutlinedTextButton}"
-										 HorizontalOptions="Center" />
-				</VerticalStackLayout>
-			</controls:TaskView.ErrorView>
-
-			<controls:TaskView.SucceededView>
-				<Grid RowDefinitions="auto,auto,auto,*" Padding="16,0,16,0">
-					<!-- Search -->
-					<controls:CompositeEntry Grid.Row="0"
-											 Style="{DynamicResource RegularCompositeEntry}"
-											 Placeholder="{l:Localize SearchTokens}"
-											 EntryData="{Binding SearchText}"
-											 IsVisible="{Binding HasTokens}"
-											 Margin="0,0,0,8">
-						<controls:CompositeEntry.LeftView>
-							<controls:SvgView Source="search.svg"
-											  WidthRequest="20"
-											  HeightRequest="20"
-											  TintColor="{DynamicResource ContentSecondaryWL}"
-											  AutomationProperties.IsInAccessibleTree="False" />
-						</controls:CompositeEntry.LeftView>
-					</controls:CompositeEntry>
-
-					<!-- Category filter -->
-					<ScrollView Grid.Row="1" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" IsVisible="{Binding HasCategories}">
-						<HorizontalStackLayout Spacing="8" Padding="0,0,0,8" BindableLayout.ItemsSource="{Binding Categories}">
+						<HorizontalStackLayout Spacing="8"
+											   BindableLayout.ItemsSource="{Binding Categories}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel:TokenCategoryChip">
 									<controls:TemplatedButton Command="{Binding SelectCategoryCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyTokensViewModel}}, x:DataType=viewmodel:MyTokensViewModel}"
 															  CommandParameter="{Binding .}"
 															  SemanticProperties.Description="{Binding Name}">
-										<Border StrokeShape="RoundRectangle 24" StrokeThickness="1" Padding="12,6"
-												Stroke="Transparent"
-												Background="{DynamicResource TnPSuccessbgWL}">
+										<Border Style="{DynamicResource ListCardChipBorder}">
 											<Border.Triggers>
-												<DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-													<Setter Property="Stroke" Value="{DynamicResource TnPSuccessContentWL}" />
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsSelected}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource ContentPrimaryWL}" />
+													<Setter Property="Stroke"
+															Value="{DynamicResource ContentPrimaryWL}" />
 												</DataTrigger>
 											</Border.Triggers>
 											<Label Text="{Binding Name}"
-												   Style="{DynamicResource Brand2LabelS}"
-												   TextColor="{DynamicResource TnPSuccessContentWL}"
-												   FontSize="{StaticResource FontSizeSm}" />
+												   Style="{DynamicResource ListCardChipLabel}">
+												<Label.Triggers>
+													<DataTrigger TargetType="Label"
+																 Binding="{Binding IsSelected}"
+																 Value="True">
+														<Setter Property="TextColor"
+																Value="{DynamicResource ContentPrimaryInverted}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
 										</Border>
 									</controls:TemplatedButton>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</HorizontalStackLayout>
-					</ScrollView>
+					</HorizontalStackLayout>
+				</ScrollView>
 
-					<!-- Search progress, and the search limit -->
-					<VerticalStackLayout Grid.Row="2" Spacing="4">
-						<HorizontalStackLayout Spacing="8" IsVisible="{Binding IsLoadingAll}" Padding="0,0,0,8">
-							<ActivityIndicator IsRunning="{Binding IsLoadingAll}"
-											   Color="{DynamicResource PrimaryWL}"
-											   WidthRequest="16"
-											   HeightRequest="16"
-											   VerticalOptions="Center" />
-							<Label Text="{l:Localize TokenSearchLoading}" Style="{DynamicResource ItemDescriptionLabel}"
-								   TextColor="{DynamicResource ContentSecondaryWL}" VerticalOptions="Center" />
-						</HorizontalStackLayout>
-						<Label Text="{Binding SearchLimitedText}" IsVisible="{Binding IsSearchLimited}"
-							   Style="{DynamicResource ItemDescriptionLabel}" TextColor="{DynamicResource ContentSecondaryWL}"
-							   Margin="0,0,0,8" />
+				<!-- What the list is doing: loading, searching all tokens, or how many tokens a search covers -->
+				<Label Grid.Row="2"
+					   Margin="20,16,20,0"
+					   Style="{DynamicResource ListCardStatusLabel}"
+					   Text="{Binding TokenStatusText}"
+					   IsVisible="{Binding ShowTokenStatus}" />
+
+				<Grid Grid.Row="3">
+					<!-- Rows shaped like tokens while the first page loads -->
+					<controls:ListCardPlaceholder Margin="16,12,16,0"
+												  VerticalOptions="Start"
+												  ShowsValue="True"
+												  IsVisible="{Binding IsLoadingTokens}" />
+
+					<!-- The tokens couldn't be loaded -->
+					<VerticalStackLayout Padding="32"
+										 Spacing="16"
+										 HorizontalOptions="Center"
+										 VerticalOptions="Center"
+										 IsVisible="{Binding ShowLoadError}">
+						<Label Text="{Binding LoadErrorText}"
+							   Style="{DynamicResource InfoLabel}"
+							   HorizontalTextAlignment="Center" />
+						<controls:TextButton LabelData="{l:Localize TryAgain}"
+											 Command="{Binding LoadTask.ReloadCommand}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 HorizontalOptions="Center" />
 					</VerticalStackLayout>
 
-					<!-- Tokens -->
-					<RefreshView Grid.Row="3"
+					<RefreshView IsVisible="{Binding IsLoaded}"
 								 IsRefreshing="{Binding IsRefreshing}"
 								 Command="{Binding RefreshTokensCommand}">
 						<Grid>
-							<controls:LoadingCollectionView ItemsSource="{Binding Tokens}"
+							<controls:LoadingCollectionView Margin="16,12,16,0"
+															IsVisible="False"
+															controls:Reveal.IsShown="{Binding ShowTokenList}"
+															controls:ListCard.IsEnabled="True"
+															ItemsSource="{Binding Tokens}"
 															SelectionMode="None"
 															ItemSizingStrategy="MeasureAllItems"
 															RemainingItemsThreshold="3"
 															LoadMoreCommand="{Binding LoadMoreTokensCommand}">
 								<CollectionView.ItemsLayout>
-									<LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+									<LinearItemsLayout Orientation="Vertical"
+													   ItemSpacing="0" />
 								</CollectionView.ItemsLayout>
 								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="objectmodel:TokenItem">
-										<views:TokenRowView />
+										<views:TokenListRowView />
 									</DataTemplate>
 								</CollectionView.ItemTemplate>
 								<CollectionView.Footer>
-									<BoxView HeightRequest="16" Color="Transparent" AutomationProperties.IsInAccessibleTree="False" />
+									<BoxView HeightRequest="16"
+											 Color="Transparent"
+											 AutomationProperties.IsInAccessibleTree="False" />
 								</CollectionView.Footer>
 							</controls:LoadingCollectionView>
 
-							<!-- An empty wallet. Only the button takes taps, so the list can still be pulled to refresh. -->
-							<VerticalStackLayout IsVisible="{Binding ShowNoTokens}" Padding="32" Spacing="12"
-												 HorizontalOptions="Center" VerticalOptions="Start"
-												 InputTransparent="True" CascadeInputTransparent="False">
-								<controls:SvgView Source="wallet.svg" HeightRequest="64" WidthRequest="64"
-												  TintColor="{DynamicResource ContentSecondaryWL}"
-												  InputTransparent="True"
-												  AutomationProperties.IsInAccessibleTree="False" />
-								<Label Text="{l:Localize NoTokensYet}" Style="{DynamicResource InfoLabel}" HorizontalTextAlignment="Center"
-									   InputTransparent="True" />
-								<controls:TextButton LabelData="{l:Localize CreateToken}"
-													 Command="{Binding CreateTokenCommand}"
-													 IsVisible="{Binding CanCreateToken}"
-													 Style="{DynamicResource FilledTextButton}"
-													 HorizontalOptions="Center" />
+							<!-- Runs along the top edge of the card while the whole wallet loads for a search -->
+							<controls:IndeterminateProgressLine Margin="16,12,16,0"
+																IsRunning="{Binding IsLoadingAll}"
+																IsVisible="{Binding IsLoadingAll}"
+																Color="{DynamicResource ContentAccessWL}" />
+
+							<!-- An empty wallet. It takes no taps, so the list can still be pulled to refresh. -->
+							<VerticalStackLayout VerticalOptions="Start"
+												 IsVisible="{Binding ShowNoTokens}"
+												 InputTransparent="True">
+								<VerticalStackLayout Padding="24,12,24,0"
+													 Spacing="6">
+									<Label Style="{DynamicResource IdentityFlowTitleLabel}"
+										   Text="{l:Localize TokensEmptyHeading}" />
+									<Label Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
+										   Text="{l:Localize TokensEmptyDescription}" />
+								</VerticalStackLayout>
+								<Border Style="{DynamicResource ListCardEmptyBorder}"
+										Margin="16,24,16,0">
+									<Grid ColumnDefinitions="44,*"
+										  ColumnSpacing="14">
+										<Border Grid.Column="0"
+												Style="{DynamicResource ListCardEmptyTileBorder}"
+												AutomationProperties.IsInAccessibleTree="False">
+											<Path Data="{x:Static ui:Geometries.TokenPath}"
+												  Fill="{DynamicResource InputFieldsSurfaceStrokeInactive}"
+												  Aspect="Uniform"
+												  WidthRequest="22"
+												  HeightRequest="22"
+												  HorizontalOptions="Center"
+												  VerticalOptions="Center" />
+										</Border>
+										<Label Grid.Column="1"
+											   Style="{DynamicResource IdentityFlowCaptionLabel}"
+											   VerticalOptions="Center"
+											   Text="{l:Localize TokensEmptyHint}" />
+									</Grid>
+								</Border>
 							</VerticalStackLayout>
 
 							<!-- A search or filter that matched nothing -->
-							<Label IsVisible="{Binding ShowNoMatches}" Text="{l:Localize NoMatchingTokens}"
-								   Style="{DynamicResource InfoLabel}" HorizontalTextAlignment="Center"
-								   VerticalOptions="Start" Margin="0,24,0,0" InputTransparent="True" />
+							<Label Margin="20,16,20,0"
+								   VerticalOptions="Start"
+								   Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
+								   Text="{l:Localize NoMatchingTokens}"
+								   IsVisible="{Binding ShowNoMatches}"
+								   InputTransparent="True" />
 						</Grid>
 					</RefreshView>
 				</Grid>
-			</controls:TaskView.SucceededView>
-		</controls:TaskView>
-	</Grid>
+			</Grid>
+		</controls:IdentityFlowShell.BodyContent>
+
+		<controls:IdentityFlowShell.StickyFooterContent>
+			<controls:TextButton Style="{DynamicResource FilledTextButton}"
+								 MaximumWidthRequest="560"
+								 HorizontalOptions="Fill"
+								 LabelData="{l:Localize CreateToken}"
+								 Command="{Binding CreateTokenCommand}" />
+		</controls:IdentityFlowShell.StickyFooterContent>
+	</controls:IdentityFlowShell>
 </base:BaseContentPage>

@@ -4820,4 +4820,85 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="TokensCreatedByContract" xml:space="preserve">
     <value>Tokens criados por este contrato</value>
   </data>
+  <data name="NoteCommandNotAvailable" xml:space="preserve">
+    <value>Esta ação não está disponível no momento.</value>
+  </data>
+  <data name="NoMatchingTemplates" xml:space="preserve">
+    <value>Nenhum modelo corresponde à sua busca.</value>
+  </data>
+  <data name="ScanQR" xml:space="preserve">
+    <value>Digitalizar QR</value>
+  </data>
+  <data name="SearchAgain" xml:space="preserve">
+    <value>Buscar novamente</value>
+  </data>
+  <data name="SearchTemplates" xml:space="preserve">
+    <value>Buscar modelos</value>
+  </data>
+  <data name="TemplateCreatedOn" xml:space="preserve">
+    <value>Criado em {0}</value>
+  </data>
+  <data name="TemplateHideVersions" xml:space="preserve">
+    <value>Ocultar versões de {0}</value>
+  </data>
+  <data name="TemplateNew" xml:space="preserve">
+    <value>Novo</value>
+  </data>
+  <data name="TemplateNewestOn" xml:space="preserve">
+    <value>mais recente em {0}</value>
+  </data>
+  <data name="TemplatePickerDescription" xml:space="preserve">
+    <value>Você preenche os detalhes no próximo passo.</value>
+  </data>
+  <data name="TemplatePickerHeading" xml:space="preserve">
+    <value>Escolha um modelo</value>
+  </data>
+  <data name="TemplateQrNotUsable" xml:space="preserve">
+    <value>Este código QR não é um modelo que você possa usar aqui.</value>
+  </data>
+  <data name="TemplateShareDescription" xml:space="preserve">
+    <value>Compartilhar o código QR de {0}</value>
+  </data>
+  <data name="TemplateShowVersions" xml:space="preserve">
+    <value>Mostrar versões de {0}</value>
+  </data>
+  <data name="TemplateUseVersion" xml:space="preserve">
+    <value>Usar a versão de {0}</value>
+  </data>
+  <data name="TemplateVersionCount" xml:space="preserve">
+    <value>{0} versões</value>
+  </data>
+  <data name="TemplateVersionNewest" xml:space="preserve">
+    <value>Mais recente</value>
+  </data>
+  <data name="TemplatesChecking" xml:space="preserve">
+    <value>Procurando novos modelos</value>
+  </data>
+  <data name="TemplatesLooking" xml:space="preserve">
+    <value>Procurando modelos</value>
+  </data>
+  <data name="TemplatesNoneDescription" xml:space="preserve">
+    <value>Não há nenhum disponível para você no momento.</value>
+  </data>
+  <data name="TemplatesNoneHeading" xml:space="preserve">
+    <value>Ainda não há modelos</value>
+  </data>
+  <data name="TemplatesNoneHint" xml:space="preserve">
+    <value>Quando alguém compartilhar um modelo com você, ele aparecerá aqui. Você também pode digitalizar o código QR dele.</value>
+  </data>
+  <data name="TemplatesUpToDate" xml:space="preserve">
+    <value>Tudo atualizado</value>
+  </data>
+  <data name="TokensLoading" xml:space="preserve">
+    <value>Carregando seus tokens</value>
+  </data>
+  <data name="TokensEmptyHeading" xml:space="preserve">
+    <value>Ainda não há tokens</value>
+  </data>
+  <data name="TokensEmptyDescription" xml:space="preserve">
+    <value>Os tokens que você criar ou receber aparecem aqui.</value>
+  </data>
+  <data name="TokensEmptyHint" xml:space="preserve">
+    <value>Crie um a partir de um modelo ou peça para alguém enviar um para você.</value>
+  </data>
 </root>

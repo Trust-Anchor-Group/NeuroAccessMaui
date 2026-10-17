@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
@@ -58,6 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			ServiceRef.TokenUnreadTracker.UnreadChanged += this.TokenUnreadTracker_UnreadChanged;
 			ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
 			ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
+			this.LoadTask.PropertyChanged += this.LoadTask_PropertyChanged;
 
 			this.LoadTask.Load(this.LoadFirstPageAsync);
 		}
@@ -68,6 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			ServiceRef.TokenUnreadTracker.UnreadChanged -= this.TokenUnreadTracker_UnreadChanged;
 			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
+			this.LoadTask.PropertyChanged -= this.LoadTask_PropertyChanged;
 
 			this.LoadTask.Cancel();
 			this.searchDelayCancel?.Cancel();
@@ -95,6 +98,34 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 				await MainThread.InvokeOnMainThreadAsync(() => this.LoadErrorText = GetLoadErrorText(Ex));
 				throw;
 			}
+		}
+
+		/// <summary>
+		/// Updates the page when the first page of tokens starts loading, has loaded, or failed to load.
+		/// </summary>
+		private void LoadTask_PropertyChanged(object? Sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName != nameof(ObservableTask.State))
+				return;
+
+			this.OnPropertyChanged(nameof(this.IsLoadingTokens));
+			this.OnPropertyChanged(nameof(this.IsLoaded));
+			this.OnPropertyChanged(nameof(this.ShowLoadError));
+			this.OnPropertyChanged(nameof(this.TokenStatusText));
+			this.OnPropertyChanged(nameof(this.ShowTokenStatus));
+			this.NotifyTokenCountChanged();
+		}
+
+		/// <summary>
+		/// Updates what depends on how many tokens are loaded. Called on the main thread.
+		/// </summary>
+		private void NotifyTokenCountChanged()
+		{
+			this.OnPropertyChanged(nameof(this.HasTokens));
+			this.OnPropertyChanged(nameof(this.ShowNoTokens));
+			this.OnPropertyChanged(nameof(this.ShowNoMatches));
+			this.OnPropertyChanged(nameof(this.ShowSearch));
+			this.OnPropertyChanged(nameof(this.ShowTokenList));
 		}
 
 		/// <summary>
@@ -275,8 +306,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 					this.Tokens.Add(Item);
 			}
 
-			this.OnPropertyChanged(nameof(this.HasTokens));
-			this.OnPropertyChanged(nameof(this.ShowNoTokens));
+			this.NotifyTokenCountChanged();
 		}
 
 		/// <summary>
@@ -433,9 +463,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 					this.Tokens.Insert(0, Item);
 
 				this.UpdateCategories();
-				this.OnPropertyChanged(nameof(this.HasTokens));
-				this.OnPropertyChanged(nameof(this.ShowNoTokens));
-				this.OnPropertyChanged(nameof(this.ShowNoMatches));
+				this.NotifyTokenCountChanged();
 			});
 
 			return Task.CompletedTask;
@@ -457,9 +485,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 				RemoveToken(this.Tokens, e.Token.TokenId);
 
 				this.UpdateCategories();
-				this.OnPropertyChanged(nameof(this.HasTokens));
-				this.OnPropertyChanged(nameof(this.ShowNoTokens));
-				this.OnPropertyChanged(nameof(this.ShowNoMatches));
+				this.NotifyTokenCountChanged();
 			});
 
 			return Task.CompletedTask;
@@ -550,7 +576,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// The category the list is filtered by, if any.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsAllCategoriesSelected))]
 		private string? selectedCategory;
+
+		/// <summary>
+		/// If no category filter is applied, so the "All" chip is selected.
+		/// </summary>
+		public bool IsAllCategoriesSelected => this.SelectedCategory is null;
 
 		/// <summary>
 		/// If a search or category filter is applied.
@@ -563,9 +595,60 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		public bool HasTokens => this.allTokens.Count > 0;
 
 		/// <summary>
-		/// If the wallet is empty.
+		/// If the wallet is empty. Shown once the first page has loaded.
 		/// </summary>
-		public bool ShowNoTokens => this.allTokens.Count == 0;
+		public bool ShowNoTokens => this.LoadTask.IsSucceeded && this.allTokens.Count == 0;
+
+		/// <summary>
+		/// If the first page of tokens is loading. Placeholder rows show meanwhile.
+		/// </summary>
+		public bool IsLoadingTokens => this.LoadTask.IsPending || this.LoadTask.IsRunning;
+
+		/// <summary>
+		/// If the first page of tokens has loaded.
+		/// </summary>
+		public bool IsLoaded => this.LoadTask.IsSucceeded;
+
+		/// <summary>
+		/// If the tokens couldn't be loaded.
+		/// </summary>
+		public bool ShowLoadError => this.LoadTask.IsFailed;
+
+		/// <summary>
+		/// If the search field is shown: while the tokens load, and once there are tokens to search.
+		/// </summary>
+		public bool ShowSearch => this.IsLoadingTokens || (this.IsLoaded && this.allTokens.Count > 0);
+
+		/// <summary>
+		/// If the card with the tokens is shown.
+		/// </summary>
+		public bool ShowTokenList => this.IsLoaded && this.allTokens.Count > 0;
+
+		/// <summary>
+		/// What the list is doing: loading, searching all tokens, or how many tokens a search covers. Null when there is
+		/// nothing to say.
+		/// </summary>
+		public string? TokenStatusText
+		{
+			get
+			{
+				if (this.IsLoadingTokens)
+					return ServiceRef.Localizer[nameof(AppResources.TokensLoading)];
+
+				if (this.IsLoadingAll)
+					return ServiceRef.Localizer[nameof(AppResources.TokenSearchLoading)];
+
+				if (this.IsSearchLimited)
+					return this.SearchLimitedText;
+
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// If <see cref="TokenStatusText"/> is shown.
+		/// </summary>
+		public bool ShowTokenStatus => this.TokenStatusText is not null;
 
 		/// <summary>
 		/// If a search or filter matched none of the tokens.
@@ -583,12 +666,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(ShowNoMatches))]
+		[NotifyPropertyChangedFor(nameof(TokenStatusText))]
+		[NotifyPropertyChangedFor(nameof(ShowTokenStatus))]
 		private bool isLoadingAll;
 
 		/// <summary>
 		/// If the wallet has more tokens than a search covers.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(TokenStatusText))]
+		[NotifyPropertyChangedFor(nameof(ShowTokenStatus))]
 		private bool isSearchLimited;
 
 		/// <summary>
@@ -689,6 +776,23 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 
 			Chip.IsSelected = Select;
 			this.SelectedCategory = Select ? Chip.Name : null;
+
+			this.FilterChanged();
+		}
+
+		/// <summary>
+		/// Removes the category filter, when the "All" chip is tapped.
+		/// </summary>
+		[RelayCommand]
+		private void SelectAllCategories()
+		{
+			if (this.SelectedCategory is null)
+				return;
+
+			foreach (TokenCategoryChip Chip in this.Categories)
+				Chip.IsSelected = false;
+
+			this.SelectedCategory = null;
 
 			this.FilterChanged();
 		}

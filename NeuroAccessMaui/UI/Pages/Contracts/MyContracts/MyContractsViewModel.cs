@@ -2,8 +2,6 @@
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Persistence;
-using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Resources.Languages;
 using System.Collections.ObjectModel;
@@ -11,23 +9,28 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.QR;
-using Waher.Script;
 using NeuroAccessMaui.UI.MVVM;
 using CommunityToolkit.Maui.Core.Extensions;
-using NeuroAccessMaui.UI.Popups;
+using NeuroAccessMaui.Models;
+using NeuroAccessMaui.Services.UI.QR;
+using NeuroAccessMaui.Services.Wallet.Tokens;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
 	/// <summary>
 	/// View model responsible for presenting and filtering a list of contracts and templates.
 	/// In the contracts list, contracts are grouped as an inbox: what needs the user's action, what is in progress, what is
-	/// signed and what has ended. Templates are listed flat, filtered by category.
+	/// signed and what has ended. Templates are listed newest first, one row per title, with older versions folded under the
+	/// newest.
 	/// </summary>
 	public partial class MyContractsViewModel : BaseViewModel, IDisposable
 	{
 		private const int ReloadDelayMs = 300;
 		private const int GroupPageSize = 10;
 		private const int PickerBatchSize = 50;
+		private const int MaxTemplates = 500;
+		private const int TemplatePlaceholderDelayMs = 200;
+		private const int UpToDateDisplayMs = 1500;
 
 		private static readonly ContractListGroup[] groupOrder =
 		[
@@ -43,15 +46,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly bool isInbox;
 		private readonly Dictionary<ContractListGroup, ContractGroupModel> groups = [];
 		private Contract? selectedContract = null;
-		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase);
-
-		/// <summary>
-		/// Event raised when a filter tag becomes selected. Consumers can react (e.g., scroll into view).
-		/// </summary>
-		public event Action<SelectableTag>? TagSelected;
-
-		private readonly string AllCategory = ServiceRef.Localizer[nameof(AppResources.All)];
 		private readonly int contractBatchSize = 10;
+		private readonly List<TemplateGroupModel> allTemplates = [];
+		private readonly HashSet<string> knownTemplateIds = new(StringComparer.OrdinalIgnoreCase);
 
 		private readonly SemaphoreSlim loadLock = new(1, 1);
 		private CancellationTokenSource? reloadCancellation;
@@ -62,15 +59,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private bool isLoaded;
 		private bool isSubscribed;
 		private bool disposed;
+		private bool templatesLoaded;
+		private bool isTemplatePlaceholderDue;
+		private bool showTemplatesUpToDate;
 
 		private int loadedContracts;
-		private string currentCategory;
 		private string searchText = string.Empty;
-
-		/// <summary>
-		/// Collection of available filter tags for categories. One tag can be selected at a time.
-		/// </summary>
-		public ObservableCollection<SelectableTag> FilterTags { get; set; } = new();
 
 		/// <summary>
 		/// Remaining items threshold for incremental loading. 0 enables loading, -1 disables.
@@ -101,7 +95,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.loadedContracts = 0;
 			this.hasMore = 0;
-			this.currentCategory = this.AllCategory;
 
 			if (Args is not null)
 			{
@@ -148,28 +141,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			this.IsBusy = true;
 			this.ShowContractsMissing = false;
 
-			if (this.UsesCategoryTags)
-			{
-				await this.LoadCategories();
-
-				// Ensure an "All" tag exists showing total count, selected by default
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					if (this.tagMap.TryGetValue(this.AllCategory, out SelectableTag? allTag))
-					{
-						allTag.IsSelected = true;
-					}
-					else
-					{
-						SelectableTag all = new(this.AllCategory, true);
-						this.tagMap[this.AllCategory] = all;
-						this.FilterTags.Insert(0, all);
-					}
-				});
-
-				this.currentCategory = this.AllCategory;
-			}
-
 			if (!this.isSubscribed)
 			{
 				ServiceRef.ContractStore.ContractChanged += this.ContractStore_ContractChanged;
@@ -202,6 +173,35 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 				if (!IsEmpty)
 					await this.ShowLoadedAsync();
+			}
+			else if (this.IsTemplateList)
+			{
+				// Templates on the phone show at once. Placeholder rows only show if they take a moment, and templates for
+				// creating tokens that are missing are looked for afterwards, while the list can be used.
+				bool LooksForTemplates = this.contractsListMode == ContractsListMode.TokenCreationTemplates;
+
+				await MainThread.InvokeOnMainThreadAsync(() => { this.IsCheckingTemplates = LooksForTemplates; });
+				_ = this.ShowTemplatePlaceholderWhenSlowAsync();
+
+				try
+				{
+					await this.LoadTemplatesAsync();
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.templatesLoaded = true;
+					this.UpdateTemplateState();
+				});
+
+				await this.ShowLoadedAsync();
+
+				if (LooksForTemplates)
+					_ = this.DownloadMissingTemplatesAsync();
 			}
 			else
 			{
@@ -292,9 +292,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		public bool IsFlatList => !this.isInbox;
 
 		/// <summary>
-		/// If the list is filtered by category tags. Templates are; contracts are searched by text.
+		/// If the list is a template picker: contract templates, or templates for creating tokens.
 		/// </summary>
-		public bool UsesCategoryTags => this.contractsListMode != ContractsListMode.Contracts;
+		public bool IsTemplateList => this.contractsListMode != ContractsListMode.Contracts;
 
 		/// <summary>
 		/// What the list says when it is empty. An empty list of token creation templates says how to get one.
@@ -346,103 +346,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <summary>
-		/// Opens the filter popup and applies the selected tag when the popup returns.
-		/// </summary>
-		[RelayCommand]
-		private async Task OpenFilterPopup()
-		{
-			FilterContractsPopupViewModel vm = new FilterContractsPopupViewModel(this.FilterTags);
-			SelectableTag? selectedTag = await ServiceRef.PopupService.PushAsync<FilterContractsPopup, FilterContractsPopupViewModel, MyContractsViewModel.SelectableTag>(vm);
-			if (selectedTag is not null && !string.Equals(selectedTag.Category, this.currentCategory, StringComparison.OrdinalIgnoreCase))
-				await this.FilterChanged(selectedTag);
-		}
-
-		/// <summary>
-		/// Changes the selected filter tag and refreshes the contract list accordingly.
-		/// </summary>
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		private async Task FilterChanged(object? parameter)
-		{
-			if (parameter is SelectableTag Tag)
-			{
-				bool wasSelected = Tag.IsSelected;
-				if (wasSelected)
-				{
-					foreach (SelectableTag t in this.FilterTags)
-					{
-						t.IsSelected = t.Category == this.AllCategory;
-						if (string.Equals(t.Category, this.AllCategory, StringComparison.OrdinalIgnoreCase))
-							this.TagSelected?.Invoke(t);
-					}
-
-					this.currentCategory = this.AllCategory;
-				}
-				else
-				{
-					foreach (SelectableTag t in this.FilterTags)
-						t.IsSelected = (t == Tag);
-
-					this.currentCategory = Tag.Category;
-					this.TagSelected?.Invoke(Tag);
-				}
-
-				await this.ApplySearchFilter();
-			}
-		}
-
-		/// <summary>
-		/// Should be called by page on text change.
+		/// Should be called by page on text change. Contracts are searched by text over every group, after a short pause in
+		/// typing.
 		/// </summary>
 		public void UpdateSearch(string? text)
 		{
-			if (!this.UsesCategoryTags)
-			{
-				// Contracts are searched by text over every group, after a short pause in typing.
-				this.searchText = text?.Trim() ?? string.Empty;
-				this.ScheduleReload();
-				return;
-			}
-
-			string? previousCategory = this.currentCategory;
-
-			SelectableTag? selectedTag = null;
-
-			if (string.IsNullOrEmpty(text))
-			{
-				foreach (SelectableTag Tag in this.FilterTags)
-				{
-					Tag.IsSelected = false;
-				}
-				this.FilterTags[0].IsSelected = true; // Select "All"
-				selectedTag = this.FilterTags[0];
-				this.currentCategory = this.AllCategory;
-			}
-			else
-			{
-				bool found = false; // To ensure only one tag is selected
-				foreach (SelectableTag Tag in this.FilterTags)
-				{
-					if (Tag.Category.Contains(text ?? string.Empty, StringComparison.OrdinalIgnoreCase) && !found)
-					{
-						found = true;
-						Tag.IsSelected = true;
-						selectedTag = Tag;
-						this.currentCategory = Tag.Category;
-					}
-					else
-					{
-						Tag.IsSelected = false;
-					}
-				}
-			}
-
-			if (!string.Equals(previousCategory, this.currentCategory, StringComparison.OrdinalIgnoreCase))
-			{
-				if (selectedTag is not null)
-					this.TagSelected?.Invoke(selectedTag);
-
-				this.ApplySearchFilter().ConfigureAwait(false);
-			}
+			this.searchText = text?.Trim() ?? string.Empty;
+			this.ScheduleReload();
 		}
 
 		/// <summary>
@@ -779,13 +689,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			if (this.isInbox)
 				await this.LoadInboxAsync();
+			else if (this.IsTemplateList)
+				await this.LoadTemplatesAsync();
 			else
-			{
-				if (this.UsesCategoryTags)
-					await this.LoadCategories();
-
 				await this.ApplySearchFilter();
-			}
 
 			await this.ShowLoadedAsync();
 		}
@@ -1037,19 +944,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <summary>
-		/// Shares a template reference as a QR code in a popup.
+		/// Shares a template reference as a QR code in a popup. A row of the template picker shares its newest version.
 		/// </summary>
 		[RelayCommand]
 		private async Task ShareTemplateQR(object? parameter)
 		{
 			try
 			{
-				ContractModel? Model = parameter as ContractModel;
+				ContractModel? Model = parameter switch
+				{
+					TemplateGroupModel Group => Group.Newest,
+					ContractModel Contract => Contract,
+					_ => null
+				};
+
 				if (Model is null)
 					return;
 
 				string ContractUri = Model.ContractIdUriString;
-				string ContractName = Model.Category;
+				string ContractName = parameter is TemplateGroupModel Row ? Row.Title : Model.Category;
 
 				if (string.IsNullOrEmpty(ContractUri))
 					return;
@@ -1068,50 +981,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <summary>
-		/// Loads available categories and populates <see cref="FilterTags"/>.
-		/// </summary>
-		private async Task LoadCategories()
-		{
-			try
-			{
-				string Filter = this.contractsListMode == ContractsListMode.TokenCreationTemplates
-					? "IsTemplate=true and IsTokenCreationTemplate=true"
-					: $"IsTemplate={this.contractsListMode != ContractsListMode.Contracts}";
-
-				object Categories = await Expression.EvalAsync("select distinct Category from NeuroAccessMaui.Services.Contracts.ContractReference where " + Filter);
-
-				if (Categories is not object[] Items)
-					return;
-
-				foreach (object Item in Items)
-				{
-					if (Item is string category && !string.IsNullOrWhiteSpace(category))
-					{
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							if (!this.tagMap.ContainsKey(category))
-							{
-								SelectableTag NewTag = new(category, false);
-								this.tagMap[category] = NewTag;
-								this.FilterTags.Add(NewTag);
-							}
-						});
-					}
-				}
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		/// <summary>
 		/// Command handler that loads additional contracts when the user scrolls near the end of the list.
 		/// </summary>
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task LoadMoreContracts()
 		{
-			if (this.isInbox)
+			if (this.isInbox || this.IsTemplateList)
 				return;
 
 			await this.LoadContracts();
@@ -1159,121 +1034,38 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			finally
 			{
 				this.loadedContracts += this.contractBatchSize;
-
-				if (this.HasMore == -1 && this.contractsListMode == ContractsListMode.TokenCreationTemplates)
-				{
-					// Templates found on the Neuron, or known for its domain, are added to the list when they are missing.
-					foreach (string TokenTemplateId in await ServiceRef.TokenTemplateService.GetCreationTemplatesAsync())
-					{
-						try
-						{
-							ContractReference? Existing = await ServiceRef.ContractStore.GetAsync(TokenTemplateId);
-
-							if (Existing is null || !Existing.IsTemplate || !Existing.ContractLoaded)
-							{
-								// The store raises a change for the new row, and the list reloads with it.
-								Contract? Contract = await ServiceRef.XmppService.GetContract(TokenTemplateId);
-								if (Contract is not null)
-									await ServiceRef.ContractStore.UpsertAsync(Contract, ContractOrigin.Opened);
-							}
-						}
-						catch (Exception Ex)
-						{
-							ServiceRef.LogService.LogException(Ex);
-						}
-					}
-				}
 			}
 		}
 
 		/// <summary>
-		/// Queries the database for a batch of <see cref="ContractReference"/> records consistent with the current filter.
-		/// Also updates <see cref="HasMore"/> based on result count.
+		/// Queries the database for a batch of contracts consistent with the current search. Also updates
+		/// <see cref="HasMore"/> based on result count. Templates are loaded by <see cref="LoadTemplatesAsync"/> instead.
 		/// </summary>
 		private async Task<IEnumerable<ContractReference>?> LoadFromDatabase()
 		{
+			if (this.contractsListMode != ContractsListMode.Contracts)
+				return null;
+
 			IEnumerable<ContractReference> ContractReferences;
 
-			if (this.contractsListMode == ContractsListMode.Contracts)
+			if (this.pickerFilter is not null)
 			{
-				if (this.pickerFilter is not null)
-				{
-					// Picking for a contract-reference parameter: only signed contracts that meet its rules, in one list.
-					ContractReferences = await this.LoadPickerCandidatesAsync();
-					this.HasMore = -1;
-				}
-				else
-				{
-					ContractReferences = await ServiceRef.ContractStore.QueryAsync(new ContractListQuery()
-					{
-						IsTemplate = false,
-						SearchText = this.searchText,
-						Offset = this.loadedContracts,
-						MaxCount = this.contractBatchSize
-					});
-
-					// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-					this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
-				}
-
-				return ContractReferences;
-			}
-
-			if (this.currentCategory == this.AllCategory)
-			{
-				switch (this.contractsListMode)
-				{
-					case ContractsListMode.ContractTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true)));
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
-						break;
-
-					case ContractsListMode.TokenCreationTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("IsTokenCreationTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true)));
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
-						break;
-
-					default:
-						return null;
-				}
+				// Picking for a contract-reference parameter: only signed contracts that meet its rules, in one list.
+				ContractReferences = await this.LoadPickerCandidatesAsync();
+				this.HasMore = -1;
 			}
 			else
 			{
-				switch (this.contractsListMode)
+				ContractReferences = await ServiceRef.ContractStore.QueryAsync(new ContractListQuery()
 				{
-					case ContractsListMode.ContractTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true),
-							new FilterFieldEqualTo("Category", this.currentCategory)));
+					IsTemplate = false,
+					SearchText = this.searchText,
+					Offset = this.loadedContracts,
+					MaxCount = this.contractBatchSize
+				});
 
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
-						break;
-
-					case ContractsListMode.TokenCreationTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("IsTokenCreationTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true),
-							new FilterFieldEqualTo("Category", this.currentCategory)));
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-					this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
-						break;
-
-					default:
-						return null;
-				}
+				// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+				this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 			}
 
 			return ContractReferences;
@@ -1330,6 +1122,468 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			return Result;
 		}
+
+		#region Template picker
+
+		/// <summary>
+		/// The rows of the template picker that match the search: one row per template title, newest first.
+		/// </summary>
+		public ObservableCollection<TemplateGroupModel> Templates { get; } = [];
+
+		/// <summary>
+		/// Text to search the templates' titles for.
+		/// </summary>
+		[ObservableProperty]
+		private string? templateSearchText;
+
+		/// <summary>
+		/// If templates that are missing from the phone are being looked for and downloaded.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowTemplateCheckLine))]
+		private bool isCheckingTemplates;
+
+		/// <summary>
+		/// The line under the search field that says what the template list is doing, if anything.
+		/// </summary>
+		[ObservableProperty]
+		private string? templateStatusText;
+
+		/// <summary>
+		/// If <see cref="TemplateStatusText"/> is shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool showTemplateStatus;
+
+		/// <summary>
+		/// If placeholder rows are shown while the first templates load.
+		/// </summary>
+		[ObservableProperty]
+		private bool showTemplatePlaceholder;
+
+		/// <summary>
+		/// If the template list has rows to show.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowTemplateCheckLine))]
+		private bool showTemplateList;
+
+		/// <summary>
+		/// If there are no templates at all, once loading and looking for templates have finished.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(TemplateHeadingText))]
+		[NotifyPropertyChangedFor(nameof(TemplateDescriptionText))]
+		[NotifyPropertyChangedFor(nameof(ShowTemplateSearch))]
+		[NotifyPropertyChangedFor(nameof(CanSearchTemplatesAgain))]
+		private bool showNoTemplates;
+
+		/// <summary>
+		/// If a search matched none of the templates.
+		/// </summary>
+		[ObservableProperty]
+		private bool showNoTemplateMatches;
+
+		/// <summary>
+		/// If the line along the top of the template list runs, while templates are looked for.
+		/// </summary>
+		public bool ShowTemplateCheckLine => this.IsCheckingTemplates && this.ShowTemplateList;
+
+		/// <summary>
+		/// The template picker's heading.
+		/// </summary>
+		public string TemplateHeadingText => this.ShowNoTemplates
+			? ServiceRef.Localizer[nameof(AppResources.TemplatesNoneHeading)]
+			: ServiceRef.Localizer[nameof(AppResources.TemplatePickerHeading)];
+
+		/// <summary>
+		/// The text under the template picker's heading.
+		/// </summary>
+		public string TemplateDescriptionText => this.ShowNoTemplates
+			? ServiceRef.Localizer[nameof(AppResources.TemplatesNoneDescription)]
+			: ServiceRef.Localizer[nameof(AppResources.TemplatePickerDescription)];
+
+		/// <summary>
+		/// If the template search field is shown. There is nothing to search when there are no templates.
+		/// </summary>
+		public bool ShowTemplateSearch => !this.ShowNoTemplates;
+
+		/// <summary>
+		/// If templates can be looked for again. Only templates for creating tokens are looked for.
+		/// </summary>
+		public bool CanSearchTemplatesAgain => this.ShowNoTemplates && this.contractsListMode == ContractsListMode.TokenCreationTemplates;
+
+		partial void OnTemplateSearchTextChanged(string? Value)
+		{
+			this.ApplyTemplateFilter();
+		}
+
+		/// <summary>
+		/// Shows the placeholder rows if the templates haven't loaded after a moment, so a quick load doesn't flash them.
+		/// </summary>
+		private async Task ShowTemplatePlaceholderWhenSlowAsync()
+		{
+			try
+			{
+				await Task.Delay(TemplatePlaceholderDelayMs);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.isTemplatePlaceholderDue = true;
+					this.UpdateTemplateState();
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Loads the stored templates, groups the versions of each template under its title, and shows the rows that match
+		/// the search. Templates that weren't on the phone when the picker opened are marked as new.
+		/// </summary>
+		private async Task LoadTemplatesAsync()
+		{
+			await this.loadLock.WaitAsync();
+			try
+			{
+				IReadOnlyList<ContractReference> Rows = await ServiceRef.ContractStore.QueryAsync(new ContractListQuery()
+				{
+					IsTemplate = true,
+					IsTokenCreationTemplate = this.contractsListMode == ContractsListMode.TokenCreationTemplates ? true : null,
+					Offset = 0,
+					MaxCount = MaxTemplates
+				});
+
+				List<TemplateGroupModel> Groups = GroupTemplates(Rows);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					HashSet<string> ExpandedKeys = new(StringComparer.Ordinal);
+
+					foreach (TemplateGroupModel Group in this.allTemplates)
+					{
+						if (Group.IsExpanded)
+							ExpandedKeys.Add(Group.Key);
+					}
+
+					bool IsFirstLoad = !this.templatesLoaded;
+
+					foreach (TemplateGroupModel Group in Groups)
+					{
+						if (IsFirstLoad)
+						{
+							foreach (TemplateVersionModel Version in Group.Versions)
+								this.knownTemplateIds.Add(Version.Contract.ContractId);
+						}
+						else
+							Group.IsNew = !this.knownTemplateIds.Contains(Group.Newest.ContractId);
+
+						Group.IsExpanded = ExpandedKeys.Contains(Group.Key);
+					}
+
+					this.allTemplates.Clear();
+					this.allTemplates.AddRange(Groups);
+					this.templatesLoaded = true;
+
+					this.ApplyTemplateFilter();
+				});
+			}
+			finally
+			{
+				this.loadLock.Release();
+			}
+		}
+
+		/// <summary>
+		/// Groups templates by title. Each group lists its versions newest first, and the groups are sorted by their newest
+		/// version, newest first.
+		/// </summary>
+		/// <param name="Rows">The stored templates.</param>
+		/// <returns>The rows of the template picker.</returns>
+		private static List<TemplateGroupModel> GroupTemplates(IEnumerable<ContractReference> Rows)
+		{
+			Dictionary<string, List<ContractModel>> ByKey = new(StringComparer.Ordinal);
+
+			foreach (ContractReference Ref in Rows)
+			{
+				if (string.IsNullOrEmpty(Ref.ContractId?.Value))
+					continue;
+
+				ContractModel Model = new(Ref);
+				string Key = TemplateGroupModel.GetKey(GetTemplateTitle(Model), Model.ContractId);
+
+				if (!ByKey.TryGetValue(Key, out List<ContractModel>? Versions))
+				{
+					Versions = [];
+					ByKey[Key] = Versions;
+				}
+
+				Versions.Add(Model);
+			}
+
+			List<TemplateGroupModel> Result = [];
+
+			foreach (List<ContractModel> Versions in ByKey.Values)
+			{
+				Versions.Sort((A, B) => B.Timestamp.CompareTo(A.Timestamp));
+				Result.Add(new TemplateGroupModel(GetTemplateTitle(Versions[0]), Versions));
+			}
+
+			Result.Sort((A, B) => B.Newest.Timestamp.CompareTo(A.Newest.Timestamp));
+
+			return Result;
+		}
+
+		/// <summary>
+		/// Gets the title of a template: its category, or else its name, or else its ID.
+		/// </summary>
+		/// <param name="Model">The template.</param>
+		/// <returns>The title.</returns>
+		private static string GetTemplateTitle(ContractModel Model)
+		{
+			if (!string.IsNullOrWhiteSpace(Model.Category))
+				return Model.Category.Trim();
+
+			if (!string.IsNullOrWhiteSpace(Model.Name))
+				return Model.Name.Trim();
+
+			return Model.ContractId;
+		}
+
+		/// <summary>
+		/// Shows the template rows whose titles match the search. Called on the main thread.
+		/// </summary>
+		private void ApplyTemplateFilter()
+		{
+			string Query = this.TemplateSearchText?.Trim() ?? string.Empty;
+
+			this.Templates.Clear();
+
+			foreach (TemplateGroupModel Group in this.allTemplates)
+			{
+				if (Query.Length == 0 || Group.Title.Contains(Query, StringComparison.CurrentCultureIgnoreCase))
+					this.Templates.Add(Group);
+			}
+
+			this.UpdateTemplateState();
+		}
+
+		/// <summary>
+		/// Updates what the template picker shows: placeholder rows while the first templates load, the list, the empty
+		/// state, and the status line. Called on the main thread.
+		/// </summary>
+		private void UpdateTemplateState()
+		{
+			bool HasTemplates = this.allTemplates.Count > 0;
+			bool IsWaiting = !this.templatesLoaded || (!HasTemplates && this.IsCheckingTemplates);
+			string? Status = null;
+
+			this.ShowTemplatePlaceholder = IsWaiting && this.isTemplatePlaceholderDue;
+			this.ShowTemplateList = this.Templates.Count > 0;
+			this.ShowNoTemplates = !IsWaiting && !HasTemplates;
+			this.ShowNoTemplateMatches = HasTemplates && this.Templates.Count == 0;
+
+			if (IsWaiting)
+			{
+				if (this.isTemplatePlaceholderDue)
+					Status = ServiceRef.Localizer[nameof(AppResources.TemplatesLooking)];
+			}
+			else if (this.IsCheckingTemplates && HasTemplates)
+				Status = ServiceRef.Localizer[nameof(AppResources.TemplatesChecking)];
+			else if (this.showTemplatesUpToDate && HasTemplates)
+				Status = ServiceRef.Localizer[nameof(AppResources.TemplatesUpToDate)];
+
+			this.TemplateStatusText = Status;
+			this.ShowTemplateStatus = Status is not null;
+		}
+
+		/// <summary>
+		/// Looks for templates for creating tokens that aren't on the phone, and downloads them. The list stays usable
+		/// meanwhile, and templates that arrive are added to it and marked as new.
+		/// </summary>
+		private async Task CheckForNewTemplatesAsync()
+		{
+			bool IsAlreadyChecking = await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				if (this.IsCheckingTemplates)
+					return true;
+
+				this.IsCheckingTemplates = true;
+				this.showTemplatesUpToDate = false;
+				this.UpdateTemplateState();
+				return false;
+			});
+
+			if (!IsAlreadyChecking)
+				await this.DownloadMissingTemplatesAsync();
+		}
+
+		/// <summary>
+		/// Downloads the templates for creating tokens that aren't on the phone, reloads the list, and ends the check. The
+		/// caller has set <see cref="IsCheckingTemplates"/>.
+		/// </summary>
+		private async Task DownloadMissingTemplatesAsync()
+		{
+			bool Completed = false;
+
+			try
+			{
+				foreach (string TemplateId in await ServiceRef.TokenTemplateService.GetCreationTemplatesAsync())
+				{
+					try
+					{
+						ContractReference? Existing = await ServiceRef.ContractStore.GetAsync(TemplateId);
+
+						if (Existing is null || !Existing.IsTemplate || !Existing.ContractLoaded)
+						{
+							Contract? Template = await ServiceRef.XmppService.GetContract(TemplateId);
+							if (Template is not null)
+								await ServiceRef.ContractStore.UpsertAsync(Template, ContractOrigin.Opened);
+						}
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+				}
+
+				Completed = true;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			try
+			{
+				// The templates that arrived are listed before the check ends, so the picker never says it's empty in between.
+				await this.LoadTemplatesAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			bool ShowsUpToDate = await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.IsCheckingTemplates = false;
+				this.showTemplatesUpToDate = Completed && this.allTemplates.Count > 0;
+				this.UpdateTemplateState();
+				return this.showTemplatesUpToDate;
+			});
+
+			if (!ShowsUpToDate)
+				return;
+
+			await Task.Delay(UpToDateDisplayMs);
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.showTemplatesUpToDate = false;
+				this.UpdateTemplateState();
+			});
+		}
+
+		/// <summary>
+		/// Uses a template: the newest version when a row is tapped, or the version that was tapped.
+		/// </summary>
+		/// <param name="Parameter">The row, or the version.</param>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task TemplateSelectedAsync(object? Parameter)
+		{
+			ContractModel? Model = Parameter switch
+			{
+				TemplateGroupModel Group => Group.Newest,
+				TemplateVersionModel Version => Version.Contract,
+				_ => null
+			};
+
+			if (Model is null)
+				return;
+
+			try
+			{
+				await this.ContractSelectedAsync(Model);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Shows or hides the versions of a template.
+		/// </summary>
+		/// <param name="Parameter">The row.</param>
+		[RelayCommand]
+		private void ToggleVersions(object? Parameter)
+		{
+			if (Parameter is TemplateGroupModel Group)
+				Group.IsExpanded = !Group.IsExpanded;
+		}
+
+		/// <summary>
+		/// Scans a template's QR code, saves the template, and uses it as if its row was tapped.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ScanTemplateQrAsync()
+		{
+			try
+			{
+				ContractLinkData? Scan = await QrCode.GetQrService().ScanContractAsync(nameof(AppResources.ScanQRCode));
+				Contract? Template = Scan?.Contract;
+
+				if (Template is null)
+					return;
+
+				if (!this.IsUsableTemplate(Template))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.TemplateQrNotUsable)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
+				ContractReference Ref = await ServiceRef.ContractStore.UpsertAsync(Template, ContractOrigin.Opened);
+				await this.ContractSelectedAsync(new ContractModel(Ref));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Looks for templates again, after nothing was found.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private Task SearchTemplatesAgainAsync()
+		{
+			return this.CheckForNewTemplatesAsync();
+		}
+
+		/// <summary>
+		/// Checks if a scanned contract can be used in this picker: it must be a template, and in the token picker, a
+		/// template for creating tokens.
+		/// </summary>
+		/// <param name="Template">The scanned contract.</param>
+		/// <returns>If the contract can be used.</returns>
+		private bool IsUsableTemplate(Contract Template)
+		{
+			if (Template.PartsMode != ContractParts.TemplateOnly)
+				return false;
+
+			if (this.contractsListMode != ContractsListMode.TokenCreationTemplates)
+				return true;
+
+			return Template.ForMachinesNamespace == TokenTemplateService.GetNamespace(TokenAction.Create) &&
+				Template.ForMachinesLocalName == TokenTemplateService.GetLocalName(TokenAction.Create);
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Releases the resources owned by the view model.

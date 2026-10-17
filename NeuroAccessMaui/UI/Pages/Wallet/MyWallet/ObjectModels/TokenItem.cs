@@ -6,6 +6,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
@@ -20,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 	/// <summary>
 	/// Encapsulates a <see cref="Token"/> object.
 	/// </summary>
-	public partial class TokenItem : ObservableObject, IUniqueItem
+	public partial class TokenItem : ObservableObject, IUniqueItem, IListCardItem
 	{
 		private readonly Token token;
 		private readonly TaskCompletionSource<TokenItem?>? selected;
@@ -364,6 +365,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		/// </summary>
 		[ObservableProperty]
 		private double glyphHeight;
+
+		/// <summary>
+		/// Where the token's row sits in a list card, so the row draws its part of the card.
+		/// </summary>
+		[ObservableProperty]
+		private ListCardPosition cardPosition;
 
 		/// <summary>
 		/// Number of unread notifications about the token.

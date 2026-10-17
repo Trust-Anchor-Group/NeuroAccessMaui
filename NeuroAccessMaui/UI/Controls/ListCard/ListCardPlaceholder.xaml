@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="NeuroAccessMaui.UI.Controls.ListCardPlaceholder"
+			 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+			 x:Name="ThisPlaceholder"
+			 x:DataType="controls:ListCardPlaceholder"
+			 AutomationProperties.IsInAccessibleTree="False">
+	<!-- Rows shaped like the real ones, fading out down the card, while the list loads. The line on the top edge moves. -->
+	<Border Style="{DynamicResource ListCardBorder}">
+		<Grid>
+			<VerticalStackLayout x:Name="Rows">
+				<Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="14" Padding="16" MinimumHeightRequest="76">
+					<BoxView Style="{DynamicResource ListCardPlaceholderTile}" />
+					<VerticalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+						<Grid ColumnDefinitions="62*,38*">
+							<BoxView Style="{DynamicResource ListCardPlaceholderTitle}" />
+						</Grid>
+						<Grid ColumnDefinitions="34*,66*">
+							<BoxView Style="{DynamicResource ListCardPlaceholderSubtitle}" />
+						</Grid>
+					</VerticalStackLayout>
+					<BoxView Grid.Column="2" Style="{DynamicResource ListCardPlaceholderValue}"
+							 IsVisible="{Binding ShowsValue, Source={x:Reference ThisPlaceholder}}" />
+				</Grid>
+				<BoxView Style="{DynamicResource ListCardPlaceholderDivider}" />
+				<Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="14" Padding="16" MinimumHeightRequest="76" Opacity="0.7">
+					<BoxView Style="{DynamicResource ListCardPlaceholderTile}" />
+					<VerticalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+						<Grid ColumnDefinitions="50*,50*">
+							<BoxView Style="{DynamicResource ListCardPlaceholderTitle}" />
+						</Grid>
+						<Grid ColumnDefinitions="44*,56*">
+							<BoxView Style="{DynamicResource ListCardPlaceholderSubtitle}" />
+						</Grid>
+					</VerticalStackLayout>
+					<BoxView Grid.Column="2" Style="{DynamicResource ListCardPlaceholderValue}"
+							 IsVisible="{Binding ShowsValue, Source={x:Reference ThisPlaceholder}}" />
+				</Grid>
+				<BoxView Style="{DynamicResource ListCardPlaceholderDivider}" />
+				<Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="14" Padding="16" MinimumHeightRequest="76" Opacity="0.45">
+					<BoxView Style="{DynamicResource ListCardPlaceholderTile}" />
+					<VerticalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+						<Grid ColumnDefinitions="64*,36*">
+							<BoxView Style="{DynamicResource ListCardPlaceholderTitle}" />
+						</Grid>
+						<Grid ColumnDefinitions="30*,70*">
+							<BoxView Style="{DynamicResource ListCardPlaceholderSubtitle}" />
+						</Grid>
+					</VerticalStackLayout>
+					<BoxView Grid.Column="2" Style="{DynamicResource ListCardPlaceholderValue}"
+							 IsVisible="{Binding ShowsValue, Source={x:Reference ThisPlaceholder}}" />
+				</Grid>
+			</VerticalStackLayout>
+
+			<controls:IndeterminateProgressLine IsRunning="{Binding IsVisible, Source={x:Reference ThisPlaceholder}}"
+												Color="{DynamicResource ContentAccessWL}" />
+		</Grid>
+	</Border>
+</ContentView>

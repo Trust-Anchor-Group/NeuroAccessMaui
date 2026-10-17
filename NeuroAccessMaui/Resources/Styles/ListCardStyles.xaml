@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+	<!-- Lists drawn as one card, with thin dividers between the rows (template picker, My Tokens) -->
+	<Style x:Key="ListCardBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="Margin"
+				Value="0" />
+		<Setter Property="BackgroundColor"
+				Value="{DynamicResource SurfaceElevation1WL}" />
+		<Setter Property="Stroke"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="StrokeThickness"
+				Value="1" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 16" />
+	</Style>
+
+	<!-- One line under the search field that says what the list is doing -->
+	<Style x:Key="ListCardStatusLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeSm}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentSecondaryWL}" />
+		<Setter Property="LineBreakMode"
+				Value="TailTruncation" />
+		<Setter Property="MaxLines"
+				Value="1" />
+	</Style>
+
+	<Style x:Key="ListCardRowTitleLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeLg}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentPrimaryWL}" />
+		<Setter Property="LineBreakMode"
+				Value="TailTruncation" />
+		<Setter Property="MaxLines"
+				Value="1" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<Style x:Key="ListCardRowDetailLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeSm}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentSecondaryWL}" />
+		<Setter Property="LineBreakMode"
+				Value="TailTruncation" />
+		<Setter Property="MaxLines"
+				Value="1" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<!-- The square tile at the start of a row, with a tinted background -->
+	<Style x:Key="ListCardTileBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="WidthRequest"
+				Value="44" />
+		<Setter Property="HeightRequest"
+				Value="44" />
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="BackgroundColor"
+				Value="{DynamicResource TnPSuccessbgWL}" />
+		<Setter Property="StrokeThickness"
+				Value="0" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 12" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<Style x:Key="ListCardMonogramLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSize2xl}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentAccessWL}" />
+		<Setter Property="HorizontalOptions"
+				Value="Center" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<!-- Small pills inside a row, such as "New" or an expiry -->
+	<Style x:Key="ListCardPillBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="Padding"
+				Value="8,0" />
+		<Setter Property="HeightRequest"
+				Value="20" />
+		<Setter Property="BackgroundColor"
+				Value="{DynamicResource TnPSuccessbgWL}" />
+		<Setter Property="StrokeThickness"
+				Value="0" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 10" />
+		<Setter Property="HorizontalOptions"
+				Value="Start" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<Style x:Key="ListCardPillLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeXs}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentAccessWL}" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+		<Setter Property="VerticalTextAlignment"
+				Value="Center" />
+		<Setter Property="LineBreakMode"
+				Value="NoWrap" />
+	</Style>
+
+	<!-- Filter chips above a list -->
+	<Style x:Key="ListCardChipBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="HeightRequest"
+				Value="40" />
+		<Setter Property="Padding"
+				Value="16,0" />
+		<Setter Property="BackgroundColor"
+				Value="{DynamicResource SurfaceElevation1WL}" />
+		<Setter Property="Stroke"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="StrokeThickness"
+				Value="1" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 20" />
+	</Style>
+
+	<Style x:Key="ListCardChipLabel"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+		<Setter Property="FontSize"
+				Value="{StaticResource FontSizeSm}" />
+		<Setter Property="TextColor"
+				Value="{DynamicResource ContentPrimaryWL}" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+		<Setter Property="LineBreakMode"
+				Value="NoWrap" />
+	</Style>
+
+	<!-- An empty list: a dashed outline in the shape of a row, with a hint -->
+	<Style x:Key="ListCardEmptyBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border">
+		<Setter Property="Padding"
+				Value="16,20" />
+		<Setter Property="BackgroundColor"
+				Value="Transparent" />
+		<Setter Property="Stroke"
+				Value="{DynamicResource InputFieldsSurfaceStrokeInactive}" />
+		<Setter Property="StrokeThickness"
+				Value="1.5" />
+		<Setter Property="StrokeDashArray"
+				Value="4,3" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 16" />
+	</Style>
+
+	<Style x:Key="ListCardEmptyTileBorder"
+		   ApplyToDerivedTypes="False"
+		   TargetType="Border"
+		   BasedOn="{StaticResource ListCardEmptyBorder}">
+		<Setter Property="WidthRequest"
+				Value="44" />
+		<Setter Property="HeightRequest"
+				Value="44" />
+		<Setter Property="Padding"
+				Value="0" />
+		<Setter Property="StrokeShape"
+				Value="RoundRectangle 12" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<!-- Placeholder rows shown while a list loads -->
+	<Style x:Key="ListCardPlaceholderTile"
+		   ApplyToDerivedTypes="False"
+		   TargetType="BoxView">
+		<Setter Property="WidthRequest"
+				Value="44" />
+		<Setter Property="HeightRequest"
+				Value="44" />
+		<Setter Property="CornerRadius"
+				Value="12" />
+		<Setter Property="Color"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="Opacity"
+				Value="0.75" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<Style x:Key="ListCardPlaceholderTitle"
+		   ApplyToDerivedTypes="False"
+		   TargetType="BoxView">
+		<Setter Property="HeightRequest"
+				Value="12" />
+		<Setter Property="CornerRadius"
+				Value="6" />
+		<Setter Property="Color"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="Opacity"
+				Value="0.75" />
+	</Style>
+
+	<Style x:Key="ListCardPlaceholderSubtitle"
+		   ApplyToDerivedTypes="False"
+		   TargetType="BoxView">
+		<Setter Property="HeightRequest"
+				Value="10" />
+		<Setter Property="CornerRadius"
+				Value="5" />
+		<Setter Property="Color"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="Opacity"
+				Value="0.75" />
+	</Style>
+
+	<Style x:Key="ListCardPlaceholderValue"
+		   ApplyToDerivedTypes="False"
+		   TargetType="BoxView">
+		<Setter Property="WidthRequest"
+				Value="52" />
+		<Setter Property="HeightRequest"
+				Value="12" />
+		<Setter Property="CornerRadius"
+				Value="6" />
+		<Setter Property="Color"
+				Value="{DynamicResource SurfaceDividerWL}" />
+		<Setter Property="Opacity"
+				Value="0.75" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+	</Style>
+
+	<Style x:Key="ListCardPlaceholderDivider"
+		   ApplyToDerivedTypes="False"
+		   TargetType="BoxView">
+		<Setter Property="HeightRequest"
+				Value="1" />
+		<Setter Property="Margin"
+				Value="74,0,0,0" />
+		<Setter Property="Color"
+				Value="{DynamicResource SurfaceDividerWL}" />
+	</Style>
+
+</ResourceDictionary>

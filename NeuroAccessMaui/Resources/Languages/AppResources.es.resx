@@ -4820,4 +4820,85 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="TokensCreatedByContract" xml:space="preserve">
     <value>Tokens que creó este contrato</value>
   </data>
+  <data name="NoteCommandNotAvailable" xml:space="preserve">
+    <value>Esta acción no está disponible en este momento.</value>
+  </data>
+  <data name="NoMatchingTemplates" xml:space="preserve">
+    <value>Ninguna plantilla coincide con tu búsqueda.</value>
+  </data>
+  <data name="ScanQR" xml:space="preserve">
+    <value>Escanear QR</value>
+  </data>
+  <data name="SearchAgain" xml:space="preserve">
+    <value>Buscar de nuevo</value>
+  </data>
+  <data name="SearchTemplates" xml:space="preserve">
+    <value>Buscar plantillas</value>
+  </data>
+  <data name="TemplateCreatedOn" xml:space="preserve">
+    <value>Creada el {0}</value>
+  </data>
+  <data name="TemplateHideVersions" xml:space="preserve">
+    <value>Ocultar versiones de {0}</value>
+  </data>
+  <data name="TemplateNew" xml:space="preserve">
+    <value>Nueva</value>
+  </data>
+  <data name="TemplateNewestOn" xml:space="preserve">
+    <value>la más reciente del {0}</value>
+  </data>
+  <data name="TemplatePickerDescription" xml:space="preserve">
+    <value>Completarás los detalles en el siguiente paso.</value>
+  </data>
+  <data name="TemplatePickerHeading" xml:space="preserve">
+    <value>Elige una plantilla</value>
+  </data>
+  <data name="TemplateQrNotUsable" xml:space="preserve">
+    <value>Este código QR no es una plantilla que puedas usar aquí.</value>
+  </data>
+  <data name="TemplateShareDescription" xml:space="preserve">
+    <value>Compartir el código QR de {0}</value>
+  </data>
+  <data name="TemplateShowVersions" xml:space="preserve">
+    <value>Mostrar versiones de {0}</value>
+  </data>
+  <data name="TemplateUseVersion" xml:space="preserve">
+    <value>Usar la versión del {0}</value>
+  </data>
+  <data name="TemplateVersionCount" xml:space="preserve">
+    <value>{0} versiones</value>
+  </data>
+  <data name="TemplateVersionNewest" xml:space="preserve">
+    <value>Más reciente</value>
+  </data>
+  <data name="TemplatesChecking" xml:space="preserve">
+    <value>Buscando plantillas nuevas</value>
+  </data>
+  <data name="TemplatesLooking" xml:space="preserve">
+    <value>Buscando plantillas</value>
+  </data>
+  <data name="TemplatesNoneDescription" xml:space="preserve">
+    <value>No hay ninguna disponible para ti en este momento.</value>
+  </data>
+  <data name="TemplatesNoneHeading" xml:space="preserve">
+    <value>Aún no hay plantillas</value>
+  </data>
+  <data name="TemplatesNoneHint" xml:space="preserve">
+    <value>Cuando alguien comparta una plantilla contigo, aparecerá aquí. También puedes escanear su código QR.</value>
+  </data>
+  <data name="TemplatesUpToDate" xml:space="preserve">
+    <value>Todo al día</value>
+  </data>
+  <data name="TokensLoading" xml:space="preserve">
+    <value>Cargando tus tokens</value>
+  </data>
+  <data name="TokensEmptyHeading" xml:space="preserve">
+    <value>Aún no hay tokens</value>
+  </data>
+  <data name="TokensEmptyDescription" xml:space="preserve">
+    <value>Los tokens que crees o recibas aparecen aquí.</value>
+  </data>
+  <data name="TokensEmptyHint" xml:space="preserve">
+    <value>Crea uno a partir de una plantilla o pide a alguien que te envíe uno.</value>
+  </data>
 </root>

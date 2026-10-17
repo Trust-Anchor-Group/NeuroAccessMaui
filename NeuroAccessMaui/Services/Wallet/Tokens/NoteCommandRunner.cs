@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI.Toasts;
@@ -18,6 +19,13 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		/// How long the scripts of a command may run before they are stopped.
 		/// </summary>
 		public static readonly TimeSpan ScriptTimeout = TimeSpan.FromSeconds(5);
+
+		// Names the current state has when a condition runs, as in LegalLab.
+		private const string StateVariable = "State";
+		private const string StateTagVariable = "<State>";
+
+		// Commands whose condition isn't allowed, so the reason is logged once per command.
+		private static readonly ConditionalWeakTable<NoteCommand, object> refusedConditions = new();
 
 		/// <summary>
 		/// Picks the text for the user's language: the exact culture, then the same language, then English, then text
@@ -55,8 +63,9 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		}
 
 		/// <summary>
-		/// Checks if the app may run a command: it has a note generation script, and every script it has, including the
-		/// parameters' validation scripts, parses and passes <see cref="NoteScriptValidator"/>.
+		/// Checks if the app may run a command: it has a note generation script, and that script and the parameters'
+		/// validation scripts parse and pass <see cref="NoteScriptValidator"/>. The command's condition, its note context
+		/// script, must parse. It is checked with the state machine's variables by <see cref="IsAvailableAsync"/>.
 		/// </summary>
 		/// <param name="Command">The note command.</param>
 		/// <param name="AssignedNames">Names the scripts assign that aren't parameters.</param>
@@ -71,11 +80,10 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 				if (Generation is null)
 					return false;
 
-				Expression? Context = Command.ParsedNoteContextScript;
-				if (Context is null && !string.IsNullOrWhiteSpace(Command.NoteContextScript))
+				if (!string.IsNullOrWhiteSpace(Command.NoteContextScript) && Command.ParsedNoteContextScript is null)
 					return false;
 
-				List<Expression?> Scripts = [Context, Generation];
+				List<Expression?> Scripts = [Generation];
 				List<string> ParameterNames = [];
 
 				foreach (Parameter Parameter in Command.Parameters ?? [])
@@ -151,15 +159,99 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		}
 
 		/// <summary>
+		/// Checks if a command applies in the current state of the token's state machine. A command without a condition,
+		/// its note context script, always applies. A condition runs in the background with the current state as
+		/// <c>State</c> and the machine's variables, and the command applies only if it returns true. A condition that
+		/// isn't allowed, fails, or runs longer than <see cref="ScriptTimeout"/> counts as false.
+		/// </summary>
+		/// <param name="Command">The note command.</param>
+		/// <param name="State">The current state, or null when it isn't known.</param>
+		/// <param name="MachineVariables">The state machine's variables. They aren't changed.</param>
+		/// <returns>If the command applies.</returns>
+		public static async Task<bool> IsAvailableAsync(NoteCommand Command, string? State, IReadOnlyDictionary<string, object> MachineVariables)
+		{
+			if (string.IsNullOrWhiteSpace(Command.NoteContextScript))
+				return true;
+
+			if (string.IsNullOrEmpty(State))
+				return false;
+
+			Expression Condition;
+			string[] AssignedNames;
+
+			try
+			{
+				Condition = Command.ParsedNoteContextScript;
+				if (Condition is null)
+					return false;
+
+				HashSet<string> Names = new(MachineVariables.Keys, StringComparer.Ordinal)
+				{
+					StateVariable,
+					StateTagVariable
+				};
+
+				if (!NoteScriptValidator.IsAllowed([Condition], Names, out AssignedNames))
+				{
+					if (refusedConditions.TryAdd(Command, Command))
+					{
+						ServiceRef.LogService.LogWarning("Note command " + Command.Id +
+							" was not shown, since its condition isn't allowed in the app.");
+					}
+
+					return false;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return false;
+			}
+
+			Variables Variables = new();
+
+			foreach (string Name in AssignedNames)
+				Variables[Name] = null;
+
+			Variables[StateVariable] = State;
+			Variables[StateTagVariable] = State;
+
+			foreach (KeyValuePair<string, object> Variable in MachineVariables)
+				Variables[Variable.Key] = Variable.Value;
+
+			Task<object> Evaluation = Task.Run(() => Condition.EvaluateAsync(Variables));
+			Task Completed = await Task.WhenAny(Evaluation, Task.Delay(ScriptTimeout));
+
+			if (Completed != Evaluation)
+			{
+				Variables.Abort();
+				return false;
+			}
+
+			try
+			{
+				return await Evaluation is bool Result && Result;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Runs a command: asks for confirmation when the command has a confirmation text, generates the note from the
-		/// parameter values, and adds it to the token, as a personal note when the command says so. Success is shown as a
-		/// toast, and failure in a dialog, with the command's own texts when it has them.
+		/// parameter values, checks that the command still applies, and adds the note to the token, as a personal note
+		/// when the command says so. Success is shown as a toast, and failure in a dialog, with the command's own texts
+		/// when it has them.
 		/// </summary>
 		/// <param name="Command">The note command. Its parameters hold the values to use.</param>
 		/// <param name="TokenId">ID of the token.</param>
 		/// <param name="AssignedNames">Names the scripts assign that aren't parameters, from <see cref="CanRun"/>.</param>
+		/// <param name="IsAvailable">Checks if the command still applies, just before the note is sent, since the token's
+		/// state can change while the user fills in the form. Null to send without checking.</param>
 		/// <returns>If the note was added.</returns>
-		public static async Task<bool> RunAsync(NoteCommand Command, string TokenId, string[] AssignedNames)
+		public static async Task<bool> RunAsync(NoteCommand Command, string TokenId, string[] AssignedNames, Func<Task<bool>>? IsAvailable)
 		{
 			string Title = SelectText(Command.Title) ?? Command.Id ?? string.Empty;
 			string? Confirmation = SelectText(Command.Confirmation);
@@ -184,6 +276,12 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 			{
 				ServiceRef.LogService.LogException(Ex);
 				await ShowFailureAsync(Title, FailureText);
+				return false;
+			}
+
+			if (IsAvailable is not null && !await IsAvailable())
+			{
+				await ShowFailureAsync(Title, ServiceRef.Localizer[nameof(AppResources.NoteCommandNotAvailable)]);
 				return false;
 			}
 
@@ -220,8 +318,8 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		}
 
 		/// <summary>
-		/// Runs the note context script, and then the note generation script, in the background. Both are stopped if they
-		/// run longer than <see cref="ScriptTimeout"/>.
+		/// Runs the note generation script in the background, and stops it if it runs longer than
+		/// <see cref="ScriptTimeout"/>.
 		/// </summary>
 		/// <param name="Command">The note command.</param>
 		/// <param name="Variables">The variables to run the scripts with.</param>
@@ -230,10 +328,6 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		{
 			Task<object?> Evaluation = Task.Run(async () =>
 			{
-				Expression? Context = Command.ParsedNoteContextScript;
-				if (Context is not null)
-					await Context.EvaluateAsync(Variables);
-
 				object? Note = await Command.GetNote(Variables);
 				return Note;
 			});
