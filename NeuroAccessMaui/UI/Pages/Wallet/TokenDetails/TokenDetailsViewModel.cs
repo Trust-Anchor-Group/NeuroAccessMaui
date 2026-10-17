@@ -6,6 +6,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -19,11 +20,8 @@ using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
-using NeuroFeatures.Events;
 using NeuroFeatures.Tags;
-using ShimSkiaSharp;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Web;
@@ -38,125 +36,31 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 	/// <summary>
 	/// The view model to bind to for when displaying the contents of a token.
 	/// </summary>
-	/// <param name="Page">Page hosting details.</param>
 	/// <param name="Args">Navigation arguments.</param>
-	public partial class TokenDetailsViewModel(TokenDetailsPage Page, TokenDetailsNavigationArgs? Args) : QrXmppViewModel()
+	public partial class TokenDetailsViewModel(TokenDetailsNavigationArgs? Args) : QrXmppViewModel()
 	{
+		/// <summary>
+		/// The most state-machine variables shown inline. The rest are one tap away.
+		/// </summary>
+		private const int MaxInlineVariables = 5;
+
 		private readonly TokenDetailsNavigationArgs? navigationArguments = Args;
-		private readonly TokenDetailsPage page = Page;
+		private readonly Dictionary<string, object> machineVariables = [];
+		private string? machineId;
+		private bool historyAvailable;
 
 		/// <inheritdoc/>
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
 
-			if (this.navigationArguments is not null)
-			{
-				this.Created = this.navigationArguments.Token?.Created;
-				this.Updated = this.navigationArguments.Token?.Updated;
-				this.Expires = this.navigationArguments.Token?.Expires;
-				this.ArchiveRequired = this.navigationArguments.Token?.ArchiveRequired;
-				this.ArchiveOptional = this.navigationArguments.Token?.ArchiveOptional;
-				this.SignatureTimestamp = this.navigationArguments.Token?.SignatureTimestamp;
-				this.Signature = this.navigationArguments.Token?.Signature;
-				this.DefinitionSchemaDigest = this.navigationArguments.Token?.DefinitionSchemaDigest;
-				this.DefinitionSchemaHashFunction = this.navigationArguments.Token?.DefinitionSchemaHashFunction;
-				this.CreatorCanDestroy = this.navigationArguments.Token?.CreatorCanDestroy ?? false;
-				this.OwnerCanDestroyBatch = this.navigationArguments.Token?.OwnerCanDestroyBatch ?? false;
-				this.OwnerCanDestroyIndividual = this.navigationArguments.Token?.OwnerCanDestroyIndividual ?? false;
-				this.CertifierCanDestroy = this.navigationArguments.Token?.CertifierCanDestroy ?? false;
-				this.FriendlyName = this.navigationArguments.Token?.FriendlyName;
-				this.Category = this.navigationArguments.Token?.Category;
-				this.GlyphContentType = this.navigationArguments.Token?.GlyphContentType;
-				this.Ordinal = this.navigationArguments.Token?.Ordinal;
-				this.Value = this.navigationArguments.Token?.Value;
-				this.TokenIdMethod = this.navigationArguments.Token?.TokenIdMethod;
-				this.TokenId = this.navigationArguments.Token?.TokenId;
-				this.ShortTokenId = this.navigationArguments.Token?.ShortTokenId;
-				this.Visibility = this.navigationArguments.Token?.Visibility;
-				this.Creator = this.navigationArguments.Token?.Creator;
-				this.CreatorFriendlyName = await ContactInfo.GetFriendlyName(this.navigationArguments.Token?.Creator);
-				this.CreatorJid = this.navigationArguments.Token?.CreatorJid;
-				this.Owner = this.navigationArguments.Token?.Owner;
-				this.OwnerFriendlyName = await ContactInfo.GetFriendlyName(this.navigationArguments.Token?.Owner);
-				this.OwnerJid = this.navigationArguments.Token?.OwnerJid;
-				this.BatchSize = this.navigationArguments.Token?.BatchSize;
-				this.TrustProvider = this.navigationArguments.Token?.TrustProvider;
-				this.TrustProviderFriendlyName = await ContactInfo.GetFriendlyName(this.navigationArguments.Token?.TrustProvider);
-				this.TrustProviderJid = this.navigationArguments.Token?.TrustProviderJid;
-				this.Currency = this.navigationArguments.Token?.Currency;
-				this.Reference = this.navigationArguments.Token?.Reference;
-				this.Definition = this.navigationArguments.Token?.Definition;
-				this.DefinitionNamespace = this.navigationArguments.Token?.DefinitionNamespace;
-				this.CreationContract = this.navigationArguments.Token?.CreationContract;
-				this.OwnershipContract = this.navigationArguments.Token?.OwnershipContract;
-				this.GlyphWidth = TokenGlyph.DetailsBoxSize;
-				this.GlyphHeight = TokenGlyph.DetailsBoxSize;
-				this.TokenXml = this.navigationArguments.Token?.Token.ToXml();
+			if (this.navigationArguments?.Token is TokenItem Item)
+				await this.LoadTokenAsync(Item);
 
-				// A shared copy that couldn't be checked with its Neuron is labeled, and offers nothing beyond copy and share.
-				// Its embedded layout isn't rendered, since rendering runs the token's own script.
-				this.IsUnverifiedCopy = this.navigationArguments.Origin == TokenOrigin.UnverifiedCopy;
-				this.IsVerified = !this.IsUnverifiedCopy;
-				this.ChangedSinceShared = this.IsVerified && this.navigationArguments.ChangedSinceShared;
-				this.IsMyToken = this.IsVerified && string.Equals(this.OwnerJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase);
-				this.CanOfferToBuy = this.IsVerified && !this.IsMyToken;
-				this.HasStateMachine = this.IsVerified && (this.navigationArguments.Token?.HasStateMachine ?? false);
-				this.HasEmbeddedLayout = this.IsVerified && (this.navigationArguments.Token?.HasEmbeddedLayout ?? false);
-				this.OrdinalText = ServiceRef.Localizer[nameof(AppResources.TokenOrdinalOfBatch), this.Ordinal ?? 0, this.BatchSize ?? 0];
-
-				string? RawDescription = this.navigationArguments.Token?.Description;
-				this.HasDescription = !string.IsNullOrWhiteSpace(RawDescription) && RawDescription != this.FriendlyName;
-
-				if (this.HasDescription)
-					this.DescriptionTask.Load(this.LoadDescriptionAsync);
-
-				if (this.navigationArguments.Token is not null)
-					_ = this.LoadGlyphAsync(this.navigationArguments.Token.Token);
-
-				// Only http(s) values are shown as links.
-				if (!string.IsNullOrEmpty(this.navigationArguments.Token?.Reference))
-					this.page.AddTag(this, ServiceRef.Localizer[nameof(AppResources.Reference)], this.navigationArguments.Token.Reference);   // TODO: Replace with grouped collection, when this works in Maui.
-
-				if (this.navigationArguments.Token?.Tags is not null)
-				{
-					foreach (TokenTag Tag in this.navigationArguments.Token.Tags)
-						this.page.AddTag(this, Tag.Name, Tag.Value?.ToString() ?? string.Empty);   // TODO: Replace with grouped collection, when this works in Maui.
-				}
-
-				if (this.TokenId is not null)
-					this.GenerateQrCode(Constants.UriSchemes.CreateTokenUri(this.TokenId));
-
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Witness)], string.Empty, this.navigationArguments.Token?.Witness, null, this.Witnesses);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Certifier)], ServiceRef.Localizer[nameof(AppResources.CertifierJid)], this.navigationArguments.Token?.Certifier, this.navigationArguments.Token?.CertifierJids, this.Certifiers);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Valuator)], string.Empty, this.navigationArguments.Token?.Valuator, null, this.Valuators);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Assessor)], string.Empty, this.navigationArguments.Token?.Assessor, null, this.Assessors);
-
-				this.Tags.Clear();
-
-				if (this.navigationArguments.Token?.Tags is not null)
-				{
-					foreach (TokenTag Tag in this.navigationArguments.Token.Tags)
-						this.Tags.Add(Tag);
-				}
-
-				StringBuilder sb = new();
-				string Domain = this.TokenId?.After("@") ?? string.Empty;
-				Domain = Domain.After("."); // Remove last sub-domain, corresponding to the component hosting the token.
-
-				sb.Append("https://");
-				sb.Append(Domain);
-				sb.Append("/ValidationSchema.md?NS=");
-				sb.Append(HttpUtility.UrlEncode(this.DefinitionNamespace));
-				sb.Append("&H=");
-
-				if (this.DefinitionSchemaDigest is not null)
-					sb.Append(HttpUtility.UrlEncode(Convert.ToBase64String(this.DefinitionSchemaDigest)));
-
-				sb.Append("&Download=1");
-
-				this.DefinitionSchemaUrl = sb.ToString();   // TODO: The above assume contract hosted by the TAG Neuron. URL should be retrieved using API, or be standardized.
-			}
+			ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
+			ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
+			ServiceRef.XmppService.NeuroFeatureStateUpdated += this.Wallet_StateUpdated;
+			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;
 		}
 
 		/// <inheritdoc/>
@@ -171,9 +75,110 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
+			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
+			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
+			ServiceRef.XmppService.NeuroFeatureStateUpdated -= this.Wallet_StateUpdated;
+			ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_VariablesUpdated;
+
 			this.DescriptionTask.Cancel();
+			this.MachineStateTask.Cancel();
 
 			await base.OnDisposeAsync();
+		}
+
+		#region Loading
+
+		/// <summary>
+		/// Shows a token, and starts loading what is fetched separately: the glyph, the description, the state machine,
+		/// and whether a token the user doesn't own has a visible history.
+		/// </summary>
+		/// <param name="Item">The token.</param>
+		private async Task LoadTokenAsync(TokenItem Item)
+		{
+			this.Created = Item.Created;
+			this.Updated = Item.Updated;
+			this.Expires = Item.Expires;
+			this.ArchiveRequired = Item.ArchiveRequired;
+			this.ArchiveOptional = Item.ArchiveOptional;
+			this.SignatureTimestamp = Item.SignatureTimestamp;
+			this.Signature = Item.Signature;
+			this.DefinitionSchemaDigest = Item.DefinitionSchemaDigest;
+			this.DefinitionSchemaHashFunction = Item.DefinitionSchemaHashFunction;
+			this.CreatorCanDestroy = Item.CreatorCanDestroy;
+			this.OwnerCanDestroyBatch = Item.OwnerCanDestroyBatch;
+			this.OwnerCanDestroyIndividual = Item.OwnerCanDestroyIndividual;
+			this.CertifierCanDestroy = Item.CertifierCanDestroy;
+			this.FriendlyName = Item.FriendlyName;
+			this.Category = Item.Category;
+			this.HasCategory = Item.HasCategory;
+			this.GlyphContentType = Item.GlyphContentType;
+			this.Ordinal = Item.Ordinal;
+			this.Value = Item.Value;
+			this.TokenIdMethod = Item.TokenIdMethod;
+			this.TokenId = Item.TokenId;
+			this.ShortTokenId = Item.ShortTokenId;
+			this.Visibility = Item.Visibility;
+			this.Creator = Item.Creator;
+			this.CreatorFriendlyName = await ContactInfo.GetFriendlyName(Item.Creator);
+			this.CreatorJid = Item.CreatorJid;
+			this.Owner = Item.Owner;
+			this.OwnerFriendlyName = await ContactInfo.GetFriendlyName(Item.Owner);
+			this.OwnerJid = Item.OwnerJid;
+			this.BatchSize = Item.BatchSize;
+			this.TrustProvider = Item.TrustProvider;
+			this.TrustProviderFriendlyName = await ContactInfo.GetFriendlyName(Item.TrustProvider);
+			this.TrustProviderJid = Item.TrustProviderJid;
+			this.Currency = Item.Currency;
+			this.Reference = Item.Reference;
+			this.Definition = Item.Definition;
+			this.DefinitionNamespace = Item.DefinitionNamespace;
+			this.CreationContract = Item.CreationContract;
+			this.OwnershipContract = Item.OwnershipContract;
+			this.GlyphWidth = TokenGlyph.DetailsBoxSize;
+			this.GlyphHeight = TokenGlyph.DetailsBoxSize;
+			this.TokenXml = Item.Token.ToXml();
+			this.machineId = Item.Token.MachineId;
+
+			// A shared copy that couldn't be checked with its Neuron is labeled, and offers nothing beyond copy and share.
+			// Its embedded layout isn't rendered, since rendering runs the token's own script.
+			this.IsUnverifiedCopy = this.navigationArguments?.Origin == TokenOrigin.UnverifiedCopy;
+			this.IsVerified = !this.IsUnverifiedCopy;
+			this.ChangedSinceShared = this.IsVerified && (this.navigationArguments?.ChangedSinceShared ?? false);
+			this.IsMyToken = this.IsVerified && string.Equals(this.OwnerJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase);
+			this.IsExpired = Item.IsExpired;
+			this.ExpiryText = Item.ExpiryText;
+			this.HasExpiryText = Item.HasExpiryText;
+			this.HasStateMachine = this.IsVerified && Item.HasStateMachine;
+			this.HasEmbeddedLayout = this.IsVerified && Item.HasEmbeddedLayout;
+			this.OrdinalText = ServiceRef.Localizer[nameof(AppResources.TokenOrdinalOfBatch), this.Ordinal ?? 0, this.BatchSize ?? 0];
+			this.DefinitionSchemaUrl = GetSchemaUrl(this.TokenId, this.DefinitionNamespace, this.DefinitionSchemaDigest);
+			this.UpdateOwnershipText();
+
+			string? RawDescription = Item.Description;
+			this.HasDescription = !string.IsNullOrWhiteSpace(RawDescription) && RawDescription != this.FriendlyName;
+
+			if (this.HasDescription)
+				this.DescriptionTask.Load(this.LoadDescriptionAsync);
+
+			_ = this.LoadGlyphAsync(Item.Token);
+
+			if (this.HasEmbeddedLayout)
+				_ = this.LoadEmbeddedLayoutAsync(Item);
+
+			if (this.TokenId is not null)
+				this.GenerateQrCode(Constants.UriSchemes.CreateTokenUri(this.TokenId));
+
+			await this.BuildOwnershipPropertiesAsync(Item);
+			this.BuildTags(Item);
+			await this.BuildTechnicalPropertiesAsync(Item);
+
+			this.UpdateActions();
+
+			if (this.HasStateMachine)
+				this.MachineStateTask.Load(this.LoadMachineStateAsync);
+
+			if (this.IsVerified && !this.IsMyToken)
+				_ = this.ProbeHistoryAsync();
 		}
 
 		/// <summary>
@@ -227,61 +232,528 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
-		private async Task Populate(string LegalIdLabel, string JidLabel, string[]? LegalIds, string[]? Jids, ObservableCollection<PartItem> Parts)
+		/// <summary>
+		/// Renders the embedded layout, which replaces the glyph at the top of the page. The glyph stays when rendering fails.
+		/// </summary>
+		/// <param name="Item">The token.</param>
+		private async Task LoadEmbeddedLayoutAsync(TokenItem Item)
 		{
-			int i, c = LegalIds?.Length ?? 0;
-			int d = Jids?.Length ?? 0;
-			string FriendlyName;
-			string Jid;
-
-			Parts.Clear();
-
-			for (i = 0; i < c; i++)
+			try
 			{
-				FriendlyName = await ContactInfo.GetFriendlyName(LegalIds![i]);
-				Jid = i < d ? (Jids![i] ?? string.Empty) : string.Empty;
+				byte[]? Png = await Item.RenderEmbeddedLayoutPngAsync();
+				if (Png is null)
+					return;
 
-				Parts.Add(new PartItem(LegalIds[i], Jid, FriendlyName));
-
-				this.page.AddLegalId(this, LegalIdLabel, FriendlyName, LegalIds[i]);    // TODO: Replace with grouped collection, when this works in Maui.
-
-				if (!string.IsNullOrEmpty(Jid))
-					this.page.AddJid(this, JidLabel, Jid, LegalIds[i], FriendlyName);   // TODO: Replace with grouped collection, when this works in Maui.
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.EmbeddedLayoutImage = ImageSource.FromStream(() => new MemoryStream(Png));
+					this.HasEmbeddedLayoutImage = true;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
 		/// <summary>
-		/// Token ID
+		/// Checks if the token's Neuron lets the user see the history of a token the user doesn't own. History is offered
+		/// only when it does.
 		/// </summary>
-		[ObservableProperty]
-		private string? definitionSchemaUrl;
+		private async Task ProbeHistoryAsync()
+		{
+			string? TokenId = this.TokenId;
+			if (string.IsNullOrEmpty(TokenId))
+				return;
+
+			try
+			{
+				await ServiceRef.XmppService.GetNeuroFeatureEvents(TokenId, 0, 1);
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.historyAvailable = true;
+					this.UpdateActions();
+				});
+			}
+			catch (Exception Ex)
+			{
+				// The history isn't offered.
+				ServiceRef.LogService.LogDebug("Token history isn't available: " + Ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Builds the "Ownership and dates" rows.
+		/// </summary>
+		/// <param name="Item">The token.</param>
+		private async Task BuildOwnershipPropertiesAsync(TokenItem Item)
+		{
+			List<TokenPropertyItem> Rows = [];
+
+			AddParty(Rows, ServiceRef.Localizer[nameof(AppResources.Owner)], Item.Owner, this.OwnerFriendlyName);
+			AddParty(Rows, ServiceRef.Localizer[nameof(AppResources.Creator)], Item.Creator, this.CreatorFriendlyName);
+			AddParty(Rows, ServiceRef.Localizer[nameof(AppResources.TrustProvider)], Item.TrustProvider, this.TrustProviderFriendlyName);
+
+			AddDate(Rows, ServiceRef.Localizer[nameof(AppResources.Created)], Item.Created);
+			AddDate(Rows, ServiceRef.Localizer[nameof(AppResources.Updated)], Item.Updated);
+
+			if (TokenExpiry.HasExpiry(Item.Expires))
+				AddDate(Rows, ServiceRef.Localizer[nameof(AppResources.Expires)], Item.Expires);
+
+			await AddPartiesAsync(Rows, ServiceRef.Localizer[nameof(AppResources.Witness)], Item.Witness);
+			await AddPartiesAsync(Rows, ServiceRef.Localizer[nameof(AppResources.Certifier)], Item.Certifier);
+			await AddPartiesAsync(Rows, ServiceRef.Localizer[nameof(AppResources.Valuator)], Item.Valuator);
+			await AddPartiesAsync(Rows, ServiceRef.Localizer[nameof(AppResources.Assessor)], Item.Assessor);
+
+			SetItems(this.OwnershipProperties, Rows);
+		}
+
+		/// <summary>
+		/// Builds the tag rows: the creator's reference first, then the tags.
+		/// </summary>
+		/// <param name="Item">The token.</param>
+		private void BuildTags(TokenItem Item)
+		{
+			List<TokenTagItem> Rows = [];
+
+			if (!string.IsNullOrEmpty(Item.Reference))
+				Rows.Add(new TokenTagItem(ServiceRef.Localizer[nameof(AppResources.Reference)], Item.Reference));
+
+			if (Item.Tags is not null)
+			{
+				foreach (TokenTag Tag in Item.Tags)
+					Rows.Add(new TokenTagItem(Tag.Name, Tag.Value?.ToString() ?? string.Empty));
+			}
+
+			SetItems(this.Tags, Rows);
+			this.HasTags = Rows.Count > 0;
+		}
+
+		/// <summary>
+		/// Builds the rows in "Technical details".
+		/// </summary>
+		/// <param name="Item">The token.</param>
+		private async Task BuildTechnicalPropertiesAsync(TokenItem Item)
+		{
+			List<TokenPropertyItem> Rows =
+			[
+				new(ServiceRef.Localizer[nameof(AppResources.TokenId)], Item.TokenId, TokenPropertyKind.Text)
+				{
+					CopyText = Constants.UriSchemes.NeuroFeature + ":" + Item.TokenId,
+					CopiedMessage = ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]
+				}
+			];
+
+			if (!string.IsNullOrEmpty(Item.ShortTokenId))
+				Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.ShortId)], Item.ShortTokenId, TokenPropertyKind.Text));
+
+			string Visibility = new LocalizedState().Convert(Item.Visibility, typeof(string), null, CultureInfo.CurrentCulture)?.ToString()
+				?? Item.Visibility.ToString();
+
+			Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.TokenVisibility)], Visibility, TokenPropertyKind.Text));
+			Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.Ordinal)], this.OrdinalText ?? string.Empty, TokenPropertyKind.Text));
+			Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.TokenIdMethod)], Item.TokenIdMethod.ToString(), TokenPropertyKind.Text));
+
+			if (this.HasStateMachine && !string.IsNullOrEmpty(this.machineId) &&
+				!string.Equals(this.machineId, Item.TokenId, StringComparison.OrdinalIgnoreCase))
+			{
+				Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.MachineId)], this.machineId, TokenPropertyKind.Text));
+			}
+
+			AddContract(Rows, ServiceRef.Localizer[nameof(AppResources.CreationContract)], Item.CreationContract);
+			AddContract(Rows, ServiceRef.Localizer[nameof(AppResources.OwnershipContract)], Item.OwnershipContract);
+
+			AddJid(Rows, ServiceRef.Localizer[nameof(AppResources.OwnerJid)], Item.OwnerJid, Item.Owner, this.OwnerFriendlyName);
+			AddJid(Rows, ServiceRef.Localizer[nameof(AppResources.CreatorJid)], Item.CreatorJid, Item.Creator, this.CreatorFriendlyName);
+			AddJid(Rows, ServiceRef.Localizer[nameof(AppResources.TrustProviderJid)], Item.TrustProviderJid, Item.TrustProvider, this.TrustProviderFriendlyName);
+
+			int i, c = Item.CertifierJids?.Length ?? 0;
+			int d = Item.Certifier?.Length ?? 0;
+
+			for (i = 0; i < c; i++)
+			{
+				string? CertifierId = i < d ? Item.Certifier![i] : null;
+				string? CertifierName = CertifierId is null ? null : await ContactInfo.GetFriendlyName(CertifierId);
+
+				AddJid(Rows, ServiceRef.Localizer[nameof(AppResources.CertifierJid)], Item.CertifierJids![i], CertifierId, CertifierName);
+			}
+
+			if (Item.Signature is not null && Item.Signature.Length > 0)
+			{
+				Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.Signature)],
+					Convert.ToBase64String(Item.Signature), TokenPropertyKind.Text));
+			}
+
+			AddDate(Rows, ServiceRef.Localizer[nameof(AppResources.Timestamp)], Item.SignatureTimestamp);
+
+			if (!string.IsNullOrEmpty(Item.DefinitionNamespace))
+			{
+				Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.DefinitionNamespace)], Item.DefinitionNamespace,
+					TokenTagItem.IsWebLink(Item.DefinitionNamespace) ? TokenPropertyKind.Link : TokenPropertyKind.Text));
+			}
+
+			if (Item.DefinitionSchemaDigest is not null && Item.DefinitionSchemaDigest.Length > 0)
+			{
+				string Digest = Convert.ToBase64String(Item.DefinitionSchemaDigest);
+
+				// The digest links to the schema only when the schema's location is known.
+				Rows.Add(this.DefinitionSchemaUrl is string SchemaUrl
+					? new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.DefinitionSchemaDigest)], Digest, TokenPropertyKind.Link, SchemaUrl)
+					{
+						CopyText = Digest
+					}
+					: new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.DefinitionSchemaDigest)], Digest, TokenPropertyKind.Text));
+
+				Rows.Add(new TokenPropertyItem(ServiceRef.Localizer[nameof(AppResources.HashFunction)],
+					Item.DefinitionSchemaHashFunction.ToString(), TokenPropertyKind.Text));
+			}
+
+			AddYesNo(Rows, ServiceRef.Localizer[nameof(AppResources.CreatorCanDestroy)], Item.CreatorCanDestroy);
+			AddYesNo(Rows, ServiceRef.Localizer[nameof(AppResources.OwnerCanDestroyBatch)], Item.OwnerCanDestroyBatch);
+			AddYesNo(Rows, ServiceRef.Localizer[nameof(AppResources.OwnerCanDestroyIndividual)], Item.OwnerCanDestroyIndividual);
+			AddYesNo(Rows, ServiceRef.Localizer[nameof(AppResources.CertifierCanDestroy)], Item.CertifierCanDestroy);
+
+			SetItems(this.TechnicalProperties, Rows);
+		}
+
+		private static void AddParty(List<TokenPropertyItem> Rows, string Label, string? LegalId, string? FriendlyName)
+		{
+			if (string.IsNullOrEmpty(LegalId))
+				return;
+
+			Rows.Add(new TokenPropertyItem(Label, string.IsNullOrEmpty(FriendlyName) ? LegalId : FriendlyName, TokenPropertyKind.LegalId, LegalId));
+		}
+
+		private static async Task AddPartiesAsync(List<TokenPropertyItem> Rows, string Label, string[]? LegalIds)
+		{
+			if (LegalIds is null)
+				return;
+
+			foreach (string LegalId in LegalIds)
+				AddParty(Rows, Label, LegalId, await ContactInfo.GetFriendlyName(LegalId));
+		}
+
+		private static void AddJid(List<TokenPropertyItem> Rows, string Label, string? Jid, string? LegalId, string? FriendlyName)
+		{
+			if (string.IsNullOrEmpty(Jid))
+				return;
+
+			Rows.Add(new TokenPropertyItem(Label, Jid, TokenPropertyKind.Jid)
+			{
+				LegalId = LegalId,
+				FriendlyName = FriendlyName
+			});
+		}
+
+		private static void AddContract(List<TokenPropertyItem> Rows, string Label, string? ContractId)
+		{
+			if (!string.IsNullOrEmpty(ContractId))
+				Rows.Add(new TokenPropertyItem(Label, ContractId, TokenPropertyKind.Contract));
+		}
+
+		private static void AddDate(List<TokenPropertyItem> Rows, string Label, DateTime Value)
+		{
+			if (Value == DateTime.MinValue || Value == DateTime.MaxValue)
+				return;
+
+			DateTime Local = Value.Kind == DateTimeKind.Local ? Value : DateTime.SpecifyKind(Value, DateTimeKind.Utc).ToLocalTime();
+
+			Rows.Add(new TokenPropertyItem(Label, Local.ToString("g", CultureInfo.CurrentCulture), TokenPropertyKind.Text));
+		}
+
+		private static void AddYesNo(List<TokenPropertyItem> Rows, string Label, bool Value)
+		{
+			Rows.Add(new TokenPropertyItem(Label,
+				ServiceRef.Localizer[Value ? nameof(AppResources.Yes) : nameof(AppResources.No)], TokenPropertyKind.Text));
+		}
+
+		private static void SetItems<T>(ObservableCollection<T> Collection, IEnumerable<T> Items)
+		{
+			Collection.Clear();
+
+			foreach (T Item in Items)
+				Collection.Add(Item);
+		}
+
+		/// <summary>
+		/// Gets the web address of the schema that validates the token's definition. The schema is hosted on the Neuron
+		/// that hosts the token: the token ID's domain, without the label of the component hosting tokens.
+		/// </summary>
+		/// <param name="TokenId">Token ID.</param>
+		/// <param name="Namespace">Namespace of the definition.</param>
+		/// <param name="Digest">Digest of the schema.</param>
+		/// <returns>The address, or null when it can't be known.</returns>
+		private static string? GetSchemaUrl(string? TokenId, string? Namespace, byte[]? Digest)
+		{
+			if (string.IsNullOrEmpty(TokenId) || string.IsNullOrEmpty(Namespace) || Digest is null || Digest.Length == 0)
+				return null;
+
+			int i = TokenId.IndexOf('@');
+			if (i < 0)
+				return null;
+
+			string Domain = TokenId[(i + 1)..];
+
+			i = Domain.IndexOf('.');
+			if (i <= 0 || i >= Domain.Length - 1)
+				return null;
+
+			string Host = Domain[(i + 1)..];
+
+			StringBuilder sb = new();
+
+			sb.Append("https://");
+			sb.Append(Host);
+			sb.Append("/ValidationSchema.md?NS=");
+			sb.Append(HttpUtility.UrlEncode(Namespace));
+			sb.Append("&H=");
+			sb.Append(HttpUtility.UrlEncode(Convert.ToBase64String(Digest)));
+			sb.Append("&Download=1");
+
+			return sb.ToString();
+		}
+
+		#endregion
+
+		#region Ownership and actions
+
+		/// <summary>
+		/// Updates the ownership chip.
+		/// </summary>
+		private void UpdateOwnershipText()
+		{
+			this.OwnershipText = this.IsMyToken
+				? ServiceRef.Localizer[nameof(AppResources.TokenYours)]
+				: ServiceRef.Localizer[nameof(AppResources.TokenOwnedBy), this.OwnerFriendlyName ?? this.Owner ?? string.Empty];
+		}
+
+		/// <summary>
+		/// Works out which actions are offered, from where the token comes from, who owns it, if it has expired, and which
+		/// templates are available.
+		/// </summary>
+		private void UpdateActions()
+		{
+			bool CanChangeOwner = this.IsVerified && !this.IsExpired && !this.HasLeftWallet;
+			bool HasTransferTemplate = !string.IsNullOrEmpty(Constants.ContractTemplates.TransferTokenTemplate);
+			bool HasConsignmentTemplate = !string.IsNullOrEmpty(Constants.ContractTemplates.TokenConsignmentTemplate);
+
+			this.CanOfferToSell = CanChangeOwner && this.IsMyToken && HasTransferTemplate;
+			this.CanConsign = CanChangeOwner && this.IsMyToken && HasConsignmentTemplate;
+			this.CanSell = this.CanOfferToSell || this.CanConsign;
+			this.CanOfferToBuy = CanChangeOwner && !this.IsMyToken && HasTransferTemplate;
+			this.CanViewHistory = this.IsVerified && (this.IsMyToken || this.historyAvailable);
+			this.HistoryLabel = this.IsMyToken
+				? ServiceRef.Localizer[nameof(AppResources.NotesAndHistory)]
+				: ServiceRef.Localizer[nameof(AppResources.History)];
+
+			this.TransferBlockedText = this.IsVerified && this.IsMyToken && this.IsExpired
+				? ServiceRef.Localizer[nameof(AppResources.TokenExpiredNoTransfer)]
+				: null;
+			this.HasTransferBlockedText = this.TransferBlockedText is not null;
+
+			if (!this.CanSell)
+				this.IsSellOptionsVisible = false;
+		}
+
+		private bool IsThisToken(string? TokenId)
+		{
+			if (string.IsNullOrEmpty(TokenId))
+				return false;
+
+			return string.Equals(TokenId, this.TokenId, StringComparison.OrdinalIgnoreCase) ||
+				(!string.IsNullOrEmpty(this.machineId) && string.Equals(TokenId, this.machineId, StringComparison.OrdinalIgnoreCase));
+		}
+
+		private Task Wallet_TokenRemoved(object? Sender, TokenEventArgs e)
+		{
+			if (!this.IsVerified || e.Token is null || !string.Equals(e.Token.TokenId, this.TokenId, StringComparison.OrdinalIgnoreCase))
+				return Task.CompletedTask;
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (!this.IsMyToken)
+					return;
+
+				this.IsMyToken = false;
+				this.HasLeftWallet = true;
+				this.UpdateOwnershipText();
+				this.UpdateActions();
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
+		{
+			if (!this.IsVerified || e.Token is null || !string.Equals(e.Token.TokenId, this.TokenId, StringComparison.OrdinalIgnoreCase))
+				return Task.CompletedTask;
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (this.IsMyToken)
+					return;
+
+				this.IsMyToken = true;
+				this.HasLeftWallet = false;
+				this.UpdateOwnershipText();
+				this.UpdateActions();
+			});
+
+			return Task.CompletedTask;
+		}
+
+		#endregion
+
+		#region State machine
+
+		/// <summary>
+		/// Loads the current state and variables of the token's state machine.
+		/// </summary>
+		/// <param name="Context">Task context.</param>
+		private async Task LoadMachineStateAsync(TaskContext<int> Context)
+		{
+			string? TokenId = this.TokenId;
+			if (string.IsNullOrEmpty(TokenId))
+				return;
+
+			try
+			{
+				CurrentStateEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureCurrentState(TokenId);
+				if (!e.Ok)
+					throw e.StanzaError ?? new Exception(e.ErrorText);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.machineVariables.Clear();
+					this.Variables.Clear();
+
+					if (e.Variables is not null)
+					{
+						foreach (Waher.Script.Variable Variable in e.Variables)
+							this.SetVariable(Variable.Name, Variable.ValueObject);
+					}
+
+					this.SetMachineState(e.CurrentState, e.Ended);
+				});
+			}
+			catch (Exception Ex)
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+					this.MachineStateErrorText = TokenErrors.ToMessage(Ex) ?? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Shows the state of the state machine. Called on the main thread.
+		/// </summary>
+		/// <param name="State">The current state.</param>
+		/// <param name="Ended">If the state machine has ended.</param>
+		private void SetMachineState(string? State, bool Ended)
+		{
+			this.MachineEnded = Ended || string.IsNullOrEmpty(State);
+			this.MachineStateText = this.MachineEnded
+				? ServiceRef.Localizer[nameof(AppResources.TokenStateEnded)]
+				: ServiceRef.Localizer[nameof(AppResources.TokenStateBody), State ?? string.Empty];
+		}
+
+		/// <summary>
+		/// Sets a state-machine variable. The first few variables are shown inline. Called on the main thread.
+		/// </summary>
+		/// <param name="Name">Variable name.</param>
+		/// <param name="Value">Variable value.</param>
+		private void SetVariable(string Name, object Value)
+		{
+			this.machineVariables[Name] = Value;
+
+			bool Found = false;
+
+			foreach (VariableModel Model in this.Variables)
+			{
+				if (Model.Name == Name)
+				{
+					Model.UpdateValue(Value);
+					Found = true;
+					break;
+				}
+			}
+
+			if (!Found && this.Variables.Count < MaxInlineVariables)
+				this.Variables.Add(new VariableModel(Name, Value));
+
+			this.HasVariables = this.machineVariables.Count > 0;
+		}
+
+		private Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
+		{
+			if (!this.HasStateMachine || !this.IsThisToken(e.TokenId))
+				return Task.CompletedTask;
+
+			MainThread.BeginInvokeOnMainThread(() => this.SetMachineState(e.NewState, string.IsNullOrEmpty(e.NewState)));
+
+			return Task.CompletedTask;
+		}
+
+		private Task Wallet_VariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
+		{
+			if (!this.HasStateMachine || !this.IsThisToken(e.TokenId))
+				return Task.CompletedTask;
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				foreach (Waher.Script.Variable Variable in e.Variables)
+					this.SetVariable(Variable.Name, Variable.ValueObject);
+			});
+
+			return Task.CompletedTask;
+		}
+
+		#endregion
 
 		#region Properties
 
 		/// <summary>
-		/// Certifiers
+		/// Rows in "Ownership and dates".
 		/// </summary>
-		public ObservableCollection<PartItem> Certifiers { get; } = [];
+		public ObservableCollection<TokenPropertyItem> OwnershipProperties { get; } = [];
 
 		/// <summary>
-		/// Valuators
+		/// Rows in "Technical details".
 		/// </summary>
-		public ObservableCollection<PartItem> Valuators { get; } = [];
+		public ObservableCollection<TokenPropertyItem> TechnicalProperties { get; } = [];
 
 		/// <summary>
-		/// Assessors
+		/// The creator's reference and tags.
 		/// </summary>
-		public ObservableCollection<PartItem> Assessors { get; } = [];
+		public ObservableCollection<TokenTagItem> Tags { get; } = [];
 
 		/// <summary>
-		/// Witnesses
+		/// The first state-machine variables, shown inline.
 		/// </summary>
-		public ObservableCollection<PartItem> Witnesses { get; } = [];
+		public ObservableCollection<VariableModel> Variables { get; } = [];
 
 		/// <summary>
-		/// Witnesses
+		/// Loads the description, and exposes its loading and loaded states.
 		/// </summary>
-		public ObservableCollection<TokenTag> Tags { get; } = [];
+		public ObservableTask DescriptionTask { get; } = new();
+
+		/// <summary>
+		/// Loads the state of the token's state machine, and exposes its loading, error and loaded states.
+		/// </summary>
+		public ObservableTask MachineStateTask { get; } = new();
+
+		/// <summary>
+		/// Web address of the schema that validates the token's definition, when it is known.
+		/// </summary>
+		[ObservableProperty]
+		private string? definitionSchemaUrl;
+
+		/// <summary>
+		/// If the token has tags or a reference.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasTags;
 
 		/// <summary>
 		/// When token was created.
@@ -368,10 +840,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private string? friendlyName;
 
 		/// <summary>
-		/// Friendly name of token.
+		/// Category of token.
 		/// </summary>
 		[ObservableProperty]
 		private string? category;
+
+		/// <summary>
+		/// If the token has a category.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasCategory;
 
 		/// <summary>
 		/// Description of token.
@@ -414,25 +892,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		[ObservableProperty]
 		private string? shortTokenId;
-
-		/// <inheritdoc/>
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			switch (e.PropertyName)
-			{
-				case nameof(this.ShortTokenId):
-					this.HasShortTokenId = !string.IsNullOrEmpty(this.ShortTokenId);
-					break;
-			}
-		}
-
-		/// <summary>
-		/// If the token has a Short ID
-		/// </summary>
-		[ObservableProperty]
-		private bool hasShortTokenId;
 
 		/// <summary>
 		/// Token XML
@@ -573,10 +1032,52 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private double glyphHeight;
 
 		/// <summary>
+		/// The rendered embedded layout, shown instead of the glyph.
+		/// </summary>
+		[ObservableProperty]
+		private ImageSource? embeddedLayoutImage;
+
+		/// <summary>
+		/// If the embedded layout has been rendered.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasEmbeddedLayoutImage;
+
+		/// <summary>
 		/// If the token belongs to the user.
 		/// </summary>
 		[ObservableProperty]
 		private bool isMyToken;
+
+		/// <summary>
+		/// If the token left the user's wallet while the page was open.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasLeftWallet;
+
+		/// <summary>
+		/// Says who owns the token: the user, or someone else.
+		/// </summary>
+		[ObservableProperty]
+		private string? ownershipText;
+
+		/// <summary>
+		/// If the token has expired.
+		/// </summary>
+		[ObservableProperty]
+		private bool isExpired;
+
+		/// <summary>
+		/// Says that the token has expired or expires soon.
+		/// </summary>
+		[ObservableProperty]
+		private string? expiryText;
+
+		/// <summary>
+		/// If <see cref="ExpiryText"/> has a text to show.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasExpiryText;
 
 		/// <summary>
 		/// If the token is associated with a state-machine.
@@ -609,10 +1110,58 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private bool changedSinceShared;
 
 		/// <summary>
+		/// If the user can sell the token, in one of the ways below.
+		/// </summary>
+		[ObservableProperty]
+		private bool canSell;
+
+		/// <summary>
+		/// If the user can offer the token for sale to a buyer.
+		/// </summary>
+		[ObservableProperty]
+		private bool canOfferToSell;
+
+		/// <summary>
+		/// If the user can consign the token to an auction.
+		/// </summary>
+		[ObservableProperty]
+		private bool canConsign;
+
+		/// <summary>
+		/// If the ways of selling the token are shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool isSellOptionsVisible;
+
+		/// <summary>
 		/// If the user can offer to buy the token.
 		/// </summary>
 		[ObservableProperty]
 		private bool canOfferToBuy;
+
+		/// <summary>
+		/// If the token's notes and history can be shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool canViewHistory;
+
+		/// <summary>
+		/// Label of the history action: "Notes and history" for the owner, "History" for others.
+		/// </summary>
+		[ObservableProperty]
+		private string? historyLabel;
+
+		/// <summary>
+		/// Says why the token can't change owner, when it can't.
+		/// </summary>
+		[ObservableProperty]
+		private string? transferBlockedText;
+
+		/// <summary>
+		/// If <see cref="TransferBlockedText"/> has a text to show.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasTransferBlockedText;
 
 		/// <summary>
 		/// If the token has a description worth showing: one that isn't empty, and isn't just the name.
@@ -627,150 +1176,60 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private string? ordinalText;
 
 		/// <summary>
-		/// Loads the description, and exposes its loading and loaded states.
+		/// If "Technical details" is expanded.
 		/// </summary>
-		public ObservableTask DescriptionTask { get; } = new();
+		[ObservableProperty]
+		private bool isTechnicalDetailsExpanded;
 
+		/// <summary>
+		/// The state of the state machine, as text.
+		/// </summary>
+		[ObservableProperty]
+		private string? machineStateText;
+
+		/// <summary>
+		/// If the state machine has ended.
+		/// </summary>
+		[ObservableProperty]
+		private bool machineEnded;
+
+		/// <summary>
+		/// If the state machine has variables.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasVariables;
+
+		/// <summary>
+		/// Text shown when the state of the state machine couldn't be loaded.
+		/// </summary>
+		[ObservableProperty]
+		private string? machineStateErrorText;
 
 		#endregion
 
 		#region Commands
 
 		/// <summary>
-		/// Command to copy a value to the clipboard.
+		/// Expands or collapses "Technical details".
 		/// </summary>
 		[RelayCommand]
-		public static async Task CopyToClipboard(object Parameter)
+		private void ToggleTechnicalDetails()
 		{
-			try
-			{
-				string s = Parameter?.ToString() ?? string.Empty;
-				int i = s.IndexOf('@');
-
-				if (i > 0 && Guid.TryParse(s[..i], out _))
-				{
-					await Clipboard.SetTextAsync(Constants.UriSchemes.NeuroFeature + ":" + s);
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-						ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
-				}
-				else
-				{
-					await Clipboard.SetTextAsync(s);
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-						ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			this.IsTechnicalDetailsExpanded = !this.IsTechnicalDetailsExpanded;
 		}
 
 		/// <summary>
-		/// Command to view a Legal ID.
+		/// Sells the token. When there is more than one way to sell it, the ways are shown first.
 		/// </summary>
 		[RelayCommand]
-		private static async Task ViewId(object Parameter)
+		private async Task Sell()
 		{
-			string? LegalId = Parameter?.ToString();
-			if (string.IsNullOrEmpty(LegalId))
-				return;
-
-			try
-			{
-				await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(LegalId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)]);
-			}
-			catch (Exception ex)
-			{
-				await ServiceRef.UiService.DisplayException(ex);
-			}
-		}
-
-		/// <summary>
-		/// Command to view a smart contract.
-		/// </summary>
-		[RelayCommand]
-		private static async Task ViewContract(object Parameter)
-		{
-			string? ContractId = Parameter?.ToString();
-			if (string.IsNullOrEmpty(ContractId))
-				return;
-
-			try
-			{
-				await ServiceRef.ContractOrchestratorService.OpenContract(ContractId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)], null);
-			}
-			catch (Exception ex)
-			{
-				await ServiceRef.UiService.DisplayException(ex);
-			}
-		}
-
-		/// <summary>
-		/// Command to open a chat page.
-		/// </summary>
-		[RelayCommand]
-		private async Task OpenChat(object Parameter)
-		{
-			string? s = Parameter?.ToString();
-			if (string.IsNullOrEmpty(s))
-				return;
-
-			string? BareJid;
-			string? LegalId;
-			string? FriendlyName;
-
-			switch (s)
-			{
-				case "Owner":
-					BareJid = this.OwnerJid;
-					LegalId = this.Owner;
-					FriendlyName = this.OwnerFriendlyName;
-					break;
-
-				case "Creator":
-					BareJid = this.CreatorJid;
-					LegalId = this.Creator;
-					FriendlyName = this.CreatorFriendlyName;
-					break;
-
-				case "TrustProvider":
-					BareJid = this.TrustProviderJid;
-					LegalId = this.TrustProvider;
-					FriendlyName = this.TrustProviderFriendlyName;
-					break;
-
-				default:
-					string[] Parts = s.Split(" | ");
-					if (Parts.Length != 3)
-						return;
-
-					BareJid = Parts[0];
-					LegalId = Parts[1];
-					FriendlyName = Parts[2];
-					break;
-			}
-
-			try
-			{
-				ChatNavigationArgs Args = new(LegalId, BareJid, FriendlyName);
-				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
-			}
-			catch (Exception ex)
-			{
-				await ServiceRef.UiService.DisplayException(ex);
-			}
-		}
-
-		/// <summary>
-		/// Command to open a link.
-		/// </summary>
-		[RelayCommand]
-		private static async Task OpenLink(object Parameter)
-		{
-			if (Parameter is not null)
-				await App.OpenUrlAsync(Parameter.ToString()!);
+			if (this.CanOfferToSell && this.CanConsign)
+				this.IsSellOptionsVisible = !this.IsSellOptionsVisible;
+			else if (this.CanOfferToSell)
+				await this.OfferToSell();
+			else if (this.CanConsign)
+				await this.PublishMarketplace();
 		}
 
 		/// <summary>
@@ -841,12 +1300,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (this.QrCodeBin is null)
 					return;
 
-				string FileName = "Token.QR." + InternetContent.GetFileExtension(this.QrCodeContentType);
-
 				await this.OpenQrPopup(this.FriendlyName);
-
-				//ServiceRef.PlatformSpecific.ShareImage(this.QrCodeBin, this.FriendlyName ?? string.Empty,
-				//	ServiceRef.Localizer[nameof(AppResources.Share)], FileName);
 			}
 			catch (Exception ex)
 			{
@@ -856,7 +1310,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		}
 
 		/// <summary>
-		/// Command to publish the token on the marketplace, for sale.
+		/// Command to consign the token to an auction on the marketplace.
 		/// </summary>
 		[RelayCommand]
 		private async Task PublishMarketplace()
@@ -876,7 +1330,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 						{ "Currency", e.Currency }
 					});
 
-				Template.Parts = 
+				Template.Parts =
 				[
 					new()
 					{
@@ -1105,7 +1559,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		}
 
 		/// <summary>
-		/// Command to view events related to token.
+		/// Command to view the token's notes and history. The events page loads them itself, page by page.
 		/// </summary>
 		[RelayCommand]
 		private async Task ViewEvents()
@@ -1115,8 +1569,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			try
 			{
-				TokenEvent[] Events = this.TokenId is null ? [] : await ServiceRef.XmppService.GetNeuroFeatureEvents(this.TokenId);
-				TokenEventsNavigationArgs Args = new(this.TokenId!, Events, this.IsMyToken);
+				TokenEventsNavigationArgs Args = new(this.TokenId, this.IsMyToken)
+				{
+					MachineId = this.machineId
+				};
 
 				await ServiceRef.NavigationService.GoToAsync(nameof(TokenEventsPage), Args, BackMethod.Pop);
 			}
@@ -1126,10 +1582,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to show the token's embedded layout on its own page.
+		/// </summary>
 		[RelayCommand]
 		private async Task PresentEmbeddedLayout()
 		{
-			if (this.TokenId is null)
+			if (this.TokenId is null || this.navigationArguments?.Token is null)
 				return;
 
 			EmbeddedLayoutNavigationArgs Args = new(this.navigationArguments.Token);
@@ -1236,7 +1695,5 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		public override Task<string> Title => Task.FromResult<string>(this.FriendlyName ?? string.Empty);
 
 		#endregion
-
-
 	}
 }

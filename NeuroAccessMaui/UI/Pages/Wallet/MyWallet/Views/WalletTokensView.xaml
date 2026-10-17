@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentView x:Class="NeuroAccessMaui.UI.Pages.Wallet.MyWallet.Views.WalletTokensView"
+					  x:DataType="viewmodel:WalletViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
+					  xmlns:tokenviews="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens.Views"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet">
+	<VerticalStackLayout Spacing="8">
+		<!-- Header -->
+		<Grid ColumnDefinitions="*,auto">
+			<Label Text="{l:Localize Tokens}"
+				   Style="{DynamicResource SectionTitleLabel}"
+				   VerticalOptions="Center"
+				   SemanticProperties.HeadingLevel="Level2" />
+			<controls:TextButton Grid.Column="1"
+								 LabelData="{l:Localize SeeAll}"
+								 Style="{DynamicResource TransparentTextButton}"
+								 Command="{Binding SeeAllTokensCommand}"
+								 VerticalOptions="Center" />
+		</Grid>
+
+		<!-- Totals per currency -->
+		<ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" IsVisible="{Binding HasTokenTotals}">
+			<HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding TokenTotals}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate x:DataType="objectmodel:TokenTotalItem">
+						<Border StrokeShape="RoundRectangle 12" StrokeThickness="0" Padding="12,4"
+								BackgroundColor="{DynamicResource TnPInfobgWL}">
+							<Label Text="{Binding TotalText}"
+								   FontSize="{StaticResource FontSizeSm}"
+								   TextColor="{DynamicResource TnPInfoContentWL}"
+								   LineBreakMode="NoWrap" />
+						</Border>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+			</HorizontalStackLayout>
+		</ScrollView>
+
+		<!-- Most recent tokens -->
+		<controls:TaskView Task="{Binding RecentTokensTask}">
+			<controls:TaskView.RunningView>
+				<ActivityIndicator IsRunning="True"
+								   Color="{DynamicResource PrimaryWL}"
+								   HorizontalOptions="Center"
+								   Margin="0,16" />
+			</controls:TaskView.RunningView>
+
+			<controls:TaskView.ErrorView>
+				<VerticalStackLayout Spacing="8" Padding="0,8">
+					<Label Text="{Binding TokensErrorText}" Style="{DynamicResource InfoLabel}" HorizontalTextAlignment="Center" />
+					<controls:TextButton LabelData="{l:Localize TryAgain}"
+										 Command="{Binding ReloadTokensCommand}"
+										 Style="{DynamicResource OutlinedTextButton}"
+										 HorizontalOptions="Center" />
+				</VerticalStackLayout>
+			</controls:TaskView.ErrorView>
+
+			<controls:TaskView.SucceededView>
+				<VerticalStackLayout Spacing="8">
+					<VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding RecentTokens}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="objectmodel:TokenItem">
+								<tokenviews:TokenRowView />
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
+					<Label Text="{l:Localize NoTokensYet}"
+						   IsVisible="{Binding HasNoTokens}"
+						   Style="{DynamicResource InfoLabel}"
+						   TextColor="{DynamicResource ContentSecondaryWL}"
+						   HorizontalTextAlignment="Center"
+						   Margin="0,8" />
+				</VerticalStackLayout>
+			</controls:TaskView.SucceededView>
+		</controls:TaskView>
+	</VerticalStackLayout>
+</base:BaseContentView>

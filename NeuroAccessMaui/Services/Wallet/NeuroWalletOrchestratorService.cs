@@ -33,6 +33,10 @@ namespace NeuroAccessMaui.Services.Wallet
 		}
 
 		/// <inheritdoc/>
+		public bool AreTokensEnabled =>
+			ServiceRef.TagProfile.HasBetaFeatures && !string.IsNullOrEmpty(ServiceRef.TagProfile.NeuroFeaturesJid);
+
+		/// <inheritdoc/>
 		public override Task Load(bool isResuming, CancellationToken CancellationToken)
 		{
 			if (this.BeginLoad(isResuming, CancellationToken))
@@ -44,7 +48,8 @@ namespace NeuroAccessMaui.Services.Wallet
 				if (!this.legacyCleanupStarted)
 				{
 					this.legacyCleanupStarted = true;
-					_ = Task.Run(DeleteLegacyTokenEventsAsync);
+					// The cleanup runs once in the background, and isn't tied to this load.
+					_ = Task.Run(DeleteLegacyTokenEventsAsync, CancellationToken.None);
 				}
 			}
 

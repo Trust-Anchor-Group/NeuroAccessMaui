@@ -4811,4 +4811,91 @@ Document read. You can move your iPhone.</value>
   <data name="NoteIsPersonal" xml:space="preserve">
     <value>Personal</value>
   </data>
+  <data name="Tokens" xml:space="preserve">
+    <value>Tokens</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>See all</value>
+  </data>
+  <data name="NoTokensYet" xml:space="preserve">
+    <value>You have no tokens yet.</value>
+  </data>
+  <data name="ChooseAToken" xml:space="preserve">
+    <value>Choose a token</value>
+  </data>
+  <data name="SearchTokens" xml:space="preserve">
+    <value>Search tokens</value>
+  </data>
+  <data name="TokenSearchLimited" xml:space="preserve">
+    <value>Search covers your first {0} tokens.</value>
+  </data>
+  <data name="TokenSearchLoading" xml:space="preserve">
+    <value>Searching all your tokens…</value>
+  </data>
+  <data name="NoMatchingTokens" xml:space="preserve">
+    <value>No tokens match your search.</value>
+  </data>
+  <data name="TokensLoadFailed" xml:space="preserve">
+    <value>Your tokens couldn't be loaded.</value>
+  </data>
+  <data name="TokenCountAndValue" xml:space="preserve">
+    <value>{0} tokens · {1} {2}</value>
+  </data>
+  <data name="OneTokenAndValue" xml:space="preserve">
+    <value>1 token · {0} {1}</value>
+  </data>
+  <data name="TokenUnreadCount" xml:space="preserve">
+    <value>{0} unread</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="ExpiresToday" xml:space="preserve">
+    <value>Expires today</value>
+  </data>
+  <data name="ExpiresTomorrow" xml:space="preserve">
+    <value>Expires tomorrow</value>
+  </data>
+  <data name="ExpiresInDays" xml:space="preserve">
+    <value>Expires in {0} days</value>
+  </data>
+  <data name="TokenYours" xml:space="preserve">
+    <value>Yours</value>
+  </data>
+  <data name="TokenOwnedBy" xml:space="preserve">
+    <value>Owned by {0}</value>
+  </data>
+  <data name="OwnershipAndDates" xml:space="preserve">
+    <value>Ownership and dates</value>
+  </data>
+  <data name="TechnicalDetails" xml:space="preserve">
+    <value>Technical details</value>
+  </data>
+  <data name="NotesAndHistory" xml:space="preserve">
+    <value>Notes and history</value>
+  </data>
+  <data name="Sell" xml:space="preserve">
+    <value>Sell</value>
+  </data>
+  <data name="ConsignToAuction" xml:space="preserve">
+    <value>Consign to auction</value>
+  </data>
+  <data name="TokenExpiredNoTransfer" xml:space="preserve">
+    <value>This token has expired, so it can't be sold or given away.</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="MachineId" xml:space="preserve">
+    <value>State machine ID</value>
+  </data>
+  <data name="StateMachine" xml:space="preserve">
+    <value>State machine</value>
+  </data>
+  <data name="PersonalNoteHelp" xml:space="preserve">
+    <value>Only the current owner sees personal notes. They are removed when the token changes owner.</value>
+  </data>
+  <data name="NoEventsYet" xml:space="preserve">
+    <value>No events yet.</value>
+  </data>
 </root>

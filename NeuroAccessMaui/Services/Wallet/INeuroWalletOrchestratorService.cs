@@ -10,6 +10,11 @@ namespace NeuroAccessMaui.Services.Wallet
     public interface INeuroWalletOrchestratorService : ILoadableService
     {
         /// <summary>
+        /// If token features are shown: beta features are turned on, and a Neuro-Features service is known.
+        /// </summary>
+        bool AreTokensEnabled { get; }
+
+        /// <summary>
         /// Opens the eDaler wallet
         /// </summary>
         Task OpenEDalerWallet();

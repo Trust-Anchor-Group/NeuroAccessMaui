@@ -11,7 +11,8 @@
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					  xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels">
+					  xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
+					  xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.Views">
 	<VisualElement.Resources>
 		<DataTemplate x:Key="DefaultTemplate">
 			<Grid />
@@ -254,21 +255,28 @@
 			</Grid>
 		</Border>
 
-		<Grid VerticalOptions="End" Grid.Row="2" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="16" RowDefinitions="auto">
-			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
-								LabelText="{l:Localize RequestCredits}"
-								LabelPosition="Right"
-								HeightRequest="48"
-								SvgSource="request.svg"
-								Command="{Binding ViewRequestPaymentCommand}"/>
+		<Grid Grid.Row="2" RowDefinitions="*,auto">
+			<!-- Tokens -->
+			<ScrollView Grid.Row="0" IsVisible="{Binding AreTokensEnabled}">
+				<views:WalletTokensView Margin="16,8,16,8" />
+			</ScrollView>
 
-			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
-								LabelText="{l:Localize SendCredits}"
-								LabelPosition="Right"
-								HeightRequest="48"
-								SvgSource="send.svg"
-								Command="{Binding SendEdalerCommand}"
-								Grid.Column="1"/>
+			<Grid VerticalOptions="End" Grid.Row="1" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="16" RowDefinitions="auto">
+				<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+									LabelText="{l:Localize RequestCredits}"
+									LabelPosition="Right"
+									HeightRequest="48"
+									SvgSource="request.svg"
+									Command="{Binding ViewRequestPaymentCommand}"/>
+
+				<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+									LabelText="{l:Localize SendCredits}"
+									LabelPosition="Right"
+									HeightRequest="48"
+									SvgSource="send.svg"
+									Command="{Binding SendEdalerCommand}"
+									Grid.Column="1"/>
+			</Grid>
 		</Grid>
 	</Grid>
 </base:BaseContentPage>

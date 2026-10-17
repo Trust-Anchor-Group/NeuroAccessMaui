@@ -5,13 +5,14 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 	/// <summary>
 	/// Counts unread notifications per token, from the notification records stored in the token channel.
 	/// </summary>
-	public sealed class TokenUnreadTracker : ITokenUnreadTracker
+	public sealed class TokenUnreadTracker : ITokenUnreadTracker, IDisposable
 	{
 		private readonly INotificationServiceV2 notificationService;
 		private readonly Dictionary<string, HashSet<string>> unreadByToken = new(StringComparer.OrdinalIgnoreCase);
 		private readonly object synchObject = new();
 		private readonly SemaphoreSlim loadSemaphore = new(1, 1);
 		private bool loaded;
+		private bool disposed;
 
 		/// <summary>
 		/// Counts unread notifications per token, from the notification records stored in the token channel.
@@ -176,6 +177,19 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		/// <summary>
+		/// Stops listening for notification records, and releases the lock used while loading.
+		/// </summary>
+		public void Dispose()
+		{
+			if (this.disposed)
+				return;
+
+			this.disposed = true;
+			this.notificationService.OnNotificationAdded -= this.NotificationService_OnNotificationAdded;
+			this.loadSemaphore.Dispose();
 		}
 	}
 }

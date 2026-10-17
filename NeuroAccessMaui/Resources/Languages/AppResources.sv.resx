@@ -4676,4 +4676,91 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="KillerId" xml:space="preserve">
     <value>Avbrytarens ID</value>
   </data>
+  <data name="Tokens" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>Visa alla</value>
+  </data>
+  <data name="NoTokensYet" xml:space="preserve">
+    <value>Du har inga token än.</value>
+  </data>
+  <data name="ChooseAToken" xml:space="preserve">
+    <value>Välj en token</value>
+  </data>
+  <data name="SearchTokens" xml:space="preserve">
+    <value>Sök token</value>
+  </data>
+  <data name="TokenSearchLimited" xml:space="preserve">
+    <value>Sökningen omfattar dina första {0} token.</value>
+  </data>
+  <data name="TokenSearchLoading" xml:space="preserve">
+    <value>Söker bland alla dina token…</value>
+  </data>
+  <data name="NoMatchingTokens" xml:space="preserve">
+    <value>Inga token matchar din sökning.</value>
+  </data>
+  <data name="TokensLoadFailed" xml:space="preserve">
+    <value>Dina token kunde inte laddas.</value>
+  </data>
+  <data name="TokenCountAndValue" xml:space="preserve">
+    <value>{0} token · {1} {2}</value>
+  </data>
+  <data name="OneTokenAndValue" xml:space="preserve">
+    <value>1 token · {0} {1}</value>
+  </data>
+  <data name="TokenUnreadCount" xml:space="preserve">
+    <value>{0} olästa</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>Utgången</value>
+  </data>
+  <data name="ExpiresToday" xml:space="preserve">
+    <value>Upphör i dag</value>
+  </data>
+  <data name="ExpiresTomorrow" xml:space="preserve">
+    <value>Upphör i morgon</value>
+  </data>
+  <data name="ExpiresInDays" xml:space="preserve">
+    <value>Upphör om {0} dagar</value>
+  </data>
+  <data name="TokenYours" xml:space="preserve">
+    <value>Din</value>
+  </data>
+  <data name="TokenOwnedBy" xml:space="preserve">
+    <value>Ägs av {0}</value>
+  </data>
+  <data name="OwnershipAndDates" xml:space="preserve">
+    <value>Ägande och datum</value>
+  </data>
+  <data name="TechnicalDetails" xml:space="preserve">
+    <value>Tekniska detaljer</value>
+  </data>
+  <data name="NotesAndHistory" xml:space="preserve">
+    <value>Anteckningar och historik</value>
+  </data>
+  <data name="Sell" xml:space="preserve">
+    <value>Sälj</value>
+  </data>
+  <data name="ConsignToAuction" xml:space="preserve">
+    <value>Lämna till auktion</value>
+  </data>
+  <data name="TokenExpiredNoTransfer" xml:space="preserve">
+    <value>Den här token har upphört att gälla och kan därför inte säljas eller ges bort.</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Taggar</value>
+  </data>
+  <data name="MachineId" xml:space="preserve">
+    <value>Tillståndsmaskinens ID</value>
+  </data>
+  <data name="StateMachine" xml:space="preserve">
+    <value>Tillståndsmaskin</value>
+  </data>
+  <data name="PersonalNoteHelp" xml:space="preserve">
+    <value>Endast den nuvarande ägaren ser personliga anteckningar. De tas bort när token byter ägare.</value>
+  </data>
+  <data name="NoEventsYet" xml:space="preserve">
+    <value>Inga händelser än.</value>
+  </data>
 </root>

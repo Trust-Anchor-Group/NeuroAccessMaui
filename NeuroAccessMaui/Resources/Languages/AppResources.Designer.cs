@@ -14429,5 +14429,266 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("NoteIsPersonal", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tokens.
+        /// </summary>
+        public static string Tokens {
+            get {
+                return ResourceManager.GetString("Tokens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See all.
+        /// </summary>
+        public static string SeeAll {
+            get {
+                return ResourceManager.GetString("SeeAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no tokens yet..
+        /// </summary>
+        public static string NoTokensYet {
+            get {
+                return ResourceManager.GetString("NoTokensYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a token.
+        /// </summary>
+        public static string ChooseAToken {
+            get {
+                return ResourceManager.GetString("ChooseAToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search tokens.
+        /// </summary>
+        public static string SearchTokens {
+            get {
+                return ResourceManager.GetString("SearchTokens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search covers your first {0} tokens..
+        /// </summary>
+        public static string TokenSearchLimited {
+            get {
+                return ResourceManager.GetString("TokenSearchLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Searching all your tokens….
+        /// </summary>
+        public static string TokenSearchLoading {
+            get {
+                return ResourceManager.GetString("TokenSearchLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No tokens match your search..
+        /// </summary>
+        public static string NoMatchingTokens {
+            get {
+                return ResourceManager.GetString("NoMatchingTokens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your tokens couldn't be loaded..
+        /// </summary>
+        public static string TokensLoadFailed {
+            get {
+                return ResourceManager.GetString("TokensLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} tokens · {1} {2}.
+        /// </summary>
+        public static string TokenCountAndValue {
+            get {
+                return ResourceManager.GetString("TokenCountAndValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 token · {0} {1}.
+        /// </summary>
+        public static string OneTokenAndValue {
+            get {
+                return ResourceManager.GetString("OneTokenAndValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} unread.
+        /// </summary>
+        public static string TokenUnreadCount {
+            get {
+                return ResourceManager.GetString("TokenUnreadCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expired.
+        /// </summary>
+        public static string Expired {
+            get {
+                return ResourceManager.GetString("Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expires today.
+        /// </summary>
+        public static string ExpiresToday {
+            get {
+                return ResourceManager.GetString("ExpiresToday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expires tomorrow.
+        /// </summary>
+        public static string ExpiresTomorrow {
+            get {
+                return ResourceManager.GetString("ExpiresTomorrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expires in {0} days.
+        /// </summary>
+        public static string ExpiresInDays {
+            get {
+                return ResourceManager.GetString("ExpiresInDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yours.
+        /// </summary>
+        public static string TokenYours {
+            get {
+                return ResourceManager.GetString("TokenYours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owned by {0}.
+        /// </summary>
+        public static string TokenOwnedBy {
+            get {
+                return ResourceManager.GetString("TokenOwnedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ownership and dates.
+        /// </summary>
+        public static string OwnershipAndDates {
+            get {
+                return ResourceManager.GetString("OwnershipAndDates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Technical details.
+        /// </summary>
+        public static string TechnicalDetails {
+            get {
+                return ResourceManager.GetString("TechnicalDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes and history.
+        /// </summary>
+        public static string NotesAndHistory {
+            get {
+                return ResourceManager.GetString("NotesAndHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sell.
+        /// </summary>
+        public static string Sell {
+            get {
+                return ResourceManager.GetString("Sell", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consign to auction.
+        /// </summary>
+        public static string ConsignToAuction {
+            get {
+                return ResourceManager.GetString("ConsignToAuction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This token has expired, so it can't be sold or given away..
+        /// </summary>
+        public static string TokenExpiredNoTransfer {
+            get {
+                return ResourceManager.GetString("TokenExpiredNoTransfer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tags.
+        /// </summary>
+        public static string Tags {
+            get {
+                return ResourceManager.GetString("Tags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State machine ID.
+        /// </summary>
+        public static string MachineId {
+            get {
+                return ResourceManager.GetString("MachineId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State machine.
+        /// </summary>
+        public static string StateMachine {
+            get {
+                return ResourceManager.GetString("StateMachine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the current owner sees personal notes. They are removed when the token changes owner..
+        /// </summary>
+        public static string PersonalNoteHelp {
+            get {
+                return ResourceManager.GetString("PersonalNoteHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No events yet..
+        /// </summary>
+        public static string NoEventsYet {
+            get {
+                return ResourceManager.GetString("NoEventsYet", resourceCulture);
+            }
+        }
     }
 }

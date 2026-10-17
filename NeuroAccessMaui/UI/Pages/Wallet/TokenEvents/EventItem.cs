@@ -8,6 +8,7 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
@@ -218,8 +219,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public static async Task CopyToClipboard(string Text)
 		{
 			await Clipboard.SetTextAsync(Text);
-			await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-				ServiceRef.Localizer[nameof(AppResources.NoteCopiedToClipboard)]);
+			await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.NoteCopiedToClipboard)]);
 		}
 
 		/// <summary>

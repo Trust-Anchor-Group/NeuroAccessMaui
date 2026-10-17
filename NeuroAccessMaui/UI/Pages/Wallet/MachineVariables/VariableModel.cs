@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.UI.Toasts;
 using Waher.Script;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
@@ -53,8 +54,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 			try
 			{
 				await Clipboard.SetTextAsync(this.AsScript);
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+				await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 			}
 			catch (Exception ex)
 			{

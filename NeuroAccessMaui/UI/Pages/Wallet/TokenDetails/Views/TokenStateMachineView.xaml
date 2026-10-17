@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.Views.TokenStateMachineView"
+			 x:DataType="viewmodel:TokenDetailsViewModel"
+			 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+			 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+			 xmlns:variables="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineVariables"
+			 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails">
+	<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="16">
+		<VerticalStackLayout Spacing="8">
+			<Label Text="{l:Localize StateMachine}"
+				   Style="{DynamicResource SectionTitleLabel}"
+				   SemanticProperties.HeadingLevel="Level2" />
+
+			<!-- Current state and the first few variables -->
+			<controls:TaskView Task="{Binding MachineStateTask}">
+				<controls:TaskView.RunningView>
+					<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center" />
+				</controls:TaskView.RunningView>
+
+				<controls:TaskView.ErrorView>
+					<VerticalStackLayout Spacing="8">
+						<Label Text="{Binding MachineStateErrorText}"
+							   Style="{DynamicResource ItemDescriptionLabel}"
+							   TextColor="{DynamicResource ContentSecondaryWL}"
+							   HorizontalTextAlignment="Center" />
+						<controls:TextButton LabelData="{l:Localize TryAgain}"
+											 Command="{Binding MachineStateTask.ReloadCommand}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 HorizontalOptions="Center" />
+					</VerticalStackLayout>
+				</controls:TaskView.ErrorView>
+
+				<controls:TaskView.SucceededView>
+					<VerticalStackLayout Spacing="8">
+						<Border StrokeShape="RoundRectangle 12"
+								StrokeThickness="0"
+								Padding="8,2"
+								HorizontalOptions="Start"
+								BackgroundColor="{DynamicResource TnPInfobgWL}">
+							<Border.Triggers>
+								<DataTrigger TargetType="Border" Binding="{Binding MachineEnded}" Value="True">
+									<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation1WL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<Label Text="{Binding MachineStateText}"
+								   FontSize="{StaticResource FontSizeSm}"
+								   TextColor="{DynamicResource TnPInfoContentWL}">
+								<Label.Triggers>
+									<DataTrigger TargetType="Label" Binding="{Binding MachineEnded}" Value="True">
+										<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+						</Border>
+
+						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Variables}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="variables:VariableModel">
+									<Grid ColumnDefinitions="*,auto" ColumnSpacing="8" Padding="0,4">
+										<VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+											<Label Text="{Binding Name}"
+												   Style="{DynamicResource ItemDescriptionLabel}"
+												   FontSize="{StaticResource FontSizeXs}"
+												   TextColor="{DynamicResource ContentSecondaryWL}" />
+											<Label Text="{Binding AsScript}"
+												   Style="{DynamicResource ItemDescriptionLabel}"
+												   TextColor="{DynamicResource ContentPrimaryWL}"
+												   LineBreakMode="TailTruncation"
+												   MaxLines="3" />
+										</VerticalStackLayout>
+										<controls:SvgButton Grid.Column="1"
+															SvgSource="content_copy.svg"
+															Style="{DynamicResource IconButtonOnBackground}"
+															Command="{Binding CopyToClipboardCommand}"
+															VerticalOptions="Center"
+															SemanticProperties.Description="{l:Localize CopyToClipboard}" />
+									</Grid>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
+
+						<controls:TextButton LabelData="{l:Localize SeeAll}"
+											 Command="{Binding VariablesReportCommand}"
+											 IsVisible="{Binding HasVariables}"
+											 Style="{DynamicResource TransparentTextButton}"
+											 HorizontalOptions="Start" />
+					</VerticalStackLayout>
+				</controls:TaskView.SucceededView>
+			</controls:TaskView>
+
+			<!-- Reports -->
+			<Label Text="{l:Localize Reports}"
+				   Style="{DynamicResource ItemDescriptionLabel}"
+				   TextColor="{DynamicResource ContentSecondaryWL}"
+				   Margin="0,8,0,0"
+				   SemanticProperties.HeadingLevel="Level3" />
+			<FlexLayout Direction="Row" Wrap="Wrap" JustifyContent="Start" AlignItems="Center">
+				<controls:TextButton LabelData="{l:Localize Present}"
+									 Command="{Binding PresentReportCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 Margin="0,0,8,8" />
+				<controls:TextButton LabelData="{l:Localize History}"
+									 Command="{Binding HistoryReportCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 Margin="0,0,8,8" />
+				<controls:TextButton LabelData="{l:Localize States}"
+									 Command="{Binding StatesReportCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 Margin="0,0,8,8" />
+				<controls:TextButton LabelData="{l:Localize Profiling}"
+									 Command="{Binding ProfilingReportCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 Margin="0,0,8,8" />
+			</FlexLayout>
+		</VerticalStackLayout>
+	</Border>
+</ContentView>

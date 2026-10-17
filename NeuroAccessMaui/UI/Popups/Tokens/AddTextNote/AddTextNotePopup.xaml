@@ -4,30 +4,49 @@
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
                 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Tokens.AddTextNote">
     <ScrollView VerticalOptions="Center">
         <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
             <Label Text="{l:Localize TextNote}"
-                   Style="{DynamicResource SectionTitleLabel}" />
-            <controls:CompositeEntry x:Name="NoteEntry"
-                                     Style="{DynamicResource RegularCompositeEntry}"
-                                     EntryData="{Binding TextNote}">
-                <controls:CompositeEntry.Behaviors>
-                    <mct:EventToCommandBehavior EventName="Completed"
-                                               Command="{Binding AddNoteCommand}" />
-                </controls:CompositeEntry.Behaviors>
-            </controls:CompositeEntry>
-            <Grid ColumnDefinitions="Auto,*">
-                <CheckBox Grid.Column="0" IsChecked="{Binding Personal}"
-                          VerticalOptions="Center" />
-                <Label Grid.Column="1" Text="{l:Localize NoteIsPersonal}"
-                       VerticalOptions="Center"
-                       Margin="{DynamicResource SmallLeftMargins}" />
-            </Grid>
+                   Style="{DynamicResource SectionTitleLabel}"
+                   SemanticProperties.HeadingLevel="Level1" />
+
+            <!-- The note, which grows as it is written -->
+            <Border StrokeShape="RoundRectangle 8"
+                    Padding="8,4"
+                    Stroke="{DynamicResource ContentPrimaryWL}"
+                    BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+                <Editor x:Name="NoteEditor"
+                        Text="{Binding TextNote}"
+                        AutoSize="TextChanges"
+                        MinimumHeightRequest="96"
+                        MaximumHeightRequest="240"
+                        Keyboard="Text"
+                        BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+                        TextColor="{DynamicResource InputFieldsContentPrimary}"
+                        SemanticProperties.Description="{l:Localize TextNote}" />
+            </Border>
+
+            <!-- Personal notes, and what they mean -->
+            <VerticalStackLayout Spacing="4">
+                <Grid ColumnDefinitions="Auto,*">
+                    <CheckBox Grid.Column="0"
+                              IsChecked="{Binding Personal}"
+                              VerticalOptions="Center"
+                              SemanticProperties.Description="{l:Localize NoteIsPersonal}" />
+                    <Label Grid.Column="1"
+                           Text="{l:Localize NoteIsPersonal}"
+                           VerticalOptions="Center"
+                           Margin="{DynamicResource SmallLeftMargins}"
+                           AutomationProperties.IsInAccessibleTree="False" />
+                </Grid>
+                <Label Text="{l:Localize PersonalNoteHelp}"
+                       Style="{DynamicResource ItemDescriptionLabel}"
+                       TextColor="{DynamicResource ContentSecondaryWL}" />
+            </VerticalStackLayout>
+
             <controls:TextButton Command="{Binding AddNoteCommand}"
                                  Style="{DynamicResource FilledTextButton}"
                                  LabelData="{l:Localize Add}" />

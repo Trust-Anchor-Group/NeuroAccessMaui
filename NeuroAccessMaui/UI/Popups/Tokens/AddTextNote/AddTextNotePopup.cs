@@ -9,6 +9,10 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 	{
 		private readonly AddTextNoteViewModel viewModel;
 
+		/// <summary>
+		/// Creates a new instance of the <see cref="AddTextNotePopup"/> class.
+		/// </summary>
+		/// <param name="viewModel">View model of the popup.</param>
 		public AddTextNotePopup(AddTextNoteViewModel viewModel)
 		{
 			this.InitializeComponent();
@@ -16,12 +20,14 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 			this.BindingContext = viewModel;
 		}
 
+		/// <inheritdoc/>
 		public override Task OnAppearingAsync()
 		{
-			this.NoteEntry.Focus();
+			this.NoteEditor.Focus();
 			return base.OnAppearingAsync();
 		}
 
+		/// <inheritdoc/>
 		public override Task OnDisappearingAsync()
 		{
 			this.viewModel.Close();

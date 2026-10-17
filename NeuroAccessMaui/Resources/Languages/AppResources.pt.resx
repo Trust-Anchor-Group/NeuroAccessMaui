@@ -4691,4 +4691,91 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="KillerId" xml:space="preserve">
     <value>ID de quem a interrompeu</value>
   </data>
+  <data name="Tokens" xml:space="preserve">
+    <value>Tokens</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>Ver tudo</value>
+  </data>
+  <data name="NoTokensYet" xml:space="preserve">
+    <value>Você ainda não tem tokens.</value>
+  </data>
+  <data name="ChooseAToken" xml:space="preserve">
+    <value>Escolha um token</value>
+  </data>
+  <data name="SearchTokens" xml:space="preserve">
+    <value>Buscar tokens</value>
+  </data>
+  <data name="TokenSearchLimited" xml:space="preserve">
+    <value>A busca abrange seus primeiros {0} tokens.</value>
+  </data>
+  <data name="TokenSearchLoading" xml:space="preserve">
+    <value>Buscando em todos os seus tokens…</value>
+  </data>
+  <data name="NoMatchingTokens" xml:space="preserve">
+    <value>Nenhum token corresponde à sua busca.</value>
+  </data>
+  <data name="TokensLoadFailed" xml:space="preserve">
+    <value>Não foi possível carregar seus tokens.</value>
+  </data>
+  <data name="TokenCountAndValue" xml:space="preserve">
+    <value>{0} tokens · {1} {2}</value>
+  </data>
+  <data name="OneTokenAndValue" xml:space="preserve">
+    <value>1 token · {0} {1}</value>
+  </data>
+  <data name="TokenUnreadCount" xml:space="preserve">
+    <value>{0} não lidas</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>Expirado</value>
+  </data>
+  <data name="ExpiresToday" xml:space="preserve">
+    <value>Expira hoje</value>
+  </data>
+  <data name="ExpiresTomorrow" xml:space="preserve">
+    <value>Expira amanhã</value>
+  </data>
+  <data name="ExpiresInDays" xml:space="preserve">
+    <value>Expira em {0} dias</value>
+  </data>
+  <data name="TokenYours" xml:space="preserve">
+    <value>Seu</value>
+  </data>
+  <data name="TokenOwnedBy" xml:space="preserve">
+    <value>Pertence a {0}</value>
+  </data>
+  <data name="OwnershipAndDates" xml:space="preserve">
+    <value>Propriedade e datas</value>
+  </data>
+  <data name="TechnicalDetails" xml:space="preserve">
+    <value>Detalhes técnicos</value>
+  </data>
+  <data name="NotesAndHistory" xml:space="preserve">
+    <value>Notas e histórico</value>
+  </data>
+  <data name="Sell" xml:space="preserve">
+    <value>Vender</value>
+  </data>
+  <data name="ConsignToAuction" xml:space="preserve">
+    <value>Consignar em leilão</value>
+  </data>
+  <data name="TokenExpiredNoTransfer" xml:space="preserve">
+    <value>Este token expirou, então não pode ser vendido nem doado.</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="MachineId" xml:space="preserve">
+    <value>ID da máquina de estados</value>
+  </data>
+  <data name="StateMachine" xml:space="preserve">
+    <value>Máquina de estados</value>
+  </data>
+  <data name="PersonalNoteHelp" xml:space="preserve">
+    <value>Somente o proprietário atual vê as notas pessoais. Elas são removidas quando o token muda de proprietário.</value>
+  </data>
+  <data name="NoEventsYet" xml:space="preserve">
+    <value>Ainda não há eventos.</value>
+  </data>
 </root>

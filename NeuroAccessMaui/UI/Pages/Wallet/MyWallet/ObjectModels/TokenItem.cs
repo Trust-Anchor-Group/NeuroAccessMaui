@@ -1,9 +1,12 @@
 ﻿using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
 using NeuroFeatures.Tags;
@@ -21,6 +24,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 	{
 		private readonly Token token;
 		private readonly TaskCompletionSource<TokenItem?>? selected;
+		private readonly TokenExpiryStatus expiryStatus;
+		private readonly int expiresInDays;
 
 		/// <summary>
 		/// Encapsulates a <see cref="Token"/> object.
@@ -42,6 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 			this.selected = Selected;
 			this.GlyphWidth = TokenGlyph.ListBoxSize;
 			this.GlyphHeight = TokenGlyph.ListBoxSize;
+			this.expiryStatus = TokenExpiry.GetStatus(Token.Expires, DateTime.UtcNow, out this.expiresInDays);
 
 			_ = this.LoadGlyphAsync();
 		}
@@ -68,6 +74,40 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		/// When token expires.
 		/// </summary>
 		public DateTime Expires => this.token.Expires;
+
+		/// <summary>
+		/// How soon the token expires, as of when the item was created.
+		/// </summary>
+		public TokenExpiryStatus ExpiryStatus => this.expiryStatus;
+
+		/// <summary>
+		/// If the token has expired.
+		/// </summary>
+		public bool IsExpired => this.expiryStatus == TokenExpiryStatus.Expired;
+
+		/// <summary>
+		/// If the token expires today or within the next few days.
+		/// </summary>
+		public bool IsExpiringSoon => this.expiryStatus == TokenExpiryStatus.Today || this.expiryStatus == TokenExpiryStatus.Soon;
+
+		/// <summary>
+		/// Calendar days left until the token expires, or null when it has expired or doesn't expire.
+		/// </summary>
+		public int? ExpiresInDays => this.expiryStatus switch
+		{
+			TokenExpiryStatus.Later or TokenExpiryStatus.Soon or TokenExpiryStatus.Today => this.expiresInDays,
+			_ => null
+		};
+
+		/// <summary>
+		/// A short text saying that the token has expired or expires soon, or null otherwise.
+		/// </summary>
+		public string? ExpiryText => TokenExpiry.GetText(this.expiryStatus, this.expiresInDays);
+
+		/// <summary>
+		/// If <see cref="ExpiryText"/> has a text to show.
+		/// </summary>
+		public bool HasExpiryText => this.IsExpired || this.IsExpiringSoon;
 
 		/// <summary>
 		/// Required archiving time after token expires.
@@ -128,6 +168,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		/// Category of token.
 		/// </summary>
 		public string Category => this.token.Category;
+
+		/// <summary>
+		/// If the token has a category.
+		/// </summary>
+		public bool HasCategory => !string.IsNullOrWhiteSpace(this.token.Category);
 
 		/// <summary>
 		/// Description engraved into the token.
@@ -319,12 +364,43 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasUnread))]
+		[NotifyPropertyChangedFor(nameof(UnreadText))]
+		[NotifyPropertyChangedFor(nameof(AccessibleDescription))]
 		private int unreadCount;
 
 		/// <summary>
 		/// If there are unread notifications about the token.
 		/// </summary>
 		public bool HasUnread => this.UnreadCount > 0;
+
+		/// <summary>
+		/// The number of unread notifications, as a phrase a screen reader can announce.
+		/// </summary>
+		public string UnreadText => ServiceRef.Localizer[nameof(AppResources.TokenUnreadCount), this.UnreadCount];
+
+		/// <summary>
+		/// What a screen reader announces for the token's row: its name, category, value, expiry and unread notifications.
+		/// </summary>
+		public string AccessibleDescription
+		{
+			get
+			{
+				List<string> Parts = [this.token.FriendlyName];
+
+				if (this.HasCategory)
+					Parts.Add(this.token.Category);
+
+				Parts.Add(MoneyToString.ToString(this.token.Value) + " " + this.token.Currency);
+
+				if (this.ExpiryText is string Expiry)
+					Parts.Add(Expiry);
+
+				if (this.HasUnread)
+					Parts.Add(this.UnreadText);
+
+				return string.Join(", ", Parts);
+			}
+		}
 
 		/// <summary>
 		/// Loads the glyph shown in token lists.

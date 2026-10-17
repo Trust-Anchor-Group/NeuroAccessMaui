@@ -16,6 +16,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -25,6 +26,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
@@ -47,7 +49,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 	/// </summary>
 	public partial class WalletViewModel : XmppViewModel
 	{
+		/// <summary>
+		/// How many of the most recent tokens the Tokens section shows.
+		/// </summary>
+		private const int RecentTokenCount = 3;
+
+		/// <summary>
+		/// How long the Tokens section waits after a token is added or removed before it refreshes, so a burst of changes
+		/// is loaded once.
+		/// </summary>
+		private static readonly TimeSpan tokensRefreshDelay = TimeSpan.FromSeconds(1);
+
 		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+		private CancellationTokenSource? tokensRefreshCancel;
+		private DateTime lastTokenEvent;
 
 		#region Observable Properties
 
@@ -126,6 +141,51 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		/// </summary>
 		public ObservableTask<bool> GetBalanceTask { get; } = new();
 
+		/// <summary>
+		/// Loads the token totals per currency, shown in the Tokens section.
+		/// </summary>
+		public ObservableTask TokenTotalsTask { get; } = new();
+
+		/// <summary>
+		/// Loads the most recent tokens, and exposes the loading, error and loaded states of the Tokens section.
+		/// </summary>
+		public ObservableTask RecentTokensTask { get; } = new();
+
+		#endregion
+
+		#region Tokens
+
+		/// <summary>
+		/// If the Tokens section is shown.
+		/// </summary>
+		public bool AreTokensEnabled => ServiceRef.NeuroWalletOrchestratorService.AreTokensEnabled;
+
+		/// <summary>
+		/// Token totals per currency.
+		/// </summary>
+		public ObservableCollection<TokenTotalItem> TokenTotals { get; } = [];
+
+		/// <summary>
+		/// The most recent tokens.
+		/// </summary>
+		public ObservableCollection<TokenItem> RecentTokens { get; } = [];
+
+		/// <summary>
+		/// If there are token totals to show.
+		/// </summary>
+		public bool HasTokenTotals => this.TokenTotals.Count > 0;
+
+		/// <summary>
+		/// If the wallet has no tokens.
+		/// </summary>
+		public bool HasNoTokens => this.RecentTokens.Count == 0;
+
+		/// <summary>
+		/// Text shown when the Tokens section couldn't be loaded.
+		/// </summary>
+		[ObservableProperty]
+		private string? tokensErrorText;
+
 		#endregion
 
 		#region Lifecycle
@@ -135,11 +195,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			await base.OnInitializeAsync();
 
-			// Uncomment if event handlers are needed
 			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
-			// ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
-			// ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
-			// ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
+			ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokensChanged;
+			ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokensChanged;
+			ServiceRef.TokenUnreadTracker.UnreadChanged += this.TokenUnreadTracker_UnreadChanged;
 		}
 
 		/// <inheritdoc/>
@@ -148,18 +207,32 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			await base.OnAppearingAsync();
 			// Re-load on appearing.
 			this.GetBalanceTask.Load(this.LoadBalanceAsync);
+
+			this.OnPropertyChanged(nameof(this.AreTokensEnabled));
+
+			if (this.AreTokensEnabled)
+			{
+				if (this.RecentTokensTask.IsSucceeded)
+				{
+					if (this.lastTokenEvent != ServiceRef.XmppService.LastNeuroFeatureEvent)
+						this.ScheduleTokensRefresh();
+				}
+				else if (!this.RecentTokensTask.IsRunning)
+					this.LoadTokens();
+			}
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
-			// Uncomment if event handlers are subscribed in OnInitialize.
-			// ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
-			// ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
-			// ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
-			// ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
-
 			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
+			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokensChanged;
+			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokensChanged;
+			ServiceRef.TokenUnreadTracker.UnreadChanged -= this.TokenUnreadTracker_UnreadChanged;
+
+			this.tokensRefreshCancel?.Cancel();
+			this.TokenTotalsTask.Cancel();
+			this.RecentTokensTask.Cancel();
 
 			await base.OnDisposeAsync();
 		}
@@ -177,6 +250,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			{
 				this.BuyEdalerCommand.NotifyCanExecuteChanged();
 				this.SendEdalerCommand.NotifyCanExecuteChanged();
+
+				// A Tokens section that failed while offline loads again once connected.
+				if (this.IsConnected && this.AreTokensEnabled && (this.RecentTokensTask.IsFailed || this.RecentTokensTask.IsCanceled))
+					this.LoadTokens();
 			}
 		}
 
@@ -377,6 +454,32 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		}
 
 		/// <summary>
+		/// Opens the full list of tokens.
+		/// </summary>
+		[RelayCommand]
+		private async Task SeeAllTokens()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), BackMethod.Pop);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Loads the Tokens section again, after it failed.
+		/// </summary>
+		[RelayCommand]
+		private void ReloadTokens()
+		{
+			this.LoadTokens();
+		}
+
+		/// <summary>
 		/// Command to navigate to transaction history page.
 		/// </summary>
 		[RelayCommand]
@@ -419,6 +522,194 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			});
 
 			ServiceRef.LogService.LogDebug("Refreshing Edaler Completed");
+		}
+
+		/// <summary>
+		/// Loads the Tokens section through its tasks, which show the loading and error states.
+		/// </summary>
+		private void LoadTokens()
+		{
+			this.TokenTotalsTask.Load(this.LoadTokenTotalsAsync);
+			this.RecentTokensTask.Load(this.LoadRecentTokensAsync);
+		}
+
+		/// <summary>
+		/// Loads the token totals. When they can't be loaded, the totals chips are left out.
+		/// </summary>
+		/// <param name="Context">Task context.</param>
+		private async Task LoadTokenTotalsAsync(TaskContext<int> Context)
+		{
+			TokenTotal[] Totals = await FetchTokenTotalsAsync();
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetTokenTotals(Totals));
+		}
+
+		/// <summary>
+		/// Loads the most recent tokens.
+		/// </summary>
+		/// <param name="Context">Task context.</param>
+		private async Task LoadRecentTokensAsync(TaskContext<int> Context)
+		{
+			try
+			{
+				this.lastTokenEvent = ServiceRef.XmppService.LastNeuroFeatureEvent;
+
+				Token[] Tokens = await FetchRecentTokensAsync();
+
+				await MainThread.InvokeOnMainThreadAsync(() => this.SetRecentTokens(Tokens));
+			}
+			catch (Exception Ex)
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+					this.TokensErrorText = TokenErrors.ToMessage(Ex) ?? ServiceRef.Localizer[nameof(AppResources.TokensLoadFailed)]);
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Waits for the connection to the Neuron.
+		/// </summary>
+		/// <exception cref="TimeoutException">If the app couldn't connect.</exception>
+		private static async Task WaitForTokenConnectionAsync()
+		{
+			if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
+				throw new TimeoutException();
+		}
+
+		private static async Task<TokenTotal[]> FetchTokenTotalsAsync()
+		{
+			await WaitForTokenConnectionAsync();
+
+			TokenTotalsEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureTotals();
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(e.ErrorText);
+
+			return e.Totals ?? [];
+		}
+
+		private static async Task<Token[]> FetchRecentTokensAsync()
+		{
+			await WaitForTokenConnectionAsync();
+			await ServiceRef.TokenUnreadTracker.EnsureLoadedAsync();
+
+			TokensEventArgs e = await ServiceRef.XmppService.GetNeuroFeatures(0, RecentTokenCount);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(e.ErrorText);
+
+			return e.Tokens ?? [];
+		}
+
+		/// <summary>
+		/// Shows token totals. Called on the main thread.
+		/// </summary>
+		/// <param name="Totals">Totals per currency.</param>
+		private void SetTokenTotals(TokenTotal[] Totals)
+		{
+			this.TokenTotals.Clear();
+
+			foreach (TokenTotal Total in Totals)
+			{
+				if (Total.NrTokens > 0)
+					this.TokenTotals.Add(new TokenTotalItem(Total));
+			}
+
+			this.OnPropertyChanged(nameof(this.HasTokenTotals));
+		}
+
+		/// <summary>
+		/// Shows the most recent tokens. Called on the main thread.
+		/// </summary>
+		/// <param name="Tokens">The tokens, newest first.</param>
+		private void SetRecentTokens(Token[] Tokens)
+		{
+			this.RecentTokens.Clear();
+
+			foreach (Token Token in Tokens)
+			{
+				ServiceRef.TokenNameCache.Remember(Token);
+
+				this.RecentTokens.Add(new TokenItem(Token)
+				{
+					UnreadCount = ServiceRef.TokenUnreadTracker.GetUnreadCount(Token.TokenId)
+				});
+			}
+
+			this.OnPropertyChanged(nameof(this.HasNoTokens));
+		}
+
+		/// <summary>
+		/// Refreshes the Tokens section shortly, without showing the loading state. Repeated calls are merged.
+		/// </summary>
+		private void ScheduleTokensRefresh()
+		{
+			CancellationTokenSource Cancel = new();
+			Interlocked.Exchange(ref this.tokensRefreshCancel, Cancel)?.Cancel();
+
+			_ = this.RefreshTokensQuietlyAsync(Cancel.Token);
+		}
+
+		private async Task RefreshTokensQuietlyAsync(CancellationToken Cancel)
+		{
+			try
+			{
+				await Task.Delay(tokensRefreshDelay, Cancel);
+
+				if (this.RecentTokensTask.IsFailed || this.RecentTokensTask.IsCanceled)
+				{
+					await MainThread.InvokeOnMainThreadAsync(this.LoadTokens);
+					return;
+				}
+
+				if (!this.RecentTokensTask.IsSucceeded)
+					return;
+
+				this.lastTokenEvent = ServiceRef.XmppService.LastNeuroFeatureEvent;
+
+				Task<TokenTotal[]> TotalsTask = FetchTokenTotalsAsync();
+				Token[] Tokens = await FetchRecentTokensAsync();
+				TokenTotal[] Totals = await TotalsTask;
+
+				Cancel.ThrowIfCancellationRequested();
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.SetRecentTokens(Tokens);
+					this.SetTokenTotals(Totals);
+				});
+			}
+			catch (OperationCanceledException)
+			{
+				// A newer refresh replaced this one.
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private Task Wallet_TokensChanged(object? Sender, TokenEventArgs e)
+		{
+			if (this.AreTokensEnabled)
+				this.ScheduleTokensRefresh();
+
+			return Task.CompletedTask;
+		}
+
+		private void TokenUnreadTracker_UnreadChanged(object? Sender, string TokenId)
+		{
+			int Count = ServiceRef.TokenUnreadTracker.GetUnreadCount(TokenId);
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				foreach (TokenItem Item in this.RecentTokens)
+				{
+					if (string.Equals(Item.TokenId, TokenId, StringComparison.OrdinalIgnoreCase))
+					{
+						Item.UnreadCount = Count;
+						break;
+					}
+				}
+			});
 		}
 
 		/// <summary>
