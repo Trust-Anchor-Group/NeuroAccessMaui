@@ -55,13 +55,12 @@
 		</DataTemplate>
 	</base:BaseContentPage.Resources>
 
-	<!-- Built from the same parts as My Tokens: a centered header, cards with thin dividers, and the main action in a
-		 sticky footer. -->
+	<!-- Built from the same parts as My Tokens: a centered header, and cards with thin dividers. Selling and buying are
+		 under More. -->
 	<controls:IdentityFlowShell Title="{l:Localize TokenDetails}"
 								ShowLeadingAction="True"
 								LeadingActionCommand="{Binding GoBackCommand}"
-								LeadingActionDescription="{l:Localize Close}"
-								ShowStickyFooter="{Binding ShowMainAction}">
+								LeadingActionDescription="{l:Localize Close}">
 		<controls:IdentityFlowShell.BodyContent>
 			<ScrollView>
 				<VerticalStackLayout Padding="16,4,16,24">
@@ -255,25 +254,16 @@
 						</VerticalStackLayout>
 					</Border>
 
-					<!-- Quick actions. Give keeps its place, disabled, until the templates are known. More holds the rest. -->
+					<!-- Quick actions, sharing the width equally. Give appears once its template is found. More holds the rest. The gaps are padding inside each tile, since FlexLayout misplaces children with margins. -->
 					<FlexLayout Direction="Row"
 								AlignItems="Stretch"
 								Margin="-4,12,-4,0">
 						<controls:TemplatedButton FlexLayout.Grow="1"
 												  FlexLayout.Basis="0"
-												  Margin="4,0"
+												  Padding="4,0"
 												  Command="{Binding GiveCommand}"
-												  IsVisible="{Binding ShowGive}"
-												  IsEnabled="{Binding CanGive}"
+												  IsVisible="{Binding CanGive}"
 												  SemanticProperties.Description="{l:Localize Give}">
-							<controls:TemplatedButton.Triggers>
-								<Trigger TargetType="controls:TemplatedButton"
-										 Property="IsEnabled"
-										 Value="False">
-									<Setter Property="Opacity"
-											Value="0.5" />
-								</Trigger>
-							</controls:TemplatedButton.Triggers>
 							<Border Style="{DynamicResource ListCardActionTileBorder}">
 								<VerticalStackLayout Spacing="6"
 													 VerticalOptions="Center">
@@ -291,7 +281,7 @@
 
 						<controls:TemplatedButton FlexLayout.Grow="1"
 												  FlexLayout.Basis="0"
-												  Margin="4,0"
+												  Padding="4,0"
 												  Command="{Binding ShareCommand}"
 												  SemanticProperties.Description="{l:Localize Share}">
 							<Border Style="{DynamicResource ListCardActionTileBorder}">
@@ -311,7 +301,7 @@
 
 						<controls:TemplatedButton FlexLayout.Grow="1"
 												  FlexLayout.Basis="0"
-												  Margin="4,0"
+												  Padding="4,0"
 												  Command="{Binding ViewEventsCommand}"
 												  IsVisible="{Binding CanViewHistory}"
 												  SemanticProperties.Description="{Binding HistoryLabel}">
@@ -332,7 +322,7 @@
 
 						<controls:TemplatedButton FlexLayout.Grow="1"
 												  FlexLayout.Basis="0"
-												  Margin="4,0"
+												  Padding="4,0"
 												  Command="{Binding ToggleMoreCommand}"
 												  SemanticProperties.Description="{l:Localize More}">
 							<Border Style="{DynamicResource ListCardActionTileBorder}">
@@ -359,12 +349,86 @@
 						</controls:TemplatedButton>
 					</FlexLayout>
 
-					<!-- More: the actions that are used less often -->
+					<!-- More: selling or offering to buy, and the actions that are used less often. "Send to contact" is always
+						 there, so the rows above it have their divider below, and the rows after it above. -->
 					<Border Style="{DynamicResource ListCardBorder}"
 							Margin="0,8,0,0"
 							IsVisible="False"
 							controls:Reveal.IsShown="{Binding IsMoreVisible}">
 						<VerticalStackLayout>
+							<!-- A row shaped like "Offer to sell" while the templates for selling and buying are looked up -->
+							<VerticalStackLayout IsVisible="{Binding IsLoadingTradeActions}"
+												 AutomationProperties.IsInAccessibleTree="False">
+								<Grid ColumnDefinitions="*,Auto"
+									  Padding="16,0"
+									  HeightRequest="52">
+									<Grid ColumnDefinitions="40*,60*"
+										  VerticalOptions="Center">
+										<BoxView Style="{DynamicResource ListCardPlaceholderTitle}" />
+									</Grid>
+								</Grid>
+								<BoxView Style="{DynamicResource ListCardRowDivider}" />
+							</VerticalStackLayout>
+							<VerticalStackLayout IsVisible="{Binding CanOfferToSell}">
+								<controls:TemplatedButton Command="{Binding OfferToSellCommand}"
+														  SemanticProperties.Description="{l:Localize OfferToSell}">
+									<Grid ColumnDefinitions="*,Auto"
+										  ColumnSpacing="12"
+										  Padding="16,0"
+										  MinimumHeightRequest="52">
+										<Label Text="{l:Localize OfferToSell}"
+											   Style="{DynamicResource ListCardRowTitleLabel}" />
+										<controls:SvgView Grid.Column="1"
+														  Source="arrow_forward_ios.svg"
+														  WidthRequest="14"
+														  HeightRequest="14"
+														  VerticalOptions="Center"
+														  TintColor="{DynamicResource ContentSecondaryWL}"
+														  AutomationProperties.IsInAccessibleTree="False" />
+									</Grid>
+								</controls:TemplatedButton>
+								<BoxView Style="{DynamicResource ListCardRowDivider}" />
+							</VerticalStackLayout>
+							<VerticalStackLayout IsVisible="{Binding CanConsign}">
+								<controls:TemplatedButton Command="{Binding PublishMarketplaceCommand}"
+														  SemanticProperties.Description="{l:Localize ConsignToAuction}">
+									<Grid ColumnDefinitions="*,Auto"
+										  ColumnSpacing="12"
+										  Padding="16,0"
+										  MinimumHeightRequest="52">
+										<Label Text="{l:Localize ConsignToAuction}"
+											   Style="{DynamicResource ListCardRowTitleLabel}" />
+										<controls:SvgView Grid.Column="1"
+														  Source="arrow_forward_ios.svg"
+														  WidthRequest="14"
+														  HeightRequest="14"
+														  VerticalOptions="Center"
+														  TintColor="{DynamicResource ContentSecondaryWL}"
+														  AutomationProperties.IsInAccessibleTree="False" />
+									</Grid>
+								</controls:TemplatedButton>
+								<BoxView Style="{DynamicResource ListCardRowDivider}" />
+							</VerticalStackLayout>
+							<VerticalStackLayout IsVisible="{Binding CanOfferToBuy}">
+								<controls:TemplatedButton Command="{Binding OfferToBuyCommand}"
+														  SemanticProperties.Description="{l:Localize OfferToBuy}">
+									<Grid ColumnDefinitions="*,Auto"
+										  ColumnSpacing="12"
+										  Padding="16,0"
+										  MinimumHeightRequest="52">
+										<Label Text="{l:Localize OfferToBuy}"
+											   Style="{DynamicResource ListCardRowTitleLabel}" />
+										<controls:SvgView Grid.Column="1"
+														  Source="arrow_forward_ios.svg"
+														  WidthRequest="14"
+														  HeightRequest="14"
+														  VerticalOptions="Center"
+														  TintColor="{DynamicResource ContentSecondaryWL}"
+														  AutomationProperties.IsInAccessibleTree="False" />
+									</Grid>
+								</controls:TemplatedButton>
+								<BoxView Style="{DynamicResource ListCardRowDivider}" />
+							</VerticalStackLayout>
 							<controls:TemplatedButton Command="{Binding SendToContactCommand}"
 													  SemanticProperties.Description="{l:Localize SendToContact}">
 								<Grid ColumnDefinitions="*,Auto"
@@ -609,30 +673,5 @@
 				</VerticalStackLayout>
 			</ScrollView>
 		</controls:IdentityFlowShell.BodyContent>
-
-		<!-- One main action: Sell for the owner, Offer to buy for others. It is disabled until the templates are known. -->
-		<controls:IdentityFlowShell.StickyFooterContent>
-			<VerticalStackLayout Spacing="8"
-								 MaximumWidthRequest="560">
-				<!-- The ways to sell, when there is more than one -->
-				<VerticalStackLayout Spacing="8"
-									 IsVisible="{Binding IsSellOptionsVisible}">
-					<controls:TextButton LabelData="{l:Localize OfferToSell}"
-										 Command="{Binding OfferToSellCommand}"
-										 IsVisible="{Binding CanOfferToSell}"
-										 Style="{DynamicResource OutlinedTextButton}"
-										 HorizontalOptions="Fill" />
-					<controls:TextButton LabelData="{l:Localize ConsignToAuction}"
-										 Command="{Binding PublishMarketplaceCommand}"
-										 IsVisible="{Binding CanConsign}"
-										 Style="{DynamicResource OutlinedTextButton}"
-										 HorizontalOptions="Fill" />
-				</VerticalStackLayout>
-				<controls:TextButton Style="{DynamicResource FilledTextButton}"
-									 HorizontalOptions="Fill"
-									 LabelData="{Binding MainActionText}"
-									 Command="{Binding MainActionCommand}" />
-			</VerticalStackLayout>
-		</controls:IdentityFlowShell.StickyFooterContent>
 	</controls:IdentityFlowShell>
 </base:BaseContentPage>

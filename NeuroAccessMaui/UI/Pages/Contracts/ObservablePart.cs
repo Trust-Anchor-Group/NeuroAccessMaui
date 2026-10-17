@@ -269,7 +269,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			!this.IsPresetFromArgs && this.Role != "TrustProvider";
 
 		/// <summary>
-		/// True if this part was preselected via navigation args and therefore should not be removable in the Roles view.
+		/// True if this part was preselected via navigation args. It can be removed like any other part, but isn't offered an
+		/// identity request for inviting.
 		/// </summary>
 		public bool IsPresetFromArgs
 		{
@@ -278,8 +279,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				if (this.SetProperty(ref this.isPresetFromArgs, value))
 				{
-					this.OnPropertyChanged(nameof(this.ShowRemoveAsMe));
-					this.OnPropertyChanged(nameof(this.ShowRemoveAsThirdParty));
 					this.OnPropertyChanged(nameof(this.CanRequestIdentityToInvite));
 				}
 			}
@@ -287,14 +286,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		private bool isPresetFromArgs = false;
 
 		/// <summary>
-		/// Helper property for XAML: show the remove cross for "me" parts if not preset from args.
+		/// Helper property for XAML: show the remove cross for "me" parts.
 		/// </summary>
-		public bool ShowRemoveAsMe => this.IsMe && !this.IsPresetFromArgs;
+		public bool ShowRemoveAsMe => this.IsMe;
 
 		/// <summary>
-		/// Helper property for XAML: show the remove cross for third-party parts if not preset from args.
+		/// Helper property for XAML: show the remove cross for third-party parts.
 		/// </summary>
-		public bool ShowRemoveAsThirdParty => this.IsThirdParty && !this.IsPresetFromArgs;
+		public bool ShowRemoveAsThirdParty => this.IsThirdParty;
 
 		#endregion
 

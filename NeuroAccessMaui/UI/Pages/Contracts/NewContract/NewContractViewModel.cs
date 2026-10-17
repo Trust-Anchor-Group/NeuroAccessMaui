@@ -54,10 +54,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#endregion
 
 		#region Properties
-		// If roles were preselected via args, the user cannot change their own role selections
-		[ObservableProperty]
-		private bool areRolesLockedForMe;
-
 		[ObservableProperty]
 		private ObservableContract? contract;
 
@@ -590,12 +586,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								if (RoleValue is string LegalID)
 									await RoleItem.AddPart(LegalID, PresetFromArgs: true);
 							}
-						}
-						// If my own ID was preselected for any role, lock role selection
-						string? MyIdInit = ServiceRef.TagProfile.LegalIdentity?.Id;
-						if (!string.IsNullOrEmpty(MyIdInit))
-						{
-							this.AreRolesLockedForMe = this.Contract.Roles.Any(r => r.Parts.Any(p => p.LegalId == MyIdInit));
 						}
 					}
 					foreach (ObservableParameter Parameter in this.Contract.Parameters)

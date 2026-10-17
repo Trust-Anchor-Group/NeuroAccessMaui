@@ -598,7 +598,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			this.CanOfferToSell = CanChangeOwner && this.IsMyToken && this.hasTransferTemplate;
 			this.CanConsign = CanChangeOwner && this.IsMyToken && this.hasConsignmentTemplate;
-			this.CanSell = this.CanOfferToSell || this.CanConsign;
 			this.CanOfferToBuy = CanChangeOwner && !this.IsMyToken && this.hasTransferTemplate;
 			this.CanGive = CanChangeOwner && this.IsMyToken && this.hasDonationTemplate;
 			this.CanDestroy = CanChangeOwner && this.IsMyToken && this.OwnerCanDestroyIndividual && this.hasDestructionTemplate;
@@ -612,19 +611,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				: null;
 			this.HasTransferBlockedText = this.TransferBlockedText is not null;
 
-			if (!this.CanSell)
-				this.IsSellOptionsVisible = false;
-
-			// Give and the footer's main action depend on templates. While those load, they are shown disabled, so the
-			// page doesn't move when they arrive.
-			bool MayChangeOwner = CanChangeOwner && this.IsLoadingTemplates;
-
-			this.ShowGive = this.CanGive || (MayChangeOwner && this.IsMyToken);
-			this.CanRunMainAction = this.CanSell || this.CanOfferToBuy;
-			this.ShowMainAction = this.CanRunMainAction || MayChangeOwner;
-			this.MainActionText = this.IsMyToken
-				? ServiceRef.Localizer[nameof(AppResources.Sell)]
-				: ServiceRef.Localizer[nameof(AppResources.OfferToBuy)];
+			// The templates for selling, buying and giving are looked up in the background. Until they are known, More shows
+			// a placeholder row, and Give only appears once its template is found, so a tile never disappears.
+			this.IsLoadingTradeActions = CanChangeOwner && this.IsLoadingTemplates;
 
 			this.UpdateNoteCommands();
 		}
@@ -1502,12 +1491,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private bool changedSinceShared;
 
 		/// <summary>
-		/// If the user can sell the token, in one of the ways below.
-		/// </summary>
-		[ObservableProperty]
-		private bool canSell;
-
-		/// <summary>
 		/// If the user can offer the token for sale to a buyer.
 		/// </summary>
 		[ObservableProperty]
@@ -1518,12 +1501,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		[ObservableProperty]
 		private bool canConsign;
-
-		/// <summary>
-		/// If the ways of selling the token are shown.
-		/// </summary>
-		[ObservableProperty]
-		private bool isSellOptionsVisible;
 
 		/// <summary>
 		/// If the user can offer to buy the token.
@@ -1652,32 +1629,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private bool isLoadingTemplates;
 
 		/// <summary>
-		/// If the Give tile is shown. It is disabled until the templates are known.
+		/// If the templates for selling and buying are still being looked up, and More shows a placeholder row.
 		/// </summary>
 		[ObservableProperty]
-		private bool showGive;
+		private bool isLoadingTradeActions;
 
 		/// <summary>
-		/// If the sticky footer with the main action is shown.
-		/// </summary>
-		[ObservableProperty]
-		private bool showMainAction;
-
-		/// <summary>
-		/// The main action: Sell for the owner, and Offer to buy for others.
-		/// </summary>
-		[ObservableProperty]
-		private string? mainActionText;
-
-		/// <summary>
-		/// If the main action can be used.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(MainActionCommand))]
-		private bool canRunMainAction;
-
-		/// <summary>
-		/// If the actions under More are shown.
+		/// If the actions under More are shown: selling or offering to buy, and the actions used less often.
 		/// </summary>
 		[ObservableProperty]
 		private bool isMoreVisible;
@@ -1702,29 +1660,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private void ToggleMore()
 		{
 			this.IsMoreVisible = !this.IsMoreVisible;
-		}
-
-		/// <summary>
-		/// The main action in the footer: sells the token when it is the user's, and offers to buy it otherwise.
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanRunMainAction))]
-		private Task MainAction()
-		{
-			return this.IsMyToken ? this.Sell() : this.OfferToBuy();
-		}
-
-		/// <summary>
-		/// Sells the token. When there is more than one way to sell it, the ways are shown first.
-		/// </summary>
-		[RelayCommand]
-		private async Task Sell()
-		{
-			if (this.CanOfferToSell && this.CanConsign)
-				this.IsSellOptionsVisible = !this.IsSellOptionsVisible;
-			else if (this.CanOfferToSell)
-				await this.OfferToSell();
-			else if (this.CanConsign)
-				await this.PublishMarketplace();
 		}
 
 		/// <summary>

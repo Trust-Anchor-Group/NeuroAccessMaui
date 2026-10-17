@@ -12,10 +12,11 @@
                 PopupMargin="0"
                 CardWidthFraction="1"
                 CardMaxHeightFraction="0.9"
-                CardPadding="16,10,16,28"
+                CardPadding="16,20,16,24"
                 CardStyle="{DynamicResource NoteCommandSheetBorder}">
     <base:BasePopup.Resources>
-        <!-- A sheet that rises from the bottom edge, named after the command -->
+        <!-- A sheet that rises from the bottom edge, named after the command. It is as tall as its content, and the shell
+             keeps it above the keyboard. -->
         <Style x:Key="NoteCommandSheetBorder"
                TargetType="Border">
             <Setter Property="BackgroundColor"
@@ -38,21 +39,15 @@
                                                DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
     </base:BasePopup.Resources>
 
-    <ScrollView>
+    <!-- Like the other popups, the scroll view is centered, so it is as tall as its content instead of the sheet's
+         highest. -->
+    <ScrollView VerticalOptions="Center">
         <VerticalStackLayout Spacing="18">
-            <BoxView WidthRequest="36"
-                     HeightRequest="4"
-                     CornerRadius="2"
-                     Color="{DynamicResource SurfaceDividerWL}"
-                     HorizontalOptions="Center"
-                     AutomationProperties.IsInAccessibleTree="False" />
-
             <!-- The command's name and what it does, with a close button -->
             <Grid ColumnDefinitions="*,44"
                   ColumnSpacing="12">
                 <VerticalStackLayout Grid.Column="0"
-                                     Spacing="4"
-                                     Padding="0,4,0,0">
+                                     Spacing="4">
                     <Label Text="{Binding Title}"
                            FontFamily="SpaceGroteskBold"
                            FontSize="{StaticResource FontSize4xl}"
@@ -75,8 +70,10 @@
                                     SemanticProperties.Description="{l:Localize Cancel}" />
             </Grid>
 
-            <!-- Parameters -->
+            <!-- Parameters. Their editors come with their own side margins, so the stack makes up for them, and the cards
+                 line up with the title and the button. -->
             <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+                                 Margin="-16,0"
                                  BindableLayout.ItemsSource="{Binding Parameters}"
                                  BindableLayout.ItemTemplateSelector="{StaticResource ParameterTemplateSelector}" />
 
