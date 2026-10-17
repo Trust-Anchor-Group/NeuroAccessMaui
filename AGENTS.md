@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for AI coding agents working in this repository. People should start with [README.md](README.md) and [Content/contributing.md](Content/contributing.md).
+Guidance for AI coding agents working in this repository. People should start with [README.md](README.md) and [docs/contributing.md](docs/contributing.md).
 
 ## Project
 
@@ -21,10 +21,6 @@ dotnet format style NeuroAccessMaui.sln --verify-no-changes --include path/to/Fi
 # Whitespace check (tabs, CRLF, final newline) on the files you changed.
 dotnet format whitespace . --folder --verify-no-changes --include path/to/First.cs path/to/Second.cs
 
-# Unit tests. Plain .NET, no MAUI workloads needed.
-dotnet test NeuroAccess.Nfc.Test/NeuroAccess.Nfc.Test.csproj
-dotnet test IdApp.Cv.Test/IdApp.Cv.Test.csproj
-
 # Build the app for Android. Slow, so ask first (see Boundaries).
 dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -f net10.0-android
 ```
@@ -32,7 +28,7 @@ dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -f net10.0-android
 ## Where things live
 
 | Path | What it holds |
-|---|---|
+| --- | --- |
 | `NeuroAccessMaui/Services/` | App services, reached through `ServiceRef` (for example `ServiceRef.NavigationService`, `ServiceRef.LogService`, `ServiceRef.Localizer`) |
 | `NeuroAccessMaui/UI/Pages/<Area>/<Feature>/` | A page's XAML, its view model, navigation args and sub-views, side by side |
 | `NeuroAccessMaui/UI/Controls/`, `NeuroAccessMaui/UI/Popups/` | Reusable controls and popups |
@@ -44,10 +40,10 @@ dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -f net10.0-android
 | `NeuroAccessMaui.Camera/`, `NeuroAccessMaui.OCR/` | Camera and OCR libraries |
 | `NeuroAccessMaui.Generator/` | Source generator behind `[ObservableTaskCommand]` |
 | `NeuroAccess.Nfc.Test/`, `IdApp.Cv.Test/` | MSTest projects |
-| `Content/` | Developer docs |
+| `docs/` | Developer docs |
 | `plans/` | Requirements, design and task notes from earlier feature work |
 
-Before working in an area, read its doc in `Content/`: `architecture.md`, `navigation.md`, `services.md`, `Kyc.md`, `Onboarding.md`, `AnimationGuide.md`, `NotificationServiceV2.md` or `Branding.md`. If `plans/` has a folder for the feature you are touching, read it for context. Do not create new plan files unless asked.
+Before working in an area, read its guide in `docs/`: `architecture.md`, `services.md`, `navigation.md`, `animations.md`, `notifications.md`, `onboarding.md`, `kyc.md` or `branding.md`. If `plans/` has a folder for the feature you are touching, read it for context. Do not create new plan files unless asked.
 
 ## Code style
 
@@ -56,7 +52,7 @@ These rules are mandatory for every line you write or change. Several of them di
 ### Naming
 
 | Symbol | Style | Example |
-|---|---|---|
+| --- | --- | --- |
 | Classes, structs, enums, interfaces, methods, properties, events | PascalCase. Interfaces start with `I`. | `KycReference`, `IKycService`, `IsValid` |
 | Local variables | PascalCase | `string UserName = "Alice";` |
 | Parameters, including primary constructor parameters | PascalCase | `LoadUserAsync(string UserId)` |
@@ -108,60 +104,60 @@ using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc.References
 {
-	/// <summary>
-	/// View model for the page that lists the user's KYC references.
-	/// </summary>
-	public partial class ReferencesViewModel : BaseViewModel
-	{
-		private const int maxReferences = 50;
-		private static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(30);
-		private readonly string? userId;
+ /// <summary>
+ /// View model for the page that lists the user's KYC references.
+ /// </summary>
+ public partial class ReferencesViewModel : BaseViewModel
+ {
+  private const int maxReferences = 50;
+  private static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(30);
+  private readonly string? userId;
 
-		/// <summary>
-		/// Creates the view model for the KYC references page.
-		/// </summary>
-		/// <param name="Args">Navigation arguments, if any.</param>
-		public ReferencesViewModel(ReferencesNavigationArgs? Args)
-		{
-			this.userId = Args?.UserId;
-		}
+  /// <summary>
+  /// Creates the view model for the KYC references page.
+  /// </summary>
+  /// <param name="Args">Navigation arguments, if any.</param>
+  public ReferencesViewModel(ReferencesNavigationArgs? Args)
+  {
+   this.userId = Args?.UserId;
+  }
 
-		/// <summary>
-		/// Number of references that are still valid.
-		/// </summary>
-		[ObservableProperty]
-		private int validCount;
+  /// <summary>
+  /// Number of references that are still valid.
+  /// </summary>
+  [ObservableProperty]
+  private int validCount;
 
-		/// <summary>
-		/// Reloads the references and counts the valid ones.
-		/// </summary>
-		[RelayCommand]
-		private async Task RefreshAsync()
-		{
-			if (this.userId is null)
-				return;
+  /// <summary>
+  /// Reloads the references and counts the valid ones.
+  /// </summary>
+  [RelayCommand]
+  private async Task RefreshAsync()
+  {
+   if (this.userId is null)
+    return;
 
-			try
-			{
-				KycReference[] References = await ServiceRef.KycService.LoadReferencesAsync(this.userId, requestTimeout);
-				int Count = 0;
+   try
+   {
+    KycReference[] References = await ServiceRef.KycService.LoadReferencesAsync(this.userId, requestTimeout);
+    int Count = 0;
 
-				for (int i = 0; i < References.Length && i < maxReferences; i++)
-				{
-					if (References[i].IsValid)
-						Count++;
-				}
+    for (int i = 0; i < References.Length && i < maxReferences; i++)
+    {
+     if (References[i].IsValid)
+      Count++;
+    }
 
-				this.ValidCount = Count;
-				await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)]);
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-				await ServiceRef.UiService.DisplayException(Ex);
-			}
-		}
-	}
+    this.ValidCount = Count;
+    await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)]);
+   }
+   catch (Exception Ex)
+   {
+    ServiceRef.LogService.LogException(Ex);
+    await ServiceRef.UiService.DisplayException(Ex);
+   }
+  }
+ }
 }
 ```
 
@@ -169,7 +165,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc.References
 
 - **MVVM.** Logic and state live in view models that derive from `BaseViewModel`. Pages derive from `BaseContentPage` and section views from `BaseContentView`. Code-behind holds only purely visual work, such as animations.
 - **Bindings.** Use `[ObservableProperty]` and `[RelayCommand]` from CommunityToolkit.Mvvm, and bind commands in XAML instead of adding event handlers.
-- **Navigation.** Change screens with `ServiceRef.NavigationService`, which is backed by `CustomShell`. Never push MAUI pages directly. Show popups with `ServiceRef.PopupService` and toasts with `ServiceRef.ToastService`. See `Content/navigation.md`.
+- **Navigation.** Change screens with `ServiceRef.NavigationService`, which is backed by `CustomShell`. Never push MAUI pages directly. Show popups with `ServiceRef.PopupService` and toasts with `ServiceRef.ToastService`. See `docs/navigation.md`.
 - **Localization.** All user-facing text is localized: `ServiceRef.Localizer[nameof(AppResources.Key)]` in C# and `{l:Localize Key}` in XAML. Add new keys to `AppResources.resx` and add the matching property to `AppResources.Designer.cs`, which is only regenerated inside Visual Studio. Other languages are produced by `Translation/TranslateResources.bat`, so translate by hand only when asked.
 - **Main thread.** Update bound properties and UI on the main thread, with `MainThread.BeginInvokeOnMainThread()` or `Dispatcher.Dispatch()`, whenever the code can run off it, such as in service events, timers and `Task.Run`.
 - **Errors.** Catch, log with `ServiceRef.LogService.LogException(Ex)`, and show with `ServiceRef.UiService.DisplayException(Ex)` when the user should know.
@@ -188,7 +184,7 @@ Add tests only when asked. When you do:
 
 ## Git and pull requests
 
-- Branch from `dev` and open PRs against `dev` (Git Flow, see `Content/contributing.md`).
+- Branch from `dev` and open PRs against `dev` (Git Flow, see `docs/contributing.md`).
 - Fill in `.github/pull_request_template.md`, including the Changelog section with one-line entries under Added, Changed, Fixed or Removed. A workflow copies them into `CHANGELOG.md` when the PR merges.
 
 ## Boundaries

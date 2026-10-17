@@ -415,6 +415,7 @@ build/
 
 # vs code
 */.vscode/
+.vscode/
 
 #specific files
 NeuroAccessMaui/NeuroAccessMaui.generated.sln
