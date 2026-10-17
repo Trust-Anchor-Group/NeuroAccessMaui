@@ -1,373 +1,221 @@
 # AGENTS.md
 
+Guidance for AI coding agents working in this repository. People should start with [README.md](README.md) and [Content/contributing.md](Content/contributing.md).
+
 ## Project
 
-NeuroAccessMaui is a cross-platform .NET MAUI application for Android, iOS, and Windows. It provides secure digital identity management, KYC processing, and contract management features backed by distributed ledger technology.
+Neuro-Access is a .NET MAUI app by Trust Anchor Group for Android and iOS, plus Windows when built on Windows. It gives users digital identities, KYC, smart contracts, tokens and eDaler wallets on top of XMPP.
 
-This file is the always-on steering guide for Codex users and other agents working in this repository. Follow it for every code, planning, review, and refactoring task.
+- C# `latest` on .NET 10. The SDK is pinned in `global.json` with roll-forward disabled.
+- `Directory.Build.props` turns on nullable reference types for every project.
+- `.editorconfig` holds the formatting, naming and analyzer rules, and `XamlStyler.config` holds the XAML formatting rules. Both are part of the code style below.
 
-## Codex Workflow
+## Commands
 
-Use a plan-first workflow for non-trivial feature work, behavioral changes, architecture changes, security-sensitive changes, or broad refactors.
+Run these from the repository root.
 
-Plans live in:
+```sh
+# Style check on the C# files you changed. Fix everything it reports.
+dotnet format style NeuroAccessMaui.sln --verify-no-changes --include path/to/First.cs path/to/Second.cs
 
-```text
-plans/<feature-slug>/
+# Whitespace check (tabs, CRLF, final newline) on the files you changed.
+dotnet format whitespace . --folder --verify-no-changes --include path/to/First.cs path/to/Second.cs
+
+# Unit tests. Plain .NET, no MAUI workloads needed.
+dotnet test NeuroAccess.Nfc.Test/NeuroAccess.Nfc.Test.csproj
+dotnet test IdApp.Cv.Test/IdApp.Cv.Test.csproj
+
+# Build the app for Android. Slow, so ask first (see Boundaries).
+dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -f net10.0-android
 ```
 
-Use these files:
+## Where things live
 
-- `requirements.md`
-- `design.md`
-- `tasks.md`
-- `decisions.md` when architectural or product decisions need to be recorded
+| Path | What it holds |
+|---|---|
+| `NeuroAccessMaui/Services/` | App services, reached through `ServiceRef` (for example `ServiceRef.NavigationService`, `ServiceRef.LogService`, `ServiceRef.Localizer`) |
+| `NeuroAccessMaui/UI/Pages/<Area>/<Feature>/` | A page's XAML, its view model, navigation args and sub-views, side by side |
+| `NeuroAccessMaui/UI/Controls/`, `NeuroAccessMaui/UI/Popups/` | Reusable controls and popups |
+| `NeuroAccessMaui/UI/MVVM/` | Shared MVVM infrastructure, including `ObservableTask` and `[ObservableTaskCommand]` |
+| `NeuroAccessMaui/Resources/Languages/` | `AppResources.resx` (English), its translations, and the checked-in `AppResources.Designer.cs` |
+| `NeuroAccessMaui/Resources/Styles/` | Shared XAML styles |
+| `NeuroAccessMaui/Platforms/` | Android, iOS and Windows specific code |
+| `NeuroAccess.Nfc/`, `IdApp.Cv/` | Plain .NET libraries for NFC and image processing |
+| `NeuroAccessMaui.Camera/`, `NeuroAccessMaui.OCR/` | Camera and OCR libraries |
+| `NeuroAccessMaui.Generator/` | Source generator behind `[ObservableTaskCommand]` |
+| `NeuroAccess.Nfc.Test/`, `IdApp.Cv.Test/` | MSTest projects |
+| `Content/` | Developer docs |
+| `plans/` | Requirements, design and task notes from earlier feature work |
 
-Keep `plans/<feature-slug>/` as the source of truth for the work. Do not create parallel `.specs/` or `.kiro/` folders unless the user explicitly asks.
+Before working in an area, read its doc in `Content/`: `architecture.md`, `navigation.md`, `services.md`, `Kyc.md`, `Onboarding.md`, `AnimationGuide.md`, `NotificationServiceV2.md` or `Branding.md`. If `plans/` has a folder for the feature you are touching, read it for context. Do not create new plan files unless asked.
 
-### Phase Order
+## Code style
 
-Move through phases in this order:
+These rules are mandatory for every line you write or change. Several of them differ from common .NET defaults (PascalCase locals and parameters, no `var`, no `_` on fields), so do not fall back on habits from other codebases. Where existing code breaks a rule, follow the rule in the lines you touch and leave untouched code as it is.
 
-1. Requirements
-2. Design
-3. Tasks
-4. Implementation
-5. Verification
+### Naming
 
-For user-requested planning work, stop at the end of each planning phase and ask for approval before moving to the next phase. If the user explicitly asks to continue through multiple phases in one turn, still keep the phase sections separate and call out assumptions clearly.
+| Symbol | Style | Example |
+|---|---|---|
+| Classes, structs, enums, interfaces, methods, properties, events | PascalCase. Interfaces start with `I`. | `KycReference`, `IKycService`, `IsValid` |
+| Local variables | PascalCase | `string UserName = "Alice";` |
+| Parameters, including primary constructor parameters | PascalCase | `LoadUserAsync(string UserId)` |
+| Exception variables | PascalCase, like other locals | `catch (Exception Ex)` |
+| Private fields, including `private const` and `private static readonly` | camelCase with no `_` prefix | `currentUser`, `defaultEndpoint`, `requestTimeout` |
+| Loop counters and math variables | Short lowercase names are allowed | `i`, `j`, `x`, `y`, `z` |
+| Async methods, including `[RelayCommand]` methods | End in `Async`. The generated command drops the suffix, so `RefreshAsync` still gives `RefreshCommand`. | `LoadUserAsync` |
 
-For small, obvious fixes, a full plan is not required. Still read the relevant code first and keep the change scoped.
+### Types and expressions
 
-### Requirements Phase
+- Declare every local with its explicit type. Do not use `var`, except for anonymous types or a type that cannot be named. Target-typed `new()` is fine: `List<string> Names = new();`.
+- Prefix every instance member with `this.`, for fields, properties, methods and events alike. Use `base.` when you mean the base class member.
+- Check for null with `is null` and `is not null`, never `== null` or `!= null`.
+- Await every task, or discard it on purpose with `_ = this.SaveAsync();`. An unawaited call is a build error here (CS4014).
+- Use `async` and `await` for asynchronous work. Never block on a task with `.Result` or `.Wait()`.
+- Nullable reference types are on. Fix nullable warnings instead of suppressing them.
 
-Create or update `requirements.md`.
+### Layout
 
-Include:
+- Indent with tabs, use CRLF line endings, and end every file with a newline.
+- Use block-scoped namespaces (`namespace X { ... }`), never file-scoped ones. The namespace matches the folder path.
+- Put `using` directives at the top of the file, outside the namespace, with `System` namespaces first.
+- Order modifiers as `.editorconfig` does: access modifier, `static`, `new`, `virtual`/`abstract`/`sealed`/`override`, `readonly`, `async`.
+- Put one primary type in each file and name the file after it.
+- Format XAML by `XamlStyler.config`: tabs, one attribute per line, and attributes in the order it defines.
 
-- Purpose or problem
-- Goals
-- Non-goals
-- User stories or scenarios
-- Requirements with stable IDs such as `R1`, `R2`, `R3`
-- Acceptance criteria
-- Edge cases
-- Security and privacy considerations
-- Compatibility and migration notes
-- Assumptions
-- Open questions
+### Documentation comments
 
-Acceptance criteria must be testable. Prefer:
+- Every class, struct, record, enum and interface, and every public member, has a `/// <summary>` that says what it is for.
+- Document each parameter with `<param>` and each non-void return value with `<returns>`. Primary constructor parameters are documented on the type.
+- Document `[ObservableProperty]` fields. The summary is copied to the generated property.
+- Document internal and private members when their logic is not obvious. Use `<remarks>` for extra context and `<see cref="..."/>` to point at other code.
 
-```text
-WHEN <event or condition>
-THEN <expected behavior>
-```
+### Comments and structure
 
-Do not design implementation details during this phase unless they are needed to clarify scope.
+- Use clear, descriptive names and keep methods short, with one responsibility each.
+- Comment only where the logic is complex or the reason is not obvious.
+- Comments must make sense from the code alone. Do not mention requirement or task IDs, plan documents, tickets or chat context.
 
-### Design Phase
+### Example
 
-Create or update `design.md` only after requirements are approved.
-
-Include:
-
-- Current system analysis
-- Proposed architecture
-- Data model changes
-- API, service, and interface changes
-- UI and UX changes when relevant
-- Error handling
-- Security and privacy considerations
-- Migration and backwards compatibility
-- Test strategy
-- Alternatives considered
-
-Designs must fit the existing .NET MAUI, MVVM, service, navigation, localization, and safe-area conventions in this repository.
-
-### Tasks Phase
-
-Create or update `tasks.md` only after design is approved.
-
-Tasks must be small, ordered, and independently reviewable. Use checkboxes and stable IDs that trace back to requirements.
-
-Use this shape:
-
-```md
-- [ ] R1-T1 Add focused task title
-  - Covers: R1, R2
-  - Files: NeuroAccessMaui/Services/ExampleService.cs
-  - Validate: Source review, or an exact command if the user explicitly requested running validation
-  - Done when: Concrete completion criteria
-```
-
-Do not add tests to the task list unless tests were explicitly requested or the user approved them during planning.
-
-### Implementation Phase
-
-Implement one task at a time unless the user explicitly asks for a larger batch.
-
-Before editing code:
-
-- Read `requirements.md`, `design.md`, and `tasks.md`.
-- Identify the exact task being implemented.
-- Check the worktree for existing changes and preserve user work.
-- Do not silently expand scope.
-
-During implementation:
-
-- Follow the approved design.
-- Keep changes minimal and maintainable.
-- If the design is wrong or incomplete, stop and propose a design or task update.
-- Do not add dependencies without explicit approval.
-- Do not create tests, documentation files, or new plans unless explicitly requested by the user or required by the approved task.
-
-After implementation:
-
-- Update `tasks.md` only for the task actually completed.
-- Add a short note under the task when useful.
-- Run validation only when the user explicitly asked for it or the task specifically authorizes it. Otherwise, provide the exact validation command the user can run.
-- Summarize changed files, validation status, and remaining risks.
-
-### Review Phase
-
-When asked to review a plan or code change, prioritize findings first:
-
-- Bugs or behavioral regressions
-- Security, privacy, or data-loss risks
-- Missing requirements coverage
-- Design contradictions
-- Incomplete or unsafe task sequencing
-- Missing validation that materially affects confidence
-
-Keep summaries brief and secondary to findings.
-
-### Codex Skills
-
-Repo-local Codex skills live in:
-
-```text
-.agents/skills/
-```
-
-Use them for repeatable workflows:
-
-- `$create-plan` for requirements, design, and task planning
-- `$implement-plan-task` for implementing exactly one approved task
-- `$review-plan` for reviewing plan completeness and consistency
-
-If a skill conflicts with this file, this file wins.
-
-## Coding Standards
-
-### General Guidelines
-
-- Use clear, descriptive names for variables, methods, and classes.
-- Write self-documenting code; use comments only where logic is complex or non-obvious.
-- Keep methods short and focused on a single responsibility.
-- Use `async` and `await` for asynchronous operations.
-- Async methods must use the `Async` suffix, such as `LoadUserAsync`.
-- Avoid blocking calls on the UI thread.
-- Keep code testable even when explicit tests are not written.
-- Ensure all classes, structs, enums, and public functions/properties include XML documentation comments.
-- Each XML documentation summary must clearly describe the purpose of the member.
-- Parameters and return values must be documented with `<param>` and `<returns>` tags where applicable.
-
-Example:
+The names below are illustrative. The shape is what matters.
 
 ```csharp
-/// <summary>
-/// Loads user data asynchronously.
-/// </summary>
-/// <param name="UserId">The unique identifier for the user.</param>
-/// <returns>A task representing the asynchronous operation.</returns>
-public async Task LoadUserAsync(string UserId)
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Kyc.References
 {
+	/// <summary>
+	/// View model for the page that lists the user's KYC references.
+	/// </summary>
+	public partial class ReferencesViewModel : BaseViewModel
+	{
+		private const int maxReferences = 50;
+		private static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(30);
+		private readonly string? userId;
+
+		/// <summary>
+		/// Creates the view model for the KYC references page.
+		/// </summary>
+		/// <param name="Args">Navigation arguments, if any.</param>
+		public ReferencesViewModel(ReferencesNavigationArgs? Args)
+		{
+			this.userId = Args?.UserId;
+		}
+
+		/// <summary>
+		/// Number of references that are still valid.
+		/// </summary>
+		[ObservableProperty]
+		private int validCount;
+
+		/// <summary>
+		/// Reloads the references and counts the valid ones.
+		/// </summary>
+		[RelayCommand]
+		private async Task RefreshAsync()
+		{
+			if (this.userId is null)
+				return;
+
+			try
+			{
+				KycReference[] References = await ServiceRef.KycService.LoadReferencesAsync(this.userId, requestTimeout);
+				int Count = 0;
+
+				for (int i = 0; i < References.Length && i < maxReferences; i++)
+				{
+					if (References[i].IsValid)
+						Count++;
+				}
+
+				this.ValidCount = Count;
+				await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+	}
 }
 ```
 
-### .NET And C# Conventions
+## App patterns
 
-Use PascalCase for:
+- **MVVM.** Logic and state live in view models that derive from `BaseViewModel`. Pages derive from `BaseContentPage` and section views from `BaseContentView`. Code-behind holds only purely visual work, such as animations.
+- **Bindings.** Use `[ObservableProperty]` and `[RelayCommand]` from CommunityToolkit.Mvvm, and bind commands in XAML instead of adding event handlers.
+- **Navigation.** Change screens with `ServiceRef.NavigationService`, which is backed by `CustomShell`. Never push MAUI pages directly. Show popups with `ServiceRef.PopupService` and toasts with `ServiceRef.ToastService`. See `Content/navigation.md`.
+- **Localization.** All user-facing text is localized: `ServiceRef.Localizer[nameof(AppResources.Key)]` in C# and `{l:Localize Key}` in XAML. Add new keys to `AppResources.resx` and add the matching property to `AppResources.Designer.cs`, which is only regenerated inside Visual Studio. Other languages are produced by `Translation/TranslateResources.bat`, so translate by hand only when asked.
+- **Main thread.** Update bound properties and UI on the main thread, with `MainThread.BeginInvokeOnMainThread()` or `Dispatcher.Dispatch()`, whenever the code can run off it, such as in service events, timers and `Task.Run`.
+- **Errors.** Catch, log with `ServiceRef.LogService.LogException(Ex)`, and show with `ServiceRef.UiService.DisplayException(Ex)` when the user should know.
+- **Safe areas and keyboard.** Never hard-code safe-area margins. Use the `SafeArea` attached properties on pages, or bind to `SafeInsetsExtension` when a literal `Thickness` is needed. Keyboard insets are applied automatically; opt out with `KeyboardInsets.Mode="Manual"` or `IKeyboardInsetAware` only when a view must manage that padding itself. Popups and toasts already adjust to inset changes, so override that only with a clear reason.
+- **Testability.** Inject dependencies where you can, avoid new static state, and keep plain .NET logic apart from platform code.
 
-- Classes, structs, and enums
-- Methods
-- Properties
-- Local variables
-- Arguments
+## Tests
 
-Use camelCase without an underscore prefix for all private fields, including:
+Add tests only when asked. When you do:
 
-- Private instance fields
-- `private const` fields
-- `private static readonly` fields
+- Use MSTest (the `MSTest` package) in `NeuroAccess.Nfc.Test` or `IdApp.Cv.Test`, which target `net10.0` without MAUI. A source file with no MAUI dependencies can be linked in with `<Compile Include="..." Link="..." />`.
+- Test classes have `[TestClass]`, end in `Tests`, and cover one logical area each.
+- Test methods have `[TestMethod]`, are `public void` or `public async Task`, and are named `Test_NN_Description`, with a two-digit number in the class. Insert between existing tests with a letter, as in `Test_03a_...`. Example: `Test_01_BuildStableKeyName_DatabaseKey_NormalizesPath`.
+- Mocks go in a `Mocks/` folder, start with `Mock`, and are simple in-memory or dictionary-backed implementations. Avoid mocking frameworks unless the complexity demands one.
+- Helpers are `private static` methods in the test class that uses them, not shared helper classes. Duplicate small helpers when that keeps tests self-contained.
 
-Use camelCase for local variables only in short-term loop or mathematical cases, such as `x`, `y`, `z`, `i`, and `j`.
+## Git and pull requests
 
-Prefer explicitly typed variables for all local variables and object instantiations. Use `var` only for anonymous types or when the type is truly unnameable.
+- Branch from `dev` and open PRs against `dev` (Git Flow, see `Content/contributing.md`).
+- Fill in `.github/pull_request_template.md`, including the Changelog section with one-line entries under Added, Changed, Fixed or Removed. A workflow copies them into `CHANGELOG.md` when the PR merges.
 
-Use modern null checks:
+## Boundaries
 
-```csharp
-if (Value is null)
-{
-}
-```
+Always:
 
-Always use `this.` for instance members. Use `base.` when explicitly referencing base class members.
+- Read the code around a change before editing it, and match it.
+- Keep changes to what the task needs.
+- Preserve other uncommitted work. The working tree often holds several tasks in progress, so never revert, reset, stash, check out or reformat files you were not asked to change.
 
-Example:
+Ask first:
 
-```csharp
-KycReference Reference = new KycReference();
-string UserName = "Alice";
-int Index = 0;
+- Building or running the app, or deploying it to a device or emulator. The style checks and unit tests above are fine to run.
+- Adding or upgrading packages, or changing a `.csproj`, `Directory.Build.props`, `global.json`, `.editorconfig` or `XamlStyler.config`.
+- Adding tests, documentation, plan files or new projects.
+- Committing, pushing or opening a PR.
 
-private const string defaultEndpoint = "https://api.example.com";
-private static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(30);
-private string currentUser;
+Never:
 
-for (int i = 0; i < 10; i++)
-{
-}
-```
+- Silence a style or analyzer rule to get code through, whether with `#pragma warning disable`, `[SuppressMessage]` or an `.editorconfig` override. Fix the code.
+- Commit secrets or the Firebase config files (`google-services.json`, `GoogleService-Info.plist`). They are git-ignored on purpose.
+- Edit anything under `bin/` or `obj/`.
 
-### MAUI And XAML Guidelines
+## Before you finish
 
-- Use the MVVM pattern for UI logic separation.
-- Place UI logic in ViewModels, not in code-behind.
-- Use data binding and commands for user interactions.
-- Use `ObservableObject` and `RelayCommand` from `CommunityToolkit.Mvvm`.
-- ViewModels should inherit from the shared `BaseViewModel`.
-- Avoid inline event handlers in XAML; use commands and bindings.
-- Purely visual animations may be implemented in code-behind when needed for reliability or simplicity, as long as business logic and state remain in the ViewModel.
-- Ensure all user-facing text supports localization.
-- All UI updates must occur on the main thread by using `MainThread.BeginInvokeOnMainThread()` or `Dispatcher.Dispatch()`.
-
-### Navigation And Insets
-
-- Use `NavigationService`, backed by `CustomShell`, from view models to change screens.
-- Avoid directly pushing MAUI navigation pages.
-- Pages should derive from `BaseContentPage`.
-- Section views should derive from `BaseContentView`.
-- Keyboard insets are opt-out. Set `KeyboardInsets.Mode="Manual"` or implement `IKeyboardInsetAware` only when a view must manage that padding itself.
-- Never hard-code safe-area margins.
-- Use `SafeArea` attached properties on pages or bind to `SafeInsetsExtension` in XAML when a literal `Thickness` is needed.
-- Popups and toasts already adjust to inset updates. Override that behavior only with a clear reason.
-
-### File Organization
-
-Group related files into appropriate folders, including:
-
-- `Services`
-- `UI/Pages`
-- `UI/Controls`
-- `Models`
-- `ViewModels`
-
-Each file must be named after its primary class or component.
-
-## Testing
-
-Do not auto-generate or commit tests unless explicitly requested.
-
-Code must remain testable:
-
-- Use dependency injection where appropriate.
-- Keep logic modular.
-- Avoid static coupling and global state.
-- Separate platform-dependent code from plain .NET logic when possible.
-
-Test project rules, when tests are explicitly requested:
-
-- Framework: MSTest via the `MSTest` NuGet package.
-- Test projects: `NeuroAccess.Nfc.Test` and `NeuroAccessMaui.Test`.
-- Target framework: `net10.0` with no MAUI TFMs.
-- Test projects may include source files under test through `<Compile Include="..." Link="..." />` when the source has no MAUI platform dependencies.
-
-Test method rules:
-
-- Use `[TestMethod]`.
-- Use `public void` or `public async Task`.
-- Follow `Test_N_Description`, where `N` is a two-digit sequence within the test class.
-- Use suffixes such as `Test_03a_...` when inserting between existing tests.
-
-Example:
-
-```csharp
-[TestMethod]
-public void Test_01_BuildStableKeyName_DatabaseKey_NormalizesPath()
-{
-}
-```
-
-Test class rules:
-
-- Use `[TestClass]`.
-- End class names with `Tests`.
-- Use one test class per logical area.
-
-Mock rules:
-
-- Place mocks in a `Mocks/` subfolder within the test project.
-- Prefix mock names with `Mock`.
-- Prefer simple dictionary-backed or in-memory implementations.
-- Avoid mocking frameworks unless complexity demands them.
-
-Test helper rules:
-
-- Do not create separate helper classes for test utilities.
-- Keep helper methods as `private static` methods inside the test class that uses them.
-- Duplicate small helper logic across test classes when that improves locality.
-
-Comment rules:
-
-- Do not reference requirement IDs, task IDs, or spec document numbers in code comments.
-- Comments should describe what and why in terms future developers can understand without external documents.
-
-## Documentation Requirements
-
-- All public members must include XML documentation.
-- Internal or private members may include XML docs if they expose significant internal logic.
-- Summaries should be concise and descriptive.
-- Use `<remarks>` when additional context or implementation notes are helpful.
-
-Example:
-
-```csharp
-/// <summary>
-/// Represents a user identity record for KYC processing.
-/// </summary>
-/// <remarks>
-/// Instances of this class are immutable once created.
-/// </remarks>
-public class KycReference
-{
-    /// <summary>
-    /// Gets the unique identifier for this reference.
-    /// </summary>
-    public string Id { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="KycReference"/> class.
-    /// </summary>
-    /// <param name="Id">The unique identifier.</param>
-    public KycReference(string Id)
-    {
-        this.Id = Id;
-    }
-}
-```
-
-## Agent Summary
-
-When generating or editing code:
-
-- Follow the plan-first workflow for non-trivial work.
-- Follow all naming, typing, and documentation conventions.
-- Respect the existing folder structure and MVVM architecture.
-- Include XML documentation comments for all classes, structs, enums, and public members.
-- Preserve user changes in the worktree.
-- Avoid creating, building, or running the project unless explicitly instructed.
-- Do not add tests, documentation files, or dependencies without a direct request or approved plan task.
-- Ensure generated code is intended to compile cleanly under these conventions.
+1. Go through your diff against the code style rules: naming, explicit types, `this.`, `is null`, `Async` suffixes, tabs and CRLF, block-scoped namespaces, and XML docs on every new type and public member.
+2. Run the style and whitespace checks on the files you changed and fix what they report. If you could not run them, say so.
+3. Make sure new user-facing text is in `AppResources.resx` and `AppResources.Designer.cs`.
+4. Make sure no unrelated files changed.
+5. Report what you changed, what you ran and its result, and anything left open.

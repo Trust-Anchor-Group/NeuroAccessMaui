@@ -75,7 +75,7 @@ If you start one of these, create a file under `Content/` (e.g. `Content/depende
 
 See [Content/contributing.md](Content/contributing.md) for branching model (Git Flow), coding style and PR process.
 
-For Codex and other AI-assisted work, use [AGENTS.md](AGENTS.md) as the source of truth. Non-trivial changes should use the plan-first workflow in `plans/<feature-slug>/`, with repo-local skills under `.agents/skills/`.
+AI coding agents follow [AGENTS.md](AGENTS.md), which also holds the code style every change must follow.
 
 ---
 
