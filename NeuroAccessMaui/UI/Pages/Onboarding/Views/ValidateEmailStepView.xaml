@@ -2,15 +2,16 @@
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.ValidateEmailStepView"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                                x:DataType="viewmodels:ValidateEmailOnboardingStepViewModel">
-    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingEmail}">
         <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-            <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
+            <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" AutomationId="{x:Static automation:AutomationIds.LabelOnboardingEmailTitle}" />
             <Label Text="{Binding Description}" FontSize="{StaticResource FontSizeLg}" TextColor="{DynamicResource ContentSecondaryWL}" />
 
             <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
@@ -20,6 +21,7 @@
                         BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
                         Stroke="{DynamicResource InputFieldsSurfaceStroke}">
                     <Entry IsSpellCheckEnabled="False"
+                           AutomationId="{x:Static automation:AutomationIds.InputOnboardingEmailAddress}"
                            Placeholder="{l:Localize EmailSectionTitle}"
                            Keyboard="Email"
                            Text="{Binding EmailText}" />
@@ -45,9 +47,11 @@
         </VerticalStackLayout>
 
         <controls:TextButton Style="{DynamicResource FilledTextButton}"
+                             AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingEmailSendCode}"
                              LabelData="{Binding LocalizedSendCodeText}"
                              Command="{Binding SendCodeCommand}" />
         <controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+                             AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingEmailResendCode}"
                              LabelData="{l:Localize ResendCode}"
                              Command="{Binding ResendCodeCommand}"
                              IsEnabled="{Binding CanResendCode}" />

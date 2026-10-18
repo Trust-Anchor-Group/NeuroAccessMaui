@@ -55,13 +55,14 @@ namespace NeuroAccessMaui.Services.Localization
 			}
 		}
 
+		/// <summary>Gets or sets the selected application culture independently of an async caller's thread culture.</summary>
 		public CultureInfo CurrentCulture
 		{
-			get => CultureInfo.CurrentCulture;
+			get => AppResources.Culture ?? CultureInfo.CurrentCulture;
 
 			set
 			{
-				if (CultureInfo.CurrentCulture.Name == value.Name)
+				if (this.CurrentCulture.Name == value.Name)
 				{
 					return;
 				}

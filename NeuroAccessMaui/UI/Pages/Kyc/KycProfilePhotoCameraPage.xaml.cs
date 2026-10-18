@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Kyc.Photography;
 using NeuroAccessMaui.UI.Pages.Utility.Images;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
@@ -17,6 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	public partial class KycProfilePhotoCameraPage
 	{
 		private bool cameraReleased;
+		private readonly IKycPhotoCamera camera;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KycProfilePhotoCameraPage"/> class.
@@ -25,9 +28,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.InitializeComponent();
 			KycProfilePhotoCameraNavigationArgs? NavigationArgs = ServiceRef.NavigationService.PopLatestArgs<KycProfilePhotoCameraNavigationArgs>();
-			KycProfilePhotoCameraViewModel ViewModel = new KycProfilePhotoCameraViewModel(NavigationArgs);
+#if UI_AUTOMATION
+			// Automation builds capture a fixed photo instead of using the device camera.
+			this.CameraView.IsVisible = false;
+			this.camera = new UiAutomation.FixtureKycPhotoCamera();
+#else
+			this.camera = new NativeKycPhotoCamera(this.CameraView,
+				(NavigationArgs?.CaptureProfile ?? KycCaptureProfile.Selfie) == KycCaptureProfile.Selfie);
+#endif
+			KycProfilePhotoCameraViewModel ViewModel = new KycProfilePhotoCameraViewModel(NavigationArgs, this.camera);
 			this.BindingContext = ViewModel;
-			ViewModel.CameraView = this.CameraView;
 			ViewModel.PropertyChanged += this.OnViewModelPropertyChanged;
 			this.CaptureGuide.Drawable = new CaptureGuideDrawable(ViewModel.CaptureProfile, ViewModel.GuideFrameAspectRatio);
 		}
@@ -54,7 +64,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			// The view model turns the torch off first, which needs the camera before it is released.
 			await base.OnDisposeAsync();
 			await this.ReleaseCameraAsync();
-			this.ViewModel.CameraView = null;
 		}
 
 		private async Task ReleaseCameraAsync()
@@ -65,7 +74,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			this.cameraReleased = true;
-			await this.CameraView.ReleaseAsync();
+			await this.camera.ReleaseAsync();
 		}
 
 		private void OnViewModelPropertyChanged(object? Sender, PropertyChangedEventArgs E)

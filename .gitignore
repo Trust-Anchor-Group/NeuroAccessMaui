@@ -384,7 +384,6 @@ FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
 .vscode/*
-!.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
@@ -422,3 +421,8 @@ google-services.json
 */google-services.json
 GoogleService-Info.plist
 */GoogleService-Info.plist
+
+# Personal mobile test settings and generated reports
+*.local.runsettings
+tests/**/*.local.json
+TestResults/

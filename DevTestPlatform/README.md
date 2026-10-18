@@ -67,7 +67,7 @@ Screen previews are input-transparent visual previews. Component previews allow 
 
 [ScenarioSimulationService](Fakes/ScenarioSimulationService.cs) returns localized diagnostic outcomes. Busy simulations stay pending until cancelled. Simulation does not drive production backend commands. [RenderSession](Rendering/RenderSession.cs) owns loaded callbacks and disposes the production view model when released.
 
-Use [Espresso tests](../tests/mobile/andriod/ui/README.md) against the main app for real user flows. Their manifest and launcher currently target `com.tag.NeuroAccess`; sharing IDs does not retarget instrumentation to the developer app.
+Use the shared [Appium/MSTest tests](../tests/README.md) against the production Android/iOS app for real user flows. Sharing IDs does not make the preview catalog an end-to-end target.
 
 ## Automation IDs
 
@@ -89,7 +89,7 @@ AutomationIds.ForKey(
     "valid");
 ```
 
-See [UI_IDS.md](../tests/mobile/andriod/ui/app/src/androidTest/java/com/tag/neuroaccess/neuroaccessespressoautomationtests/UI_IDS.md) for the full catalog and key encoding. Avoid translated labels, input values and row positions as keys.
+See [Automation metadata](../tests/contracts/automation-ids.md) for the full catalog and key encoding. Avoid translated labels, input values and row positions as keys.
 
 ## Extend the catalog
 
@@ -97,8 +97,8 @@ See [UI_IDS.md](../tests/mobile/andriod/ui/app/src/androidTest/java/com/tag/neur
 2. Add an adapter creating the real production view and concrete view model.
 3. Keep fixture values in `Fixtures/` and synthetic outcomes in the simulation service.
 4. Add default and Swedish developer resource labels.
-5. Register metadata and its owner in `AutomationIds.cs`; mirror constants in `common/UiIds.kt`.
-6. Update this guide and `UI_IDS.md`.
+5. Register metadata and its owner in `AutomationIds.cs`; the C# tests link this source directly.
+6. Update this guide and the automation metadata guide.
 
 Optional static check from the repository root, using PowerShell 7:
 
@@ -106,4 +106,4 @@ Optional static check from the repository root, using PowerShell 7:
 pwsh -File .\tests\scripts\validate-automation-contract.ps1
 ```
 
-The check covers ownership, references, dynamic prefixes, retired-ID reuse and locale assets. Existing legacy selectors can still produce findings; see `UI_IDS.md`. This check does not prove rendering or end-to-end behavior.
+The check covers ownership, references, dynamic prefixes, retired-ID reuse and production resource-key references. The unit suite validates resource contents separately. Native rendering and end-to-end behavior require device tests.

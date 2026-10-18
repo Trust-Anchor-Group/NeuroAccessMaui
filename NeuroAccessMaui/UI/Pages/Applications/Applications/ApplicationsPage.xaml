@@ -37,6 +37,7 @@
 
 		<Grid ColumnDefinitions="auto, *, auto" RowDefinitions="auto, *">
 			<controls:SvgButton Command="{Binding GoBackCommand}"
+								AutomationId="{x:Static automation:AutomationIds.ButtonApplicationsCatalogBack}"
 								SvgSource="close.svg"
 								Style="{DynamicResource IconButton}"
 								HorizontalOptions="Start"

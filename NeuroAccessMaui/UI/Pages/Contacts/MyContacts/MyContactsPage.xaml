@@ -2,8 +2,10 @@
 <base:BaseContentPage x:Name="ThisPage"
 					 x:Class="NeuroAccessMaui.UI.Pages.Contacts.MyContacts.MyContactsPage"
 					 x:DataType="viewmodel:ContactListViewModel"
+					 AutomationId="{x:Static automation:AutomationIds.ScreenContactsList}"
 					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					 xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -19,7 +21,7 @@
 				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contacts}">
 					<BindableLayout.ItemTemplate>
 						<DataTemplate x:DataType="viewmodel:ContactInfoModel">
-							<Border Style="{DynamicResource BorderSet}">
+							<Border AutomationId="{Binding LegalId, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.ItemContactsListContact}}}" Style="{DynamicResource BorderSet}">
 								<Grid ColumnDefinitions="auto, *, auto, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
 									<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24">
 										<Border.Triggers>
@@ -64,12 +66,14 @@
 									<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
 														VerticalOptions="Center"
 														Grid.Column="3"
+														AutomationId="{Binding LegalId, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.ButtonContactsListChat}}}"
 														Command="{Binding ViewChatCommand}"
 														IsVisible="{Binding IsViewMode, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"/>
 
 									<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
 														VerticalOptions="Center"
 														Grid.Column="4"
+														AutomationId="{Binding LegalId, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.ButtonContactsListDetails}}}"
 														Command="{Binding ViewContactCommand}"
 														IsVisible="{Binding IsViewMode, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"/>
 								</Grid>
@@ -93,6 +97,7 @@
 			<Grid ColumnDefinitions="*, auto" Margin="8,0,8,0">
 				<controls:SvgButton
 					Grid.Row="0" Grid.Column="0"
+					AutomationId="{x:Static automation:AutomationIds.ButtonContactsListBack}"
 					Command="{Binding GoBackCommand}"
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
@@ -135,7 +140,7 @@
 								Color="{DynamicResource ContentPrimaryWL}"
 								Grid.Row="3"/>
 			
-			<ScrollView Grid.Row="3">
+			<ScrollView AutomationId="{x:Static automation:AutomationIds.ControlContactsListScroll}" Grid.Row="3">
 				<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
 								ItemsSource="{Binding Path=FilteredContacts}"
 								ItemTemplate="{StaticResource ContactTemplate}"

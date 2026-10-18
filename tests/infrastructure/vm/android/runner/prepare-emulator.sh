@@ -103,6 +103,9 @@ else
 fi
 nohup "$emulator" "${emulator_args[@]}" \
     >"$results_dir/emulator-console.txt" 2>&1 </dev/null &
-printf '%s\n' "$!" >"$results_dir/emulator.pid"
+emulator_pid="$!"
+printf '%s\n' "$emulator_pid" >"$results_dir/emulator.pid"
+# A failed boot must not leave this invocation's emulator process behind.
+trap 'status=$?; if ((status != 0)); then kill "$emulator_pid" 2>/dev/null || true; fi' EXIT
 bash "$SCRIPT_DIR/wait-for-android.sh" --serial "$serial" --timeout 300 >>"$results_dir/emulator-setup.txt"
 printf '%s\n' "$serial"

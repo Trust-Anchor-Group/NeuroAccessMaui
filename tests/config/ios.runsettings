@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <MaxCpuCount>1</MaxCpuCount>
+  </RunConfiguration>
+  <TestRunParameters>
+    <Parameter name="ENABLED" value="false" />
+    <Parameter name="PLATFORM" value="iOS" />
+    <Parameter name="APPIUM_URL" value="http://127.0.0.1:4723" />
+    <Parameter name="APP_ID" value="com.trustanchorgroup.NeuroAccess" />
+    <Parameter name="LANGUAGE_CODE" value="en" />
+    <Parameter name="IOS_SIMULATOR" value="true" />
+    <Parameter name="WDA_LOCAL_PORT" value="8100" />
+    <Parameter name="WDA_LOCAL_PORT_A" value="8100" />
+    <Parameter name="WDA_LOCAL_PORT_B" value="8101" />
+    <Parameter name="ALLOW_RESET" value="false" />
+    <Parameter name="ALLOW_KYC_DRAFT_UPDATE" value="false" />
+    <Parameter name="ALLOW_KYC_SUBMISSION" value="false" />
+    <Parameter name="MANUAL_APPROVAL" value="false" />
+    <Parameter name="REVOKE_IDENTITY" value="false" />
+    <Parameter name="MANUAL_APPROVAL_TIMEOUT_MINUTES" value="10" />
+    <Parameter name="KYC_NEW_APPLICATION" value="true" />
+    <Parameter name="PERSONAL_NUMBER_AGE_GROUP" value="adult-2000s" />
+    <Parameter name="SYSTEM_LOCALE" value="en-US" />
+    <Parameter name="KYC_PHOTO_FIELD_ID" value="selfieUpload" />
+    <Parameter name="CAPTURE_SENSITIVE_ARTIFACTS" value="false" />
+  </TestRunParameters>
+</RunSettings>

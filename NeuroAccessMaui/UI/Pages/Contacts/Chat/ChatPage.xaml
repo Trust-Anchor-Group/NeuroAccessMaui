@@ -2,8 +2,10 @@
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Contacts.Chat.ChatPage"
 							 x:DataType="viewmodel:ChatViewModel"
+							 AutomationId="{x:Static automation:AutomationIds.ScreenContactsChat}"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -18,11 +20,12 @@
 
 		<Grid RowDefinitions="auto, *, auto" ColumnDefinitions="auto, *" Padding="{DynamicResource MediumMargins}">
 			<controls:ImageButton Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
+											 AutomationId="{x:Static automation:AutomationIds.ButtonContactsChatBack}"
 											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-			<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource PageTitleLabel}" FontSize="{StaticResource FontSize4xl}" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
+			<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource PageTitleLabel}" FontSize="{StaticResource FontSize4xl}" AutomationId="{Binding LegalId, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.LabelContactsChatPeer}}}" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
 
-			<ScrollView Grid.ColumnSpan="2" Grid.Row="1" x:Name="ScrollView" x:FieldModifier="public" Orientation="Vertical">
+			<ScrollView AutomationId="{x:Static automation:AutomationIds.ControlContactsChatScroll}" Grid.ColumnSpan="2" Grid.Row="1" x:Name="ScrollView" x:FieldModifier="public" Orientation="Vertical">
 				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}" HorizontalOptions="Fill">
 					
 					<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasMessages}">
@@ -46,6 +49,7 @@
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="Fill" MinimumHeightRequest="40"
+									AutomationId="{x:Static automation:AutomationIds.InputContactsChatMessage}"
 									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
 									BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
 									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{DynamicResource InputFieldsContentPrimary}"/>
@@ -105,6 +109,7 @@
 					<!-- Second View: Send Button -->
 					<ContentView IsVisible="{Binding Path=IsWriting}">
 						<controls:ImageButton PathData="{x:Static ui:Geometries.SendPath}"
+                              AutomationId="{x:Static automation:AutomationIds.ButtonContactsChatSend}"
                               Command="{Binding SendCommand}"
                               Style="{DynamicResource ImageOnlyButton}">
 							<controls:ImageButton.Behaviors>

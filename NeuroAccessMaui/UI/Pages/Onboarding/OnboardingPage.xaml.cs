@@ -11,6 +11,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 			this.ContentPageModel = viewModel;
 
+			this.ConfigureAutomation();
+
 			foreach (ViewSwitcherStateView stateView in this.FlowSwitcher.StateViews)
 			{
 				if (stateView.Content is BaseOnboardingView onboardingView)
@@ -20,5 +22,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				}
 			}
 		}
+
+		// Implemented in UiAutomation/OnboardingPage.Automation.cs; normal builds compile the call away.
+		partial void ConfigureAutomation();
 	}
 }

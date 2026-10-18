@@ -291,11 +291,6 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 			if (this.IsImageProcessing)
 				return;
 
-			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
-
-			if (!Permitted)
-				return;
-
 			try
 			{
 				if (this.CameraOnly)
@@ -316,6 +311,9 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 					await this.SetImageValueAsync(CapturedBytes);
 					return;
 				}
+
+				if (!await ServiceRef.PermissionService.CheckCameraPermissionAsync())
+					return;
 
 				FileResult? FileResult = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
 				{

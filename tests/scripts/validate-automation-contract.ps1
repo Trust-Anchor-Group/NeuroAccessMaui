@@ -78,7 +78,7 @@ foreach ($SourceFile in $SourceFiles) {
         foreach ($Attribute in $Metadata) {
             $Value = $Attribute.Value
             $Static = [regex]::Match($Value, '^\{x:Static \w+:AutomationIds\.(?<symbol>\w+)\}$')
-            $Dynamic = [regex]::Match($Value, 'Converter=\{\w+:AutomationKey Prefix=\{x:Static \w+:AutomationIds\.(?<symbol>\w+)\}\}')
+            $Dynamic = [regex]::Match($Value, 'Converter=\{\w+:(?:AutomationKey|KycFieldKey) Prefix=\{x:Static \w+:AutomationIds\.(?<symbol>\w+)\}\}')
             if ($Static.Success -or $Dynamic.Success) {
                 $Symbol = if ($Static.Success) { $Static.Groups['symbol'].Value } else { $Dynamic.Groups['symbol'].Value }
                 if (-not $Definitions.ContainsKey($Symbol)) { continue }
@@ -109,7 +109,7 @@ foreach ($SourceFile in $SourceFiles) {
     } else {
         foreach ($Assignment in [regex]::Matches($Source, '\bAutomationId\s*=\s*(?<expression>[^\r\n;]+)')) {
             $Expression = $Assignment.Groups['expression'].Value
-            if ($RelativePath -eq 'NeuroAccessMaui/UI/Controls/CompositeEntry.cs' -and $Expression.Trim() -eq 'value') {
+            if ($RelativePath -eq 'NeuroAccessMaui/UI/Controls/Inputs/CompositeEntry.cs' -and $Expression.Trim() -eq 'value') {
                 # Existing component forwarding is not a new logical identifier declaration.
                 continue
             }
@@ -134,46 +134,34 @@ foreach ($Definition in $Definitions.GetEnumerator()) {
     }
 }
 
-$AndroidRoot = Join-Path $ContractRoot 'tests/mobile/andriod/ui/app/src/androidTest'
-$KotlinCatalogPath = Join-Path $AndroidRoot 'java/com/tag/neuroaccess/neuroaccessespressoautomationtests/common/UiIds.kt'
-$KotlinCatalog = Get-Content -LiteralPath $KotlinCatalogPath -Raw -ErrorAction Stop
-$KotlinSymbols = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-foreach ($Constant in [regex]::Matches($KotlinCatalog, 'const val (?<symbol>\w+) = "(?<id>[^"]+)"')) {
-    $Symbol = $Constant.Groups['symbol'].Value
-    if (-not $KotlinSymbols.Add($Symbol) -or -not $Definitions.ContainsKey($Symbol) -or
-        $Definitions[$Symbol].Id -cne $Constant.Groups['id'].Value) { $Problems.Add("Android catalog drift: $Symbol") }
+$TestRoot = Join-Path $ContractRoot 'tests'
+$SupportRoot = Join-Path $TestRoot 'NeuroAccessMaui.Testing'
+$Project = Get-Content -LiteralPath (Join-Path $SupportRoot 'NeuroAccessMaui.Testing.csproj') -Raw
+if (!$Project.Contains('../NeuroAccessMaui/UI/Automation/AutomationIds.cs')) {
+    $Problems.Add('The test project must link the production AutomationIds catalog.')
 }
-if ($KotlinSymbols.Count -ne $Definitions.Count) { $Problems.Add('Android and production catalogs have different coverage.') }
+if (!$Project.Contains('../NeuroAccessMaui/Resources/Languages/AppResources*.resx')) {
+    $Problems.Add('The test project must link the production localization resources.')
+}
 $TextKeys = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-foreach ($KotlinFile in Get-ChildItem -LiteralPath $AndroidRoot -Recurse -File -Filter '*.kt') {
-    $Kotlin = Get-Content -LiteralPath $KotlinFile.FullName -Raw -ErrorAction Stop
-    foreach ($Reference in [regex]::Matches($Kotlin, '\bUiIds\.(?<symbol>\w+)')) {
+foreach ($TestFile in Get-ChildItem -LiteralPath $TestRoot -Recurse -File -Filter '*.cs' | Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' }) {
+    $Source = Get-Content -LiteralPath $TestFile.FullName -Raw
+    foreach ($Reference in [regex]::Matches($Source, '\bAutomationIds\.(?<symbol>\w+)')) {
         $Symbol = $Reference.Groups['symbol'].Value
-        if ($Symbol -ne 'forKey' -and -not $KotlinSymbols.Contains($Symbol)) { $Problems.Add("Unknown Android catalog reference: $Symbol") }
+        if ($Symbol -ne 'ForKey' -and !$Definitions.ContainsKey($Symbol)) { $Problems.Add("Unknown test catalog reference: $($TestFile.Name) : $Symbol") }
     }
-    if ($KotlinFile.FullName -ne $KotlinCatalogPath) {
-        foreach ($Literal in [regex]::Matches($Kotlin, '"(?<id>(screen|popup|button|input|control|label|image|field|panel|value|contact_row|identity_application)_[^"]+)"')) {
-            if (-not $Values.Contains($Literal.Groups['id'].Value)) {
-                $Problems.Add("Uncatalogued Android selector: $($KotlinFile.Name)")
-            }
-        }
-    }
-    foreach ($Key in [regex]::Matches($Kotlin, 'UiText\.text\((?:\w+,\s*)?"(?<key>[^"$]+)"')) {
+    foreach ($Key in [regex]::Matches($Source, '(?:Text|Language|Translations)\["(?<key>[^"\r\n]+)"\]|MatchesNumber\("(?<key>[^"\r\n]+)"')) {
         [void]$TextKeys.Add($Key.Groups['key'].Value)
     }
 }
-$LocaleRoot = Join-Path $AndroidRoot 'assets/ui-contracts'
-$LocaleFiles = @(Get-ChildItem -LiteralPath $LocaleRoot -File -Filter '*.json')
-if ($LocaleFiles.Count -ne 12) { $Problems.Add('Expected the twelve existing locale assets.') }
-foreach ($LocaleFile in $LocaleFiles) {
-    try { $Locale = Get-Content -LiteralPath $LocaleFile.FullName -Raw | ConvertFrom-Json -AsHashtable -ErrorAction Stop }
-    catch { $Problems.Add("Invalid locale asset: $($LocaleFile.Name)"); continue }
-    foreach ($Key in $TextKeys) {
-        if (-not $Locale.ContainsKey($Key)) { $Problems.Add("Missing text contract: $($LocaleFile.Name) : $Key") }
-    }
+[xml]$Resources = Get-Content -LiteralPath (Join-Path $ContractRoot 'NeuroAccessMaui/Resources/Languages/AppResources.resx') -Raw
+$ResourceKeys = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+foreach ($Entry in $Resources.root.data) { [void]$ResourceKeys.Add($Entry.name) }
+foreach ($Key in $TextKeys) {
+    if (!$ResourceKeys.Contains($Key)) { $Problems.Add("Unknown application resource reference: $Key") }
 }
 if ($Problems.Count -gt 0) {
     $Problems | Sort-Object -Unique | ForEach-Object { Write-Output "CONTRACT: $_" }
     throw "Automation contract validation failed ($($Problems.Count) findings)."
 }
-Write-Output "Automation contract validated: $($Definitions.Count) definitions, $($DynamicSymbols.Count) dynamic namespaces, $($LocaleFiles.Count) locales."
+Write-Output "Automation contract validated: $($Definitions.Count) definitions, $($DynamicSymbols.Count) dynamic namespaces. Localization resources are validated by the unit suite."

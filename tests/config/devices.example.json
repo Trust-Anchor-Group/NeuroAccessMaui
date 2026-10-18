@@ -1,0 +1,19 @@
+[
+  {
+    "name": "android-emulator",
+    "platform": "android",
+    "settings": {
+      "DEVICE_ID": "emulator-5554",
+      "APPIUM_URL": "http://127.0.0.1:4723"
+    }
+  },
+  {
+    "name": "ios-simulator",
+    "platform": "ios",
+    "settings": {
+      "DEVICE_ID": "REPLACE_WITH_SIMULATOR_UDID",
+      "APPIUM_URL": "http://mac-host:4723",
+      "IOS_SIMULATOR": "true"
+    }
+  }
+]

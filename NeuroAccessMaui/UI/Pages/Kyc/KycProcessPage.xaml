@@ -39,6 +39,7 @@
 			<DataTemplate x:Key="TextFieldTemplate"
 						  x:DataType="fields:ObservableGenericField">
 				<VerticalStackLayout Spacing="2"
+									 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 									 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeEntry EntryData="{Binding StringValue, Mode=TwoWay}"
 											 LabelText="{Binding Label.Text}"
@@ -54,6 +55,7 @@
 			<DataTemplate x:Key="DateFieldTemplate"
 						  x:DataType="fields:ObservableDateField">
 				<VerticalStackLayout Spacing="2"
+									 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 									 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeDatePicker LabelText="{Binding Label.Text}"
 												  HintText="{Binding Hint.Text}"
@@ -75,6 +77,7 @@
 			<DataTemplate x:Key="IntegerFieldTemplate"
 						  x:DataType="fields:ObservableIntegerField">
 				<VerticalStackLayout Spacing="2"
+									 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 									 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeEntry EntryData="{Binding IntValue, Mode=TwoWay}"
 											 LabelText="{Binding Label.Text}"
@@ -91,6 +94,7 @@
 			<DataTemplate x:Key="DecimalFieldTemplate"
 						  x:DataType="fields:ObservableDecimalField">
 				<VerticalStackLayout Spacing="2"
+									 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 									 IsEnabled="{Binding IsEditable}">
 					<controls:CompositeEntry EntryData="{Binding DecimalValue, Mode=TwoWay}"
 											 LabelText="{Binding Label.Text}"
@@ -107,6 +111,7 @@
 			<DataTemplate x:Key="PickerFieldTemplate"
 						  x:DataType="fields:ObservablePickerField">
 				<VerticalStackLayout Spacing="2"
+									 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 									 IsEnabled="{Binding IsEditable}">
 					<controls:CompositePicker ItemsSource="{Binding Options}"
 											  LabelText="{Binding Label.Text}"
@@ -133,6 +138,7 @@
 			<DataTemplate x:Key="RadioFieldTemplate"
 						  x:DataType="fields:ObservableRadioField">
 				<VerticalStackLayout Spacing="2"
+									 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 									 IsEnabled="{Binding IsEditable}">
 					<controls:CompositePicker ItemsSource="{Binding Options}"
 											  LabelText="{Binding Label.Text}"
@@ -154,6 +160,7 @@
 			<DataTemplate x:Key="CountryFieldTemplate"
 						  x:DataType="fields:ObservableCountryField">
 				<VerticalStackLayout Spacing="2"
+									 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 									 IsEnabled="{Binding IsEditable}">
 					<controls:CompositePicker ItemsSource="{Binding Options}"
 											  LabelText="{Binding Label.Text}"
@@ -180,6 +187,7 @@
 			<DataTemplate x:Key="CheckboxFieldTemplate"
 						  x:DataType="fields:ObservableCheckboxField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
+											 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 											 HintText="{Binding Hint.Text}"
 											 IsEnabled="{Binding IsEditable}"
 											 Style="{DynamicResource BaseCompositeInputView}"
@@ -215,6 +223,7 @@
 			<DataTemplate x:Key="BooleanFieldTemplate"
 						  x:DataType="fields:ObservableBooleanField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
+											 AutomationId="{Binding ., Converter={automation:KycFieldKey Prefix={x:Static automation:AutomationIds.InputKycProcessField}}}"
 											 IsEnabled="{Binding IsEditable}"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
@@ -344,6 +353,7 @@
 							<Label Text="{Binding Label}"
 								   Style="{DynamicResource IdentityFlowKeyLabel}" />
 							<Label Text="{Binding Value}"
+								   AutomationId="{Binding Mapping, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.LabelKycSummaryValue}}}"
 								   Style="{DynamicResource IdentityFlowValueLabel}">
 								<Label.Triggers>
 									<DataTrigger TargetType="Label"
@@ -485,9 +495,11 @@
 
 				<!-- Form -->
 				<ScrollView x:Name="FormScroll"
+							AutomationId="{x:Static automation:AutomationIds.ControlKycProcessForm}"
 							Grid.Row="1"
 							IsVisible="{Binding ShowForm}">
 					<VerticalStackLayout x:Name="FormContent"
+										 AutomationId="{Binding CurrentPage.Id, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.ControlKycProcessPage}}}"
 										 Padding="16,12,16,24"
 										 Spacing="20">
 						<VerticalStackLayout Spacing="8">
@@ -560,6 +572,7 @@
 
 				<!-- Optional details the finished ID includes -->
 				<ScrollView x:Name="IdContentsScroll"
+							AutomationId="{x:Static automation:AutomationIds.ControlKycProcessContents}"
 							Grid.Row="1"
 							IsVisible="{Binding ShowIdContents}">
 					<VerticalStackLayout x:Name="IdContentsContent"
@@ -580,6 +593,7 @@
 
 				<!-- Summary -->
 				<ScrollView x:Name="SummaryScroll"
+							AutomationId="{x:Static automation:AutomationIds.ControlKycProcessSummary}"
 							Grid.Row="1"
 							IsVisible="{Binding ShowSummary}">
 					<VerticalStackLayout x:Name="SummaryContent"
@@ -595,6 +609,7 @@
 
 						<!-- Post-submission panel: application sent + peer review actions -->
 						<Border Style="{DynamicResource IdentityFlowCard}"
+								AutomationId="{x:Static automation:AutomationIds.ControlKycProcessSent}"
 								IsVisible="{Binding ApplicationSentPublic}">
 							<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 								<Label Style="{DynamicResource IdentityFlowSectionTitleLabel}"
@@ -872,9 +887,11 @@
 							  ColumnSpacing="{DynamicResource SmallSpacing}">
 							<controls:TextButton LabelData="{l:Localize Back}"
 												 Style="{DynamicResource SecondaryButton}"
+												 AutomationId="{x:Static automation:AutomationIds.ButtonKycProcessBack}"
 												 Command="{Binding GoBackCommand}" />
 							<controls:TextButton LabelData="{Binding NextButtonText}"
 												 Style="{DynamicResource PrimaryButton}"
+												 AutomationId="{x:Static automation:AutomationIds.ButtonKycProcessNext}"
 												 Command="{Binding NextCommand}"
 												 Grid.Column="1" />
 						</Grid>

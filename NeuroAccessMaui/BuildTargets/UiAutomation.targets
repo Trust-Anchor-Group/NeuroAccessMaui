@@ -1,0 +1,27 @@
+<Project>
+  <!-- EnableUiAutomation=true builds the Debug test variant: it defines UI_AUTOMATION and compiles UiAutomation/**. -->
+  <PropertyGroup>
+    <EnableUiAutomation Condition="'$(EnableUiAutomation)' == ''">false</EnableUiAutomation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(EnableUiAutomation)' == 'true'">
+    <DefineConstants>$(DefineConstants);UI_AUTOMATION</DefineConstants>
+    <ApplicationTitle>Neuro-Access Automation</ApplicationTitle>
+    <OutputPath>bin\UiAutomation\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\UiAutomation\$(Configuration)\</IntermediateOutputPath>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="UiAutomation\**\*.cs" />
+    <None Remove="UiAutomation\**\*" />
+    <EmbeddedResource Remove="UiAutomation\**\*" />
+    <MauiAsset Remove="UiAutomation\**\*" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(EnableUiAutomation)' == 'true'">
+    <Compile Include="UiAutomation\**\*.cs" />
+    <EmbeddedResource Include="UiAutomation\Fixtures\identity-test-photo.jpg" LogicalName="NeuroAccessMaui.UiAutomation.identity-test-photo.jpg" />
+  </ItemGroup>
+  <Target Name="RejectUiAutomationRelease" BeforeTargets="PrepareForBuild"
+          Condition="'$(EnableUiAutomation)' == 'true' and ('$(Configuration)' != 'Debug' or '$(_IsPublishing)' == 'true')">
+    <Error Text="EnableUiAutomation=true is only for Debug builds installed on test devices. It cannot be used for Release builds or publishing." />
+  </Target>
+</Project>
