@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Controls
+﻿using NeuroAccessMaui.UI.Automation;
+
+namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Controls
 {
 	/// <summary>
 	/// Border containing sent messages.
@@ -33,12 +35,18 @@
 		/// <exception cref="InvalidOperationException">If Message Type was not supported.</exception>
 		public static MessageFrame Create(ChatMessage Message)
 		{
-			return Message.MessageType switch
+			MessageFrame Frame = Message.MessageType switch
 			{
 				MessageType.Sent => new SendFrame(),
 				MessageType.Received => new ReceiveFrame(),
 				_ => throw new InvalidOperationException("Unhandled message type: " + Message.MessageType.ToString()),
 			};
+			if (!string.IsNullOrEmpty(Message.ObjectId))
+			{
+				Frame.AutomationId = AutomationIds.ForKey(Message.MessageType == MessageType.Sent
+					? AutomationIds.ItemContactsChatSent : AutomationIds.ItemContactsChatReceived, Message.ObjectId);
+			}
+			return Frame;
 		}
 
 		private static IView GetView(ChatMessage Message)

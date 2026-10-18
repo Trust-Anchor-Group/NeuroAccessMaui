@@ -8,7 +8,7 @@ Neuro-Access is a .NET MAUI application from [Trust Anchor Group](https://trusta
 | --- | --- | --- |
 | [NeuroAccessMaui](NeuroAccessMaui/NeuroAccessMaui.csproj) | Main application with real accounts, services and user flows | `com.tag.NeuroAccess` |
 | [DevTestPlatform](DevTestPlatform/README.md) | Developer catalog of current production UI in controlled visual scenarios | `com.tag.neuroaccess.devtestplatform` |
-| [Android UI tests](tests/mobile/andriod/ui/README.md) | Kotlin/Espresso instrumentation of the main application | Targets `com.tag.NeuroAccess` |
+| [Testing foundation](tests/README.md) | Separate MSTest unit and shared Appium UI suites | UI suite targets the production app |
 
 The developer application has its own icon, splash screen and package, so it can be installed alongside the main application. Its current catalog covers onboarding, verification and two reusable controls.
 
@@ -35,13 +35,13 @@ For real account and service flows, launch the main app:
 dotnet build .\NeuroAccessMaui\NeuroAccessMaui.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <DEVICE_SERIAL>"
 ```
 
-Replace `<DEVICE_SERIAL>` with a serial from `adb devices -l`. Match the APK's ABI to the device. Gradle builds the instrumentation APK separately and does not build either MAUI app.
+Replace `<DEVICE_SERIAL>` with a serial from `adb devices -l`. Match the APK's ABI to the device. The independent UI test project uses Appium against the separately built app. The unit tests run without MAUI or a device. All test projects are in `NeuroAccessMaui.sln`; see [the test commands](tests/README.md).
 
 See [Getting Started](Content/getting_started.md) for other setup details. Commands above reflect the current project files; older examples elsewhere may still reference earlier SDKs.
 
 ## UI identity and navigation
 
-[AutomationIds.cs](NeuroAccessMaui/UI/Automation/AutomationIds.cs) owns technical IDs for production views and developer chrome. Production controls retain their IDs inside developer previews; developer controls use `dev_` IDs. [UI_IDS.md](tests/mobile/andriod/ui/app/src/androidTest/java/com/tag/neuroaccess/neuroaccessespressoautomationtests/UI_IDS.md) documents the catalog, dynamic keys, retired identifiers and migration gaps.
+[AutomationIds.cs](NeuroAccessMaui/UI/Automation/AutomationIds.cs) owns technical IDs for production views and developer chrome. Production controls retain their IDs inside developer previews; developer controls use `dev_` IDs. [Automation metadata](tests/contracts/automation-ids.md) documents ownership, dynamic keys, platform selectors and automation-build isolation.
 
 `NavigationService` manages `BaseContentPage` navigation through a main-thread queue. `CustomShell` presents pages, global bars, popups, toasts and hardware back handling. `PopupService` coordinates popup transitions and lifecycle hooks. Use these services from view models; see [Navigation](Content/navigation.md). The developer app uses its own `DevShell` and `DevNavigationService` for preview sessions.
 
@@ -51,7 +51,7 @@ See [Getting Started](Content/getting_started.md) for other setup details. Comma
 | --- | --- |
 | Developer catalog and preview behavior | [DevTestPlatform](DevTestPlatform/README.md) |
 | Tests and automation entry points | [Tests](tests/README.md) |
-| Local Android runs, configuration, logs and reports | [Android UI tests](tests/mobile/andriod/ui/README.md) |
+| Local Android/iOS runs, configuration and reports | [Mobile UI tests](tests/README.md) |
 | Remote emulators and matrices | [VM infrastructure](tests/infrastructure/vm/readme.md) |
 | Setup | [Getting Started](Content/getting_started.md) |
 | Architecture | [Architecture](Content/architecture.md) |
@@ -68,7 +68,7 @@ Use an explicit `-f` to build one platform. Keep SDK documentation aligned with 
 
 ## Contributing
 
-Follow [AGENTS.md](AGENTS.md) and the [contribution guide](Content/contributing.md). Non-trivial behavioral changes use `plans/<feature-slug>/`. Keep production metadata, the C# catalog, the Kotlin catalog and the ID reference aligned.
+Follow [AGENTS.md](AGENTS.md) and the [contribution guide](Content/contributing.md). Non-trivial behavioral changes use `plans/<feature-slug>/`. Keep production metadata and the C# catalog aligned; the Appium tests link that catalog directly.
 
 ## Security and license
 

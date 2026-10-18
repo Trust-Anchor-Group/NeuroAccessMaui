@@ -1,9 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity.PetitionIdentityPage"
 							 x:DataType="viewmodel:PetitionIdentityViewModel"
+							 AutomationId="{x:Static automation:AutomationIds.ScreenPetitionsIdentity}"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -21,6 +23,7 @@
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<Grid ColumnDefinitions="auto, *, auto">
 					<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}"
+										  AutomationId="{x:Static automation:AutomationIds.ButtonPetitionsIdentityBack}"
 										  PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize PetitionIdentity}" Grid.Column="2"/>
@@ -59,7 +62,7 @@
 									Data="{x:Static ui:Geometries.CirclePath}"
 									Fill="{Binding State, Converter={converters:IdentityStateToColor}}" />
 
-							<Label Style="{DynamicResource ValueLabel}" Text="{Binding State, Converter={converters:LocalizedState}}" />
+							<Label Style="{DynamicResource ValueLabel}" AutomationId="{x:Static automation:AutomationIds.LabelPetitionsIdentityState}" Text="{Binding State, Converter={converters:LocalizedState}}" />
 						</HorizontalStackLayout>
 					</VerticalStackLayout>
 				</Border>
@@ -256,6 +259,7 @@
 							 FontSize="Large" Style="{DynamicResource SectionTitleLabel}"/>
 
 					<controls:TextButton x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
+												AutomationId="{x:Static automation:AutomationIds.ButtonPetitionsIdentityAccept}"
 												Style="{DynamicResource FilledTextButton}" />
 
 					<controls:TextButton x:Name="DeclineButton" LabelData="{l:Localize Decline}" Command="{Binding DeclineCommand}"

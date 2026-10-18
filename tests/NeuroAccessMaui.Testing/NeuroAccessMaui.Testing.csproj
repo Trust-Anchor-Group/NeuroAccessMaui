@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MSTest.TestFramework" Version="$(MSTestVersion)" />
+    <Compile Include="../../NeuroAccessMaui/UI/Automation/AutomationIds.cs" Link="Contracts/AutomationIds.cs" />
+    <EmbeddedResource Include="../../NeuroAccessMaui/Resources/Languages/AppResources*.resx" Link="Localization/%(Filename)%(Extension)" />
+    <InternalsVisibleTo Include="NeuroAccessMaui.UnitTests" />
+    <InternalsVisibleTo Include="NeuroAccessMaui.UITests" />
+  </ItemGroup>
+</Project>

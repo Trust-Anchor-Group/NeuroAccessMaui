@@ -281,7 +281,10 @@ Code must remain testable:
 Test project rules, when tests are explicitly requested:
 
 - Framework: MSTest via the `MSTest` NuGet package.
-- Test projects: `NeuroAccess.Nfc.Test` and `NeuroAccessMaui.Test`.
+- Mobile test projects: `tests/NeuroAccessMaui.UnitTests` and `tests/NeuroAccessMaui.UITests`.
+- Shared test support: `tests/NeuroAccessMaui.Testing` is not a runnable suite or application dependency.
+- Library test projects: `NeuroAccess.Nfc.Test` and `IdApp.Cv.Test`.
+- Test organization and run configuration: `tests/README.md`.
 - Target framework: `net10.0` with no MAUI TFMs.
 - Test projects may include source files under test through `<Compile Include="..." Link="..." />` when the source has no MAUI platform dependencies.
 
@@ -319,6 +322,7 @@ Test helper rules:
 - Do not create separate helper classes for test utilities.
 - Keep helper methods as `private static` methods inside the test class that uses them.
 - Duplicate small helper logic across test classes when that improves locality.
+- Exception: `tests/NeuroAccessMaui.UITests` uses page objects. `Screens/` wraps the controls of one area of the app, `Workflows/` composes screens into multi-screen journeys, and `Infrastructure/` holds the driver session, `MobileUi` and the per-platform classes.
 
 Comment rules:
 

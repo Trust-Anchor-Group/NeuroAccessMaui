@@ -433,4 +433,5 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
+	<Import Project="BuildTargets/UiAutomation.targets" />
 </Project>

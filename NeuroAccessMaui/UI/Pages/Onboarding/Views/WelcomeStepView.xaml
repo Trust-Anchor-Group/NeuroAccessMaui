@@ -2,6 +2,7 @@
 <onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.WelcomeStepView"
                                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                                xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -23,15 +24,17 @@
 							   VerticalOptions="Center" />
 		</controls:ConditionView.True>
 		<controls:ConditionView.False>
-			<Grid RowDefinitions="*, auto">
+			<Grid RowDefinitions="*, auto" AutomationId="{x:Static automation:AutomationIds.ScreenOnboardingProvider}">
 				<VerticalStackLayout Grid.Row="0" VerticalOptions="End" Spacing="16">
 					<VerticalStackLayout>
 						<Label Style="{DynamicResource PageTitleLabel}"
+							   AutomationId="{x:Static automation:AutomationIds.LabelOnboardingProviderTitle}"
 							   FontSize="{StaticResource FontSizeDisplayMd}"
 							   Text="{l:Localize ActivateYourDigitalIdentity}"/>
 					</VerticalStackLayout>
 
 					<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
+										AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingProviderScanqr}"
 										Style="{DynamicResource PrimaryIconButton}"
 										LabelText="{l:Localize QrScanCode}"
 										SvgSource="scan_qr.svg"
@@ -39,6 +42,7 @@
 										/>
 
 					<controls:CompositeEntry LabelText="{l:Localize HaveAnInviteCodeQuestion}"
+											 AutomationId="{x:Static automation:AutomationIds.InputOnboardingProviderInvitecode}"
 											 Placeholder="{l:Localize PasteInviteCodeHere}"
 											 Style="{DynamicResource RegularCompositeEntry}"
 											 LabelStyle="{DynamicResource GetStartedCompositeEntryLabel}"
@@ -79,6 +83,7 @@
 					</Grid>
 
 					<controls:TextButton Style="{DynamicResource SecondaryButton}"
+										 AutomationId="{x:Static automation:AutomationIds.ButtonOnboardingProviderSelect}"
 										 LabelData="{l:Localize SelectForMe}"
 										 Command="{Binding SelectForMeCommand}" />
 				</VerticalStackLayout>

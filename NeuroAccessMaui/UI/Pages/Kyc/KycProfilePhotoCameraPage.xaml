@@ -4,6 +4,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+	xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 	xmlns:camera="clr-namespace:NeuroAccessMaui.Camera;assembly=NeuroAccessMaui.Camera"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
@@ -11,6 +12,7 @@
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 	x:DataType="viewmodel:KycProfilePhotoCameraViewModel"
+	AutomationId="{x:Static automation:AutomationIds.ScreenKycCamera}"
 	BackgroundColor="Black"
 	ui:SafeArea.Mode="Ignore"
 	ui:KeyboardInsets.Mode="Ignore">
@@ -31,6 +33,7 @@
 		<Grid BackgroundColor="Black"
 			  IsVisible="{Binding HasCapturedPhoto}">
 			<Image Source="{Binding CapturedPhotoSource}"
+				   AutomationId="{x:Static automation:AutomationIds.ImageKycCameraReview}"
 				   Aspect="{Binding ReviewAspect}"
 				   HorizontalOptions="Fill"
 				   VerticalOptions="Fill" />
@@ -66,6 +69,7 @@
 			  ColumnSpacing="12"
 			  VerticalOptions="Start">
 			<controls:ImageButton Command="{Binding CancelCommand}"
+								  AutomationId="{x:Static automation:AutomationIds.ButtonKycCameraCancel}"
 								  Style="{DynamicResource FilledImageButton}"
 								  PathData="{x:Static ui:Geometries.BackButtonPath}"
 								  IsEnabled="{Binding IsCapturing, Converter={mct:InvertedBoolConverter}}"
@@ -139,6 +143,7 @@
 				  HeightRequest="78"
 				  HorizontalOptions="Center">
 				<controls:TemplatedButton Command="{Binding CaptureCommand}"
+										  AutomationId="{x:Static automation:AutomationIds.ButtonKycCameraCapture}"
 										  IsEnabled="{Binding CanCapture}"
 										  SemanticProperties.Description="{Binding CaptureText}">
 					<Grid WidthRequest="78"
@@ -185,11 +190,15 @@
 					  ColumnSpacing="10">
 					<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
 										 LabelData="{Binding RetakeText}"
-										 Command="{Binding RetakeCommand}" />
+										 Command="{Binding RetakeCommand}"
+										 AutomationId="{x:Static automation:AutomationIds.ButtonKycCameraRetake}"
+										 />
 					<controls:TextButton Grid.Column="1"
 										 Style="{DynamicResource FilledTextButton}"
 										 LabelData="{Binding UsePhotoText}"
-										 Command="{Binding UsePhotoCommand}" />
+										 Command="{Binding UsePhotoCommand}"
+										 AutomationId="{x:Static automation:AutomationIds.ButtonKycCameraAccept}"
+										 />
 				</Grid>
 			</VerticalStackLayout>
 		</Border>

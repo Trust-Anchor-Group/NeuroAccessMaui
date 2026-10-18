@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 			this.SelectedLanguageName = SelectedLanguage.Name;
 
 			// Update the language if a new language is selected.
-			if (SelectedLanguage.Name != CultureInfo.CurrentCulture.Name)
+			if (SelectedLanguage.Name != LocalizationManager.Current.CurrentCulture.Name)
 			{
 				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
 				LocalizationManager.Current.CurrentCulture = SelectedLanguage;

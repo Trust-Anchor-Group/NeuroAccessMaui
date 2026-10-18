@@ -2602,7 +2602,7 @@
     <value>Secondes</value>
   </data>
   <data name="ExpiresFormat" xml:space="preserve">
-    <value>Expire le : {0 :d}</value>
+    <value>Expire le : {0:d}</value>
   </data>
   <data name="Issued" xml:space="preserve">
     <value>Délivré</value>

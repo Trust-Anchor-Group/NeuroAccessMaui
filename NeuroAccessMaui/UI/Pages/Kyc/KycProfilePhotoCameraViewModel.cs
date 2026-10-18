@@ -5,6 +5,7 @@ using NeuroAccessMaui.Camera;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Kyc.Photography;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -21,6 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private static readonly TimeSpan previewStartRetryDelay = TimeSpan.FromMilliseconds(100);
 
 		private readonly KycProfilePhotoCameraNavigationArgs? navigationArgs;
+		private readonly IKycPhotoCamera camera;
 		private IReadOnlyList<CameraDescriptor> availableCameras = Array.Empty<CameraDescriptor>();
 		private CancellationTokenSource? previewCancellationTokenSource;
 		private byte[]? capturedPhotoBytes;
@@ -32,16 +34,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Initializes a new instance of the <see cref="KycProfilePhotoCameraViewModel"/> class.
 		/// </summary>
 		/// <param name="NavigationArgs">The navigation arguments.</param>
-		public KycProfilePhotoCameraViewModel(KycProfilePhotoCameraNavigationArgs? NavigationArgs)
+		/// <param name="Camera">The camera session owned by the page.</param>
+		public KycProfilePhotoCameraViewModel(KycProfilePhotoCameraNavigationArgs? NavigationArgs, IKycPhotoCamera Camera)
 		{
 			this.navigationArgs = NavigationArgs;
+			this.camera = Camera;
 			this.CaptureProfile = NavigationArgs?.CaptureProfile ?? KycCaptureProfile.Selfie;
 		}
-
-		/// <summary>
-		/// Gets or sets the camera preview used by the page.
-		/// </summary>
-		public CameraView? CameraView { get; set; }
 
 		/// <summary>
 		/// Gets what the photo captures.
@@ -175,7 +174,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the shutter and camera controls can be used.
 		/// </summary>
-		public bool CanCapture => !this.IsCapturing && !this.HasCapturedPhoto;
+		public bool CanCapture => this.IsCameraReady && !this.IsCapturing && !this.HasCapturedPhoto;
+
+		/// <summary>Gets or sets whether camera startup completed successfully.</summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanCapture))]
+		private bool isCameraReady;
 
 		/// <summary>
 		/// Gets or sets the captured photo shown for review.
@@ -217,12 +221,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
-			if (this.CameraView is null)
-			{
-				return;
-			}
 
-			bool CameraPermitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			bool CameraPermitted = await this.camera.RequestPermissionAsync();
 			if (!CameraPermitted)
 			{
 				await ServiceRef.UiService.DisplayAlert(
@@ -238,16 +238,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.previewCancellationTokenSource = new CancellationTokenSource();
 			CancellationToken CancellationToken = this.previewCancellationTokenSource.Token;
 
-			this.CameraView.Options = new CameraOptions
-			{
-				PreferRearCamera = !this.IsSelfie,
-				FrameDeliveryInterval = TimeSpan.FromMilliseconds(250),
-				PreviewScaling = CameraPreviewScaling.Fill,
-				TargetFps = 15,
-				TargetResolution = new Size(1280d, 720d),
-				JpegQuality = 96
-			};
-
 			bool PreviewStarted;
 			try
 			{
@@ -259,6 +249,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
+			this.IsCameraReady = PreviewStarted;
 			if (!PreviewStarted)
 				await this.HandlePreviewStartupFailureAsync();
 		}
@@ -267,12 +258,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public override async Task OnDisappearingAsync()
 		{
 			this.DisposePreviewCancellation();
-
-			if (this.CameraView is not null)
-			{
-				await this.SetTorchAsync(false);
-				await this.CameraView.StopPreviewAsync();
-			}
+			this.IsCameraReady = false;
+			await this.SetTorchAsync(false);
+			await this.camera.StopPreviewAsync();
 
 			await base.OnDisappearingAsync();
 		}
@@ -333,7 +321,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand]
 		private async Task Capture()
 		{
-			if (this.CameraView is null || !this.CanCapture)
+			if (!this.CanCapture)
 			{
 				return;
 			}
@@ -341,7 +329,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			try
 			{
 				this.IsCapturing = true;
-				byte[]? PhotoBytes = await this.CameraView.CapturePhotoAsync(CancellationToken.None);
+				byte[]? PhotoBytes = await this.camera.CapturePhotoAsync(CancellationToken.None);
 				if (PhotoBytes is null || PhotoBytes.Length == 0)
 				{
 					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
@@ -416,28 +404,28 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand]
 		private async Task SwitchCamera()
 		{
-			if (this.CameraView is null || !this.CanSwitchCamera || !this.CanCapture)
+			if (!this.CanSwitchCamera || !this.CanCapture)
 				return;
 
-			CameraPosition CurrentPosition = this.CameraView.SelectedCamera?.Position ?? CameraPosition.Unknown;
+			CameraPosition CurrentPosition = this.camera.SelectedCamera?.Position ?? CameraPosition.Unknown;
 			CameraPosition DesiredPosition = CurrentPosition == CameraPosition.Front ? CameraPosition.Rear : CameraPosition.Front;
 			CameraDescriptor? NextCamera = this.availableCameras.FirstOrDefault(Descriptor => Descriptor.Position == DesiredPosition);
 			if (NextCamera is null)
 				return;
 
 			await this.SetTorchAsync(false);
-			this.CameraView.SelectedCamera = NextCamera;
+			this.camera.SelectedCamera = NextCamera;
 			this.CanUseTorch = NextCamera.SupportsTorch;
 		}
 
 		private async Task SetTorchAsync(bool IsEnabled)
 		{
-			if (this.CameraView?.Controller is not ICameraController Controller || (!IsEnabled && !this.IsTorchOn))
+			if (!this.camera.IsReady || (!IsEnabled && !this.IsTorchOn))
 				return;
 
 			try
 			{
-				await Controller.SetTorchAsync(IsEnabled, CancellationToken.None);
+				await this.camera.SetTorchAsync(IsEnabled, CancellationToken.None);
 				this.IsTorchOn = IsEnabled;
 			}
 			catch (Exception Ex)
@@ -455,12 +443,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <returns>A task representing the asynchronous operation.</returns>
 		private async Task SelectInitialCameraAsync(CancellationToken CancellationToken)
 		{
-			if (this.CameraView is null)
-				return;
-
 			try
 			{
-				this.availableCameras = await NeuroAccessMaui.Camera.CameraView.GetAvailableCamerasAsync(CancellationToken);
+				this.availableCameras = await this.camera.GetAvailableCamerasAsync(CancellationToken);
 			}
 			catch (OperationCanceledException)
 			{
@@ -476,7 +461,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.availableCameras.Any(Descriptor => Descriptor.Position == CameraPosition.Rear);
 
 			CameraPosition PreferredPosition = this.IsSelfie ? CameraPosition.Front : CameraPosition.Rear;
-			CameraDescriptor? SelectedCamera = this.CameraView.SelectedCamera is CameraDescriptor Current &&
+			CameraDescriptor? SelectedCamera = this.camera.SelectedCamera is CameraDescriptor Current &&
 				this.availableCameras.Any(Descriptor => Descriptor.Id == Current.Id)
 				? Current
 				: this.availableCameras.FirstOrDefault(Descriptor => Descriptor.Position == PreferredPosition) ?? this.availableCameras.FirstOrDefault();
@@ -487,8 +472,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			if (!ReferenceEquals(this.CameraView.SelectedCamera, SelectedCamera))
-				this.CameraView.SelectedCamera = SelectedCamera;
+			if (!ReferenceEquals(this.camera.SelectedCamera, SelectedCamera))
+				this.camera.SelectedCamera = SelectedCamera;
 
 			this.CanUseTorch = SelectedCamera.SupportsTorch;
 		}
@@ -500,18 +485,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <returns><c>true</c> if the preview is running; otherwise <c>false</c>.</returns>
 		private async Task<bool> StartPreviewWithRetryAsync(CancellationToken CancellationToken)
 		{
-			if (this.CameraView is null)
-				return false;
-
 			for (int Attempt = 1; Attempt <= previewStartMaxAttempts; Attempt++)
 			{
 				CancellationToken.ThrowIfCancellationRequested();
 
-				if (this.CameraView.Controller is not null)
+				if (this.camera.IsReady)
 				{
 					try
 					{
-						await this.CameraView.StartPreviewAsync(CancellationToken);
+						await this.camera.StartPreviewAsync(CancellationToken);
 					}
 					catch (OperationCanceledException)
 					{
@@ -522,7 +504,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						ServiceRef.LogService.LogException(Ex);
 					}
 
-					if (this.CameraView.IsPreviewRunning)
+					if (this.camera.IsPreviewRunning)
 						return true;
 				}
 

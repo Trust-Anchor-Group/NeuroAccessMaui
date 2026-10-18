@@ -3,14 +3,16 @@
                 x:DataType="viewmodel:ShowPermissionViewModel"
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission">
-    <ScrollView VerticalOptions="Center">
+    <ScrollView VerticalOptions="Center" AutomationId="{x:Static automation:AutomationIds.PopupSystemPermission}">
         <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
             <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
                 <Label HorizontalTextAlignment="Center"
+                       AutomationId="{x:Static automation:AutomationIds.LabelSystemPermissionTitle}"
                        Style="{DynamicResource PageTitleLabel}"
                        Text="{Binding Title}" />
                 <Border WidthRequest="{Binding CameraIconBackgroundSize}"
@@ -26,6 +28,7 @@
                           Fill="{DynamicResource TnPSuccessContentWL}" />
                 </Border>
                 <Label HorizontalTextAlignment="Start"
+                       AutomationId="{x:Static automation:AutomationIds.LabelSystemPermissionDescription}"
                        Style="{DynamicResource ItemDescriptionLabel}"
                        Text="{Binding Description}"
                        FontSize="{StaticResource FontSizeMd}"
@@ -41,6 +44,7 @@
                                      LabelData="{l:Localize GoToSettings}"
                                      Style="{DynamicResource PrimaryButton}" />
                 <controls:TextButton Command="{Binding CloseCommand}"
+                                     AutomationId="{x:Static automation:AutomationIds.ButtonSystemPermissionSkip}"
                                      LabelData="{l:Localize Skip}"
                                      Style="{DynamicResource SecondaryButton}" />
             </VerticalStackLayout>

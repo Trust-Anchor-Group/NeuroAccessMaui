@@ -6,6 +6,7 @@ using Microsoft.Maui.Controls.Xaml;
 namespace NeuroAccessMaui.UI.Automation;
 
 /// <summary>Assigns contextual automation identity from a stable bound schema or opaque record key.</summary>
+[AcceptEmptyServiceProvider]
 public sealed class AutomationKeyExtension : IMarkupExtension<IValueConverter>, IValueConverter
 {
     /// <summary>Gets or sets the production-catalog namespace for this logical collection.</summary>
@@ -19,13 +20,13 @@ public sealed class AutomationKeyExtension : IMarkupExtension<IValueConverter>, 
     object IMarkupExtension.ProvideValue(IServiceProvider ServiceProvider) => this.ProvideValue(ServiceProvider);
 
     /// <summary>Encodes a stable key while leaving not-yet-bound controls unidentified.</summary>
-    /// <param name="Value">The stable key, never user-entered content.</param>
+    /// <param name="Value">The stable key, never user-entered content. Any value is converted with <see cref="object.ToString"/>.</param>
     /// <param name="TargetType">The target property type.</param>
     /// <param name="Parameter">Unused converter parameter.</param>
     /// <param name="Culture">Unused culture; technical identity is invariant.</param>
     /// <returns>The contextual identifier, or null until a nonempty key exists.</returns>
     public object? Convert(object? Value, Type TargetType, object? Parameter, CultureInfo Culture) =>
-        Value is string Key && Key.Length > 0 ? AutomationIds.ForKey(this.Prefix, Key) : null;
+        Value?.ToString() is string Key && Key.Length > 0 ? AutomationIds.ForKey(this.Prefix, Key) : null;
 
     /// <summary>Rejects reverse conversion because automation metadata never updates the source key.</summary>
     /// <param name="Value">The target value.</param>

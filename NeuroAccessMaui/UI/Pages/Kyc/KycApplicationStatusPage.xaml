@@ -2,12 +2,14 @@
 <base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Kyc.KycApplicationStatusPage"
 					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  x:DataType="viewmodel:KycApplicationStatusViewModel"
+					  AutomationId="{x:Static automation:AutomationIds.ScreenKycStatus}"
 					  ui:SafeArea.Mode="TopAndBottom">
 	<controls:IdentityFlowShell Title="{l:Localize IdentityApplication}"
 								ShowLeadingAction="True"
@@ -75,6 +77,7 @@
 						</Border>
 
 						<Label Text="{Binding TitleText}"
+							   AutomationId="{x:Static automation:AutomationIds.LabelKycStatusTitle}"
 							   Style="{DynamicResource IdentityFlowTitleLabel}" />
 						<Label Text="{Binding DescriptionText}"
 							   Style="{DynamicResource IdentityFlowBodySecondaryLabel}" />
@@ -167,6 +170,7 @@
 			<VerticalStackLayout Spacing="8">
 				<controls:TextButton Style="{DynamicResource FilledTextButton}"
 									 LabelData="{Binding PrimaryActionText}"
+									 AutomationId="{x:Static automation:AutomationIds.ButtonKycStatusOpen}"
 									 Command="{Binding PrimaryActionCommand}" />
 				<Grid ColumnDefinitions="*,*"
 					  ColumnSpacing="{DynamicResource SmallSpacing}">
@@ -176,6 +180,7 @@
 					<controls:TextButton Grid.Column="1"
 										 Style="{DynamicResource OutlinedTextButton}"
 										 LabelData="{Binding SecondaryActionText}"
+										 AutomationId="{x:Static automation:AutomationIds.ButtonKycStatusApplications}"
 										 Command="{Binding SecondaryActionCommand}" />
 				</Grid>
 			</VerticalStackLayout>

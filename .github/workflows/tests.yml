@@ -1,0 +1,135 @@
+name: Tests
+
+on:
+  pull_request:
+    paths:
+      - 'NeuroAccessMaui/**'
+      - 'NeuroAccessMaui.Camera/**'
+      - 'DevTestPlatform/**'
+      - 'tests/**'
+      - 'NeuroAccessMaui.sln'
+      - '.github/workflows/tests.yml'
+      - 'global.json'
+      - 'Directory.Build.props'
+  push:
+    branches: [main, master]
+    paths:
+      - 'NeuroAccessMaui/**'
+      - 'NeuroAccessMaui.Camera/**'
+      - 'DevTestPlatform/**'
+      - 'tests/**'
+      - 'NeuroAccessMaui.sln'
+      - '.github/workflows/tests.yml'
+      - 'global.json'
+      - 'Directory.Build.props'
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        options: [android, ios]
+        default: android
+        description: Provisioned device host
+      category:
+        type: choice
+        options: [Smoke, Languages, Registration, Pin, QuickLogin, Contacts, KycCamera, KycApplication, KycApproval, KycUpdate, KycReplacement, Kyc, FullSuite]
+        default: Smoke
+        description: Test category (account-changing categories require environment opt-ins)
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-ui-${{ inputs.platform || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Run unit tests
+        shell: pwsh
+        run: ./tests/scripts/run-tests.ps1 -Suite Unit
+      - name: Preserve test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests-${{ github.run_id }}-${{ github.run_attempt }}
+          path: TestResults/unit/
+          if-no-files-found: error
+          retention-days: 7
+  ui-contracts:
+    name: UI automation contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate automation contracts
+        shell: pwsh
+        run: ./tests/scripts/validate-automation-contract.ps1
+  ui-tests:
+    name: UI tests (${{ inputs.platform }})
+    if: github.event_name == 'workflow_dispatch'
+    needs: [unit-tests, ui-contracts]
+    runs-on: [self-hosted, mobile-ui, '${{ inputs.platform }}']
+    environment: mobile-ui-${{ inputs.platform }}
+    timeout-minutes: 180
+    env:
+      NEUROACCESS_TEST_APPIUM_URL: ${{ vars.APPIUM_URL }}
+      NEUROACCESS_TEST_DEVICE_ID: ${{ vars.DEVICE_ID }}
+      NEUROACCESS_TEST_APP_PATH: ${{ vars.APP_PATH }}
+      NEUROACCESS_TEST_IOS_SIMULATOR: ${{ vars.IOS_SIMULATOR }}
+      NEUROACCESS_TEST_CAPABILITIES: ${{ vars.CAPABILITIES }}
+      NEUROACCESS_TEST_PIN: ${{ secrets.TEST_PIN }}
+      NEUROACCESS_TEST_NEW_PIN: ${{ secrets.TEST_NEW_PIN }}
+      NEUROACCESS_TEST_PHONE_NUMBER: ${{ secrets.TEST_PHONE_NUMBER }}
+      NEUROACCESS_TEST_OTP_ENDPOINT: ${{ secrets.TEST_OTP_ENDPOINT }}
+      NEUROACCESS_TEST_REGISTRATION_MODE: temporary-phone
+      NEUROACCESS_TEST_QUICK_LOGIN_PAGE_URL: ${{ vars.QUICK_LOGIN_PAGE_URL }}
+      NEUROACCESS_TEST_BROWSER_URL: ${{ vars.BROWSER_URL }}
+      NEUROACCESS_TEST_DEVICE_ID_A: ${{ vars.DEVICE_ID_A }}
+      NEUROACCESS_TEST_DEVICE_ID_B: ${{ vars.DEVICE_ID_B }}
+      NEUROACCESS_TEST_APPIUM_URL_A: ${{ vars.APPIUM_URL_A }}
+      NEUROACCESS_TEST_APPIUM_URL_B: ${{ vars.APPIUM_URL_B }}
+      NEUROACCESS_TEST_PIN_A: ${{ secrets.TEST_PIN_A }}
+      NEUROACCESS_TEST_PIN_B: ${{ secrets.TEST_PIN_B }}
+      NEUROACCESS_TEST_WDA_BUNDLE_ID: ${{ vars.WDA_BUNDLE_ID }}
+      NEUROACCESS_TEST_ALLOW_RESET: ${{ vars.ALLOW_RESET }}
+      NEUROACCESS_TEST_RESET_BEFORE_TEST: ${{ (inputs.category == 'Smoke' || inputs.category == 'Registration') && vars.ALLOW_RESET == 'true' }}
+      NEUROACCESS_TEST_ALLOW_REGISTRATION: ${{ vars.ALLOW_REGISTRATION }}
+      NEUROACCESS_TEST_ALLOW_PIN_CHANGE: ${{ vars.ALLOW_PIN_CHANGE }}
+      NEUROACCESS_TEST_ALLOW_CONTACTS: ${{ vars.ALLOW_CONTACTS }}
+      NEUROACCESS_TEST_ALLOW_KYC_DRAFT_UPDATE: ${{ vars.ALLOW_KYC_DRAFT_UPDATE }}
+      NEUROACCESS_TEST_KYC_PHOTO_FIELD_ID: ${{ vars.KYC_PHOTO_FIELD_ID }}
+      NEUROACCESS_TEST_ALLOW_KYC_SUBMISSION: ${{ vars.ALLOW_KYC_SUBMISSION }}
+      NEUROACCESS_TEST_KYC_TEMPLATE_ITEM_ID: ${{ vars.KYC_TEMPLATE_ITEM_ID }}
+      NEUROACCESS_TEST_KYC_TEMPLATE_NAME: ${{ vars.KYC_TEMPLATE_NAME }}
+      NEUROACCESS_TEST_KYC_NEW_APPLICATION: ${{ vars.KYC_NEW_APPLICATION }}
+      NEUROACCESS_TEST_KYC_REVIEW_STAGE: ${{ vars.KYC_REVIEW_STAGE }}
+      NEUROACCESS_TEST_MANUAL_APPROVAL: ${{ vars.MANUAL_APPROVAL }}
+      NEUROACCESS_TEST_MANUAL_APPROVAL_TIMEOUT_MINUTES: ${{ vars.MANUAL_APPROVAL_TIMEOUT_MINUTES }}
+      NEUROACCESS_TEST_REVOKE_IDENTITY: ${{ vars.REVOKE_IDENTITY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Run UI tests
+        shell: pwsh
+        env:
+          TEST_PLATFORM: ${{ inputs.platform }}
+          TEST_CATEGORY: ${{ inputs.category }}
+        run: ./tests/scripts/run-tests.ps1 -Suite UI -Platform $env:TEST_PLATFORM -Filter "TestCategory=$env:TEST_CATEGORY"
+      - name: Preserve current-run reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ui-${{ inputs.platform }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: TestResults/mobile/
+          if-no-files-found: warn
+          retention-days: 7

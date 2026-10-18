@@ -490,17 +490,89 @@ public static class AutomationIds
     /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Applications/Applications/ApplicationsPage.xaml.</remarks>
     public const string LabelApplicationsCatalogTemplatetype = "label_applications_catalog_templatetype";
 
+    /// <summary>Identifies returning from Applications to Home.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Applications/Applications/ApplicationsPage.xaml.</remarks>
+    public const string ButtonApplicationsCatalogBack = "button_applications_catalog_back";
+
     /// <summary>Identifies the production KYC form and summary host.</summary>
     /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
     public const string ScreenKycProcess = "screen_kyc_process_form";
 
+    /// <summary>Identifies the current form scroll viewport.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string ControlKycProcessForm = "control_kyc_process_scroll";
+
+    /// <summary>Namespaces form pages by their stable schema ID.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string ControlKycProcessPage = "control_kyc_process_page";
+
+    /// <summary>Namespaces form fields by identity-property mapping or unmapped schema ID.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string InputKycProcessField = "input_kyc_process_field";
+
+    /// <summary>Identifies the optional ID-contents step.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string ControlKycProcessContents = "control_kyc_process_contents";
+
+    /// <summary>Identifies the summary scroll viewport.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string ControlKycProcessSummary = "control_kyc_process_summary";
+
+    /// <summary>Namespaces summary values by their property mapping.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string LabelKycSummaryValue = "label_kyc_summary_value";
+
+    /// <summary>Identifies the actual post-submission panel.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string ControlKycProcessSent = "control_kyc_process_sent";
+
+    /// <summary>Identifies forward navigation and submission.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string ButtonKycProcessNext = "button_kyc_process_next";
+
+    /// <summary>Identifies backward form navigation.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProcessPage.xaml.</remarks>
+    public const string ButtonKycProcessBack = "button_kyc_process_back";
+
+    /// <summary>Identifies the KYC photo capture page.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProfilePhotoCameraPage.xaml.</remarks>
+    public const string ScreenKycCamera = "screen_kyc_camera";
+
+    /// <summary>Identifies the KYC camera shutter.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProfilePhotoCameraPage.xaml.</remarks>
+    public const string ButtonKycCameraCapture = "button_kyc_camera_capture";
+
+    /// <summary>Identifies the KYC camera cancel action.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProfilePhotoCameraPage.xaml.</remarks>
+    public const string ButtonKycCameraCancel = "button_kyc_camera_cancel";
+
+    /// <summary>Identifies the captured KYC photo shown for review.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProfilePhotoCameraPage.xaml.</remarks>
+    public const string ImageKycCameraReview = "image_kyc_camera_review";
+
+    /// <summary>Identifies the KYC camera retake action.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProfilePhotoCameraPage.xaml.</remarks>
+    public const string ButtonKycCameraRetake = "button_kyc_camera_retake";
+
+    /// <summary>Identifies the KYC camera accept action.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycProfilePhotoCameraPage.xaml.</remarks>
+    public const string ButtonKycCameraAccept = "button_kyc_camera_accept";
+
+    /// <summary>Identifies an image field's capture card by its schema key.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/Views/KycImageFieldView.xaml.</remarks>
+    public const string ButtonKycImageCapture = "button_kyc_image_capture";
+
+    /// <summary>Identifies an accepted image by its schema field key.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/Views/KycImageFieldView.xaml.</remarks>
+    public const string ImageKycFieldPreview = "image_kyc_field_preview";
+
+    /// <summary>Namespaces onboarding by the actual profile state and opaque identity. Set only in automation builds.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UiAutomation/OnboardingPage.Automation.cs.</remarks>
+    public const string ControlOnboardingProfileIdentity = "control_onboarding_profile_identity";
+
     /// <summary>Identifies the production identity-application status page.</summary>
     /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycApplicationStatusPage.xaml.</remarks>
     public const string ScreenKycStatus = "screen_kyc_status";
-
-    /// <summary>Identifies the localized status page heading.</summary>
-    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycApplicationStatusPage.xaml.</remarks>
-    public const string LabelKycStatusHeading = "label_kyc_status_heading";
 
     /// <summary>Identifies the application status title.</summary>
     /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycApplicationStatusPage.xaml.</remarks>
@@ -514,8 +586,98 @@ public static class AutomationIds
     /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Kyc/KycApplicationStatusPage.xaml.</remarks>
     public const string ButtonKycStatusApplications = "button_kyc_status_applications";
 
+    /// <summary>Identifies the applications hub.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Main/Apps/AppsPage.xaml.</remarks>
+    public const string ScreenMainApps = "screen_main_apps";
+
+    /// <summary>Identifies opening the contacts list.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Main/Apps/AppsPage.xaml.</remarks>
+    public const string ButtonMainAppsContacts = "button_main_apps_contacts";
+
+    /// <summary>Identifies the saved contacts page.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/MyContacts/MyContactsPage.xaml.</remarks>
+    public const string ScreenContactsList = "screen_contacts_list";
+
+    /// <summary>Identifies the contacts scrolling region.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/MyContacts/MyContactsPage.xaml.</remarks>
+    public const string ControlContactsListScroll = "control_contacts_list_scroll";
+
+    /// <summary>Identifies returning from contacts.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/MyContacts/MyContactsPage.xaml.</remarks>
+    public const string ButtonContactsListBack = "button_contacts_list_back";
+
+    /// <summary>Namespaces contact rows by opaque legal identity.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/MyContacts/MyContactsPage.xaml.</remarks>
+    public const string ItemContactsListContact = "item_contacts_list_contact";
+
+    /// <summary>Namespaces contact details actions by opaque legal identity.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/MyContacts/MyContactsPage.xaml.</remarks>
+    public const string ButtonContactsListDetails = "button_contacts_list_details";
+
+    /// <summary>Namespaces contact chat actions by opaque legal identity.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/MyContacts/MyContactsPage.xaml.</remarks>
+    public const string ButtonContactsListChat = "button_contacts_list_chat";
+
+    /// <summary>Identifies the chat page.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/ChatPage.xaml.</remarks>
+    public const string ScreenContactsChat = "screen_contacts_chat";
+
+    /// <summary>Namespaces the chat heading by opaque peer identity.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/ChatPage.xaml.</remarks>
+    public const string LabelContactsChatPeer = "label_contacts_chat_peer";
+
+    /// <summary>Identifies the message editor.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/ChatPage.xaml.</remarks>
+    public const string InputContactsChatMessage = "input_contacts_chat_message";
+
+    /// <summary>Identifies sending a message.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/ChatPage.xaml.</remarks>
+    public const string ButtonContactsChatSend = "button_contacts_chat_send";
+
+    /// <summary>Identifies returning from chat.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/ChatPage.xaml.</remarks>
+    public const string ButtonContactsChatBack = "button_contacts_chat_back";
+
+    /// <summary>Identifies the chat history scrolling region.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/ChatPage.xaml.</remarks>
+    public const string ControlContactsChatScroll = "control_contacts_chat_scroll";
+
+    /// <summary>Namespaces outgoing message groups by their first persisted message identifier.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/Controls/MessageFrame.cs.</remarks>
+    public const string ItemContactsChatSent = "item_contacts_chat_sent";
+
+    /// <summary>Namespaces incoming message groups by their first persisted message identifier.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Contacts/Chat/Controls/MessageFrame.cs.</remarks>
+    public const string ItemContactsChatReceived = "item_contacts_chat_received";
+
+    /// <summary>Identifies an identity access petition.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Petitions/PetitionIdentity/PetitionIdentityPage.xaml.</remarks>
+    public const string ScreenPetitionsIdentity = "screen_petitions_identity";
+
+    /// <summary>Identifies the petition identity state.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Petitions/PetitionIdentity/PetitionIdentityPage.xaml.</remarks>
+    public const string LabelPetitionsIdentityState = "label_petitions_identity_state";
+
+    /// <summary>Identifies accepting an identity petition.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Petitions/PetitionIdentity/PetitionIdentityPage.xaml.</remarks>
+    public const string ButtonPetitionsIdentityAccept = "button_petitions_identity_accept";
+
+    /// <summary>Identifies returning from an identity petition.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Petitions/PetitionIdentity/PetitionIdentityPage.xaml.</remarks>
+    public const string ButtonPetitionsIdentityBack = "button_petitions_identity_back";
+
+    /// <summary>Identifies the notification list.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Notifications/NotificationsPage.xaml.</remarks>
+    public const string ScreenMainNotifications = "screen_main_notifications";
+
+    /// <summary>Identifies opening Home notifications.</summary>
+    /// <remarks>Owner: NeuroAccessMaui/UI/Pages/Main/HomePage.xaml.</remarks>
+    public const string ButtonMainHomeNotifications = "button_main_home_notifications";
+
     private static readonly HashSet<string> dynamicPrefixes = new HashSet<string>(StringComparer.Ordinal)
     {
+        ButtonKycImageCapture,
+        ImageKycFieldPreview,
         ItemSettingsLanguageOption,
         ItemSharedPhonecountryOption,
         DevItemPlatformCatalogScenario,
@@ -524,6 +686,16 @@ public static class AutomationIds
         ItemApplicationsCatalogTemplate,
         LabelApplicationsCatalogTemplatename,
         LabelApplicationsCatalogTemplatetype,
+        ItemContactsListContact,
+        ButtonContactsListDetails,
+        ButtonContactsListChat,
+        LabelContactsChatPeer,
+        ItemContactsChatSent,
+        ItemContactsChatReceived,
+        ControlKycProcessPage,
+        InputKycProcessField,
+        LabelKycSummaryValue,
+        ControlOnboardingProfileIdentity,
     };
 
     /// <summary>Gets retired identifiers that must never be assigned to another logical control.</summary>
@@ -615,6 +787,7 @@ public static class AutomationIds
         "button_available_identity_application",
         "identity_application_",
         "screen_kyc_process",
+        "label_kyc_status_heading",
     });
 
     /// <summary>Creates a stable instance identity without collapsing punctuation or segment boundaries.</summary>

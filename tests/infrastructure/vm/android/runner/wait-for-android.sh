@@ -23,6 +23,8 @@ while ((SECONDS < deadline)); do
         adb -s "$serial" shell settings put global window_animation_scale 0 >/dev/null
         adb -s "$serial" shell settings put global transition_animation_scale 0 >/dev/null
         adb -s "$serial" shell settings put global animator_duration_scale 0 >/dev/null
+        # Keep the screen on so long KYC and approval waits never hit the lock screen.
+        adb -s "$serial" shell svc power stayon true >/dev/null
         printf 'Android boot completed on %s\n' "$serial"
         exit 0
     fi
