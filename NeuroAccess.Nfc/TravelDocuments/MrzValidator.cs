@@ -376,6 +376,19 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				&& Value.All(static Character => Character is >= 'A' and <= 'Z');
 		}
 
+		/// <summary>
+		/// Normalizes an MRZ issuing-state or nationality code to its three-letter form.
+		/// Trailing filler characters are removed, and Germany's single-letter ICAO code
+		/// "D" (encoded as "D&lt;&lt;", ICAO Doc 9303-3 §5) is mapped to its ISO 3166-1 alpha-3 code "DEU".
+		/// </summary>
+		/// <param name="Value">Raw three-character code field from the MRZ.</param>
+		/// <returns>Normalized country code.</returns>
+		internal static string NormalizeCountryCode(string Value)
+		{
+			string Code = Value.TrimEnd('<');
+			return Code == "D" ? "DEU" : Code;
+		}
+
 		private static bool HasValidCountryCode(string? Value)
 		{
 			return !string.IsNullOrWhiteSpace(Value)
@@ -521,12 +534,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			Info = new DocumentInformation
 			{
 				DocumentType = ExtractDocumentType(Line1.Substring(0, 2)),
-				IssuingState = Line1.Substring(2, 3),
+				IssuingState = NormalizeCountryCode(Line1.Substring(2, 3)),
 				DocumentNumber = DocumentNumber.Replace("<", string.Empty),
 				DateOfBirth = DateOfBirth,
 				Gender = Line2.Substring(7, 1),
 				ExpiryDate = ExpiryDate,
-				Nationality = Line2.Substring(15, 3),
+				Nationality = NormalizeCountryCode(Line2.Substring(15, 3)),
 				OptionalData = (Line1.Substring(15, 15) + Line2.Substring(18, 11)).Replace("<", string.Empty),
 				MRZ_Information = DocumentNumber + Line1[14] + DateOfBirth + Line2[6] + ExpiryDate + Line2[14]
 			};
@@ -565,9 +578,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			Info = new DocumentInformation
 			{
 				DocumentType = ExtractDocumentType(Line1.Substring(0, 2)),
-				IssuingState = Line1.Substring(2, 3),
+				IssuingState = NormalizeCountryCode(Line1.Substring(2, 3)),
 				DocumentNumber = DocumentNumber.Replace("<", string.Empty),
-				Nationality = Line2.Substring(10, 3),
+				Nationality = NormalizeCountryCode(Line2.Substring(10, 3)),
 				DateOfBirth = DateOfBirth,
 				Gender = Line2.Substring(20, 1),
 				ExpiryDate = ExpiryDate,
@@ -611,9 +624,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			Info = new DocumentInformation
 			{
 				DocumentType = ExtractDocumentType(Line1.Substring(0, 2)),
-				IssuingState = Line1.Substring(2, 3),
+				IssuingState = NormalizeCountryCode(Line1.Substring(2, 3)),
 				DocumentNumber = DocumentNumber.Replace("<", string.Empty),
-				Nationality = Line2.Substring(10, 3),
+				Nationality = NormalizeCountryCode(Line2.Substring(10, 3)),
 				DateOfBirth = DateOfBirth,
 				Gender = Line2.Substring(20, 1),
 				ExpiryDate = ExpiryDate,
@@ -963,8 +976,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			DocumentInformation Result = new DocumentInformation
 			{
 				DocumentType = ExtractDocumentType(Match.Groups["DocType"].Value),
-				IssuingState = Match.Groups["Issuer"].Value,
-				Nationality = Match.Groups["Nationality"].Value,
+				IssuingState = NormalizeCountryCode(Match.Groups["Issuer"].Value),
+				Nationality = NormalizeCountryCode(Match.Groups["Nationality"].Value),
 				Gender = Match.Groups["Gender"].Value,
 				DocumentNumber = Match.Groups["Nr"].Value,
 				DateOfBirth = Match.Groups["Birth"].Value,
