@@ -378,15 +378,21 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 		/// <summary>
 		/// Normalizes an MRZ issuing-state or nationality code to its three-letter form.
-		/// Trailing filler characters are removed, and Germany's single-letter ICAO code
-		/// "D" (encoded as "D&lt;&lt;", ICAO Doc 9303-3 §5) is mapped to its ISO 3166-1 alpha-3 code "DEU".
+		/// Trailing filler characters are removed, and ICAO-specific codes with an ISO 3166-1 alpha-3
+		/// equivalent are mapped to it (ICAO Doc 9303-3 §5): Germany's single-letter code "D" (encoded
+		/// as "D&lt;&lt;") becomes "DEU", and the British nationality codes GBD, GBN, GBO, GBP and GBS become "GBR".
 		/// </summary>
 		/// <param name="Value">Raw three-character code field from the MRZ.</param>
 		/// <returns>Normalized country code.</returns>
 		internal static string NormalizeCountryCode(string Value)
 		{
 			string Code = Value.TrimEnd('<');
-			return Code == "D" ? "DEU" : Code;
+			return Code switch
+			{
+				"D" => "DEU",
+				"GBD" or "GBN" or "GBO" or "GBP" or "GBS" => "GBR",
+				_ => Code
+			};
 		}
 
 		private static bool HasValidCountryCode(string? Value)

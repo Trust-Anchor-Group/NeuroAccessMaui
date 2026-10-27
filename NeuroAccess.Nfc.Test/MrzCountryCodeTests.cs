@@ -42,5 +42,21 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual("DEU", Info!.IssuingState);
 			Assert.AreEqual("DEU", Info.Nationality);
 		}
+
+		[TestMethod]
+		[DataRow("GBD")]
+		[DataRow("GBN")]
+		[DataRow("GBO")]
+		[DataRow("GBP")]
+		[DataRow("GBS")]
+		public void Test_04_Parse_MRZ_TD3_BritishNationality(string Nationality)
+		{
+			string Mrz = "P<GBRCHAN<<TAI<MAN<<<<<<<<<<<<<<<<<<<<<<<<<<\nK123456784" + Nationality + "8001014M3001019<<<<<<<<<<<<<<04";
+			MrzValidationResult Result = MrzValidator.Validate(Mrz);
+			Assert.IsTrue(Result.IsParsed, Result.FailureReason);
+			Assert.AreEqual("GBR", Result.DocumentInformation!.IssuingState);
+			Assert.AreEqual("GBR", Result.DocumentInformation.Nationality);
+			Assert.AreEqual(Result.RequiredCheckCount, Result.PassedRequiredCheckCount);
+		}
 	}
 }
