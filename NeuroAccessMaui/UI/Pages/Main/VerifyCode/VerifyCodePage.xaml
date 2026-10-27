@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
+                             AutomationId="{x:Static automation:AutomationIds.ScreenSecurityVerifycode}"
 							 x:Class="NeuroAccessMaui.UI.Pages.Main.VerifyCode.VerifyCodePage"
 							 x:DataType="viewmodel:VerifyCodeViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
@@ -79,7 +80,7 @@
 						   Top="{StaticResource LargeSpacing}"
 						   Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
-			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton Command="{Binding GoBackCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonSecurityVerifycodeBack}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 			<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
 
 		</Grid>
@@ -90,12 +91,12 @@
 				<Grid Grid.Row="1" RowDefinitions="auto,auto" RowSpacing="{DynamicResource LargeSpacing}">
 					<VerticalStackLayout Grid.Row="0" Spacing="{DynamicResource LargeSpacing}">
 						<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-							<Label Style="{DynamicResource PopupTitleLabelStyle}" Text="{l:Localize OnboardingVerifyCodePageTitle}" />
+							<Label Style="{DynamicResource PopupTitleLabelStyle}" Text="{l:Localize OnboardingVerifyCodePageTitle}" AutomationId="{x:Static automation:AutomationIds.LabelSecurityVerifycodeTitle}" />
 							<Label Style="{DynamicResource PopupDetailsLabelStyle}" Text="{Binding LocalizedVerifyCodePageDetails}" />
 							<Grid>
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-									<Label Style="{DynamicResource PopupSectionTitleLabel}" Text="{l:Localize VerifyCodeSectionTitle}" />
-									<Grid RowDefinitions="auto" ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto" ColumnSpacing="0">
+									<Label Style="{DynamicResource PopupSectionTitleLabel}" Text="{l:Localize VerifyCodeSectionTitle}"  AutomationId="{x:Static automation:AutomationIds.LabelSecurityVerifycodeDigits}"/>
+									<Grid RowDefinitions="auto" ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto" ColumnSpacing="0" AutomationId="{x:Static automation:AutomationIds.ControlSecurityVerifycodeDigits}">
 										<Grid.GestureRecognizers>
 											<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
 										</Grid.GestureRecognizers>
@@ -121,6 +122,7 @@
 								</VerticalStackLayout>
 
 								<Entry x:Name="InnerCodeEntry"
+                                         AutomationId="{x:Static automation:AutomationIds.InputSecurityVerifycodeValue}"
 										 VerticalOptions="End"
 										 HeightRequest="{DynamicResource SmallSpacing}"
 										 ClearButtonVisibility="Never"
@@ -135,10 +137,10 @@
 					</VerticalStackLayout>
 
 					<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
-						<controls:TextButton HorizontalOptions="Fill" Command="{Binding VerifyCommand}"
+						<controls:TextButton HorizontalOptions="Fill" Command="{Binding VerifyCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonSecurityVerifycodeVerify}"
 													Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize Verify}" />
 
-						<controls:TextButton HorizontalOptions="Fill" Command="{Binding CodeVerification.ResendCodeCommand}"
+						<controls:TextButton HorizontalOptions="Fill" Command="{Binding CodeVerification.ResendCodeCommand}" AutomationId="{x:Static automation:AutomationIds.ButtonSecurityVerifycodeResend}"
 													Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}" />
 					</VerticalStackLayout>
 				</Grid>

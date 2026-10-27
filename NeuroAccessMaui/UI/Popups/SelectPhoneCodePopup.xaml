@@ -2,13 +2,13 @@
 <viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.SelectPhoneCodePopup"
                      x:DataType="viewmodel:SelectPhoneCodePopup"
                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
                      xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups"
 					 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data">
-    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*"
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*" AutomationId="{x:Static automation:AutomationIds.PopupSharedPhonecountry}"
           Style="{DynamicResource PopupGrid}">
-        <SearchBar x:Name="InnerSearchBar"
+        <SearchBar x:Name="InnerSearchBar" AutomationId="{x:Static automation:AutomationIds.InputSharedPhonecountrySearch}"
                    Margin="{DynamicResource MediumSpacing}"
                    TextChanged="SearchBar_TextChanged"
                    Placeholder="{l:Localize Search}" />
@@ -20,7 +20,7 @@
                         SelectionChanged="InnerListView_SelectionChanged">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="data:ISO_3166_Country">
-                    <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}" ColumnSpacing="8">
+                    <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}" ColumnSpacing="8" AutomationId="{Binding Alpha2, Converter={automation:AutomationKey Prefix={x:Static automation:AutomationIds.ItemSharedPhonecountryOption}}}">
                         <Label Text="{Binding DialCode}"
                                VerticalOptions="Center" />
                         <Label Grid.Column="1"

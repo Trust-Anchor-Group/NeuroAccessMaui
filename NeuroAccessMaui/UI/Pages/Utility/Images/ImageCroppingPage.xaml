@@ -2,7 +2,7 @@
 <base:BaseContentPage
     x:Class="NeuroAccessMaui.UI.Pages.Utility.Images.ImageCroppingPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:automation="clr-namespace:NeuroAccessMaui.UI.Automation"
     xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
     xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
     xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Utility.Images"
@@ -21,7 +21,7 @@
 								PathData="{x:Static ui:Geometries.BackButtonPath}" />
             <!--  rotation button -->
 			<controls:ImageButton
-				AutomationId="RotateImageButton"
+				AutomationId="{x:Static automation:AutomationIds.ButtonMediaImagecropRotate}"
                 Grid.Column="2"
 				Command="{Binding RotateCommand}"
 				Style="{DynamicResource FilledImageButton}"

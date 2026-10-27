@@ -1,0 +1,50 @@
+scenarios:
+  - name: small-phone-api27-demo
+    enabled: true
+    api_level: 27
+    device_profile: small_phone
+    system_image: default
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-4-api29-demo
+    enabled: true
+    api_level: 29
+    device_profile: pixel_4
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-6-api30-demo
+    enabled: true
+    api_level: 30
+    device_profile: pixel_6
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-7-pro-api34-demo
+    enabled: true
+    api_level: 34
+    device_profile: pixel_7_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest
+
+  - name: pixel-8-pro-api35-demo
+    enabled: true
+    api_level: 35
+    device_profile: pixel_8_pro
+    system_image: google_apis
+    abi: x86_64
+    storage_policy: delete
+    show_emulator: true
+    test_class: com.tag.neuroaccess.neuroaccessespressoautomationtests.onboarding.RegistrationFlowTest

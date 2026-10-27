@@ -41,11 +41,21 @@ namespace NeuroAccessMaui.Services.UI
         /// Initializes a new instance of <see cref="CustomShell"/>.
         /// </summary>
         public CustomShell(LoadingPage loadingPage, IKeyboardInsetsService keyboardInsetsService, IAnimationCoordinator animationCoordinator)
+            : this((BaseContentPage)loadingPage, keyboardInsetsService, animationCoordinator)
         {
-            ArgumentNullException.ThrowIfNull(keyboardInsetsService);
-            ArgumentNullException.ThrowIfNull(animationCoordinator);
-            this.keyboardInsetsService = keyboardInsetsService;
-            this.animationCoordinator = animationCoordinator;
+        }
+
+        /// <summary>Creates a shell with an explicitly supplied initial screen.</summary>
+        /// <param name="InitialScreen">The first screen, whose host owns its initialization.</param>
+        /// <param name="KeyboardInsetsService">The keyboard inset provider.</param>
+        /// <param name="AnimationCoordinator">The screen animation coordinator.</param>
+        public CustomShell(BaseContentPage InitialScreen, IKeyboardInsetsService KeyboardInsetsService, IAnimationCoordinator AnimationCoordinator)
+        {
+            ArgumentNullException.ThrowIfNull(InitialScreen);
+            ArgumentNullException.ThrowIfNull(KeyboardInsetsService);
+            ArgumentNullException.ThrowIfNull(AnimationCoordinator);
+            this.keyboardInsetsService = KeyboardInsetsService;
+            this.animationCoordinator = AnimationCoordinator;
             this.currentKeyboardInset = this.keyboardInsetsService.KeyboardHeight;
             this.isKeyboardVisible = this.keyboardInsetsService.IsKeyboardVisible;
             this.keyboardInsetsService.KeyboardInsetChanged += this.OnKeyboardInsetChanged;
@@ -104,7 +114,7 @@ namespace NeuroAccessMaui.Services.UI
             this.Padding = 0;
             this.SetDynamicResource(BackgroundColorProperty, "SurfaceBackgroundWL");
             
-            LoadingPage loadingPageInstance = loadingPage;
+            BaseContentPage loadingPageInstance = InitialScreen;
             this.contentHostA.Content = loadingPageInstance;
             this.contentHostB.Content = null;
             this.currentScreen = loadingPageInstance;

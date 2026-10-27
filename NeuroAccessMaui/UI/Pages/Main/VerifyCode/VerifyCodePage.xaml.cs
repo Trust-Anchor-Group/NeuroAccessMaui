@@ -14,10 +14,24 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
 		/// </summary>
 		public VerifyCodePage()
+			: this(new VerifyCodeViewModel(ServiceRef.NavigationService.PopLatestArgs<VerifyCodeNavigationArgs>()))
+		{
+		}
+
+		/// <summary>
+		/// Creates the shared verification screen with an explicitly supplied view model without changing navigation construction.
+		/// </summary>
+		/// <param name="ViewModel">The view model used by the verification screen.</param>
+		/// <returns>A verification screen bound to the supplied view model.</returns>
+		public static VerifyCodePage CreateWithViewModel(VerifyCodeViewModel ViewModel)
+		{
+			ArgumentNullException.ThrowIfNull(ViewModel);
+			return new VerifyCodePage(ViewModel);
+		}
+
+		private VerifyCodePage(VerifyCodeViewModel ViewModel)
 		{
 			this.InitializeComponent();
-
-			VerifyCodeViewModel ViewModel = new(ServiceRef.NavigationService.PopLatestArgs<VerifyCodeNavigationArgs>());
 			this.ContentPageModel = ViewModel;
 
 			this.innerLabels = [

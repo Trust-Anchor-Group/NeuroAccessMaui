@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data xml:space="preserve" name="PlatformTitle">
+    <value>Dev Test Platform</value>
+  </data>
+  <data xml:space="preserve" name="Screens">
+    <value>Screens</value>
+  </data>
+  <data xml:space="preserve" name="Components">
+    <value>Components</value>
+  </data>
+  <data xml:space="preserve" name="Scenarios">
+    <value>Scenarios</value>
+  </data>
+  <data xml:space="preserve" name="Section">
+    <value>Catalog</value>
+  </data>
+  <data xml:space="preserve" name="Category">
+    <value>Scenario category</value>
+  </data>
+  <data xml:space="preserve" name="All">
+    <value>All</value>
+  </data>
+  <data xml:space="preserve" name="Onboarding">
+    <value>Onboarding</value>
+  </data>
+  <data xml:space="preserve" name="Buttons">
+    <value>Buttons</value>
+  </data>
+  <data xml:space="preserve" name="Inputs">
+    <value>Inputs</value>
+  </data>
+  <data xml:space="preserve" name="Default">
+    <value>Default</value>
+  </data>
+  <data xml:space="preserve" name="Empty">
+    <value>Empty</value>
+  </data>
+  <data xml:space="preserve" name="Valid">
+    <value>Valid</value>
+  </data>
+  <data xml:space="preserve" name="Invalid">
+    <value>Invalid</value>
+  </data>
+  <data xml:space="preserve" name="HappyPaths">
+    <value>Happy paths</value>
+  </data>
+  <data xml:space="preserve" name="Validation">
+    <value>Validation</value>
+  </data>
+  <data xml:space="preserve" name="Loading">
+    <value>Loading</value>
+  </data>
+  <data xml:space="preserve" name="Errors">
+    <value>Errors</value>
+  </data>
+  <data xml:space="preserve" name="EdgeCases">
+    <value>Edge cases</value>
+  </data>
+  <data xml:space="preserve" name="Provider">
+    <value>ID provider</value>
+  </data>
+  <data xml:space="preserve" name="Phone">
+    <value>Phone verification</value>
+  </data>
+  <data xml:space="preserve" name="PhoneCode">
+    <value>Phone code verification</value>
+  </data>
+  <data xml:space="preserve" name="Email">
+    <value>Email verification</value>
+  </data>
+  <data xml:space="preserve" name="EmailCode">
+    <value>Email code verification</value>
+  </data>
+  <data xml:space="preserve" name="Username">
+    <value>Username</value>
+  </data>
+  <data xml:space="preserve" name="Account">
+    <value>Create account</value>
+  </data>
+  <data xml:space="preserve" name="Pin">
+    <value>Create PIN</value>
+  </data>
+  <data xml:space="preserve" name="Biometrics">
+    <value>Biometrics</value>
+  </data>
+  <data xml:space="preserve" name="Success">
+    <value>Success</value>
+  </data>
+  <data xml:space="preserve" name="TextButton">
+    <value>Production text button</value>
+  </data>
+  <data xml:space="preserve" name="CompositeEntry">
+    <value>Production composite entry</value>
+  </data>
+  <data xml:space="preserve" name="CodeSent">
+    <value>Code sent</value>
+  </data>
+  <data xml:space="preserve" name="BackendError">
+    <value>Backend error</value>
+  </data>
+  <data xml:space="preserve" name="NetworkError">
+    <value>Network error</value>
+  </data>
+  <data xml:space="preserve" name="UnitedStates">
+    <value>United States</value>
+  </data>
+  <data xml:space="preserve" name="Sweden">
+    <value>Sweden</value>
+  </data>
+  <data xml:space="preserve" name="ReadOnly">
+    <value>Read-only preview</value>
+  </data>
+  <data xml:space="preserve" name="Verifying">
+    <value>Verifying</value>
+  </data>
+  <data xml:space="preserve" name="Verified">
+    <value>Verified</value>
+  </data>
+  <data xml:space="preserve" name="Expired">
+    <value>Expired code</value>
+  </data>
+  <data xml:space="preserve" name="Suggestion">
+    <value>Invalid with suggestion</value>
+  </data>
+  <data xml:space="preserve" name="CreatingIdentity">
+    <value>Creating identity</value>
+  </data>
+  <data xml:space="preserve" name="Matching">
+    <value>Matching PIN</value>
+  </data>
+  <data xml:space="preserve" name="Mismatch">
+    <value>Confirmation mismatch</value>
+  </data>
+  <data xml:space="preserve" name="Enabled">
+    <value>Enabled</value>
+  </data>
+  <data xml:space="preserve" name="Disabled">
+    <value>Disabled</value>
+  </data>
+  <data xml:space="preserve" name="Focused">
+    <value>Focused</value>
+  </data>
+  <data xml:space="preserve" name="Search">
+    <value>Search screens, scenarios, components or tags</value>
+  </data>
+  <data xml:space="preserve" name="NoResults">
+    <value>No matching scenarios.</value>
+  </data>
+  <data xml:space="preserve" name="Fullscreen">
+    <value>Fullscreen</value>
+  </data>
+  <data xml:space="preserve" name="Back">
+    <value>Back</value>
+  </data>
+  <data xml:space="preserve" name="Simulate">
+    <value>Simulate outcome</value>
+  </data>
+  <data xml:space="preserve" name="VisualNotice">
+    <value>Current production view and ViewModel. Read-only visual preview; production lifecycle and backend actions are not started.</value>
+  </data>
+  <data xml:space="preserve" name="ComponentNotice">
+    <value>Current reusable production control. Local interaction only.</value>
+  </data>
+  <data xml:space="preserve" name="RenderFailure">
+    <value>Preview unavailable.</value>
+  </data>
+  <data xml:space="preserve" name="Pending">
+    <value>Simulated operation remains in progress until the preview closes.</value>
+  </data>
+  <data xml:space="preserve" name="Sent">
+    <value>Simulated outcome: verification code sent.</value>
+  </data>
+  <data xml:space="preserve" name="Accepted">
+    <value>Simulated outcome: verification accepted. This does not execute backend verification.</value>
+  </data>
+  <data xml:space="preserve" name="BackendFailure">
+    <value>Simulated outcome: backend rejected the operation.</value>
+  </data>
+  <data xml:space="preserve" name="NetworkFailure">
+    <value>Simulated outcome: network unavailable.</value>
+  </data>
+  <data xml:space="preserve" name="ExpiredFailure">
+    <value>Simulated outcome: verification code expired.</value>
+  </data>
+  <data xml:space="preserve" name="SimulationComplete">
+    <value>Local simulation completed.</value>
+  </data>
+  <data xml:space="preserve" name="Area">
+    <value>Application area</value>
+  </data>
+  <data xml:space="preserve" name="Subject">
+    <value>Screen or component</value>
+  </data>
+</root>
