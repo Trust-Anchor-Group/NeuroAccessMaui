@@ -178,10 +178,51 @@ namespace NeuroAccessMaui.Services.Authentication
 			}
 		}
 
+		/// <inheritdoc/>
+		public bool CanResetPinWithBiometrics => this.platformSpecific.SupportsFingerprintAuthentication;
+
+		/// <inheritdoc/>
+		public async Task<bool> ResetForgottenPinAsync()
+		{
+			if (!this.CanResetPinWithBiometrics)
+				return false;
+
+			if (!await this.uiService.DisplayAlert(
+				this.localizer[nameof(AppResources.ForgotPin)],
+				this.localizer[nameof(AppResources.ForgotPinWarning)],
+				this.localizer[nameof(AppResources.Continue)],
+				this.localizer[nameof(AppResources.Cancel)]))
+			{
+				return false;
+			}
+
+			bool Verified = await this.platformSpecific.AuthenticateUserFingerprint(
+				this.localizer[nameof(AppResources.FingerprintTitle)],
+				null,
+				this.localizer[nameof(AppResources.ForgotPinBiometricsDescription)],
+				this.localizer[nameof(AppResources.Cancel)],
+				null);
+
+			if (!Verified)
+				return false;
+
+			await this.SetCurrentPasswordCounterAsync(0);
+			await this.loginAuditor.UnblockAndReset(Constants.Password.RemoteEndpoint);
+
+			while (this.popupService.HasOpenPopups)
+				await this.popupService.PopAsync();
+
+			await ServiceRef.NavigationService.SetRootAsync(
+				nameof(OnboardingPage),
+				new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ChangePin });
+
+			return true;
+		}
+
 		/// <summary>
 		/// Checks if user is blocked from authentication and shows UI as needed.
 		/// </summary>
-		/// <returns>true if the user is blocked; otherwise false.</returns>
+		/// <returns>true if the user is blocked, or was taken to define a new PIN after a biometric reset; otherwise false.</returns>
 		public async Task<bool> CheckUserBlockingAsync()
 		{
 			DateTime? nextLoginTime = await this.loginAuditor.GetEarliestLoginOpportunity(Constants.Password.RemoteEndpoint, Constants.Password.Protocol);
@@ -212,7 +253,22 @@ namespace NeuroAccessMaui.Services.Authentication
 					}
 				}
 
-				await this.uiService.DisplayAlert(this.localizer[nameof(AppResources.ErrorTitle)], messageAlert);
+				if (this.CanResetPinWithBiometrics)
+				{
+					bool ResetPin = await this.uiService.DisplayAlert(
+						this.localizer[nameof(AppResources.ErrorTitle)],
+						messageAlert,
+						this.localizer[nameof(AppResources.ResetPinWithBiometrics)],
+						this.localizer[nameof(AppResources.Close)]);
+
+					if (ResetPin && await this.ResetForgottenPinAsync())
+						return true;
+				}
+				else
+				{
+					await this.uiService.DisplayAlert(this.localizer[nameof(AppResources.ErrorTitle)], messageAlert);
+				}
+
 				await this.CloseApplicationAsync();
 				return true;
 			}

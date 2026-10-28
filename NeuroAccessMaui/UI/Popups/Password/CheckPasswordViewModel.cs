@@ -87,6 +87,28 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		}
 
 		/// <summary>
+		/// If the user can reset a forgotten PIN by verifying with device biometrics.
+		/// </summary>
+		public bool CanResetPin => this.authenticationService.CanResetPinWithBiometrics;
+
+		/// <summary>
+		/// Resets a forgotten PIN using device biometrics and takes the user through defining a new PIN.
+		/// </summary>
+		[RelayCommand]
+		private async Task ForgotPin()
+		{
+			try
+			{
+				await this.authenticationService.ResetForgottenPinAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
 		/// Cancels password-entry
 		/// </summary>
 		[RelayCommand]

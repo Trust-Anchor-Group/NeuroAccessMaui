@@ -153,6 +153,25 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task ClearSubmissionAsync(KycReference Reference);
 
 		/// <summary>
+		/// Remembers an identity application the user cancelled while it could not be obsoleted on the server, so it is never
+		/// adopted and is obsoleted once the server can be reached.
+		/// </summary>
+		/// <param name="IdentityId">The identity identifier.</param>
+		Task AddAbandonedApplicationIdentityIdAsync(string IdentityId);
+
+		/// <summary>
+		/// Gets the identity applications the user cancelled that have not yet been confirmed obsoleted on the server.
+		/// </summary>
+		/// <returns>The abandoned identity identifiers.</returns>
+		Task<IReadOnlyList<string>> GetAbandonedApplicationIdentityIdsAsync();
+
+		/// <summary>
+		/// Stops tracking an abandoned identity application, once it is obsoleted or no longer exists on the server.
+		/// </summary>
+		/// <param name="IdentityId">The identity identifier.</param>
+		Task RemoveAbandonedApplicationIdentityIdAsync(string IdentityId);
+
+		/// <summary>
 		/// Persists review metadata from the provider.
 		/// </summary>
 		Task ApplyApplicationReviewAsync(KycReference Reference, ApplicationReview Review);

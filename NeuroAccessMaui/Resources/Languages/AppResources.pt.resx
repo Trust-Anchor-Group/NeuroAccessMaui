@@ -4946,4 +4946,31 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="DestroyToken" xml:space="preserve">
     <value>Destruir token</value>
   </data>
+  <data name="PinNotDefined" xml:space="preserve">
+    <value>Nenhum PIN está definido. Defina um PIN antes de mudar para a autenticação por PIN.</value>
+  </data>
+  <data name="OnboardingBiometricsFailedTitle" xml:space="preserve">
+    <value>Biometria não ativada</value>
+  </data>
+  <data name="OnboardingBiometricsFailedDescription" xml:space="preserve">
+    <value>Tente novamente ou continue com seu PIN por enquanto.</value>
+  </data>
+  <data name="TooManyAccountCreationAttempts" xml:space="preserve">
+    <value>Foram feitas muitas tentativas de criar uma conta a partir desta rede. Tente novamente mais tarde.</value>
+  </data>
+  <data name="TooManyAccountCreationAttemptsTryAfter" xml:space="preserve">
+    <value>Foram feitas muitas tentativas de criar uma conta a partir desta rede. Tente novamente após {0}.</value>
+  </data>
+  <data name="ForgotPin" xml:space="preserve">
+    <value>Esqueceu o PIN?</value>
+  </data>
+  <data name="ForgotPinBiometricsDescription" xml:space="preserve">
+    <value>Confirme que é você para redefinir seu PIN</value>
+  </data>
+  <data name="ForgotPinWarning" xml:space="preserve">
+    <value>Para redefinir seu PIN, confirme sua identidade com biometria. Em seguida, você criará um novo PIN.</value>
+  </data>
+  <data name="ResetPinWithBiometrics" xml:space="preserve">
+    <value>Redefinir PIN com biometria</value>
+  </data>
 </root>

@@ -5075,4 +5075,22 @@ Document read. You can move your iPhone.</value>
   <data name="OnboardingBiometricsFailedDescription" xml:space="preserve">
     <value>Try again, or continue with your PIN for now.</value>
   </data>
+  <data name="TooManyAccountCreationAttempts" xml:space="preserve">
+    <value>Too many attempts to create an account have been made from this network. Please try again later.</value>
+  </data>
+  <data name="TooManyAccountCreationAttemptsTryAfter" xml:space="preserve">
+    <value>Too many attempts to create an account have been made from this network. Try again after {0}.</value>
+  </data>
+  <data name="ForgotPin" xml:space="preserve">
+    <value>Forgot PIN?</value>
+  </data>
+  <data name="ForgotPinBiometricsDescription" xml:space="preserve">
+    <value>Verify it's you to reset your PIN</value>
+  </data>
+  <data name="ForgotPinWarning" xml:space="preserve">
+    <value>To reset your PIN, verify yourself with biometrics. You will then create a new PIN.</value>
+  </data>
+  <data name="ResetPinWithBiometrics" xml:space="preserve">
+    <value>Reset PIN with biometrics</value>
+  </data>
 </root>

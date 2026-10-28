@@ -1009,6 +1009,27 @@ namespace NeuroAccessMaui.Services.Xmpp
 			int PortNumber, string UserName, string Password, string PasswordMethod, string LanguageCode, string ApiKey, string ApiSecret,
 			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 		{
+			CancellationToken Token = this.activationCancellation?.Token
+				?? throw new InvalidOperationException("XMPP services are not active.");
+
+			// Keep the main client from being created or destroyed while a temporary client uses the same account.
+			await this.clientSemaphore.WaitAsync(Token);
+			try
+			{
+				Token.ThrowIfCancellationRequested();
+				return await this.TryConnectInnerCore(Domain, IsIpAddress, HostName, PortNumber, UserName, Password, PasswordMethod,
+					LanguageCode, ApiKey, ApiSecret, ApplicationAssembly, ConnectedFunc, Operation);
+			}
+			finally
+			{
+				this.clientSemaphore.Release();
+			}
+		}
+
+		private async Task<(bool Succeeded, string? ErrorMessage, string[]? Alternatives)> TryConnectInnerCore(string Domain, bool IsIpAddress, string HostName,
+			int PortNumber, string UserName, string Password, string PasswordMethod, string LanguageCode, string ApiKey, string ApiSecret,
+			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
+		{
 			// Use TaskCompletionSource for single completion
 			TaskCompletionSource<bool> Tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -1029,28 +1050,50 @@ namespace NeuroAccessMaui.Services.Xmpp
 					Tcs.TrySetResult(result);
 			}
 
+			void CaptureConnectionFailure(Exception Ex)
+			{
+				switch (Ex)
+				{
+					case ObjectDisposedException:
+						ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+						break;
+					case Waher.Networking.XMPP.StreamErrors.NotAuthorizedException:
+					case Waher.Networking.XMPP.AuthenticationErrors.NotAuthorizedException:
+						this.reconnectTimer?.Dispose();
+						this.reconnectTimer = null;
+						ConnectionError = NormalizeXmppFailureMessage(Ex);
+						break;
+					case Waher.Networking.XMPP.AuthenticationErrors.TemporaryAuthFailureException:
+						ConnectionError = NormalizeXmppFailureMessage(Ex);
+						break;
+					case Waher.Networking.XMPP.StanzaErrors.ConflictException Conflict:
+						Alternatives = Conflict.Alternatives;
+						break;
+					default:
+						ConnectionError = NormalizeXmppFailureMessage(Ex);
+						break;
+				}
+			}
+
 			// Connection error event handler
 			Task OnConnectionError(object? _, Exception ex)
 			{
 				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 1)
 					return Task.CompletedTask; // Ignore after dispose
 
-				switch (ex)
-				{
-					case ObjectDisposedException:
-						ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-						break;
-					case Waher.Networking.XMPP.StreamErrors.NotAuthorizedException:
-						this.reconnectTimer?.Dispose();
-						this.reconnectTimer = null;
-						break;
-					case Waher.Networking.XMPP.StanzaErrors.ConflictException Conflict:
-						Alternatives = Conflict.Alternatives;
-						break;
-					default:
-						ConnectionError = ex.Message;
-						break;
-				}
+				CaptureConnectionFailure(ex);
+
+				TrySetResult(false);
+				return Task.CompletedTask;
+			}
+
+			// Authentication and registration failures, such as rate limiting, are reported here rather than as connection errors.
+			Task OnError(object? _, Exception Ex)
+			{
+				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 1)
+					return Task.CompletedTask;
+
+				CaptureConnectionFailure(Ex);
 
 				TrySetResult(false);
 				return Task.CompletedTask;
@@ -1125,6 +1168,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				// Register handlers
 				Client.OnConnectionError += OnConnectionError;
+				Client.OnError += OnError;
 				Client.OnStateChanged += OnStateChanged;
 
 				// Begin connect
@@ -1168,6 +1212,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Interlocked.Exchange(ref Disposed, 1);
 				Client.OnStateChanged -= OnStateChanged;
 				Client.OnConnectionError -= OnConnectionError;
+				Client.OnError -= OnError;
 
 				await Client.DisposeAsync();
 				Client = null;
@@ -1206,7 +1251,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>(nameof(ConnectOperation), Operation.ToString()));
-				return (false, ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain], null);
+				string NormalizedFailureMessage = NormalizeXmppFailureMessage(ex);
+				return (false,
+					string.IsNullOrWhiteSpace(NormalizedFailureMessage)
+						? ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain]
+						: NormalizedFailureMessage,
+					null);
 			}
 			finally
 			{
@@ -1218,6 +1268,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Interlocked.Exchange(ref Disposed, 1);
 						Client.OnStateChanged -= OnStateChanged;
 						Client.OnConnectionError -= OnConnectionError;
+						Client.OnError -= OnError;
 						await Client.DisposeAsync();
 						Client = null;
 
@@ -1225,6 +1276,116 @@ namespace NeuroAccessMaui.Services.Xmpp
 					catch { /* Swallow to avoid masking original exception */ }
 				}
 			}
+		}
+
+		/// <summary>
+		/// Turns a connection or registration failure into a message that can be shown to the user.
+		/// </summary>
+		/// <param name="Ex">The failure.</param>
+		/// <returns>The message, or an empty string if the failure carries none.</returns>
+		private static string NormalizeXmppFailureMessage(Exception Ex)
+		{
+			bool IsTemporaryAuthFailure = Ex is Waher.Networking.XMPP.AuthenticationErrors.TemporaryAuthFailureException;
+			return NormalizeXmppFailureMessage(Ex.Message, IsTemporaryAuthFailure);
+		}
+
+		/// <summary>
+		/// Turns a server failure message into one line for the user, without the remote endpoint, and rewrites rate limiting
+		/// messages so they say when the user can try again, in local time.
+		/// </summary>
+		/// <param name="Message">The server message.</param>
+		/// <param name="IsTemporaryAuthFailure">If the server reported a temporary authentication failure.</param>
+		/// <returns>The message, or an empty string if there is nothing to show.</returns>
+		private static string NormalizeXmppFailureMessage(string? Message, bool IsTemporaryAuthFailure = false)
+		{
+			string NormalizedMessage = (Message ?? string.Empty)
+				.Replace('\r', ' ')
+				.Replace('\n', ' ')
+				.Trim();
+
+			int RemoteEndpointIndex = NormalizedMessage.IndexOf("Remote Endpoint:", StringComparison.OrdinalIgnoreCase);
+			if (RemoteEndpointIndex >= 0)
+				NormalizedMessage = NormalizedMessage[..RemoteEndpointIndex];
+
+			NormalizedMessage = NormalizedMessage.Trim().TrimEnd('.', ',', ';', ':');
+
+			if (string.IsNullOrWhiteSpace(NormalizedMessage))
+			{
+				return IsTemporaryAuthFailure
+					? ServiceRef.Localizer[nameof(AppResources.TooManyAccountCreationAttempts)]
+					: string.Empty;
+			}
+
+			if (TryExtractRetryAfter(NormalizedMessage, out string RetryAfter))
+				return ServiceRef.Localizer[nameof(AppResources.TooManyAccountCreationAttemptsTryAfter), ConvertRetryAfterToLocalTime(RetryAfter)];
+
+			if (IsTemporaryAuthFailure &&
+				NormalizedMessage.IndexOf("too many failed login attempts", StringComparison.OrdinalIgnoreCase) < 0)
+			{
+				return ServiceRef.Localizer[nameof(AppResources.TooManyAccountCreationAttempts)];
+			}
+
+			return NormalizedMessage + ".";
+		}
+
+		/// <summary>
+		/// Finds the time in a rate limiting message such as "Try again after 14:05.".
+		/// </summary>
+		/// <param name="Message">The message.</param>
+		/// <param name="RetryAfter">The time text, if found.</param>
+		/// <returns>If a time was found.</returns>
+		private static bool TryExtractRetryAfter(string Message, out string RetryAfter)
+		{
+			const string Marker = "Try again after ";
+			int MarkerIndex = Message.IndexOf(Marker, StringComparison.OrdinalIgnoreCase);
+			if (MarkerIndex < 0)
+			{
+				RetryAfter = string.Empty;
+				return false;
+			}
+
+			string Remaining = Message[(MarkerIndex + Marker.Length)..].Trim();
+			int EndIndex = Remaining.IndexOf('.');
+			RetryAfter = (EndIndex >= 0 ? Remaining[..EndIndex] : Remaining).Trim().TrimEnd('.', ',', ';', ':');
+			return !string.IsNullOrWhiteSpace(RetryAfter);
+		}
+
+		/// <summary>
+		/// Converts a time of day given in UTC by the server to the user's local time. Anything else is returned unchanged.
+		/// </summary>
+		/// <param name="RetryAfter">The time text from the server.</param>
+		/// <returns>The local time, or <paramref name="RetryAfter"/> if it is not a time of day.</returns>
+		private static string ConvertRetryAfterToLocalTime(string RetryAfter)
+		{
+			string[] TimeOnlyFormats =
+			[
+				"h:mm:ss tt",
+				"hh:mm:ss tt",
+				"h:mm tt",
+				"hh:mm tt",
+				"H:mm:ss",
+				"HH:mm:ss",
+				"H:mm",
+				"HH:mm"
+			];
+
+			string Value = RetryAfter.Trim();
+			if (!DateTime.TryParseExact(Value, TimeOnlyFormats, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces,
+				out DateTime ParsedTime))
+			{
+				return Value;
+			}
+
+			DateTime UtcNow = DateTime.UtcNow;
+			DateTime UtcRetryTime = new(UtcNow.Year, UtcNow.Month, UtcNow.Day, ParsedTime.Hour, ParsedTime.Minute, ParsedTime.Second,
+				DateTimeKind.Utc);
+
+			// A time more than 12 hours ago refers to tomorrow.
+			if (UtcRetryTime < UtcNow.AddHours(-12))
+				UtcRetryTime = UtcRetryTime.AddDays(1);
+
+			bool IncludeSeconds = Value.Count(Character => Character == ':') >= 2;
+			return UtcRetryTime.ToLocalTime().ToString(IncludeSeconds ? "T" : "t", CultureInfo.CurrentCulture);
 		}
 
 		private void ReconnectTimer_Tick(object? State)
@@ -1511,7 +1672,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (Array.IndexOf<string>(Codes, Code) < 0)
 				return;
 
-			await this.DestroyXmppClient();
+			await this.clientSemaphore.WaitAsync();
+			try
+			{
+				if (!ReferenceEquals(Sender, this.xmppClient))
+					return;
+				await this.DestroyXmppClient();
+			}
+			finally { this.clientSemaphore.Release(); }
 
 			this.domainName = string.Empty;
 			this.accountName = string.Empty;
@@ -3263,6 +3431,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (this.contractsClient is null)
 				return;
 
+			await this.ObsoleteAbandonedApplicationIdentitiesAsync();
+
 			IEnumerable<KycReference> References;
 
 			try
@@ -3293,6 +3463,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				if (!RefreshedIdentityIds.Add(IdentityId))
 					continue;
+
+				// Finish a promotion that was interrupted after the preview was approved, for example because the app stopped.
+				// It must run before the preview is read below, since the preview is gone once its final identity exists.
+				if (await TryResumePreviewPromotionAsync(Reference))
+				{
+					if (ServiceRef.NavigationService.CurrentPage is ApplicationsPage ResumedAppPage &&
+						ResumedAppPage.BindingContext is ApplicationsViewModel ResumedModel)
+					{
+						MainThread.BeginInvokeOnMainThread(ResumedModel.Loader.Reload);
+					}
+
+					continue;
+				}
 
 				LegalIdentity Identity;
 
@@ -3364,6 +3547,165 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			if (CurrentApplication is null || CurrentApplication.Id == Identity.Id)
 				await ServiceRef.TagProfile.SetIdentityApplication(Identity, false);
+		}
+
+		/// <summary>
+		/// Ignores updates for identity applications the user cancelled, and obsoletes them on the server if they are still active.
+		/// </summary>
+		/// <param name="Identity">The updated identity.</param>
+		/// <returns><c>true</c> if the identity belongs to a cancelled application and was handled; otherwise, <c>false</c>.</returns>
+		private async Task<bool> TryHandleAbandonedApplicationIdentityUpdateAsync(LegalIdentity Identity)
+		{
+			HashSet<string> AbandonedIdentityIds = await GetAbandonedApplicationIdentityIdsAsync();
+			if (!IsAbandonedApplicationIdentity(Identity, AbandonedIdentityIds) ||
+				IdentityIdsMatch(ServiceRef.TagProfile.LegalIdentity?.Id, Identity.Id))
+			{
+				return false;
+			}
+
+			ServiceRef.LogService.LogInformational("KycAbandonedApplicationUpdateIgnored",
+				new KeyValuePair<string, object?>("IdentityId", Identity.Id ?? string.Empty),
+				new KeyValuePair<string, object?>("IdentityState", Identity.State.ToString()));
+
+			try
+			{
+				if (Identity.State == IdentityState.Created || Identity.State == IdentityState.Approved)
+					await this.ObsoleteLegalIdentity(Identity.Id);
+				else
+					await ServiceRef.KycService.RemoveAbandonedApplicationIdentityIdAsync(Identity.Id);
+			}
+			catch (Exception Ex)
+			{
+				// The next connection tries again.
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Obsoletes identity applications the user cancelled while the server could not be reached, and stops tracking those
+		/// that are no longer active on the server.
+		/// </summary>
+		/// <returns>A task representing the cleanup.</returns>
+		private async Task ObsoleteAbandonedApplicationIdentitiesAsync()
+		{
+			IReadOnlyList<string> AbandonedIdentityIds;
+			LegalIdentity[] ServerIdentities;
+
+			try
+			{
+				AbandonedIdentityIds = await ServiceRef.KycService.GetAbandonedApplicationIdentityIdsAsync();
+				if (AbandonedIdentityIds.Count == 0)
+					return;
+
+				ServerIdentities = await this.GetLegalIdentities();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return;
+			}
+
+			foreach (string AbandonedIdentityId in AbandonedIdentityIds)
+			{
+				LegalIdentity? Identity = ServerIdentities.FirstOrDefault(Candidate => IdentityIdsMatch(Candidate.Id, AbandonedIdentityId));
+				try
+				{
+					if (Identity is not null &&
+						(Identity.State == IdentityState.Created || Identity.State == IdentityState.Approved) &&
+						!IdentityIdsMatch(ServiceRef.TagProfile.LegalIdentity?.Id, Identity.Id))
+					{
+						await this.ObsoleteLegalIdentity(Identity.Id);
+						ServiceRef.LogService.LogInformational("KycAbandonedApplicationObsoleted",
+							new KeyValuePair<string, object?>("IdentityId", Identity.Id ?? string.Empty),
+							new KeyValuePair<string, object?>("PreviousState", Identity.State.ToString()));
+					}
+
+					await ServiceRef.KycService.RemoveAbandonedApplicationIdentityIdAsync(AbandonedIdentityId);
+				}
+				catch (ItemNotFoundException)
+				{
+					await ServiceRef.KycService.RemoveAbandonedApplicationIdentityIdAsync(AbandonedIdentityId);
+				}
+				catch (Exception Ex)
+				{
+					// Kept, so the next connection tries again.
+					ServiceRef.LogService.LogException(Ex,
+						new KeyValuePair<string, object?>("Operation", "KYC.ObsoleteAbandonedApplication"),
+						new KeyValuePair<string, object?>("IdentityId", AbandonedIdentityId));
+				}
+			}
+		}
+
+		private static async Task<HashSet<string>> GetAbandonedApplicationIdentityIdsAsync()
+		{
+			try
+			{
+				IReadOnlyList<string> IdentityIds = await ServiceRef.KycService.GetAbandonedApplicationIdentityIdsAsync();
+				return new HashSet<string>(IdentityIds.Select(KycPreviewPromotionService.StripIdentityDomain), StringComparer.OrdinalIgnoreCase);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			}
+		}
+
+		private static bool IsAbandonedApplicationIdentity(LegalIdentity Identity, HashSet<string> AbandonedIdentityIds)
+		{
+			if (Identity is null || AbandonedIdentityIds.Count == 0 || string.IsNullOrWhiteSpace(Identity.Id))
+				return false;
+
+			if (AbandonedIdentityIds.Contains(KycPreviewPromotionService.StripIdentityDomain(Identity.Id)))
+				return true;
+
+			// A final identity created from a cancelled preview belongs to the same cancelled application.
+			string PreviewIdentityId = Identity[Constants.XmppProperties.Preview]?.Trim() ?? string.Empty;
+			return PreviewIdentityId.Length > 0 &&
+				AbandonedIdentityIds.Contains(KycPreviewPromotionService.StripIdentityDomain(PreviewIdentityId));
+		}
+
+		private static bool IdentityIdsMatch(string? Left, string? Right)
+		{
+			return !string.IsNullOrWhiteSpace(Left) &&
+				!string.IsNullOrWhiteSpace(Right) &&
+				string.Equals(KycPreviewPromotionService.StripIdentityDomain(Left), KycPreviewPromotionService.StripIdentityDomain(Right),
+					StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Resumes the promotion of an approved preview identity whose final identity was not recorded.
+		/// </summary>
+		/// <param name="Reference">The KYC reference.</param>
+		/// <returns>If the promotion completed now.</returns>
+		private static async Task<bool> TryResumePreviewPromotionAsync(KycReference Reference)
+		{
+			if (Reference.IdentityStage != KycIdentityApplicationStage.FinalizationInProgress ||
+				string.IsNullOrWhiteSpace(Reference.PreviewIdentityId) ||
+				!string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
+			{
+				return false;
+			}
+
+			try
+			{
+				IKycPreviewPromotionService PromotionService = ServiceRef.Provider.GetRequiredService<IKycPreviewPromotionService>();
+				KycPreviewPromotionResult Result = await PromotionService.PromoteApprovedPreviewAsync(Reference, Reference.PreviewIdentityId);
+				if (!Result.Succeeded)
+				{
+					ServiceRef.LogService.LogWarning(
+						"Interrupted preview promotion was not resumed.",
+						new KeyValuePair<string, object?>("Reason", Result.Reason));
+				}
+
+				return Result.Succeeded;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.ResumePreviewPromotion"));
+				return false;
+			}
 		}
 
 		private static async Task<KycPreviewPromotionResult?> TryPromoteApprovedPreviewAsync(KycReference? Reference, LegalIdentity Identity)
@@ -3550,6 +3892,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			KycReference? Ref = null;
 			KycPreviewPromotionResult? PreviewPromotionResult = null;
+
+			if (await this.TryHandleAbandonedApplicationIdentityUpdateAsync(e.Identity))
+				return;
 
 			try
 			{

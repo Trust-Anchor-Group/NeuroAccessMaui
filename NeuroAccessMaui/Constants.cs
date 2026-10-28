@@ -1101,6 +1101,12 @@ namespace NeuroAccessMaui
 			public const string LegacyCacheMigrationCompletedPrefix = "Cache.LegacyMigrationCompleted.";
 
 			/// <summary>
+			/// Identifiers of identity applications the user cancelled before the server confirmed them obsoleted, separated by '|'.
+			/// They are never adopted from the server, and are obsoleted there once the app can reach it.
+			/// </summary>
+			public const string AbandonedApplicationIdentityIds = "Identity.AbandonedApplicationIdentityIds";
+
+			/// <summary>
 			/// Push-notification configuration version.
 			/// </summary>
 			public const string PushNotificationConfigurationVersion = "PUSH.CONFIG_VERSION";

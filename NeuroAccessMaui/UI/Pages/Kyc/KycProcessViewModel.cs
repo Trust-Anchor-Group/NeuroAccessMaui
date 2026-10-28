@@ -2284,7 +2284,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			try
 			{
-				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+				await this.ObsoleteOrAbandonApplicationAsync(Application.Id);
 				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 				this.ApplicationSentPublic = false;
 				this.applicationSent = false;
@@ -2304,6 +2304,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				ServiceRef.LogService.LogException(Ex);
 				await ServiceRef.UiService.DisplayException(Ex);
 				return false;
+			}
+		}
+
+		/// <summary>
+		/// Obsoletes a cancelled application on the server. If the server cannot do it now, for example when offline, the
+		/// application is remembered as abandoned instead, so cancelling never fails for the user: an abandoned application is
+		/// never adopted, and is obsoleted once the server can be reached.
+		/// </summary>
+		/// <param name="IdentityId">The identity identifier of the application.</param>
+		private async Task ObsoleteOrAbandonApplicationAsync(string IdentityId)
+		{
+			try
+			{
+				await ServiceRef.XmppService.ObsoleteLegalIdentity(IdentityId);
+			}
+			catch (Waher.Networking.XMPP.StanzaErrors.ItemNotFoundException)
+			{
+				// Already gone on the server.
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.CancelApplication"));
+				await this.kycService.AddAbandonedApplicationIdentityIdAsync(IdentityId);
 			}
 		}
 

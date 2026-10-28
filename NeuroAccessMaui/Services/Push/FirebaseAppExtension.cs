@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.Services.Push
 #elif ANDROID
 				events.AddAndroid(android => android.OnCreate((activity, _) =>
 					{
-						CrossFirebase.Initialize(activity);
+						CrossFirebase.Initialize(activity, () => Platform.CurrentActivity!);
 					}
 					));
 #endif

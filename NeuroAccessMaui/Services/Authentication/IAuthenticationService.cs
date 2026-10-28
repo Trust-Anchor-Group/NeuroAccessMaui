@@ -20,6 +20,21 @@ namespace NeuroAccessMaui.Services.Authentication
 		Task<bool> CheckPasswordAndUnblockUserAsync(string password);
 		Task<long> GetCurrentPasswordCounterAsync();
 
+		/// <summary>
+		/// Gets whether a forgotten PIN can be reset by verifying the user with device biometrics.
+		/// </summary>
+		/// <remarks>
+		/// This only depends on the device supporting biometrics, not on the user having enabled biometric login in the app.
+		/// </remarks>
+		bool CanResetPinWithBiometrics { get; }
+
+		/// <summary>
+		/// Resets a forgotten PIN: confirms with the user, verifies them with device biometrics, clears failed PIN
+		/// attempts and lockout, closes open popups and takes the user to define a new PIN. The user's identity is kept.
+		/// </summary>
+		/// <returns>true if the user was verified and is being taken to define a new PIN; otherwise false.</returns>
+		Task<bool> ResetForgottenPinAsync();
+
 		// (Add other relevant authentication methods)
 	}
 

@@ -23,6 +23,7 @@ using NeuroAccessMaui.UI.MVVM.Policies;
 using Waher.Runtime.Inventory;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
+using Waher.Runtime.Settings;
 using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
 using System.Diagnostics;
@@ -51,6 +52,8 @@ namespace NeuroAccessMaui.Services.Kyc
 		private const string unknownTelemetryValue = "Unknown";
 		private const string nfcVerificationMethod = "NFC";
 		private const string photoVerificationMethod = "Photo";
+		private const char abandonedApplicationIdentityIdSeparator = '|';
+		private static readonly SemaphoreSlim abandonedApplicationIdentityIdsLock = new SemaphoreSlim(1, 1);
 
 		private readonly System.Collections.Concurrent.ConcurrentDictionary<string, AsyncLock> referenceLocks = new();
 		private readonly Channel<string> autosaveChannel;
@@ -986,6 +989,76 @@ namespace NeuroAccessMaui.Services.Kyc
 
 			if (StateTransition)
 				KycService.TryLogTerminalIdentityTelemetry(Reference, Identity.State, AllowApproval);
+		}
+
+		/// <inheritdoc/>
+		public async Task AddAbandonedApplicationIdentityIdAsync(string IdentityId)
+		{
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return;
+
+			await abandonedApplicationIdentityIdsLock.WaitAsync().ConfigureAwait(false);
+			try
+			{
+				List<string> IdentityIds = await LoadAbandonedApplicationIdentityIdsAsync().ConfigureAwait(false);
+				if (IdentityIds.Contains(IdentityId.Trim(), StringComparer.OrdinalIgnoreCase))
+					return;
+
+				IdentityIds.Add(IdentityId.Trim());
+				await SaveAbandonedApplicationIdentityIdsAsync(IdentityIds).ConfigureAwait(false);
+			}
+			finally
+			{
+				abandonedApplicationIdentityIdsLock.Release();
+			}
+		}
+
+		/// <inheritdoc/>
+		public async Task<IReadOnlyList<string>> GetAbandonedApplicationIdentityIdsAsync()
+		{
+			await abandonedApplicationIdentityIdsLock.WaitAsync().ConfigureAwait(false);
+			try
+			{
+				return await LoadAbandonedApplicationIdentityIdsAsync().ConfigureAwait(false);
+			}
+			finally
+			{
+				abandonedApplicationIdentityIdsLock.Release();
+			}
+		}
+
+		/// <inheritdoc/>
+		public async Task RemoveAbandonedApplicationIdentityIdAsync(string IdentityId)
+		{
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return;
+
+			await abandonedApplicationIdentityIdsLock.WaitAsync().ConfigureAwait(false);
+			try
+			{
+				List<string> IdentityIds = await LoadAbandonedApplicationIdentityIdsAsync().ConfigureAwait(false);
+				string CleanIdentityId = KycPreviewPromotionService.StripIdentityDomain(IdentityId);
+				if (IdentityIds.RemoveAll(Id => string.Equals(KycPreviewPromotionService.StripIdentityDomain(Id), CleanIdentityId, StringComparison.OrdinalIgnoreCase)) > 0)
+					await SaveAbandonedApplicationIdentityIdsAsync(IdentityIds).ConfigureAwait(false);
+			}
+			finally
+			{
+				abandonedApplicationIdentityIdsLock.Release();
+			}
+		}
+
+		private static async Task<List<string>> LoadAbandonedApplicationIdentityIdsAsync()
+		{
+			string Stored = await RuntimeSettings.GetAsync(Constants.Settings.AbandonedApplicationIdentityIds, string.Empty).ConfigureAwait(false);
+			return Stored
+				.Split(abandonedApplicationIdentityIdSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+				.ToList();
+		}
+
+		private static async Task SaveAbandonedApplicationIdentityIdsAsync(IEnumerable<string> IdentityIds)
+		{
+			await RuntimeSettings.SetAsync(Constants.Settings.AbandonedApplicationIdentityIds,
+				string.Join(abandonedApplicationIdentityIdSeparator, IdentityIds)).ConfigureAwait(false);
 		}
 
 		/// <summary>

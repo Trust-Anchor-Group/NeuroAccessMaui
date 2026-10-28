@@ -3292,6 +3292,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Forgot PIN?.
+        /// </summary>
+        public static string ForgotPin {
+            get {
+                return ResourceManager.GetString("ForgotPin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verify it's you to reset your PIN.
+        /// </summary>
+        public static string ForgotPinBiometricsDescription {
+            get {
+                return ResourceManager.GetString("ForgotPinBiometricsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To reset your PIN, verify yourself with biometrics. You will then create a new PIN..
+        /// </summary>
+        public static string ForgotPinWarning {
+            get {
+                return ResourceManager.GetString("ForgotPinWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to For inclusion as part in a contract..
         /// </summary>
         public static string ForInclusionInContract {
@@ -9583,6 +9610,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset PIN with biometrics.
+        /// </summary>
+        public static string ResetPinWithBiometrics {
+            get {
+                return ResourceManager.GetString("ResetPinWithBiometrics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have now approved the information provided by {0}. Your review may be used to approve the identity application..
         /// </summary>
         public static string ReviewApproved {
@@ -11271,6 +11307,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string TokenVisibility {
             get {
                 return ResourceManager.GetString("TokenVisibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many attempts to create an account have been made from this network. Please try again later..
+        /// </summary>
+        public static string TooManyAccountCreationAttempts {
+            get {
+                return ResourceManager.GetString("TooManyAccountCreationAttempts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many attempts to create an account have been made from this network. Try again after {0}..
+        /// </summary>
+        public static string TooManyAccountCreationAttemptsTryAfter {
+            get {
+                return ResourceManager.GetString("TooManyAccountCreationAttemptsTryAfter", resourceCulture);
             }
         }
         

@@ -153,6 +153,22 @@ namespace NeuroAccessMaui.Services.Kyc
 				if (!string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
 					return KycPreviewPromotionResult.NoChange("FinalIdentityAlreadySubmitted");
 
+				// An earlier attempt may have created the final identity and stopped before recording it. Promotion removes the
+				// preview, so look for that identity first: otherwise the preview cannot be read and the attempt never
+				// completes, or a second final identity is created.
+				LegalIdentity? ExistingFinalIdentity = await FindExistingFinalIdentityAsync(PreviewIdentityId).ConfigureAwait(false);
+				if (ExistingFinalIdentity is not null)
+				{
+					await this.kycService.ApplyFinalSubmissionAsync(Reference, ExistingFinalIdentity).ConfigureAwait(false);
+					if (Reference.IsFinalIdentity(ExistingFinalIdentity.Id) && Reference.FinalIdentityState == ExistingFinalIdentity.State)
+						await this.ApplyFinalIdentityToProfileAsync(ExistingFinalIdentity).ConfigureAwait(false);
+
+					ServiceRef.LogService.LogInformational("KycPreviewPromotionRecoveredExistingFinal",
+						new KeyValuePair<string, object?>("PreviewIdentityId", PreviewIdentityId),
+						new KeyValuePair<string, object?>("FinalIdentityId", ExistingFinalIdentity.Id ?? string.Empty));
+					return KycPreviewPromotionResult.Changed(ExistingFinalIdentity);
+				}
+
 				LegalIdentity? PreviewIdentity = ApprovedPreviewIdentity;
 				if (PreviewIdentity is null)
 				{
@@ -313,7 +329,47 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Result;
 		}
 
-		private static string StripIdentityDomain(string IdentityId)
+		/// <summary>
+		/// Finds a final identity on the server that links back to the preview, created by an earlier promotion attempt.
+		/// </summary>
+		/// <remarks>
+		/// Errors are not caught: if the server's identities cannot be listed, promotion must stop rather than risk creating a
+		/// second final identity.
+		/// </remarks>
+		/// <param name="PreviewIdentityId">The preview identity identifier.</param>
+		/// <returns>The final identity, or <c>null</c> if there is none.</returns>
+		private static async Task<LegalIdentity?> FindExistingFinalIdentityAsync(string PreviewIdentityId)
+		{
+			string CleanPreviewIdentityId = StripIdentityDomain(PreviewIdentityId);
+			if (string.IsNullOrEmpty(CleanPreviewIdentityId))
+				return null;
+
+			LegalIdentity[] Identities = await ServiceRef.XmppService.GetLegalIdentities().ConfigureAwait(false);
+			foreach (LegalIdentity Candidate in Identities)
+			{
+				if (Candidate is null || string.IsNullOrWhiteSpace(Candidate.Id) ||
+					string.Equals(StripIdentityDomain(Candidate.Id), CleanPreviewIdentityId, StringComparison.OrdinalIgnoreCase))
+				{
+					continue;
+				}
+
+				string PreviewLink = Candidate[Constants.XmppProperties.Preview]?.Trim() ?? string.Empty;
+				if (PreviewLink.Length > 0 &&
+					string.Equals(StripIdentityDomain(PreviewLink), CleanPreviewIdentityId, StringComparison.OrdinalIgnoreCase))
+				{
+					return Candidate;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Removes the domain part of an identity identifier.
+		/// </summary>
+		/// <param name="IdentityId">The identity identifier.</param>
+		/// <returns>The identifier without its domain.</returns>
+		internal static string StripIdentityDomain(string IdentityId)
 		{
 			string CleanIdentityId = IdentityId.Trim();
 			int AtIndex = CleanIdentityId.IndexOf('@');

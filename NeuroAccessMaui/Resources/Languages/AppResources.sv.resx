@@ -4931,4 +4931,31 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="DestroyToken" xml:space="preserve">
     <value>Förstör token</value>
   </data>
+  <data name="PinNotDefined" xml:space="preserve">
+    <value>Ingen PIN-kod är angiven. Ange en PIN-kod innan du byter till PIN-autentisering.</value>
+  </data>
+  <data name="OnboardingBiometricsFailedTitle" xml:space="preserve">
+    <value>Biometri är inte aktiverad</value>
+  </data>
+  <data name="OnboardingBiometricsFailedDescription" xml:space="preserve">
+    <value>Försök igen, eller fortsätt med din PIN-kod så länge.</value>
+  </data>
+  <data name="TooManyAccountCreationAttempts" xml:space="preserve">
+    <value>För många försök att skapa ett konto har gjorts från det här nätverket. Försök igen senare.</value>
+  </data>
+  <data name="TooManyAccountCreationAttemptsTryAfter" xml:space="preserve">
+    <value>För många försök att skapa ett konto har gjorts från det här nätverket. Försök igen efter {0}.</value>
+  </data>
+  <data name="ForgotPin" xml:space="preserve">
+    <value>Glömt PIN-koden?</value>
+  </data>
+  <data name="ForgotPinBiometricsDescription" xml:space="preserve">
+    <value>Bekräfta att det är du för att återställa din PIN-kod</value>
+  </data>
+  <data name="ForgotPinWarning" xml:space="preserve">
+    <value>Bekräfta din identitet med biometri för att återställa din PIN-kod. Därefter skapar du en ny PIN-kod.</value>
+  </data>
+  <data name="ResetPinWithBiometrics" xml:space="preserve">
+    <value>Återställ PIN-kod med biometri</value>
+  </data>
 </root>
