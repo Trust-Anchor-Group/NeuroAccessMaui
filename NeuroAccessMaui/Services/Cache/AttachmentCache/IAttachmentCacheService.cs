@@ -18,6 +18,11 @@ namespace NeuroAccessMaui.Services.Cache.AttachmentCache
 		Task<(byte[]? Data, string ContentType)> TryGet(string Url);
 
 		/// <summary>
+		/// Moves entries that older versions stored as plain files into the encrypted database.
+		/// </summary>
+		Task MigrateLegacyEntriesAsync();
+
+		/// <summary>
 		/// Adds or updates an attachment in the cache.
 		/// </summary>
 		/// <param name="Url">The URL key of the attachment.</param>

@@ -1095,6 +1095,12 @@ namespace NeuroAccessMaui
 		public static class Settings
 		{
 			/// <summary>
+			/// Prefix of the flag set once the plain cache files of older versions have been moved into the database.
+			/// The cache folder name is appended.
+			/// </summary>
+			public const string LegacyCacheMigrationCompletedPrefix = "Cache.LegacyMigrationCompleted.";
+
+			/// <summary>
 			/// Push-notification configuration version.
 			/// </summary>
 			public const string PushNotificationConfigurationVersion = "PUSH.CONFIG_VERSION";

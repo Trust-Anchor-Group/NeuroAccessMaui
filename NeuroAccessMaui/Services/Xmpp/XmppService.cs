@@ -1305,6 +1305,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 				if (await this.ChangePassword(NewPassword))
 				{
 					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewPassword, string.Empty);
+
+					// The server already uses the new password, so save it now: if the app stops before the next regular
+					// save, the stored password would no longer match and the account could not log in.
+					if (App.Current is not null)
+						await App.Current.ForceSaveAsync();
+
 					ChangeSucceeded = true;
 				}
 			}
@@ -3437,6 +3443,25 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return IsValid ?? await this.HasPrivateKey(Identity.Id);
 		}
 
+		/// <inheritdoc/>
+		public async Task<bool> HasUsableKeyAsync(LegalIdentity Identity)
+		{
+			if (await this.HasPrivateKey(Identity.Id))
+				return true;
+
+			try
+			{
+				return await this.CanSignWithCurrentKeysAsync(Identity);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex,
+					new KeyValuePair<string, object?>("Operation", "CheckIdentitySigningKeys"),
+					new KeyValuePair<string, object?>("IdentityId", Identity.Id ?? string.Empty));
+				return false;
+			}
+		}
+
 		/// <summary>
 		/// Checks if locally persisted contract signing keys are available for reuse.
 		/// </summary>
@@ -3566,6 +3591,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 				if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id)
 				{
 					if (ServiceRef.TagProfile.LegalIdentity.Created > e.Identity.Created)
+						return;
+
+					// Updates for the same identity share its Created time, so a late update sent before approval would
+					// otherwise move an approved identity back to pending.
+					if (ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved && e.Identity.State == IdentityState.Created)
 						return;
 
 					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);

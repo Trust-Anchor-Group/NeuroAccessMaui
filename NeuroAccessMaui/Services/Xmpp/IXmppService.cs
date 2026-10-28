@@ -629,6 +629,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<bool> CanSignWithCurrentKeysAsync(LegalIdentity Identity);
 
 		/// <summary>
+		/// Checks if the client holds a usable key for a legal identity, either through its stored key record or because
+		/// the current signing keys can sign on its behalf.
+		/// </summary>
+		/// <param name="Identity">The legal identity to check.</param>
+		/// <returns>If the client can sign on behalf of the identity.</returns>
+		Task<bool> HasUsableKeyAsync(LegalIdentity Identity);
+
+		/// <summary>
 		/// Checks if locally persisted contract signing keys are available for reuse.
 		/// </summary>
 		/// <returns>If a local signing key set is available.</returns>

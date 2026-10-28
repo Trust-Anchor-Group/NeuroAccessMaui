@@ -1565,7 +1565,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 					try
 					{
-						IsValid = await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false);
+						IsValid = await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient);
 						IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
 						ValidationText = IsValid ? string.Empty : ParamToValidate.Parameter.ErrorText ?? string.Empty;
 					}

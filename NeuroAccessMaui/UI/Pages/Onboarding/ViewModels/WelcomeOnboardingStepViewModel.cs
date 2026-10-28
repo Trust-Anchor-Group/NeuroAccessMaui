@@ -100,12 +100,16 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		internal override async Task OnActivatedAsync()
 		{
+			// Returning to this step must accept a new invite, unless one is still being processed.
+			if (!this.IsProcessingInvite)
+				this.autoAdvanced = false;
+
 			ServiceRef.LogService.LogInformational("Welcome step activated.");
 			await base.OnActivatedAsync();
 			if (this.IsLoading)
 			{
 				ServiceRef.LogService.LogDebug("Simulating initial loading delay.");
-				await Task.Delay(800).ConfigureAwait(false);
+				await Task.Delay(800);
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.IsLoading = false;
@@ -149,7 +153,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			{
 				try
 				{
-					await Task.Delay(inviteCodeDebounceMs, DebounceCts.Token).ConfigureAwait(false);
+					await Task.Delay(inviteCodeDebounceMs, DebounceCts.Token);
 					if (DebounceCts.IsCancellationRequested)
 					{
 						ServiceRef.LogService.LogDebug("Debounce cancelled before execution.");
@@ -164,7 +168,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					this.SetInviteProcessingState(true);
 					try
 					{
-						bool Processed = await this.ReadAndProcessInvitationAsync(Trimmed, DebounceCts.Token).ConfigureAwait(false);
+						bool Processed = await this.ReadAndProcessInvitationAsync(Trimmed, DebounceCts.Token);
 						if (Processed)
 						{
 							MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
@@ -219,8 +223,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			try
 			{
 				bool Processed = PreparedInvitation is not null
-					? await this.ProcessInvitationAsync(PreparedInvitation).ConfigureAwait(false)
-					: await this.ReadAndProcessInvitationAsync(Trimmed, CancellationToken.None).ConfigureAwait(false);
+					? await this.ProcessInvitationAsync(PreparedInvitation)
+					: await this.ReadAndProcessInvitationAsync(Trimmed, CancellationToken.None);
 				if (Processed)
 				{
 					MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
@@ -283,7 +287,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			this.SetInviteProcessingState(true);
 			try
 			{
-				if (await this.ProcessInvitationAsync(Invitation).ConfigureAwait(false))
+				if (await this.ProcessInvitationAsync(Invitation))
 					MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
 			}
 			finally
@@ -299,7 +303,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 			this.CancelPendingInviteProcessing();
 
-			if (!await this.PrepareAutomaticProviderSelectionAsync().ConfigureAwait(false))
+			if (!await this.PrepareAutomaticProviderSelectionAsync())
 			{
 				ServiceRef.LogService.LogWarning("Automatic provider preparation failed. Staying on Welcome step.");
 				return;
@@ -319,7 +323,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				}
 
 				ServiceRef.LogService.LogInformational("Advancing directly to ValidatePhone step after automatic provider selection.");
-				await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.ValidatePhone).ConfigureAwait(false);
+				await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.ValidatePhone);
 				NavigationSucceeded = true;
 			}
 			finally
@@ -407,6 +411,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
+				this.autoAdvanced = false;
 				this.InviteCodeIsValid = false;
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -450,7 +455,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		/// <returns>Whether onboarding should advance to the next step.</returns>
 		private async Task<bool> ReadAndProcessInvitationAsync(string InviteUrl, CancellationToken CancellationToken)
 		{
-			PreparationResult<Invitation> Result = await this.linkService.ReadInvitationAsync(InviteUrl, CancellationToken).ConfigureAwait(false);
+			PreparationResult<Invitation> Result = await this.linkService.ReadInvitationAsync(InviteUrl, CancellationToken);
 			if (Result.Status == PreparationStatus.Cancelled)
 				return false;
 
@@ -462,7 +467,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				return false;
 			}
 
-			return await this.ProcessInvitationAsync(Invitation).ConfigureAwait(false);
+			return await this.ProcessInvitationAsync(Invitation);
 		}
 
 		/// <summary>
@@ -503,7 +508,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 								ApiDomain = await ServiceRef.UiService.DisplayPrompt("Please enter the IP of your provider", "This is for developers and testers", "Enter", "Cancel") ?? string.Empty;
 							}
 							ServiceRef.LogService.LogInformational($"Selecting domain (ApiKey) '{ApiDomain}'.");
-							await SelectDomain(ApiDomain, ApiKey, Secret).ConfigureAwait(false);
+							await SelectDomain(ApiDomain, ApiKey, Secret);
 							domainSelectedFromInvite = true;
 							break;
 						case "Account":
@@ -512,7 +517,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							string PasswordMethod = XML.Attribute(E, "passwordMethod");
 							string AccDomain = XML.Attribute(E, "domain");
 							ServiceRef.LogService.LogInformational($"Selecting domain (Account) '{AccDomain}'. Capturing account transfer.");
-							await SelectDomain(AccDomain, string.Empty, string.Empty).ConfigureAwait(false);
+							await SelectDomain(AccDomain, string.Empty, string.Empty);
 							transferredAccount = UserName;
 							transferredPassword = Password;
 							transferredPasswordMethod = PasswordMethod;
@@ -538,10 +543,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				if (!string.IsNullOrEmpty(transferredAccount) && transferredPassword is not null && transferredPasswordMethod is not null && this.CoordinatorViewModel is not null)
 				{
 					OnboardingTransferContext Context = new OnboardingTransferContext(transferredAccount, transferredPassword, transferredPasswordMethod, LegalIdDefinition);
-					await this.CoordinatorViewModel.ApplyTransferContextAsync(Context).ConfigureAwait(false);
+					await this.CoordinatorViewModel.ApplyTransferContextAsync(Context);
 					shouldAdvance = true;
 
-					bool Connected = await this.CoordinatorViewModel.TryFinalizeTransferAsync(false).ConfigureAwait(false);
+					bool Connected = await this.CoordinatorViewModel.TryFinalizeTransferAsync(false);
 					ServiceRef.LogService.LogInformational("Deferred transfer connection attempt finished.",
 						new KeyValuePair<string, object?>("Success", Connected),
 						new KeyValuePair<string, object?>("HasLegalId", Context.HasLegalIdentity));

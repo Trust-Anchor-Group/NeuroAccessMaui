@@ -26,7 +26,7 @@ namespace NeuroAccessMaui.UI.MVVM.Reentrancy
 			}
 			try
 			{
-				await action().ConfigureAwait(false);
+				await action();
 				return true;
 			}
 			finally

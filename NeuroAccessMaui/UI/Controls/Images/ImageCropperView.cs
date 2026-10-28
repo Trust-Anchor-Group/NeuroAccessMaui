@@ -775,12 +775,12 @@ namespace NeuroAccessMaui.UI.Controls
 				if (streamImageSource is null)
 					return null;
 
-				Stream stream = await streamImageSource.Stream(CancellationToken.None).ConfigureAwait(false);
+				Stream stream = await streamImageSource.Stream(CancellationToken.None);
 				if (stream is null)
 					return null;
 
 				using MemoryStream managedStream = new MemoryStream();
-				await stream.CopyToAsync(managedStream).ConfigureAwait(false);
+				await stream.CopyToAsync(managedStream);
 				managedStream.Position = 0;
 
 				SKBitmap loadedBitmap = SKBitmap.Decode(managedStream);

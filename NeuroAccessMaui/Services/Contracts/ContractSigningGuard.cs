@@ -334,7 +334,7 @@ namespace NeuroAccessMaui.Services.Contracts
 		}
 
 		/// <summary>
-		/// Checks if the identity's private keys are on this device.
+		/// Checks if this device holds a key that can sign for the identity.
 		/// </summary>
 		/// <param name="Identity">The identity.</param>
 		/// <returns>If the keys are available, or true if it can't be checked.</returns>
@@ -342,7 +342,7 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 			try
 			{
-				return await ServiceRef.XmppService.HasPrivateKey(Identity.Id);
+				return await ServiceRef.XmppService.HasUsableKeyAsync(Identity);
 			}
 			catch (Exception Ex)
 			{

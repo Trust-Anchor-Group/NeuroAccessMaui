@@ -415,11 +415,11 @@ namespace NeuroAccessMaui.UI.Controls
 				{
 					using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(effectiveToken, item.ExternalToken);
 					effectiveToken = linked.Token;
-					await item.Factory.Invoke(effectiveToken).ConfigureAwait(false);
+					await item.Factory.Invoke(effectiveToken);
 				}
 				else
 				{
-					await item.Factory.Invoke(effectiveToken).ConfigureAwait(false);
+					await item.Factory.Invoke(effectiveToken);
 				}
 			}, workItem);
 
@@ -540,12 +540,12 @@ namespace NeuroAccessMaui.UI.Controls
 
 					if (!ReferenceEquals(oldViewInstance, viewToPresent))
 					{
-						await this.InvokeLifecycleDisappearingAsync(oldViewInstance, cancellationToken).ConfigureAwait(false);
+						await this.InvokeLifecycleDisappearingAsync(oldViewInstance, cancellationToken);
 					}
 
 					if (viewToPresent is not null)
 					{
-						await this.EnsureLifecycleInitializedAsync(viewToPresent, cancellationToken).ConfigureAwait(false);
+						await this.EnsureLifecycleInitializedAsync(viewToPresent, cancellationToken);
 					}
 
 					bool previousAnimate = this.transitionCoordinator.Animate;
@@ -564,12 +564,12 @@ namespace NeuroAccessMaui.UI.Controls
 					{
 						await PolicyRunner.RunAsync(
 							ct => this.transitionCoordinator.SwitchAsync(this, viewToPresent, this.isInitialLoad, ct),
-							cancellationToken).ConfigureAwait(false);
+							cancellationToken);
 						if (!ReferenceEquals(oldViewInstance, viewToPresent))
 						{
-							await this.InvokeLifecycleAppearingAsync(viewToPresent, cancellationToken).ConfigureAwait(false);
+							await this.InvokeLifecycleAppearingAsync(viewToPresent, cancellationToken);
 						}
-						await this.DisposeLifecycleIfRequiredAsync(oldViewInstance, viewToPresent).ConfigureAwait(false);
+						await this.DisposeLifecycleIfRequiredAsync(oldViewInstance, viewToPresent);
 					}
 					finally
 					{
@@ -592,7 +592,7 @@ namespace NeuroAccessMaui.UI.Controls
 						newItem,
 						newStateKey);
 					this.SelectionChanged?.Invoke(this, changedArgs);
-				}).ConfigureAwait(false);
+				});
 			}
 			catch (OperationCanceledException)
 			{
@@ -829,7 +829,12 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			if (this.isInitialLoad)
 			{
-				this.RequestSelection(ViewSwitcherSelectionChangeSource.Index, this.SelectedIndex, null, null);
+				// A state key requested before the view loaded may still be pending, with SelectedIndex not yet updated.
+				// Selecting by index would then cancel that request and fall back to the first view.
+				if (!string.IsNullOrWhiteSpace(this.SelectedStateKey))
+					this.RequestSelection(ViewSwitcherSelectionChangeSource.StateKey, null, null, this.SelectedStateKey);
+				else
+					this.RequestSelection(ViewSwitcherSelectionChangeSource.Index, this.SelectedIndex, null, null);
 			}
 		}
 
@@ -927,11 +932,11 @@ namespace NeuroAccessMaui.UI.Controls
 			if (view is null)
 				return;
 
-			await this.EnsureLifecycleInitializedCoreAsync(view, token).ConfigureAwait(false);
+			await this.EnsureLifecycleInitializedCoreAsync(view, token);
 			object? bindingContext = view.BindingContext;
 			if (bindingContext is not null && !ReferenceEquals(bindingContext, view))
 			{
-				await this.EnsureLifecycleInitializedCoreAsync(bindingContext, token).ConfigureAwait(false);
+				await this.EnsureLifecycleInitializedCoreAsync(bindingContext, token);
 			}
 		}
 
@@ -943,7 +948,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (this.initializedLifecycleTargets.Contains(target))
 				return;
 
-			await PolicyRunner.RunAsync(_ => lifecycleView.OnInitializeAsync(), token).ConfigureAwait(false);
+			await PolicyRunner.RunAsync(_ => lifecycleView.OnInitializeAsync(), token);
 			this.initializedLifecycleTargets.Add(target);
 		}
 
@@ -952,11 +957,11 @@ namespace NeuroAccessMaui.UI.Controls
 			if (view is null)
 				return;
 
-			await this.InvokeLifecycleAppearingCoreAsync(view, token).ConfigureAwait(false);
+			await this.InvokeLifecycleAppearingCoreAsync(view, token);
 			object? bindingContext = view.BindingContext;
 			if (bindingContext is not null && !ReferenceEquals(bindingContext, view))
 			{
-				await this.InvokeLifecycleAppearingCoreAsync(bindingContext, token).ConfigureAwait(false);
+				await this.InvokeLifecycleAppearingCoreAsync(bindingContext, token);
 			}
 		}
 
@@ -973,11 +978,11 @@ namespace NeuroAccessMaui.UI.Controls
 			if (view is null)
 				return;
 
-			await this.InvokeLifecycleDisappearingCoreAsync(view, token).ConfigureAwait(false);
+			await this.InvokeLifecycleDisappearingCoreAsync(view, token);
 			object? bindingContext = view.BindingContext;
 			if (bindingContext is not null && !ReferenceEquals(bindingContext, view))
 			{
-				await this.InvokeLifecycleDisappearingCoreAsync(bindingContext, token).ConfigureAwait(false);
+				await this.InvokeLifecycleDisappearingCoreAsync(bindingContext, token);
 			}
 		}
 
@@ -994,11 +999,11 @@ namespace NeuroAccessMaui.UI.Controls
 			if (view is null)
 				return;
 
-			await this.InvokeLifecycleDisposeCoreAsync(view).ConfigureAwait(false);
+			await this.InvokeLifecycleDisposeCoreAsync(view);
 			object? bindingContext = view.BindingContext;
 			if (bindingContext is not null && !ReferenceEquals(bindingContext, view))
 			{
-				await this.InvokeLifecycleDisposeCoreAsync(bindingContext).ConfigureAwait(false);
+				await this.InvokeLifecycleDisposeCoreAsync(bindingContext);
 			}
 		}
 
@@ -1007,7 +1012,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (target is not ILifeCycleView lifecycleView)
 				return;
 
-			await PolicyRunner.RunAsync(_ => lifecycleView.OnDisposeAsync(), CancellationToken.None).ConfigureAwait(false);
+			await PolicyRunner.RunAsync(_ => lifecycleView.OnDisposeAsync(), CancellationToken.None);
 			this.initializedLifecycleTargets.Remove(target);
 		}
 
@@ -1022,7 +1027,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (!this.ShouldDisposeView(oldView))
 				return;
 
-			await this.InvokeLifecycleDisposeAsync(oldView).ConfigureAwait(false);
+			await this.InvokeLifecycleDisposeAsync(oldView);
 			this.viewDescriptorMap.Remove(oldView);
 		}
 

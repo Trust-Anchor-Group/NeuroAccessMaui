@@ -1051,7 +1051,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							bool HasPrivateKeys = false;
 							try
 							{
-								HasPrivateKeys = await ServiceRef.XmppService.HasPrivateKey(Identity.Id);
+								HasPrivateKeys = await ServiceRef.XmppService.HasUsableKeyAsync(Identity);
 
 							}
 							catch (Exception Ex)

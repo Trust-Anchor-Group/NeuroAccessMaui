@@ -42,13 +42,13 @@ namespace NeuroAccessMaui.Animations
 					Task Execution = Child.RunAsync(Target, Context, Options, Token);
 					Tasks.Add(Execution);
 				}
-				await Task.WhenAll(Tasks).ConfigureAwait(false);
+				await Task.WhenAll(Tasks);
 			}
 			else
 			{
 				foreach (IViewAnimation Child in this.children)
 				{
-					await Child.RunAsync(Target, Context, Options, Token).ConfigureAwait(false);
+					await Child.RunAsync(Target, Context, Options, Token);
 				}
 			}
 		}

@@ -106,6 +106,19 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private async Task Enable()
 		{
 			ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Fingerprint;
+
+			// Only keep biometrics on once the user has shown they can use them, so they are not locked out later.
+			if (!await ServiceRef.AuthenticationService.AuthenticateUserAsync(AuthenticationPurpose.ChangeAuthenticationMethod, true))
+			{
+				ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Password;
+
+				ShowInfoPopup InfoPopup = new(
+					ServiceRef.Localizer[nameof(AppResources.OnboardingBiometricsFailedTitle)],
+					ServiceRef.Localizer[nameof(AppResources.OnboardingBiometricsFailedDescription)]);
+				await ServiceRef.PopupService.PushAsync(InfoPopup);
+				return;
+			}
+
 			OnboardingViewModel? Coordinator = this.CoordinatorViewModel;
 			if (Coordinator is not null)
 			{

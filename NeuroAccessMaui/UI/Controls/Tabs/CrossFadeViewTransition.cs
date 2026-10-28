@@ -50,15 +50,15 @@ namespace NeuroAccessMaui.UI.Controls
 
 			if (fadeOutTask is not null && fadeInTask is not null)
 			{
-				await Task.WhenAll(fadeOutTask, fadeInTask).ConfigureAwait(false);
+				await Task.WhenAll(fadeOutTask, fadeInTask);
 			}
 			else if (fadeOutTask is not null)
 			{
-				await fadeOutTask.ConfigureAwait(false);
+				await fadeOutTask;
 			}
 			else if (fadeInTask is not null)
 			{
-				await fadeInTask.ConfigureAwait(false);
+				await fadeInTask;
 			}
 		}
 	}

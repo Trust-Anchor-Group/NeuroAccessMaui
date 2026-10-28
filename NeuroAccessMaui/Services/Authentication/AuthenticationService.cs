@@ -10,6 +10,7 @@ using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroAccessMaui.UI.Popups.Password;
 using Waher.Events;
 using Waher.Runtime.Inventory;
@@ -120,7 +121,15 @@ namespace NeuroAccessMaui.Services.Authentication
 			{
 				case AuthenticationMethod.Fingerprint:
 					if (!this.platformSpecific.SupportsFingerprintAuthentication)
+					{
 						this.tagProfile.AuthenticationMethod = AuthenticationMethod.Password;
+
+						if (!this.tagProfile.HasLocalPassword)
+						{
+							await this.ForcePasswordRecoveryAsync();
+							return false;
+						}
+					}
 
 					if (await this.platformSpecific.AuthenticateUserFingerprint(
 						this.localizer[nameof(AppResources.FingerprintTitle)],
@@ -136,7 +145,10 @@ namespace NeuroAccessMaui.Services.Authentication
 
 				case AuthenticationMethod.Password:
 					if (!this.tagProfile.HasLocalPassword)
-						return true;
+					{
+						await this.ForcePasswordRecoveryAsync();
+						return false;
+					}
 
 					if (this.displayedPasswordPopup)
 						return false;
@@ -149,9 +161,28 @@ namespace NeuroAccessMaui.Services.Authentication
 		}
 
 		/// <summary>
+		/// Makes the user define a new PIN through the Change PIN onboarding flow. Used when the authentication method is
+		/// PIN but no PIN hash exists, so access is never granted without one.
+		/// </summary>
+		private async Task ForcePasswordRecoveryAsync()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync(
+					nameof(OnboardingPage),
+					new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ChangePin });
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
 		/// Checks if user is blocked from authentication and shows UI as needed.
 		/// </summary>
-		public async Task CheckUserBlockingAsync()
+		/// <returns>true if the user is blocked; otherwise false.</returns>
+		public async Task<bool> CheckUserBlockingAsync()
 		{
 			DateTime? nextLoginTime = await this.loginAuditor.GetEarliestLoginOpportunity(Constants.Password.RemoteEndpoint, Constants.Password.Protocol);
 			if (nextLoginTime.HasValue)
@@ -183,7 +214,10 @@ namespace NeuroAccessMaui.Services.Authentication
 
 				await this.uiService.DisplayAlert(this.localizer[nameof(AppResources.ErrorTitle)], messageAlert);
 				await this.CloseApplicationAsync();
+				return true;
 			}
+
+			return false;
 		}
 
 		/// <summary>

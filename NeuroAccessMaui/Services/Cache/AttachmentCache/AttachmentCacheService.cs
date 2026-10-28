@@ -32,6 +32,12 @@ namespace NeuroAccessMaui.Services.Cache.AttachmentCache
 		}
 
 		/// <inheritdoc/>
+		public Task MigrateLegacyEntriesAsync()
+		{
+			return this.cacheManager.MigrateLegacyFilesAsync();
+		}
+
+		/// <inheritdoc/>
 		public Task<(byte[]? Data, string ContentType)> TryGet(string Url)
 		{
 			return this.cacheManager.TryGet(Url);

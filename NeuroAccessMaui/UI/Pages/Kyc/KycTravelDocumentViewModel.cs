@@ -1361,7 +1361,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			LegalIdentity? ExistingIdentity = await this.TryLoadUsableReservedPreviewIdentityAsync(this.reference, CancellationToken);
 			if (ExistingIdentity is not null)
 			{
-				await this.ClearMatchingReservedProfileApplicationAsync(ExistingIdentity.Id).ConfigureAwait(false);
+				await this.ClearMatchingReservedProfileApplicationAsync(ExistingIdentity.Id);
 				return new TravelDocumentMrzEvidence(
 					Evidence.MrzText,
 					Evidence.DocumentInformation,
@@ -1369,9 +1369,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			IReadOnlyList<Property> ReservationProperties = await ServiceRef.KycService
-				.PreparePreviewReservationPropertiesAsync(this.reference, CancellationToken)
-				.ConfigureAwait(false);
-			bool GenerateNewKeys = !await this.HasExistingSigningKeyAsync().ConfigureAwait(false);
+				.PreparePreviewReservationPropertiesAsync(this.reference, CancellationToken);
+			bool GenerateNewKeys = !await this.HasExistingSigningKeyAsync();
 			(bool Succeeded, LegalIdentity? ReservedIdentity) = await ServiceRef.NetworkService.TryRequest(
 				() => ServiceRef.XmppService.ApplyPreviewLegalIdentity(ReservationProperties.ToArray(), GenerateNewKeys));
 
@@ -1385,8 +1384,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!Succeeded || ReservedIdentity is null || string.IsNullOrWhiteSpace(ReservedIdentity.Id))
 				return null;
 
-			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(this.reference, ReservedIdentity).ConfigureAwait(false);
-			await this.ClearMatchingReservedProfileApplicationAsync(ReservedIdentity.Id).ConfigureAwait(false);
+			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(this.reference, ReservedIdentity);
+			await this.ClearMatchingReservedProfileApplicationAsync(ReservedIdentity.Id);
 			return new TravelDocumentMrzEvidence(
 				Evidence.MrzText,
 				Evidence.DocumentInformation,
@@ -1404,7 +1403,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			(bool Succeeded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(
 				() => ServiceRef.XmppService.GetLegalIdentity(ReservedPreviewIdentityId));
-			bool CanSignWithCurrentKeys = Identity is not null && await this.CanSignForIdentityAsync(Identity).ConfigureAwait(false);
+			bool CanSignWithCurrentKeys = Identity is not null && await this.CanSignForIdentityAsync(Identity);
 			this.LogFlowEvent(
 				"PreviewReservationReuseChecked",
 				new KeyValuePair<string, object?>("Succeeded", Succeeded),
@@ -1414,32 +1413,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!Succeeded || Identity is null || !CanSignWithCurrentKeys)
 				return null;
 
-			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(Reference, Identity).ConfigureAwait(false);
+			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(Reference, Identity);
 			return Identity;
 		}
 
 		private async Task<bool> HasExistingSigningKeyAsync()
 		{
-			if (await ServiceRef.XmppService.HasSigningKeysAsync().ConfigureAwait(false))
+			if (await ServiceRef.XmppService.HasSigningKeysAsync())
 				return true;
 
 			string IdentityId = ServiceRef.TagProfile.LegalIdentity?.Id?.Trim() ?? string.Empty;
 			if (!string.IsNullOrWhiteSpace(IdentityId) &&
-				await ServiceRef.XmppService.HasPrivateKey(IdentityId).ConfigureAwait(false))
+				await ServiceRef.XmppService.HasPrivateKey(IdentityId))
 			{
 				return true;
 			}
 
 			string? ApplicationIdentityId = this.reference?.GetActiveApplicationIdentityId();
 			return !string.IsNullOrWhiteSpace(ApplicationIdentityId) &&
-				await ServiceRef.XmppService.HasPrivateKey(ApplicationIdentityId).ConfigureAwait(false);
+				await ServiceRef.XmppService.HasPrivateKey(ApplicationIdentityId);
 		}
 
 		private async Task<bool> CanSignForIdentityAsync(LegalIdentity Identity)
 		{
 			try
 			{
-				return await ServiceRef.XmppService.CanSignWithCurrentKeysAsync(Identity).ConfigureAwait(false);
+				return await ServiceRef.XmppService.CanSignWithCurrentKeysAsync(Identity);
 			}
 			catch (Exception Ex)
 			{
@@ -1478,7 +1477,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			try
 			{
-				KycNfcEvidencePolicy NfcPolicy = await this.ResolveNfcEvidencePolicyAsync().ConfigureAwait(false);
+				KycNfcEvidencePolicy NfcPolicy = await this.ResolveNfcEvidencePolicyAsync();
 				string AttachmentName = string.IsNullOrWhiteSpace(NfcPolicy.AttachmentName)
 					? KycNfcEvidencePolicy.DefaultAttachmentName
 					: NfcPolicy.AttachmentName;
@@ -1512,7 +1511,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			try
 			{
-				KycProcess? Process = await this.reference.ToProcess(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).ConfigureAwait(false);
+				KycProcess? Process = await this.reference.ToProcess(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
 				return Process?.EvidencePolicy.TravelDocument.Nfc ?? new KycNfcEvidencePolicy();
 			}
 			catch (Exception Ex)
@@ -1531,9 +1530,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
 				return;
 
-			await this.ClearMatchingReservedProfileApplicationAsync(ReservedPreviewIdentityId).ConfigureAwait(false);
+			await this.ClearMatchingReservedProfileApplicationAsync(ReservedPreviewIdentityId);
 
-			await ServiceRef.KycService.ForgetReservedPreviewIdentityAsync(this.reference, ReservedPreviewIdentityId).ConfigureAwait(false);
+			await ServiceRef.KycService.ForgetReservedPreviewIdentityAsync(this.reference, ReservedPreviewIdentityId);
 			this.LogFlowEvent(
 				EventName,
 				new KeyValuePair<string, object?>("HasReservedPreviewIdentityId", true));
@@ -1544,7 +1543,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.reference?.IsUnsubmittedReservedPreviewIdentity(PreviewIdentityId) == true &&
 				string.Equals(ServiceRef.TagProfile.IdentityApplication?.Id, PreviewIdentityId, StringComparison.OrdinalIgnoreCase))
 			{
-				await ServiceRef.TagProfile.SetIdentityApplication(null, true).ConfigureAwait(false);
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 			}
 		}
 

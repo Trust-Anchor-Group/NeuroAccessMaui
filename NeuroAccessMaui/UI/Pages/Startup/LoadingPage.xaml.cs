@@ -78,7 +78,16 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 				else
 				{
 					await this.ApplyCachedBrandingAsync();
-					await this.navigationService.SetRootAsync(nameof(MainPage));
+
+					// PIN authentication without a stored PIN would let anyone in, so the user must define a new PIN first.
+					if (this.tagProfile.AuthenticationMethod == AuthenticationMethod.Password && !this.tagProfile.HasLocalPassword)
+					{
+						await this.navigationService.SetRootAsync(
+							nameof(OnboardingPage),
+							new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ChangePin });
+					}
+					else
+						await this.navigationService.SetRootAsync(nameof(MainPage));
 				}
 			}
 			finally

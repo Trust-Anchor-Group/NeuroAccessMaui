@@ -33,6 +33,10 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 			return Task.CompletedTask;
 		}
 
+		/// <inheritdoc/>
+		public Task MigrateLegacyEntriesAsync()
+			=> this.cacheManager.MigrateLegacyFilesAsync();
+
 		public Task<(byte[]? Data, string ContentType)> TryGet(Uri Uri)
 			=> this.cacheManager.TryGet(Uri.AbsoluteUri);
 

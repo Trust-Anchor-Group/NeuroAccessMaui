@@ -276,7 +276,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 							this.AuthenticationMethod != this.ApprovedAuthenticationMethod &&
 							Enum.TryParse(this.AuthenticationMethod, out AuthenticationMethod AuthenticationMethod))
 						{
-							if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ChangeAuthenticationMethod, true))
+							bool Approved;
+
+							if (AuthenticationMethod == AuthenticationMethod.Password && !ServiceRef.TagProfile.HasLocalPassword)
+							{
+								await ServiceRef.UiService.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+									ServiceRef.Localizer[nameof(AppResources.PinNotDefined)]);
+								Approved = false;
+							}
+							else
+								Approved = await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ChangeAuthenticationMethod, true);
+
+							if (Approved)
 							{
 								ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod;
 								this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
@@ -353,7 +365,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			try
 			{
 				//Authenticate user
-				await this.authenticationService.CheckUserBlockingAsync();
+				if (await this.authenticationService.CheckUserBlockingAsync())
+					return;
 				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ChangePassword, true) == false)
 					return;
 

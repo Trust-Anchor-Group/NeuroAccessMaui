@@ -5066,4 +5066,13 @@ Document read. You can move your iPhone.</value>
   <data name="DestroyToken" xml:space="preserve">
     <value>Destroy token</value>
   </data>
+  <data name="PinNotDefined" xml:space="preserve">
+    <value>No PIN is currently defined. Please set a PIN before switching to PIN authentication.</value>
+  </data>
+  <data name="OnboardingBiometricsFailedTitle" xml:space="preserve">
+    <value>Biometrics not enabled</value>
+  </data>
+  <data name="OnboardingBiometricsFailedDescription" xml:space="preserve">
+    <value>Try again, or continue with your PIN for now.</value>
+  </data>
 </root>

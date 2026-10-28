@@ -7297,6 +7297,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Try again, or continue with your PIN for now..
+        /// </summary>
+        public static string OnboardingBiometricsFailedDescription {
+            get {
+                return ResourceManager.GetString("OnboardingBiometricsFailedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Biometrics not enabled.
+        /// </summary>
+        public static string OnboardingBiometricsFailedTitle {
+            get {
+                return ResourceManager.GetString("OnboardingBiometricsFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Neuro-Access works best when using {0}. Would you like to enable this feature? This can also be changed in the settings later.
         /// </summary>
         public static string OnboardingBiometricsPageDetails {
@@ -8760,6 +8778,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string PickPhotoOfYourself {
             get {
                 return ResourceManager.GetString("PickPhotoOfYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No PIN is currently defined. Please set a PIN before switching to PIN authentication..
+        /// </summary>
+        public static string PinNotDefined {
+            get {
+                return ResourceManager.GetString("PinNotDefined", resourceCulture);
             }
         }
         

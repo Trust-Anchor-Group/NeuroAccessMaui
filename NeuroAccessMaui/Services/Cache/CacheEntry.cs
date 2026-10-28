@@ -19,6 +19,7 @@ namespace NeuroAccessMaui.Services.Cache
 		private CaseInsensitiveString url = string.Empty;
 		private CaseInsensitiveString contentType = string.Empty;
 		private DateTime expires = DateTime.MinValue;
+		private byte[]? data = null;
 
 		/// <summary>
 		/// Contains information about a file in the local cache.
@@ -82,6 +83,17 @@ namespace NeuroAccessMaui.Services.Cache
 		{
 			get => this.contentType;
 			set => this.contentType = value;
+		}
+
+		/// <summary>
+		/// Cached content, stored in the encrypted database record. Empty for entries from older versions that stored the
+		/// content in <see cref="LocalFileName"/>.
+		/// </summary>
+		[DefaultValueNull]
+		public byte[]? Data
+		{
+			get => this.data;
+			set => this.data = value;
 		}
 	}
 }

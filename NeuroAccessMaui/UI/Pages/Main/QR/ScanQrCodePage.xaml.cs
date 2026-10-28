@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <returns>A task representing completion of page cleanup.</returns>
 		public virtual async ValueTask DisposeAsync()
 		{
-			await this.OnDisposeAsync().ConfigureAwait(false);
+			await this.OnDisposeAsync();
 			GC.SuppressFinalize(this);
 		}
 

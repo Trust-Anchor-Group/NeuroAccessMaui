@@ -12,7 +12,11 @@ namespace NeuroAccessMaui.Services.Authentication
 	{
 		Task<string?> InputPasswordAsync(AuthenticationPurpose purpose);
 		Task<bool> AuthenticateUserAsync(AuthenticationPurpose purpose, bool force = false);
-		Task CheckUserBlockingAsync();
+		/// <summary>
+		/// Checks if the user is blocked from authenticating after too many wrong PINs, and shows UI as needed.
+		/// </summary>
+		/// <returns>true if the user is blocked; otherwise false.</returns>
+		Task<bool> CheckUserBlockingAsync();
 		Task<bool> CheckPasswordAndUnblockUserAsync(string password);
 		Task<long> GetCurrentPasswordCounterAsync();
 

@@ -39,6 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		private bool isCompleting;
 		private bool hasLoggedSequence;
 		private bool allStepsSkippable;
+		private bool hasActivatedStep;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsSummaryStep))]
@@ -132,7 +133,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 					context.PasswordMethod,
 					string.Empty,
 					context.LegalIdDefinition,
-					string.Empty).ConfigureAwait(false);
+					string.Empty);
 
 				if (connected)
 				{
@@ -333,13 +334,13 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitializeAsync().ConfigureAwait(false);
+			await base.OnInitializeAsync();
 
 			this.BuildActiveSequence();
 			if (this.allStepsSkippable)
 			{
-				await this.MoveToStepAsync(OnboardingStep.Finalize, NavigationDirection.Forward).ConfigureAwait(false);
-				await this.CompleteOnboardingAsync(false, true).ConfigureAwait(false);
+				await this.MoveToStepAsync(OnboardingStep.Finalize, NavigationDirection.Forward);
+				await this.CompleteOnboardingAsync(false, true);
 				return;
 			}
 
@@ -349,7 +350,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			}
 
 			OnboardingStep StartStep = this.ResolveInitialStep();
-			await this.MoveToStepAsync(StartStep, NavigationDirection.Forward).ConfigureAwait(false);
+			await this.MoveToStepAsync(StartStep, NavigationDirection.Forward);
 
 			if (!string.IsNullOrEmpty(this.navigationArgs.PendingIntentUri))
 			{
@@ -375,7 +376,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		{
 			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel? CurrentStepViewModel))
 			{
-				bool CanAdvance = await CurrentStepViewModel.OnNextAsync().ConfigureAwait(false);
+				bool CanAdvance = await CurrentStepViewModel.OnNextAsync();
 				if (!CanAdvance)
 				{
 					return;
@@ -386,11 +387,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			OnboardingStep? NextStep = this.FindStepInDirection(this.CurrentStep, NavigationDirection.Forward);
 			if (NextStep is null)
 			{
-				await this.CompleteOnboardingAsync().ConfigureAwait(false);
+				await this.CompleteOnboardingAsync();
 				return;
 			}
 
-			await this.MoveToStepAsync(NextStep.Value, NavigationDirection.Forward).ConfigureAwait(false);
+			await this.MoveToStepAsync(NextStep.Value, NavigationDirection.Forward);
 		}
 
 		/// <summary>
@@ -409,7 +410,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel? CurrentStepViewModel))
 			{
-				await CurrentStepViewModel.OnBackAsync().ConfigureAwait(false);
+				await CurrentStepViewModel.OnBackAsync();
 			}
 
 			this.BuildActiveSequence();
@@ -419,7 +420,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				return;
 			}
 
-			await this.MoveToStepAsync(PreviousStep.Value, NavigationDirection.Backward).ConfigureAwait(false);
+			await this.MoveToStepAsync(PreviousStep.Value, NavigationDirection.Backward);
 		}
 
 		/// <summary>
@@ -438,13 +439,13 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				return;
 			}
 
-			await this.MoveToStepAsync(Step, Direction).ConfigureAwait(false);
+			await this.MoveToStepAsync(Step, Direction);
 		}
 
 		[RelayCommand]
 		private async Task ChangeLanguage()
 		{
-			await ServiceRef.PopupService.PushAsync<SelectLanguagePopup>().ConfigureAwait(false);
+			await ServiceRef.PopupService.PushAsync<SelectLanguagePopup>();
 			this.SelectedLanguage = App.SelectedLanguage;
 		}
 
@@ -742,6 +743,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 			OnboardingStep TargetStep = this.ResolveStepWithSkipping(Step, Direction);
 			this.CurrentStep = TargetStep;
+			this.hasActivatedStep = true;
 
 			try
 			{
@@ -758,7 +760,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 			if (this.stepViewModels.TryGetValue(TargetStep, out BaseOnboardingStepViewModel? StepViewModel))
 			{
-				await StepViewModel.OnActivatedAsync().ConfigureAwait(false);
+				await StepViewModel.OnActivatedAsync();
 			}
 		}
 
@@ -949,15 +951,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 			if (EnsureFinalizeVisible && this.CurrentStep != OnboardingStep.Finalize)
 			{
-				await this.MoveToStepAsync(OnboardingStep.Finalize, NavigationDirection.Forward).ConfigureAwait(false);
+				await this.MoveToStepAsync(OnboardingStep.Finalize, NavigationDirection.Forward);
 			}
 
 			ServiceRef.LogService.LogInformational("Onboarding completion triggered.",
 				new KeyValuePair<string, object?>("Scenario", this.scenario.ToString()),
 				new KeyValuePair<string, object?>("Path", AllStepsSkipped ? "AllStepsSkipped" : "Standard"));
 
-			await Task.Delay(TimeSpan.FromMilliseconds(300)).ConfigureAwait(false);
-			await ServiceRef.NavigationService.SetRootAsync(nameof(LoadingPage)).ConfigureAwait(false);
+			await Task.Delay(TimeSpan.FromMilliseconds(300));
+			await ServiceRef.NavigationService.SetRootAsync(nameof(LoadingPage));
 		}
 
 		private void LogSequence(string Message)
@@ -998,7 +1000,35 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				return;
 			}
 
-			if (Enum.TryParse(value, out OnboardingStep ParsedStep) && ParsedStep != this.CurrentStep && this.activeSequence.Contains(ParsedStep))
+			bool IsKnownStep = Enum.TryParse(value, out OnboardingStep ParsedStep);
+			if (this.hasActivatedStep && (!IsKnownStep || !this.activeSequence.Contains(ParsedStep)))
+			{
+				// The view switcher fell back to a step that is not part of this scenario, such as Welcome while changing
+				// the PIN. Show the current step again instead of leaving the user on an unrelated page.
+				string CurrentStateKey = this.CurrentStep.ToStateKey();
+				if (!string.Equals(value, CurrentStateKey, StringComparison.Ordinal))
+				{
+					MainThread.BeginInvokeOnMainThread(() =>
+					{
+						if (this.SelectedStateKey == value)
+						{
+							this.isUpdatingSelection = true;
+							try
+							{
+								this.SelectedStateKey = CurrentStateKey;
+							}
+							finally
+							{
+								this.isUpdatingSelection = false;
+							}
+						}
+					});
+				}
+
+				return;
+			}
+
+			if (IsKnownStep && ParsedStep != this.CurrentStep && this.activeSequence.Contains(ParsedStep))
 			{
 				NavigationDirection Direction = this.DetermineDirection(this.CurrentStep, ParsedStep);
 				if (Direction == NavigationDirection.Backward && IsBackRestrictedStep(this.CurrentStep))

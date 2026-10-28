@@ -368,7 +368,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 						string? Code = await NavigationArgs.VarifyCode!.Task;
 						if (!string.IsNullOrEmpty(Code))
 						{
-							await this.VerifyCodeAsync(Code, FullPhoneNumber).ConfigureAwait(false);
+							await this.VerifyCodeAsync(Code, FullPhoneNumber);
 						}
 					}
 				}

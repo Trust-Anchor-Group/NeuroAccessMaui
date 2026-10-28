@@ -260,7 +260,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					string? Code = await NavigationArgs.VarifyCode!.Task;
 					if (!string.IsNullOrEmpty(Code))
 					{
-						await this.VerifyCodeAsync(Code).ConfigureAwait(false);
+						await this.VerifyCodeAsync(Code);
 					}
 				}
 				else
@@ -366,17 +366,17 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					{
 						if (this.CoordinatorViewModel.HasPendingTransfer)
 						{
-							bool Connected = await this.CoordinatorViewModel.TryFinalizeTransferAsync(true).ConfigureAwait(false);
+							bool Connected = await this.CoordinatorViewModel.TryFinalizeTransferAsync(true);
 							ServiceRef.LogService.LogInformational("Transfer connection attempted after email verification.",
 								new KeyValuePair<string, object?>("Success", Connected));
 							if (Connected)
 							{
-								await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.DefinePassword).ConfigureAwait(false);
+								await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.DefinePassword);
 								return;
 							}
 						}
 
-						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.NameEntry).ConfigureAwait(false);
+						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.NameEntry);
 					}
 				}
 				else

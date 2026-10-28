@@ -918,7 +918,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						break;
 
 					case SelectContractAction.Select:
-						Contract? Contract = await Ref.GetContract().ConfigureAwait(false);
+						Contract? Contract = await Ref.GetContract();
 						this.selectedContract = Contract;
 						await MainThread.InvokeOnMainThreadAsync(async () =>
 						{

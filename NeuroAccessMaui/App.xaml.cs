@@ -117,6 +117,7 @@ namespace NeuroAccessMaui
         private static CancellationTokenSource? deferredCancellation;
         private static volatile bool previousRunReported;
         private static volatile bool providerThemeRefreshed;
+        private static volatile bool legacyCacheMigrated;
         private static TaskCompletionSource<bool> servicesReady = CreateServicesReadySignal();
         private static CancellationTokenSource? activationCancellation;
         private static LifecycleState lifecycleState;
@@ -613,6 +614,15 @@ namespace NeuroAccessMaui
             }
         }
 
+        /// <summary>
+        /// Moves cache entries that older versions stored as plain files on disk into the encrypted database.
+        /// </summary>
+        private static async Task MigrateLegacyCacheFilesAsync()
+        {
+            await ServiceRef.AttachmentCacheService.MigrateLegacyEntriesAsync();
+            await ServiceRef.InternetCacheService.MigrateLegacyEntriesAsync();
+        }
+
         private static async Task ObserveOptionalAsync(Func<Task> Callback)
         {
             try { await Callback(); }
@@ -628,7 +638,8 @@ namespace NeuroAccessMaui
         /// Schedules startup work that the first page does not need, to run a few seconds after it has been shown.
         /// </summary>
         /// <remarks>
-        /// Runs the crash report of the previous run and the background refresh of provider branding. Each step runs to
+        /// Runs the crash report of the previous run, the move of plain cache files from older versions into the encrypted
+        /// database, and the background refresh of provider branding. Each step runs to
         /// completion once per process, except that a branding refresh that failed for a transient reason is tried again at
         /// the next foreground activation. Going to the background cancels pending work, and the next foreground activation
         /// schedules the remaining steps again. Safe to call from any thread and any number of times.
@@ -643,7 +654,7 @@ namespace NeuroAccessMaui
 
             if (lifecycleState != LifecycleState.Active)
                 return;
-            if (previousRunReported && providerThemeRefreshed)
+            if (previousRunReported && legacyCacheMigrated && providerThemeRefreshed)
                 return;
 
             Task? Previous = deferredWork;
@@ -677,6 +688,14 @@ namespace NeuroAccessMaui
                 {
                     await ObserveOptionalAsync(SendErrorReportFromPreviousRunAsync);
                     previousRunReported = true;
+                }
+
+                Token.ThrowIfCancellationRequested();
+
+                if (!legacyCacheMigrated)
+                {
+                    await ObserveOptionalAsync(MigrateLegacyCacheFilesAsync);
+                    legacyCacheMigrated = true;
                 }
 
                 Token.ThrowIfCancellationRequested();

@@ -1012,7 +1012,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					string ValidationText = string.Empty;
 					try
 					{
-						if (await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false))
+						if (await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient))
 						{
 							IsValid = true;
 							ValidationText = string.Empty;

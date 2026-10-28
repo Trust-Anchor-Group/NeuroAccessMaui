@@ -66,7 +66,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				}
 				else
 				{
-					this.innerLabels[i].Text = "0\u2060"; // Added a "zero width no-break space" to make the disabled state to work right :)
+					this.innerLabels[i].Text = "0\ufeff"; // Added a "zero width no-break space" to make the disabled state to work right :)
 					VisualStateManager.GoToState(this.innerLabels[i], VisualStateManager.CommonStates.Disabled);
 				}
 			}

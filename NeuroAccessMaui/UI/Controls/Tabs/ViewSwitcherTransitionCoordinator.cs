@@ -68,7 +68,7 @@ namespace NeuroAccessMaui.UI.Controls
 				if (this.disposed)
 					linkedSource.Cancel();
 
-				await this.transitionLock.WaitAsync(TransitionToken).ConfigureAwait(false);
+				await this.transitionLock.WaitAsync(TransitionToken);
 				LockAcquired = true;
 				TransitionToken.ThrowIfCancellationRequested();
 				View? currentView = this.CurrentView;

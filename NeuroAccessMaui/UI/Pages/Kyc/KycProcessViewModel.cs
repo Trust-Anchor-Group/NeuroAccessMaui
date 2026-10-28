@@ -524,7 +524,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					KycNavigationSnapshot NavigationSnapshot = this.navigation;
 					double ProgressValue = this.Progress;
 
-					await this.kycService.ScheduleSnapshotAsync(Reference, Process, NavigationSnapshot, ProgressValue, CurrentPageId).ConfigureAwait(false);
+					await this.kycService.ScheduleSnapshotAsync(Reference, Process, NavigationSnapshot, ProgressValue, CurrentPageId);
 				})
 				.Build();
 		}
@@ -878,7 +878,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.kycService,
 					ServiceRef.NavigationService,
 					CancellationToken.None);
-				KycPageActionState State = await Action.GetStateAsync(Context).ConfigureAwait(false);
+				KycPageActionState State = await Action.GetStateAsync(Context);
 
 				await MainThread.InvokeOnMainThreadAsync(() => this.ApplyCurrentPageActionState(Action, State, Version));
 			}
@@ -1203,7 +1203,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.ScrollUp();
 					this.NotifyNavigationChanged();
 				}
-			}).ConfigureAwait(false))
+			}))
 			{
 				return; // Skipped due to ongoing navigation
 			}
@@ -1680,7 +1680,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterApply, CurrentPageIndex = AnchorAfterApply >= 0 ? AnchorAfterApply : this.navigation.CurrentPageIndex };
 					this.NotifyNavigationChanged();
 				}
-			}).ConfigureAwait(false)) return;
+			})) return;
 		}
 
 		private async Task<(bool CanSubmit, bool GenerateNewKeys)> ResolveSubmissionKeyGenerationAsync(bool PreviewMode)

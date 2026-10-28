@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NeuroAccessMaui.Services.Cache;
-using Waher.Content;
-using Waher.Persistence;
-using Waher.Persistence.Files.Searching;
+﻿using Waher.Persistence;
+using Waher.Persistence.Filters;
+using Waher.Runtime.Settings;
 
 namespace NeuroAccessMaui.Services.Cache
 {
+	/// <summary>
+	/// Stores cached content in the encrypted object database, with expiry and grouping by parent ID.
+	/// </summary>
+	/// <remarks>
+	/// Older versions wrote the content as plain files in a cache folder and kept only the file name in the database.
+	/// Such entries are moved into the database when read, and all at once by <see cref="MigrateLegacyFilesAsync"/>.
+	/// </remarks>
 	internal class FileCacheManager
 	{
 		private readonly string folderPath;
@@ -17,14 +18,15 @@ namespace NeuroAccessMaui.Services.Cache
 
 		private static int evictionPerformed = 0;   // 0 = not yet, 1 = done
 
-
+		/// <summary>
+		/// Creates a cache manager for one cache.
+		/// </summary>
+		/// <param name="folderName">Name of the folder older versions stored the cached files in.</param>
+		/// <param name="defaultExpiry">How long entries that are not permanent are kept.</param>
 		public FileCacheManager(string folderName, TimeSpan defaultExpiry)
 		{
 			this.folderPath = Path.Combine(FileSystem.CacheDirectory, folderName);
 			this.defaultExpiry = defaultExpiry;
-
-			if (!Directory.Exists(this.folderPath))
-				Directory.CreateDirectory(this.folderPath);
 		}
 
 		public async Task EvictOldEntries()
@@ -41,10 +43,7 @@ namespace NeuroAccessMaui.Services.Cache
 					new FilterFieldLesserOrEqualTo("Expires", DateTime.UtcNow));
 
 				foreach (CacheEntry Entry in Expired)
-				{
-					try { File.Delete(Entry.LocalFileName); }
-					catch { /* log if desired */ }
-				}
+					DeleteLegacyFile(Entry);
 			}
 			catch
 			{
@@ -60,13 +59,14 @@ namespace NeuroAccessMaui.Services.Cache
 			CacheEntry? Entry = await Database.FindFirstDeleteRest<CacheEntry>(
 				new FilterFieldEqualTo("Url", Key));
 
-			if (Entry is null ||
-				!File.Exists(Entry.LocalFileName))
+			if (Entry is not null)
+				await this.TryMigrateLegacyEntryAsync(Entry);
+
+			if (Entry is null || Entry.Data is null || Entry.Data.Length == 0)
 			{
 				if (Entry is not null)
 				{
-					try { File.Delete(Entry.LocalFileName); }
-					catch { }
+					DeleteLegacyFile(Entry);
 					await Database.Delete(Entry);
 					await Database.Provider.Flush();
 				}
@@ -77,12 +77,12 @@ namespace NeuroAccessMaui.Services.Cache
 			if (DateTime.UtcNow >= Entry.Expires)
 				return (null, string.Empty);
 
-			return (File.ReadAllBytes(Entry.LocalFileName), Entry.ContentType);
+			return (Entry.Data, Entry.ContentType);
 		}
 
 		/// <summary>
 		/// Tries to get a cached entry and indicates if it is past its expiry.
-		/// Returns bytes for both fresh and Expired items (if file exists). Expired items are not deleted here.
+		/// Returns bytes for both fresh and Expired items (if data exists). Expired items are not deleted here.
 		/// </summary>
 		public async Task<(byte[]? Data, string ContentType, bool IsExpired)> TryGetWithExpiry(string Key)
 		{
@@ -95,8 +95,12 @@ namespace NeuroAccessMaui.Services.Cache
 			if (Entry is null)
 				return (null, string.Empty, false);
 
-			if (!File.Exists(Entry.LocalFileName))
+			await this.TryMigrateLegacyEntryAsync(Entry);
+
+			if (Entry.Data is null || Entry.Data.Length == 0)
 			{
+				DeleteLegacyFile(Entry);
+
 				try { await Database.Delete(Entry); }
 				catch { }
 				await Database.Provider.Flush();
@@ -104,7 +108,7 @@ namespace NeuroAccessMaui.Services.Cache
 			}
 
 			bool Expired = DateTime.UtcNow >= Entry.Expires && Entry.Expires != DateTime.MaxValue;
-			return (File.ReadAllBytes(Entry.LocalFileName), Entry.ContentType, Expired);
+			return (Entry.Data, Entry.ContentType, Expired);
 		}
 
 		public async Task AddOrUpdate(string key, string parentId, bool permanent,
@@ -120,31 +124,27 @@ namespace NeuroAccessMaui.Services.Cache
 			CacheEntry? Existing = await Database.FindFirstDeleteRest<CacheEntry>(
 				new FilterFieldEqualTo("Url", key));
 
-			string Ext = InternetContent.GetFileExtension(contentType);
-			string Filename = Path.Combine(this.folderPath, $"{Guid.NewGuid():N}.{Ext}");
-
-			await File.WriteAllBytesAsync(Filename, data);
-
 			if (Existing is null)
 			{
 				await Database.Insert(new CacheEntry
 				{
 					Url = key,
 					ParentId = parentId ?? string.Empty,
-					LocalFileName = Filename,
+					LocalFileName = string.Empty,
 					ContentType = contentType,
-					Expires = Expires
+					Expires = Expires,
+					Data = data
 				});
 			}
 			else
 			{
-				try { File.Delete(Existing.LocalFileName); }
-				catch { }
+				DeleteLegacyFile(Existing);
 
-				Existing.LocalFileName = Filename;
+				Existing.LocalFileName = string.Empty;
 				Existing.ContentType = contentType;
 				Existing.ParentId = parentId ?? string.Empty;
 				Existing.Expires = Expires;
+				Existing.Data = data;
 
 				await Database.Update(Existing);
 			}
@@ -163,12 +163,7 @@ namespace NeuroAccessMaui.Services.Cache
 			if (Entry is null)
 				return false;
 
-			try { File.Delete(Entry.LocalFileName); }
-			catch
-			{
-				//Ignore as it may not exist or be accessible. (User clearing data etc)
-			}
-
+			DeleteLegacyFile(Entry);
 
 			await Database.Delete(Entry);
 			await Database.Provider.Flush();
@@ -209,8 +204,7 @@ namespace NeuroAccessMaui.Services.Cache
 			foreach (CacheEntry Entry in await Database.Find<CacheEntry>(
 				new FilterFieldEqualTo("ParentId", parentId)))
 			{
-				try { File.Delete(Entry.LocalFileName); }
-				catch { /* ignore */ }
+				DeleteLegacyFile(Entry);
 
 				await Database.Delete(Entry);
 				Removed++;
@@ -218,6 +212,97 @@ namespace NeuroAccessMaui.Services.Cache
 
 			await Database.Provider.Flush();
 			return Removed;
+		}
+
+		/// <summary>
+		/// Moves cache entries that older versions stored as plain files on disk into the database, deletes those files and
+		/// then the old cache folder. Safe to call more than once.
+		/// </summary>
+		/// <remarks>
+		/// The scan reads the whole cache table, so once it has completed for this cache folder a flag is persisted and later
+		/// calls return at once. Entries read before the scan has run are migrated one by one by the read methods.
+		/// </remarks>
+		public async Task MigrateLegacyFilesAsync()
+		{
+			string CompletedFlag = Constants.Settings.LegacyCacheMigrationCompletedPrefix + Path.GetFileName(this.folderPath);
+
+			try
+			{
+				if (await RuntimeSettings.GetAsync(CompletedFlag, false))
+					return;
+
+				IEnumerable<CacheEntry> LegacyEntries = await Database.Find<CacheEntry>(
+					new FilterNot(new FilterFieldEqualTo("LocalFileName", string.Empty)));
+
+				foreach (CacheEntry Entry in LegacyEntries)
+					await this.MigrateLegacyEntryAsync(Entry);
+
+				await Database.Provider.Flush();
+
+				if (Directory.Exists(this.folderPath))
+				{
+					try { Directory.Delete(this.folderPath, true); }
+					catch { }
+				}
+
+				await RuntimeSettings.SetAsync(CompletedFlag, true);
+			}
+			catch (Exception Ex)
+			{
+				// Best effort: it is tried again at the next start.
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Migrates a single entry if it still refers to a plain file, without letting failures escape.
+		/// </summary>
+		/// <param name="Entry">Entry that was just read from the database.</param>
+		private async Task TryMigrateLegacyEntryAsync(CacheEntry Entry)
+		{
+			if (string.IsNullOrEmpty(Entry.LocalFileName) || (Entry.Data is not null && Entry.Data.Length > 0))
+				return;
+
+			try
+			{
+				await this.MigrateLegacyEntryAsync(Entry);
+				await Database.Provider.Flush();
+			}
+			catch
+			{
+				// The caller treats an entry without data as missing.
+			}
+		}
+
+		private async Task MigrateLegacyEntryAsync(CacheEntry Entry)
+		{
+			if (string.IsNullOrEmpty(Entry.LocalFileName))
+				return;
+
+			if (File.Exists(Entry.LocalFileName))
+			{
+				Entry.Data = await File.ReadAllBytesAsync(Entry.LocalFileName);
+				File.Delete(Entry.LocalFileName);
+			}
+			else
+			{
+				Entry.Data = null;
+			}
+
+			Entry.LocalFileName = string.Empty;
+			await Database.Update(Entry);
+		}
+
+		private static void DeleteLegacyFile(CacheEntry Entry)
+		{
+			if (string.IsNullOrEmpty(Entry.LocalFileName))
+				return;
+
+			try { File.Delete(Entry.LocalFileName); }
+			catch
+			{
+				// Ignore as it may not exist or be accessible. (User clearing data etc)
+			}
 		}
 	}
 

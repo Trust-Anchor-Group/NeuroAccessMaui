@@ -20,6 +20,11 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 		Task<(byte[]? Data, string ContentType)> TryGet(Uri Uri);
 
 		/// <summary>
+		/// Moves entries that older versions stored as plain files into the encrypted database.
+		/// </summary>
+		Task MigrateLegacyEntriesAsync();
+
+		/// <summary>
 		/// Retrieves content for the specified URI from cache or fetches and caches it if missing.
 		/// </summary>
 		/// <param name="Uri">The URI key of the content.</param>
