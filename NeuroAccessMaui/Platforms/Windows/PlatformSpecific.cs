@@ -170,6 +170,12 @@ namespace NeuroAccessMaui.Services
 		public event EventHandler<KeyboardSizeMessage>? KeyboardSizeChanged;
 
 		/// <inheritdoc/>
+		/// <inheritdoc/>
+		public void SetScreenRotation(bool CanRotate)
+		{
+			// Windows windows aren't turned with the device.
+		}
+
 		public void HideKeyboard()
 		{
 			// No-op on Windows.

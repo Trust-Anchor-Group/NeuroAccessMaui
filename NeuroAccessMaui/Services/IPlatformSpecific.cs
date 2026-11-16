@@ -95,6 +95,12 @@ namespace NeuroAccessMaui.Services
 		void HideKeyboard();
 
 		/// <summary>
+		/// Lets the screen turn with the phone, such as while a chart is zoomed, or keeps it upright again.
+		/// </summary>
+		/// <param name="CanRotate">If the screen may turn to landscape.</param>
+		void SetScreenRotation(bool CanRotate);
+
+		/// <summary>
 		/// Event that is triggered when the keyboard is shown
 		/// </summary>
 		event EventHandler<KeyboardSizeMessage>? KeyboardShown;

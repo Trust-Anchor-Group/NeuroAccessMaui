@@ -42,10 +42,24 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		public IReadOnlyList<TokenFlowExit> Exits => this.state.Exits;
 
 		/// <summary>
-		/// If the token is in this step now.
+		/// If the token is in this step now, or ended its flow in it.
 		/// </summary>
 		[ObservableProperty]
 		private bool isCurrent;
+
+		/// <summary>
+		/// If the token's flow has ended in this step.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(BadgeText))]
+		private bool isFinished;
+
+		/// <summary>
+		/// The badge on the step the token is in: "Now", or "Ended" when the flow ended there.
+		/// </summary>
+		public string BadgeText => this.IsFinished
+			? ServiceRef.Localizer[nameof(AppResources.StateEnded)]
+			: ServiceRef.Localizer[nameof(AppResources.FlowNow)];
 
 		/// <summary>
 		/// If the token only comes to this step when something fails. Its dot is dashed and its name dimmed.

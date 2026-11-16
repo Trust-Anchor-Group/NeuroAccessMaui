@@ -113,7 +113,7 @@
 												BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
 												VerticalOptions="Center"
 												IsVisible="{Binding IsCurrent}">
-											<Label Text="{l:Localize FlowNow}"
+											<Label Text="{Binding BadgeText}"
 												   FontFamily="HaasGroteskBold"
 												   FontSize="11"
 												   TextTransform="Uppercase"

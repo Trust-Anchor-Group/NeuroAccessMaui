@@ -290,7 +290,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 			};
 
 			string Detail = Step.IsCurrent
-				? ServiceRef.Localizer[nameof(AppResources.FlowNow)]
+				? Step.BadgeText
 				: Step.IsEnd ? ServiceRef.Localizer[nameof(AppResources.FlowEnd)] : string.Empty;
 
 			if (!string.IsNullOrEmpty(Detail))

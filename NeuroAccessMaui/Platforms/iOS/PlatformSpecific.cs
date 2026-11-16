@@ -403,6 +403,12 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Force hide the keyboard
 		/// </summary>
+		/// <inheritdoc/>
+		public void SetScreenRotation(bool CanRotate)
+		{
+			// The app's supported orientations on iOS are set in Info.plist.
+		}
+
 		public void HideKeyboard()
 		{
 			AppDelegate.GetKeyWindow()?.EndEditing(true);

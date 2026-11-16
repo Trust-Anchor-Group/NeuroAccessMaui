@@ -49,6 +49,20 @@ namespace NeuroAccessMaui.UI.Popups.Images
 			this.CardContent = Layout;
 		}
 
+		/// <inheritdoc/>
+		public override Task OnAppearingAsync()
+		{
+			ServiceRef.PlatformSpecific.SetScreenRotation(true);
+			return base.OnAppearingAsync();
+		}
+
+		/// <inheritdoc/>
+		public override Task OnDisappearingAsync()
+		{
+			ServiceRef.PlatformSpecific.SetScreenRotation(false);
+			return base.OnDisappearingAsync();
+		}
+
 		/// <summary>
 		/// Shows an image in the viewer.
 		/// </summary>

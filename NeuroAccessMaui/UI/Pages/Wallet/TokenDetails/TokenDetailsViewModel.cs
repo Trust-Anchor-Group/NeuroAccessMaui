@@ -56,6 +56,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private readonly Dictionary<string, object> machineVariables = [];
 		private string? machineId;
 		private string? machineState;
+
+		/// <summary>
+		/// The step the state machine ended in, when it has ended and the server said which step that was.
+		/// </summary>
+		private string? endedState;
 		private int noteCommandsVersion;
 		private int noteCommandCandidateCount;
 		private bool noteCommandsLoaded;
@@ -811,6 +816,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		{
 			this.MachineEnded = Ended || string.IsNullOrEmpty(State);
 			this.machineState = this.MachineEnded ? null : State;
+
+			// A new state that only says the machine ended keeps the step it was known to have ended in.
+			if (this.MachineEnded && !string.IsNullOrEmpty(State))
+				this.endedState = State;
+			else if (!this.MachineEnded)
+				this.endedState = null;
 			this.MachineStateText = this.MachineEnded
 				? ServiceRef.Localizer[nameof(AppResources.StateEnded)]
 				: State;
@@ -1177,6 +1188,25 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		}
 
 		/// <summary>
+		/// Gets the step the flow ended in: the one the server named, or the only step where the flow ends.
+		/// </summary>
+		/// <returns>The step, or null when it isn't known.</returns>
+		private TokenFlowStepItem? GetEndedStep()
+		{
+			if (!string.IsNullOrEmpty(this.endedState))
+			{
+				TokenFlowStepItem? Named = this.allFlowSteps.FirstOrDefault(Step =>
+					string.Equals(Step.Id, this.endedState, StringComparison.Ordinal));
+
+				if (Named is not null)
+					return Named;
+			}
+
+			TokenFlowStepItem[] Ends = [.. this.allFlowSteps.Where(Step => Step.IsEnd)];
+			return Ends.Length == 1 ? Ends[0] : null;
+		}
+
+		/// <summary>
 		/// Gets the steps the token only comes to when something fails.
 		/// </summary>
 		/// <param name="Flow">The token's flow.</param>
@@ -1191,13 +1221,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 		/// <summary>
 		/// Shows the step the token is in now with what moves it on from there, and the steps it can move on to with how it
-		/// gets there. While that step isn't known, the first steps of the flow are shown. Called on the main thread.
+		/// gets there. While that step isn't known, or when the flow has ended, the first steps of the flow are shown, with
+		/// the step it ended in marked. Called on the main thread.
 		/// </summary>
 		private void UpdateFlow()
 		{
 			TokenFlowStepItem? Current = this.IsMachineStateKnown && !this.MachineEnded
 				? this.allFlowSteps.FirstOrDefault(Step => string.Equals(Step.Id, this.machineState, StringComparison.Ordinal))
 				: null;
+			TokenFlowStepItem? Finished = this.IsMachineStateKnown && this.MachineEnded ? this.GetEndedStep() : null;
 
 			List<TokenFlowStepItem> Shown;
 			IEnumerable<TokenFlowExit> WaysIn;
@@ -1212,6 +1244,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			{
 				Shown = [.. this.allFlowSteps.Take(MaxInlineFlowSteps)];
 				WaysIn = this.allFlowSteps.SelectMany(Step => Step.Exits);
+
+				if (Finished is not null && !Shown.Contains(Finished))
+				{
+					if (Shown.Count >= MaxInlineFlowSteps)
+						Shown.RemoveAt(Shown.Count - 1);
+
+					Shown.Add(Finished);
+				}
 			}
 
 			foreach (TokenFlowStepItem Step in this.allFlowSteps)
@@ -1221,7 +1261,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 					WaysIn.FirstOrDefault(Exit => Exit.Target == Step.Id && !Exit.IsFailure) ??
 					WaysIn.FirstOrDefault(Exit => Exit.Target == Step.Id);
 
-				Step.IsCurrent = IsCurrent;
+				Step.IsCurrent = IsCurrent || Step == Finished;
+				Step.IsFinished = Step == Finished;
 				Step.ShowWhenLines(IsCurrent ? this.machineVariables : null);
 				Step.IncomingText = WayIn is null ? string.Empty : TokenFlowStepItem.DescribeWayIn(WayIn, this.machineVariables);
 			}

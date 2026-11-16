@@ -25,6 +25,24 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		}
 
 		/// <summary>
+		/// Lets the screen turn to landscape while the page is shown, for a wider view.
+		/// </summary>
+		public override async Task OnAppearingAsync()
+		{
+			await base.OnAppearingAsync();
+			ServiceRef.PlatformSpecific.SetScreenRotation(true);
+		}
+
+		/// <summary>
+		/// Keeps the screen upright again when the page is left.
+		/// </summary>
+		public override async Task OnDisappearingAsync()
+		{
+			ServiceRef.PlatformSpecific.SetScreenRotation(false);
+			await base.OnDisappearingAsync();
+		}
+
+		/// <summary>
 		/// Remembers where the user had scrolled, before a refreshed report replaces the shown one.
 		/// </summary>
 		private void ViewModel_PropertyChanging(object? Sender, System.ComponentModel.PropertyChangingEventArgs e)

@@ -729,6 +729,13 @@ namespace NeuroAccessMaui.Services
 		private KeyboardInsetsListener? windowInsetsListener;
 
 		/// <inheritdoc/>
+		/// <inheritdoc/>
+		public void SetScreenRotation(bool CanRotate)
+		{
+			if (Platform.CurrentActivity is Activity Activity)
+				Activity.RequestedOrientation = CanRotate ? ScreenOrientation.FullSensor : ScreenOrientation.Portrait;
+		}
+
 		public void HideKeyboard()
 		{
 			if (this.activity is null || this.rootView is null)
