@@ -8,7 +8,7 @@
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
                            xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls" 
+									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI" >
 	<ContentView.Resources>
@@ -22,12 +22,46 @@
 			DurationTemplate="{StaticResource DurationParameterTemplate}"
 			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 			GeoTemplate="{StaticResource GeoParameterTemplate}"
+			CalcTemplate="{StaticResource CalcParameterTemplate}"
+			RoleTemplate="{StaticResource RoleParameterTemplate}"
+			AttachmentTemplate="{StaticResource AttachmentParameterTemplate}"
 			DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
 
 	<!-- Parameters -->
-	<Grid>
-		<CollectionView HorizontalOptions="Center"
+	<Grid RowDefinitions="Auto,*">
+		<!-- How many values need a fix, after the user tapped Next -->
+		<Border Grid.Row="0"
+				Style="{DynamicResource RoundedBorder}"
+				BackgroundColor="{DynamicResource TnPDangerbgWL}"
+				Stroke="Transparent"
+				Padding="12,8"
+				Margin="16,0,16,8"
+				IsVisible="{Binding HasParameterFixes}">
+			<Grid ColumnDefinitions="*,Auto"
+				  ColumnSpacing="{DynamicResource SmallSpacing}">
+				<Label Grid.Column="0"
+					   Text="{Binding ParameterFixText}"
+					   TextColor="{DynamicResource TnPDangerContentWL}"
+					   FontSize="{StaticResource FontSizeMd}"
+					   VerticalOptions="Center" />
+				<Label Grid.Column="1"
+					   Text="{l:Localize ParameterFixShow}"
+					   TextColor="{DynamicResource TnPDangerContentWL}"
+					   FontFamily="SpaceGroteskSemiBold"
+					   FontSize="{StaticResource FontSizeMd}"
+					   TextDecorations="Underline"
+					   VerticalOptions="Center">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Tapped="ShowFirstFix_Tapped" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
+		</Border>
+
+		<CollectionView x:Name="ParametersList"
+						Grid.Row="1"
+						HorizontalOptions="Center"
 						ItemsSource="{Binding EditableParameters}"
 						ItemTemplate="{StaticResource ParameterTemplateSelector}"
 						SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
@@ -39,5 +73,5 @@
 			</CollectionView.EmptyView>
 		</CollectionView>
 	</Grid>
-	
+
 </views:BaseNewContractView>

@@ -1,5 +1,7 @@
 ﻿
 
+using Waher.Networking.XMPP.Contracts;
+
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
 
@@ -19,6 +21,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public DataTemplate? ContractReferenceTemplate { get; set; }
 		public DataTemplate? ProtectedTemplate { get; set; }
 		public DataTemplate? GeoTemplate { get; set; }
+
+		/// <summary>
+		/// The template for a value taken from the ID of the person who signs in a role.
+		/// </summary>
+		public DataTemplate? RoleTemplate { get; set; }
+
+		/// <summary>
+		/// The template for a file attached to the contract.
+		/// </summary>
+		public DataTemplate? AttachmentTemplate { get; set; }
+
 		public DataTemplate? DefaultTemplate { get; set; }
 
 		// Add other templates if needed
@@ -46,6 +59,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				ObservableCalcParameter => this.CalcTemplate ?? this.DefaultTemplate,
 				ObservableGeoParameter => this.GeoTemplate ?? this.DefaultTemplate,
 				ObservableContractReferenceParameter => this.ContractReferenceTemplate ?? this.DefaultTemplate,
+				ObservableRoleParameter => this.RoleTemplate ?? this.DefaultTemplate,
+				ObservableParameter { Parameter: AttachmentParameter } => this.AttachmentTemplate ?? this.DefaultTemplate,
 				_ => this.DefaultTemplate
 			};
 		}

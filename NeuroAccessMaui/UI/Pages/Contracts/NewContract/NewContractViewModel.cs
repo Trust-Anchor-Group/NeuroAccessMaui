@@ -79,7 +79,46 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private StepDescriptor? currentStep;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanGoNext))]
 		private bool isCurrentStepValid;
+
+		/// <summary>
+		/// If Next can be tapped. On the parameters step it always can, so the user is shown what needs a fix.
+		/// </summary>
+		public bool CanGoNext => this.IsCurrentStepValid || this.CurrentStep?.Key == nameof(NewContractStep.Parameters);
+
+		/// <summary>
+		/// If values nobody has filled in are shown as errors. This starts when the user taps Next with values missing.
+		/// </summary>
+		private bool showMissingValues;
+
+		/// <summary>
+		/// How many parameters need a fix. Counted once the user has tapped Next with values missing or wrong.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasParameterFixes))]
+		[NotifyPropertyChangedFor(nameof(ParameterFixText))]
+		private int parameterFixCount;
+
+		/// <summary>
+		/// If the banner that counts the parameters needing a fix is shown.
+		/// </summary>
+		public bool HasParameterFixes => this.ParameterFixCount > 0;
+
+		/// <summary>
+		/// The banner text that counts the parameters needing a fix.
+		/// </summary>
+		public string ParameterFixText => this.ParameterFixCount switch
+		{
+			0 => string.Empty,
+			1 => ServiceRef.Localizer[nameof(AppResources.FieldNeedsFix)],
+			_ => ServiceRef.Localizer[nameof(AppResources.FieldsNeedFix), this.ParameterFixCount]
+		};
+
+		/// <summary>
+		/// The first parameter that needs a fix, which the banner's Show link scrolls to.
+		/// </summary>
+		public ObservableParameter? FirstParameterToFix => this.EditableParameters.FirstOrDefault(Parameter => !IsParameterComplete(Parameter));
 
 		[ObservableProperty]
 		private bool isOnPreviewStep;
@@ -122,6 +161,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				this.OnPropertyChanged(nameof(this.ProgressText));
 				this.OnPropertyChanged(nameof(this.PrimaryActionText));
 				this.OnPropertyChanged(nameof(this.CanGoBack));
+				this.OnPropertyChanged(nameof(this.CanGoNext));
 				this.NavigateStateForStep(newValue);
 				_ = this.UpdateCurrentStepValidityAsync();
 				this.OnPropertyChanged(nameof(this.IsOnRolesStep));
@@ -598,8 +638,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							|| Parameter.Parameter is TimeParameter
 							|| Parameter.Parameter is DurationParameter
 							|| Parameter.Parameter is ContractReferenceParameter
-							|| Parameter.Parameter is GeoParameter)
+							|| Parameter.Parameter is GeoParameter
+							|| Parameter.Parameter is CalcParameter
+							|| Parameter.Parameter is RoleParameter
+							|| Parameter.Parameter is AttachmentParameter)
 						{
+							// Calculated values, values from signers' IDs and attached files can't be edited here. They
+							// are shown so the user sees what the contract will hold.
 							this.EditableParameters.Add(Parameter);
 						}
 					}
@@ -740,7 +785,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			return Key switch
 			{
 				nameof(NewContractStep.Intro) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepIntro)],
-				nameof(NewContractStep.Parameters) => ServiceRef.Localizer[nameof(AppResources.Parameters)],
+				nameof(NewContractStep.Parameters) => ServiceRef.Localizer[nameof(AppResources.SetParametersTitle)],
 				nameof(NewContractStep.Settings) => ServiceRef.Localizer[nameof(AppResources.Settings)],
 				nameof(NewContractStep.Roles) => ServiceRef.Localizer[nameof(AppResources.Roles)],
 				nameof(NewContractStep.Preview) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepReview)],
@@ -787,10 +832,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <returns>If the parameter is complete.</returns>
 		private static bool IsParameterComplete(ObservableParameter Parameter)
 		{
+			// The user can't fill these in, so they never hold the step back.
+			if (IsReadOnlyParameter(Parameter))
+				return true;
+
 			if (!Parameter.IsValid)
 				return false;
 
 			return !(Parameter.IsValueMissing && Parameter.Parameter.ErrorReason == ParameterErrorReason.LacksValue);
+		}
+
+		/// <summary>
+		/// Checks if a parameter is shown without an input: a calculated value, a value from a signer's ID, or an attached
+		/// file.
+		/// </summary>
+		/// <param name="Parameter">The parameter.</param>
+		/// <returns>If the user can't fill in the parameter.</returns>
+		private static bool IsReadOnlyParameter(ObservableParameter Parameter)
+		{
+			return Parameter.Parameter is CalcParameter or RoleParameter or AttachmentParameter;
 		}
 
 		private async Task UpdateCurrentStepValidityAsync()
@@ -888,10 +948,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		[RelayCommand]
-		private void GoNextStep()
+		private async Task GoNextStepAsync()
 		{
 			if (this.CurrentStep is null)
 				return;
+
+			// Values that are missing or wrong are shown, with a count, instead of going on.
+			if (this.CurrentStep.Key == nameof(NewContractStep.Parameters) && !await this.AreParametersReadyAsync())
+				return;
+
 			int NextIndex = this.CurrentStep.Index + 1;
 			if (NextIndex < this.Steps.Count)
 			{
@@ -901,6 +966,41 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				_ = this.CreateAsync();
 			}
+		}
+
+		/// <summary>
+		/// Checks that every parameter is filled in and accepted. When one isn't, values nobody has filled in are shown as
+		/// errors from now on, and the banner counts the parameters that need a fix.
+		/// </summary>
+		/// <returns>If the user can go on to the next step.</returns>
+		private async Task<bool> AreParametersReadyAsync()
+		{
+			await this.FlushValidationAsync();
+
+			if (this.EditableParameters.All(IsParameterComplete))
+				return true;
+
+			if (!this.showMissingValues)
+			{
+				this.showMissingValues = true;
+				await MainThread.InvokeOnMainThreadAsync(this.ValidateParametersAsync);
+			}
+
+			await this.UpdateCurrentStepValidityAsync();
+			return false;
+		}
+
+		/// <summary>
+		/// Counts the parameters that need a fix, once the user has tried to go on with values missing or wrong. Called on
+		/// the main thread.
+		/// </summary>
+		private void UpdateParameterFixes()
+		{
+			this.ParameterFixCount = this.showMissingValues
+				? this.EditableParameters.Count(Parameter => !IsParameterComplete(Parameter))
+				: 0;
+
+			this.OnPropertyChanged(nameof(this.FirstParameterToFix));
 		}
 
 		[RelayCommand]
@@ -1019,14 +1119,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						}
 						else if (ParamToValidate.Value is null)
 						{
-							// A value nobody has entered yet isn't an error to show; it only keeps the step incomplete.
-							IsValid = ParamToValidate.Parameter.ErrorReason == ParameterErrorReason.LacksValue;
-							ValidationText = string.Empty;
+							// A value nobody has entered yet only keeps the step incomplete, until the user tries to go on.
+							IsValid = ParamToValidate.Parameter.ErrorReason == ParameterErrorReason.LacksValue && !this.showMissingValues;
+							ValidationText = IsValid ? string.Empty : ParameterMessages.GetErrorText(ParamToValidate.Parameter);
 						}
 						else
 						{
 							IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
-							ValidationText = ParamToValidate.Parameter.ErrorText;
+							ValidationText = IsValid ? string.Empty : ParameterMessages.GetErrorText(ParamToValidate.Parameter);
 						}
 
 						// Optional: keep debug noise low when simply entering the Parameters step
@@ -1048,11 +1148,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					foreach ((ObservableParameter Param, bool IsValid, string ValidationText) Result in Results)
 					{
-						Result.Param.IsValid = Result.IsValid;
-						Result.Param.ValidationText = Result.ValidationText;
+						// Values the user can't change aren't shown as errors. A calculated value is shown as worked out now.
+						bool ReadOnly = IsReadOnlyParameter(Result.Param);
+
+						Result.Param.IsValid = Result.IsValid || ReadOnly;
+						Result.Param.ValidationText = ReadOnly ? string.Empty : Result.ValidationText;
+
+						if (Result.Param is ObservableCalcParameter)
+							Result.Param.RefreshValue();
+						else if (Result.Param is ObservableNumericalParameter Numerical)
+							Numerical.RefreshUnit();
 					}
 					// Reflect aggregate state for step gating without triggering another validation run
 					this.IsParametersOk = this.EditableParameters.All(IsParameterComplete);
+					this.UpdateParameterFixes();
 				});
 			}
 			catch (Exception Ex)

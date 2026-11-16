@@ -38,13 +38,15 @@
 															DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
 															DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
 															NumericalTemplate="{StaticResource NumericalParameterReadOnlyTemplate}"
-															StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+															StringTemplate="{StaticResource StringParameterReadOnlyTemplate}"
 															TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
 															DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
 															ProtectedTemplate="{StaticResource ViewProtectedParameterTemplate}"
 															CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
 															ContractReferenceTemplate="{StaticResource ContractReferenceParameterReadOnlyTemplate}"
 															GeoTemplate="{StaticResource GeoParameterReadOnlyTemplate}"
+															RoleTemplate="{StaticResource RoleParameterTemplate}"
+															AttachmentTemplate="{StaticResource AttachmentParameterReadOnlyTemplate}"
 															DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
 	</ContentView.Resources>
 

@@ -2444,10 +2444,10 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Förhandsgranska kontrakt</value>
   </data>
   <data name="SetParametersTitle" xml:space="preserve">
-    <value>Ange parametrar</value>
+    <value>Fyll i uppgifter</value>
   </data>
   <data name="SetParametersDescription" xml:space="preserve">
-    <value>Specificera de variabler som styr kontraktet</value>
+    <value>Värdena kontraktet behöver</value>
   </data>
   <data name="SelectRolesTitle" xml:space="preserve">
     <value>Välj roller</value>
@@ -2486,10 +2486,10 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Krypterad</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-    <value>Visa parametrar</value>
+    <value>Uppgifter</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-    <value>Visa de variabler som styr kontraktet</value>
+    <value>Värdena i kontraktet</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
     <value>Granska tilldelade roller</value>
@@ -2597,10 +2597,10 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Ange avtalets varaktighet</value>
   </data>
   <data name="NegateDuration" xml:space="preserve">
-    <value>Negativ varaktighet: </value>
+    <value>Bakåt i tiden</value>
   </data>
   <data name="AddDuration" xml:space="preserve">
-    <value>Lägg till varaktighet</value>
+    <value>Lägg till enhet</value>
   </data>
   <data name="SelectUnit" xml:space="preserve">
     <value>Välj enhet</value>
@@ -2822,13 +2822,13 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Okänt fel. Försök igen</value>
   </data>
   <data name="SelectContract" xml:space="preserve">
-    <value>Välj ett kontrakt</value>
+    <value>Välj kontrakt</value>
   </data>
   <data name="LoadMore" xml:space="preserve">
     <value>Ladda mer</value>
   </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
-    <value>Klistra in kontrakt ID eller välj från listan</value>
+    <value>Välj kontrakt</value>
   </data>
   <data name="ScanInvitationInfo" xml:space="preserve">
     <value>Skanna inbjudan om du redan har skapat ett konto separat</value>
@@ -2972,10 +2972,10 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Köp Neuro-krediter</value>
   </data>
   <data name="UseCurrentLocation" xml:space="preserve">
-    <value>Använd nuvarande plats</value>
+    <value>Min plats</value>
   </data>
   <data name="LocationError" xml:space="preserve">
-    <value>Det uppstod ett fel när din plats skulle hämtas. Se till att platsbehörigheter är aktiverade i enhetens inställningar</value>
+    <value>Kan inte hämta din plats. Tillåt plats i Inställningar.</value>
   </data>
   <data name="Attachment_Passport" xml:space="preserve">
     <value>Passbild</value>
@@ -4512,7 +4512,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Du har inte åtkomst till kontraktet. Vill du be de som har signerat det om åtkomst?</value>
   </data>
   <data name="ContractHasNoParameters" xml:space="preserve">
-    <value>Kontraktet har inga parametrar.</value>
+    <value>Inga uppgifter att visa.</value>
   </data>
   <data name="ContractWasDeleted" xml:space="preserve">
     <value>Kontraktet har tagits bort.</value>
@@ -4605,7 +4605,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Inbjudan att signera ett kontrakt</value>
   </data>
   <data name="ParameterEncryptedNotAvailable" xml:space="preserve">
-    <value>Krypterat, inte tillgängligt på enheten</value>
+    <value>Dolt för dig</value>
   </data>
   <data name="ParameterLoadingValue" xml:space="preserve">
     <value>Laddar…</value>
@@ -4719,7 +4719,130 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Signaturer: {0} (kräver {1}, tillåter upp till {2})</value>
   </data>
   <data name="ParameterNotSet" xml:space="preserve">
-    <value>Inte valt än</value>
+    <value>Inte ifyllt</value>
+  </data>
+  <data name="ParameterFillThisIn" xml:space="preserve">
+    <value>Fyll i det här</value>
+  </data>
+  <data name="ParameterMustBeAtLeast" xml:space="preserve">
+    <value>Måste vara {0} eller mer</value>
+  </data>
+  <data name="ParameterMustBeMoreThan" xml:space="preserve">
+    <value>Måste vara mer än {0}</value>
+  </data>
+  <data name="ParameterMustBeAtMost" xml:space="preserve">
+    <value>Måste vara {0} eller mindre</value>
+  </data>
+  <data name="ParameterMustBeLessThan" xml:space="preserve">
+    <value>Måste vara mindre än {0}</value>
+  </data>
+  <data name="ParameterPickFrom" xml:space="preserve">
+    <value>Välj {0} eller senare</value>
+  </data>
+  <data name="ParameterPickAfter" xml:space="preserve">
+    <value>Välj senare än {0}</value>
+  </data>
+  <data name="ParameterPickUntil" xml:space="preserve">
+    <value>Välj {0} eller tidigare</value>
+  </data>
+  <data name="ParameterPickBefore" xml:space="preserve">
+    <value>Välj tidigare än {0}</value>
+  </data>
+  <data name="ParameterTooShort" xml:space="preserve">
+    <value>Använd minst {0} tecken</value>
+  </data>
+  <data name="ParameterTooLong" xml:space="preserve">
+    <value>Använd högst {0} tecken</value>
+  </data>
+  <data name="ParameterWrongFormat" xml:space="preserve">
+    <value>Fel format</value>
+  </data>
+  <data name="ParameterNotAllowed" xml:space="preserve">
+    <value>Tillåts inte av kontraktet</value>
+  </data>
+  <data name="ParameterOutsideArea" xml:space="preserve">
+    <value>Utanför tillåtet område</value>
+  </data>
+  <data name="ParameterContractNotFound" xml:space="preserve">
+    <value>Kontraktet hittades inte</value>
+  </data>
+  <data name="ParameterWrongContractKind" xml:space="preserve">
+    <value>Fel sorts kontrakt</value>
+  </data>
+  <data name="ParameterContractNotValid" xml:space="preserve">
+    <value>Kontraktet är inte giltigt</value>
+  </data>
+  <data name="ParameterCantCalculate" xml:space="preserve">
+    <value>Kan inte räknas ut än</value>
+  </data>
+  <data name="FieldsNeedFix" xml:space="preserve">
+    <value>{0} fält behöver rättas</value>
+  </data>
+  <data name="FieldNeedsFix" xml:space="preserve">
+    <value>1 fält behöver rättas</value>
+  </data>
+  <data name="ParameterFixShow" xml:space="preserve">
+    <value>Visa</value>
+  </data>
+  <data name="ParameterRangeBetween" xml:space="preserve">
+    <value>{0} till {1}</value>
+  </data>
+  <data name="ParameterRangeAtLeast" xml:space="preserve">
+    <value>{0} eller mer</value>
+  </data>
+  <data name="ParameterRangeAbove" xml:space="preserve">
+    <value>Mer än {0}</value>
+  </data>
+  <data name="ParameterRangeAtMost" xml:space="preserve">
+    <value>{0} eller mindre</value>
+  </data>
+  <data name="ParameterRangeBelow" xml:space="preserve">
+    <value>Mindre än {0}</value>
+  </data>
+  <data name="ParameterRangeFrom" xml:space="preserve">
+    <value>Från {0}</value>
+  </data>
+  <data name="ParameterRangeAfter" xml:space="preserve">
+    <value>Efter {0}</value>
+  </data>
+  <data name="ParameterRangeUntil" xml:space="preserve">
+    <value>Till och med {0}</value>
+  </data>
+  <data name="ParameterRangeBefore" xml:space="preserve">
+    <value>Före {0}</value>
+  </data>
+  <data name="ParameterLengthRange" xml:space="preserve">
+    <value>{0} till {1} tecken</value>
+  </data>
+  <data name="ParameterLengthAtMost" xml:space="preserve">
+    <value>Upp till {0} tecken</value>
+  </data>
+  <data name="ParameterLengthAtLeast" xml:space="preserve">
+    <value>Minst {0} tecken</value>
+  </data>
+  <data name="ParameterCalculated" xml:space="preserve">
+    <value>Uträknat</value>
+  </data>
+  <data name="ParameterFromId" xml:space="preserve">
+    <value>Från ID:t för {0}</value>
+  </data>
+  <data name="ParameterAddedOnSigning" xml:space="preserve">
+    <value>När {0} skriver under</value>
+  </data>
+  <data name="ParameterPickOnMap" xml:space="preserve">
+    <value>Välj på kartan</value>
+  </data>
+  <data name="ParameterOpenMap" xml:space="preserve">
+    <value>Öppna karta</value>
+  </data>
+  <data name="ParameterContractPlace" xml:space="preserve">
+    <value>Kontraktets plats</value>
+  </data>
+  <data name="ParameterPasteId" xml:space="preserve">
+    <value>Klistra in ID</value>
+  </data>
+  <data name="ParameterFilesNotSupported" xml:space="preserve">
+    <value>Du kan inte lägga till filer i appen än</value>
   </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Bara personerna som anges i kontraktet</value>

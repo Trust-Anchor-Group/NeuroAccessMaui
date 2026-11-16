@@ -1,44 +1,61 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.UI.Popups;
-using Waher.Runtime.Geo;
-using System;
+﻿using CommunityToolkit.Mvvm.Input;
+using Mapsui;
 using Mapsui.Projections;
-using Mapsui.UI.Maui;
 using NeuroAccessMaui.Services;
+using Waher.Runtime.Geo;
 
-namespace NeuroAccessMaui.UI.Popups.Password
+namespace NeuroAccessMaui.UI.Popups.Geo
 {
-	public partial class GeoMapViewModel : ReturningPopupViewModel<string>
+	/// <summary>
+	/// View model for the map where the user picks a place. The place is the point under the pin in the middle of the map.
+	/// </summary>
+	public partial class GeoMapViewModel : ReturningPopupViewModel<GeoPosition>
 	{
-		// Expose the MapControl so we can read the viewport center
-		public MapControl? MapControl { get; set; }
-
 		/// <summary>
-		/// Optional initial coordinate to center the map on.
+		/// View model for the map where the user picks a place.
 		/// </summary>
-		public GeoPosition? InitialCoordinate { get; }
-
-		public GeoMapViewModel(double? Latitude = null, double? Longitude = null)
+		/// <param name="InitialPosition">The place to show first, or null to show the whole world.</param>
+		public GeoMapViewModel(GeoPosition? InitialPosition)
 		{
-			if (Latitude.HasValue && Longitude.HasValue)
-				InitialCoordinate = new GeoPosition(Latitude.Value, Longitude.Value);
+			this.InitialPosition = InitialPosition;
 		}
 
+		/// <summary>
+		/// The place to show first, if any.
+		/// </summary>
+		public GeoPosition? InitialPosition { get; }
+
+		/// <summary>
+		/// Gets the point in the middle of the map, in world coordinates. Set by the popup.
+		/// </summary>
+		public Func<MPoint?>? GetCenter { get; set; }
+
+		/// <summary>
+		/// Returns the place under the pin, and closes the map.
+		/// </summary>
 		[RelayCommand]
-		public async Task Confirm()
+		private async Task ConfirmAsync()
 		{
-			if (MapControl?.Map?.Navigator.Viewport is null)
-			{
+			MPoint? Center = this.GetCenter?.Invoke();
+
+			if (Center is null)
 				this.TrySetResult(null);
-				await ServiceRef.PopupService.PopAsync();
-				return;
+			else
+			{
+				(double Longitude, double Latitude) = SphericalMercator.ToLonLat(Center.X, Center.Y);
+				this.TrySetResult(new GeoPosition(Latitude, Longitude));
 			}
 
-			var vp = MapControl.Map.Navigator.Viewport;
-			// Convert world (Mercator) to lon/lat
-			var (lon, lat) = SphericalMercator.ToLonLat(vp.CenterX, vp.CenterY);
-			this.TrySetResult($"{lon},{lat}");
+			await ServiceRef.PopupService.PopAsync();
+		}
+
+		/// <summary>
+		/// Closes the map without a place.
+		/// </summary>
+		[RelayCommand]
+		private async Task CancelAsync()
+		{
+			this.TrySetResult(null);
 			await ServiceRef.PopupService.PopAsync();
 		}
 	}

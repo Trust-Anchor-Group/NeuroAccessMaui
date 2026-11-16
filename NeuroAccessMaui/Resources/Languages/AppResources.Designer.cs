@@ -178,7 +178,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add duration.
+        ///   Looks up a localized string similar to Add unit.
         /// </summary>
         public static string AddDuration {
             get {
@@ -5605,7 +5605,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was an error getting your location. Make sure location permissions are granted in your devices&apos; settings.
+        ///   Looks up a localized string similar to Can't get your location. Allow location in Settings.
         /// </summary>
         public static string LocationError {
             get {
@@ -5902,7 +5902,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Negative duration: .
+        ///   Looks up a localized string similar to Backwards in time.
         /// </summary>
         public static string NegateDuration {
             get {
@@ -9898,7 +9898,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select a contract.
+        ///   Looks up a localized string similar to Choose contract.
         /// </summary>
         public static string SelectContract {
             get {
@@ -9907,7 +9907,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste contract ID or choose from list.
+        ///   Looks up a localized string similar to Choose contract.
         /// </summary>
         public static string SelectContractEntryDescription {
             get {
@@ -10474,7 +10474,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify the variables that govern the contract.
+        ///   Looks up a localized string similar to The values this contract needs.
         /// </summary>
         public static string SetParametersDescription {
             get {
@@ -10483,7 +10483,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set parameters.
+        ///   Looks up a localized string similar to Fill in details.
         /// </summary>
         public static string SetParametersTitle {
             get {
@@ -11842,7 +11842,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use current location.
+        ///   Looks up a localized string similar to My location.
         /// </summary>
         public static string UseCurrentLocation {
             get {
@@ -12031,7 +12031,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View the variables that govern the contract.
+        ///   Looks up a localized string similar to The values in this contract.
         /// </summary>
         public static string ViewParametersDescription {
             get {
@@ -12040,7 +12040,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View parameters.
+        ///   Looks up a localized string similar to Details.
         /// </summary>
         public static string ViewParametersTitle {
             get {
@@ -13369,7 +13369,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This contract has no parameters..
+        ///   Looks up a localized string similar to No details to show.
         /// </summary>
         public static string ContractHasNoParameters {
             get {
@@ -13648,7 +13648,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Encrypted, not available on this device.
+        ///   Looks up a localized string similar to Hidden from you.
         /// </summary>
         public static string ParameterEncryptedNotAvailable {
             get {
@@ -13666,7 +13666,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not stored.
+        ///   Looks up a localized string similar to Not saved.
         /// </summary>
         public static string ParameterNotStored {
             get {
@@ -13990,11 +13990,380 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not chosen yet.
+        ///   Looks up a localized string similar to Not filled in.
         /// </summary>
         public static string ParameterNotSet {
             get {
                 return ResourceManager.GetString("ParameterNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill this in.
+        /// </summary>
+        public static string ParameterFillThisIn {
+            get {
+                return ResourceManager.GetString("ParameterFillThisIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be {0} or more.
+        /// </summary>
+        public static string ParameterMustBeAtLeast {
+            get {
+                return ResourceManager.GetString("ParameterMustBeAtLeast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be more than {0}.
+        /// </summary>
+        public static string ParameterMustBeMoreThan {
+            get {
+                return ResourceManager.GetString("ParameterMustBeMoreThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be {0} or less.
+        /// </summary>
+        public static string ParameterMustBeAtMost {
+            get {
+                return ResourceManager.GetString("ParameterMustBeAtMost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be less than {0}.
+        /// </summary>
+        public static string ParameterMustBeLessThan {
+            get {
+                return ResourceManager.GetString("ParameterMustBeLessThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick {0} or later.
+        /// </summary>
+        public static string ParameterPickFrom {
+            get {
+                return ResourceManager.GetString("ParameterPickFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick later than {0}.
+        /// </summary>
+        public static string ParameterPickAfter {
+            get {
+                return ResourceManager.GetString("ParameterPickAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick {0} or earlier.
+        /// </summary>
+        public static string ParameterPickUntil {
+            get {
+                return ResourceManager.GetString("ParameterPickUntil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick earlier than {0}.
+        /// </summary>
+        public static string ParameterPickBefore {
+            get {
+                return ResourceManager.GetString("ParameterPickBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use at least {0} characters.
+        /// </summary>
+        public static string ParameterTooShort {
+            get {
+                return ResourceManager.GetString("ParameterTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use at most {0} characters.
+        /// </summary>
+        public static string ParameterTooLong {
+            get {
+                return ResourceManager.GetString("ParameterTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong format.
+        /// </summary>
+        public static string ParameterWrongFormat {
+            get {
+                return ResourceManager.GetString("ParameterWrongFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not allowed by the contract.
+        /// </summary>
+        public static string ParameterNotAllowed {
+            get {
+                return ResourceManager.GetString("ParameterNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outside the allowed area.
+        /// </summary>
+        public static string ParameterOutsideArea {
+            get {
+                return ResourceManager.GetString("ParameterOutsideArea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract not found.
+        /// </summary>
+        public static string ParameterContractNotFound {
+            get {
+                return ResourceManager.GetString("ParameterContractNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong kind of contract.
+        /// </summary>
+        public static string ParameterWrongContractKind {
+            get {
+                return ResourceManager.GetString("ParameterWrongContractKind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That contract isn't valid.
+        /// </summary>
+        public static string ParameterContractNotValid {
+            get {
+                return ResourceManager.GetString("ParameterContractNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can't calculate yet.
+        /// </summary>
+        public static string ParameterCantCalculate {
+            get {
+                return ResourceManager.GetString("ParameterCantCalculate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} fields need a fix.
+        /// </summary>
+        public static string FieldsNeedFix {
+            get {
+                return ResourceManager.GetString("FieldsNeedFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 field needs a fix.
+        /// </summary>
+        public static string FieldNeedsFix {
+            get {
+                return ResourceManager.GetString("FieldNeedsFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        public static string ParameterFixShow {
+            get {
+                return ResourceManager.GetString("ParameterFixShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} to {1}.
+        /// </summary>
+        public static string ParameterRangeBetween {
+            get {
+                return ResourceManager.GetString("ParameterRangeBetween", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} or more.
+        /// </summary>
+        public static string ParameterRangeAtLeast {
+            get {
+                return ResourceManager.GetString("ParameterRangeAtLeast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More than {0}.
+        /// </summary>
+        public static string ParameterRangeAbove {
+            get {
+                return ResourceManager.GetString("ParameterRangeAbove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} or less.
+        /// </summary>
+        public static string ParameterRangeAtMost {
+            get {
+                return ResourceManager.GetString("ParameterRangeAtMost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Less than {0}.
+        /// </summary>
+        public static string ParameterRangeBelow {
+            get {
+                return ResourceManager.GetString("ParameterRangeBelow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From {0}.
+        /// </summary>
+        public static string ParameterRangeFrom {
+            get {
+                return ResourceManager.GetString("ParameterRangeFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After {0}.
+        /// </summary>
+        public static string ParameterRangeAfter {
+            get {
+                return ResourceManager.GetString("ParameterRangeAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Until {0}.
+        /// </summary>
+        public static string ParameterRangeUntil {
+            get {
+                return ResourceManager.GetString("ParameterRangeUntil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before {0}.
+        /// </summary>
+        public static string ParameterRangeBefore {
+            get {
+                return ResourceManager.GetString("ParameterRangeBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} to {1} characters.
+        /// </summary>
+        public static string ParameterLengthRange {
+            get {
+                return ResourceManager.GetString("ParameterLengthRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up to {0} characters.
+        /// </summary>
+        public static string ParameterLengthAtMost {
+            get {
+                return ResourceManager.GetString("ParameterLengthAtMost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least {0} characters.
+        /// </summary>
+        public static string ParameterLengthAtLeast {
+            get {
+                return ResourceManager.GetString("ParameterLengthAtLeast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calculated.
+        /// </summary>
+        public static string ParameterCalculated {
+            get {
+                return ResourceManager.GetString("ParameterCalculated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From {0}'s ID.
+        /// </summary>
+        public static string ParameterFromId {
+            get {
+                return ResourceManager.GetString("ParameterFromId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When {0} signs.
+        /// </summary>
+        public static string ParameterAddedOnSigning {
+            get {
+                return ResourceManager.GetString("ParameterAddedOnSigning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick on map.
+        /// </summary>
+        public static string ParameterPickOnMap {
+            get {
+                return ResourceManager.GetString("ParameterPickOnMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open map.
+        /// </summary>
+        public static string ParameterOpenMap {
+            get {
+                return ResourceManager.GetString("ParameterOpenMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract place.
+        /// </summary>
+        public static string ParameterContractPlace {
+            get {
+                return ResourceManager.GetString("ParameterContractPlace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste ID.
+        /// </summary>
+        public static string ParameterPasteId {
+            get {
+                return ResourceManager.GetString("ParameterPasteId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can't add files in the app yet.
+        /// </summary>
+        public static string ParameterFilesNotSupported {
+            get {
+                return ResourceManager.GetString("ParameterFilesNotSupported", resourceCulture);
             }
         }
         

@@ -1,35 +1,47 @@
-using System.Threading.Tasks;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Projections;
 using Mapsui.Tiling;
-using NeuroAccessMaui.Services;
-using Waher.Runtime.Geo;
 
-namespace NeuroAccessMaui.UI.Popups.Password
+namespace NeuroAccessMaui.UI.Popups.Geo
 {
 	/// <summary>
-	/// Displays an interactive map to pick a geographic coordinate.
+	/// A map where the user picks a place by moving the map under a pin.
 	/// </summary>
 	public partial class GeoMapPopup : BasePopup
 	{
-		public GeoMapPopup(GeoMapViewModel viewModel)
+		/// <summary>
+		/// How far in to zoom when the map opens on a place, in map resolution.
+		/// </summary>
+		private const double placeResolution = 10;
+
+		/// <summary>
+		/// Creates the map where the user picks a place.
+		/// </summary>
+		/// <param name="ViewModel">The view model, which gets the picked place.</param>
+		public GeoMapPopup(GeoMapViewModel ViewModel)
 		{
-			InitializeComponent();
-			viewModel.MapControl = this.GeoMapControl;
-			this.BindingContext = viewModel;
+			this.InitializeComponent();
+
+			this.GeoMapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
 			this.GeoMapControl.Map.Navigator.RotationLock = true;
-			this.GeoMapControl.Map?.Layers.Add(OpenStreetMap.CreateTileLayer());
+
+			ViewModel.GetCenter = () => this.GeoMapControl.Map?.Navigator.Viewport is Mapsui.Viewport Viewport
+				? new MPoint(Viewport.CenterX, Viewport.CenterY)
+				: null;
+
+			this.BindingContext = ViewModel;
 		}
 
+		/// <inheritdoc/>
 		public override Task OnAppearingAsync()
 		{
-			if (this.BindingContext is GeoMapViewModel viewModel && viewModel.InitialCoordinate is not null)
+			if (this.BindingContext is GeoMapViewModel ViewModel && ViewModel.InitialPosition is not null)
 			{
-				MPoint mercator = SphericalMercator.FromLonLat(viewModel.InitialCoordinate.Longitude, viewModel.InitialCoordinate.Latitude).ToMPoint();
-				this.GeoMapControl.Map?.Navigator.CenterOn(mercator);
-				this.GeoMapControl.Map?.Navigator.ZoomTo(1000);
+				MPoint Point = SphericalMercator.FromLonLat(ViewModel.InitialPosition.Longitude, ViewModel.InitialPosition.Latitude).ToMPoint();
+				this.GeoMapControl.Map.Navigator.CenterOnAndZoomTo(Point, placeResolution);
 			}
+
 			return base.OnAppearingAsync();
 		}
 	}

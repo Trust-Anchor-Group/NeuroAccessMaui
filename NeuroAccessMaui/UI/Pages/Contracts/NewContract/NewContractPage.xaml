@@ -121,7 +121,7 @@
 				<controls:TextButton Grid.Row="2"
 									 Grid.Column="2"
 									 Command="{Binding GoNextStepCommand}"
-									 IsEnabled="{Binding IsCurrentStepValid}"
+									 IsEnabled="{Binding CanGoNext}"
 									 Style="{DynamicResource PrimaryButton}"
 									 LabelData="{Binding PrimaryActionText}"/>
 			</Grid>

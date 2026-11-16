@@ -5,9 +5,11 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
-using NeuroAccessMaui.UI.Popups.Info;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+using NeuroAccessMaui.UI.Popups.Geo;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -80,6 +82,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (string.IsNullOrEmpty(CP.StringValue))
 					CP.SetValue(null);
 			}
+			else if (ParameterInfo is ObservableNumericalParameter Numerical)
+				Numerical.FindUnit(contract);
 
 			return ParameterInfo;
 		}
@@ -209,7 +213,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				this.SetProperty(ref this.validationText, value);
 				this.OnPropertyChanged(nameof(this.CanShowError));
-				this.ShowErrorCommand.NotifyCanExecuteChanged();
 			}
 		}
 		private string validationText = string.Empty;
@@ -251,6 +254,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// If nobody has entered a value yet, and the template didn't provide one.
 		/// </summary>
 		public bool IsValueMissing => this.value is null;
+
+		/// <summary>
+		/// Shows the value the parameter holds now, after it was worked out somewhere else, such as a calculated value
+		/// during validation.
+		/// </summary>
+		public void RefreshValue()
+		{
+			if (this.SetProperty(ref this.value, this.Parameter.ObjectValue, nameof(this.Value)))
+			{
+				this.OnPropertyChanged(nameof(this.CanReadValue));
+				this.OnPropertyChanged(nameof(this.IsValueMissing));
+			}
+		}
 
 		/// <summary>
 		/// Clears values through nullable properties for parameter types whose SetValue rejects null.
@@ -332,7 +348,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			: ServiceRef.Localizer[nameof(AppResources.ParameterEncryptedNotAvailable)];
 		#endregion
 
+		/// <summary>
+		/// If there is a text that says why the value isn't accepted.
+		/// </summary>
 		public bool CanShowError => !string.IsNullOrEmpty(this.ValidationText);
+
+		/// <summary>
+		/// A short hint about which values are allowed, such as "0 to 100", or an empty string.
+		/// </summary>
+		public string Hint => this.hint ??= ParameterMessages.GetHint(this.Parameter);
+		private string? hint;
+
+		/// <summary>
+		/// If there is a hint about which values are allowed.
+		/// </summary>
+		public bool HasHint => !string.IsNullOrEmpty(this.Hint);
 
 		#region Formatting
 		/// <summary>
@@ -369,19 +399,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 		#endregion
 
-		#region Commands
-
-
-		[RelayCommand(CanExecute = nameof(CanShowError), AllowConcurrentExecutions = false)]
-		private async Task ShowError()
-		{
-			if (string.IsNullOrEmpty(this.ValidationText))
-				return;
-			ShowInfoPopup Popup = new ShowInfoPopup(this.Parameter.ErrorReason?.ToString() ?? ServiceRef.Localizer[nameof(AppResources.Error)], this.ValidationText);
-			await ServiceRef.PopupService.PushAsync(Popup);
-		}
-		#endregion
-
 		#region Property Change Handling
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
@@ -402,7 +419,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			base.OnPropertyChanged(Args);
 
 			if (Args.PropertyName == nameof(this.Value))
+			{
 				this.OnPropertyChanged(nameof(this.BooleanValue));
+				this.OnPropertyChanged(nameof(this.BooleanText));
+			}
 		}
 
 		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
@@ -413,8 +433,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool BooleanValue
 		{
 			get => this.Value as bool? ?? false;
-			set => this.Value = value;
+			set
+			{
+				// The switch reports "off" while nothing is chosen; that isn't a choice.
+				if (this.Value is null && !value)
+					return;
+
+				this.Value = value;
+			}
 		}
+
+		/// <summary>
+		/// "Yes" or "No", or that nothing is chosen yet.
+		/// </summary>
+		public string BooleanText => this.Value switch
+		{
+			true => ServiceRef.Localizer[nameof(AppResources.Yes)],
+			false => ServiceRef.Localizer[nameof(AppResources.No)],
+			_ => ServiceRef.Localizer[nameof(AppResources.ParameterNotSet)]
+		};
 
 		[RelayCommand]
 		private void ToggleBooleanValue()
@@ -437,7 +474,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			base.OnPropertyChanged(Args);
 
 			if (Args.PropertyName == nameof(this.Value))
+			{
 				this.OnPropertyChanged(nameof(this.DateValue));
+				this.OnPropertyChanged(nameof(this.DateText));
+			}
 		}
 
 		public ObservableDateParameter(DateParameter parameter) : base(parameter)
@@ -450,6 +490,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.Value as DateTime?;
 			set => this.Value = value;
 		}
+
+		/// <summary>
+		/// The date in the user's short format, or "-".
+		/// </summary>
+		public string DateText => this.DateValue?.ToString("d", CultureInfo.CurrentCulture) ?? "-";
 	}
 
 	/// <summary>
@@ -481,6 +526,71 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public string DecimalText => this.DecimalValue is decimal Number ? FormatNumber(Number) : "-";
 
 		/// <summary>
+		/// The value with its unit or currency, such as "250 EUR" or "5 %".
+		/// </summary>
+		public string DecimalTextWithUnit => this.HasUnit && this.DecimalValue.HasValue
+			? this.DecimalText + " " + this.Unit
+			: this.DecimalText;
+
+		/// <summary>
+		/// The unit or currency of the number, or an empty string when it isn't known.
+		/// </summary>
+		public string Unit => this.isPercent ? "%" : this.currencyParameter?.StringValue ?? string.Empty;
+
+		/// <summary>
+		/// If the number has a known unit or currency.
+		/// </summary>
+		public bool HasUnit => !string.IsNullOrEmpty(this.Unit);
+
+		/// <summary>
+		/// If the number is a percentage.
+		/// </summary>
+		private bool isPercent;
+
+		/// <summary>
+		/// The parameter that holds the currency of the number, if any.
+		/// </summary>
+		private Parameter? currencyParameter;
+
+		/// <summary>
+		/// Words in parameter names that mean an amount of money.
+		/// </summary>
+		private static readonly string[] amountWords = ["Amount", "Price", "Cost", "Fee", "Total", "Sum", "Value", "Payment", "Deposit"];
+
+		/// <summary>
+		/// Works out the number's unit. A number whose name or guide speaks of percent is a percentage. An amount, judged by
+		/// its name, is in the currency of a parameter named "Currency", when the contract has one.
+		/// </summary>
+		/// <param name="Contract">The contract the parameter belongs to.</param>
+		public void FindUnit(Contract Contract)
+		{
+			string Name = this.Parameter.Name ?? string.Empty;
+			string Guide = this.Parameter.Guide ?? string.Empty;
+
+			if (Name.Contains("Percent", StringComparison.OrdinalIgnoreCase) || Guide.Contains('%'))
+			{
+				this.isPercent = true;
+				return;
+			}
+
+			if (!amountWords.Any(Word => Name.Contains(Word, StringComparison.OrdinalIgnoreCase)))
+				return;
+
+			this.currencyParameter = Contract.Parameters?.FirstOrDefault(P =>
+				P is StringParameter && string.Equals(P.Name, "Currency", StringComparison.OrdinalIgnoreCase));
+		}
+
+		/// <summary>
+		/// Shows the unit again, for example after the currency was changed.
+		/// </summary>
+		public void RefreshUnit()
+		{
+			this.OnPropertyChanged(nameof(this.Unit));
+			this.OnPropertyChanged(nameof(this.HasUnit));
+			this.OnPropertyChanged(nameof(this.DecimalTextWithUnit));
+		}
+
+		/// <summary>
 		/// Notifies the numeric editor when the underlying observable value changes.
 		/// </summary>
 		/// <param name="Args">The property change notification.</param>
@@ -492,6 +602,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				this.OnPropertyChanged(nameof(this.DecimalValue));
 				this.OnPropertyChanged(nameof(this.DecimalText));
+				this.OnPropertyChanged(nameof(this.DecimalTextWithUnit));
 			}
 		}
 	}
@@ -507,7 +618,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			base.OnPropertyChanged(Args);
 
 			if (Args.PropertyName == nameof(this.Value))
+			{
 				this.OnPropertyChanged(nameof(this.StringValue));
+				this.OnPropertyChanged(nameof(this.LengthCounter));
+			}
 		}
 
 		public ObservableStringParameter(StringParameter parameter) : base(parameter)
@@ -520,6 +634,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.Value as string ?? string.Empty;
 			set => this.Value = value;
 		}
+
+		/// <summary>
+		/// If the contract limits the length of the text, so a counter is shown.
+		/// </summary>
+		public bool HasLengthCounter => ((StringParameter)this.Parameter).MaxLength.HasValue;
+
+		/// <summary>
+		/// How long the text is, out of the longest length allowed, such as "12/40".
+		/// </summary>
+		public string LengthCounter => this.HasLengthCounter
+			? this.StringValue.Length.ToString(CultureInfo.CurrentCulture) + "/" +
+				((StringParameter)this.Parameter).MaxLength!.Value.ToString(CultureInfo.CurrentCulture)
+			: string.Empty;
+
+		/// <summary>
+		/// If there is a hint or a length counter to show under the input.
+		/// </summary>
+		public bool HasHintOrCounter => this.HasHint || this.HasLengthCounter;
 	}
 
 	public class ObservableTimeParameter : ObservableParameter
@@ -533,13 +665,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			base.OnPropertyChanged(Args);
 
 			if (Args.PropertyName == nameof(this.Value))
+			{
 				this.OnPropertyChanged(nameof(this.TimeSpanValue));
+				this.OnPropertyChanged(nameof(this.TimeText));
+			}
 		}
 
 		public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
 		{
 			this.InitializeValue(parameter.ObjectValue as TimeSpan?);
 		}
+
+		/// <summary>
+		/// The time in the user's short format, without seconds, or "-".
+		/// </summary>
+		public string TimeText => this.TimeSpanValue is TimeSpan Time
+			? DateTime.Today.Add(Time).ToString("t", CultureInfo.CurrentCulture)
+			: "-";
 
 		/// <summary>
 		/// The time, or null while nobody has chosen one.
@@ -570,6 +712,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			if (Args.PropertyName == nameof(this.Value))
 			{
 				this.OnPropertyChanged(nameof(this.DurationValue));
+				this.OnPropertyChanged(nameof(this.NullableDurationValue));
 				this.OnPropertyChanged(nameof(this.StringValue));
 			}
 		}
@@ -578,6 +721,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			this.InitializeValue(parameter.ObjectValue is Duration Duration ? Duration : null);
 		}
+
+		/// <summary>
+		/// The duration, or null while nobody has entered one.
+		/// </summary>
+		public Duration? NullableDurationValue
+		{
+			get => this.Value as Duration?;
+			set
+			{
+				if (Nullable.Equals(value, this.NullableDurationValue))
+					return;
+
+				this.Value = value;
+			}
+		}
+
+		/// <summary>
+		/// If the contract allows a duration that goes backwards in time.
+		/// </summary>
+		public bool AllowsNegative => ((DurationParameter)this.Parameter).Min is Duration Min && Min.Negation;
 
 		public string StringValue
 		{
@@ -623,7 +786,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			base.OnPropertyChanged(Args);
 
 			if (Args.PropertyName == nameof(this.Value))
+			{
 				this.OnPropertyChanged(nameof(this.RoleValue));
+				this.OnPropertyChanged(nameof(this.HasRoleValue));
+				this.OnPropertyChanged(nameof(this.RoleDisplayText));
+			}
 		}
 
 		public ObservableRoleParameter(RoleParameter parameter) : base(parameter)
@@ -636,6 +803,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.Value as string ?? string.Empty;
 			set => this.Value = value;
 		}
+
+		/// <summary>
+		/// The role whose signer's ID the value is taken from.
+		/// </summary>
+		public string RoleName => ((RoleParameter)this.Parameter).Role ?? string.Empty;
+
+		/// <summary>
+		/// Where the value comes from, such as "From the Buyer's ID".
+		/// </summary>
+		public string SourceText => ServiceRef.Localizer[nameof(AppResources.ParameterFromId), this.RoleName];
+
+		/// <summary>
+		/// If the value is known, because someone has signed in the role.
+		/// </summary>
+		public bool HasRoleValue => !string.IsNullOrEmpty(this.RoleValue);
+
+		/// <summary>
+		/// The value, or when it will be known, such as "When the Buyer signs".
+		/// </summary>
+		public string RoleDisplayText => this.HasRoleValue
+			? this.RoleValue
+			: ServiceRef.Localizer[nameof(AppResources.ParameterAddedOnSigning), this.RoleName];
 	}
 
 	public class ObservableCalcParameter : ObservableParameter
@@ -652,8 +841,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				this.OnPropertyChanged(nameof(this.CalcValue));
 				this.OnPropertyChanged(nameof(this.CalcString));
+				this.OnPropertyChanged(nameof(this.HasCalcValue));
+				this.OnPropertyChanged(nameof(this.CalcDisplayText));
 			}
 		}
+
+		/// <summary>
+		/// If the value could be worked out from the values filled in so far.
+		/// </summary>
+		public bool HasCalcValue => this.Value is not null;
+
+		/// <summary>
+		/// The calculated value, or that it can't be worked out yet.
+		/// </summary>
+		public string CalcDisplayText => this.HasCalcValue
+			? this.CalcString
+			: ServiceRef.Localizer[nameof(AppResources.ParameterCantCalculate)];
 
 		public ObservableCalcParameter(CalcParameter parameter) : base(parameter)
 		{
@@ -703,8 +906,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.DateTimeValue));
 				this.OnPropertyChanged(nameof(this.SelectedDate));
 				this.OnPropertyChanged(nameof(this.SelectedTime));
+				this.OnPropertyChanged(nameof(this.DateTimeText));
 			}
 		}
+
+		/// <summary>
+		/// The date and time in the user's short format, in local time and without seconds, or "-".
+		/// </summary>
+		public string DateTimeText => this.DateTimeValue is DateTime Value
+			? (Value.Kind == DateTimeKind.Utc ? Value.ToLocalTime() : Value).ToString("g", CultureInfo.CurrentCulture)
+			: "-";
 
 		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
 		{
@@ -785,11 +996,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			base.OnPropertyChanged(Args);
 
 			if (Args.PropertyName == nameof(this.Value))
+			{
 				this.OnPropertyChanged(nameof(this.ContractReferenceValue));
+				this.OnPropertyChanged(nameof(this.HasContract));
+				this.OnPropertyChanged(nameof(this.CanPasteId));
+				this.OnPropertyChanged(nameof(this.ContractTitle));
+				this.OnPropertyChanged(nameof(this.ContractSubtitle));
+				_ = this.LoadReferencedContractAsync();
+			}
 		}
 
 		public ObservableContractReferenceParameter(ContractReferenceParameter parameter) : base(parameter)
 		{
+			// A value set here also looks up the contract, through the change of the value.
 			this.InitializeValue(parameter.ObjectValue);
 		}
 
@@ -797,6 +1016,92 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			get => this.Value?.ToString() ?? string.Empty;
 			set => this.Value = value;
+		}
+
+		/// <summary>
+		/// The chosen contract, as the phone has it, or null when it isn't on the phone.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ContractTitle))]
+		[NotifyPropertyChangedFor(nameof(ContractSubtitle))]
+		private ContractModel? referencedContract;
+
+		/// <summary>
+		/// If the user chose to type or paste the contract's ID instead of choosing it from a list.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanPasteId))]
+		private bool isPastingId;
+
+		/// <summary>
+		/// If a contract has been chosen.
+		/// </summary>
+		public bool HasContract => !string.IsNullOrEmpty(this.ContractReferenceValue);
+
+		/// <summary>
+		/// If "Paste ID" is offered: nothing is chosen, and the ID field isn't shown yet.
+		/// </summary>
+		public bool CanPasteId => !this.HasContract && !this.IsPastingId;
+
+		/// <summary>
+		/// The chosen contract's name, or its ID when the phone doesn't have it.
+		/// </summary>
+		public string ContractTitle => this.ReferencedContract is ContractModel Model && !string.IsNullOrEmpty(Model.NameOrCategory)
+			? Model.NameOrCategory
+			: this.ContractReferenceValue;
+
+		/// <summary>
+		/// The chosen contract's state and when it last changed, when the phone has it.
+		/// </summary>
+		public string ContractSubtitle
+		{
+			get
+			{
+				if (this.ReferencedContract is not ContractModel Model)
+					return string.Empty;
+
+				string[] Parts = [Model.StateText, Model.LastChangedText];
+				return string.Join(" · ", Parts.Where(Text => !string.IsNullOrEmpty(Text)));
+			}
+		}
+
+		/// <summary>
+		/// Looks up the chosen contract on the phone, so it can be shown by its name and state.
+		/// </summary>
+		private async Task LoadReferencedContractAsync()
+		{
+			string Id = this.ContractReferenceValue;
+			ContractModel? Model = null;
+
+			if (!string.IsNullOrEmpty(Id))
+			{
+				try
+				{
+					ContractReference? Row = await ServiceRef.ContractStore.GetAsync(Id);
+					if (Row is not null)
+						Model = new ContractModel(Row);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				// A newer choice wins over a lookup that finished late.
+				if (Id == this.ContractReferenceValue)
+					this.ReferencedContract = Model;
+			});
+		}
+
+		/// <summary>
+		/// Shows the field where the user types or pastes the contract's ID.
+		/// </summary>
+		[RelayCommand]
+		private void PasteId()
+		{
+			this.IsPastingId = true;
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
@@ -856,6 +1161,79 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				this.OnPropertyChanged(nameof(this.GeoValue));
 				this.OnPropertyChanged(nameof(this.GeoString));
+				this.OnPropertyChanged(nameof(this.GeoText));
+				this.OnPropertyChanged(nameof(this.HasGeoValue));
+				this.OpenMapCommand.NotifyCanExecuteChanged();
+			}
+		}
+
+		/// <summary>
+		/// If a place has been chosen.
+		/// </summary>
+		public bool HasGeoValue => this.GeoValue is not null;
+
+		/// <summary>
+		/// The place as degrees north or south and east or west, such as "59.3293° N, 18.0686° E", or that it isn't
+		/// filled in.
+		/// </summary>
+		public string GeoText
+		{
+			get
+			{
+				if (this.GeoValue is not GeoPosition Position)
+					return ServiceRef.Localizer[nameof(AppResources.ParameterNotSet)];
+
+				CultureInfo Culture = CultureInfo.CurrentCulture;
+				string Latitude = Math.Abs(Position.Latitude).ToString("0.0000", Culture) + "° " + (Position.Latitude < 0 ? "S" : "N");
+				string Longitude = Math.Abs(Position.Longitude).ToString("0.0000", Culture) + "° " + (Position.Longitude < 0 ? "W" : "E");
+
+				return Latitude + ", " + Longitude;
+			}
+		}
+
+		/// <summary>
+		/// If the place is where the contract applies.
+		/// </summary>
+		public bool IsContractLocation => ((GeoParameter)this.Parameter).ContractLocation;
+
+		/// <summary>
+		/// Opens a map where the user picks the place by moving the map under a pin.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task PickOnMapAsync()
+		{
+			try
+			{
+				GeoMapViewModel ViewModel = new(this.GeoValue);
+				await ServiceRef.PopupService.PushAsync(new GeoMapPopup(ViewModel));
+
+				GeoPosition? Picked = await ViewModel.Result;
+				if (Picked is not null)
+					MainThread.BeginInvokeOnMainThread(() => this.GeoValue = Picked);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Shows the place in the phone's map app.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(HasGeoValue))]
+		private async Task OpenMapAsync()
+		{
+			if (this.GeoValue is not GeoPosition Position)
+				return;
+
+			try
+			{
+				await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(Position.Latitude, Position.Longitude,
+					new MapLaunchOptions { Name = this.Label });
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 

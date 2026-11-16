@@ -1744,7 +1744,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				if (Parameter.Parameter is BooleanParameter or StringParameter or NumericalParameter
 					or DateParameter or TimeParameter or DurationParameter
-					or DateTimeParameter or CalcParameter or ContractReferenceParameter or GeoParameter)
+					or DateTimeParameter or CalcParameter or ContractReferenceParameter or GeoParameter
+					or RoleParameter or AttachmentParameter)
 				{
 					this.DisplayableParameters.Add(Parameter);
 				}

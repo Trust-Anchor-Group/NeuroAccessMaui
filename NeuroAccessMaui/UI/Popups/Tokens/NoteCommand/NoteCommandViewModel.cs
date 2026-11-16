@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.UI.Pages.Contracts;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using Waher.Networking.XMPP.Contracts;
@@ -140,7 +141,7 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.NoteCommand
 					{
 						Valid = await NoteCommandRunner.IsParameterValidAsync(Editor.Parameter, Variables);
 						if (!Valid)
-							ValidationText = Editor.Parameter.ErrorText ?? string.Empty;
+							ValidationText = ParameterMessages.GetErrorText(Editor.Parameter);
 					}
 
 					if (Version != this.validationVersion)

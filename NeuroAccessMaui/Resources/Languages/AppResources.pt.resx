@@ -2444,10 +2444,10 @@ Continue apenas se você confia na origem.</value>
     <value>Visualizar contrato</value>
   </data>
   <data name="SetParametersTitle" xml:space="preserve">
-    <value>Definir parâmetros</value>
+    <value>Preencha os dados</value>
   </data>
   <data name="SetParametersDescription" xml:space="preserve">
-    <value>Especifique as variáveis que regem o contrato</value>
+    <value>Os valores de que este contrato precisa</value>
   </data>
   <data name="SelectRolesTitle" xml:space="preserve">
     <value>Selecionar papéis</value>
@@ -2486,10 +2486,10 @@ Continue apenas se você confia na origem.</value>
     <value>Criptografado</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-    <value>Ver parâmetros</value>
+    <value>Dados</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-    <value>Veja as variáveis que regem o contrato</value>
+    <value>Os valores deste contrato</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
     <value>Revisar papéis atribuídos</value>
@@ -2597,10 +2597,10 @@ Continue apenas se você confia na origem.</value>
     <value>Especifique a duração do contrato</value>
   </data>
   <data name="NegateDuration" xml:space="preserve">
-    <value>Duração negativa: </value>
+    <value>Para trás no tempo</value>
   </data>
   <data name="AddDuration" xml:space="preserve">
-    <value>Adicionar duração</value>
+    <value>Adicionar unidade</value>
   </data>
   <data name="SelectUnit" xml:space="preserve">
     <value>Selecione a unidade</value>
@@ -2822,13 +2822,13 @@ Continue apenas se você confia na origem.</value>
     <value>Erro desconhecido. Por favor, tente novamente</value>
   </data>
   <data name="SelectContract" xml:space="preserve">
-    <value>Selecione um contrato</value>
+    <value>Escolha um contrato</value>
   </data>
   <data name="LoadMore" xml:space="preserve">
     <value>Carregar mais</value>
   </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
-    <value>Cole o ID do contrato ou escolha da lista</value>
+    <value>Escolha um contrato</value>
   </data>
   <data name="ScanInvitationInfo" xml:space="preserve">
     <value>Escaneie o convite se você já criou uma conta separadamente</value>
@@ -2972,10 +2972,10 @@ Continue apenas se você confia na origem.</value>
     <value>Comprar Créditos-Neuro</value>
   </data>
   <data name="UseCurrentLocation" xml:space="preserve">
-    <value>Usar localização atual</value>
+    <value>Minha localização</value>
   </data>
   <data name="LocationError" xml:space="preserve">
-    <value>Ocorreu um erro ao obter sua localização. Certifique-se de que as permissões de localização estão ativadas nas configurações do seu dispositivo</value>
+    <value>Não foi possível obter sua localização. Permita a localização nas Configurações.</value>
   </data>
   <data name="Attachment_Passport" xml:space="preserve">
     <value>Imagem do passaporte</value>
@@ -4512,7 +4512,7 @@ Documento lido. Você pode mover seu iPhone.</value>
     <value>Você não tem acesso a este contrato. Quer pedir acesso às pessoas que o assinaram?</value>
   </data>
   <data name="ContractHasNoParameters" xml:space="preserve">
-    <value>Este contrato não tem parâmetros.</value>
+    <value>Não há dados para mostrar.</value>
   </data>
   <data name="ContractWasDeleted" xml:space="preserve">
     <value>Este contrato foi excluído.</value>
@@ -4605,13 +4605,13 @@ Documento lido. Você pode mover seu iPhone.</value>
     <value>Convite para assinar um contrato</value>
   </data>
   <data name="ParameterEncryptedNotAvailable" xml:space="preserve">
-    <value>Criptografado, não disponível neste dispositivo</value>
+    <value>Oculto para você</value>
   </data>
   <data name="ParameterLoadingValue" xml:space="preserve">
     <value>Carregando…</value>
   </data>
   <data name="ParameterNotStored" xml:space="preserve">
-    <value>Não armazenado</value>
+    <value>Não salvo</value>
   </data>
   <data name="PetitionContractNotLoaded" xml:space="preserve">
     <value>Não foi possível carregar o contrato. Você ainda pode aceitar ou recusar a solicitação.</value>
@@ -4719,7 +4719,130 @@ Documento lido. Você pode mover seu iPhone.</value>
     <value>Assinaturas: {0} (precisa de {1}, permite até {2})</value>
   </data>
   <data name="ParameterNotSet" xml:space="preserve">
-    <value>Ainda não escolhido</value>
+    <value>Não preenchido</value>
+  </data>
+  <data name="ParameterFillThisIn" xml:space="preserve">
+    <value>Preencha isto</value>
+  </data>
+  <data name="ParameterMustBeAtLeast" xml:space="preserve">
+    <value>Deve ser {0} ou mais</value>
+  </data>
+  <data name="ParameterMustBeMoreThan" xml:space="preserve">
+    <value>Deve ser mais que {0}</value>
+  </data>
+  <data name="ParameterMustBeAtMost" xml:space="preserve">
+    <value>Deve ser {0} ou menos</value>
+  </data>
+  <data name="ParameterMustBeLessThan" xml:space="preserve">
+    <value>Deve ser menos que {0}</value>
+  </data>
+  <data name="ParameterPickFrom" xml:space="preserve">
+    <value>Escolha {0} ou depois</value>
+  </data>
+  <data name="ParameterPickAfter" xml:space="preserve">
+    <value>Escolha depois de {0}</value>
+  </data>
+  <data name="ParameterPickUntil" xml:space="preserve">
+    <value>Escolha {0} ou antes</value>
+  </data>
+  <data name="ParameterPickBefore" xml:space="preserve">
+    <value>Escolha antes de {0}</value>
+  </data>
+  <data name="ParameterTooShort" xml:space="preserve">
+    <value>Use pelo menos {0} caracteres</value>
+  </data>
+  <data name="ParameterTooLong" xml:space="preserve">
+    <value>Use no máximo {0} caracteres</value>
+  </data>
+  <data name="ParameterWrongFormat" xml:space="preserve">
+    <value>Formato incorreto</value>
+  </data>
+  <data name="ParameterNotAllowed" xml:space="preserve">
+    <value>Não permitido pelo contrato</value>
+  </data>
+  <data name="ParameterOutsideArea" xml:space="preserve">
+    <value>Fora da área permitida</value>
+  </data>
+  <data name="ParameterContractNotFound" xml:space="preserve">
+    <value>Contrato não encontrado</value>
+  </data>
+  <data name="ParameterWrongContractKind" xml:space="preserve">
+    <value>Tipo de contrato errado</value>
+  </data>
+  <data name="ParameterContractNotValid" xml:space="preserve">
+    <value>Esse contrato não é válido</value>
+  </data>
+  <data name="ParameterCantCalculate" xml:space="preserve">
+    <value>Ainda não dá para calcular</value>
+  </data>
+  <data name="FieldsNeedFix" xml:space="preserve">
+    <value>{0} campos precisam de correção</value>
+  </data>
+  <data name="FieldNeedsFix" xml:space="preserve">
+    <value>1 campo precisa de correção</value>
+  </data>
+  <data name="ParameterFixShow" xml:space="preserve">
+    <value>Mostrar</value>
+  </data>
+  <data name="ParameterRangeBetween" xml:space="preserve">
+    <value>De {0} a {1}</value>
+  </data>
+  <data name="ParameterRangeAtLeast" xml:space="preserve">
+    <value>{0} ou mais</value>
+  </data>
+  <data name="ParameterRangeAbove" xml:space="preserve">
+    <value>Mais que {0}</value>
+  </data>
+  <data name="ParameterRangeAtMost" xml:space="preserve">
+    <value>{0} ou menos</value>
+  </data>
+  <data name="ParameterRangeBelow" xml:space="preserve">
+    <value>Menos que {0}</value>
+  </data>
+  <data name="ParameterRangeFrom" xml:space="preserve">
+    <value>A partir de {0}</value>
+  </data>
+  <data name="ParameterRangeAfter" xml:space="preserve">
+    <value>Depois de {0}</value>
+  </data>
+  <data name="ParameterRangeUntil" xml:space="preserve">
+    <value>Até {0}</value>
+  </data>
+  <data name="ParameterRangeBefore" xml:space="preserve">
+    <value>Antes de {0}</value>
+  </data>
+  <data name="ParameterLengthRange" xml:space="preserve">
+    <value>De {0} a {1} caracteres</value>
+  </data>
+  <data name="ParameterLengthAtMost" xml:space="preserve">
+    <value>Até {0} caracteres</value>
+  </data>
+  <data name="ParameterLengthAtLeast" xml:space="preserve">
+    <value>Pelo menos {0} caracteres</value>
+  </data>
+  <data name="ParameterCalculated" xml:space="preserve">
+    <value>Calculado</value>
+  </data>
+  <data name="ParameterFromId" xml:space="preserve">
+    <value>Do ID de {0}</value>
+  </data>
+  <data name="ParameterAddedOnSigning" xml:space="preserve">
+    <value>Quando {0} assinar</value>
+  </data>
+  <data name="ParameterPickOnMap" xml:space="preserve">
+    <value>Escolher no mapa</value>
+  </data>
+  <data name="ParameterOpenMap" xml:space="preserve">
+    <value>Abrir mapa</value>
+  </data>
+  <data name="ParameterContractPlace" xml:space="preserve">
+    <value>Local do contrato</value>
+  </data>
+  <data name="ParameterPasteId" xml:space="preserve">
+    <value>Colar ID</value>
+  </data>
+  <data name="ParameterFilesNotSupported" xml:space="preserve">
+    <value>Você ainda não pode adicionar arquivos no app</value>
   </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Apenas as pessoas nomeadas no contrato</value>
