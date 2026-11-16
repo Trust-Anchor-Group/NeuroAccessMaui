@@ -53,6 +53,7 @@
 			<Setter Property="StrokeThickness" Value="0" />
 			<Setter Property="Padding" Value="8,2" />
 			<Setter Property="HorizontalOptions" Value="Start" />
+			<Setter Property="VerticalOptions" Value="Center" />
 			<Setter Property="BackgroundColor" Value="{DynamicResource TnPInfobgWL}" />
 		</Style>
 		<Style x:Key="EventChipLabel" TargetType="Label">
@@ -633,41 +634,6 @@
 											</Border>
 										</Grid>
 									</HorizontalStackLayout>
-
-									<!-- How the values changed over time, drawn by the token's Neuron -->
-									<Border StrokeShape="RoundRectangle 14"
-											StrokeThickness="1"
-											Stroke="{DynamicResource SurfaceDividerWL}"
-											BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-											Padding="14,0"
-											MinimumHeightRequest="48"
-											Margin="0,4,0,0"
-											IsVisible="{Binding HasValueChart}"
-											SemanticProperties.Description="{l:Localize HistoryValueChart}">
-										<Border.GestureRecognizers>
-											<TapGestureRecognizer Command="{Binding ShowValueChartCommand}" />
-										</Border.GestureRecognizers>
-										<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-											<Path Grid.Column="0"
-												  Data="{x:Static ui:Geometries.HistoryIconPath}"
-												  Fill="{DynamicResource ContentPrimaryWL}"
-												  Aspect="Uniform"
-												  WidthRequest="18"
-												  HeightRequest="18"
-												  VerticalOptions="Center" />
-											<Label Grid.Column="1"
-												   Text="{l:Localize HistoryValueChart}"
-												   FontFamily="HaasGroteskMedium"
-												   FontSize="{StaticResource FontSizeSm}"
-												   TextColor="{DynamicResource ContentPrimaryWL}"
-												   VerticalOptions="Center" />
-											<Label Grid.Column="2"
-												   Text="›"
-												   FontSize="{StaticResource FontSizeLg}"
-												   TextColor="{DynamicResource ContentSecondaryWL}"
-												   VerticalOptions="Center" />
-										</Grid>
-									</Border>
 								</VerticalStackLayout>
 							</CollectionView.Header>
 							<CollectionView.Footer>

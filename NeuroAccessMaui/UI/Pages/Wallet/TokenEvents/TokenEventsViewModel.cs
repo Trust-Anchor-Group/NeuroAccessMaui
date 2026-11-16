@@ -1,19 +1,17 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.MVVM;
-using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
-using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
-using System.Collections.ObjectModel;
-using System.Globalization;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
@@ -52,7 +50,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			this.preloadedEvents = Args?.Events;
 			this.TokenId = Args?.TokenId;
 			this.IsMyToken = Args?.IsMyToken ?? false;
-			this.HasValueChart = !string.IsNullOrEmpty(Args?.MachineId);
 
 			this.Events = [];
 			this.Events.CollectionChanged += (Sender, Args) => this.UpdateShownEvents();
@@ -340,11 +337,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public bool IsStepsSelected => this.SelectedFilter == TokenEventFilter.Steps;
 
 		/// <summary>
-		/// If the token has a state machine, so its values can be shown as a chart.
-		/// </summary>
-		public bool HasValueChart { get; }
-
-		/// <summary>
 		/// Shows the events of the chosen kind.
 		/// </summary>
 		partial void OnSelectedFilterChanged(TokenEventFilter value)
@@ -489,27 +481,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		private void SelectFilter(TokenEventFilter Filter)
 		{
 			this.SelectedFilter = Filter;
-		}
-
-		/// <summary>
-		/// Shows how the token's values have changed over time, as charts drawn by the token's Neuron.
-		/// </summary>
-		[RelayCommand]
-		private async Task ShowValueChartAsync()
-		{
-			if (string.IsNullOrEmpty(this.TokenId))
-				return;
-
-			try
-			{
-				MachineReportNavigationArgs Args = new(new TokenHistoryReport(this.TokenId));
-				await ServiceRef.NavigationService.GoToAsync(nameof(MachineReportPage), Args, BackMethod.Pop);
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-				await ServiceRef.UiService.DisplayException(Ex);
-			}
 		}
 
 		/// <summary>
