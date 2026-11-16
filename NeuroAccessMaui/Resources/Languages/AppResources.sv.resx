@@ -4916,6 +4916,12 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="FlowWhenEvent" xml:space="preserve">
     <value>När något händer</value>
   </data>
+  <data name="HistoryFilterOwnership" xml:space="preserve">
+    <value>Ägande</value>
+  </data>
+  <data name="HistoryFilterNotes" xml:space="preserve">
+    <value>Anteckningar</value>
+  </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Bara personerna som anges i kontraktet</value>
   </data>

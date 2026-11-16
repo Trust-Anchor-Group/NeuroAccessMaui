@@ -49,6 +49,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			this.IsMyToken = Args?.IsMyToken ?? false;
 
 			this.Events = [];
+			this.Events.CollectionChanged += (Sender, Args) => this.UpdateShownEvents();
 		}
 
 		/// <inheritdoc/>
@@ -109,7 +110,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 					this.serverOffset = Page.Length;
 					this.reachedEnd = Page.Length < PageSize;
 					this.HasMoreEvents = !this.reachedEnd;
-					this.ShowNoEvents = this.Events.Count == 0;
+					this.ShowNoEvents = this.ShownEvents.Count == 0;
 				});
 			}
 			catch (Exception Ex)
@@ -160,7 +161,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 
 					// Events added since the first page was loaded push the older ones further down on the server.
 					this.serverOffset += Index;
-					this.ShowNoEvents = this.Events.Count == 0;
+					this.ShowNoEvents = this.ShownEvents.Count == 0;
 				});
 			}
 			finally
@@ -267,6 +268,80 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public ObservableCollection<EventItem> Events { get; }
 
 		/// <summary>
+		/// The events the chosen filter lets through, newest first.
+		/// </summary>
+		public ObservableCollection<EventItem> ShownEvents { get; } = [];
+
+		/// <summary>
+		/// The kind of events shown.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsAllSelected))]
+		[NotifyPropertyChangedFor(nameof(IsOwnershipSelected))]
+		[NotifyPropertyChangedFor(nameof(IsNotesSelected))]
+		private TokenEventFilter selectedFilter = TokenEventFilter.All;
+
+		/// <summary>
+		/// If every event is shown.
+		/// </summary>
+		public bool IsAllSelected => this.SelectedFilter == TokenEventFilter.All;
+
+		/// <summary>
+		/// If only events about who owns the token are shown.
+		/// </summary>
+		public bool IsOwnershipSelected => this.SelectedFilter == TokenEventFilter.Ownership;
+
+		/// <summary>
+		/// If only notes are shown.
+		/// </summary>
+		public bool IsNotesSelected => this.SelectedFilter == TokenEventFilter.Notes;
+
+		/// <summary>
+		/// Shows the events of the chosen kind.
+		/// </summary>
+		partial void OnSelectedFilterChanged(TokenEventFilter value)
+		{
+			this.UpdateShownEvents();
+		}
+
+		/// <summary>
+		/// Shows the events the chosen filter lets through, in the order of all events. Called on the main thread.
+		/// </summary>
+		private void UpdateShownEvents()
+		{
+			List<EventItem> Shown = [.. this.Events.Where(Item => Matches(Item, this.SelectedFilter))];
+
+			if (!this.ShownEvents.SequenceEqual(Shown))
+			{
+				this.ShownEvents.Clear();
+
+				foreach (EventItem Item in Shown)
+					this.ShownEvents.Add(Item);
+			}
+
+			if (this.LoadTask.IsSucceeded)
+				this.ShowNoEvents = this.ShownEvents.Count == 0;
+		}
+
+		/// <summary>
+		/// Checks if an event is of a kind the filter lets through.
+		/// </summary>
+		/// <param name="Item">The event.</param>
+		/// <param name="Filter">The filter.</param>
+		/// <returns>If the event is shown.</returns>
+		private static bool Matches(EventItem Item, TokenEventFilter Filter)
+		{
+			return Filter switch
+			{
+				TokenEventFilter.Ownership => Item.Type is EventType.Created or EventType.Transferred or EventType.Donated
+					or EventType.Destroyed or EventType.Killed,
+				TokenEventFilter.Notes => Item.Type is EventType.NoteText or EventType.NoteXml or EventType.ExternalNoteText
+					or EventType.ExternalNoteXml,
+				_ => true
+			};
+		}
+
+		/// <summary>
 		/// Loads the newest events.
 		/// </summary>
 		public ObservableTask LoadTask { get; } = new();
@@ -316,6 +391,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		#endregion
 
 		#region Commands
+
+		/// <summary>
+		/// Shows only the events of a kind.
+		/// </summary>
+		/// <param name="Filter">The kind of events to show.</param>
+		[RelayCommand]
+		private void SelectFilter(TokenEventFilter Filter)
+		{
+			this.SelectedFilter = Filter;
+		}
 
 		/// <summary>
 		/// Loads the next page of older events.
@@ -421,7 +506,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 
 					this.localNotes.Add(NewEvent);
 					this.Events.Insert(0, NewEvent);
-					this.ShowNoEvents = false;
+					this.ShowNoEvents = this.ShownEvents.Count == 0;
 
 					this.ScheduleRefresh();
 				}

@@ -4916,6 +4916,12 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="FlowWhenEvent" xml:space="preserve">
     <value>Quando algo acontecer</value>
   </data>
+  <data name="HistoryFilterOwnership" xml:space="preserve">
+    <value>Propriedade</value>
+  </data>
+  <data name="HistoryFilterNotes" xml:space="preserve">
+    <value>Notas</value>
+  </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Apenas as pessoas nomeadas no contrato</value>
   </data>

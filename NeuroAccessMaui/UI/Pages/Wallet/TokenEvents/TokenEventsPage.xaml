@@ -35,6 +35,18 @@
 			<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 			<Setter Property="VerticalOptions" Value="Center" />
 		</Style>
+		<!-- Chips that narrow the history to a kind of event -->
+		<Style x:Key="HistoryFilterChip" TargetType="Border">
+			<Setter Property="StrokeShape" Value="RoundRectangle 16" />
+			<Setter Property="StrokeThickness" Value="1" />
+			<Setter Property="Stroke" Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="Padding" Value="14,6" />
+			<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation1WL}" />
+		</Style>
+		<Style x:Key="HistoryFilterChipLabel" TargetType="Label">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
+			<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
+		</Style>
 		<Style x:Key="EventChipBorder" TargetType="Border">
 			<Setter Property="StrokeShape" Value="RoundRectangle 12" />
 			<Setter Property="StrokeThickness" Value="0" />
@@ -441,7 +453,7 @@
 				<RefreshView IsRefreshing="{Binding IsRefreshing}"
 							 Command="{Binding RefreshEventsCommand}">
 					<Grid>
-						<controls:LoadingCollectionView ItemsSource="{Binding Events}"
+						<controls:LoadingCollectionView ItemsSource="{Binding ShownEvents}"
 														ItemTemplate="{StaticResource EventStyleSelector}"
 														SelectionMode="None"
 														ItemSizingStrategy="MeasureAllItems"
@@ -452,10 +464,90 @@
 								<LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
 							</CollectionView.ItemsLayout>
 							<CollectionView.Header>
-								<Label Text="{l:Localize TokenEventsDescription}"
-									   Style="{DynamicResource ItemDescriptionLabel}"
-									   TextColor="{DynamicResource ContentSecondaryWL}"
-									   Margin="0,0,0,8" />
+								<VerticalStackLayout Spacing="8"
+													 Margin="0,0,0,8">
+									<Label Text="{l:Localize TokenEventsDescription}"
+										   Style="{DynamicResource ItemDescriptionLabel}"
+										   TextColor="{DynamicResource ContentSecondaryWL}" />
+									<!-- Chips that narrow the history to a kind of event -->
+									<HorizontalStackLayout Spacing="8">
+										<Border Style="{StaticResource HistoryFilterChip}">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsAllSelected}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Border.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
+																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.All}" />
+											</Border.GestureRecognizers>
+											<Label Text="{l:Localize All}"
+												   Style="{StaticResource HistoryFilterChipLabel}">
+												<Label.Triggers>
+													<DataTrigger TargetType="Label"
+																 Binding="{Binding IsAllSelected}"
+																 Value="True">
+														<Setter Property="TextColor"
+																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
+										</Border>
+										<Border Style="{StaticResource HistoryFilterChip}">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsOwnershipSelected}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Border.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
+																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.Ownership}" />
+											</Border.GestureRecognizers>
+											<Label Text="{l:Localize HistoryFilterOwnership}"
+												   Style="{StaticResource HistoryFilterChipLabel}">
+												<Label.Triggers>
+													<DataTrigger TargetType="Label"
+																 Binding="{Binding IsOwnershipSelected}"
+																 Value="True">
+														<Setter Property="TextColor"
+																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
+										</Border>
+										<Border Style="{StaticResource HistoryFilterChip}">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsNotesSelected}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Border.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
+																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.Notes}" />
+											</Border.GestureRecognizers>
+											<Label Text="{l:Localize HistoryFilterNotes}"
+												   Style="{StaticResource HistoryFilterChipLabel}">
+												<Label.Triggers>
+													<DataTrigger TargetType="Label"
+																 Binding="{Binding IsNotesSelected}"
+																 Value="True">
+														<Setter Property="TextColor"
+																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
+										</Border>
+									</HorizontalStackLayout>
+								</VerticalStackLayout>
 							</CollectionView.Header>
 							<CollectionView.Footer>
 								<Grid Padding="0,8,0,16">

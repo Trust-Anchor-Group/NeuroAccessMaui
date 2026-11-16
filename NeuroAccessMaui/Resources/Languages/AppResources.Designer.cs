@@ -14584,6 +14584,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ownership.
+        /// </summary>
+        public static string HistoryFilterOwnership {
+            get {
+                return ResourceManager.GetString("HistoryFilterOwnership", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        public static string HistoryFilterNotes {
+            get {
+                return ResourceManager.GetString("HistoryFilterNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only the people named in the contract.
         /// </summary>
         public static string ContractPartsNamed {
