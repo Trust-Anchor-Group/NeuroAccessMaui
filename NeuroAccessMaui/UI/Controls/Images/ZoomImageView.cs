@@ -26,8 +26,9 @@ namespace NeuroAccessMaui.UI.Controls
 		private readonly Grid stage;
 		private readonly Microsoft.Maui.Controls.Image image;
 		private readonly Label percentLabel;
-		private double startTranslationX;
-		private double startTranslationY;
+		private double lastPanX;
+		private double lastPanY;
+		private bool isPinching;
 
 		/// <summary>
 		/// Creates the view.
@@ -245,7 +246,21 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private void Pinch_PinchUpdated(object? Sender, PinchGestureUpdatedEventArgs e)
 		{
-			if (e.Status != GestureStatus.Running)
+			// While two fingers pinch, the pan gesture also reports moves; those are left out, so the image doesn't jump.
+			switch (e.Status)
+			{
+				case GestureStatus.Started:
+					this.isPinching = true;
+					return;
+
+				case GestureStatus.Completed:
+				case GestureStatus.Canceled:
+					this.isPinching = false;
+					return;
+			}
+
+			// Android can report a very large or small step when a finger is lifted. Such a step is not a real pinch.
+			if (e.Scale < 0.5 || e.Scale > 2)
 				return;
 
 			double Scale = Math.Clamp(this.image.Scale * e.Scale, minScale, maxScale);
@@ -265,13 +280,20 @@ namespace NeuroAccessMaui.UI.Controls
 			switch (e.StatusType)
 			{
 				case GestureStatus.Started:
-					this.startTranslationX = this.image.TranslationX;
-					this.startTranslationY = this.image.TranslationY;
+					this.lastPanX = 0;
+					this.lastPanY = 0;
 					break;
 
 				case GestureStatus.Running:
-					if (this.image.Scale > minScale)
-						this.SetZoom(this.image.Scale, this.startTranslationX + e.TotalX, this.startTranslationY + e.TotalY);
+					// The image moves by how far the finger moved since the last report, so a pinch in between can't make
+					// it jump.
+					double Dx = e.TotalX - this.lastPanX;
+					double Dy = e.TotalY - this.lastPanY;
+					this.lastPanX = e.TotalX;
+					this.lastPanY = e.TotalY;
+
+					if (!this.isPinching && this.image.Scale > minScale)
+						this.SetZoom(this.image.Scale, this.image.TranslationX + Dx, this.image.TranslationY + Dy);
 					break;
 			}
 		}

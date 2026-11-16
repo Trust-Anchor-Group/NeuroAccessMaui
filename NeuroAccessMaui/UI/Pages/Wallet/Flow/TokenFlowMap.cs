@@ -48,8 +48,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 		private readonly Dictionary<TokenFlowStepItem, Border> cards = [];
 		private double contentWidth;
 		private double contentHeight;
-		private double startTranslationX;
-		private double startTranslationY;
+		private double lastPanX;
+		private double lastPanY;
+		private bool isPinching;
 		private bool hasFitted;
 
 		/// <summary>
@@ -341,7 +342,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 
 		private void Pinch_PinchUpdated(object? Sender, PinchGestureUpdatedEventArgs e)
 		{
-			if (e.Status != GestureStatus.Running)
+			// While two fingers pinch, the pan gesture also reports moves; those are left out, so the map doesn't jump.
+			switch (e.Status)
+			{
+				case GestureStatus.Started:
+					this.isPinching = true;
+					return;
+
+				case GestureStatus.Completed:
+				case GestureStatus.Canceled:
+					this.isPinching = false;
+					return;
+			}
+
+			// Android can report a very large or small step when a finger is lifted. Such a step is not a real pinch.
+			if (e.Scale < 0.5 || e.Scale > 2)
 				return;
 
 			double Scale = Math.Clamp(this.content.Scale * e.Scale, minScale, maxScale);
@@ -360,12 +375,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 			switch (e.StatusType)
 			{
 				case GestureStatus.Started:
-					this.startTranslationX = this.content.TranslationX;
-					this.startTranslationY = this.content.TranslationY;
+					this.lastPanX = 0;
+					this.lastPanY = 0;
 					break;
 
 				case GestureStatus.Running:
-					this.MoveTo(this.startTranslationX + e.TotalX, this.startTranslationY + e.TotalY);
+					// The map moves by how far the finger moved since the last report, so a pinch in between can't make it
+					// jump.
+					double Dx = e.TotalX - this.lastPanX;
+					double Dy = e.TotalY - this.lastPanY;
+					this.lastPanX = e.TotalX;
+					this.lastPanY = e.TotalY;
+
+					if (!this.isPinching)
+						this.MoveTo(this.content.TranslationX + Dx, this.content.TranslationY + Dy);
 					break;
 			}
 		}
