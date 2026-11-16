@@ -10,6 +10,103 @@
 		 itself is a chip in the hero. -->
 	<VerticalStackLayout>
 
+		<!-- Flow: the steps of the token's state machine, read from its definition. The step it is in now is marked, with
+			 what moves it on from there. -->
+		<VerticalStackLayout IsVisible="{Binding HasFlow}">
+			<Label Text="{l:Localize StateDiagram}"
+				   Style="{DynamicResource ListCardSectionLabel}" />
+
+			<VerticalStackLayout BindableLayout.ItemsSource="{Binding FlowSteps}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate x:DataType="viewmodel:TokenFlowStepItem">
+						<Grid>
+							<controls:ListCardSegment Position="{Binding CardPosition}"
+													  FillColor="{DynamicResource SurfaceElevation1WL}"
+													  StrokeColor="{DynamicResource SurfaceDividerWL}"
+													  DividerInset="48" />
+							<Grid ColumnDefinitions="20,*"
+								  ColumnSpacing="12"
+								  Padding="16,12"
+								  MinimumHeightRequest="52">
+								<!-- A dot on the step line. The step the token is in now has a filled, larger dot. -->
+								<Ellipse Grid.Column="0"
+										 WidthRequest="10"
+										 HeightRequest="10"
+										 VerticalOptions="Start"
+										 Margin="0,5,0,0"
+										 Stroke="{DynamicResource ContentSecondaryWL}"
+										 StrokeThickness="1.5">
+									<Ellipse.Triggers>
+										<DataTrigger TargetType="Ellipse"
+													 Binding="{Binding IsCurrent}"
+													 Value="True">
+											<Setter Property="WidthRequest"
+													Value="14" />
+											<Setter Property="HeightRequest"
+													Value="14" />
+											<Setter Property="Margin"
+													Value="0,3,0,0" />
+											<Setter Property="Fill"
+													Value="{DynamicResource ContentAccessWL}" />
+											<Setter Property="Stroke"
+													Value="{DynamicResource ContentAccessWL}" />
+										</DataTrigger>
+									</Ellipse.Triggers>
+								</Ellipse>
+								<VerticalStackLayout Grid.Column="1"
+													 Spacing="4">
+									<HorizontalStackLayout Spacing="8">
+										<Label Text="{Binding Name}"
+											   Style="{DynamicResource ListCardRowTitleLabel}"
+											   VerticalOptions="Center" />
+										<Border StrokeShape="RoundRectangle 10"
+												StrokeThickness="0"
+												Padding="8,1"
+												BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+												IsVisible="{Binding IsCurrent}"
+												VerticalOptions="Center">
+											<Label Text="{l:Localize FlowNow}"
+												   FontSize="{StaticResource FontSizeSm}"
+												   TextColor="{DynamicResource TnPSuccessContentWL}" />
+										</Border>
+									</HorizontalStackLayout>
+									<Label Text="{Binding ExitsText}"
+										   IsVisible="{Binding HasExitsText}"
+										   Style="{DynamicResource ListCardRowDetailLabel}" />
+								</VerticalStackLayout>
+							</Grid>
+						</Grid>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+			</VerticalStackLayout>
+
+			<!-- The whole flow, with what moves it on from each step -->
+			<Grid>
+				<controls:ListCardSegment Position="Last"
+										  FillColor="{DynamicResource SurfaceElevation1WL}"
+										  StrokeColor="{DynamicResource SurfaceDividerWL}"
+										  DividerInset="16" />
+				<controls:TemplatedButton Command="{Binding SeeFullFlowCommand}"
+										  SemanticProperties.Description="{l:Localize FlowSeeAll}">
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="12"
+						  Padding="16,0"
+						  MinimumHeightRequest="52">
+						<Label Grid.Column="0"
+							   Text="{l:Localize FlowSeeAll}"
+							   Style="{DynamicResource ListCardRowLinkLabel}" />
+						<controls:SvgView Grid.Column="1"
+										  Source="arrow_forward_ios.svg"
+										  WidthRequest="14"
+										  HeightRequest="14"
+										  VerticalOptions="Center"
+										  TintColor="{DynamicResource ContentSecondaryWL}"
+										  AutomationProperties.IsInAccessibleTree="False" />
+					</Grid>
+				</controls:TemplatedButton>
+			</Grid>
+		</VerticalStackLayout>
+
 		<!-- State: the first few variables, and a row that opens all of them -->
 		<VerticalStackLayout IsVisible="{Binding ShowStateSection}">
 			<Label Text="{l:Localize State}"
@@ -91,14 +188,14 @@
 											  Padding="16,0"
 											  MinimumHeightRequest="52">
 											<Label Grid.Column="0"
-												   Text="{Binding Name}"
+												   Text="{Binding DisplayName}"
 												   Style="{DynamicResource ListCardRowKeyLabel}" />
 											<Label Grid.Column="1"
 												   Text="{Binding PreviousValueText}"
 												   IsVisible="{Binding IsChanged}"
 												   Style="{DynamicResource ListCardRowDetailLabel}" />
 											<Label Grid.Column="2"
-												   Text="{Binding AsScript}"
+												   Text="{Binding DisplayValue}"
 												   Style="{DynamicResource ListCardRowTitleLabel}"
 												   MaximumWidthRequest="180"
 												   HorizontalTextAlignment="End" />

@@ -14395,6 +14395,195 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Now.
+        /// </summary>
+        public static string FlowNow {
+            get {
+                return ResourceManager.GetString("FlowNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End.
+        /// </summary>
+        public static string FlowEnd {
+            get {
+                return ResourceManager.GetString("FlowEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See full flow.
+        /// </summary>
+        public static string FlowSeeAll {
+            get {
+                return ResourceManager.GetString("FlowSeeAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diagram.
+        /// </summary>
+        public static string FlowDiagram {
+            get {
+                return ResourceManager.GetString("FlowDiagram", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stays here.
+        /// </summary>
+        public static string FlowStaysHere {
+            get {
+                return ResourceManager.GetString("FlowStaysHere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If it fails: {0}.
+        /// </summary>
+        public static string FlowIfFails {
+            get {
+                return ResourceManager.GetString("FlowIfFails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On {0}.
+        /// </summary>
+        public static string FlowOnDate {
+            get {
+                return ResourceManager.GetString("FlowOnDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On a set date.
+        /// </summary>
+        public static string FlowOnSetDate {
+            get {
+                return ResourceManager.GetString("FlowOnSetDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After {0}.
+        /// </summary>
+        public static string FlowAfter {
+            get {
+                return ResourceManager.GetString("FlowAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After a set time.
+        /// </summary>
+        public static string FlowAfterSetTime {
+            get {
+                return ResourceManager.GetString("FlowAfterSetTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When a condition is met.
+        /// </summary>
+        public static string FlowWhenCondition {
+            get {
+                return ResourceManager.GetString("FlowWhenCondition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When it's sold.
+        /// </summary>
+        public static string FlowWhenSold {
+            get {
+                return ResourceManager.GetString("FlowWhenSold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When a payment arrives.
+        /// </summary>
+        public static string FlowWhenPaid {
+            get {
+                return ResourceManager.GetString("FlowWhenPaid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When a payment is sent.
+        /// </summary>
+        public static string FlowWhenPaymentSent {
+            get {
+                return ResourceManager.GetString("FlowWhenPaymentSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When the owner adds a note.
+        /// </summary>
+        public static string FlowWhenOwnerNotes {
+            get {
+                return ResourceManager.GetString("FlowWhenOwnerNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When the owner taps {0}.
+        /// </summary>
+        public static string FlowWhenOwnerTaps {
+            get {
+                return ResourceManager.GetString("FlowWhenOwnerTaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When someone else adds a note.
+        /// </summary>
+        public static string FlowWhenOthersNote {
+            get {
+                return ResourceManager.GetString("FlowWhenOthersNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When someone else taps {0}.
+        /// </summary>
+        public static string FlowWhenOthersTap {
+            get {
+                return ResourceManager.GetString("FlowWhenOthersTap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When a contract is signed.
+        /// </summary>
+        public static string FlowWhenContractSigned {
+            get {
+                return ResourceManager.GetString("FlowWhenContractSigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When it's destroyed.
+        /// </summary>
+        public static string FlowWhenDestroyed {
+            get {
+                return ResourceManager.GetString("FlowWhenDestroyed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When something happens.
+        /// </summary>
+        public static string FlowWhenEvent {
+            get {
+                return ResourceManager.GetString("FlowWhenEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only the people named in the contract.
         /// </summary>
         public static string ContractPartsNamed {

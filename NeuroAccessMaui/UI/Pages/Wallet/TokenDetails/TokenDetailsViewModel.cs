@@ -19,6 +19,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
+using NeuroAccessMaui.UI.Popups.Tokens.Flow;
 using NeuroAccessMaui.UI.Popups.Tokens.NoteCommand;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
@@ -196,6 +197,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			if (this.HasStateMachine)
 			{
+				this.LoadFlow(Item.Definition);
 				this.MachineStateTask.Load(this.LoadMachineStateAsync);
 				_ = this.LoadNoteCommandsAsync(Item.Token);
 			}
@@ -813,6 +815,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.IsMachineStateKnown = true;
 
 			this.UpdateNoteCommands();
+			this.UpdateFlow();
 		}
 
 		/// <summary>
@@ -1043,6 +1046,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 					this.SetVariable(Variable.Name, Variable.ValueObject, true);
 
 				this.UpdateNoteCommands();
+
+				// Dates and times in the flow can come from the values.
+				this.UpdateFlow();
 			});
 
 			return Task.CompletedTask;
@@ -1106,6 +1112,124 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// The first state-machine variables, shown inline.
 		/// </summary>
 		public ObservableCollection<TokenVariableItem> Variables { get; } = [];
+
+		/// <summary>
+		/// The steps of the token's flow, read from its definition, with the one it is in now marked.
+		/// </summary>
+		public ObservableCollection<TokenFlowStepItem> FlowSteps { get; } = [];
+
+		/// <summary>
+		/// If the token's flow could be read, so the Flow section is shown.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasFlow;
+
+		/// <summary>
+		/// The steps of the token's flow, read from its definition, or null.
+		/// </summary>
+		private TokenFlow? flow;
+
+		/// <summary>
+		/// Reads the token's flow from its definition, and shows its steps. Called on the main thread.
+		/// </summary>
+		/// <param name="Definition">The token's definition.</param>
+		private void LoadFlow(string? Definition)
+		{
+			this.flow = null;
+			this.FlowSteps.Clear();
+
+			try
+			{
+				this.flow = TokenFlow.Parse(Definition);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			if (this.flow is not null)
+			{
+				Dictionary<string, string> Names = this.flow.States.ToDictionary(State => State.Id, State => TokenText.ToWords(State.Id));
+
+				for (int i = 0; i < this.flow.States.Count; i++)
+				{
+					this.FlowSteps.Add(new TokenFlowStepItem(this.flow.States[i], Names)
+					{
+						CardPosition = ListCardPositionOf(i, this.flow.States.Count + 1)
+					});
+				}
+			}
+
+			this.HasFlow = this.FlowSteps.Count > 0;
+			this.UpdateFlow();
+		}
+
+		/// <summary>
+		/// Marks the step the token is in now, and shows what moves it on from there. Called on the main thread.
+		/// </summary>
+		private void UpdateFlow()
+		{
+			foreach (TokenFlowStepItem Step in this.FlowSteps)
+			{
+				bool IsCurrent = this.IsMachineStateKnown && !this.MachineEnded &&
+					string.Equals(Step.Id, this.machineState, StringComparison.Ordinal);
+
+				Step.IsCurrent = IsCurrent;
+				Step.ExitsText = IsCurrent ? Step.DescribeExits(this.machineVariables) : string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Gets where a row sits in a card of rows.
+		/// </summary>
+		/// <param name="Index">The row's index.</param>
+		/// <param name="Count">How many rows the card has.</param>
+		/// <returns>The row's position.</returns>
+		private static ListCardPosition ListCardPositionOf(int Index, int Count)
+		{
+			if (Count <= 1)
+				return ListCardPosition.Only;
+
+			if (Index == 0)
+				return ListCardPosition.First;
+
+			return Index == Count - 1 ? ListCardPosition.Last : ListCardPosition.Middle;
+		}
+
+		/// <summary>
+		/// Shows every step of the token's flow, with what moves it on from each.
+		/// </summary>
+		[RelayCommand]
+		private async Task SeeFullFlowAsync()
+		{
+			if (this.flow is null)
+				return;
+
+			try
+			{
+				List<TokenFlowStepItem> Steps = [];
+				Dictionary<string, string> Names = this.flow.States.ToDictionary(State => State.Id, State => TokenText.ToWords(State.Id));
+
+				for (int i = 0; i < this.flow.States.Count; i++)
+				{
+					TokenFlowStepItem Step = new(this.flow.States[i], Names)
+					{
+						CardPosition = ListCardPositionOf(i, this.flow.States.Count),
+						IsCurrent = this.IsMachineStateKnown && !this.MachineEnded &&
+							string.Equals(this.flow.States[i].Id, this.machineState, StringComparison.Ordinal)
+					};
+
+					Step.ExitsText = Step.DescribeExits(this.machineVariables);
+					Steps.Add(Step);
+				}
+
+				await ServiceRef.PopupService.PushAsync(new TokenFlowPopup(Steps, this.StatesReportCommand));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		/// <summary>
 		/// Loads the description, and exposes its loading and loaded states.

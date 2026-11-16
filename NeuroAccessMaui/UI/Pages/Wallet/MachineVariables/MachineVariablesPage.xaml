@@ -36,8 +36,8 @@
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel:VariableModel">
 									<VerticalStackLayout>
-										<Label Text="{Binding Path=Name}" Style="{DynamicResource KeyLabel}"/>
-										<Label LineBreakMode="NoWrap" Text="{Binding Path=AsScript}" Style="{DynamicResource ValueLabel}">
+										<Label Text="{Binding Path=DisplayName}" Style="{DynamicResource KeyLabel}"/>
+										<Label LineBreakMode="NoWrap" Text="{Binding Path=DisplayValue}" Style="{DynamicResource ValueLabel}">
 											<Label.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}"/>
 											</Label.GestureRecognizers>

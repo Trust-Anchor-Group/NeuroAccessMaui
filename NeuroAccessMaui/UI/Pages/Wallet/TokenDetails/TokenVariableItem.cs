@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		{
 			get
 			{
-				string Result = this.Name + ", " + this.AsScript;
+				string Result = this.DisplayName + ", " + this.DisplayValue;
 
 				if (this.IsChanged && !string.IsNullOrEmpty(this.PreviousValueText))
 					Result += ", " + this.PreviousValueText;
@@ -64,19 +64,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <param name="ShowChange">If the row is tinted for a moment, with the value before, when the value differs.</param>
 		public void ChangeValue(object Value, bool ShowChange)
 		{
-			string Before = this.AsScript;
+			string Before = this.DisplayValue;
 
 			this.UpdateValue(Value);
 			this.OnPropertyChanged(nameof(this.AccessibleDescription));
 
-			if (ShowChange && Before != this.AsScript)
+			if (ShowChange && Before != this.DisplayValue)
 				_ = this.ShowChangeAsync(Before);
 		}
 
 		/// <summary>
 		/// Tints the row and shows the value before, until the highlight time has passed or the value changes again.
 		/// </summary>
-		/// <param name="Before">The value before, as script.</param>
+		/// <param name="Before">The value before, as shown to the user.</param>
 		private async Task ShowChangeAsync(string Before)
 		{
 			int Version = ++this.changeVersion;

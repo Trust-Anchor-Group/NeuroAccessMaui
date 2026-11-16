@@ -4772,6 +4772,69 @@ Document read. You can move your iPhone.</value>
   <data name="ReportImageNotShown" xml:space="preserve">
     <value>Can't show this image</value>
   </data>
+  <data name="FlowNow" xml:space="preserve">
+    <value>Now</value>
+  </data>
+  <data name="FlowEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="FlowSeeAll" xml:space="preserve">
+    <value>See full flow</value>
+  </data>
+  <data name="FlowDiagram" xml:space="preserve">
+    <value>Diagram</value>
+  </data>
+  <data name="FlowStaysHere" xml:space="preserve">
+    <value>Stays here</value>
+  </data>
+  <data name="FlowIfFails" xml:space="preserve">
+    <value>If it fails: {0}</value>
+  </data>
+  <data name="FlowOnDate" xml:space="preserve">
+    <value>On {0}</value>
+  </data>
+  <data name="FlowOnSetDate" xml:space="preserve">
+    <value>On a set date</value>
+  </data>
+  <data name="FlowAfter" xml:space="preserve">
+    <value>After {0}</value>
+  </data>
+  <data name="FlowAfterSetTime" xml:space="preserve">
+    <value>After a set time</value>
+  </data>
+  <data name="FlowWhenCondition" xml:space="preserve">
+    <value>When a condition is met</value>
+  </data>
+  <data name="FlowWhenSold" xml:space="preserve">
+    <value>When it's sold</value>
+  </data>
+  <data name="FlowWhenPaid" xml:space="preserve">
+    <value>When a payment arrives</value>
+  </data>
+  <data name="FlowWhenPaymentSent" xml:space="preserve">
+    <value>When a payment is sent</value>
+  </data>
+  <data name="FlowWhenOwnerNotes" xml:space="preserve">
+    <value>When the owner adds a note</value>
+  </data>
+  <data name="FlowWhenOwnerTaps" xml:space="preserve">
+    <value>When the owner taps {0}</value>
+  </data>
+  <data name="FlowWhenOthersNote" xml:space="preserve">
+    <value>When someone else adds a note</value>
+  </data>
+  <data name="FlowWhenOthersTap" xml:space="preserve">
+    <value>When someone else taps {0}</value>
+  </data>
+  <data name="FlowWhenContractSigned" xml:space="preserve">
+    <value>When a contract is signed</value>
+  </data>
+  <data name="FlowWhenDestroyed" xml:space="preserve">
+    <value>When it's destroyed</value>
+  </data>
+  <data name="FlowWhenEvent" xml:space="preserve">
+    <value>When something happens</value>
+  </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Only the people named in the contract</value>
   </data>

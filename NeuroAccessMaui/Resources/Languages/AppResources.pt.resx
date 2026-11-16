@@ -4853,6 +4853,69 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="ReportImageNotShown" xml:space="preserve">
     <value>Não é possível mostrar esta imagem</value>
   </data>
+  <data name="FlowNow" xml:space="preserve">
+    <value>Agora</value>
+  </data>
+  <data name="FlowEnd" xml:space="preserve">
+    <value>Fim</value>
+  </data>
+  <data name="FlowSeeAll" xml:space="preserve">
+    <value>Ver o fluxo completo</value>
+  </data>
+  <data name="FlowDiagram" xml:space="preserve">
+    <value>Diagrama</value>
+  </data>
+  <data name="FlowStaysHere" xml:space="preserve">
+    <value>Fica aqui</value>
+  </data>
+  <data name="FlowIfFails" xml:space="preserve">
+    <value>Se falhar: {0}</value>
+  </data>
+  <data name="FlowOnDate" xml:space="preserve">
+    <value>Em {0}</value>
+  </data>
+  <data name="FlowOnSetDate" xml:space="preserve">
+    <value>Em uma data definida</value>
+  </data>
+  <data name="FlowAfter" xml:space="preserve">
+    <value>Depois de {0}</value>
+  </data>
+  <data name="FlowAfterSetTime" xml:space="preserve">
+    <value>Depois de um tempo definido</value>
+  </data>
+  <data name="FlowWhenCondition" xml:space="preserve">
+    <value>Quando uma condição é atendida</value>
+  </data>
+  <data name="FlowWhenSold" xml:space="preserve">
+    <value>Quando for vendido</value>
+  </data>
+  <data name="FlowWhenPaid" xml:space="preserve">
+    <value>Quando um pagamento chegar</value>
+  </data>
+  <data name="FlowWhenPaymentSent" xml:space="preserve">
+    <value>Quando um pagamento for enviado</value>
+  </data>
+  <data name="FlowWhenOwnerNotes" xml:space="preserve">
+    <value>Quando o dono adicionar uma nota</value>
+  </data>
+  <data name="FlowWhenOwnerTaps" xml:space="preserve">
+    <value>Quando o dono tocar em {0}</value>
+  </data>
+  <data name="FlowWhenOthersNote" xml:space="preserve">
+    <value>Quando outra pessoa adicionar uma nota</value>
+  </data>
+  <data name="FlowWhenOthersTap" xml:space="preserve">
+    <value>Quando outra pessoa tocar em {0}</value>
+  </data>
+  <data name="FlowWhenContractSigned" xml:space="preserve">
+    <value>Quando um contrato for assinado</value>
+  </data>
+  <data name="FlowWhenDestroyed" xml:space="preserve">
+    <value>Quando for destruído</value>
+  </data>
+  <data name="FlowWhenEvent" xml:space="preserve">
+    <value>Quando algo acontecer</value>
+  </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Apenas as pessoas nomeadas no contrato</value>
   </data>
