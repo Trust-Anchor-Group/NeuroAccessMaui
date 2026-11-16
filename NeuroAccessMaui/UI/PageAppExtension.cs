@@ -78,6 +78,7 @@ using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.AccountEvent;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived;
+using NeuroAccessMaui.UI.Pages.Wallet.Flow;
 using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
@@ -317,6 +318,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ServiceProvidersPage, ServiceProvidersViewModel>();
 			Builder.Services.AddTransient<TokenDetailsPage, TokenDetailsViewModel>();
 			Builder.Services.AddTransient<TokenEventsPage, TokenEventsViewModel>();
+			Builder.Services.AddTransient<TokenFlowPage, TokenFlowViewModel>();
 			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
 			Builder.Services.AddTransient<TransactionHistoryPage, TransactionHistoryViewModel>();
 			Builder.Services.AddTransient<EmbeddedLayoutPage, EmbeddedLayoutViewModel>();

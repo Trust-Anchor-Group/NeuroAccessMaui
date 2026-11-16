@@ -66,6 +66,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.AccountEvent;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived;
 using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
+using NeuroAccessMaui.UI.Pages.Wallet.Flow;
 using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
@@ -800,6 +801,7 @@ namespace NeuroAccessMaui
 			Routing.RegisterRoute(nameof(ServiceProvidersPage), typeof(ServiceProvidersPage));
 			Routing.RegisterRoute(nameof(TokenDetailsPage), typeof(TokenDetailsPage));
 			Routing.RegisterRoute(nameof(TokenEventsPage), typeof(TokenEventsPage));
+			Routing.RegisterRoute(nameof(TokenFlowPage), typeof(TokenFlowPage));
 			Routing.RegisterRoute(nameof(WalletPage), typeof(WalletPage));
 			Routing.RegisterRoute(nameof(TransactionHistoryPage), typeof(TransactionHistoryPage));
 			Routing.RegisterRoute(nameof(EmbeddedLayoutPage), typeof(EmbeddedLayoutPage));

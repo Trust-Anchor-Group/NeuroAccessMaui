@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Wallet.Flow.TokenFlowPage"
+					  x:DataType="viewmodel:TokenFlowViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.Flow">
+	<!-- The flow as a map that can be pinched and moved, with what moves the token on from the tapped step in a sheet
+		 that stays put under it -->
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		  RowDefinitions="Auto,*,Auto">
+
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="Auto,*,Auto"
+			  ColumnSpacing="12"
+			  Margin="16,8,16,8">
+			<controls:SvgButton Grid.Column="0"
+								Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}"
+								SvgSource="close.svg" />
+			<Label Grid.Column="1"
+				   Text="{l:Localize StateDiagram}"
+				   Style="{DynamicResource PageTitleLabel}"
+				   VerticalOptions="Center" />
+			<!-- Fit the whole flow on the screen -->
+			<Border Grid.Column="2"
+					WidthRequest="40"
+					HeightRequest="40"
+					StrokeShape="RoundRectangle 20"
+					StrokeThickness="0"
+					BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+					VerticalOptions="Center"
+					SemanticProperties.Description="{l:Localize ZoomFit}">
+				<Border.GestureRecognizers>
+					<TapGestureRecognizer Tapped="Fit_Tapped" />
+				</Border.GestureRecognizers>
+				<Path Data="M4 9V4H9M20 9V4H15M4 15V20H9M20 15V20H15"
+					  Stroke="{DynamicResource ContentPrimaryWL}"
+					  StrokeThickness="2"
+					  StrokeLineCap="Round"
+					  Aspect="Uniform"
+					  WidthRequest="18"
+					  HeightRequest="18"
+					  HorizontalOptions="Center"
+					  VerticalOptions="Center" />
+			</Border>
+		</Grid>
+
+		<viewmodel:TokenFlowMap x:Name="FlowMap"
+								Grid.Row="1"
+								Steps="{Binding Steps}"
+								Variables="{Binding Variables}"
+								SelectedStep="{Binding SelectedStep, Mode=TwoWay}" />
+
+		<!-- What moves the token on from the tapped step -->
+		<Border Grid.Row="2"
+				StrokeShape="RoundRectangle 24,24,0,0"
+				StrokeThickness="1"
+				Stroke="{DynamicResource SurfaceDividerWL}"
+				BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+				Padding="20,10,20,24">
+			<VerticalStackLayout Spacing="2">
+				<BoxView WidthRequest="36"
+						 HeightRequest="4"
+						 CornerRadius="2"
+						 Color="{DynamicResource SurfaceDividerWL}"
+						 HorizontalOptions="Center"
+						 Margin="0,0,0,10" />
+				<Label Text="{Binding SheetTitle}"
+					   FontFamily="SpaceGroteskSemiBold"
+					   FontSize="17"
+					   TextColor="{DynamicResource ContentPrimaryWL}"
+					   SemanticProperties.HeadingLevel="Level2" />
+				<Label Text="{l:Localize FlowWhatMovesOn}"
+					   FontSize="13"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   Margin="0,0,0,6" />
+				<ScrollView MaximumHeightRequest="240">
+					<VerticalStackLayout BindableLayout.ItemsSource="{Binding SheetLines}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="viewmodel:TokenFlowSheetLine">
+								<Grid ColumnDefinitions="Auto,*"
+									  ColumnSpacing="12"
+									  Padding="0,10">
+									<Border Grid.Column="0"
+											WidthRequest="36"
+											HeightRequest="36"
+											StrokeShape="RoundRectangle 10"
+											StrokeThickness="0"
+											BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+											VerticalOptions="Center">
+										<Path Data="{Binding Icon}"
+											  Fill="{DynamicResource ContentPrimaryWL}"
+											  Aspect="Uniform"
+											  WidthRequest="18"
+											  HeightRequest="18"
+											  HorizontalOptions="Center"
+											  VerticalOptions="Center" />
+									</Border>
+									<VerticalStackLayout Grid.Column="1"
+														 Spacing="2"
+														 VerticalOptions="Center">
+										<Label Text="{Binding Title}"
+											   FontFamily="HaasGroteskMedium"
+											   FontSize="{StaticResource FontSizeMd}"
+											   TextColor="{DynamicResource ContentPrimaryWL}" />
+										<Label Text="{Binding Subtitle}"
+											   FontSize="13"
+											   TextColor="{DynamicResource ContentSecondaryWL}"
+											   IsVisible="{Binding HasSubtitle}" />
+									</VerticalStackLayout>
+								</Grid>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
+				</ScrollView>
+			</VerticalStackLayout>
+		</Border>
+	</Grid>
+</base:BaseContentPage>

@@ -10,106 +10,178 @@
 		 itself is a chip in the hero. -->
 	<VerticalStackLayout>
 
-		<!-- Flow: the steps of the token's state machine, read from its definition. The step it is in now is marked, with
-			 what moves it on from there. -->
+		<!-- Flow: the step the token is in now, with what moves it on from there, and the steps it can move on to. Read
+			 from the token's definition, so it needs no server call. -->
 		<VerticalStackLayout IsVisible="{Binding HasFlow}">
 			<Label Text="{l:Localize StateDiagram}"
 				   Style="{DynamicResource ListCardSectionLabel}" />
 
-			<VerticalStackLayout BindableLayout.ItemsSource="{Binding FlowSteps}">
-				<BindableLayout.ItemTemplate>
-					<DataTemplate x:DataType="viewmodel:TokenFlowStepItem">
-						<Grid>
-							<controls:ListCardSegment Position="{Binding CardPosition}"
-													  FillColor="{DynamicResource SurfaceElevation1WL}"
-													  StrokeColor="{DynamicResource SurfaceDividerWL}"
-													  DividerInset="48" />
+			<Border Style="{DynamicResource ListCardBorder}"
+					Padding="16,14,16,0">
+				<VerticalStackLayout BindableLayout.ItemsSource="{Binding FlowSteps}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="viewmodel:TokenFlowStepItem">
 							<Grid ColumnDefinitions="20,*"
-								  ColumnSpacing="12"
-								  Padding="16,12"
-								  MinimumHeightRequest="52">
-								<!-- A dot on the step line. The step the token is in now has a filled, larger dot. -->
-								<Ellipse Grid.Column="0"
-										 WidthRequest="10"
-										 HeightRequest="10"
-										 VerticalOptions="Start"
-										 Margin="0,5,0,0"
-										 Stroke="{DynamicResource ContentSecondaryWL}"
-										 StrokeThickness="1.5">
-									<Ellipse.Triggers>
-										<DataTrigger TargetType="Ellipse"
-													 Binding="{Binding IsCurrent}"
-													 Value="True">
-											<Setter Property="WidthRequest"
-													Value="14" />
-											<Setter Property="HeightRequest"
-													Value="14" />
-											<Setter Property="Margin"
-													Value="0,3,0,0" />
-											<Setter Property="Fill"
-													Value="{DynamicResource ContentAccessWL}" />
-											<Setter Property="Stroke"
-													Value="{DynamicResource ContentAccessWL}" />
-										</DataTrigger>
-									</Ellipse.Triggers>
-								</Ellipse>
+								  ColumnSpacing="12">
+								<!-- The line of the flow: a dot for the step, and a bar on to the next step -->
+								<Grid Grid.Column="0"
+									  RowDefinitions="Auto,*">
+									<!-- A ring around the dot of the step the token is in now -->
+									<Ellipse WidthRequest="20"
+											 HeightRequest="20"
+											 Fill="{DynamicResource TnPSuccessbgWL}"
+											 HorizontalOptions="Center"
+											 VerticalOptions="Start"
+											 IsVisible="{Binding IsCurrent}" />
+									<!-- The dot: filled for the step now, dashed for a step reached when something fails, and
+										 square where the flow ends -->
+									<Border WidthRequest="12"
+											HeightRequest="12"
+											Margin="0,4,0,0"
+											Padding="0"
+											StrokeShape="RoundRectangle 6"
+											StrokeThickness="2"
+											Stroke="{DynamicResource ContentSecondaryWL}"
+											BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+											HorizontalOptions="Center"
+											VerticalOptions="Start">
+										<Border.Triggers>
+											<DataTrigger TargetType="Border"
+														 Binding="{Binding IsFailureStep}"
+														 Value="True">
+												<Setter Property="StrokeDashArray"
+														Value="2,2" />
+											</DataTrigger>
+											<DataTrigger TargetType="Border"
+														 Binding="{Binding IsEnd}"
+														 Value="True">
+												<Setter Property="StrokeShape"
+														Value="RoundRectangle 3" />
+											</DataTrigger>
+											<DataTrigger TargetType="Border"
+														 Binding="{Binding IsCurrent}"
+														 Value="True">
+												<Setter Property="Stroke"
+														Value="{DynamicResource ContentAccessWL}" />
+												<Setter Property="BackgroundColor"
+														Value="{DynamicResource ContentAccessWL}" />
+											</DataTrigger>
+										</Border.Triggers>
+									</Border>
+									<BoxView Grid.Row="1"
+											 WidthRequest="2"
+											 MinimumHeightRequest="14"
+											 HorizontalOptions="Center"
+											 VerticalOptions="Fill"
+											 Color="{DynamicResource SurfaceDividerWL}"
+											 IsVisible="{Binding HasRailBelow}">
+										<BoxView.Triggers>
+											<DataTrigger TargetType="BoxView"
+														 Binding="{Binding IsCurrent}"
+														 Value="True">
+												<Setter Property="Color"
+														Value="{DynamicResource ContentAccessWL}" />
+											</DataTrigger>
+										</BoxView.Triggers>
+									</BoxView>
+								</Grid>
+
 								<VerticalStackLayout Grid.Column="1"
-													 Spacing="4">
-									<HorizontalStackLayout Spacing="8">
-										<Label Text="{Binding Name}"
-											   Style="{DynamicResource ListCardRowTitleLabel}"
-											   VerticalOptions="Center" />
-										<Border StrokeShape="RoundRectangle 10"
+													 Spacing="4"
+													 Padding="0,0,0,14">
+									<Grid ColumnDefinitions="*,Auto"
+										  ColumnSpacing="8">
+										<Label Grid.Column="0"
+											   Text="{Binding Name}"
+											   FontFamily="SpaceGroteskSemiBold"
+											   FontSize="{StaticResource FontSizeMd}"
+											   TextColor="{DynamicResource ContentPrimaryWL}"
+											   VerticalOptions="Center">
+											<Label.Triggers>
+												<DataTrigger TargetType="Label"
+															 Binding="{Binding IsFailureStep}"
+															 Value="True">
+													<Setter Property="TextColor"
+															Value="{DynamicResource ContentSecondaryWL}" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
+										<Border Grid.Column="1"
+												StrokeShape="RoundRectangle 6"
 												StrokeThickness="0"
-												Padding="8,1"
-												BackgroundColor="{DynamicResource TnPSuccessbgWL}"
-												IsVisible="{Binding IsCurrent}"
-												VerticalOptions="Center">
+												Padding="6,2"
+												BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+												VerticalOptions="Center"
+												IsVisible="{Binding IsCurrent}">
 											<Label Text="{l:Localize FlowNow}"
-												   FontSize="{StaticResource FontSizeSm}"
-												   TextColor="{DynamicResource TnPSuccessContentWL}" />
+												   FontFamily="HaasGroteskBold"
+												   FontSize="11"
+												   TextTransform="Uppercase"
+												   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}" />
 										</Border>
-									</HorizontalStackLayout>
-									<Label Text="{Binding ExitsText}"
-										   IsVisible="{Binding HasExitsText}"
-										   Style="{DynamicResource ListCardRowDetailLabel}" />
+									</Grid>
+
+									<!-- What moves the token on, for the step it is in now -->
+									<VerticalStackLayout Spacing="4"
+														 IsVisible="{Binding HasWhenLines}"
+														 BindableLayout.ItemsSource="{Binding WhenLines}">
+										<BindableLayout.ItemTemplate>
+											<DataTemplate x:DataType="viewmodel:TokenFlowWhenLine">
+												<Grid ColumnDefinitions="Auto,*"
+													  ColumnSpacing="6">
+													<Path Grid.Column="0"
+														  Data="{Binding Icon}"
+														  Fill="{DynamicResource ContentSecondaryWL}"
+														  Aspect="Uniform"
+														  WidthRequest="14"
+														  HeightRequest="14"
+														  VerticalOptions="Start"
+														  Margin="0,2,0,0" />
+													<Label Grid.Column="1"
+														   Text="{Binding Text}"
+														   FontSize="13"
+														   TextColor="{DynamicResource ContentSecondaryWL}" />
+												</Grid>
+											</DataTemplate>
+										</BindableLayout.ItemTemplate>
+									</VerticalStackLayout>
+
+									<!-- How the token gets to a step it can move on to -->
+									<Label Text="{Binding IncomingText}"
+										   FontSize="13"
+										   TextColor="{DynamicResource ContentSecondaryWL}"
+										   IsVisible="{Binding HasIncomingText}" />
 								</VerticalStackLayout>
 							</Grid>
-						</Grid>
-					</DataTemplate>
-				</BindableLayout.ItemTemplate>
-			</VerticalStackLayout>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</VerticalStackLayout>
+			</Border>
 
 			<!-- The whole flow, with what moves it on from each step -->
-			<Grid>
-				<controls:ListCardSegment Position="Last"
-										  FillColor="{DynamicResource SurfaceElevation1WL}"
-										  StrokeColor="{DynamicResource SurfaceDividerWL}"
-										  DividerInset="16" />
-				<controls:TemplatedButton Command="{Binding SeeFullFlowCommand}"
-										  SemanticProperties.Description="{l:Localize FlowSeeAll}">
-					<Grid ColumnDefinitions="*,Auto"
-						  ColumnSpacing="12"
-						  Padding="16,0"
-						  MinimumHeightRequest="52">
-						<Label Grid.Column="0"
-							   Text="{l:Localize FlowSeeAll}"
-							   Style="{DynamicResource ListCardRowLinkLabel}" />
-						<controls:SvgView Grid.Column="1"
-										  Source="arrow_forward_ios.svg"
-										  WidthRequest="14"
-										  HeightRequest="14"
-										  VerticalOptions="Center"
-										  TintColor="{DynamicResource ContentSecondaryWL}"
-										  AutomationProperties.IsInAccessibleTree="False" />
-					</Grid>
-				</controls:TemplatedButton>
+			<Grid ColumnDefinitions="*,Auto"
+				  Padding="4,10"
+				  SemanticProperties.Description="{l:Localize FlowSeeAll}">
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding SeeFullFlowCommand}" />
+				</Grid.GestureRecognizers>
+				<Label Grid.Column="0"
+					   Text="{l:Localize FlowSeeAll}"
+					   FontFamily="HaasGroteskMedium"
+					   FontSize="{StaticResource FontSizeSm}"
+					   TextColor="{DynamicResource ContentAccessWL}" />
+				<Label Grid.Column="1"
+					   Text="›"
+					   FontFamily="HaasGroteskMedium"
+					   FontSize="{StaticResource FontSizeLg}"
+					   TextColor="{DynamicResource ContentAccessWL}"
+					   VerticalOptions="Center" />
 			</Grid>
 		</VerticalStackLayout>
 
-		<!-- State: the first few variables, and a row that opens all of them -->
+		<!-- Values: the first few, and a row that opens all of them -->
 		<VerticalStackLayout IsVisible="{Binding ShowStateSection}">
-			<Label Text="{l:Localize State}"
+			<Label Text="{l:Localize TokenValues}"
 				   Style="{DynamicResource ListCardSectionLabel}" />
 
 			<controls:TaskView Task="{Binding MachineStateTask}">

@@ -4847,6 +4847,21 @@ Document read. You can move your iPhone.</value>
   <data name="FlowWhenEvent" xml:space="preserve">
     <value>When something happens</value>
   </data>
+  <data name="FlowOr" xml:space="preserve">
+    <value>Or {0}</value>
+  </data>
+  <data name="FlowIncomingFailure" xml:space="preserve">
+    <value>If something goes wrong</value>
+  </data>
+  <data name="FlowGoesTo" xml:space="preserve">
+    <value>Goes to {0}</value>
+  </data>
+  <data name="FlowWhatMovesOn" xml:space="preserve">
+    <value>What moves it on</value>
+  </data>
+  <data name="TokenValues" xml:space="preserve">
+    <value>Values</value>
+  </data>
   <data name="HistoryFilterOwnership" xml:space="preserve">
     <value>Ownership</value>
   </data>
@@ -5241,7 +5256,7 @@ Document read. You can move your iPhone.</value>
     <value>Ended</value>
   </data>
   <data name="AllVariables" xml:space="preserve">
-    <value>All {0} variables</value>
+    <value>All {0} values</value>
   </data>
   <data name="NoActionsNow" xml:space="preserve">
     <value>No actions now</value>

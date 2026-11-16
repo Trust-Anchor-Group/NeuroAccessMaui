@@ -14620,6 +14620,51 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Or {0}.
+        /// </summary>
+        public static string FlowOr {
+            get {
+                return ResourceManager.GetString("FlowOr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If something goes wrong.
+        /// </summary>
+        public static string FlowIncomingFailure {
+            get {
+                return ResourceManager.GetString("FlowIncomingFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goes to {0}.
+        /// </summary>
+        public static string FlowGoesTo {
+            get {
+                return ResourceManager.GetString("FlowGoesTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What moves it on.
+        /// </summary>
+        public static string FlowWhatMovesOn {
+            get {
+                return ResourceManager.GetString("FlowWhatMovesOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Values.
+        /// </summary>
+        public static string TokenValues {
+            get {
+                return ResourceManager.GetString("TokenValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ownership.
         /// </summary>
         public static string HistoryFilterOwnership {
@@ -15799,7 +15844,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All {0} variables.
+        ///   Looks up a localized string similar to All {0} values.
         /// </summary>
         public static string AllVariables {
             get {

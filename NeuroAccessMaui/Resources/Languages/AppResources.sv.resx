@@ -4928,6 +4928,21 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="FlowWhenEvent" xml:space="preserve">
     <value>När något händer</value>
   </data>
+  <data name="FlowOr" xml:space="preserve">
+    <value>Eller {0}</value>
+  </data>
+  <data name="FlowIncomingFailure" xml:space="preserve">
+    <value>Om något går fel</value>
+  </data>
+  <data name="FlowGoesTo" xml:space="preserve">
+    <value>Går till {0}</value>
+  </data>
+  <data name="FlowWhatMovesOn" xml:space="preserve">
+    <value>Det här tar den vidare</value>
+  </data>
+  <data name="TokenValues" xml:space="preserve">
+    <value>Värden</value>
+  </data>
   <data name="HistoryFilterOwnership" xml:space="preserve">
     <value>Ägande</value>
   </data>
@@ -5337,7 +5352,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Avslutad</value>
   </data>
   <data name="AllVariables" xml:space="preserve">
-    <value>Alla {0} variabler</value>
+    <value>Alla {0} värden</value>
   </data>
   <data name="NoActionsNow" xml:space="preserve">
     <value>Inga åtgärder just nu</value>

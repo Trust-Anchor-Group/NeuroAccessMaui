@@ -13,13 +13,13 @@ using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
+using NeuroAccessMaui.UI.Pages.Wallet.Flow;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
-using NeuroAccessMaui.UI.Popups.Tokens.Flow;
 using NeuroAccessMaui.UI.Popups.Tokens.NoteCommand;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
@@ -45,7 +45,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <summary>
 		/// The most state-machine variables shown inline. The rest are one tap away.
 		/// </summary>
-		private const int MaxInlineVariables = 5;
+		private const int MaxInlineVariables = 2;
+
+		/// <summary>
+		/// How many steps the Flow section shows while it isn't known which step the token is in.
+		/// </summary>
+		private const int MaxInlineFlowSteps = 5;
 
 		private readonly TokenDetailsNavigationArgs? navigationArguments = Args;
 		private readonly Dictionary<string, object> machineVariables = [];
@@ -1130,12 +1135,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private TokenFlow? flow;
 
 		/// <summary>
+		/// Every step of the token's flow. The Flow section shows the step the token is in and the steps it can move on to.
+		/// </summary>
+		private readonly List<TokenFlowStepItem> allFlowSteps = [];
+
+		/// <summary>
 		/// Reads the token's flow from its definition, and shows its steps. Called on the main thread.
 		/// </summary>
 		/// <param name="Definition">The token's definition.</param>
 		private void LoadFlow(string? Definition)
 		{
 			this.flow = null;
+			this.allFlowSteps.Clear();
 			this.FlowSteps.Clear();
 
 			try
@@ -1150,54 +1161,84 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			if (this.flow is not null)
 			{
 				Dictionary<string, string> Names = this.flow.States.ToDictionary(State => State.Id, State => TokenText.ToWords(State.Id));
+				HashSet<string> FailureSteps = GetFailureSteps(this.flow);
 
-				for (int i = 0; i < this.flow.States.Count; i++)
+				foreach (TokenFlowState State in this.flow.States)
 				{
-					this.FlowSteps.Add(new TokenFlowStepItem(this.flow.States[i], Names)
+					this.allFlowSteps.Add(new TokenFlowStepItem(State, Names)
 					{
-						CardPosition = ListCardPositionOf(i, this.flow.States.Count + 1)
+						IsFailureStep = FailureSteps.Contains(State.Id)
 					});
 				}
 			}
 
-			this.HasFlow = this.FlowSteps.Count > 0;
+			this.HasFlow = this.allFlowSteps.Count > 0;
 			this.UpdateFlow();
 		}
 
 		/// <summary>
-		/// Marks the step the token is in now, and shows what moves it on from there. Called on the main thread.
+		/// Gets the steps the token only comes to when something fails.
+		/// </summary>
+		/// <param name="Flow">The token's flow.</param>
+		/// <returns>The code names of those steps.</returns>
+		private static HashSet<string> GetFailureSteps(TokenFlow Flow)
+		{
+			IEnumerable<TokenFlowExit> Exits = Flow.States.SelectMany(State => State.Exits);
+			HashSet<string> ReachedNormally = [.. Exits.Where(Exit => !Exit.IsFailure).Select(Exit => Exit.Target)];
+
+			return [.. Exits.Where(Exit => Exit.IsFailure && !ReachedNormally.Contains(Exit.Target)).Select(Exit => Exit.Target)];
+		}
+
+		/// <summary>
+		/// Shows the step the token is in now with what moves it on from there, and the steps it can move on to with how it
+		/// gets there. While that step isn't known, the first steps of the flow are shown. Called on the main thread.
 		/// </summary>
 		private void UpdateFlow()
 		{
-			foreach (TokenFlowStepItem Step in this.FlowSteps)
+			TokenFlowStepItem? Current = this.IsMachineStateKnown && !this.MachineEnded
+				? this.allFlowSteps.FirstOrDefault(Step => string.Equals(Step.Id, this.machineState, StringComparison.Ordinal))
+				: null;
+
+			List<TokenFlowStepItem> Shown;
+			IEnumerable<TokenFlowExit> WaysIn;
+
+			if (Current is not null)
 			{
-				bool IsCurrent = this.IsMachineStateKnown && !this.MachineEnded &&
-					string.Equals(Step.Id, this.machineState, StringComparison.Ordinal);
+				HashSet<string> Targets = [.. Current.Exits.Select(Exit => Exit.Target)];
+				Shown = [Current, .. this.allFlowSteps.Where(Step => Step != Current && Targets.Contains(Step.Id))];
+				WaysIn = Current.Exits;
+			}
+			else
+			{
+				Shown = [.. this.allFlowSteps.Take(MaxInlineFlowSteps)];
+				WaysIn = this.allFlowSteps.SelectMany(Step => Step.Exits);
+			}
+
+			foreach (TokenFlowStepItem Step in this.allFlowSteps)
+			{
+				bool IsCurrent = Step == Current;
+				TokenFlowExit? WayIn = IsCurrent ? null :
+					WaysIn.FirstOrDefault(Exit => Exit.Target == Step.Id && !Exit.IsFailure) ??
+					WaysIn.FirstOrDefault(Exit => Exit.Target == Step.Id);
 
 				Step.IsCurrent = IsCurrent;
-				Step.ExitsText = IsCurrent ? Step.DescribeExits(this.machineVariables) : string.Empty;
+				Step.ShowWhenLines(IsCurrent ? this.machineVariables : null);
+				Step.IncomingText = WayIn is null ? string.Empty : TokenFlowStepItem.DescribeWayIn(WayIn, this.machineVariables);
+			}
+
+			for (int i = 0; i < Shown.Count; i++)
+				Shown[i].HasRailBelow = i < Shown.Count - 1;
+
+			if (!this.FlowSteps.SequenceEqual(Shown))
+			{
+				this.FlowSteps.Clear();
+				foreach (TokenFlowStepItem Step in Shown)
+					this.FlowSteps.Add(Step);
 			}
 		}
 
 		/// <summary>
-		/// Gets where a row sits in a card of rows.
-		/// </summary>
-		/// <param name="Index">The row's index.</param>
-		/// <param name="Count">How many rows the card has.</param>
-		/// <returns>The row's position.</returns>
-		private static ListCardPosition ListCardPositionOf(int Index, int Count)
-		{
-			if (Count <= 1)
-				return ListCardPosition.Only;
-
-			if (Index == 0)
-				return ListCardPosition.First;
-
-			return Index == Count - 1 ? ListCardPosition.Last : ListCardPosition.Middle;
-		}
-
-		/// <summary>
-		/// Shows every step of the token's flow, with what moves it on from each.
+		/// Shows the token's whole flow as a map, with what moves it on from each step.
 		/// </summary>
 		[RelayCommand]
 		private async Task SeeFullFlowAsync()
@@ -1207,23 +1248,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			try
 			{
-				List<TokenFlowStepItem> Steps = [];
-				Dictionary<string, string> Names = this.flow.States.ToDictionary(State => State.Id, State => TokenText.ToWords(State.Id));
-
-				for (int i = 0; i < this.flow.States.Count; i++)
-				{
-					TokenFlowStepItem Step = new(this.flow.States[i], Names)
-					{
-						CardPosition = ListCardPositionOf(i, this.flow.States.Count),
-						IsCurrent = this.IsMachineStateKnown && !this.MachineEnded &&
-							string.Equals(this.flow.States[i].Id, this.machineState, StringComparison.Ordinal)
-					};
-
-					Step.ExitsText = Step.DescribeExits(this.machineVariables);
-					Steps.Add(Step);
-				}
-
-				await ServiceRef.PopupService.PushAsync(new TokenFlowPopup(Steps, this.StatesReportCommand));
+				TokenFlowNavigationArgs Args = new([.. this.allFlowSteps], new Dictionary<string, object>(this.machineVariables));
+				await ServiceRef.NavigationService.GoToAsync(nameof(TokenFlowPage), Args, BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{

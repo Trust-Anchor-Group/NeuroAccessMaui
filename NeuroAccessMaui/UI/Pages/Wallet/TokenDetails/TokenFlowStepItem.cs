@@ -1,21 +1,22 @@
+using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Wallet.Tokens;
-using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Converters;
 using Waher.Content;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 {
 	/// <summary>
-	/// A step of a token's flow, shown as a row: its name, if the token is in it now, and what moves it on from there.
+	/// A step of a token's flow: its name, if the token is in it now, what moves it on from there, and how it gets there.
 	/// </summary>
 	/// <param name="State">The step.</param>
 	/// <param name="Names">The names in words of all steps, by code name.</param>
 	public partial class TokenFlowStepItem(TokenFlowState State, IReadOnlyDictionary<string, string> Names)
-		: ObservableObject, IListCardItem
+		: ObservableObject
 	{
 		private readonly TokenFlowState state = State;
 		private readonly IReadOnlyDictionary<string, string> names = Names;
@@ -36,53 +37,142 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		public bool IsEnd => this.state.IsEnd;
 
 		/// <summary>
-		/// Where the row sits in its card.
+		/// The ways out of the step.
 		/// </summary>
-		[ObservableProperty]
-		private ListCardPosition cardPosition;
+		public IReadOnlyList<TokenFlowExit> Exits => this.state.Exits;
 
 		/// <summary>
 		/// If the token is in this step now.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasExitsText))]
 		private bool isCurrent;
 
 		/// <summary>
-		/// What moves the token on from this step, one way per line, such as "On 1 Jun 2026 → Done".
+		/// If the token only comes to this step when something fails. Its dot is dashed and its name dimmed.
+		/// </summary>
+		public bool IsFailureStep { get; init; }
+
+		/// <summary>
+		/// If the line of the flow runs on below this step, to the next step shown.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasExitsText))]
-		private string exitsText = string.Empty;
+		private bool hasRailBelow;
 
 		/// <summary>
-		/// If the ways out are shown: for the step the token is in, and in the full flow.
+		/// How the token gets to this step from the one it is in now, such as "When a condition is met".
 		/// </summary>
-		public bool HasExitsText => !string.IsNullOrEmpty(this.ExitsText);
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasIncomingText))]
+		private string incomingText = string.Empty;
 
 		/// <summary>
-		/// Works out the text about the ways out of the step, with dates and times taken from the token's values.
+		/// If there is a text about how the token gets to this step.
 		/// </summary>
-		/// <param name="Variables">The token's values now, by name.</param>
-		/// <returns>One line per way out, or the end of the flow.</returns>
-		public string DescribeExits(IReadOnlyDictionary<string, object> Variables)
+		public bool HasIncomingText => !string.IsNullOrEmpty(this.IncomingText);
+
+		/// <summary>
+		/// What moves the token on from this step, one line per way out with an icon. Filled for the step it is in now.
+		/// </summary>
+		public ObservableCollection<TokenFlowWhenLine> WhenLines { get; } = [];
+
+		/// <summary>
+		/// If the ways out are listed as lines.
+		/// </summary>
+		public bool HasWhenLines => this.WhenLines.Count > 0;
+
+		/// <summary>
+		/// Lists what moves the token on from this step, or clears the list.
+		/// </summary>
+		/// <param name="Variables">The token's values now, by name, or null to clear the list.</param>
+		public void ShowWhenLines(IReadOnlyDictionary<string, object>? Variables)
 		{
-			if (this.state.IsEnd)
-				return ServiceRef.Localizer[nameof(AppResources.FlowStaysHere)];
+			this.WhenLines.Clear();
 
-			List<string> Lines = [];
-
-			foreach (TokenFlowExit Exit in this.state.Exits)
+			if (Variables is not null)
 			{
-				string Target = this.names.TryGetValue(Exit.Target, out string? Words) ? Words : TokenText.ToWords(Exit.Target);
-				string Trigger = DescribeTrigger(Exit, Variables);
+				TokenFlowExit[] Exits = [.. this.state.Exits.Distinct()];
+				bool ManyTargets = Exits.Select(Exit => Exit.Target).Distinct().Count() > 1;
 
-				Lines.Add(Exit.IsFailure
-					? ServiceRef.Localizer[nameof(AppResources.FlowIfFails), Target]
-					: Trigger + " → " + Target);
+				foreach (TokenFlowExit Exit in Exits)
+				{
+					string Target = this.NameOf(Exit.Target);
+					string Text;
+
+					if (Exit.IsFailure)
+						Text = ServiceRef.Localizer[nameof(AppResources.FlowIfFails), Target];
+					else
+					{
+						Text = DescribeTrigger(Exit, Variables);
+						if (ManyTargets)
+							Text += " → " + Target;
+
+						// The second way out and those after it read "Or when ...".
+						if (this.WhenLines.Count > 0)
+							Text = ServiceRef.Localizer[nameof(AppResources.FlowOr), LowerFirst(Text)];
+					}
+
+					this.WhenLines.Add(new TokenFlowWhenLine(IconOf(Exit), Text));
+				}
 			}
 
-			return string.Join(Environment.NewLine, Lines.Distinct());
+			this.OnPropertyChanged(nameof(this.HasWhenLines));
+		}
+
+		/// <summary>
+		/// Describes how the token gets into a step through a way out of another step.
+		/// </summary>
+		/// <param name="Exit">The way out that leads to the step.</param>
+		/// <param name="Variables">The token's values now, by name.</param>
+		/// <returns>The description, such as "When a condition is met" or "If something goes wrong".</returns>
+		public static string DescribeWayIn(TokenFlowExit Exit, IReadOnlyDictionary<string, object> Variables)
+		{
+			return Exit.IsFailure
+				? ServiceRef.Localizer[nameof(AppResources.FlowIncomingFailure)]
+				: DescribeTrigger(Exit, Variables);
+		}
+
+		/// <summary>
+		/// Gets the step name in words for a code name.
+		/// </summary>
+		/// <param name="Id">The step's code name.</param>
+		/// <returns>The name in words.</returns>
+		private string NameOf(string Id)
+		{
+			return this.names.TryGetValue(Id, out string? Words) ? Words : TokenText.ToWords(Id);
+		}
+
+		/// <summary>
+		/// Gets the icon for the kind of trigger of a way out.
+		/// </summary>
+		/// <param name="Exit">The way out.</param>
+		/// <returns>The icon.</returns>
+		public static Geometry IconOf(TokenFlowExit Exit)
+		{
+			if (Exit.IsFailure)
+				return Geometries.ErrorPath;
+
+			return Exit.Trigger switch
+			{
+				TokenFlowTrigger.DateTime => Geometries.CalendarPath,
+				TokenFlowTrigger.Duration => Geometries.DurationPath,
+				TokenFlowTrigger.Condition => Geometries.CalculatorPath,
+				TokenFlowTrigger.Transferred => Geometries.SendPath,
+				TokenFlowTrigger.PaymentReceived or TokenFlowTrigger.PaymentSent => Geometries.MoneyPath,
+				TokenFlowTrigger.OwnerNote or TokenFlowTrigger.ExternalNote => Geometries.TapPath,
+				TokenFlowTrigger.ContractSigned => Geometries.ContractPath,
+				TokenFlowTrigger.Destroyed => Geometries.TrashCanButtonPath,
+				_ => Geometries.InfoCirclePath
+			};
+		}
+
+		/// <summary>
+		/// Makes the first letter of a text lower case, so it can follow a word such as "Or".
+		/// </summary>
+		/// <param name="Text">The text.</param>
+		/// <returns>The text with a lower-case first letter.</returns>
+		private static string LowerFirst(string Text)
+		{
+			return string.IsNullOrEmpty(Text) ? Text : char.ToLower(Text[0], CultureInfo.CurrentCulture) + Text[1..];
 		}
 
 		/// <summary>
@@ -91,7 +181,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <param name="Exit">The way out.</param>
 		/// <param name="Variables">The token's values now, by name.</param>
 		/// <returns>The description.</returns>
-		private static string DescribeTrigger(TokenFlowExit Exit, IReadOnlyDictionary<string, object> Variables)
+		public static string DescribeTrigger(TokenFlowExit Exit, IReadOnlyDictionary<string, object> Variables)
 		{
 			switch (Exit.Trigger)
 			{
