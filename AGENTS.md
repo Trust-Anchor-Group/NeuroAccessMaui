@@ -21,7 +21,7 @@ dotnet format style NeuroAccessMaui.sln --verify-no-changes --include path/to/Fi
 # Whitespace check (tabs, CRLF, final newline) on the files you changed.
 dotnet format whitespace . --folder --verify-no-changes --include path/to/First.cs path/to/Second.cs
 
-# Build the app for Android. Slow, so ask first (see Boundaries).
+# Build the app for Android, to check that a change compiles.
 dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -f net10.0-android
 ```
 
@@ -194,10 +194,10 @@ Always:
 - Read the code around a change before editing it, and match it.
 - Keep changes to what the task needs.
 - Preserve other uncommitted work. The working tree often holds several tasks in progress, so never revert, reset, stash, check out or reformat files you were not asked to change.
+- Build the app, run the checks and unit tests, and run the app on a device or emulator whenever that helps verify a change. None of these need asking first.
 
 Ask first:
 
-- Building or running the app, or deploying it to a device or emulator. The style checks and unit tests above are fine to run.
 - Adding or upgrading packages, or changing a `.csproj`, `Directory.Build.props`, `global.json`, `.editorconfig` or `XamlStyler.config`.
 - Adding tests, documentation, plan files or new projects.
 - Committing, pushing or opening a PR.
