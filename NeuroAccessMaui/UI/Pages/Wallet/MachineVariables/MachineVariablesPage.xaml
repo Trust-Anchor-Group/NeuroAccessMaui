@@ -1,53 +1,146 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.MachineVariables.MachineVariablesPage"
-							 x:DataType="viewmodel:MachineVariablesViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineVariables">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+					  x:Class="NeuroAccessMaui.UI.Pages.Wallet.MachineVariables.MachineVariablesPage"
+					  x:DataType="viewmodel:MachineVariablesViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineVariables">
+	<!-- A token's values now, grouped, with a search. A value that changed a moment ago is tinted, with the value it had
+		 before struck through. A list opens on a page of its own. -->
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		  RowDefinitions="Auto,Auto,*">
 
-		<controls:Background/>
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="Auto,*"
+			  ColumnSpacing="12"
+			  Margin="16,8,16,4">
+			<controls:ImageButton Grid.Column="0"
+								  Command="{Binding GoBackCommand}"
+								  Style="{DynamicResource ImageOnlyButton}"
+								  PathData="{x:Static ui:Geometries.BackButtonPath}"
+								  VerticalOptions="Center" />
+			<VerticalStackLayout Grid.Column="1"
+								 VerticalOptions="Center">
+				<Label Text="{Binding Title}"
+					   FontFamily="SpaceGroteskSemiBold"
+					   FontSize="{StaticResource FontSizeXl}"
+					   TextColor="{DynamicResource ContentPrimaryWL}"
+					   SemanticProperties.HeadingLevel="Level1" />
+				<HorizontalStackLayout Spacing="6"
+									   IsVisible="{Binding IsLive}">
+					<Ellipse WidthRequest="7"
+							 HeightRequest="7"
+							 Fill="{DynamicResource ContentAccessWL}"
+							 VerticalOptions="Center"
+							 IsVisible="{Binding Running}" />
+					<Label Text="{Binding LiveText}"
+						   FontSize="{StaticResource FontSizeXs}"
+						   TextColor="{DynamicResource ContentSecondaryWL}"
+						   VerticalOptions="Center" />
+				</HorizontalStackLayout>
+			</VerticalStackLayout>
+		</Grid>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+		<controls:CompositeEntry Grid.Row="1"
+								 Margin="16,8,16,0"
+								 Style="{DynamicResource RegularCompositeEntry}"
+								 Placeholder="{l:Localize ValuesFind}"
+								 EntryData="{Binding SearchText}">
+			<controls:CompositeEntry.LeftView>
+				<controls:SvgView Source="search.svg"
+								  WidthRequest="20"
+								  HeightRequest="20"
+								  TintColor="{DynamicResource ContentSecondaryWL}"
+								  AutomationProperties.IsInAccessibleTree="False" />
+			</controls:CompositeEntry.LeftView>
+		</controls:CompositeEntry>
 
-				<Label Text="{l:Localize Variables}" Style="{DynamicResource PageTitleLabel}"/>
+		<ScrollView Grid.Row="2">
+			<VerticalStackLayout Padding="16,0,16,24">
+				<Label Text="{l:Localize ValuesNoMatch}"
+					   FontSize="{StaticResource FontSizeSm}"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   HorizontalOptions="Center"
+					   Margin="0,24,0,0"
+					   IsVisible="{Binding HasNoMatches}" />
 
-				<Border Style="{DynamicResource BorderSet}">
-					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{DynamicResource SmallMargins}">
-						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CurrentState}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="{DynamicResource SmallMargins}" VerticalOptions="Start"
-								 HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
-								 IsVisible="{Binding Running}"/>
-						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize MachineHasEnded}" Margin="{DynamicResource SmallMargins}" VerticalOptions="Start"
-								 HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
-								 IsVisible="{Binding Ended}"/>
-						<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize CurrentVariables}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-						<VerticalStackLayout Grid.Column="0" Grid.Row="3" BindableLayout.ItemsSource="{Binding Path=Variables}">
-							<BindableLayout.ItemTemplate>
-								<DataTemplate x:DataType="viewmodel:VariableModel">
-									<VerticalStackLayout>
-										<Label Text="{Binding Path=DisplayName}" Style="{DynamicResource KeyLabel}"/>
-										<Label LineBreakMode="NoWrap" Text="{Binding Path=DisplayValue}" Style="{DynamicResource ValueLabel}">
-											<Label.GestureRecognizers>
-												<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}"/>
-											</Label.GestureRecognizers>
-										</Label>
+				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Groups}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="viewmodel:VariableGroup">
+							<VerticalStackLayout>
+								<Label Text="{Binding Title}"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="13"
+									   TextColor="{DynamicResource ContentSecondaryWL}"
+									   Margin="4,14,4,6"
+									   SemanticProperties.HeadingLevel="Level2" />
+								<!-- The 1 px gaps between rows show the card's divider colour as lines -->
+								<Border Style="{DynamicResource ListCardBorder}">
+									<VerticalStackLayout Spacing="1"
+														 BackgroundColor="{DynamicResource SurfaceDividerWL}"
+														 BindableLayout.ItemsSource="{Binding Items}">
+										<BindableLayout.ItemTemplate>
+											<DataTemplate x:DataType="viewmodel:VariableModel">
+												<Grid ColumnDefinitions="4*,6*"
+													  ColumnSpacing="12"
+													  Padding="16,10"
+													  MinimumHeightRequest="46"
+													  BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+													  SemanticProperties.Description="{Binding AccessibleDescription}">
+													<Grid.Triggers>
+														<DataTrigger TargetType="Grid"
+																	 Binding="{Binding IsChanged}"
+																	 Value="True">
+															<Setter Property="BackgroundColor"
+																	Value="{DynamicResource TnPSuccessbgWL}" />
+														</DataTrigger>
+													</Grid.Triggers>
+													<Grid.GestureRecognizers>
+														<TapGestureRecognizer Command="{Binding OpenCommand}" />
+													</Grid.GestureRecognizers>
+													<Label Grid.Column="0"
+														   Text="{Binding DisplayName}"
+														   FontSize="{StaticResource FontSizeSm}"
+														   TextColor="{DynamicResource ContentSecondaryWL}"
+														   VerticalOptions="Center" />
+													<VerticalStackLayout Grid.Column="1"
+																		 Spacing="1"
+																		 VerticalOptions="Center">
+														<Label Text="{Binding DisplayValue}"
+															   FontFamily="SpaceGroteskSemiBold"
+															   FontSize="{StaticResource FontSizeMd}"
+															   TextColor="{DynamicResource ContentPrimaryWL}"
+															   HorizontalTextAlignment="End"
+															   LineBreakMode="WordWrap">
+															<Label.Triggers>
+																<DataTrigger TargetType="Label"
+																			 Binding="{Binding IsList}"
+																			 Value="True">
+																	<Setter Property="TextColor"
+																			Value="{DynamicResource ContentAccessWL}" />
+																</DataTrigger>
+															</Label.Triggers>
+														</Label>
+														<Label Text="{Binding PreviousValue}"
+															   FontSize="{StaticResource FontSizeXs}"
+															   TextColor="{DynamicResource ContentSecondaryWL}"
+															   TextDecorations="Strikethrough"
+															   HorizontalTextAlignment="End"
+															   IsVisible="{Binding IsChanged}" />
+													</VerticalStackLayout>
+												</Grid>
+											</DataTemplate>
+										</BindableLayout.ItemTemplate>
 									</VerticalStackLayout>
-								</DataTemplate>
-							</BindableLayout.ItemTemplate>
-						</VerticalStackLayout>
-					</Grid>
-				</Border>
+								</Border>
+							</VerticalStackLayout>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

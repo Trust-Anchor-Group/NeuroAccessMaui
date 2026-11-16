@@ -4943,6 +4943,30 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="TokenValues" xml:space="preserve">
     <value>Värden</value>
   </data>
+  <data name="ValuesMoney" xml:space="preserve">
+    <value>Pengar</value>
+  </data>
+  <data name="ValuesDates" xml:space="preserve">
+    <value>Datum och tider</value>
+  </data>
+  <data name="ValuesPeople" xml:space="preserve">
+    <value>Personer och länkar</value>
+  </data>
+  <data name="ValuesFind" xml:space="preserve">
+    <value>Hitta ett värde</value>
+  </data>
+  <data name="ValuesRows" xml:space="preserve">
+    <value>{0} rader</value>
+  </data>
+  <data name="ValuesLiveUpdated" xml:space="preserve">
+    <value>Live · uppdaterad {0}</value>
+  </data>
+  <data name="ValuesUpdated" xml:space="preserve">
+    <value>Uppdaterad {0}</value>
+  </data>
+  <data name="ValuesNoMatch" xml:space="preserve">
+    <value>Inga värden matchar</value>
+  </data>
   <data name="HistoryFilterOwnership" xml:space="preserve">
     <value>Ägande</value>
   </data>

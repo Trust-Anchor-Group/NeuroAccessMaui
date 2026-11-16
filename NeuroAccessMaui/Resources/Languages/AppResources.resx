@@ -4862,6 +4862,30 @@ Document read. You can move your iPhone.</value>
   <data name="TokenValues" xml:space="preserve">
     <value>Values</value>
   </data>
+  <data name="ValuesMoney" xml:space="preserve">
+    <value>Money</value>
+  </data>
+  <data name="ValuesDates" xml:space="preserve">
+    <value>Dates and times</value>
+  </data>
+  <data name="ValuesPeople" xml:space="preserve">
+    <value>People and links</value>
+  </data>
+  <data name="ValuesFind" xml:space="preserve">
+    <value>Find a value</value>
+  </data>
+  <data name="ValuesRows" xml:space="preserve">
+    <value>{0} rows</value>
+  </data>
+  <data name="ValuesLiveUpdated" xml:space="preserve">
+    <value>Live · updated {0}</value>
+  </data>
+  <data name="ValuesUpdated" xml:space="preserve">
+    <value>Updated {0}</value>
+  </data>
+  <data name="ValuesNoMatch" xml:space="preserve">
+    <value>No values match</value>
+  </data>
   <data name="HistoryFilterOwnership" xml:space="preserve">
     <value>Ownership</value>
   </data>

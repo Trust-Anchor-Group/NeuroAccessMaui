@@ -14665,6 +14665,78 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Money.
+        /// </summary>
+        public static string ValuesMoney {
+            get {
+                return ResourceManager.GetString("ValuesMoney", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dates and times.
+        /// </summary>
+        public static string ValuesDates {
+            get {
+                return ResourceManager.GetString("ValuesDates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to People and links.
+        /// </summary>
+        public static string ValuesPeople {
+            get {
+                return ResourceManager.GetString("ValuesPeople", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find a value.
+        /// </summary>
+        public static string ValuesFind {
+            get {
+                return ResourceManager.GetString("ValuesFind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} rows.
+        /// </summary>
+        public static string ValuesRows {
+            get {
+                return ResourceManager.GetString("ValuesRows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Live · updated {0}.
+        /// </summary>
+        public static string ValuesLiveUpdated {
+            get {
+                return ResourceManager.GetString("ValuesLiveUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated {0}.
+        /// </summary>
+        public static string ValuesUpdated {
+            get {
+                return ResourceManager.GetString("ValuesUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No values match.
+        /// </summary>
+        public static string ValuesNoMatch {
+            get {
+                return ResourceManager.GetString("ValuesNoMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ownership.
         /// </summary>
         public static string HistoryFilterOwnership {

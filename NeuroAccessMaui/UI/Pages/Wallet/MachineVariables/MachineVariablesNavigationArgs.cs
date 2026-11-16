@@ -33,6 +33,22 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		}
 
 		/// <summary>
+		/// Creates navigation arguments for the rows of a value that is a list, opened from another value.
+		/// </summary>
+		/// <param name="Title">The name of the value whose rows are shown.</param>
+		/// <param name="Variables">The rows, by name or number.</param>
+		public MachineVariablesNavigationArgs(string Title, Variables Variables)
+		{
+			this.Title = Title;
+			this.Variables = Variables;
+		}
+
+		/// <summary>
+		/// The title of the page, when it shows the rows of a list rather than a token's values.
+		/// </summary>
+		public string? Title { get; }
+
+		/// <summary>
 		/// ID of the token whose state-machine is shown.
 		/// </summary>
 		public string? TokenId { get; }
