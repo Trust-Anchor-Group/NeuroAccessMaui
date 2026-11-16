@@ -1,15 +1,15 @@
-﻿using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
-using NeuroFeatures.Events;
-using System.Text;
+﻿using System.Text;
 using System.Windows.Input;
-using Waher.Content;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat;
-using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
+using NeuroFeatures.Events;
+using Waher.Content;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
@@ -105,6 +105,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// Timestamp
 		/// </summary>
 		public DateTime Timestamp => this.@event.Timestamp;
+
+		/// <summary>
+		/// The time of day the event happened, such as "9:13 PM". The day is the heading above the first event of each day.
+		/// </summary>
+		public string TimeText => this.Timestamp.ToString("t", System.Globalization.CultureInfo.CurrentCulture);
 
 		/// <summary>
 		/// When event expires

@@ -1,19 +1,19 @@
-﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Models;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
-using Waher.Networking.XMPP.Contracts;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Resources.Languages;
-using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.UI.Popups.QR;
-using NeuroAccessMaui.UI.MVVM;
-using CommunityToolkit.Maui.Core.Extensions;
-using NeuroAccessMaui.Models;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+using NeuroAccessMaui.UI.Popups.QR;
+using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -127,6 +127,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.isInbox = this.contractsListMode == ContractsListMode.Contracts && this.Action == SelectContractAction.ViewContract;
 
+			if (this.isInbox)
+				this.EmptyDescription = ServiceRef.Localizer[nameof(AppResources.ContractsEmptyDescription)];
+
 			this.groups[ContractListGroup.NeedsAction] = new ContractGroupModel(ContractListGroup.NeedsAction, ServiceRef.Localizer[nameof(AppResources.ContractGroupNeedsAction)]);
 			this.groups[ContractListGroup.InProgress] = new ContractGroupModel(ContractListGroup.InProgress, ServiceRef.Localizer[nameof(AppResources.ContractGroupInProgress)]);
 			this.groups[ContractListGroup.Signed] = new ContractGroupModel(ContractListGroup.Signed, ServiceRef.Localizer[nameof(AppResources.ContractGroupSigned)]);
@@ -205,6 +208,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 			else
 			{
+				string Requirement = await this.GetPickerRequirementAsync();
+				await MainThread.InvokeOnMainThreadAsync(() => this.EmptyDescription = Requirement);
+
 				await this.LoadContracts();
 				await this.ShowLoadedAsync();
 			}
@@ -299,9 +305,88 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <summary>
 		/// What the list says when it is empty. An empty list of token creation templates says how to get one.
 		/// </summary>
-		public string EmptyText => this.contractsListMode == ContractsListMode.TokenCreationTemplates
-			? ServiceRef.Localizer[nameof(AppResources.NoCreationTemplates)]
-			: ServiceRef.Localizer[nameof(AppResources.NoContractsFound)];
+		public string EmptyText
+		{
+			get
+			{
+				if (this.contractsListMode == ContractsListMode.TokenCreationTemplates)
+					return ServiceRef.Localizer[nameof(AppResources.NoCreationTemplates)];
+
+				if (this.isInbox)
+					return ServiceRef.Localizer[nameof(AppResources.ContractsEmptyHeading)];
+
+				if (this.pickerFilter is not null)
+					return ServiceRef.Localizer[nameof(AppResources.ContractPickerEmptyHeading)];
+
+				return ServiceRef.Localizer[nameof(AppResources.NoContractsFound)];
+			}
+		}
+
+		/// <summary>
+		/// What an empty list explains under its heading: what shows up in the list, or which contracts can be picked.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasEmptyDescription))]
+		private string emptyDescription = string.Empty;
+
+		/// <summary>
+		/// If an empty list explains itself under its heading.
+		/// </summary>
+		public bool HasEmptyDescription => this.EmptyDescription.Length > 0;
+
+		/// <summary>
+		/// How to get a contract that would show up in an empty list.
+		/// </summary>
+		public string EmptyHint
+		{
+			get
+			{
+				if (this.isInbox)
+					return ServiceRef.Localizer[nameof(AppResources.ContractsEmptyHint)];
+
+				if (this.pickerFilter is not null)
+					return ServiceRef.Localizer[nameof(AppResources.ContractPickerEmptyHint)];
+
+				return string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// If an empty list says how to get a contract for it.
+		/// </summary>
+		public bool HasEmptyHint => this.EmptyHint.Length > 0;
+
+		/// <summary>
+		/// Says which contracts can be picked: those made from the template the value asks for, by the template's title when
+		/// the phone has it, or else those of the kind the value asks for.
+		/// </summary>
+		/// <returns>The sentence, or an empty string when the list isn't for picking a contract.</returns>
+		private async Task<string> GetPickerRequirementAsync()
+		{
+			ContractPickerFilter? Filter = this.pickerFilter;
+			if (Filter is null)
+				return string.Empty;
+
+			if (string.IsNullOrEmpty(Filter.TemplateId))
+				return ServiceRef.Localizer[nameof(AppResources.ContractPickerNeedsKind)];
+
+			string TemplateName = Filter.TemplateId.Length > 12 ? Filter.TemplateId[..8] + "…" : Filter.TemplateId;
+
+			try
+			{
+				ContractReference? Template = await ServiceRef.ContractStore.GetAsync(Filter.TemplateId);
+				string? Title = string.IsNullOrWhiteSpace(Template?.Category) ? Template?.Name : Template.Category;
+
+				if (!string.IsNullOrWhiteSpace(Title))
+					TemplateName = Title.Trim();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return ServiceRef.Localizer[nameof(AppResources.ContractPickerNeedsTemplate), TemplateName];
+		}
 
 		/// <summary>
 		/// Holds the flat list of contracts to display.

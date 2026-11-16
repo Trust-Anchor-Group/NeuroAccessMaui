@@ -154,20 +154,54 @@
 				   Grid.Column="2" HorizontalOptions="End"/>
 		</Grid>
 
-		<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Padding="16,16,16,0" Margin="16,16,16,0">
-			<VerticalStackLayout>
-				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-					   VerticalOptions="Center" IsVisible="{Binding Path=ShowContractsMissing}" Text="{Binding EmptyText}" Margin="0,40,0,0"/>
-
-				<controls:CompositeEntry
-					Style="{DynamicResource RegularCompositeEntry}"
-					Placeholder="{l:Localize Search}"
-					TextChanged="ContractsSearchChanged"
-					Margin="0,0,0,16"
-					IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
-				</controls:CompositeEntry>
-			</VerticalStackLayout>
+		<!-- Search, while there are contracts -->
+		<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Padding="16,16,16,0" Margin="16,16,16,0"
+				IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
+			<controls:CompositeEntry
+				Style="{DynamicResource RegularCompositeEntry}"
+				Placeholder="{l:Localize Search}"
+				TextChanged="ContractsSearchChanged"
+				Margin="0,0,0,16"
+				IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
+			</controls:CompositeEntry>
 		</Border>
+
+		<!-- No contracts: what shows up here or can be picked, and how to get one -->
+		<VerticalStackLayout Grid.Row="1"
+							 Margin="0,8,0,0"
+							 IsVisible="{Binding ShowContractsMissing}"
+							 InputTransparent="True">
+			<VerticalStackLayout Padding="24,12,24,0"
+								 Spacing="6">
+				<Label Style="{DynamicResource IdentityFlowTitleLabel}"
+					   Text="{Binding EmptyText}" />
+				<Label IsVisible="{Binding HasEmptyDescription}"
+					   Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
+					   Text="{Binding EmptyDescription}" />
+			</VerticalStackLayout>
+			<Border Margin="16,24,16,0"
+					IsVisible="{Binding HasEmptyHint}"
+					Style="{DynamicResource ListCardEmptyBorder}">
+				<Grid ColumnDefinitions="44,*"
+					  ColumnSpacing="14">
+					<Border Grid.Column="0"
+							Style="{DynamicResource ListCardEmptyTileBorder}"
+							AutomationProperties.IsInAccessibleTree="False">
+						<Path HorizontalOptions="Center"
+							  VerticalOptions="Center"
+							  HeightRequest="22"
+							  WidthRequest="22"
+							  Aspect="Uniform"
+							  Data="{x:Static ui:Geometries.ContractPath}"
+							  Fill="{DynamicResource InputFieldsSurfaceStrokeInactive}" />
+					</Border>
+					<Label Grid.Column="1"
+						   VerticalOptions="Center"
+						   Style="{DynamicResource IdentityFlowCaptionLabel}"
+						   Text="{Binding EmptyHint}" />
+				</Grid>
+			</Border>
+		</VerticalStackLayout>
 
 		<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
 						   Color="{DynamicResource TnPInfoContentWL}"

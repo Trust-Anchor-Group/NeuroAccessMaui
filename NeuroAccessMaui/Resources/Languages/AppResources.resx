@@ -4805,6 +4805,27 @@ Document read. You can move your iPhone.</value>
   <data name="ContractGroupHeader" xml:space="preserve">
     <value>{0} · {1}</value>
   </data>
+  <data name="ContractsEmptyHeading" xml:space="preserve">
+    <value>No contracts yet</value>
+  </data>
+  <data name="ContractsEmptyDescription" xml:space="preserve">
+    <value>Contracts you create, or are invited to sign, show up here.</value>
+  </data>
+  <data name="ContractsEmptyHint" xml:space="preserve">
+    <value>Create one from a template, or scan a contract's QR code to open it.</value>
+  </data>
+  <data name="ContractPickerEmptyHeading" xml:space="preserve">
+    <value>No contracts to pick</value>
+  </data>
+  <data name="ContractPickerNeedsTemplate" xml:space="preserve">
+    <value>You can only pick a signed, valid contract made from the template “{0}”.</value>
+  </data>
+  <data name="ContractPickerNeedsKind" xml:space="preserve">
+    <value>You can only pick a signed, valid contract of the kind this value asks for.</value>
+  </data>
+  <data name="ContractPickerEmptyHint" xml:space="preserve">
+    <value>Create one and get it signed first, then come back and pick it.</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Show</value>
   </data>

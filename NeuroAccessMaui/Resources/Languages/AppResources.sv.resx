@@ -4886,6 +4886,27 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ContractGroupHeader" xml:space="preserve">
     <value>{0} · {1}</value>
   </data>
+  <data name="ContractsEmptyHeading" xml:space="preserve">
+    <value>Inga kontrakt än</value>
+  </data>
+  <data name="ContractsEmptyDescription" xml:space="preserve">
+    <value>Kontrakt du skapar, eller blir inbjuden att signera, visas här.</value>
+  </data>
+  <data name="ContractsEmptyHint" xml:space="preserve">
+    <value>Skapa ett från en mall, eller skanna ett kontrakts QR-kod för att öppna det.</value>
+  </data>
+  <data name="ContractPickerEmptyHeading" xml:space="preserve">
+    <value>Inga kontrakt att välja</value>
+  </data>
+  <data name="ContractPickerNeedsTemplate" xml:space="preserve">
+    <value>Du kan bara välja ett signerat, giltigt kontrakt som skapats från mallen ”{0}”.</value>
+  </data>
+  <data name="ContractPickerNeedsKind" xml:space="preserve">
+    <value>Du kan bara välja ett signerat, giltigt kontrakt av den sort som värdet kräver.</value>
+  </data>
+  <data name="ContractPickerEmptyHint" xml:space="preserve">
+    <value>Skapa ett och få det signerat först, och kom sedan tillbaka och välj det.</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Visa</value>
   </data>

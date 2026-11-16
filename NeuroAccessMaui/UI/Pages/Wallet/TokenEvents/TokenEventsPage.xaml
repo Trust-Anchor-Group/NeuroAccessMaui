@@ -48,19 +48,30 @@
 			<Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
 			<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 		</Style>
-		<Style x:Key="EventChipBorder" TargetType="Border">
-			<Setter Property="StrokeShape" Value="RoundRectangle 12" />
-			<Setter Property="StrokeThickness" Value="0" />
-			<Setter Property="Padding" Value="8,2" />
-			<Setter Property="HorizontalOptions" Value="Start" />
-			<Setter Property="VerticalOptions" Value="Center" />
-			<Setter Property="BackgroundColor" Value="{DynamicResource TnPInfobgWL}" />
-		</Style>
-		<Style x:Key="EventChipLabel" TargetType="Label">
+		<!-- A person or contract that opens when tapped. Its tap area reaches 14 points above and below the line, so
+			 rows stay close together. -->
+		<Style x:Key="EventLinkLabel" TargetType="Label">
+			<Setter Property="FontFamily" Value="HaasGroteskMedium" />
 			<Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
-			<Setter Property="TextColor" Value="{DynamicResource TnPInfoContentWL}" />
+			<Setter Property="TextColor" Value="{DynamicResource ContentAccessWL}" />
 			<Setter Property="LineBreakMode" Value="MiddleTruncation" />
 			<Setter Property="MaxLines" Value="1" />
+			<Setter Property="VerticalOptions" Value="Center" />
+		</Style>
+		<!-- The round mark in front of an event's title, coloured by the kind of event -->
+		<Style x:Key="EventIconBorder" TargetType="Border">
+			<Setter Property="WidthRequest" Value="28" />
+			<Setter Property="HeightRequest" Value="28" />
+			<Setter Property="StrokeShape" Value="RoundRectangle 14" />
+			<Setter Property="StrokeThickness" Value="0" />
+			<Setter Property="VerticalOptions" Value="Center" />
+		</Style>
+		<Style x:Key="EventIconPath" TargetType="Path">
+			<Setter Property="WidthRequest" Value="14" />
+			<Setter Property="HeightRequest" Value="14" />
+			<Setter Property="Aspect" Value="Uniform" />
+			<Setter Property="HorizontalOptions" Value="Center" />
+			<Setter Property="VerticalOptions" Value="Center" />
 		</Style>
 		<Style x:Key="PersonalChipBorder" TargetType="Border">
 			<Setter Property="StrokeShape" Value="RoundRectangle 12" />
@@ -74,41 +85,38 @@
 		<DataTemplate x:Key="CreatedEvent" x:DataType="events:CreatedItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize Created}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource TnPSuccessbgWL}">
+							<Path Data="{x:Static ui:Geometries.TokenPath}" Fill="{DynamicResource TnPSuccessContentWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize Created}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Creator}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}"
 												  SemanticProperties.Description="{Binding CreatorFriendlyName}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding CreatorFriendlyName}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding CreatorFriendlyName}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Owner}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}"
 												  SemanticProperties.Description="{Binding OwnerFriendlyName}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize OwnershipContract}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}"
 												  SemanticProperties.Description="{l:Localize OwnershipContract}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Value}" Style="{StaticResource EventKeyLabel}" />
 						<Label Grid.Column="1" Style="{StaticResource EventValueLabel}">
 							<Label.FormattedText>
@@ -127,31 +135,30 @@
 		<DataTemplate x:Key="DestroyedEvent" x:DataType="events:DestroyedItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize Destroyed}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource TnPDangerbgWL}">
+							<Path Data="{x:Static ui:Geometries.TrashCanButtonPath}" Fill="{DynamicResource TnPDangerContentWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize Destroyed}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Owner}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}"
 												  SemanticProperties.Description="{Binding OwnerFriendlyName}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize OwnershipContract}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}"
 												  SemanticProperties.Description="{l:Localize OwnershipContract}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Value}" Style="{StaticResource EventKeyLabel}" />
 						<Label Grid.Column="1" Style="{StaticResource EventValueLabel}">
 							<Label.FormattedText>
@@ -170,41 +177,38 @@
 		<DataTemplate x:Key="TransferredEvent" x:DataType="events:TransferredItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize Transferred}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource TnPInfobgWL}">
+							<Path Data="{x:Static ui:Geometries.MoneyPath}" Fill="{DynamicResource TnPInfoContentWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize Transferred}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Seller}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding Seller}"
 												  SemanticProperties.Description="{Binding SellerFriendlyName}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding SellerFriendlyName}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding SellerFriendlyName}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Owner}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}"
 												  SemanticProperties.Description="{Binding OwnerFriendlyName}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize OwnershipContract}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}"
 												  SemanticProperties.Description="{l:Localize OwnershipContract}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Value}" Style="{StaticResource EventKeyLabel}" />
 						<Label Grid.Column="1" Style="{StaticResource EventValueLabel}">
 							<Label.FormattedText>
@@ -223,38 +227,35 @@
 		<DataTemplate x:Key="DonatedEvent" x:DataType="events:DonatedItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize Donated}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource TnPInfobgWL}">
+							<Path Data="{x:Static ui:Geometries.SendPath}" Fill="{DynamicResource TnPInfoContentWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize Donated}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Donor}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding Donor}"
 												  SemanticProperties.Description="{Binding DonorFriendlyName}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding DonorFriendlyName}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding DonorFriendlyName}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize Owner}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}"
 												  SemanticProperties.Description="{Binding OwnerFriendlyName}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnerFriendlyName}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize OwnershipContract}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}"
 												  SemanticProperties.Description="{l:Localize OwnershipContract}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding OwnershipContract}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
 				</VerticalStackLayout>
@@ -264,9 +265,12 @@
 		<DataTemplate x:Key="NoteText" x:DataType="events:NoteTextItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize TextNote}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource SurfaceElevation2WL}">
+							<Path Data="{x:Static ui:Geometries.ContractEditPath}" Fill="{DynamicResource ContentPrimaryWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize TextNote}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
 					<Border IsVisible="{Binding Personal}" Style="{StaticResource PersonalChipBorder}">
 						<Label Text="{l:Localize NoteIsPersonal}" Style="{StaticResource EventKeyLabel}" />
@@ -288,9 +292,12 @@
 		<DataTemplate x:Key="NoteXml" x:DataType="events:NoteXmlItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize XmlNote}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource SurfaceElevation2WL}">
+							<Path Data="{x:Static ui:Geometries.ContractEditPath}" Fill="{DynamicResource ContentPrimaryWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize XmlNote}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
 					<Border IsVisible="{Binding Personal}" Style="{StaticResource PersonalChipBorder}">
 						<Label Text="{l:Localize NoteIsPersonal}" Style="{StaticResource EventKeyLabel}" />
@@ -307,18 +314,19 @@
 		<DataTemplate x:Key="ExternalNoteText" x:DataType="events:ExternalNoteTextItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize TextNote}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource SurfaceElevation2WL}">
+							<Path Data="{x:Static ui:Geometries.ContractEditPath}" Fill="{DynamicResource ContentPrimaryWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize TextNote}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize From}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}"
 												  SemanticProperties.Description="{Binding Source}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding Source}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding Source}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
 					<Border IsVisible="{Binding Personal}" Style="{StaticResource PersonalChipBorder}">
@@ -341,18 +349,19 @@
 		<DataTemplate x:Key="ExternalNoteXml" x:DataType="events:ExternalNoteXmlItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize XmlNote}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource SurfaceElevation2WL}">
+							<Path Data="{x:Static ui:Geometries.ContractEditPath}" Fill="{DynamicResource ContentPrimaryWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize XmlNote}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize From}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}"
 												  SemanticProperties.Description="{Binding Source}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding Source}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding Source}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
 					<Border IsVisible="{Binding Personal}" Style="{StaticResource PersonalChipBorder}">
@@ -370,22 +379,23 @@
 		<DataTemplate x:Key="Killed" x:DataType="events:KilledItem">
 			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
 				<VerticalStackLayout Spacing="8">
-					<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-						<Label Text="{l:Localize Killed}" Style="{StaticResource EventTitleLabel}" />
-						<Label Grid.Column="1" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" />
+					<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="10">
+						<Border Style="{StaticResource EventIconBorder}" BackgroundColor="{DynamicResource TnPDangerbgWL}">
+							<Path Data="{x:Static ui:Geometries.CancelPath}" Fill="{DynamicResource TnPDangerContentWL}" Style="{StaticResource EventIconPath}" />
+						</Border>
+						<Label Grid.Column="1" Text="{l:Localize Killed}" Style="{StaticResource EventTitleLabel}" />
+						<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize KillerUser}" Style="{StaticResource EventKeyLabel}" />
 						<Label Grid.Column="1" Text="{Binding User}" Style="{StaticResource EventValueLabel}" LineBreakMode="MiddleTruncation" />
 					</Grid>
-					<Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="2*,3*" ColumnSpacing="12">
 						<Label Text="{l:Localize KillerId}" Style="{StaticResource EventKeyLabel}" />
-						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start"
+						<controls:TemplatedButton Grid.Column="1" HorizontalOptions="Start" Margin="0,-14"
 												  Command="{Binding ViewIdCommand}" CommandParameter="{Binding LegalId}"
 												  SemanticProperties.Description="{l:Localize KillerId}">
-							<Border Style="{StaticResource EventChipBorder}">
-								<Label Text="{Binding LegalId}" Style="{StaticResource EventChipLabel}" />
-							</Border>
+							<Label Text="{Binding LegalId}" Style="{StaticResource EventLinkLabel}" />
 						</controls:TemplatedButton>
 					</Grid>
 				</VerticalStackLayout>
@@ -424,7 +434,7 @@
 						<Label Text="{Binding Title}" Style="{StaticResource EventTitleLabel}" />
 						<Label Text="{l:Localize HistorySeenLive}" Style="{StaticResource EventKeyLabel}" />
 					</VerticalStackLayout>
-					<Label Grid.Column="2" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" VerticalOptions="Start" />
+					<Label Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource EventTimeLabel}" VerticalOptions="Start" />
 				</Grid>
 			</Border>
 		</DataTemplate>
@@ -642,17 +652,15 @@
 													   IsVisible="{Binding IsLoadingMore}"
 													   Color="{DynamicResource PrimaryWL}"
 													   HorizontalOptions="Center" />
+									<!-- Under the filter chips, so it never covers them -->
+									<Label IsVisible="{Binding ShowNoEvents}"
+										   Text="{l:Localize NoEventsYet}"
+										   Style="{DynamicResource InfoLabel}"
+										   HorizontalTextAlignment="Center"
+										   Margin="32,24,32,0" />
 								</Grid>
 							</CollectionView.Footer>
 						</controls:LoadingCollectionView>
-
-						<Label IsVisible="{Binding ShowNoEvents}"
-							   Text="{l:Localize NoEventsYet}"
-							   Style="{DynamicResource InfoLabel}"
-							   HorizontalTextAlignment="Center"
-							   VerticalOptions="Start"
-							   Margin="32,64,32,0"
-							   InputTransparent="True" />
 					</Grid>
 				</RefreshView>
 			</controls:TaskView.SucceededView>

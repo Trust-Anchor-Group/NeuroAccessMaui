@@ -14494,6 +14494,69 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No contracts yet.
+        /// </summary>
+        public static string ContractsEmptyHeading {
+            get {
+                return ResourceManager.GetString("ContractsEmptyHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contracts you create, or are invited to sign, show up here.
+        /// </summary>
+        public static string ContractsEmptyDescription {
+            get {
+                return ResourceManager.GetString("ContractsEmptyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create one from a template, or scan a contract's QR code to open it.
+        /// </summary>
+        public static string ContractsEmptyHint {
+            get {
+                return ResourceManager.GetString("ContractsEmptyHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No contracts to pick.
+        /// </summary>
+        public static string ContractPickerEmptyHeading {
+            get {
+                return ResourceManager.GetString("ContractPickerEmptyHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can only pick a signed, valid contract made from the template “{0}”.
+        /// </summary>
+        public static string ContractPickerNeedsTemplate {
+            get {
+                return ResourceManager.GetString("ContractPickerNeedsTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can only pick a signed, valid contract of the kind this value asks for.
+        /// </summary>
+        public static string ContractPickerNeedsKind {
+            get {
+                return ResourceManager.GetString("ContractPickerNeedsKind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create one and get it signed first, then come back and pick it.
+        /// </summary>
+        public static string ContractPickerEmptyHint {
+            get {
+                return ResourceManager.GetString("ContractPickerEmptyHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show.
         /// </summary>
         public static string ContractShowDetails {

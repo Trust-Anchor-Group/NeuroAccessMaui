@@ -4886,6 +4886,27 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="ContractGroupHeader" xml:space="preserve">
     <value>{0} · {1}</value>
   </data>
+  <data name="ContractsEmptyHeading" xml:space="preserve">
+    <value>Ainda não há contratos</value>
+  </data>
+  <data name="ContractsEmptyDescription" xml:space="preserve">
+    <value>Os contratos que você cria, ou que é convidado a assinar, aparecem aqui.</value>
+  </data>
+  <data name="ContractsEmptyHint" xml:space="preserve">
+    <value>Crie um a partir de um modelo, ou escaneie o código QR de um contrato para abri-lo.</value>
+  </data>
+  <data name="ContractPickerEmptyHeading" xml:space="preserve">
+    <value>Nenhum contrato para escolher</value>
+  </data>
+  <data name="ContractPickerNeedsTemplate" xml:space="preserve">
+    <value>Você só pode escolher um contrato assinado e válido criado a partir do modelo “{0}”.</value>
+  </data>
+  <data name="ContractPickerNeedsKind" xml:space="preserve">
+    <value>Você só pode escolher um contrato assinado e válido do tipo que este valor pede.</value>
+  </data>
+  <data name="ContractPickerEmptyHint" xml:space="preserve">
+    <value>Primeiro crie um e faça com que seja assinado; depois volte e escolha-o.</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Mostrar</value>
   </data>
