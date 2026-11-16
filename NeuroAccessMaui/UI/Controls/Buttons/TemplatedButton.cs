@@ -11,11 +11,20 @@ namespace NeuroAccessMaui.UI.Controls
 	public class TemplatedButton : ContentView, IButtonElement
 	{
 		/// <summary>
+		/// The smallest width and height of a button, so it is easy to tap.
+		/// </summary>
+		public const double MinimumTouchSize = 48;
+
+		/// <summary>
 		/// Initializes a new instance of <see cref="TemplatedButton"/> class.
 		/// </summary>
 		public TemplatedButton() :
 			base()
 		{
+			// However small a button is drawn, the area that can be tapped is at least 48 by 48.
+			this.MinimumHeightRequest = MinimumTouchSize;
+			this.MinimumWidthRequest = MinimumTouchSize;
+
 			TapGestureRecognizer TapRecognizer = new();
 			TapRecognizer.Tapped += this.OnTapped;
 			this.GestureRecognizers.Add(TapRecognizer);

@@ -516,106 +516,122 @@
 										   TextColor="{DynamicResource ContentSecondaryWL}" />
 									<!-- Chips that narrow the history to a kind of event -->
 									<HorizontalStackLayout Spacing="8">
-										<Border Style="{StaticResource HistoryFilterChip}">
-											<Border.Triggers>
-												<DataTrigger TargetType="Border"
-															 Binding="{Binding IsAllSelected}"
-															 Value="True">
-													<Setter Property="BackgroundColor"
-															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
-												</DataTrigger>
-											</Border.Triggers>
-											<Border.GestureRecognizers>
+										<Grid MinimumHeightRequest="48"
+											  MinimumWidthRequest="48">
+											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
 																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.All}" />
-											</Border.GestureRecognizers>
-											<Label Text="{l:Localize All}"
-												   Style="{StaticResource HistoryFilterChipLabel}">
-												<Label.Triggers>
-													<DataTrigger TargetType="Label"
+											</Grid.GestureRecognizers>
+											<Border Style="{StaticResource HistoryFilterChip}"
+													VerticalOptions="Center">
+												<Border.Triggers>
+													<DataTrigger TargetType="Border"
 																 Binding="{Binding IsAllSelected}"
 																 Value="True">
-														<Setter Property="TextColor"
-																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														<Setter Property="BackgroundColor"
+																Value="{DynamicResource ButtonAccessPrimarybgWL}" />
 													</DataTrigger>
-												</Label.Triggers>
-											</Label>
-										</Border>
-										<Border Style="{StaticResource HistoryFilterChip}">
-											<Border.Triggers>
-												<DataTrigger TargetType="Border"
-															 Binding="{Binding IsOwnershipSelected}"
-															 Value="True">
-													<Setter Property="BackgroundColor"
-															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
-												</DataTrigger>
-											</Border.Triggers>
-											<Border.GestureRecognizers>
+												</Border.Triggers>
+												<Label Text="{l:Localize All}"
+													   Style="{StaticResource HistoryFilterChipLabel}">
+													<Label.Triggers>
+														<DataTrigger TargetType="Label"
+																	 Binding="{Binding IsAllSelected}"
+																	 Value="True">
+															<Setter Property="TextColor"
+																	Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														</DataTrigger>
+													</Label.Triggers>
+												</Label>
+											</Border>
+										</Grid>
+										<Grid MinimumHeightRequest="48"
+											  MinimumWidthRequest="48">
+											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
 																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.Ownership}" />
-											</Border.GestureRecognizers>
-											<Label Text="{l:Localize HistoryFilterOwnership}"
-												   Style="{StaticResource HistoryFilterChipLabel}">
-												<Label.Triggers>
-													<DataTrigger TargetType="Label"
+											</Grid.GestureRecognizers>
+											<Border Style="{StaticResource HistoryFilterChip}"
+													VerticalOptions="Center">
+												<Border.Triggers>
+													<DataTrigger TargetType="Border"
 																 Binding="{Binding IsOwnershipSelected}"
 																 Value="True">
-														<Setter Property="TextColor"
-																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														<Setter Property="BackgroundColor"
+																Value="{DynamicResource ButtonAccessPrimarybgWL}" />
 													</DataTrigger>
-												</Label.Triggers>
-											</Label>
-										</Border>
-										<Border Style="{StaticResource HistoryFilterChip}">
-											<Border.Triggers>
-												<DataTrigger TargetType="Border"
-															 Binding="{Binding IsNotesSelected}"
-															 Value="True">
-													<Setter Property="BackgroundColor"
-															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
-												</DataTrigger>
-											</Border.Triggers>
-											<Border.GestureRecognizers>
+												</Border.Triggers>
+												<Label Text="{l:Localize HistoryFilterOwnership}"
+													   Style="{StaticResource HistoryFilterChipLabel}">
+													<Label.Triggers>
+														<DataTrigger TargetType="Label"
+																	 Binding="{Binding IsOwnershipSelected}"
+																	 Value="True">
+															<Setter Property="TextColor"
+																	Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														</DataTrigger>
+													</Label.Triggers>
+												</Label>
+											</Border>
+										</Grid>
+										<Grid MinimumHeightRequest="48"
+											  MinimumWidthRequest="48">
+											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
 																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.Notes}" />
-											</Border.GestureRecognizers>
-											<Label Text="{l:Localize HistoryFilterNotes}"
-												   Style="{StaticResource HistoryFilterChipLabel}">
-												<Label.Triggers>
-													<DataTrigger TargetType="Label"
+											</Grid.GestureRecognizers>
+											<Border Style="{StaticResource HistoryFilterChip}"
+													VerticalOptions="Center">
+												<Border.Triggers>
+													<DataTrigger TargetType="Border"
 																 Binding="{Binding IsNotesSelected}"
 																 Value="True">
-														<Setter Property="TextColor"
-																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														<Setter Property="BackgroundColor"
+																Value="{DynamicResource ButtonAccessPrimarybgWL}" />
 													</DataTrigger>
-												</Label.Triggers>
-											</Label>
-										</Border>
-										<Border Style="{StaticResource HistoryFilterChip}">
-											<Border.Triggers>
-												<DataTrigger TargetType="Border"
-															 Binding="{Binding IsStepsSelected}"
-															 Value="True">
-													<Setter Property="BackgroundColor"
-															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
-												</DataTrigger>
-											</Border.Triggers>
-											<Border.GestureRecognizers>
+												</Border.Triggers>
+												<Label Text="{l:Localize HistoryFilterNotes}"
+													   Style="{StaticResource HistoryFilterChipLabel}">
+													<Label.Triggers>
+														<DataTrigger TargetType="Label"
+																	 Binding="{Binding IsNotesSelected}"
+																	 Value="True">
+															<Setter Property="TextColor"
+																	Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														</DataTrigger>
+													</Label.Triggers>
+												</Label>
+											</Border>
+										</Grid>
+										<Grid MinimumHeightRequest="48"
+											  MinimumWidthRequest="48">
+											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
 																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.Steps}" />
-											</Border.GestureRecognizers>
-											<Label Text="{l:Localize HistoryFilterSteps}"
-												   Style="{StaticResource HistoryFilterChipLabel}">
-												<Label.Triggers>
-													<DataTrigger TargetType="Label"
+											</Grid.GestureRecognizers>
+											<Border Style="{StaticResource HistoryFilterChip}"
+													VerticalOptions="Center">
+												<Border.Triggers>
+													<DataTrigger TargetType="Border"
 																 Binding="{Binding IsStepsSelected}"
 																 Value="True">
-														<Setter Property="TextColor"
-																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														<Setter Property="BackgroundColor"
+																Value="{DynamicResource ButtonAccessPrimarybgWL}" />
 													</DataTrigger>
-												</Label.Triggers>
-											</Label>
-										</Border>
+												</Border.Triggers>
+												<Label Text="{l:Localize HistoryFilterSteps}"
+													   Style="{StaticResource HistoryFilterChipLabel}">
+													<Label.Triggers>
+														<DataTrigger TargetType="Label"
+																	 Binding="{Binding IsStepsSelected}"
+																	 Value="True">
+															<Setter Property="TextColor"
+																	Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+														</DataTrigger>
+													</Label.Triggers>
+												</Label>
+											</Border>
+										</Grid>
 									</HorizontalStackLayout>
 
 									<!-- How the values changed over time, drawn by the token's Neuron -->
@@ -623,7 +639,8 @@
 											StrokeThickness="1"
 											Stroke="{DynamicResource SurfaceDividerWL}"
 											BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-											Padding="14,10"
+											Padding="14,0"
+											MinimumHeightRequest="48"
 											Margin="0,4,0,0"
 											IsVisible="{Binding HasValueChart}"
 											SemanticProperties.Description="{l:Localize HistoryValueChart}">

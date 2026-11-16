@@ -197,10 +197,11 @@ namespace NeuroAccessMaui.UI.Popups.Images
 
 			Border Fit = new()
 			{
-				HeightRequest = 40,
+				HeightRequest = 48,
+				MinimumWidthRequest = 48,
 				Padding = new Thickness(16, 0),
 				StrokeThickness = 0,
-				StrokeShape = new RoundRectangle { CornerRadius = 20 },
+				StrokeShape = new RoundRectangle { CornerRadius = 24 },
 				Content = FitLabel
 			};
 			Fit.SetDynamicResource(VisualElement.BackgroundColorProperty, "ButtonAccessPrimarybgWL");
@@ -210,7 +211,7 @@ namespace NeuroAccessMaui.UI.Popups.Images
 			{
 				Padding = new Thickness(4),
 				StrokeThickness = 1,
-				StrokeShape = new RoundRectangle { CornerRadius = 24 },
+				StrokeShape = new RoundRectangle { CornerRadius = 28 },
 				HorizontalOptions = LayoutOptions.Center,
 				Content = new HorizontalStackLayout
 				{
@@ -233,7 +234,7 @@ namespace NeuroAccessMaui.UI.Popups.Images
 		}
 
 		/// <summary>
-		/// Creates a round 40 point button with an icon, or with a sign such as "+".
+		/// Creates a round 48 point button with an icon, or with a sign such as "+".
 		/// </summary>
 		/// <param name="Icon">The icon, used when there is no sign.</param>
 		/// <param name="Description">What the button does, for screen readers.</param>
@@ -274,11 +275,11 @@ namespace NeuroAccessMaui.UI.Popups.Images
 
 			Border Button = new()
 			{
-				WidthRequest = 40,
-				HeightRequest = 40,
+				WidthRequest = 48,
+				HeightRequest = 48,
 				Padding = 0,
 				StrokeThickness = 0,
-				StrokeShape = new RoundRectangle { CornerRadius = 20 },
+				StrokeShape = new RoundRectangle { CornerRadius = 24 },
 				VerticalOptions = LayoutOptions.Center,
 				Content = Content
 			};

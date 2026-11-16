@@ -416,6 +416,10 @@
 							   FontFamily="HaasGroteskMedium"
 							   FontSize="{StaticResource FontSizeSm}"
 							   TextColor="{DynamicResource ContentAccessWL}"
+							   MinimumWidthRequest="48"
+							   MinimumHeightRequest="48"
+							   HorizontalTextAlignment="End"
+							   VerticalTextAlignment="Center"
 							   VerticalOptions="Center">
 							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding PickContractReferenceCommand}" />
@@ -455,14 +459,19 @@
 				<HorizontalStackLayout Spacing="4">
 					<Label Text="{l:Localize Optional}"
 						   Style="{DynamicResource ParameterHintLabel}"
+						   VerticalOptions="Center"
 						   IsVisible="{Binding IsOptional}" />
 					<Label Text="·"
 						   Style="{DynamicResource ParameterHintLabel}"
+						   VerticalOptions="Center"
 						   IsVisible="{Binding ShowsHintSeparator}" />
 					<Label Text="{l:Localize ParameterPasteId}"
 						   FontFamily="HaasGroteskMedium"
 						   FontSize="{StaticResource FontSizeSm}"
 						   TextColor="{DynamicResource ContentAccessWL}"
+						   MinimumWidthRequest="48"
+						   MinimumHeightRequest="48"
+						   VerticalTextAlignment="Center"
 						   IsVisible="{Binding CanPasteId}">
 						<Label.GestureRecognizers>
 							<TapGestureRecognizer Command="{Binding PasteIdCommand}" />

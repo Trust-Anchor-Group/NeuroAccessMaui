@@ -20,7 +20,7 @@
 			<Grid ColumnDefinitions="4*,6*"
 				  ColumnSpacing="12"
 				  Padding="16,12"
-				  MinimumHeightRequest="46"
+				  MinimumHeightRequest="48"
 				  BackgroundColor="{DynamicResource SurfaceElevation1WL}">
 				<Grid.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding RowCommand}" />
@@ -150,6 +150,9 @@
 							   FontFamily="HaasGroteskMedium"
 							   FontSize="13"
 							   TextColor="{DynamicResource ContentAccessWL}"
+							   MinimumHeightRequest="48"
+							   MinimumWidthRequest="48"
+							   VerticalTextAlignment="Center"
 							   VerticalOptions="Center"
 							   IsVisible="{Binding HasGeoValue}">
 							<Label.GestureRecognizers>

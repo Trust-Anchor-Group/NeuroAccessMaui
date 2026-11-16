@@ -160,7 +160,8 @@
 
 			<!-- The whole flow, with what moves it on from each step -->
 			<Grid ColumnDefinitions="*,Auto"
-				  Padding="4,10"
+				  Padding="4,0"
+				  MinimumHeightRequest="48"
 				  SemanticProperties.Description="{l:Localize FlowSeeAll}">
 				<Grid.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding SeeFullFlowCommand}" />
@@ -169,7 +170,8 @@
 					   Text="{l:Localize FlowSeeAll}"
 					   FontFamily="HaasGroteskMedium"
 					   FontSize="{StaticResource FontSizeSm}"
-					   TextColor="{DynamicResource ContentAccessWL}" />
+					   TextColor="{DynamicResource ContentAccessWL}"
+					   VerticalOptions="Center" />
 				<Label Grid.Column="1"
 					   Text="›"
 					   FontFamily="HaasGroteskMedium"

@@ -27,9 +27,9 @@
 				   VerticalOptions="Center" />
 			<!-- Fit the whole flow on the screen -->
 			<Border Grid.Column="2"
-					WidthRequest="40"
-					HeightRequest="40"
-					StrokeShape="RoundRectangle 20"
+					WidthRequest="48"
+					HeightRequest="48"
+					StrokeShape="RoundRectangle 24"
 					StrokeThickness="0"
 					BackgroundColor="{DynamicResource SurfaceElevation1WL}"
 					VerticalOptions="Center"

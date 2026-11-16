@@ -82,6 +82,8 @@ namespace NeuroAccessMaui.UI.Controls
 				Text = ServiceRef.Localizer[nameof(AppResources.AddDuration)],
 				FontFamily = "HaasGroteskMedium",
 				FontSize = 13,
+				MinimumHeightRequest = 48,
+				VerticalTextAlignment = TextAlignment.Center,
 				HorizontalOptions = LayoutOptions.Start
 			};
 			this.addUnitLabel.SetDynamicResource(Label.TextColorProperty, "ContentAccessWL");
@@ -431,7 +433,10 @@ namespace NeuroAccessMaui.UI.Controls
 					Text = "✕",
 					Style = AppStyles.InfoLabel,
 					VerticalOptions = LayoutOptions.Center,
-					Padding = new Thickness(8, 0, 0, 0)
+					HorizontalTextAlignment = TextAlignment.Center,
+					VerticalTextAlignment = TextAlignment.Center,
+					MinimumWidthRequest = 48,
+					MinimumHeightRequest = 48
 				};
 				TapGestureRecognizer RemoveTap = new();
 				RemoveTap.Tapped += (Sender, Args) => this.owner.RemoveRow(this);
@@ -479,8 +484,8 @@ namespace NeuroAccessMaui.UI.Controls
 
 				Border Button = new()
 				{
-					WidthRequest = 40,
-					HeightRequest = 40,
+					WidthRequest = 48,
+					HeightRequest = 48,
 					Padding = 0,
 					StrokeThickness = 1,
 					StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
