@@ -1,75 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <views:BaseViewContractView x:Name="ThisPage"
-									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.ParametersView"
-									 x:DataType="base:ViewContractViewModel"
-									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-									 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
+							x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.ParametersView"
+							x:DataType="base:ViewContractViewModel"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+							xmlns:contracts="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
 	<ContentView.Resources>
-		<!-- A protected value that can't be shown says why: encrypted for others, still loading, or never stored. -->
-		<DataTemplate x:Key="ViewProtectedParameterTemplate"
-						  x:DataType="objectModel:ObservableParameter">
-			<Border Style="{DynamicResource BorderSet}"
-					  Margin="{DynamicResource MediumLeftRightMargins}">
-				<Grid RowDefinitions="Auto,Auto"
-						ColumnSpacing="{DynamicResource SmallSpacing}">
-					<Label Grid.Row="0"
-							 Text="{Binding Label}"
-							 Style="{DynamicResource ParameterItemTitleLabel}"
-							 HorizontalTextAlignment="Start" />
-					<controls:ParameterProtectionIndicator Grid.Row="1"
-																		IsTransient="{Binding IsTransient}"
-																		IsEncrypted="{Binding IsEncrypted}"
-																		TransientText="{l:Localize ParameterNotStored}"
-																		EncryptedText="{Binding EncryptedValueText, Mode=OneWay}"
-																		IsVisible="{Binding IsProtected}" />
+		<!-- One value: what it is on the left, the value on the right. Notes such as "Hidden from you" are dimmed, and a
+			 value that opens a contract or a place is a link. -->
+		<DataTemplate x:Key="ParameterRowTemplate"
+					  x:DataType="objectModel:ObservableParameter">
+			<Grid ColumnDefinitions="4*,6*"
+				  ColumnSpacing="12"
+				  Padding="16,12"
+				  MinimumHeightRequest="46"
+				  BackgroundColor="{DynamicResource SurfaceElevation1WL}">
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding RowCommand}" />
+				</Grid.GestureRecognizers>
+				<Label Grid.Column="0"
+					   Text="{Binding Label}"
+					   FontSize="{StaticResource FontSizeSm}"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   LineBreakMode="WordWrap"
+					   VerticalOptions="Center" />
+				<!-- A hidden value: a lock and a short note -->
+				<HorizontalStackLayout Grid.Column="1"
+									   Spacing="5"
+									   HorizontalOptions="End"
+									   VerticalOptions="Center"
+									   IsVisible="{Binding RowShowsLock}">
+					<Path Data="{x:Static ui:Geometries.LockPath}"
+						  Fill="{DynamicResource ContentSecondaryWL}"
+						  Aspect="Uniform"
+						  WidthRequest="14"
+						  HeightRequest="14"
+						  VerticalOptions="Center" />
+					<Label Text="{Binding RowValue}"
+						   FontSize="13"
+						   TextColor="{DynamicResource ContentSecondaryWL}"
+						   VerticalOptions="Center" />
+				</HorizontalStackLayout>
+				<!-- A value, which wraps when it is long -->
+				<Grid Grid.Column="1"
+					  ColumnDefinitions="*,Auto"
+					  ColumnSpacing="4"
+					  VerticalOptions="Center"
+					  IsVisible="{Binding RowShowsLock, Converter={StaticResource InvertedBoolConverter}}">
+					<Label Grid.Column="0"
+						   Text="{Binding RowValue}"
+						   FontFamily="SpaceGroteskSemiBold"
+						   FontSize="{StaticResource FontSizeMd}"
+						   TextColor="{DynamicResource ContentPrimaryWL}"
+						   HorizontalTextAlignment="End"
+						   LineBreakMode="WordWrap"
+						   VerticalOptions="Center">
+						<Label.Triggers>
+							<DataTrigger TargetType="Label"
+										 Binding="{Binding RowIsMuted}"
+										 Value="True">
+								<Setter Property="FontFamily"
+										Value="HaasGroteskRegular" />
+								<Setter Property="FontSize"
+										Value="{StaticResource FontSizeSm}" />
+								<Setter Property="TextColor"
+										Value="{DynamicResource ContentSecondaryWL}" />
+							</DataTrigger>
+							<DataTrigger TargetType="Label"
+										 Binding="{Binding RowIsLink}"
+										 Value="True">
+								<Setter Property="TextColor"
+										Value="{DynamicResource ContentAccessWL}" />
+							</DataTrigger>
+						</Label.Triggers>
+					</Label>
+					<Label Grid.Column="1"
+						   Text="›"
+						   FontFamily="SpaceGroteskSemiBold"
+						   FontSize="{StaticResource FontSizeXl}"
+						   TextColor="{DynamicResource ContentAccessWL}"
+						   VerticalOptions="Center"
+						   IsVisible="{Binding RowIsLink}" />
 				</Grid>
-			</Border>
+			</Grid>
 		</DataTemplate>
 
-		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
-															BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
-															DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
-															DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
-															NumericalTemplate="{StaticResource NumericalParameterReadOnlyTemplate}"
-															StringTemplate="{StaticResource StringParameterReadOnlyTemplate}"
-															TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
-															DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
-															ProtectedTemplate="{StaticResource ViewProtectedParameterTemplate}"
-															CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
-															ContractReferenceTemplate="{StaticResource ContractReferenceParameterReadOnlyTemplate}"
-															GeoTemplate="{StaticResource GeoParameterReadOnlyTemplate}"
-															RoleTemplate="{StaticResource RoleParameterTemplate}"
-															AttachmentTemplate="{StaticResource AttachmentParameterReadOnlyTemplate}"
-															DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
+		<!-- A place: a small map, the coordinates, and a link that opens the map -->
+		<DataTemplate x:Key="GeoParameterRowTemplate"
+					  x:DataType="objectModel:ObservableGeoParameter">
+			<Grid ColumnDefinitions="Auto,*"
+				  ColumnSpacing="12"
+				  Padding="12"
+				  BackgroundColor="{DynamicResource SurfaceElevation1WL}">
+				<Border Grid.Column="0"
+						WidthRequest="72"
+						HeightRequest="72"
+						StrokeShape="RoundRectangle 10"
+						StrokeThickness="0"
+						VerticalOptions="Center"
+						IsVisible="{Binding HasGeoValue}">
+					<controls:GeoMapPreview Position="{Binding GeoValue}"
+											AreaMin="{Binding AreaMin}"
+											AreaMax="{Binding AreaMax}"
+											PinSize="22" />
+				</Border>
+				<VerticalStackLayout Grid.Column="1"
+									 Spacing="3"
+									 VerticalOptions="Center">
+					<Label Text="{Binding Label}"
+						   FontSize="13"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+					<Label Text="{Binding RowValue}"
+						   FontFamily="SpaceGroteskSemiBold"
+						   FontSize="{StaticResource FontSizeMd}"
+						   TextColor="{DynamicResource ContentPrimaryWL}">
+						<Label.Triggers>
+							<DataTrigger TargetType="Label"
+										 Binding="{Binding RowIsMuted}"
+										 Value="True">
+								<Setter Property="FontFamily"
+										Value="HaasGroteskRegular" />
+								<Setter Property="FontSize"
+										Value="{StaticResource FontSizeSm}" />
+								<Setter Property="TextColor"
+										Value="{DynamicResource ContentSecondaryWL}" />
+							</DataTrigger>
+						</Label.Triggers>
+					</Label>
+					<HorizontalStackLayout Spacing="8">
+						<Border StrokeShape="RoundRectangle 6"
+								StrokeThickness="0"
+								Padding="6,2"
+								BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+								VerticalOptions="Center"
+								IsVisible="{Binding IsContractLocation}">
+							<Label Text="{l:Localize ParameterContractPlace}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="11"
+								   TextColor="{DynamicResource ContentAccessWL}" />
+						</Border>
+						<Label Text="{l:Localize ParameterOpenMap}"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   TextColor="{DynamicResource ContentAccessWL}"
+							   VerticalOptions="Center"
+							   IsVisible="{Binding HasGeoValue}">
+							<Label.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OpenMapCommand}" />
+							</Label.GestureRecognizers>
+						</Label>
+					</HorizontalStackLayout>
+				</VerticalStackLayout>
+			</Grid>
+		</DataTemplate>
+
+		<!-- Places get a map; everything else, and a place that is hidden, gets a plain row -->
+		<objectModel:ParameterTemplateSelector x:Key="ParameterRowSelector"
+											   GeoTemplate="{StaticResource GeoParameterRowTemplate}"
+											   ProtectedTemplate="{StaticResource ParameterRowTemplate}"
+											   DefaultTemplate="{StaticResource ParameterRowTemplate}" />
 	</ContentView.Resources>
 
+	<ScrollView>
+		<VerticalStackLayout Padding="16,0,16,24"
+							 Spacing="8">
+			<Label Text="{l:Localize ViewParametersTitle}"
+				   FontFamily="SpaceGroteskSemiBold"
+				   FontSize="20"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   Margin="4,0,4,4"
+				   SemanticProperties.HeadingLevel="Level1" />
 
-	<!-- Parameters -->
-	<Grid RowDefinitions="*">
-		<CollectionView HorizontalOptions="Center"
-								 ItemsSource="{Binding DisplayableParameters}"
-								 ItemTemplate="{StaticResource ParameterTemplateSelector}"
-								 SelectionMode="None"
-								 ItemSizingStrategy="MeasureAllItems">
-			<CollectionView.ItemsLayout>
-				<LinearItemsLayout Orientation="Vertical"
-											 ItemSpacing="16" />
-			</CollectionView.ItemsLayout>
-			<CollectionView.EmptyView>
-				<Label Text="{l:Localize ContractHasNoParameters}"
-						 Style="{DynamicResource InfoLabel}"
-						 HorizontalOptions="Center" />
-			</CollectionView.EmptyView>
-		</CollectionView>
-	</Grid>
+			<Label Text="{l:Localize ContractHasNoParameters}"
+				   Style="{DynamicResource InfoLabel}"
+				   HorizontalOptions="Center"
+				   IsVisible="{Binding HasParameters, Converter={StaticResource InvertedBoolConverter}}" />
 
+			<!-- The values, then the calculated ones, the ones from IDs and the rest, each group in one card -->
+			<VerticalStackLayout Spacing="8"
+								 BindableLayout.ItemsSource="{Binding ParameterGroups}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate x:DataType="contracts:ParameterGroup">
+						<VerticalStackLayout Spacing="6">
+							<HorizontalStackLayout Spacing="6"
+												   Margin="4,8,4,0"
+												   IsVisible="{Binding HasTitle}">
+								<Path Data="{Binding Icon}"
+									  Fill="{DynamicResource ContentSecondaryWL}"
+									  Aspect="Uniform"
+									  WidthRequest="14"
+									  HeightRequest="14"
+									  VerticalOptions="Center"
+									  IsVisible="{Binding HasIcon}" />
+								<Label Text="{Binding Title}"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="13"
+									   TextColor="{DynamicResource ContentSecondaryWL}"
+									   VerticalOptions="Center"
+									   SemanticProperties.HeadingLevel="Level2" />
+							</HorizontalStackLayout>
 
-
+							<!-- The 1 px gaps between rows show the card's divider colour as lines -->
+							<Border Style="{DynamicResource ListCardBorder}">
+								<VerticalStackLayout Spacing="1"
+													 BackgroundColor="{DynamicResource SurfaceDividerWL}"
+													 BindableLayout.ItemsSource="{Binding Items}"
+													 BindableLayout.ItemTemplateSelector="{StaticResource ParameterRowSelector}" />
+							</Border>
+						</VerticalStackLayout>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
 </views:BaseViewContractView>

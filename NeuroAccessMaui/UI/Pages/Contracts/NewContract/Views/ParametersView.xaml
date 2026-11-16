@@ -8,6 +8,7 @@
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
                            xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+                           xmlns:contracts="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI" >
@@ -22,8 +23,6 @@
 			DurationTemplate="{StaticResource DurationParameterTemplate}"
 			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 			GeoTemplate="{StaticResource GeoParameterTemplate}"
-			CalcTemplate="{StaticResource CalcParameterTemplate}"
-			RoleTemplate="{StaticResource RoleParameterTemplate}"
 			AttachmentTemplate="{StaticResource AttachmentParameterTemplate}"
 			DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
@@ -62,7 +61,7 @@
 		<CollectionView x:Name="ParametersList"
 						Grid.Row="1"
 						HorizontalOptions="Center"
-						ItemsSource="{Binding EditableParameters}"
+						ItemsSource="{Binding InputParameters}"
 						ItemTemplate="{StaticResource ParameterTemplateSelector}"
 						SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemsLayout>
@@ -71,6 +70,128 @@
 			<CollectionView.EmptyView>
 				<Label Text="{l:Localize SomethingWentWrong}" />
 			</CollectionView.EmptyView>
+			<CollectionView.Footer>
+				<VerticalStackLayout Spacing="16"
+									 Padding="0,16,0,16">
+					<!-- Values taken from people's IDs when they sign, one card for each role -->
+					<VerticalStackLayout Spacing="16"
+										 BindableLayout.ItemsSource="{Binding IdParameterGroups}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="contracts:ParameterGroup">
+								<Border Style="{DynamicResource BorderSet}"
+										Margin="{DynamicResource MediumLeftRightMargins}">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+										<Grid ColumnDefinitions="*,Auto"
+											  ColumnSpacing="8">
+											<Label Grid.Column="0"
+												   Text="{Binding Title}"
+												   Style="{DynamicResource ParameterItemTitleLabel}" />
+											<Border Grid.Column="1"
+													StrokeShape="RoundRectangle 6"
+													StrokeThickness="0"
+													Padding="7,2"
+													BackgroundColor="{DynamicResource TnPInfobgWL}"
+													VerticalOptions="Center">
+												<Label Text="{l:Localize ParameterAddedOnSigningTag}"
+													   FontFamily="HaasGroteskMedium"
+													   FontSize="11"
+													   TextColor="{DynamicResource TnPInfoContentWL}" />
+											</Border>
+										</Grid>
+										<VerticalStackLayout Spacing="6"
+															 BindableLayout.ItemsSource="{Binding Items}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="objectModel:ObservableParameter">
+													<Grid ColumnDefinitions="*,Auto"
+														  ColumnSpacing="12">
+														<Label Grid.Column="0"
+															   Text="{Binding Label}"
+															   FontSize="{StaticResource FontSizeMd}"
+															   TextColor="{DynamicResource ContentPrimaryWL}" />
+														<Label Grid.Column="1"
+															   Text="{Binding RowValue}"
+															   FontSize="{StaticResource FontSizeMd}"
+															   TextColor="{DynamicResource ContentPrimaryWL}"
+															   HorizontalTextAlignment="End">
+															<Label.Triggers>
+																<DataTrigger TargetType="Label"
+																			 Binding="{Binding RowIsMuted}"
+																			 Value="True">
+																	<Setter Property="TextColor"
+																			Value="{DynamicResource ContentSecondaryWL}" />
+																</DataTrigger>
+															</Label.Triggers>
+														</Label>
+													</Grid>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
+
+					<!-- The calculated values, worked out as the user fills in -->
+					<Border StrokeShape="RoundRectangle 16"
+							StrokeThickness="0"
+							Padding="14,12"
+							BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+							Margin="{DynamicResource MediumLeftRightMargins}"
+							IsVisible="{Binding HasCalculatedParameters}">
+						<VerticalStackLayout Spacing="6">
+							<HorizontalStackLayout Spacing="6">
+								<Path Data="{x:Static ui:Geometries.CalculatorPath}"
+									  Fill="{DynamicResource TnPSuccessContentWL}"
+									  Aspect="Uniform"
+									  WidthRequest="14"
+									  HeightRequest="14"
+									  VerticalOptions="Center" />
+								<Label Text="{l:Localize ParameterCalculated}"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="{StaticResource FontSizeXs}"
+									   TextColor="{DynamicResource TnPSuccessContentWL}"
+									   VerticalOptions="Center" />
+							</HorizontalStackLayout>
+							<VerticalStackLayout Spacing="4"
+												 BindableLayout.ItemsSource="{Binding CalculatedParameters}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="objectModel:ObservableParameter">
+										<Grid ColumnDefinitions="*,Auto"
+											  ColumnSpacing="12">
+											<Label Grid.Column="0"
+												   Text="{Binding Label}"
+												   FontSize="{StaticResource FontSizeSm}"
+												   TextColor="{DynamicResource ContentPrimaryWL}"
+												   VerticalOptions="Center" />
+											<Label Grid.Column="1"
+												   Text="{Binding RowValue}"
+												   FontFamily="SpaceGroteskSemiBold"
+												   FontSize="{StaticResource FontSizeLg}"
+												   TextColor="{DynamicResource ContentPrimaryWL}"
+												   HorizontalTextAlignment="End"
+												   VerticalOptions="Center">
+												<Label.Triggers>
+													<DataTrigger TargetType="Label"
+																 Binding="{Binding RowIsMuted}"
+																 Value="True">
+														<Setter Property="FontFamily"
+																Value="HaasGroteskRegular" />
+														<Setter Property="FontSize"
+																Value="{StaticResource FontSizeSm}" />
+														<Setter Property="TextColor"
+																Value="{DynamicResource ContentSecondaryWL}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
+										</Grid>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+			</CollectionView.Footer>
 		</CollectionView>
 	</Grid>
 

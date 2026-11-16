@@ -82,8 +82,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (string.IsNullOrEmpty(CP.StringValue))
 					CP.SetValue(null);
 			}
-			else if (ParameterInfo is ObservableNumericalParameter Numerical)
+			if (ParameterInfo is ObservableNumericalParameter Numerical)
 				Numerical.FindUnit(contract);
+			else if (ParameterInfo is ObservableCalcParameter Calc)
+				Calc.FindUnit(contract);
 
 			return ParameterInfo;
 		}
@@ -188,10 +190,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			private set
 			{
 				if (this.SetProperty(ref this.description, value))
+				{
 					this.OnPropertyChanged(nameof(this.Label));
+					this.OnPropertyChanged(nameof(this.Placeholder));
+				}
 			}
 		}
 		private string description = string.Empty;
+
+		/// <summary>
+		/// The example shown in an empty input: the parameter's guide, when the label is its description. When the label is
+		/// the guide itself, the input is left empty instead of repeating it.
+		/// </summary>
+		public string Placeholder => !string.IsNullOrEmpty(this.Description) && !string.IsNullOrEmpty(this.Parameter.Guide)
+			? this.Parameter.Guide
+			: string.Empty;
 
 		/// <summary>
 		/// If the parameter is avlid
@@ -364,6 +377,82 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		public bool HasHint => !string.IsNullOrEmpty(this.Hint);
 
+		#region Reading
+		/// <summary>
+		/// If the value can't be shown, because it is protected and this phone can't read it.
+		/// </summary>
+		public bool IsValueHidden => this.IsProtected && !this.CanReadValue;
+
+		/// <summary>
+		/// The value as one short line, for the list of a contract's details: the value itself, or a note such as "Not
+		/// filled in" or "Hidden from you".
+		/// </summary>
+		public string RowValue
+		{
+			get
+			{
+				if (this.IsValueHidden)
+				{
+					return this.IsTransient
+						? ServiceRef.Localizer[nameof(AppResources.ParameterNotStored)]
+						: this.EncryptedValueText;
+				}
+
+				return this.IsRowValueMissing ? this.RowMissingText : this.FormatRowValue();
+			}
+		}
+
+		/// <summary>
+		/// If the row shows a note instead of a value, which is shown dimmed.
+		/// </summary>
+		public bool RowIsMuted => this.IsValueHidden || this.IsRowValueMissing;
+
+		/// <summary>
+		/// If the row shows a lock, because the value is hidden.
+		/// </summary>
+		public bool RowShowsLock => this.IsValueHidden;
+
+		/// <summary>
+		/// If tapping the row opens what the value points to, such as a contract or a place.
+		/// </summary>
+		public bool RowIsLink => !this.IsValueHidden && this.RowCommand is not null && !this.IsRowValueMissing;
+
+		/// <summary>
+		/// What tapping the row does, or null when the row only shows a value.
+		/// </summary>
+		public virtual System.Windows.Input.ICommand? RowCommand => null;
+
+		/// <summary>
+		/// If there is no value to show yet.
+		/// </summary>
+		protected virtual bool IsRowValueMissing => this.Value is null;
+
+		/// <summary>
+		/// What the row shows while there is no value.
+		/// </summary>
+		protected virtual string RowMissingText => ServiceRef.Localizer[nameof(AppResources.ParameterNotSet)];
+
+		/// <summary>
+		/// Formats a value that is there, for the row.
+		/// </summary>
+		/// <returns>The value as short text.</returns>
+		protected virtual string FormatRowValue()
+		{
+			return this.Parameter.StringValue ?? string.Empty;
+		}
+
+		/// <summary>
+		/// Tells the row that its value, or how it is shown, has changed.
+		/// </summary>
+		protected void NotifyRowChanged()
+		{
+			this.OnPropertyChanged(nameof(this.RowValue));
+			this.OnPropertyChanged(nameof(this.RowIsMuted));
+			this.OnPropertyChanged(nameof(this.RowShowsLock));
+			this.OnPropertyChanged(nameof(this.RowIsLink));
+		}
+		#endregion
+
 		#region Formatting
 		/// <summary>
 		/// Formats a number for the current culture, keeping every significant decimal and dropping trailing zeros.
@@ -400,9 +489,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		#endregion
 
 		#region Property Change Handling
+		/// <summary>
+		/// Keeps the row of a contract's details in step with the value.
+		/// </summary>
+		/// <param name="e">The property change notification.</param>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
+
+			if (e.PropertyName is nameof(this.Value) or nameof(this.IsLoadingValue))
+				this.NotifyRowChanged();
 		}
 		#endregion
 	}
@@ -453,6 +549,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			_ => ServiceRef.Localizer[nameof(AppResources.ParameterNotSet)]
 		};
 
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.BooleanText;
+
 		[RelayCommand]
 		private void ToggleBooleanValue()
 		{
@@ -495,6 +594,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// The date in the user's short format, or "-".
 		/// </summary>
 		public string DateText => this.DateValue?.ToString("d", CultureInfo.CurrentCulture) ?? "-";
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.DateText;
 	}
 
 	/// <summary>
@@ -535,7 +637,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// The unit or currency of the number, or an empty string when it isn't known.
 		/// </summary>
-		public string Unit => this.isPercent ? "%" : this.currencyParameter?.StringValue ?? string.Empty;
+		public string Unit => this.unit?.Text ?? string.Empty;
 
 		/// <summary>
 		/// If the number has a known unit or currency.
@@ -543,41 +645,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool HasUnit => !string.IsNullOrEmpty(this.Unit);
 
 		/// <summary>
-		/// If the number is a percentage.
+		/// The number's unit or currency, if it has one.
 		/// </summary>
-		private bool isPercent;
+		private ParameterUnit? unit;
 
 		/// <summary>
-		/// The parameter that holds the currency of the number, if any.
-		/// </summary>
-		private Parameter? currencyParameter;
-
-		/// <summary>
-		/// Words in parameter names that mean an amount of money.
-		/// </summary>
-		private static readonly string[] amountWords = ["Amount", "Price", "Cost", "Fee", "Total", "Sum", "Value", "Payment", "Deposit"];
-
-		/// <summary>
-		/// Works out the number's unit. A number whose name or guide speaks of percent is a percentage. An amount, judged by
-		/// its name, is in the currency of a parameter named "Currency", when the contract has one.
+		/// Works out the number's unit or currency.
 		/// </summary>
 		/// <param name="Contract">The contract the parameter belongs to.</param>
 		public void FindUnit(Contract Contract)
 		{
-			string Name = this.Parameter.Name ?? string.Empty;
-			string Guide = this.Parameter.Guide ?? string.Empty;
-
-			if (Name.Contains("Percent", StringComparison.OrdinalIgnoreCase) || Guide.Contains('%'))
-			{
-				this.isPercent = true;
-				return;
-			}
-
-			if (!amountWords.Any(Word => Name.Contains(Word, StringComparison.OrdinalIgnoreCase)))
-				return;
-
-			this.currencyParameter = Contract.Parameters?.FirstOrDefault(P =>
-				P is StringParameter && string.Equals(P.Name, "Currency", StringComparison.OrdinalIgnoreCase));
+			this.unit = ParameterUnit.Find(this.Parameter, Contract);
 		}
 
 		/// <summary>
@@ -588,7 +666,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.OnPropertyChanged(nameof(this.Unit));
 			this.OnPropertyChanged(nameof(this.HasUnit));
 			this.OnPropertyChanged(nameof(this.DecimalTextWithUnit));
+			this.NotifyRowChanged();
 		}
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.DecimalTextWithUnit;
 
 		/// <summary>
 		/// Notifies the numeric editor when the underlying observable value changes.
@@ -641,6 +723,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool HasLengthCounter => ((StringParameter)this.Parameter).MaxLength.HasValue;
 
 		/// <summary>
+		/// The longest text the input accepts.
+		/// </summary>
+		public int MaxLength => ((StringParameter)this.Parameter).MaxLength ?? int.MaxValue;
+
+		/// <summary>
 		/// How long the text is, out of the longest length allowed, such as "12/40".
 		/// </summary>
 		public string LengthCounter => this.HasLengthCounter
@@ -652,6 +739,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// If there is a hint or a length counter to show under the input.
 		/// </summary>
 		public bool HasHintOrCounter => this.HasHint || this.HasLengthCounter;
+
+		/// <inheritdoc/>
+		protected override bool IsRowValueMissing => string.IsNullOrEmpty(this.StringValue);
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.StringValue;
 	}
 
 	public class ObservableTimeParameter : ObservableParameter
@@ -682,6 +775,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public string TimeText => this.TimeSpanValue is TimeSpan Time
 			? DateTime.Today.Add(Time).ToString("t", CultureInfo.CurrentCulture)
 			: "-";
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.TimeText;
 
 		/// <summary>
 		/// The time, or null while nobody has chosen one.
@@ -741,6 +837,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// If the contract allows a duration that goes backwards in time.
 		/// </summary>
 		public bool AllowsNegative => ((DurationParameter)this.Parameter).Min is Duration Min && Min.Negation;
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue()
+		{
+			return this.NullableDurationValue is Duration Value ? DurationToString.ToString(Value) : string.Empty;
+		}
 
 		public string StringValue
 		{
@@ -825,6 +927,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public string RoleDisplayText => this.HasRoleValue
 			? this.RoleValue
 			: ServiceRef.Localizer[nameof(AppResources.ParameterAddedOnSigning), this.RoleName];
+
+		/// <inheritdoc/>
+		protected override bool IsRowValueMissing => !this.HasRoleValue;
+
+		/// <inheritdoc/>
+		protected override string RowMissingText => this.RoleDisplayText;
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.RoleValue;
 	}
 
 	public class ObservableCalcParameter : ObservableParameter
@@ -863,6 +974,47 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.InitializeValue(parameter.ObjectValue);
 		}
 
+		/// <summary>
+		/// The unit or currency of a calculated number, if it has one.
+		/// </summary>
+		private ParameterUnit? unit;
+
+		/// <summary>
+		/// Works out the unit or currency of a calculated number.
+		/// </summary>
+		/// <param name="Contract">The contract the parameter belongs to.</param>
+		public void FindUnit(Contract Contract)
+		{
+			this.unit = ParameterUnit.Find(this.Parameter, Contract);
+		}
+
+		/// <summary>
+		/// Shows the value again with its unit, for example after the currency was changed.
+		/// </summary>
+		public void RefreshUnit()
+		{
+			this.OnPropertyChanged(nameof(this.CalcString));
+			this.OnPropertyChanged(nameof(this.CalcDisplayText));
+			this.NotifyRowChanged();
+		}
+
+		/// <inheritdoc/>
+		protected override string RowMissingText => ServiceRef.Localizer[nameof(AppResources.ParameterCantCalculate)];
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.CalcString;
+
+		/// <summary>
+		/// Adds the unit, when known, after a calculated number.
+		/// </summary>
+		/// <param name="Number">The number as text.</param>
+		/// <returns>The number with its unit.</returns>
+		private string WithUnit(string Number)
+		{
+			string Unit = this.unit?.Text ?? string.Empty;
+			return string.IsNullOrEmpty(Unit) ? Number : Number + " " + Unit;
+		}
+
 		public object? CalcValue
 		{
 			get => this.Value;
@@ -878,8 +1030,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 				return Value switch
 				{
-					decimal DecimalValue => FormatNumber(DecimalValue),
-					double DoubleValue => DoubleValue.ToString("G17", Culture),
+					decimal DecimalValue => this.WithUnit(FormatNumber(DecimalValue)),
+					double DoubleValue => this.WithUnit(Math.Abs(DoubleValue) < 7.9e28
+						? FormatNumber((decimal)DoubleValue)
+						: DoubleValue.ToString("G17", Culture)),
 					DateTime DateTimeValue => (DateTimeValue.Kind == DateTimeKind.Utc ? DateTimeValue.ToLocalTime() : DateTimeValue).ToString("G", Culture),
 					TimeSpan TimeSpanValue => FormatTimeSpan(TimeSpanValue),
 					Duration DurationValue => DurationToString.ToString(DurationValue),
@@ -916,6 +1070,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public string DateTimeText => this.DateTimeValue is DateTime Value
 			? (Value.Kind == DateTimeKind.Utc ? Value.ToLocalTime() : Value).ToString("g", CultureInfo.CurrentCulture)
 			: "-";
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.DateTimeText;
 
 		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
 		{
@@ -1000,6 +1157,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.ContractReferenceValue));
 				this.OnPropertyChanged(nameof(this.HasContract));
 				this.OnPropertyChanged(nameof(this.CanPasteId));
+				this.OnPropertyChanged(nameof(this.ShowsHintSeparator));
 				this.OnPropertyChanged(nameof(this.ContractTitle));
 				this.OnPropertyChanged(nameof(this.ContractSubtitle));
 				_ = this.LoadReferencedContractAsync();
@@ -1024,6 +1182,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(ContractTitle))]
 		[NotifyPropertyChangedFor(nameof(ContractSubtitle))]
+		[NotifyPropertyChangedFor(nameof(RowValue))]
 		private ContractModel? referencedContract;
 
 		/// <summary>
@@ -1031,6 +1190,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanPasteId))]
+		[NotifyPropertyChangedFor(nameof(ShowsHintSeparator))]
 		private bool isPastingId;
 
 		/// <summary>
@@ -1042,6 +1202,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// If "Paste ID" is offered: nothing is chosen, and the ID field isn't shown yet.
 		/// </summary>
 		public bool CanPasteId => !this.HasContract && !this.IsPastingId;
+
+		/// <summary>
+		/// If the contract can be created without choosing a contract here.
+		/// </summary>
+		public bool IsOptional => !((ContractReferenceParameter)this.Parameter).Required;
+
+		/// <summary>
+		/// If "Optional" and "Paste ID" are both shown, with a dot between them.
+		/// </summary>
+		public bool ShowsHintSeparator => this.IsOptional && this.CanPasteId;
+
+		/// <inheritdoc/>
+		public override System.Windows.Input.ICommand? RowCommand => this.OpenContractCommand;
+
+		/// <inheritdoc/>
+		protected override bool IsRowValueMissing => !this.HasContract;
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.ContractTitle;
 
 		/// <summary>
 		/// The chosen contract's name, or its ID when the phone doesn't have it.
@@ -1163,6 +1342,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.GeoString));
 				this.OnPropertyChanged(nameof(this.GeoText));
 				this.OnPropertyChanged(nameof(this.HasGeoValue));
+				this.OnPropertyChanged(nameof(this.HasMap));
 				this.OpenMapCommand.NotifyCanExecuteChanged();
 			}
 		}
@@ -1197,6 +1377,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool IsContractLocation => ((GeoParameter)this.Parameter).ContractLocation;
 
 		/// <summary>
+		/// One corner of the area the place must be in, or null when the contract doesn't limit it.
+		/// </summary>
+		public GeoPosition? AreaMin => ((GeoParameter)this.Parameter).Min;
+
+		/// <summary>
+		/// The opposite corner of the area the place must be in, or null when the contract doesn't limit it.
+		/// </summary>
+		public GeoPosition? AreaMax => ((GeoParameter)this.Parameter).Max;
+
+		/// <summary>
+		/// If there is a map to show: a place has been chosen, or the contract limits it to an area.
+		/// </summary>
+		public bool HasMap => this.HasGeoValue || (this.AreaMin is not null && this.AreaMax is not null);
+
+		/// <inheritdoc/>
+		public override System.Windows.Input.ICommand? RowCommand => this.OpenMapCommand;
+
+		/// <inheritdoc/>
+		protected override string FormatRowValue() => this.GeoText;
+
+		/// <summary>
 		/// Opens a map where the user picks the place by moving the map under a pin.
 		/// </summary>
 		[RelayCommand(AllowConcurrentExecutions = false)]
@@ -1204,7 +1405,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			try
 			{
-				GeoMapViewModel ViewModel = new(this.GeoValue);
+				GeoMapViewModel ViewModel = new(this.GeoValue, this.AreaMin, this.AreaMax);
 				await ServiceRef.PopupService.PushAsync(new GeoMapPopup(ViewModel));
 
 				GeoPosition? Picked = await ViewModel.Result;

@@ -6,7 +6,7 @@ using Duration = Waher.Content.Duration;
 namespace NeuroAccessMaui.UI.Controls
 {
 	/// <summary>
-	/// An input for a duration. Each row holds a number with a stepper and a unit. "Add unit" adds a row for durations such
+	/// An input for a duration. Each row holds a number between buttons for less and more, and a unit. "Add unit" adds a row for durations such
 	/// as "1 year 6 months", and "Backwards in time" makes the duration negative where the contract allows that.
 	/// </summary>
 	public class DurationInput : ContentView
@@ -42,7 +42,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// The label shown above the input.
 		/// </summary>
 		public static readonly BindableProperty LabelTextProperty =
-			BindableProperty.Create(nameof(LabelText), typeof(string), typeof(DurationInput), string.Empty);
+			BindableProperty.Create(nameof(LabelText), typeof(string), typeof(DurationInput), string.Empty,
+				propertyChanged: (Bindable, OldValue, NewValue) =>
+					((DurationInput)Bindable).titleLabel.IsVisible = !string.IsNullOrEmpty(NewValue as string));
 
 		/// <summary>
 		/// If the duration may go backwards in time.
@@ -68,6 +70,7 @@ namespace NeuroAccessMaui.UI.Controls
 				Style = AppStyles.SectionTitleLabel
 			};
 			this.titleLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.LabelText), source: this));
+			this.titleLabel.IsVisible = false;
 
 			this.rowsLayout = new VerticalStackLayout
 			{
@@ -77,10 +80,11 @@ namespace NeuroAccessMaui.UI.Controls
 			this.addUnitLabel = new Label
 			{
 				Text = ServiceRef.Localizer[nameof(AppResources.AddDuration)],
-				Style = AppStyles.InfoLabel,
-				TextDecorations = TextDecorations.Underline,
+				FontFamily = "HaasGroteskMedium",
+				FontSize = 13,
 				HorizontalOptions = LayoutOptions.Start
 			};
+			this.addUnitLabel.SetDynamicResource(Label.TextColorProperty, "ContentAccessWL");
 			TapGestureRecognizer AddUnitTap = new();
 			AddUnitTap.Tapped += (Sender, Args) => this.AddRow(null, null);
 			this.addUnitLabel.GestureRecognizers.Add(AddUnitTap);
@@ -368,13 +372,14 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// One row of the input: a number, a stepper and a unit.
+		/// One row of the input: buttons for less and more around a number, and a unit.
 		/// </summary>
 		private sealed class UnitRow
 		{
 			private readonly DurationInput owner;
 			private readonly Entry entry;
-			private readonly Stepper stepper;
+			private readonly Border numberField;
+			private readonly Border unitField;
 			private readonly Picker unitPicker;
 			private readonly Label removeLabel;
 			private DurationUnits[] units = [];
@@ -401,22 +406,25 @@ namespace NeuroAccessMaui.UI.Controls
 				};
 				this.entry.TextChanged += this.Entry_TextChanged;
 
-				this.stepper = new Stepper
+				this.entry.HorizontalTextAlignment = TextAlignment.Center;
+				this.numberField = new Border
 				{
-					Minimum = 0,
-					Maximum = maxNumber,
-					Increment = 1,
-					Value = Number ?? 0,
-					VerticalOptions = LayoutOptions.Center
+					Style = AppStyles.RegularCompositeEntryBorder,
+					Padding = new Thickness(4, 0),
+					WidthRequest = 64,
+					Content = this.entry
 				};
-				this.stepper.ValueChanged += this.Stepper_ValueChanged;
 
 				this.unitPicker = new Picker
 				{
-					VerticalOptions = LayoutOptions.Center,
-					MinimumWidthRequest = 96
+					VerticalOptions = LayoutOptions.Center
 				};
 				this.unitPicker.SelectedIndexChanged += this.UnitPicker_SelectedIndexChanged;
+				this.unitField = new Border
+				{
+					Style = AppStyles.RegularCompositeEntryBorder,
+					Content = this.unitPicker
+				};
 
 				this.removeLabel = new Label
 				{
@@ -429,27 +437,79 @@ namespace NeuroAccessMaui.UI.Controls
 				RemoveTap.Tapped += (Sender, Args) => this.owner.RemoveRow(this);
 				this.removeLabel.GestureRecognizers.Add(RemoveTap);
 
+				// Less, the number, more, and the unit, as one row.
 				Grid Row = new()
 				{
 					ColumnDefinitions =
 					{
+						new ColumnDefinition { Width = GridLength.Auto },
+						new ColumnDefinition { Width = GridLength.Auto },
+						new ColumnDefinition { Width = GridLength.Auto },
 						new ColumnDefinition { Width = GridLength.Star },
-						new ColumnDefinition { Width = GridLength.Auto },
-						new ColumnDefinition { Width = GridLength.Auto },
 						new ColumnDefinition { Width = GridLength.Auto }
 					},
 					ColumnSpacing = AppStyles.SmallSpacing
 				};
-				Row.Add(this.entry, 0, 0);
-				Row.Add(this.stepper, 1, 0);
-				Row.Add(this.unitPicker, 2, 0);
-				Row.Add(this.removeLabel, 3, 0);
+				Row.Add(CreateStepButton("−", () => this.Step(-1)), 0, 0);
+				Row.Add(this.numberField, 1, 0);
+				Row.Add(CreateStepButton("+", () => this.Step(1)), 2, 0);
+				Row.Add(this.unitField, 3, 0);
+				Row.Add(this.removeLabel, 4, 0);
 
-				this.View = new Border
+				this.View = Row;
+			}
+
+			/// <summary>
+			/// Creates a square button that makes the number one less or one more.
+			/// </summary>
+			/// <param name="Text">The button's sign.</param>
+			/// <param name="OnTap">What the button does.</param>
+			/// <returns>The button.</returns>
+			private static Border CreateStepButton(string Text, Action OnTap)
+			{
+				Label Sign = new()
 				{
-					Style = AppStyles.RegularCompositeEntryBorder,
-					Content = Row
+					Text = Text,
+					FontFamily = "HaasGroteskMedium",
+					FontSize = 20,
+					HorizontalOptions = LayoutOptions.Center,
+					VerticalOptions = LayoutOptions.Center
 				};
+				Sign.SetDynamicResource(Label.TextColorProperty, "ContentPrimaryWL");
+
+				Border Button = new()
+				{
+					WidthRequest = 40,
+					HeightRequest = 40,
+					Padding = 0,
+					StrokeThickness = 1,
+					StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
+					VerticalOptions = LayoutOptions.Center,
+					Content = Sign
+				};
+				Button.SetDynamicResource(Border.StrokeProperty, "InputFieldsSurfaceStroke");
+				Button.SetDynamicResource(VisualElement.BackgroundColorProperty, "SurfaceElevation1WL");
+
+				TapGestureRecognizer Tap = new();
+				Tap.Tapped += (Sender, Args) => OnTap();
+				Button.GestureRecognizers.Add(Tap);
+
+				return Button;
+			}
+
+			/// <summary>
+			/// Makes the number one less or one more, never below zero.
+			/// </summary>
+			/// <param name="Change">-1 or 1.</param>
+			private void Step(int Change)
+			{
+				this.Number = Math.Clamp((this.Number ?? 0) + Change, 0, maxNumber);
+
+				this.isSyncing = true;
+				this.entry.Text = this.Number.Value.ToString(CultureInfo.CurrentCulture);
+				this.isSyncing = false;
+
+				this.owner.UpdateDuration();
 			}
 
 			/// <summary>
@@ -458,13 +518,15 @@ namespace NeuroAccessMaui.UI.Controls
 			/// <param name="IsValid">If the duration is accepted.</param>
 			public void SetValid(bool IsValid)
 			{
-				this.View.SetDynamicResource(Border.StrokeProperty, IsValid ? "InputFieldsSurfaceStroke" : "InputFieldsContentDangerv500");
+				string Stroke = IsValid ? "InputFieldsSurfaceStroke" : "InputFieldsContentDangerv500";
+				this.numberField.SetDynamicResource(Border.StrokeProperty, Stroke);
+				this.unitField.SetDynamicResource(Border.StrokeProperty, Stroke);
 			}
 
 			/// <summary>
 			/// The view of the row.
 			/// </summary>
-			public Border View { get; }
+			public Grid View { get; }
 
 			/// <summary>
 			/// The row's unit.
@@ -512,24 +574,6 @@ namespace NeuroAccessMaui.UI.Controls
 				this.Number = int.TryParse(Digits, NumberStyles.None, CultureInfo.InvariantCulture, out int Number)
 					? Math.Min(Number, maxNumber)
 					: null;
-
-				this.isSyncing = true;
-				this.stepper.Value = this.Number ?? 0;
-				this.isSyncing = false;
-
-				this.owner.UpdateDuration();
-			}
-
-			private void Stepper_ValueChanged(object? Sender, ValueChangedEventArgs e)
-			{
-				if (this.isSyncing)
-					return;
-
-				this.Number = (int)e.NewValue;
-
-				this.isSyncing = true;
-				this.entry.Text = this.Number.Value.ToString(CultureInfo.CurrentCulture);
-				this.isSyncing = false;
 
 				this.owner.UpdateDuration();
 			}

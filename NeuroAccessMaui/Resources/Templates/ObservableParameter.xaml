@@ -91,9 +91,10 @@
 					  ColumnSpacing="{DynamicResource MediumSpacing}">
 					<VerticalStackLayout Grid.Column="0"
 										 VerticalOptions="Center">
-						<Label Text="{Binding Label}"
-							   Style="{DynamicResource ParameterItemTitleLabel}"
-							   TextColor="{DynamicResource ContentPrimaryWL}" />
+						<controls:ParameterHeader Text="{Binding Label}"
+												  IsEncrypted="{Binding IsEncrypted}"
+												  IsTransient="{Binding IsTransient}"
+												  TextColor="{DynamicResource ContentPrimaryWL}" />
 						<Label Text="{Binding BooleanText}"
 							   Style="{DynamicResource ParameterHintLabel}" />
 					</VerticalStackLayout>
@@ -105,26 +106,6 @@
 				<Label Text="{Binding ValidationText}"
 					   IsVisible="{Binding CanShowError}"
 					   Style="{DynamicResource ParameterErrorLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only BooleanParameterTemplate -->
-	<DataTemplate x:Key="BooleanParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableBooleanParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding BooleanText}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -135,36 +116,18 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
 				<controls:CompositeDatePicker Style="{DynamicResource RegularCompositeDatePicker}"
 											  IsValid="{Binding IsValid}"
 											  ValidationText="{Binding ValidationText}"
-											  LabelText="{Binding Label}"
 											  NullableDate="{Binding DateValue}"
-											  Placeholder="{Binding Guide}"
+											  Placeholder="{Binding Placeholder}"
 											  VerticalOptions="Center" />
 				<Label Text="{Binding Hint}"
 					   IsVisible="{Binding HasHint}"
 					   Style="{DynamicResource ParameterHintLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only DateParameterTemplate -->
-	<DataTemplate x:Key="DateParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableDateParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding DateText}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -175,48 +138,34 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Grid ColumnDefinitions="*, Auto"
-					  ColumnSpacing="{DynamicResource SmallSpacing}">
-					<controls:CompositeEntry Grid.Column="0"
-											 Style="{DynamicResource RegularCompositeEntry}"
-											 EntryData="{Binding DecimalValue, Converter={StaticResource StringToDecimalConverter}}"
-											 Keyboard="Numeric"
-											 Placeholder="{Binding Guide}"
-											 VerticalOptions="Center"
-											 LabelText="{Binding Label}"
-											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}" />
-					<!-- The unit or currency the number is in -->
-					<Label Grid.Column="1"
-						   Text="{Binding Unit}"
-						   IsVisible="{Binding HasUnit}"
-						   Style="{DynamicResource ParameterItemValueLabel}"
-						   TextColor="{DynamicResource ContentSecondaryWL}"
-						   VerticalOptions="Center" />
-				</Grid>
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
+				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+										 EntryData="{Binding DecimalValue, Converter={StaticResource StringToDecimalConverter}}"
+										 Keyboard="Numeric"
+										 Placeholder="{Binding Placeholder}"
+										 VerticalOptions="Center"
+										 IsValid="{Binding IsValid}"
+										 ValidationText="{Binding ValidationText}">
+					<!-- The unit or currency the number is in, inside the field -->
+					<controls:CompositeEntry.RightView>
+						<Border StrokeShape="RoundRectangle 6"
+								StrokeThickness="0"
+								Padding="8,3"
+								BackgroundColor="{DynamicResource SurfaceDividerWL}"
+								VerticalOptions="Center"
+								IsVisible="{Binding HasUnit}">
+							<Label Text="{Binding Unit}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="13"
+								   TextColor="{DynamicResource ContentSecondaryWL}" />
+						</Border>
+					</controls:CompositeEntry.RightView>
+				</controls:CompositeEntry>
 				<Label Text="{Binding Hint}"
 					   IsVisible="{Binding HasHint}"
 					   Style="{DynamicResource ParameterHintLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only NumericalParameterTemplate -->
-	<DataTemplate x:Key="NumericalParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableNumericalParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding DecimalTextWithUnit}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -227,12 +176,15 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
 				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 										 EntryData="{Binding StringValue, Mode=TwoWay}"
 										 Keyboard="Text"
-										 Placeholder="{Binding Guide}"
+										 Placeholder="{Binding Placeholder}"
+										 MaxLength="{Binding MaxLength}"
 										 VerticalOptions="Center"
-										 LabelText="{Binding Label}"
 										 IsValid="{Binding IsValid}"
 										 ValidationText="{Binding ValidationText}" />
 				<Grid ColumnDefinitions="*, Auto"
@@ -247,26 +199,6 @@
 						   IsVisible="{Binding HasLengthCounter}"
 						   Style="{DynamicResource ParameterHintLabel}" />
 				</Grid>
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only StringParameterTemplate -->
-	<DataTemplate x:Key="StringParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableStringParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding StringValue, Converter={StaticResource HyphenIfEmptyConverter}}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -277,10 +209,12 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
 				<controls:CompositeInputView Style="{DynamicResource BaseCompositeInputView}"
 											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}"
-											 LabelText="{Binding Label}">
+											 ValidationText="{Binding ValidationText}">
 					<controls:CompositeInputView.CenterView>
 						<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}"
 									BackgroundColor="Transparent"
@@ -296,26 +230,6 @@
 				<Label Text="{Binding Hint}"
 					   IsVisible="{Binding HasHint}"
 					   Style="{DynamicResource ParameterHintLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only TimeParameterTemplate -->
-	<DataTemplate x:Key="TimeParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableTimeParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding TimeText}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -326,8 +240,10 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<controls:DurationInput LabelText="{Binding Label}"
-										DurationValue="{Binding NullableDurationValue, Mode=TwoWay}"
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
+				<controls:DurationInput DurationValue="{Binding NullableDurationValue, Mode=TwoWay}"
 										AllowNegative="{Binding AllowsNegative}"
 										IsValid="{Binding IsValid}" />
 				<Label Text="{Binding ValidationText}"
@@ -336,26 +252,6 @@
 				<Label Text="{Binding Hint}"
 					   IsVisible="{Binding HasHint}"
 					   Style="{DynamicResource ParameterHintLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only DurationParameterTemplate -->
-	<DataTemplate x:Key="DurationParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableDurationParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding DurationValue, Converter={StaticResource DurationToStringConverter}}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -386,33 +282,14 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
 				<Label Text="{Binding Value, Converter={StaticResource HyphenIfEmptyConverter}}"
 					   Style="{DynamicResource ParameterItemValueLabel}" />
 				<Label Text="{Binding ValidationText}"
 					   IsVisible="{Binding CanShowError}"
 					   Style="{DynamicResource ParameterErrorLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only DefaultParameterTemplate -->
-	<DataTemplate x:Key="DefaultParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding Value, Converter={StaticResource HyphenIfEmptyConverter}}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -423,6 +300,9 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
 				<!-- Date and time side by side -->
 				<Grid ColumnDefinitions="3*,2*"
 					  ColumnSpacing="{DynamicResource SmallSpacing}">
@@ -430,10 +310,9 @@
 												  Style="{DynamicResource RegularCompositeDatePicker}"
 												  IsValid="{Binding IsValid}"
 												  ValidationText="{Binding ValidationText}"
-												  LabelText="{Binding Label}"
 												  NullableDate="{Binding SelectedDate}"
-												  Placeholder="{Binding Guide}"
-												  VerticalOptions="End" />
+												  Placeholder="{Binding Placeholder}"
+												  VerticalOptions="Start" />
 
 					<controls:CompositeInputView Grid.Column="1"
 												 Style="{DynamicResource BaseCompositeInputView}"
@@ -464,111 +343,6 @@
 				<Label Text="{Binding Hint}"
 					   IsVisible="{Binding HasHint}"
 					   Style="{DynamicResource ParameterHintLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- DateTimeParameterReadOnlyTemplate -->
-	<DataTemplate x:Key="DateTimeParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableDateTimeParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding DateTimeText}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- CalcParameterTemplate: worked out from the other values, and updated while they are filled in -->
-	<DataTemplate x:Key="CalcParameterTemplate"
-				  x:DataType="objectModel:ObservableCalcParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding CalcDisplayText}"
-					   Style="{DynamicResource ParameterItemValueLabel}">
-					<Label.Triggers>
-						<DataTrigger TargetType="Label"
-									 Binding="{Binding HasCalcValue}"
-									 Value="False">
-							<Setter Property="TextColor"
-									Value="{DynamicResource ContentSecondaryWL}" />
-							<Setter Property="FontFamily"
-									Value="HaasGroteskRegular" />
-						</DataTrigger>
-					</Label.Triggers>
-				</Label>
-				<Border Style="{StaticResource ParameterSourceChip}">
-					<Label Text="{l:Localize ParameterCalculated}"
-						   FontSize="{StaticResource FontSizeSm}"
-						   TextColor="{DynamicResource TnPInfoContentWL}" />
-				</Border>
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only CalcParameterTemplate -->
-	<DataTemplate x:Key="CalcParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableCalcParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding CalcString}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<Border Style="{StaticResource ParameterSourceChip}">
-					<Label Text="{l:Localize ParameterCalculated}"
-						   FontSize="{StaticResource FontSizeSm}"
-						   TextColor="{DynamicResource TnPInfoContentWL}" />
-				</Border>
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- RoleParameterTemplate: taken from the ID of the person who signs in a role -->
-	<DataTemplate x:Key="RoleParameterTemplate"
-				  x:DataType="objectModel:ObservableRoleParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding RoleDisplayText}"
-					   Style="{DynamicResource ParameterItemValueLabel}">
-					<Label.Triggers>
-						<DataTrigger TargetType="Label"
-									 Binding="{Binding HasRoleValue}"
-									 Value="False">
-							<Setter Property="TextColor"
-									Value="{DynamicResource ContentSecondaryWL}" />
-							<Setter Property="FontFamily"
-									Value="HaasGroteskRegular" />
-						</DataTrigger>
-					</Label.Triggers>
-				</Label>
-				<Border Style="{StaticResource ParameterSourceChip}">
-					<Label Text="{Binding SourceText}"
-						   FontSize="{StaticResource FontSizeSm}"
-						   TextColor="{DynamicResource TnPInfoContentWL}" />
-				</Border>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -579,8 +353,9 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
 				<Label Text="{Binding Value, Converter={StaticResource HyphenIfEmptyConverter}}"
 					   Style="{DynamicResource ParameterItemValueLabel}"
 					   LineBreakMode="MiddleTruncation" />
@@ -590,52 +365,57 @@
 		</Border>
 	</DataTemplate>
 
-	<!-- Read-only AttachmentParameterTemplate -->
-	<DataTemplate x:Key="AttachmentParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding Value, Converter={StaticResource HyphenIfEmptyConverter}}"
-					   Style="{DynamicResource ParameterItemValueLabel}"
-					   LineBreakMode="MiddleTruncation" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- ContractReferenceParameterTemplate -->
+	<!-- ContractReferenceParameterTemplate: a contract the new one refers to, shown as a small card -->
 	<DataTemplate x:Key="ContractReferenceParameterTemplate"
 				  x:DataType="objectModel:ObservableContractReferenceParameter">
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
 
 				<!-- The chosen contract -->
-				<Border Style="{DynamicResource BorderSet}"
-						Margin="0"
-						Padding="12"
+				<Border StrokeShape="RoundRectangle 12"
+						StrokeThickness="1"
+						Stroke="{DynamicResource SurfaceDividerWL}"
+						Padding="12,10"
 						IsVisible="{Binding HasContract}">
-					<Grid ColumnDefinitions="*,Auto"
-						  ColumnSpacing="{DynamicResource SmallSpacing}">
-						<VerticalStackLayout Grid.Column="0"
-											 Spacing="2">
+					<Grid ColumnDefinitions="Auto,*,Auto"
+						  ColumnSpacing="12">
+						<Border Grid.Column="0"
+								WidthRequest="40"
+								HeightRequest="40"
+								StrokeShape="RoundRectangle 10"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								VerticalOptions="Center">
+							<Path Data="{x:Static ui:Geometries.ContractPath}"
+								  Fill="{DynamicResource TnPSuccessContentWL}"
+								  Aspect="Uniform"
+								  WidthRequest="20"
+								  HeightRequest="20"
+								  HorizontalOptions="Center"
+								  VerticalOptions="Center" />
+						</Border>
+						<VerticalStackLayout Grid.Column="1"
+											 Spacing="2"
+											 VerticalOptions="Center">
 							<Label Text="{Binding ContractTitle}"
 								   Style="{DynamicResource ParameterItemValueLabel}"
 								   LineBreakMode="TailTruncation"
-								   MaxLines="2" />
+								   MaxLines="1" />
 							<Label Text="{Binding ContractSubtitle}"
-								   Style="{DynamicResource ParameterHintLabel}" />
+								   FontSize="{StaticResource FontSizeXs}"
+								   TextColor="{DynamicResource ContentSecondaryWL}"
+								   LineBreakMode="TailTruncation"
+								   MaxLines="1" />
 						</VerticalStackLayout>
-						<Label Grid.Column="1"
+						<Label Grid.Column="2"
 							   Text="{l:Localize Change}"
-							   Style="{DynamicResource ClickableValueLabel}"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="{StaticResource FontSizeSm}"
+							   TextColor="{DynamicResource ContentAccessWL}"
 							   VerticalOptions="Center">
 							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding PickContractReferenceCommand}" />
@@ -644,70 +424,91 @@
 					</Grid>
 				</Border>
 
-				<!-- Nothing chosen yet -->
-				<controls:TextButton LabelData="{l:Localize SelectContract}"
-									 Style="{DynamicResource SecondaryButton}"
-									 Command="{Binding PickContractReferenceCommand}"
-									 IsVisible="{Binding HasContract, Converter={mct:InvertedBoolConverter}}" />
-				<Label Text="{l:Localize ParameterPasteId}"
-					   Style="{DynamicResource ClickableValueLabel}"
-					   IsVisible="{Binding CanPasteId}">
-					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding PasteIdCommand}" />
-					</Label.GestureRecognizers>
-				</Label>
+				<!-- Nothing chosen yet: a dashed row to choose one -->
+				<Border StrokeShape="RoundRectangle 12"
+						StrokeThickness="1"
+						StrokeDashArray="4,3"
+						Stroke="{DynamicResource InputFieldsSurfaceStroke}"
+						HeightRequest="48"
+						Padding="12,0"
+						IsVisible="{Binding HasContract, Converter={mct:InvertedBoolConverter}}">
+					<Border.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding PickContractReferenceCommand}" />
+					</Border.GestureRecognizers>
+					<HorizontalStackLayout Spacing="10"
+										   VerticalOptions="Center">
+						<Path Data="{x:Static ui:Geometries.ContractPath}"
+							  Fill="{DynamicResource ContentAccessWL}"
+							  Aspect="Uniform"
+							  WidthRequest="18"
+							  HeightRequest="18"
+							  VerticalOptions="Center" />
+						<Label Text="{l:Localize SelectContract}"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="{StaticResource FontSizeMd}"
+							   TextColor="{DynamicResource ContentAccessWL}"
+							   VerticalOptions="Center" />
+					</HorizontalStackLayout>
+				</Border>
+
+				<!-- "Optional · Paste ID" -->
+				<HorizontalStackLayout Spacing="4">
+					<Label Text="{l:Localize Optional}"
+						   Style="{DynamicResource ParameterHintLabel}"
+						   IsVisible="{Binding IsOptional}" />
+					<Label Text="·"
+						   Style="{DynamicResource ParameterHintLabel}"
+						   IsVisible="{Binding ShowsHintSeparator}" />
+					<Label Text="{l:Localize ParameterPasteId}"
+						   FontFamily="HaasGroteskMedium"
+						   FontSize="{StaticResource FontSizeSm}"
+						   TextColor="{DynamicResource ContentAccessWL}"
+						   IsVisible="{Binding CanPasteId}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding PasteIdCommand}" />
+						</Label.GestureRecognizers>
+					</Label>
+				</HorizontalStackLayout>
 				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 										 EntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
-										 Placeholder="{Binding Guide}"
+										 Placeholder="{Binding Placeholder}"
 										 IsValid="{Binding IsValid}"
 										 IsVisible="{Binding IsPastingId}" />
 
 				<Label Text="{Binding ValidationText}"
 					   IsVisible="{Binding CanShowError}"
 					   Style="{DynamicResource ParameterErrorLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
 
-	<!-- Read-only ContractReferenceParameterTemplate -->
-	<DataTemplate x:Key="ContractReferenceParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableContractReferenceParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<!-- The contract's name, as a link that opens it -->
-				<Label Text="{Binding ContractTitle, Converter={StaticResource HyphenIfEmptyConverter}}"
-					   Style="{DynamicResource ClickableValueLabel}"
-					   LineBreakMode="TailTruncation"
-					   MaxLines="2">
-					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding OpenContractCommand}" />
-					</Label.GestureRecognizers>
-				</Label>
-				<Label Text="{Binding ContractSubtitle}"
-					   Style="{DynamicResource ParameterHintLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- CoordinatesParameterTemplate -->
+	<!-- GeoParameterTemplate: a place, picked on a map or from the phone's location, never typed -->
 	<DataTemplate x:Key="GeoParameterTemplate"
 				  x:DataType="objectModel:ObservableGeoParameter">
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
+				<controls:ParameterHeader Text="{Binding Label}"
+										  IsEncrypted="{Binding IsEncrypted}"
+										  IsTransient="{Binding IsTransient}" />
+
+				<!-- The place on a map, with the allowed area dashed. Tapping it opens the map to pick the place. -->
+				<Border StrokeShape="RoundRectangle 12"
+						StrokeThickness="0"
+						HeightRequest="170"
+						IsVisible="{Binding HasMap}">
+					<Border.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding PickOnMapCommand}" />
+					</Border.GestureRecognizers>
+					<controls:GeoMapPreview Position="{Binding GeoValue}"
+											AreaMin="{Binding AreaMin}"
+											AreaMax="{Binding AreaMax}" />
+				</Border>
+
 				<Label Text="{Binding GeoText}"
-					   Style="{DynamicResource ParameterItemValueLabel}">
+					   FontFamily="SpaceGroteskSemiBold"
+					   FontSize="{StaticResource FontSizeLg}"
+					   TextColor="{DynamicResource ContentPrimaryWL}">
 					<Label.Triggers>
 						<DataTrigger TargetType="Label"
 									 Binding="{Binding HasGeoValue}"
@@ -719,6 +520,9 @@
 						</DataTrigger>
 					</Label.Triggers>
 				</Label>
+				<Label Text="{Binding Hint}"
+					   IsVisible="{Binding HasHint}"
+					   Style="{DynamicResource ParameterHintLabel}" />
 				<Border Style="{StaticResource ParameterSourceChip}"
 						IsVisible="{Binding IsContractLocation}">
 					<Label Text="{l:Localize ParameterContractPlace}"
@@ -750,36 +554,6 @@
 				<Label Text="{Binding ValidationText}"
 					   IsVisible="{Binding CanShowError}"
 					   Style="{DynamicResource ParameterErrorLabel}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
-			</VerticalStackLayout>
-		</Border>
-	</DataTemplate>
-
-	<!-- Read-only GeoParameterTemplate -->
-	<DataTemplate x:Key="GeoParameterReadOnlyTemplate"
-				  x:DataType="objectModel:ObservableGeoParameter">
-		<Border Style="{DynamicResource BorderSet}"
-				Margin="{DynamicResource MediumLeftRightMargins}">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-				<Label Text="{Binding Label}"
-					   Style="{DynamicResource ParameterItemTitleLabel}" />
-				<Label Text="{Binding GeoText}"
-					   Style="{DynamicResource ParameterItemValueLabel}" />
-				<Border Style="{StaticResource ParameterSourceChip}"
-						IsVisible="{Binding IsContractLocation}">
-					<Label Text="{l:Localize ParameterContractPlace}"
-						   FontSize="{StaticResource FontSizeSm}"
-						   TextColor="{DynamicResource TnPInfoContentWL}" />
-				</Border>
-				<controls:TextButton LabelData="{l:Localize ParameterOpenMap}"
-									 Style="{DynamicResource SecondaryButton}"
-									 Command="{Binding OpenMapCommand}"
-									 IsVisible="{Binding HasGeoValue}" />
-				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
-													   IsEncrypted="{Binding IsEncrypted}"
-													   IsVisible="{Binding IsProtected}" />
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>

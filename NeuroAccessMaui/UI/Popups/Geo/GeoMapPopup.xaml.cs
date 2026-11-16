@@ -1,7 +1,9 @@
 using Mapsui;
 using Mapsui.Extensions;
+using Mapsui.Layers;
 using Mapsui.Projections;
 using Mapsui.Tiling;
+using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Popups.Geo
 {
@@ -26,6 +28,10 @@ namespace NeuroAccessMaui.UI.Popups.Geo
 			this.GeoMapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer());
 			this.GeoMapControl.Map.Navigator.RotationLock = true;
 
+			MemoryLayer? AreaLayer = GeoMapPreview.CreateAreaLayer(ViewModel.AreaMin, ViewModel.AreaMax);
+			if (AreaLayer is not null)
+				this.GeoMapControl.Map.Layers.Add(AreaLayer);
+
 			ViewModel.GetCenter = () => this.GeoMapControl.Map?.Navigator.Viewport is Mapsui.Viewport Viewport
 				? new MPoint(Viewport.CenterX, Viewport.CenterY)
 				: null;
@@ -36,10 +42,15 @@ namespace NeuroAccessMaui.UI.Popups.Geo
 		/// <inheritdoc/>
 		public override Task OnAppearingAsync()
 		{
-			if (this.BindingContext is GeoMapViewModel ViewModel && ViewModel.InitialPosition is not null)
+			if (this.BindingContext is GeoMapViewModel ViewModel)
 			{
-				MPoint Point = SphericalMercator.FromLonLat(ViewModel.InitialPosition.Longitude, ViewModel.InitialPosition.Latitude).ToMPoint();
-				this.GeoMapControl.Map.Navigator.CenterOnAndZoomTo(Point, placeResolution);
+				if (ViewModel.InitialPosition is not null)
+				{
+					MPoint Point = SphericalMercator.FromLonLat(ViewModel.InitialPosition.Longitude, ViewModel.InitialPosition.Latitude).ToMPoint();
+					this.GeoMapControl.Map.Navigator.CenterOnAndZoomTo(Point, placeResolution);
+				}
+				else if (GeoMapPreview.GetArea(ViewModel.AreaMin, ViewModel.AreaMax) is MRect Area)
+					this.GeoMapControl.Map.Navigator.ZoomToBox(Area.Grow(Area.Width * 0.1, Area.Height * 0.1));
 			}
 
 			return base.OnAppearingAsync();

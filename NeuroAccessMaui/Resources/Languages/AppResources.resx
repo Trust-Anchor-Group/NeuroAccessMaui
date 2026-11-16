@@ -4748,6 +4748,18 @@ Document read. You can move your iPhone.</value>
   <data name="ParameterAddedOnSigning" xml:space="preserve">
     <value>When {0} signs</value>
   </data>
+  <data name="ParametersFromIds" xml:space="preserve">
+    <value>From IDs</value>
+  </data>
+  <data name="ParameterAddedOnSigningTag" xml:space="preserve">
+    <value>Added on signing</value>
+  </data>
+  <data name="ParameterOnlyPartiesSee" xml:space="preserve">
+    <value>Only parties see this</value>
+  </data>
+  <data name="ParameterInsideArea" xml:space="preserve">
+    <value>Inside the marked area</value>
+  </data>
   <data name="ParameterPickOnMap" xml:space="preserve">
     <value>Pick on map</value>
   </data>

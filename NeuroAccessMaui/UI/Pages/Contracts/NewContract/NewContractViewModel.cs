@@ -204,6 +204,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		public ObservableCollection<ObservableParameter> EditableParameters { get; set; } = [];
 
 		/// <summary>
+		/// The values the user fills in, in the contract's order. Calculated values and values from IDs are shown apart.
+		/// </summary>
+		public ObservableCollection<ObservableParameter> InputParameters { get; } = [];
+
+		/// <summary>
+		/// The calculated values, shown together in one box under the values the user fills in.
+		/// </summary>
+		public ObservableCollection<ObservableParameter> CalculatedParameters { get; } = [];
+
+		/// <summary>
+		/// The values taken from people's IDs when they sign, one card for each role.
+		/// </summary>
+		public ObservableCollection<ParameterGroup> IdParameterGroups { get; } = [];
+
+		/// <summary>
+		/// If the contract has calculated values.
+		/// </summary>
+		public bool HasCalculatedParameters => this.CalculatedParameters.Count > 0;
+
+		/// <summary>
 		/// If HumanReadableText is not empty
 		/// </summary>
 		public bool HasHumanReadableText => this.HumanReadableText is not null;
@@ -648,6 +668,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							this.EditableParameters.Add(Parameter);
 						}
 					}
+					this.SortParameters();
 					this.OnPropertyChanged(nameof(this.HasRoles));
 					this.OnPropertyChanged(nameof(this.HasParameters));
 
@@ -851,6 +872,47 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private static bool IsReadOnlyParameter(ObservableParameter Parameter)
 		{
 			return Parameter.Parameter is CalcParameter or RoleParameter or AttachmentParameter;
+		}
+
+		/// <summary>
+		/// Sorts the parameters into the values the user fills in, the calculated values, and the values from each role's
+		/// ID.
+		/// </summary>
+		private void SortParameters()
+		{
+			this.InputParameters.Clear();
+			this.CalculatedParameters.Clear();
+			this.IdParameterGroups.Clear();
+
+			Dictionary<string, List<ObservableParameter>> ByRole = new();
+			List<string> RoleOrder = new();
+
+			foreach (ObservableParameter Parameter in this.EditableParameters)
+			{
+				if (Parameter is ObservableCalcParameter)
+					this.CalculatedParameters.Add(Parameter);
+				else if (Parameter is ObservableRoleParameter RoleParameter)
+				{
+					if (!ByRole.TryGetValue(RoleParameter.RoleName, out List<ObservableParameter>? Items))
+					{
+						Items = new();
+						ByRole[RoleParameter.RoleName] = Items;
+						RoleOrder.Add(RoleParameter.RoleName);
+					}
+
+					Items.Add(Parameter);
+				}
+				else
+					this.InputParameters.Add(Parameter);
+			}
+
+			foreach (string Role in RoleOrder)
+			{
+				string Title = ServiceRef.Localizer[nameof(AppResources.ParameterFromId), Role];
+				this.IdParameterGroups.Add(new ParameterGroup(Title, null, ByRole[Role]));
+			}
+
+			this.OnPropertyChanged(nameof(this.HasCalculatedParameters));
 		}
 
 		private async Task UpdateCurrentStepValidityAsync()
@@ -1154,8 +1216,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Result.Param.IsValid = Result.IsValid || ReadOnly;
 						Result.Param.ValidationText = ReadOnly ? string.Empty : Result.ValidationText;
 
-						if (Result.Param is ObservableCalcParameter)
-							Result.Param.RefreshValue();
+						if (Result.Param is ObservableCalcParameter Calc)
+						{
+							Calc.RefreshValue();
+							Calc.RefreshUnit();
+						}
 						else if (Result.Param is ObservableNumericalParameter Numerical)
 							Numerical.RefreshUnit();
 					}

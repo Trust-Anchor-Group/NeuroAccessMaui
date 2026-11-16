@@ -112,6 +112,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts
 			if (Parameter is StringParameter StringParameter)
 				return GetLengthHint(StringParameter.MinLength, StringParameter.MaxLength);
 
+			// A place's limits are the area drawn on its map.
+			if (Parameter is GeoParameter GeoParameter)
+			{
+				return GeoParameter.Min is not null && GeoParameter.Max is not null
+					? ServiceRef.Localizer[nameof(AppResources.ParameterInsideArea)]
+					: string.Empty;
+			}
+
 			Limits Limits = GetLimits(Parameter);
 
 			if (Limits.Min is not null && Limits.Max is not null)

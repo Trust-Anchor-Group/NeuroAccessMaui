@@ -4829,6 +4829,18 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="ParameterAddedOnSigning" xml:space="preserve">
     <value>Quando {0} assinar</value>
   </data>
+  <data name="ParametersFromIds" xml:space="preserve">
+    <value>Das identidades</value>
+  </data>
+  <data name="ParameterAddedOnSigningTag" xml:space="preserve">
+    <value>Adicionado ao assinar</value>
+  </data>
+  <data name="ParameterOnlyPartiesSee" xml:space="preserve">
+    <value>Só as partes veem isto</value>
+  </data>
+  <data name="ParameterInsideArea" xml:space="preserve">
+    <value>Dentro da área marcada</value>
+  </data>
   <data name="ParameterPickOnMap" xml:space="preserve">
     <value>Escolher no mapa</value>
   </data>

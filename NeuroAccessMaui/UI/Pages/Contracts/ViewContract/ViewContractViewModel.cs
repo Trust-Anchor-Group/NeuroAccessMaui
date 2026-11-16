@@ -177,7 +177,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		public bool HasHumanReadableText => this.HumanReadableText is not null;
 
-		public ObservableCollection<ObservableParameter> DisplayableParameters { get; } = new();
+		/// <summary>
+		/// The contract's values in the groups they are shown in: the values themselves, calculated values, values from
+		/// people's IDs, and other values such as linked contracts, places and hidden values.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasParameters))]
+		private IReadOnlyList<ParameterGroup> parameterGroups = [];
+
+		/// <summary>
+		/// If the contract has values to show.
+		/// </summary>
+		public bool HasParameters => this.ParameterGroups.Count > 0;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(ReadyToSign))]
@@ -1723,9 +1734,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		private void PrepareDisplayableParameters()
 		{
-			this.DisplayableParameters.Clear();
 			if (this.Contract?.Parameters is null)
+			{
+				this.ParameterGroups = [];
 				return;
+			}
 
 			Variables Vars = [];
 
@@ -1738,25 +1751,48 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Vars["NowUtc"] = FirstSignature.Value.ToUniversalTime();
 			}
 
+			List<ObservableParameter> Values = new();
+			List<ObservableParameter> Calculated = new();
+			List<ObservableParameter> FromIds = new();
+			List<ObservableParameter> Other = new();
+
 			foreach (ObservableParameter Parameter in this.Contract.Parameters)
 			{
 				Parameter.Parameter.Populate(Vars);
 
-				if (Parameter.Parameter is BooleanParameter or StringParameter or NumericalParameter
+				if (Parameter.Parameter is not (BooleanParameter or StringParameter or NumericalParameter
 					or DateParameter or TimeParameter or DurationParameter
 					or DateTimeParameter or CalcParameter or ContractReferenceParameter or GeoParameter
-					or RoleParameter or AttachmentParameter)
+					or RoleParameter or AttachmentParameter))
 				{
-					this.DisplayableParameters.Add(Parameter);
+					continue;
 				}
+
+				if (Parameter.IsValueHidden || Parameter.Parameter is ContractReferenceParameter or GeoParameter or AttachmentParameter)
+					Other.Add(Parameter);
+				else if (Parameter.Parameter is CalcParameter)
+					Calculated.Add(Parameter);
+				else if (Parameter.Parameter is RoleParameter)
+					FromIds.Add(Parameter);
+				else
+					Values.Add(Parameter);
 			}
-/*
-			foreach (ObservableParameter P in this.DisplayableParameters)
-			{
-				P.Parameter.IsParameterValid(Vars, ServiceRef.XmppService.ContractsClient);
-				ServiceRef.LogService.LogDebug($"Parameter '{P.Parameter.Name}' validation result: {P.IsValid}, Error: {P.Parameter.ErrorReason} - {P.ValidationText}");
-			}
-*/
+
+			List<ParameterGroup> Groups = new();
+
+			if (Values.Count > 0)
+				Groups.Add(new ParameterGroup(string.Empty, null, Values));
+
+			if (Calculated.Count > 0)
+				Groups.Add(new ParameterGroup(ServiceRef.Localizer[nameof(AppResources.ParameterCalculated)], Geometries.CalculatorPath, Calculated));
+
+			if (FromIds.Count > 0)
+				Groups.Add(new ParameterGroup(ServiceRef.Localizer[nameof(AppResources.ParametersFromIds)], Geometries.ShowIdIconPath, FromIds));
+
+			if (Other.Count > 0)
+				Groups.Add(new ParameterGroup(ServiceRef.Localizer[nameof(AppResources.Other)], null, Other));
+
+			this.ParameterGroups = Groups;
 		}
 
 		private void PrepareSignableRoles()

@@ -14323,6 +14323,42 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to From IDs.
+        /// </summary>
+        public static string ParametersFromIds {
+            get {
+                return ResourceManager.GetString("ParametersFromIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added on signing.
+        /// </summary>
+        public static string ParameterAddedOnSigningTag {
+            get {
+                return ResourceManager.GetString("ParameterAddedOnSigningTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only parties see this.
+        /// </summary>
+        public static string ParameterOnlyPartiesSee {
+            get {
+                return ResourceManager.GetString("ParameterOnlyPartiesSee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inside the marked area.
+        /// </summary>
+        public static string ParameterInsideArea {
+            get {
+                return ResourceManager.GetString("ParameterInsideArea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pick on map.
         /// </summary>
         public static string ParameterPickOnMap {

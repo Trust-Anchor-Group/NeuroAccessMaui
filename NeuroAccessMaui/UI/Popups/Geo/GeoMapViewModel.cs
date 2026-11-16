@@ -14,11 +14,25 @@ namespace NeuroAccessMaui.UI.Popups.Geo
 		/// <summary>
 		/// View model for the map where the user picks a place.
 		/// </summary>
-		/// <param name="InitialPosition">The place to show first, or null to show the whole world.</param>
-		public GeoMapViewModel(GeoPosition? InitialPosition)
+		/// <param name="InitialPosition">The place to show first, or null to show the allowed area, or the whole world.</param>
+		/// <param name="AreaMin">One corner of the area the place must be in, or null.</param>
+		/// <param name="AreaMax">The opposite corner of the area the place must be in, or null.</param>
+		public GeoMapViewModel(GeoPosition? InitialPosition, GeoPosition? AreaMin = null, GeoPosition? AreaMax = null)
 		{
 			this.InitialPosition = InitialPosition;
+			this.AreaMin = AreaMin;
+			this.AreaMax = AreaMax;
 		}
+
+		/// <summary>
+		/// One corner of the area the place must be in, if the contract limits it.
+		/// </summary>
+		public GeoPosition? AreaMin { get; }
+
+		/// <summary>
+		/// The opposite corner of the area the place must be in, if the contract limits it.
+		/// </summary>
+		public GeoPosition? AreaMax { get; }
 
 		/// <summary>
 		/// The place to show first, if any.

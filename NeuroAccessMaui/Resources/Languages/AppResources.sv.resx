@@ -4829,6 +4829,18 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ParameterAddedOnSigning" xml:space="preserve">
     <value>När {0} skriver under</value>
   </data>
+  <data name="ParametersFromIds" xml:space="preserve">
+    <value>Från ID-handlingar</value>
+  </data>
+  <data name="ParameterAddedOnSigningTag" xml:space="preserve">
+    <value>Läggs till vid signering</value>
+  </data>
+  <data name="ParameterOnlyPartiesSee" xml:space="preserve">
+    <value>Bara parterna ser detta</value>
+  </data>
+  <data name="ParameterInsideArea" xml:space="preserve">
+    <value>Inom det markerade området</value>
+  </data>
   <data name="ParameterPickOnMap" xml:space="preserve">
     <value>Välj på kartan</value>
   </data>

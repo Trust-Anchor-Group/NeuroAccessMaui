@@ -51,6 +51,24 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
+		/// Bindable property for the longest text the entry accepts.
+		/// </summary>
+		public static readonly BindableProperty MaxLengthProperty = BindableProperty.Create(
+			 nameof(MaxLength),
+			 typeof(int),
+			 typeof(CompositeEntry),
+			 int.MaxValue);
+
+		/// <summary>
+		/// Gets or sets the longest text the entry accepts.
+		/// </summary>
+		public int MaxLength
+		{
+			get => (int)this.GetValue(MaxLengthProperty);
+			set => this.SetValue(MaxLengthProperty, value);
+		}
+
+		/// <summary>
 		/// Bindable property indicating whether the entry is used for password input.
 		/// </summary>
 		public static readonly BindableProperty IsPasswordProperty = BindableProperty.Create(
@@ -248,6 +266,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.SetBinding(InputView.IsSpellCheckEnabledProperty, new Binding(nameof(this.IsSpellCheckEnabled), source: this));
 			this.innerEntry.SetBinding(InputView.IsTextPredictionEnabledProperty, new Binding(nameof(this.IsTextPredictionEnabled), source: this));
 			this.innerEntry.SetBinding(Entry.IsReadOnlyProperty, new Binding(nameof(this.IsReadOnly), source: this));
+			this.innerEntry.SetBinding(InputView.MaxLengthProperty, new Binding(nameof(this.MaxLength), source: this));
 
 			// Handle events
 			this.innerEntry.Completed += this.OnEntryCompleted;
