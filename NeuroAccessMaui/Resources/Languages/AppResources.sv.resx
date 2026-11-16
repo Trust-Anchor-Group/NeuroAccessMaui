@@ -1424,16 +1424,16 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Begäran om avläsning</value>
   </data>
   <data name="UnableToGetHistory" xml:space="preserve">
-    <value>Det gick inte att hämta historikrapporten.</value>
+    <value>Kan inte läsa in. Försök igen.</value>
   </data>
   <data name="UnableToGetPresent" xml:space="preserve">
-    <value>Det gick inte att få aktuell rapport.</value>
+    <value>Kan inte läsa in. Försök igen.</value>
   </data>
   <data name="UnableToGetProfiling" xml:space="preserve">
-    <value>Det gick inte att få profileringsrapport.</value>
+    <value>Kan inte läsa in. Försök igen.</value>
   </data>
   <data name="UnableToGetStateDiagram" xml:space="preserve">
-    <value>Det gick inte att hämta tillståndsdiagramrapporten.</value>
+    <value>Kan inte läsa in. Försök igen.</value>
   </data>
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} vill ansluta till din enhet {1}.</value>
@@ -1649,7 +1649,7 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Välj foto</value>
   </data>
   <data name="Present" xml:space="preserve">
-    <value>Presentera</value>
+    <value>Värden nu</value>
   </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Produktinformation</value>
@@ -1772,7 +1772,7 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
     <value>Dela</value>
   </data>
   <data name="StateDiagram" xml:space="preserve">
-    <value>Tillståndsdiagram</value>
+    <value>Flöde</value>
   </data>
   <data name="StreetName" xml:space="preserve">
     <value>Gatunamn</value>
@@ -4844,6 +4844,15 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ParameterFilesNotSupported" xml:space="preserve">
     <value>Du kan inte lägga till filer i appen än</value>
   </data>
+  <data name="ZoomFit" xml:space="preserve">
+    <value>Anpassa</value>
+  </data>
+  <data name="ZoomHint" xml:space="preserve">
+    <value>Nyp för att zooma · dubbeltryck för att anpassa</value>
+  </data>
+  <data name="ReportImageNotShown" xml:space="preserve">
+    <value>Kan inte visa bilden</value>
+  </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Bara personerna som anges i kontraktet</value>
   </data>
@@ -5259,13 +5268,13 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Inga av dess åtgärder kan köras i det nuvarande tillståndet.</value>
   </data>
   <data name="PresentReportDescription" xml:space="preserve">
-    <value>Värdena så som token beskriver dem nu</value>
+    <value>Vad den innehåller nu</value>
   </data>
   <data name="HistoryReportDescription" xml:space="preserve">
-    <value>Hur värdena har ändrats över tid</value>
+    <value>Vad som hänt, och när</value>
   </data>
   <data name="StatesReportDescription" xml:space="preserve">
-    <value>Tillstånden och hur de hänger ihop</value>
+    <value>Stegen och vad som tar det vidare</value>
   </data>
   <data name="More" xml:space="preserve">
     <value>Mer</value>

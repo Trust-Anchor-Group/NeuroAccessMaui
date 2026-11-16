@@ -34,7 +34,7 @@
 				</VerticalStackLayout>
 			</controls:TaskView.ErrorView>
 			<controls:TaskView.SucceededView>
-				<ScrollView>
+				<ScrollView x:Name="ReportScrollView">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Border Style="{DynamicResource BorderSet}">
 							<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">

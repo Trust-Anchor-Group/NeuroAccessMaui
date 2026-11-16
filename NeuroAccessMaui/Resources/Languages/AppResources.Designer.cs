@@ -8926,7 +8926,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Present.
+        ///   Looks up a localized string similar to Values now.
         /// </summary>
         public static string Present {
             get {
@@ -10744,7 +10744,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to State Diagram.
+        ///   Looks up a localized string similar to Flow.
         /// </summary>
         public static string StateDiagram {
             get {
@@ -11635,7 +11635,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to get history report..
+        ///   Looks up a localized string similar to Can't load this. Try again.
         /// </summary>
         public static string UnableToGetHistory {
             get {
@@ -11662,7 +11662,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to get present report..
+        ///   Looks up a localized string similar to Can't load this. Try again.
         /// </summary>
         public static string UnableToGetPresent {
             get {
@@ -11671,7 +11671,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to get profiling report..
+        ///   Looks up a localized string similar to Can't load this. Try again.
         /// </summary>
         public static string UnableToGetProfiling {
             get {
@@ -11680,7 +11680,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to get state diagram report..
+        ///   Looks up a localized string similar to Can't load this. Try again.
         /// </summary>
         public static string UnableToGetStateDiagram {
             get {
@@ -14368,6 +14368,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fit.
+        /// </summary>
+        public static string ZoomFit {
+            get {
+                return ResourceManager.GetString("ZoomFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pinch to zoom · double-tap to fit.
+        /// </summary>
+        public static string ZoomHint {
+            get {
+                return ResourceManager.GetString("ZoomHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can't show this image.
+        /// </summary>
+        public static string ReportImageNotShown {
+            get {
+                return ResourceManager.GetString("ReportImageNotShown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only the people named in the contract.
         /// </summary>
         public static string ContractPartsNamed {
@@ -15565,7 +15592,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The values as the token describes them now.
+        ///   Looks up a localized string similar to What it holds now.
         /// </summary>
         public static string PresentReportDescription {
             get {
@@ -15574,7 +15601,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to How the values changed over time.
+        ///   Looks up a localized string similar to What happened, and when.
         /// </summary>
         public static string HistoryReportDescription {
             get {
@@ -15583,7 +15610,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The states and how they connect.
+        ///   Looks up a localized string similar to Steps and what moves it on.
         /// </summary>
         public static string StatesReportDescription {
             get {

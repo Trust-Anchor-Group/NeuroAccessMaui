@@ -80,17 +80,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		}
 
 		/// <summary>
-		/// Generates the report using the MAUI renderer. The report is fetched and rendered off the UI thread,
-		/// and then shown on the main thread.
+		/// Generates the report using the MAUI renderer, and shows it. Views are created on the main thread; waiting for the
+		/// server doesn't hold it up.
 		/// </summary>
 		/// <param name="ReportView">View model showing the report.</param>
 		public async Task GenerateReportMaui(MachineReportViewModel ReportView)
 		{
 			this.view = ReportView;
 
-			VerticalStackLayout MauiContent = await Task.Run(() => this.GetReportMaui());
-
-			await MainThread.InvokeOnMainThreadAsync(() => ReportView.Report = MauiContent);
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				VerticalStackLayout MauiContent = await this.GetReportMaui();
+				ReportView.Report = MauiContent;
+			});
 		}
 
 		/// <summary>

@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using SkiaSharp;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -1549,33 +1551,43 @@ namespace NeuroAccessMaui.UI.Rendering
 				}
 				catch (Exception Ex)
 				{
-					Ex = Log.UnnestException(Ex);
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
 
-					if (Ex is AggregateException Ex2)
+			// A chart sent as graph XML, as in a token's history report, is drawn and shown as an image.
+			if (string.Equals(Element.Language, "graph", StringComparison.OrdinalIgnoreCase))
+			{
+				try
+				{
+					PixelInformation Pixels = await new Waher.Content.Markdown.Model.CodeContent.GraphContent().GenerateImage(
+						Element.Rows, Element.Language, Element.Document);
+					byte[] Png = Pixels.EncodeAsPng();
+
+					await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
 					{
-						foreach (Exception Ex3 in Ex2.InnerExceptions)
-						{
-							Label ExceptionLabel = new Label
-							{
-								LineBreakMode = LineBreakMode.WordWrap,
-								TextColor = AppColors.Alert,
-								Text = Ex3.Message
-							};
+						Url = "data:image/png;base64," + Convert.ToBase64String(Png, 0, Png.Length),
+						Width = Pixels.Width,
+						Height = Pixels.Height
+					});
 
-							BlockStackLayout.Add(ExceptionLabel);
-						}
-					}
-					else
+					return;
+				}
+				catch (Exception Ex)
+				{
+					// The block's own text, such as graph XML, means nothing to the user. A short message is shown instead.
+					ServiceRef.LogService.LogException(Log.UnnestException(Ex));
+
+					BlockStackLayout.Add(new Label
 					{
-						Label ExceptionLabel = new Label
-						{
-							LineBreakMode = LineBreakMode.WordWrap,
-							TextColor = AppColors.Alert,
-							Text = Ex.Message
-						};
+						LineBreakMode = LineBreakMode.WordWrap,
+						TextColor = AppColors.Alert,
+						Text = ServiceRef.Localizer[nameof(AppResources.ReportImageNotShown)]
+					});
 
-						BlockStackLayout.Add(ExceptionLabel);
-					}
+					Bakup.Content = BlockStackLayout;
+					this.currentElement = Bakup;
+					return;
 				}
 			}
 
@@ -2201,23 +2213,16 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			Source = await CheckDataUri(Source);
 
-			Image Image = new Image
-			{
-				Source = Source.Url,
-			};
-
-			ScrollView Sv = new ScrollView
-			{
-				Orientation = ScrollOrientation.Horizontal,
-				Content = Image
-			};
+			// The image fits the width it gets and keeps its shape. A tap opens it where it can be zoomed.
+			Microsoft.Maui.Controls.ImageSource MauiSource = Source.Url;
+			Controls.ZoomableImage Image = new(MauiSource, Source.Width, Source.Height, Title);
 
 			VerticalStackLayout Vsl = new VerticalStackLayout
 			{
 				Spacing = AppStyles.SmallSpacing
 			};
 
-			Vsl.Add(Sv);
+			Vsl.Add(Image);
 
 			if (Title is not null)
 			{
@@ -2229,9 +2234,6 @@ namespace NeuroAccessMaui.UI.Rendering
 				};
 				Vsl.Add(Label);
 			}
-
-			if (Source.Height.HasValue)
-				Sv.HeightRequest = Source.Height.Value;
 
 			ContentView Cv = (ContentView)this.currentElement;
 

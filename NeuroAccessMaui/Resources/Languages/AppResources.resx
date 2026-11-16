@@ -1424,16 +1424,16 @@ Only continue if you trust where it came from.</value>
     <value>Readout Request</value>
   </data>
   <data name="UnableToGetHistory" xml:space="preserve">
-    <value>Unable to get history report.</value>
+    <value>Can't load this. Try again.</value>
   </data>
   <data name="UnableToGetPresent" xml:space="preserve">
-    <value>Unable to get present report.</value>
+    <value>Can't load this. Try again.</value>
   </data>
   <data name="UnableToGetProfiling" xml:space="preserve">
-    <value>Unable to get profiling report.</value>
+    <value>Can't load this. Try again.</value>
   </data>
   <data name="UnableToGetStateDiagram" xml:space="preserve">
-    <value>Unable to get state diagram report.</value>
+    <value>Can't load this. Try again.</value>
   </data>
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} wants to connect to your device {1}.</value>
@@ -1649,7 +1649,7 @@ Only continue if you trust where it came from.</value>
     <value>Pick photo</value>
   </data>
   <data name="Present" xml:space="preserve">
-    <value>Present</value>
+    <value>Values now</value>
   </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Product Information</value>
@@ -1772,7 +1772,7 @@ Only continue if you trust where it came from.</value>
     <value>Share</value>
   </data>
   <data name="StateDiagram" xml:space="preserve">
-    <value>State Diagram</value>
+    <value>Flow</value>
   </data>
   <data name="StreetName" xml:space="preserve">
     <value>Street Name</value>
@@ -4763,6 +4763,15 @@ Document read. You can move your iPhone.</value>
   <data name="ParameterFilesNotSupported" xml:space="preserve">
     <value>You can't add files in the app yet</value>
   </data>
+  <data name="ZoomFit" xml:space="preserve">
+    <value>Fit</value>
+  </data>
+  <data name="ZoomHint" xml:space="preserve">
+    <value>Pinch to zoom · double-tap to fit</value>
+  </data>
+  <data name="ReportImageNotShown" xml:space="preserve">
+    <value>Can't show this image</value>
+  </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Only the people named in the contract</value>
   </data>
@@ -5163,13 +5172,13 @@ Document read. You can move your iPhone.</value>
     <value>None of its actions can be run in the current state.</value>
   </data>
   <data name="PresentReportDescription" xml:space="preserve">
-    <value>The values as the token describes them now</value>
+    <value>What it holds now</value>
   </data>
   <data name="HistoryReportDescription" xml:space="preserve">
-    <value>How the values changed over time</value>
+    <value>What happened, and when</value>
   </data>
   <data name="StatesReportDescription" xml:space="preserve">
-    <value>The states and how they connect</value>
+    <value>Steps and what moves it on</value>
   </data>
   <data name="More" xml:space="preserve">
     <value>More</value>

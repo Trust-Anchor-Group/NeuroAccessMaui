@@ -24,5 +24,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		{
 			return ServiceRef.XmppService.GenerateNeuroFeatureStateDiagramReportMaui(this.TokenId);
 		}
+
+		/// <summary>
+		/// The diagram shows the states and the current one, not the values, so it isn't drawn again when only values
+		/// change.
+		/// </summary>
+		/// <param name="Sender">Sender of event.</param>
+		/// <param name="e">Event arguments.</param>
+		public override Task OnVariablesUpdated(object? Sender, NeuroFeatures.EventArguments.VariablesUpdatedEventArgs e)
+		{
+			return Task.CompletedTask;
+		}
 	}
 }
