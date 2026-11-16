@@ -3301,6 +3301,9 @@ Only continue if you trust where it came from.</value>
   <data name="KycTravelDocumentNfcSuccess" xml:space="preserve">
     <value>Document read successfully. You can move your phone.</value>
   </data>
+  <data name="KycTravelDocumentNfcReadAgain" xml:space="preserve">
+    <value>The chip's details differ from the scanned ones, so your application now uses the chip's details. Read the chip once more to finish.</value>
+  </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
     <value>Chip reading is unavailable. You can continue without the chip.</value>
   </data>

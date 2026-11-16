@@ -228,6 +228,15 @@
   <data name="RequestWasCancelled" xml:space="preserve">
     <value>La solicitud fue cancelada</value>
   </data>
+  <data name="ServiceUnavailable" xml:space="preserve">
+    <value>El servicio no está disponible en este momento. Inténtalo de nuevo más tarde.</value>
+  </data>
+  <data name="NotAuthorized" xml:space="preserve">
+    <value>No tienes autorización para realizar esta acción.</value>
+  </data>
+  <data name="ActionNotAllowed" xml:space="preserve">
+    <value>Esta acción no está permitida.</value>
+  </data>
   <data name="XmppState_Authenticating" xml:space="preserve">
     <value>Autenticación de la identidad de red</value>
   </data>
@@ -3748,6 +3757,9 @@ Continúa solo si confías en su origen.</value>
   <data name="KycTravelDocumentNfcSuccess" xml:space="preserve">
     <value>Documento leído correctamente. Ya puedes mover el teléfono.</value>
   </data>
+  <data name="KycTravelDocumentNfcReadAgain" xml:space="preserve">
+    <value>Los datos del chip difieren de los escaneados, así que tu solicitud ahora usa los datos del chip. Lee el chip una vez más para terminar.</value>
+  </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
     <value>La lectura del chip no está disponible. Puedes continuar sin chip.</value>
   </data>
@@ -3777,6 +3789,213 @@ Continúa solo si confías en su origen.</value>
   </data>
   <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
     <value>No se pudo leer el documento. Inténtalo de nuevo o vuelve a escanear los datos del documento.</value>
+  </data>
+  <data name="NfcTesterAppName" xml:space="preserve">
+    <value>Probador NFC</value>
+  </data>
+  <data name="NfcTesterTitle" xml:space="preserve">
+    <value>Probar el NFC del documento</value>
+  </data>
+  <data name="NfcTesterDescription" xml:space="preserve">
+    <value>Escanea un pasaporte o documento de identidad para probar su chip. Esto no solicita ni actualiza ninguna identidad.</value>
+  </data>
+  <data name="NfcTesterScanButton" xml:space="preserve">
+    <value>Escanear documento</value>
+  </data>
+  <data name="NfcTesterNewTestButton" xml:space="preserve">
+    <value>Iniciar una nueva prueba</value>
+  </data>
+  <data name="NfcTesterReadAgainButton" xml:space="preserve">
+    <value>Probar NFC de nuevo</value>
+  </data>
+  <data name="NfcTesterUnavailable" xml:space="preserve">
+    <value>El escaneo NFC de documentos no está disponible en este dispositivo o con esta configuración de la aplicación.</value>
+  </data>
+  <data name="NfcTesterReady" xml:space="preserve">
+    <value>Acerca el documento al teléfono y mantenlo quieto.</value>
+  </data>
+  <data name="NfcTesterReading" xml:space="preserve">
+    <value>Leyendo el chip del documento. Mantén el documento quieto.</value>
+  </data>
+  <data name="NfcTesterSuccess" xml:space="preserve">
+    <value>La lectura NFC se completó correctamente.</value>
+  </data>
+  <data name="NfcTesterPartialResult" xml:space="preserve">
+    <value>La lectura no se completó, pero a continuación se muestran los datos de diagnóstico disponibles.</value>
+  </data>
+  <data name="NfcTesterResultsTitle" xml:space="preserve">
+    <value>Datos encontrados</value>
+  </data>
+  <data name="NfcTesterNoReadableData" xml:space="preserve">
+    <value>No se devolvieron datos legibles del documento.</value>
+  </data>
+  <data name="NfcTesterCertificateStatus" xml:space="preserve">
+    <value>Verificación del certificado</value>
+  </data>
+  <data name="NfcTesterCertificateStatusValid" xml:space="preserve">
+    <value>Verificado</value>
+  </data>
+  <data name="NfcTesterCertificateStatusInvalid" xml:space="preserve">
+    <value>No verificado</value>
+  </data>
+  <data name="NfcTesterCertificateStatusIncomplete" xml:space="preserve">
+    <value>Verificación incompleta</value>
+  </data>
+  <data name="NfcTesterCertificateStatusNotVerified" xml:space="preserve">
+    <value>No verificado</value>
+  </data>
+  <data name="NfcTesterCertificateReasonAuthenticationFailed" xml:space="preserve">
+    <value>No se pudo autenticar el chip, así que no se comprobó el certificado.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonLdsApplicationNotFound" xml:space="preserve">
+    <value>El chip no contiene una aplicación de documento de viaje electrónico compatible.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonApplicationInformationReadFailed" xml:space="preserve">
+    <value>No se pudo leer la información de la aplicación del chip antes de verificar el certificado.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonApplicationInformationParseFailed" xml:space="preserve">
+    <value>No se pudo interpretar la información de la aplicación del chip antes de verificar el certificado.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonSecurityObjectReadFailed" xml:space="preserve">
+    <value>No se pudo leer el objeto de seguridad del documento (EF.SOD).</value>
+  </data>
+  <data name="NfcTesterCertificateReasonSecurityObjectParseFailed" xml:space="preserve">
+    <value>No se pudo interpretar el objeto de seguridad del documento (EF.SOD).</value>
+  </data>
+  <data name="NfcTesterCertificateReasonNoCertificate" xml:space="preserve">
+    <value>No se encontró ningún certificado del firmante del documento.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonMultipleCertificates" xml:space="preserve">
+    <value>El documento contenía un número inesperado de certificados de firmante.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonInvalidCertificate" xml:space="preserve">
+    <value>Falló la comprobación de la cadena, la firma, la confianza o la revocación del certificado del firmante.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonRevokedCertificate" xml:space="preserve">
+    <value>El certificado del firmante ha sido revocado.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonRevocationStatusUnknown" xml:space="preserve">
+    <value>No se pudo validar el estado de revocación del certificado del firmante.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonCertificateNotYetValid" xml:space="preserve">
+    <value>El certificado del firmante todavía no es válido.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonCertificateExpired" xml:space="preserve">
+    <value>El certificado del firmante ha caducado.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonDataGroupHashMismatch" xml:space="preserve">
+    <value>Los datos del documento no coinciden con los hashes firmados en EF.SOD.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonDataGroupReadFailed" xml:space="preserve">
+    <value>Se comprobó el certificado, pero no se pudieron leer todos los datos del documento.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonDataGroupParseFailed" xml:space="preserve">
+    <value>Se comprobó el certificado, pero no se pudieron interpretar todos los datos del documento.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonUnexpectedError" xml:space="preserve">
+    <value>Un error inesperado interrumpió la verificación del certificado.</value>
+  </data>
+  <data name="NfcTesterCertificateSubject" xml:space="preserve">
+    <value>Firmante</value>
+  </data>
+  <data name="NfcTesterCertificateIssuer" xml:space="preserve">
+    <value>Emisor del certificado</value>
+  </data>
+  <data name="NfcTesterCertificateSerialNumber" xml:space="preserve">
+    <value>Número de serie del certificado</value>
+  </data>
+  <data name="NfcTesterCertificateValidFrom" xml:space="preserve">
+    <value>Certificado válido desde</value>
+  </data>
+  <data name="NfcTesterCertificateValidUntil" xml:space="preserve">
+    <value>Certificado válido hasta</value>
+  </data>
+  <data name="NfcTesterRawXmlTitle" xml:space="preserve">
+    <value>XML NFC sin procesar</value>
+  </data>
+  <data name="NfcTesterShowRawXml" xml:space="preserve">
+    <value>Mostrar XML sin procesar</value>
+  </data>
+  <data name="NfcTesterHideRawXml" xml:space="preserve">
+    <value>Ocultar XML sin procesar</value>
+  </data>
+  <data name="NfcTesterShareButton" xml:space="preserve">
+    <value>Compartir NFC.xml</value>
+  </data>
+  <data name="NfcTesterShareWarning" xml:space="preserve">
+    <value>NFC.xml puede contener datos personales y de protocolo sensibles. Compártelo solo con alguien de confianza.</value>
+  </data>
+  <data name="NfcTesterShareConfirmTitle" xml:space="preserve">
+    <value>¿Compartir datos NFC sensibles?</value>
+  </data>
+  <data name="NfcTesterShareConfirmButton" xml:space="preserve">
+    <value>Compartir</value>
+  </data>
+  <data name="NfcTesterShareFailed" xml:space="preserve">
+    <value>No se pudo compartir NFC.xml. Inténtalo de nuevo.</value>
+  </data>
+  <data name="NfcTesterDocumentType" xml:space="preserve">
+    <value>Tipo de documento</value>
+  </data>
+  <data name="NfcTesterIssuingState" xml:space="preserve">
+    <value>Estado emisor</value>
+  </data>
+  <data name="NfcTesterDocumentNumber" xml:space="preserve">
+    <value>Número de documento</value>
+  </data>
+  <data name="NfcTesterLastNames" xml:space="preserve">
+    <value>Apellidos</value>
+  </data>
+  <data name="NfcTesterFirstNames" xml:space="preserve">
+    <value>Nombres</value>
+  </data>
+  <data name="NfcTesterNationality" xml:space="preserve">
+    <value>Nacionalidad</value>
+  </data>
+  <data name="NfcTesterDateOfBirth" xml:space="preserve">
+    <value>Fecha de nacimiento</value>
+  </data>
+  <data name="NfcTesterGender" xml:space="preserve">
+    <value>Género</value>
+  </data>
+  <data name="NfcTesterExpiryDate" xml:space="preserve">
+    <value>Fecha de caducidad</value>
+  </data>
+  <data name="NfcTesterOptionalData" xml:space="preserve">
+    <value>Datos opcionales</value>
+  </data>
+  <data name="NfcTesterFullName" xml:space="preserve">
+    <value>Nombre completo</value>
+  </data>
+  <data name="NfcTesterOtherNames" xml:space="preserve">
+    <value>Otros nombres</value>
+  </data>
+  <data name="NfcTesterPersonalNumber" xml:space="preserve">
+    <value>Número personal</value>
+  </data>
+  <data name="NfcTesterPlaceOfBirth" xml:space="preserve">
+    <value>Lugar de nacimiento</value>
+  </data>
+  <data name="NfcTesterPermanentAddress" xml:space="preserve">
+    <value>Dirección permanente</value>
+  </data>
+  <data name="NfcTesterTelephone" xml:space="preserve">
+    <value>Teléfono</value>
+  </data>
+  <data name="NfcTesterProfession" xml:space="preserve">
+    <value>Profesión</value>
+  </data>
+  <data name="NfcTesterPersonalTitle" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="NfcTesterPersonalSummary" xml:space="preserve">
+    <value>Resumen personal</value>
+  </data>
+  <data name="NfcTesterOtherNumbers" xml:space="preserve">
+    <value>Otros números</value>
+  </data>
+  <data name="NfcTesterCustodyInformation" xml:space="preserve">
+    <value>Información de custodia</value>
   </data>
   <data name="TravelDocumentScan_IosNfcIntroPassport" xml:space="preserve">
     <value>⚪ ⚪ ⚪

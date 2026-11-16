@@ -111,7 +111,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private readonly ITravelDocumentReadoutService readoutService = ServiceRef.Provider.GetRequiredService<ITravelDocumentReadoutService>();
 		private readonly TravelDocumentReadProgress readProgress = new TravelDocumentReadProgress();
 		private readonly KycProcessNavigationArgs? navigationArguments;
+		private readonly bool readChip;
 		private KycReference? reference;
+		private LegalIdentity? boundPreviewIdentity;
 		private Guid? activeSessionId;
 		private Guid? finalizingSessionId;
 		private Guid? reportedTelemetrySessionId;
@@ -123,6 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private bool wasNfcSessionInterrupted;
 		private bool isMrzScanPending;
 		private bool hasReachedChipStep;
+		private bool continueToFormOnAppearing;
 		private bool disposedValue;
 
 		/// <summary>
@@ -206,7 +209,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the NFC readout can be started.
 		/// </summary>
-		public bool CanStartNfc => this.HasMrz && !this.IsNfcBusy && !this.HasReadout;
+		public bool CanStartNfc => this.readChip && this.HasMrz && !this.IsNfcBusy && !this.HasReadout;
 
 		/// <summary>
 		/// Gets a value indicating whether the introductory chip-symbol check should be shown.
@@ -469,6 +472,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.navigationArguments = ServiceRef.NavigationService.PopLatestArgs<KycProcessNavigationArgs>();
 			this.reference = this.navigationArguments?.Reference;
+			this.readChip = this.navigationArguments?.ReadChip == true;
 		}
 
 		/// <inheritdoc/>
@@ -483,6 +487,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!IsFirstAppearance && !this.wasNfcSessionInterrupted)
 			{
 				this.LogFlowEvent("AppearingStateKept");
+				if (this.continueToFormOnAppearing)
+					await this.ContinueToFormAfterScanAsync();
+
 				return;
 			}
 
@@ -706,7 +713,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		/// <summary>
-		/// Saves the scanned document details and starts reading the chip.
+		/// Saves the scanned document details, and either starts reading the chip or returns to the form.
 		/// </summary>
 		/// <param name="Result">The accepted scanner result.</param>
 		/// <param name="ScannedMrz">The normalized machine-readable lines.</param>
@@ -736,8 +743,36 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				"ScanMrzEvidenceReady",
 				new KeyValuePair<string, object?>("EvidenceMrzLength", Evidence.MrzText.Length),
 				new KeyValuePair<string, object?>("HasApplicationIdentityId", !string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId)));
+			if (!this.readChip)
+			{
+				await this.ContinueToFormAfterScanAsync();
+				return;
+			}
+
 			await this.SetStatusAsync("KycTravelDocumentSaved", false, false, false, KycTravelDocumentFlowState.MrzCaptured);
 			await this.StartNfcReadoutFromEvidenceAsync(Evidence);
+		}
+
+		/// <summary>
+		/// Opens the form with the scanned document details, keeping them for the chip read at the end of the form.
+		/// </summary>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task ContinueToFormAfterScanAsync()
+		{
+			// The scanner closes itself while its result is handled, and closing it after this navigation would remove the form
+			// instead, so an open scanner defers the navigation until this page appears again.
+			bool IsScannerOpen = await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.continueToFormOnAppearing = ServiceRef.NavigationService.CurrentPage is KycDocumentMrzScannerPage;
+				return this.continueToFormOnAppearing;
+			});
+			if (IsScannerOpen || this.reference is null)
+				return;
+
+			await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(this.reference)
+			{
+				ForceFormResume = true
+			}, BackMethod.Pop2);
 		}
 
 		[RelayCommand]
@@ -869,7 +904,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand]
 		private async Task ReturnToApplicationAsync()
 		{
-			await this.ContinueToApplicationAsync(BackMethod.Pop);
+			await this.ContinueToApplicationAsync(this.readChip ? BackMethod.Pop2 : BackMethod.Pop);
 		}
 
 		[RelayCommand]
@@ -908,7 +943,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					break;
 
 				case TravelDocumentRecoveryAction.CloseFlow:
-					await this.ContinueToApplicationAsync(BackMethod.Pop);
+					await this.ContinueToApplicationAsync(this.readChip ? BackMethod.Pop2 : BackMethod.Pop);
 					break;
 
 				case TravelDocumentRecoveryAction.ContactSupport:
@@ -995,6 +1030,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (Result.IsSuccess && await this.SaveReadoutAsync(Result, FlowCancellationToken))
 				{
 					this.TrackTerminalNfcSession(SessionId, "Succeeded", string.Empty);
+					if (await this.DiscardReadoutIfReservationIsStaleAsync(FlowCancellationToken))
+					{
+						await this.SetStatusAsync("KycTravelDocumentNfcReadAgain", false, false, false, KycTravelDocumentFlowState.MrzCaptured, SessionId);
+						Announce(ServiceRef.Localizer["KycTravelDocumentNfcReadAgain"]);
+						await this.CompleteNfcSessionAsync(SessionId, null);
+						return;
+					}
+
 					await this.UpdateNativeNfcAlertAsync(SessionId, "TravelDocumentScan_IosNfcSuccess");
 					await this.SetStatusAsync("KycTravelDocumentNfcSuccess", true, false, true, KycTravelDocumentFlowState.Success, SessionId);
 					await this.ProvideOutcomeFeedbackAsync(true);
@@ -1018,6 +1061,44 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (IsFinalizing || await this.TryBeginNfcFinalizationAsync(SessionId, Evidence.ApplicationIdentityId))
 					await this.FinishFailedNfcSessionAsync(SessionId, TravelDocumentFailureFactory.CreateUnexpectedFailure());
 			}
+		}
+
+		/// <summary>
+		/// Discards the chip read when the values it put in the form differ from the reserved preview identity, such as a name the
+		/// camera misread. The chip values stay in the form, so the next read reserves a new preview identity that holds them.
+		/// </summary>
+		/// <param name="CancellationToken">The token that cancels the chip read.</param>
+		/// <returns><c>true</c> if the chip has to be read again; otherwise, <c>false</c>.</returns>
+		private async Task<bool> DiscardReadoutIfReservationIsStaleAsync(CancellationToken CancellationToken)
+		{
+			if (this.reference is null)
+				return false;
+
+			bool IsStale;
+			try
+			{
+				IReadOnlyList<Property> ReservationProperties = await ServiceRef.KycService
+					.PreparePreviewReservationPropertiesAsync(this.reference, CancellationToken);
+				IsStale = this.boundPreviewIdentity is null || !ReservedIdentityMatches(this.boundPreviewIdentity, ReservationProperties);
+			}
+			catch (Exception Ex)
+			{
+				// Without the comparison the reservation cannot be trusted, and another read costs less than a rejected final identity.
+				ServiceRef.LogService.LogException(Ex);
+				IsStale = true;
+			}
+
+			if (!IsStale)
+				return false;
+
+			this.reference.NfcReadoutXml = null;
+			this.reference.NfcReadoutUpdatedUtc = null;
+			this.reference.NfcVerifiedFieldIds = null;
+			this.reference.Version++;
+			this.reference.UpdatedUtc = DateTime.UtcNow;
+			await ServiceRef.KycService.SaveKycReferenceAsync(this.reference);
+			await this.ForgetReservedPreviewIdentityAsync("PreviewReservationChipDetailsChangedForgotten");
+			return true;
 		}
 
 		private Task<bool> TryBeginNfcFinalizationAsync(Guid SessionId, string? PreviewIdentityId)
@@ -1307,7 +1388,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			if (this.reference is not null)
 			{
-				await this.SaveReferenceEvidenceAsync(NormalizedMrz, null, DocumentInformation);
+				// The form was filled from these details when they were scanned, so applying them again would undo what the user
+				// corrected since then.
+				await this.SaveReferenceEvidenceAsync(NormalizedMrz, null);
 				return new TravelDocumentMrzEvidence(
 					NormalizedMrz,
 					DocumentInformation,
@@ -1358,9 +1441,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.reference is null)
 				return string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId) ? null : Evidence;
 
-			LegalIdentity? ExistingIdentity = await this.TryLoadUsableReservedPreviewIdentityAsync(this.reference, CancellationToken);
+			IReadOnlyList<Property> ReservationProperties = await ServiceRef.KycService
+				.PreparePreviewReservationPropertiesAsync(this.reference, CancellationToken);
+			LegalIdentity? ExistingIdentity = await this.TryLoadUsableReservedPreviewIdentityAsync(this.reference, ReservationProperties, CancellationToken);
 			if (ExistingIdentity is not null)
 			{
+				this.boundPreviewIdentity = ExistingIdentity;
 				await this.ClearMatchingReservedProfileApplicationAsync(ExistingIdentity.Id);
 				return new TravelDocumentMrzEvidence(
 					Evidence.MrzText,
@@ -1368,8 +1454,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					ExistingIdentity.Id);
 			}
 
-			IReadOnlyList<Property> ReservationProperties = await ServiceRef.KycService
-				.PreparePreviewReservationPropertiesAsync(this.reference, CancellationToken);
 			bool GenerateNewKeys = !await this.HasExistingSigningKeyAsync();
 			(bool Succeeded, LegalIdentity? ReservedIdentity) = await ServiceRef.NetworkService.TryRequest(
 				() => ServiceRef.XmppService.ApplyPreviewLegalIdentity(ReservationProperties.ToArray(), GenerateNewKeys));
@@ -1384,6 +1468,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!Succeeded || ReservedIdentity is null || string.IsNullOrWhiteSpace(ReservedIdentity.Id))
 				return null;
 
+			this.boundPreviewIdentity = ReservedIdentity;
 			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(this.reference, ReservedIdentity);
 			await this.ClearMatchingReservedProfileApplicationAsync(ReservedIdentity.Id);
 			return new TravelDocumentMrzEvidence(
@@ -1394,6 +1479,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task<LegalIdentity?> TryLoadUsableReservedPreviewIdentityAsync(
 			KycReference Reference,
+			IReadOnlyList<Property> ReservationProperties,
 			CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
@@ -1404,17 +1490,49 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			(bool Succeeded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(
 				() => ServiceRef.XmppService.GetLegalIdentity(ReservedPreviewIdentityId));
 			bool CanSignWithCurrentKeys = Identity is not null && await this.CanSignForIdentityAsync(Identity);
+			bool MatchesReservationProperties = Identity is not null && ReservedIdentityMatches(Identity, ReservationProperties);
 			this.LogFlowEvent(
 				"PreviewReservationReuseChecked",
 				new KeyValuePair<string, object?>("Succeeded", Succeeded),
 				new KeyValuePair<string, object?>("HasIdentity", Identity is not null),
-				new KeyValuePair<string, object?>("CanSignWithCurrentKeys", CanSignWithCurrentKeys));
+				new KeyValuePair<string, object?>("CanSignWithCurrentKeys", CanSignWithCurrentKeys),
+				new KeyValuePair<string, object?>("MatchesReservationProperties", MatchesReservationProperties));
 
 			if (!Succeeded || Identity is null || !CanSignWithCurrentKeys)
 				return null;
 
+			// A reservation fixes the preview's properties and can outlive the scan that made it, for example when the app closes during
+			// the chip read. Reusing it after another document is scanned would apply with the earlier details.
+			if (!MatchesReservationProperties)
+			{
+				await this.ForgetReservedPreviewIdentityAsync("PreviewReservationDetailsChangedForgotten");
+				return null;
+			}
+
 			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(Reference, Identity);
 			return Identity;
+		}
+
+		/// <summary>
+		/// Checks whether a reserved preview identity holds the values that would be reserved now.
+		/// </summary>
+		/// <param name="Identity">The reserved preview identity.</param>
+		/// <param name="ReservationProperties">The reservation properties prepared from the current form.</param>
+		/// <returns><c>true</c> if every property has the value the identity holds; otherwise, <c>false</c>.</returns>
+		internal static bool ReservedIdentityMatches(LegalIdentity Identity, IReadOnlyList<Property> ReservationProperties)
+		{
+			foreach (Property Property in ReservationProperties)
+			{
+				if (string.Equals(Property.Name, Constants.XmppProperties.DeviceId, StringComparison.OrdinalIgnoreCase))
+					continue;
+
+				string ReservedValue = Identity[Property.Name]?.Trim() ?? string.Empty;
+				string CurrentValue = Property.Value?.Trim() ?? string.Empty;
+				if (!string.Equals(ReservedValue, CurrentValue, StringComparison.OrdinalIgnoreCase))
+					return false;
+			}
+
+			return true;
 		}
 
 		private async Task<bool> HasExistingSigningKeyAsync()
@@ -1576,6 +1694,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.reference.NfcVerifiedFieldIds = await this.ApplyNfcFieldsAsync(DocumentData);
 
 			KycProcess? Process = await this.reference.GetProcess(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+			if (Process is not null && DocumentData is not null && !string.IsNullOrWhiteSpace(ReadoutXml))
+				this.reference.ReservedFieldIds = GetFilledFormFieldIds(Process);
+
 			this.reference.ApplyEvidenceStateToProcess(Process);
 			this.reference.Version++;
 			this.reference.UpdatedUtc = DateTime.UtcNow;
@@ -1587,6 +1708,27 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("SavedReadout", !string.IsNullOrWhiteSpace(ReadoutXml)),
 				new KeyValuePair<string, object?>("ReferenceHasFullMrz", this.reference.HasFullTravelDocumentMrz),
 				new KeyValuePair<string, object?>("ReferenceHasReadout", !string.IsNullOrWhiteSpace(this.reference.NfcReadoutXml)));
+		}
+
+		/// <summary>
+		/// Gets the form fields that hold a value when the chip is read, which the reserved preview identity then fixes.
+		/// </summary>
+		/// <remarks>
+		/// Photos are attachments, which the reservation does not hold. Fields that are still empty stay editable, so a form saved
+		/// before the chip read moved to the end of the flow can still be completed. The check before sending catches their values.
+		/// </remarks>
+		/// <param name="Process">The process holding the form values.</param>
+		/// <returns>The identifiers of the filled fields.</returns>
+		private static string[] GetFilledFormFieldIds(KycProcess Process)
+		{
+			return Process.Pages
+				.SelectMany(Page => Page.AllFields.Concat(Page.AllSections.SelectMany(Section => Section.AllFields)))
+				.Where(Field => Field.FieldType != FieldType.Image &&
+					Field.FieldType != FieldType.File &&
+					!string.IsNullOrWhiteSpace(Field.StringValue))
+				.Select(Field => Field.Id)
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.ToArray();
 		}
 
 		private async Task ApplyMrzFieldsAsync(DocumentInformation DocumentInformation)
@@ -1627,11 +1769,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (TryResolveGenderCode(DocumentData.Gender, out string GenderCode))
 				Values[Constants.XmppProperties.Gender] = GenderCode;
 
+			string CountryCode = ResolvePersonalNumberCountryCode(DocumentData.IssuingState, DocumentData.Nationality);
 			string PersonalNumber = DocumentData.PersonalNumber?.Replace("<", string.Empty).Trim() ?? string.Empty;
 			if (string.IsNullOrWhiteSpace(PersonalNumber))
-			{
-				string CountryCode = ResolvePersonalNumberCountryCode(DocumentData.IssuingState, DocumentData.Nationality);
 				PersonalNumber = await ResolvePersonalNumberAsync(DocumentData.OptionalData, CountryCode);
+			else
+			{
+				// Stored in the format the scanned details use, so the chip read does not make a reserved value differ.
+				string NormalizedPersonalNumber = await ResolvePersonalNumberAsync(PersonalNumber, CountryCode);
+				if (!string.IsNullOrWhiteSpace(NormalizedPersonalNumber))
+					PersonalNumber = NormalizedPersonalNumber;
 			}
 
 			if (!string.IsNullOrWhiteSpace(PersonalNumber))
@@ -1804,7 +1951,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return KycTravelDocumentFlowState.MrzGuide;
 
 			if (this.reference?.HasFullTravelDocumentMrz == true)
-				return KycTravelDocumentFlowState.NfcReady;
+				return this.readChip ? KycTravelDocumentFlowState.NfcReady : KycTravelDocumentFlowState.MrzGuide;
 
 			return KycTravelDocumentFlowState.Intro;
 		}
@@ -1898,7 +2045,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (HasInsufficientSavedMrz)
 				return ServiceRef.Localizer["KycTravelDocumentInvalidMrz"];
 
-			if (this.reference?.HasFullTravelDocumentMrz == true)
+			if (this.readChip && this.reference?.HasFullTravelDocumentMrz == true)
 				return ServiceRef.Localizer["KycTravelDocumentSaved"];
 
 			return string.Empty;

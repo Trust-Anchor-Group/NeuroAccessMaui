@@ -228,6 +228,15 @@
   <data name="RequestWasCancelled" xml:space="preserve">
     <value>Begäran avbröts</value>
   </data>
+  <data name="ServiceUnavailable" xml:space="preserve">
+    <value>Tjänsten är inte tillgänglig just nu. Försök igen senare.</value>
+  </data>
+  <data name="NotAuthorized" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+  <data name="ActionNotAllowed" xml:space="preserve">
+    <value>Den här åtgärden är inte tillåten.</value>
+  </data>
   <data name="XmppState_Authenticating" xml:space="preserve">
     <value>Autentiserar nätverksidentitet</value>
   </data>
@@ -3706,6 +3715,21 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
   <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
     <value>Fortsätt utan chip</value>
   </data>
+  <data name="KycTravelDocumentMrzLabel" xml:space="preserve">
+    <value>MRZ</value>
+  </data>
+  <data name="KycTravelDocumentMrzPlaceholder" xml:space="preserve">
+    <value>Klistra in MRZ-raderna från ditt dokument</value>
+  </data>
+  <data name="KycTravelDocumentSaveButton" xml:space="preserve">
+    <value>Spara MRZ</value>
+  </data>
+  <data name="KycTravelDocumentScanMrzButton" xml:space="preserve">
+    <value>Skanna MRZ</value>
+  </data>
+  <data name="KycTravelDocumentStartNfcButton" xml:space="preserve">
+    <value>Starta NFC-avläsning</value>
+  </data>
   <data name="KycTravelDocumentSuccessTitle" xml:space="preserve">
     <value>Dokumentchip läst</value>
   </data>
@@ -3732,6 +3756,9 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
   </data>
   <data name="KycTravelDocumentNfcSuccess" xml:space="preserve">
     <value>Dokumentet har lästs in. Du kan flytta telefonen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadAgain" xml:space="preserve">
+    <value>Chipets uppgifter skiljer sig från de skannade, så din ansökan använder nu chipets uppgifter. Läs chipet en gång till för att slutföra.</value>
   </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
     <value>Chipavläsning är inte tillgänglig. Du kan fortsätta utan chip.</value>
@@ -3762,6 +3789,213 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
   </data>
   <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
     <value>Det gick inte att läsa dokumentet. Försök igen eller skanna dokumentets uppgifter igen.</value>
+  </data>
+  <data name="NfcTesterAppName" xml:space="preserve">
+    <value>NFC-testare</value>
+  </data>
+  <data name="NfcTesterTitle" xml:space="preserve">
+    <value>Testa dokumentets NFC</value>
+  </data>
+  <data name="NfcTesterDescription" xml:space="preserve">
+    <value>Skanna ett pass eller en id-handling för att testa dess chip. Det här ansöker inte om och uppdaterar inte någon identitet.</value>
+  </data>
+  <data name="NfcTesterScanButton" xml:space="preserve">
+    <value>Skanna dokument</value>
+  </data>
+  <data name="NfcTesterNewTestButton" xml:space="preserve">
+    <value>Starta ett nytt test</value>
+  </data>
+  <data name="NfcTesterReadAgainButton" xml:space="preserve">
+    <value>Försök med NFC igen</value>
+  </data>
+  <data name="NfcTesterUnavailable" xml:space="preserve">
+    <value>NFC-skanning av dokument är inte tillgänglig på den här enheten eller med den här appkonfigurationen.</value>
+  </data>
+  <data name="NfcTesterReady" xml:space="preserve">
+    <value>Håll dokumentet nära telefonen och håll det stilla.</value>
+  </data>
+  <data name="NfcTesterReading" xml:space="preserve">
+    <value>Läser dokumentets chip. Håll dokumentet stilla.</value>
+  </data>
+  <data name="NfcTesterSuccess" xml:space="preserve">
+    <value>NFC-avläsningen slutfördes.</value>
+  </data>
+  <data name="NfcTesterPartialResult" xml:space="preserve">
+    <value>Avläsningen slutfördes inte, men tillgängliga diagnostikdata visas nedan.</value>
+  </data>
+  <data name="NfcTesterResultsTitle" xml:space="preserve">
+    <value>Hittade uppgifter</value>
+  </data>
+  <data name="NfcTesterNoReadableData" xml:space="preserve">
+    <value>Inga läsbara dokumentuppgifter returnerades.</value>
+  </data>
+  <data name="NfcTesterCertificateStatus" xml:space="preserve">
+    <value>Certifikatverifiering</value>
+  </data>
+  <data name="NfcTesterCertificateStatusValid" xml:space="preserve">
+    <value>Verifierat</value>
+  </data>
+  <data name="NfcTesterCertificateStatusInvalid" xml:space="preserve">
+    <value>Inte verifierat</value>
+  </data>
+  <data name="NfcTesterCertificateStatusIncomplete" xml:space="preserve">
+    <value>Verifieringen är ofullständig</value>
+  </data>
+  <data name="NfcTesterCertificateStatusNotVerified" xml:space="preserve">
+    <value>Inte verifierat</value>
+  </data>
+  <data name="NfcTesterCertificateReasonAuthenticationFailed" xml:space="preserve">
+    <value>Chipet kunde inte autentiseras, så certifikatet kontrollerades inte.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonLdsApplicationNotFound" xml:space="preserve">
+    <value>Chipet innehåller ingen applikation för elektroniska resehandlingar som stöds.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonApplicationInformationReadFailed" xml:space="preserve">
+    <value>Chipets applikationsinformation kunde inte läsas före certifikatverifieringen.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonApplicationInformationParseFailed" xml:space="preserve">
+    <value>Chipets applikationsinformation kunde inte tolkas före certifikatverifieringen.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonSecurityObjectReadFailed" xml:space="preserve">
+    <value>Dokumentets säkerhetsobjekt (EF.SOD) kunde inte läsas.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonSecurityObjectParseFailed" xml:space="preserve">
+    <value>Dokumentets säkerhetsobjekt (EF.SOD) kunde inte tolkas.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonNoCertificate" xml:space="preserve">
+    <value>Inget certifikat för dokumentets signerare hittades.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonMultipleCertificates" xml:space="preserve">
+    <value>Dokumentet innehöll ett oväntat antal signerarcertifikat.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonInvalidCertificate" xml:space="preserve">
+    <value>Kontrollen av signerarcertifikatets kedja, signatur, förtroende eller återkallelse misslyckades.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonRevokedCertificate" xml:space="preserve">
+    <value>Signerarcertifikatet har återkallats.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonRevocationStatusUnknown" xml:space="preserve">
+    <value>Det gick inte att kontrollera om signerarcertifikatet har återkallats.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonCertificateNotYetValid" xml:space="preserve">
+    <value>Signerarcertifikatet är inte giltigt än.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonCertificateExpired" xml:space="preserve">
+    <value>Signerarcertifikatet har gått ut.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonDataGroupHashMismatch" xml:space="preserve">
+    <value>Dokumentuppgifterna stämmer inte med hashvärdena som signerats i EF.SOD.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonDataGroupReadFailed" xml:space="preserve">
+    <value>Certifikatet kontrollerades, men alla dokumentuppgifter kunde inte läsas.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonDataGroupParseFailed" xml:space="preserve">
+    <value>Certifikatet kontrollerades, men alla dokumentuppgifter kunde inte tolkas.</value>
+  </data>
+  <data name="NfcTesterCertificateReasonUnexpectedError" xml:space="preserve">
+    <value>Ett oväntat fel avbröt certifikatverifieringen.</value>
+  </data>
+  <data name="NfcTesterCertificateSubject" xml:space="preserve">
+    <value>Signerare</value>
+  </data>
+  <data name="NfcTesterCertificateIssuer" xml:space="preserve">
+    <value>Certifikatutfärdare</value>
+  </data>
+  <data name="NfcTesterCertificateSerialNumber" xml:space="preserve">
+    <value>Certifikatets serienummer</value>
+  </data>
+  <data name="NfcTesterCertificateValidFrom" xml:space="preserve">
+    <value>Certifikatet giltigt från</value>
+  </data>
+  <data name="NfcTesterCertificateValidUntil" xml:space="preserve">
+    <value>Certifikatet giltigt till</value>
+  </data>
+  <data name="NfcTesterRawXmlTitle" xml:space="preserve">
+    <value>Rå NFC-XML</value>
+  </data>
+  <data name="NfcTesterShowRawXml" xml:space="preserve">
+    <value>Visa rå XML</value>
+  </data>
+  <data name="NfcTesterHideRawXml" xml:space="preserve">
+    <value>Dölj rå XML</value>
+  </data>
+  <data name="NfcTesterShareButton" xml:space="preserve">
+    <value>Dela NFC.xml</value>
+  </data>
+  <data name="NfcTesterShareWarning" xml:space="preserve">
+    <value>NFC.xml kan innehålla känsliga person- och protokolluppgifter. Dela den bara med någon du litar på.</value>
+  </data>
+  <data name="NfcTesterShareConfirmTitle" xml:space="preserve">
+    <value>Dela känsliga NFC-uppgifter?</value>
+  </data>
+  <data name="NfcTesterShareConfirmButton" xml:space="preserve">
+    <value>Dela</value>
+  </data>
+  <data name="NfcTesterShareFailed" xml:space="preserve">
+    <value>NFC.xml kunde inte delas. Försök igen.</value>
+  </data>
+  <data name="NfcTesterDocumentType" xml:space="preserve">
+    <value>Dokumenttyp</value>
+  </data>
+  <data name="NfcTesterIssuingState" xml:space="preserve">
+    <value>Utfärdande stat</value>
+  </data>
+  <data name="NfcTesterDocumentNumber" xml:space="preserve">
+    <value>Dokumentnummer</value>
+  </data>
+  <data name="NfcTesterLastNames" xml:space="preserve">
+    <value>Efternamn</value>
+  </data>
+  <data name="NfcTesterFirstNames" xml:space="preserve">
+    <value>Förnamn</value>
+  </data>
+  <data name="NfcTesterNationality" xml:space="preserve">
+    <value>Nationalitet</value>
+  </data>
+  <data name="NfcTesterDateOfBirth" xml:space="preserve">
+    <value>Födelsedatum</value>
+  </data>
+  <data name="NfcTesterGender" xml:space="preserve">
+    <value>Kön</value>
+  </data>
+  <data name="NfcTesterExpiryDate" xml:space="preserve">
+    <value>Utgångsdatum</value>
+  </data>
+  <data name="NfcTesterOptionalData" xml:space="preserve">
+    <value>Valfria uppgifter</value>
+  </data>
+  <data name="NfcTesterFullName" xml:space="preserve">
+    <value>Fullständigt namn</value>
+  </data>
+  <data name="NfcTesterOtherNames" xml:space="preserve">
+    <value>Andra namn</value>
+  </data>
+  <data name="NfcTesterPersonalNumber" xml:space="preserve">
+    <value>Personnummer</value>
+  </data>
+  <data name="NfcTesterPlaceOfBirth" xml:space="preserve">
+    <value>Födelseort</value>
+  </data>
+  <data name="NfcTesterPermanentAddress" xml:space="preserve">
+    <value>Permanent adress</value>
+  </data>
+  <data name="NfcTesterTelephone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="NfcTesterProfession" xml:space="preserve">
+    <value>Yrke</value>
+  </data>
+  <data name="NfcTesterPersonalTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="NfcTesterPersonalSummary" xml:space="preserve">
+    <value>Personlig sammanfattning</value>
+  </data>
+  <data name="NfcTesterOtherNumbers" xml:space="preserve">
+    <value>Andra nummer</value>
+  </data>
+  <data name="NfcTesterCustodyInformation" xml:space="preserve">
+    <value>Vårdnadsinformation</value>
   </data>
   <data name="TravelDocumentScan_IosNfcIntroPassport" xml:space="preserve">
     <value>⚪ ⚪ ⚪

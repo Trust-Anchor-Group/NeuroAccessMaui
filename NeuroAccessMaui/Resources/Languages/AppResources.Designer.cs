@@ -5092,6 +5092,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The chip&apos;s details differ from the scanned ones, so your application now uses the chip&apos;s details. Read the chip once more to finish..
+        /// </summary>
+        public static string KycTravelDocumentNfcReadAgain {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReadAgain", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to NFC chip readout saved and ready to attach to this application..
         /// </summary>
         public static string KycTravelDocumentNfcSuccess {

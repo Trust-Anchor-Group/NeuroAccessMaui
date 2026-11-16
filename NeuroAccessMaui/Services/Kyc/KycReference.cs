@@ -201,6 +201,15 @@ namespace NeuroAccessMaui.Services.Kyc
 		public string[]? NfcVerifiedFieldIds { get; set; }
 
 		/// <summary>
+		/// Gets or sets the identifiers of the fields that held a value when the chip was read for the reserved preview identity.
+		/// </summary>
+		/// <remarks>
+		/// The reservation fixes these values, so the fields stay read-only until the reservation is sent or forgotten.
+		/// </remarks>
+		[DefaultValueNull]
+		public string[]? ReservedFieldIds { get; set; }
+
+		/// <summary>
 		/// Gets whether an unsubmitted NFC draft can be rescanned to recover missing field-verification metadata.
 		/// </summary>
 		[IgnoreMember]
@@ -642,10 +651,14 @@ namespace NeuroAccessMaui.Services.Kyc
 				return;
 
 			bool HasNfcReadout = !string.IsNullOrWhiteSpace(this.NfcReadoutXml);
-			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] = HasNfcReadout ? "true" : "false";
+			// The chip is read at the end of the form, so a scanned document already counts: otherwise the form would ask for the
+			// document photos that the chip read replaces. Leaving the chip read discards the scan, which brings those pages back.
+			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] = HasNfcReadout || this.HasFullTravelDocumentMrz ? "true" : "false";
 			HashSet<string> VerifiedFieldIds = HasNfcReadout
 				? new HashSet<string>(this.NfcVerifiedFieldIds ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase)
 				: new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			if (HasNfcReadout && !string.IsNullOrWhiteSpace(this.ReservedPreviewIdentityId))
+				VerifiedFieldIds.UnionWith(this.ReservedFieldIds ?? Array.Empty<string>());
 
 			foreach (KycPage Page in Process.Pages)
 			{

@@ -714,16 +714,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.kycReference is null)
 				return;
 
-			string ReservedPreviewIdentityId = this.kycReference.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
-			if (!string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
-			{
-				bool ClearMatchingProfileApplication = this.kycReference.IsUnsubmittedReservedPreviewIdentity(ReservedPreviewIdentityId) &&
-					string.Equals(ServiceRef.TagProfile.IdentityApplication?.Id, ReservedPreviewIdentityId, StringComparison.OrdinalIgnoreCase);
-				if (ClearMatchingProfileApplication)
-					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
-
-				await this.kycService.ForgetReservedPreviewIdentityAsync(this.kycReference, ReservedPreviewIdentityId);
-			}
+			await this.ForgetReservedPreviewIdentityAsync();
 
 			this.kycReference.TravelDocumentMrz = null;
 			this.kycReference.TravelDocumentMrzUpdatedUtc = null;
@@ -736,6 +727,20 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.kycReference.UpdatedUtc = DateTime.UtcNow;
 			await this.kycService.SaveKycReferenceAsync(this.kycReference);
 			this.RefreshDerivedEvidenceState();
+		}
+
+		private async Task ForgetReservedPreviewIdentityAsync()
+		{
+			string ReservedPreviewIdentityId = this.kycReference?.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
+			if (this.kycReference is null || string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+				return;
+
+			bool ClearMatchingProfileApplication = this.kycReference.IsUnsubmittedReservedPreviewIdentity(ReservedPreviewIdentityId) &&
+				string.Equals(ServiceRef.TagProfile.IdentityApplication?.Id, ReservedPreviewIdentityId, StringComparison.OrdinalIgnoreCase);
+			if (ClearMatchingProfileApplication)
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+
+			await this.kycService.ForgetReservedPreviewIdentityAsync(this.kycReference, ReservedPreviewIdentityId);
 		}
 
 		private int GetFirstVisibleIndex()
@@ -1574,7 +1579,76 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
 				return;
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(KycTravelDocumentPage), new KycProcessNavigationArgs(this.kycReference));
+			await ServiceRef.NavigationService.GoToAsync(nameof(KycTravelDocumentPage), new KycProcessNavigationArgs(this.kycReference)
+			{
+				ReadChip = true
+			});
+		}
+
+		/// <summary>
+		/// Sends the user to the chip read when the application cannot be sent yet: a document was scanned but its chip has not
+		/// been read, or the reserved preview identity cannot be fetched or no longer holds what the form holds.
+		/// </summary>
+		/// <remarks>
+		/// The chip read happens at this point rather than earlier because a reservation fixes the claims of the preview, and the
+		/// final identity can only hold claims of the preview. The chip read is tied to the reservation, so a stale reservation
+		/// takes the chip read with it.
+		/// </remarks>
+		/// <returns><c>true</c> if the application must not be sent now; otherwise, <c>false</c>.</returns>
+		private async Task<bool> TryRedirectToChipReadAsync()
+		{
+			if (this.kycReference is null ||
+				this.process is null ||
+				this.process.ApplicationPolicy.Mode != KycApplicationMode.Preview ||
+				!this.process.EvidencePolicy.TravelDocument.Nfc.Enabled)
+			{
+				return false;
+			}
+
+			string ReservedPreviewIdentityId = this.kycReference.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
+			if (!string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+			{
+				(bool Succeeded, LegalIdentity? ReservedIdentity) = await ServiceRef.NetworkService.TryRequest(
+					() => ServiceRef.XmppService.GetLegalIdentity(ReservedPreviewIdentityId),
+					displayAlert: false);
+
+				// Offline, the reservation may still be valid, so the chip read is kept for a later attempt. Online, a reservation
+				// that cannot be fetched can never be sent, so it is treated as stale like one that no longer matches the form.
+				if (!Succeeded && !ServiceRef.NetworkService.IsOnline)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)]);
+					return true;
+				}
+
+				IReadOnlyList<Property> ReservationProperties = await this.kycService
+					.PreparePreviewReservationPropertiesAsync(this.kycReference, CancellationToken.None);
+				if (ReservedIdentity is null || !KycTravelDocumentViewModel.ReservedIdentityMatches(ReservedIdentity, ReservationProperties))
+				{
+					await this.ForgetReservedPreviewIdentityAsync();
+					this.kycReference.NfcReadoutXml = null;
+					this.kycReference.NfcReadoutUpdatedUtc = null;
+					this.kycReference.NfcVerifiedFieldIds = null;
+					this.kycReference.Version++;
+					this.kycReference.UpdatedUtc = DateTime.UtcNow;
+					await this.kycService.SaveKycReferenceAsync(this.kycReference);
+					this.RefreshDerivedEvidenceState();
+				}
+			}
+
+			if (!this.kycReference.HasFullTravelDocumentMrz ||
+				!string.IsNullOrWhiteSpace(this.kycReference.NfcReadoutXml) ||
+				!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
+			{
+				return false;
+			}
+
+			await ServiceRef.NavigationService.GoToAsync(nameof(KycTravelDocumentPage), new KycProcessNavigationArgs(this.kycReference)
+			{
+				ReadChip = true
+			});
+			return true;
 		}
 
 		[RelayCommand]
@@ -1590,6 +1664,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				this.RefreshDerivedEvidenceState();
 				await this.BuildMappedValuesAsync();
+				if (await this.TryRedirectToChipReadAsync())
+					return;
+
 				KycEvidenceValidationResult EvidenceValidation = this.evidenceValidationService.Validate(this.process, this.kycReference);
 				if (!EvidenceValidation.CanSubmit)
 				{

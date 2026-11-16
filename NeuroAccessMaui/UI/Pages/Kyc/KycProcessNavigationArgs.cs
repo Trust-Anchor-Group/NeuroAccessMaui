@@ -38,6 +38,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Gets or sets a value indicating whether an incomplete travel-document chip attempt should be abandoned.
 		/// </summary>
 		public bool AbandonTravelDocumentAttempt { get; init; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the travel-document page should read the chip. Otherwise it only scans the
+		/// document details and returns to the form, because the chip read reserves the preview identity with the values the
+		/// form holds at that moment.
+		/// </summary>
+		public bool ReadChip { get; init; }
 	}
 }
 

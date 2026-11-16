@@ -194,8 +194,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				if (FinalContent.Stage != KycApplicationContentStage.FinalPromotion)
 					return KycPreviewPromotionResult.NoChange("UnexpectedPromotionContentStage");
 
-				List<Property> FinalProperties = FinalContent.Properties.ToList();
-				UsePreviewAgeAbove(FinalProperties, PreviewIdentity);
+				List<Property> FinalProperties = UsePreviewClaims(FinalContent.Properties, PreviewIdentity);
 				AddOrReplaceProperty(FinalProperties, Constants.XmppProperties.Preview, StripIdentityDomain(PreviewIdentity.Id));
 
 				LegalIdentity FinalIdentity = await ServiceRef.XmppService.AddLegalIdentity(
@@ -246,23 +245,36 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
-		/// Replaces a rebuilt AGEABOVE claim with the value the preview identity was approved with.
+		/// Limits the final application to claims the approved preview identity holds, with the names and values the preview was
+		/// approved with.
 		/// </summary>
 		/// <remarks>
-		/// AGEABOVE is derived from today's date, so a birthday between preview and promotion could otherwise raise it and make
-		/// the final application disagree with the approved preview.
+		/// The server rejects a final application if any of its claims differs from the preview. The final application is rebuilt
+		/// from the saved form, which can change after the preview is reserved at the document scan: fields copied from a previous
+		/// application can be edited, the chip read replaces values the camera read, AGEABOVE follows today's date, and COUNTRY and
+		/// NATIONALITY start from the phone number or a previous identity. Claims the preview lacks were never reviewed, so they are
+		/// left out, and claims the user left out of the final application stay out.
 		/// </remarks>
 		/// <param name="FinalProperties">The final application properties.</param>
 		/// <param name="PreviewIdentity">The approved preview identity.</param>
-		private static void UsePreviewAgeAbove(List<Property> FinalProperties, LegalIdentity PreviewIdentity)
+		/// <returns>The final application properties, copied from the preview identity.</returns>
+		private static List<Property> UsePreviewClaims(IEnumerable<Property> FinalProperties, LegalIdentity PreviewIdentity)
 		{
-			int Index = FinalProperties.FindIndex(Property => string.Equals(Property.Name, Constants.XmppProperties.AgeAbove, StringComparison.OrdinalIgnoreCase));
-			if (Index < 0)
-				return;
+			List<Property> Result = new List<Property>();
+			foreach (Property FinalProperty in FinalProperties)
+			{
+				if (Result.Exists(Property => string.Equals(Property.Name, FinalProperty.Name, StringComparison.OrdinalIgnoreCase)))
+					continue;
 
-			string PreviewAgeAbove = PreviewIdentity[Constants.XmppProperties.AgeAbove]?.Trim() ?? string.Empty;
-			if (!string.IsNullOrEmpty(PreviewAgeAbove))
-				FinalProperties[Index] = new Property(Constants.XmppProperties.AgeAbove, PreviewAgeAbove);
+				Property? PreviewProperty = PreviewIdentity.Properties?.FirstOrDefault(Property =>
+					string.Equals(Property.Name, FinalProperty.Name, StringComparison.OrdinalIgnoreCase));
+				if (PreviewProperty is null || string.IsNullOrWhiteSpace(PreviewProperty.Value))
+					continue;
+
+				Result.Add(new Property(PreviewProperty.Name, PreviewProperty.Value));
+			}
+
+			return Result;
 		}
 
 		private static void AddOrReplaceProperty(List<Property> Properties, string Name, string Value)
