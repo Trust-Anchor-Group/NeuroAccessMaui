@@ -58,9 +58,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private string? machineState;
 
 		/// <summary>
-		/// The step the state machine ended in, when it has ended and the server said which step that was.
+		/// The last step the state machine was seen in. When the machine ends without naming a step, this is the step it was
+		/// in before it ended.
 		/// </summary>
-		private string? endedState;
+		private string? lastState;
 		private int noteCommandsVersion;
 		private int noteCommandCandidateCount;
 		private bool noteCommandsLoaded;
@@ -817,11 +818,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.MachineEnded = Ended || string.IsNullOrEmpty(State);
 			this.machineState = this.MachineEnded ? null : State;
 
-			// A new state that only says the machine ended keeps the step it was known to have ended in.
-			if (this.MachineEnded && !string.IsNullOrEmpty(State))
-				this.endedState = State;
-			else if (!this.MachineEnded)
-				this.endedState = null;
+			// A new state that only says the machine ended keeps the step it was last seen in.
+			if (!string.IsNullOrEmpty(State))
+				this.lastState = State;
 			this.MachineStateText = this.MachineEnded
 				? ServiceRef.Localizer[nameof(AppResources.StateEnded)]
 				: State;
@@ -1188,15 +1187,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		}
 
 		/// <summary>
-		/// Gets the step the flow ended in: the one the server named, or the only step where the flow ends.
+		/// Gets the step the flow ended in: the last step the machine was seen in before it ended, or, when that isn't known,
+		/// the only step where the flow ends.
 		/// </summary>
 		/// <returns>The step, or null when it isn't known.</returns>
 		private TokenFlowStepItem? GetEndedStep()
 		{
-			if (!string.IsNullOrEmpty(this.endedState))
+			if (!string.IsNullOrEmpty(this.lastState))
 			{
 				TokenFlowStepItem? Named = this.allFlowSteps.FirstOrDefault(Step =>
-					string.Equals(Step.Id, this.endedState, StringComparison.Ordinal));
+					string.Equals(Step.Id, this.lastState, StringComparison.Ordinal));
 
 				if (Named is not null)
 					return Named;
