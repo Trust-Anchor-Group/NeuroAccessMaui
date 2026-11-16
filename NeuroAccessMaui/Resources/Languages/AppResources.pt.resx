@@ -4968,10 +4968,22 @@ Documento lido. Você pode mover seu iPhone.</value>
     <value>Nenhum valor corresponde</value>
   </data>
   <data name="HistoryFilterOwnership" xml:space="preserve">
-    <value>Propriedade</value>
+    <value>Vendas</value>
   </data>
   <data name="HistoryFilterNotes" xml:space="preserve">
     <value>Notas</value>
+  </data>
+  <data name="HistoryFilterSteps" xml:space="preserve">
+    <value>Etapas</value>
+  </data>
+  <data name="HistoryStep" xml:space="preserve">
+    <value>Etapa: {0}</value>
+  </data>
+  <data name="HistorySeenLive" xml:space="preserve">
+    <value>Visto ao vivo no app</value>
+  </data>
+  <data name="HistoryValueChart" xml:space="preserve">
+    <value>Gráfico de valores</value>
   </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Apenas as pessoas nomeadas no contrato</value>

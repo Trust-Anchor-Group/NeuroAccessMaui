@@ -51,6 +51,11 @@
 		public DataTemplate? KilledTemplate { get; set; }
 
 		/// <summary>
+		/// Template for a step the token moved to, seen live in the app.
+		/// </summary>
+		public DataTemplate? StepTemplate { get; set; }
+
+		/// <summary>
 		/// Template to use for other items.
 		/// </summary>
 		public DataTemplate? DefaultTemplate { get; set; }
@@ -71,6 +76,7 @@
 					EventType.ExternalNoteText => this.ExternalNoteTextTemplate ?? this.DefaultTemplate,
 					EventType.ExternalNoteXml => this.ExternalNoteXmlTemplate ?? this.DefaultTemplate,
 					EventType.Killed => this.KilledTemplate ?? this.DefaultTemplate,
+					EventType.Step => this.StepTemplate ?? this.DefaultTemplate,
 					_ => this.DefaultTemplate,
 				};
 			}

@@ -3,13 +3,17 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
+using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
@@ -29,6 +33,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		private readonly TokenEventsNavigationArgs? navigationArguments;
 		private readonly HashSet<(DateTime Timestamp, EventType Type)> eventKeys = [];
 		private readonly List<NoteTextItem> localNotes = [];
+		private readonly List<StepItem> liveSteps = [];
 		private readonly SemaphoreSlim pageLock = new(1, 1);
 		private TokenEvent[]? preloadedEvents;
 		private int serverOffset;
@@ -47,6 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			this.preloadedEvents = Args?.Events;
 			this.TokenId = Args?.TokenId;
 			this.IsMyToken = Args?.IsMyToken ?? false;
+			this.HasValueChart = !string.IsNullOrEmpty(Args?.MachineId);
 
 			this.Events = [];
 			this.Events.CollectionChanged += (Sender, Args) => this.UpdateShownEvents();
@@ -106,6 +112,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 						if (this.eventKeys.Add(GetKey(Item)))
 							this.Events.Add(Item);
 					}
+
+					// Steps seen live aren't among the Neuron's events, so they are kept when the events are loaded again.
+					foreach (StepItem Step in this.liveSteps)
+						this.InsertByTime(Step);
 
 					this.serverOffset = Page.Length;
 					this.reachedEnd = Page.Length < PageSize;
@@ -245,10 +255,37 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 
 		private Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
 		{
-			if (this.IsThisToken(e.TokenId))
-				this.ScheduleRefresh();
+			if (!this.IsThisToken(e.TokenId))
+				return Task.CompletedTask;
+
+			if (!string.IsNullOrEmpty(e.NewState) && !string.IsNullOrEmpty(this.TokenId))
+			{
+				StepItem Step = new(this.TokenId, e.NewState, DateTime.UtcNow);
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.liveSteps.Add(Step);
+					this.InsertByTime(Step);
+				});
+			}
+
+			this.ScheduleRefresh();
 
 			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Adds an event where it belongs among the events, newest first. Called on the main thread.
+		/// </summary>
+		/// <param name="Item">The event.</param>
+		private void InsertByTime(EventItem Item)
+		{
+			int Index = 0;
+
+			while (Index < this.Events.Count && this.Events[Index].Timestamp > Item.Timestamp)
+				Index++;
+
+			this.Events.Insert(Index, Item);
 		}
 
 		private void TokenUnreadTracker_UnreadChanged(object? Sender, string TokenId)
@@ -279,6 +316,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		[NotifyPropertyChangedFor(nameof(IsAllSelected))]
 		[NotifyPropertyChangedFor(nameof(IsOwnershipSelected))]
 		[NotifyPropertyChangedFor(nameof(IsNotesSelected))]
+		[NotifyPropertyChangedFor(nameof(IsStepsSelected))]
 		private TokenEventFilter selectedFilter = TokenEventFilter.All;
 
 		/// <summary>
@@ -297,6 +335,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public bool IsNotesSelected => this.SelectedFilter == TokenEventFilter.Notes;
 
 		/// <summary>
+		/// If only steps seen live are shown.
+		/// </summary>
+		public bool IsStepsSelected => this.SelectedFilter == TokenEventFilter.Steps;
+
+		/// <summary>
+		/// If the token has a state machine, so its values can be shown as a chart.
+		/// </summary>
+		public bool HasValueChart { get; }
+
+		/// <summary>
 		/// Shows the events of the chosen kind.
 		/// </summary>
 		partial void OnSelectedFilterChanged(TokenEventFilter value)
@@ -310,8 +358,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		private void UpdateShownEvents()
 		{
 			List<EventItem> Shown = [.. this.Events.Where(Item => Matches(Item, this.SelectedFilter))];
+			bool DaysChanged = SetDays(Shown);
 
-			if (!this.ShownEvents.SequenceEqual(Shown))
+			if (DaysChanged || !this.ShownEvents.SequenceEqual(Shown))
 			{
 				this.ShownEvents.Clear();
 
@@ -321,6 +370,45 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 
 			if (this.LoadTask.IsSucceeded)
 				this.ShowNoEvents = this.ShownEvents.Count == 0;
+		}
+
+		/// <summary>
+		/// Puts a day heading on the first event of each day.
+		/// </summary>
+		/// <param name="Shown">The events shown, newest first.</param>
+		/// <returns>If any heading changed.</returns>
+		private static bool SetDays(List<EventItem> Shown)
+		{
+			bool Changed = false;
+			DateTime? LastDay = null;
+			DateTime Today = DateTime.Today;
+
+			foreach (EventItem Item in Shown)
+			{
+				DateTime Local = Item.Timestamp.Kind == DateTimeKind.Utc ? Item.Timestamp.ToLocalTime() : Item.Timestamp;
+				DateTime Day = Local.Date;
+				string Text = string.Empty;
+
+				if (Day != LastDay)
+				{
+					if (Day == Today)
+						Text = ServiceRef.Localizer[nameof(AppResources.Today)];
+					else if (Day == Today.AddDays(-1))
+						Text = ServiceRef.Localizer[nameof(AppResources.Yesterday)];
+					else
+						Text = Day.ToString("D", CultureInfo.CurrentCulture);
+
+					LastDay = Day;
+				}
+
+				if (Item.DayText != Text)
+				{
+					Item.DayText = Text;
+					Changed = true;
+				}
+			}
+
+			return Changed;
 		}
 
 		/// <summary>
@@ -337,6 +425,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 					or EventType.Destroyed or EventType.Killed,
 				TokenEventFilter.Notes => Item.Type is EventType.NoteText or EventType.NoteXml or EventType.ExternalNoteText
 					or EventType.ExternalNoteXml,
+				TokenEventFilter.Steps => Item.Type is EventType.Step,
 				_ => true
 			};
 		}
@@ -400,6 +489,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		private void SelectFilter(TokenEventFilter Filter)
 		{
 			this.SelectedFilter = Filter;
+		}
+
+		/// <summary>
+		/// Shows how the token's values have changed over time, as charts drawn by the token's Neuron.
+		/// </summary>
+		[RelayCommand]
+		private async Task ShowValueChartAsync()
+		{
+			if (string.IsNullOrEmpty(this.TokenId))
+				return;
+
+			try
+			{
+				MachineReportNavigationArgs Args = new(new TokenHistoryReport(this.TokenId));
+				await ServiceRef.NavigationService.GoToAsync(nameof(MachineReportPage), Args, BackMethod.Pop);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
 		}
 
 		/// <summary>

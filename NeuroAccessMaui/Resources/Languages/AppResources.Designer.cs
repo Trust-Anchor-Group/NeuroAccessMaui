@@ -14737,7 +14737,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ownership.
+        ///   Looks up a localized string similar to Sales.
         /// </summary>
         public static string HistoryFilterOwnership {
             get {
@@ -14751,6 +14751,42 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string HistoryFilterNotes {
             get {
                 return ResourceManager.GetString("HistoryFilterNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steps.
+        /// </summary>
+        public static string HistoryFilterSteps {
+            get {
+                return ResourceManager.GetString("HistoryFilterSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step: {0}.
+        /// </summary>
+        public static string HistoryStep {
+            get {
+                return ResourceManager.GetString("HistoryStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seen live in the app.
+        /// </summary>
+        public static string HistorySeenLive {
+            get {
+                return ResourceManager.GetString("HistorySeenLive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value chart.
+        /// </summary>
+        public static string HistoryValueChart {
+            get {
+                return ResourceManager.GetString("HistoryValueChart", resourceCulture);
             }
         }
         

@@ -62,6 +62,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// Statemachine killed.
 		/// </summary>
 		Killed,
+
+		/// <summary>
+		/// The token moved to a step, seen live in the app.
+		/// </summary>
+		Step,
 	}
 
 	/// <summary>
@@ -120,6 +125,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// Type of event.
 		/// </summary>
 		public abstract EventType Type { get; }
+
+		/// <summary>
+		/// The day heading shown above the event when it is the first event of its day, such as "Today", or an empty string.
+		/// </summary>
+		public string DayText { get; set; } = string.Empty;
+
+		/// <summary>
+		/// If the day heading is shown above the event.
+		/// </summary>
+		public bool ShowsDay => !string.IsNullOrEmpty(this.DayText);
+
+		/// <summary>
+		/// The event as a list of one, so the template that adds the day heading can show the event with its own template.
+		/// </summary>
+		public IReadOnlyList<EventItem> Self => [this];
 
 		/// <summary>
 		/// Command executed when the user wants to view an ID

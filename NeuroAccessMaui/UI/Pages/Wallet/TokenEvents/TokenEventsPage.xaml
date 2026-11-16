@@ -8,6 +8,7 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenEvents"
 							 xmlns:events="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events">
 	<VisualElement.Resources>
@@ -399,6 +400,34 @@
 			</Border>
 		</DataTemplate>
 
+		<!-- A step the token moved to, seen live while the history was open -->
+		<DataTemplate x:Key="StepEvent" x:DataType="events:StepItem">
+			<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="12">
+				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+					<Border Grid.Column="0"
+							WidthRequest="32"
+							HeightRequest="32"
+							StrokeShape="RoundRectangle 16"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource TnPInfobgWL}"
+							VerticalOptions="Center">
+						<Path Data="{x:Static ui:Geometries.ArrowRightPath}"
+							  Fill="{DynamicResource TnPInfoContentWL}"
+							  Aspect="Uniform"
+							  WidthRequest="14"
+							  HeightRequest="14"
+							  HorizontalOptions="Center"
+							  VerticalOptions="Center" />
+					</Border>
+					<VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+						<Label Text="{Binding Title}" Style="{StaticResource EventTitleLabel}" />
+						<Label Text="{l:Localize HistorySeenLive}" Style="{StaticResource EventKeyLabel}" />
+					</VerticalStackLayout>
+					<Label Grid.Column="2" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource EventTimeLabel}" VerticalOptions="Start" />
+				</Grid>
+			</Border>
+		</DataTemplate>
+
 		<viewmodel:EventTypeTemplateSelector x:Key="EventStyleSelector"
 											 CreatedTemplate="{StaticResource CreatedEvent}"
 											 DestroyedTemplate="{StaticResource DestroyedEvent}"
@@ -409,7 +438,23 @@
 											 ExternalNoteTextTemplate="{StaticResource ExternalNoteText}"
 											 ExternalNoteXmlTemplate="{StaticResource ExternalNoteXml}"
 											 KilledTemplate="{StaticResource Killed}"
+											 StepTemplate="{StaticResource StepEvent}"
 											 DefaultTemplate="{StaticResource OtherEvents}"/>
+
+		<!-- An event with the heading of its day above it, when it is the first event of that day -->
+		<DataTemplate x:Key="EventWithDay" x:DataType="viewmodel:EventItem">
+			<VerticalStackLayout>
+				<Label Text="{Binding DayText}"
+					   FontFamily="HaasGroteskMedium"
+					   FontSize="13"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   Margin="4,6,4,8"
+					   IsVisible="{Binding ShowsDay}"
+					   SemanticProperties.HeadingLevel="Level2" />
+				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Self}"
+									 BindableLayout.ItemTemplateSelector="{StaticResource EventStyleSelector}" />
+			</VerticalStackLayout>
+		</DataTemplate>
 	</VisualElement.Resources>
 
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto,*,auto">
@@ -454,7 +499,7 @@
 							 Command="{Binding RefreshEventsCommand}">
 					<Grid>
 						<controls:LoadingCollectionView ItemsSource="{Binding ShownEvents}"
-														ItemTemplate="{StaticResource EventStyleSelector}"
+														ItemTemplate="{StaticResource EventWithDay}"
 														SelectionMode="None"
 														ItemSizingStrategy="MeasureAllItems"
 														RemainingItemsThreshold="3"
@@ -546,7 +591,66 @@
 												</Label.Triggers>
 											</Label>
 										</Border>
+										<Border Style="{StaticResource HistoryFilterChip}">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsStepsSelected}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Border.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
+																	  CommandParameter="{x:Static viewmodel:TokenEventFilter.Steps}" />
+											</Border.GestureRecognizers>
+											<Label Text="{l:Localize HistoryFilterSteps}"
+												   Style="{StaticResource HistoryFilterChipLabel}">
+												<Label.Triggers>
+													<DataTrigger TargetType="Label"
+																 Binding="{Binding IsStepsSelected}"
+																 Value="True">
+														<Setter Property="TextColor"
+																Value="{DynamicResource ButtonAccessPrimaryContentWL}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
+										</Border>
 									</HorizontalStackLayout>
+
+									<!-- How the values changed over time, drawn by the token's Neuron -->
+									<Border StrokeShape="RoundRectangle 14"
+											StrokeThickness="1"
+											Stroke="{DynamicResource SurfaceDividerWL}"
+											BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+											Padding="14,10"
+											Margin="0,4,0,0"
+											IsVisible="{Binding HasValueChart}"
+											SemanticProperties.Description="{l:Localize HistoryValueChart}">
+										<Border.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ShowValueChartCommand}" />
+										</Border.GestureRecognizers>
+										<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+											<Path Grid.Column="0"
+												  Data="{x:Static ui:Geometries.HistoryIconPath}"
+												  Fill="{DynamicResource ContentPrimaryWL}"
+												  Aspect="Uniform"
+												  WidthRequest="18"
+												  HeightRequest="18"
+												  VerticalOptions="Center" />
+											<Label Grid.Column="1"
+												   Text="{l:Localize HistoryValueChart}"
+												   FontFamily="HaasGroteskMedium"
+												   FontSize="{StaticResource FontSizeSm}"
+												   TextColor="{DynamicResource ContentPrimaryWL}"
+												   VerticalOptions="Center" />
+											<Label Grid.Column="2"
+												   Text="›"
+												   FontSize="{StaticResource FontSizeLg}"
+												   TextColor="{DynamicResource ContentSecondaryWL}"
+												   VerticalOptions="Center" />
+										</Grid>
+									</Border>
 								</VerticalStackLayout>
 							</CollectionView.Header>
 							<CollectionView.Footer>

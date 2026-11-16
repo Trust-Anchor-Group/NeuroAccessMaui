@@ -4887,10 +4887,22 @@ Document read. You can move your iPhone.</value>
     <value>No values match</value>
   </data>
   <data name="HistoryFilterOwnership" xml:space="preserve">
-    <value>Ownership</value>
+    <value>Sales</value>
   </data>
   <data name="HistoryFilterNotes" xml:space="preserve">
     <value>Notes</value>
+  </data>
+  <data name="HistoryFilterSteps" xml:space="preserve">
+    <value>Steps</value>
+  </data>
+  <data name="HistoryStep" xml:space="preserve">
+    <value>Step: {0}</value>
+  </data>
+  <data name="HistorySeenLive" xml:space="preserve">
+    <value>Seen live in the app</value>
+  </data>
+  <data name="HistoryValueChart" xml:space="preserve">
+    <value>Value chart</value>
   </data>
   <data name="ContractPartsNamed" xml:space="preserve">
     <value>Only the people named in the contract</value>
