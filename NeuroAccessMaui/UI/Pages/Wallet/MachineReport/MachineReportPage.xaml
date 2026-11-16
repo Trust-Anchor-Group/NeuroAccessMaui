@@ -15,31 +15,7 @@
 
 		<controls:Background Grid.RowSpan="2"/>
 
-		<!-- Close, the title with where the report is from, and share when the report is one image -->
-		<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="12" Margin="16,8,16,8">
-			<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
-
-			<VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-				<Label Text="{Binding Title}"
-					   FontFamily="SpaceGroteskSemiBold"
-					   FontSize="17"
-					   TextColor="{DynamicResource ContentPrimaryWL}"
-					   LineBreakMode="TailTruncation"
-					   MaxLines="1" />
-				<Label Text="{Binding SourceText}"
-					   FontSize="12"
-					   TextColor="{DynamicResource ContentSecondaryWL}"
-					   IsVisible="{Binding IsImageReport}" />
-			</VerticalStackLayout>
-
-			<controls:SvgButton Grid.Column="2" Command="{Binding ShareCommand}"
-								Style="{DynamicResource IconButton}" SvgSource="share.svg"
-								SemanticProperties.Description="{l:Localize Share}"
-								IsVisible="{Binding CanShare}" />
-		</Grid>
-
-		<controls:TaskView Grid.Row="1" Task="{Binding ReportTask}">
+		<controls:TaskView x:Name="Body" Grid.Row="1" Task="{Binding ReportTask}">
 			<controls:TaskView.RunningView>
 				<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center" VerticalOptions="Center"/>
 			</controls:TaskView.RunningView>
@@ -53,7 +29,8 @@
 			<controls:TaskView.SucceededView>
 				<Grid>
 					<!-- A report that is one image opens where it can be zoomed and moved straight away -->
-					<controls:ZoomImageView Source="{Binding ReportImage}"
+					<controls:ZoomImageView x:Name="ZoomView"
+											Source="{Binding ReportImage}"
 											IsVisible="{Binding IsImageReport}"
 											Margin="12,0,12,20" />
 					<ScrollView x:Name="ReportScrollView" IsVisible="{Binding IsTextReport}">
@@ -68,5 +45,45 @@
 				</Grid>
 			</controls:TaskView.SucceededView>
 		</controls:TaskView>
+
+		<!-- Close, the title with where the report is from, and share when the report is one image. In landscape it lies
+			 over the image, and its empty space lets touches through to the image. -->
+		<Grid x:Name="Header"
+			  ColumnDefinitions="auto, *, auto"
+			  ColumnSpacing="12"
+			  Margin="16,8,16,8"
+			  VerticalOptions="Start"
+			  InputTransparent="True"
+			  CascadeInputTransparent="False">
+			<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
+
+			<Border x:Name="TitleBox"
+					Grid.Column="1"
+					VerticalOptions="Center"
+					HorizontalOptions="Start"
+					Padding="0"
+					StrokeThickness="0"
+					StrokeShape="RoundRectangle 20"
+					BackgroundColor="Transparent">
+				<VerticalStackLayout VerticalOptions="Center">
+					<Label Text="{Binding Title}"
+						   FontFamily="SpaceGroteskSemiBold"
+						   FontSize="17"
+						   TextColor="{DynamicResource ContentPrimaryWL}"
+						   LineBreakMode="TailTruncation"
+						   MaxLines="1" />
+					<Label Text="{Binding SourceText}"
+						   FontSize="12"
+						   TextColor="{DynamicResource ContentSecondaryWL}"
+						   IsVisible="{Binding IsImageReport}" />
+				</VerticalStackLayout>
+			</Border>
+
+			<controls:SvgButton Grid.Column="2" Command="{Binding ShareCommand}"
+								Style="{DynamicResource IconButton}" SvgSource="share.svg"
+								SemanticProperties.Description="{l:Localize Share}"
+								IsVisible="{Binding CanShare}" />
+		</Grid>
 	</Grid>
 </base:BaseContentPage>

@@ -21,6 +21,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 		private const double maxScale = 2.5;
 
 		/// <summary>
+		/// The largest move between two pan reports that is taken as a real move. Android measures a pan from the first finger
+		/// on the screen, so when that finger is lifted the total jumps to another finger.
+		/// </summary>
+		private const double maxPanStep = 80;
+
+		/// <summary>
 		/// The steps of the flow, in order, with the first step first.
 		/// </summary>
 		public static readonly BindableProperty StepsProperty =
@@ -51,6 +57,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 		private double lastPanX;
 		private double lastPanY;
 		private bool isPinching;
+		private bool rebasePan;
 		private bool hasFitted;
 
 		/// <summary>
@@ -120,6 +127,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 		{
 			get => (IReadOnlyDictionary<string, object>?)this.GetValue(VariablesProperty);
 			set => this.SetValue(VariablesProperty, value);
+		}
+
+		/// <summary>
+		/// Fits the whole flow again the next time the map changes size, such as when the phone turns.
+		/// </summary>
+		public void RefitOnResize()
+		{
+			this.hasFitted = false;
 		}
 
 		/// <summary>
@@ -347,11 +362,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 			{
 				case GestureStatus.Started:
 					this.isPinching = true;
+					this.rebasePan = true;
 					return;
 
 				case GestureStatus.Completed:
 				case GestureStatus.Canceled:
 					this.isPinching = false;
+					this.rebasePan = true;
 					return;
 			}
 
@@ -377,6 +394,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 				case GestureStatus.Started:
 					this.lastPanX = 0;
 					this.lastPanY = 0;
+					this.rebasePan = false;
 					break;
 
 				case GestureStatus.Running:
@@ -386,6 +404,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 					double Dy = e.TotalY - this.lastPanY;
 					this.lastPanX = e.TotalX;
 					this.lastPanY = e.TotalY;
+
+					// The first report after a pinch, and a jump to another finger, only set where the next move starts from.
+					if (this.rebasePan || Math.Abs(Dx) > maxPanStep || Math.Abs(Dy) > maxPanStep)
+					{
+						this.rebasePan = false;
+						break;
+					}
 
 					if (!this.isPinching)
 						this.MoveTo(this.content.TranslationX + Dx, this.content.TranslationY + Dy);

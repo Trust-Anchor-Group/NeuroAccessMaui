@@ -9,19 +9,35 @@
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.Flow">
 	<!-- The flow as a map that can be pinched and moved, with what moves the token on from the tapped step in a sheet
-		 that stays put under it -->
+		 that stays put under it. In landscape the map takes the whole height, the top bar lies over it, and the sheet
+		 moves to the side. -->
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-		  RowDefinitions="Auto,*,Auto">
+		  RowDefinitions="Auto,*,Auto"
+		  ColumnDefinitions="*,Auto">
 
-		<Grid Grid.Row="0"
+		<viewmodel:TokenFlowMap x:Name="FlowMap"
+								Grid.Row="1"
+								Grid.ColumnSpan="2"
+								Steps="{Binding Steps}"
+								Variables="{Binding Variables}"
+								SelectedStep="{Binding SelectedStep, Mode=TwoWay}" />
+
+		<!-- Its empty space lets touches through to the map when it lies over it -->
+		<Grid x:Name="Header"
+			  Grid.Row="0"
+			  Grid.ColumnSpan="2"
 			  ColumnDefinitions="Auto,*,Auto"
 			  ColumnSpacing="12"
-			  Margin="16,8,16,8">
+			  Margin="16,8,16,8"
+			  VerticalOptions="Start"
+			  InputTransparent="True"
+			  CascadeInputTransparent="False">
 			<controls:SvgButton Grid.Column="0"
 								Command="{Binding GoBackCommand}"
 								Style="{DynamicResource IconButton}"
 								SvgSource="close.svg" />
-			<Label Grid.Column="1"
+			<Label x:Name="TitleLabel"
+				   Grid.Column="1"
 				   Text="{l:Localize StateDiagram}"
 				   Style="{DynamicResource PageTitleLabel}"
 				   VerticalOptions="Center" />
@@ -49,21 +65,18 @@
 			</Border>
 		</Grid>
 
-		<viewmodel:TokenFlowMap x:Name="FlowMap"
-								Grid.Row="1"
-								Steps="{Binding Steps}"
-								Variables="{Binding Variables}"
-								SelectedStep="{Binding SelectedStep, Mode=TwoWay}" />
-
 		<!-- What moves the token on from the tapped step -->
-		<Border Grid.Row="2"
+		<Border x:Name="Sheet"
+				Grid.Row="2"
+				Grid.ColumnSpan="2"
 				StrokeShape="RoundRectangle 24,24,0,0"
 				StrokeThickness="1"
 				Stroke="{DynamicResource SurfaceDividerWL}"
 				BackgroundColor="{DynamicResource SurfaceElevation1WL}"
 				Padding="20,10,20,24">
 			<VerticalStackLayout Spacing="2">
-				<BoxView WidthRequest="36"
+				<BoxView x:Name="SheetHandle"
+						 WidthRequest="36"
 						 HeightRequest="4"
 						 CornerRadius="2"
 						 Color="{DynamicResource SurfaceDividerWL}"
@@ -78,7 +91,8 @@
 					   FontSize="13"
 					   TextColor="{DynamicResource ContentSecondaryWL}"
 					   Margin="0,0,0,6" />
-				<ScrollView MaximumHeightRequest="240">
+				<ScrollView x:Name="SheetScroll"
+							MaximumHeightRequest="240">
 					<VerticalStackLayout BindableLayout.ItemsSource="{Binding SheetLines}">
 						<BindableLayout.ItemTemplate>
 							<DataTemplate x:DataType="viewmodel:TokenFlowSheetLine">

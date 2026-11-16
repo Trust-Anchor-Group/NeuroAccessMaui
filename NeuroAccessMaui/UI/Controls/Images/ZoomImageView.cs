@@ -17,18 +17,31 @@ namespace NeuroAccessMaui.UI.Controls
 		private const double doubleTapScale = 2.5;
 
 		/// <summary>
+		/// The largest move between two pan reports that is taken as a real move. Android measures a pan from the first finger
+		/// on the screen, so when that finger is lifted the total jumps to another finger.
+		/// </summary>
+		private const double maxPanStep = 80;
+
+		/// <summary>
 		/// The image.
 		/// </summary>
 		public static readonly BindableProperty SourceProperty =
 			BindableProperty.Create(nameof(Source), typeof(ImageSource), typeof(ZoomImageView), null,
 				propertyChanged: (Bindable, OldValue, NewValue) => ((ZoomImageView)Bindable).image.Source = NewValue as ImageSource);
 
+		private readonly Grid layout;
 		private readonly Grid stage;
 		private readonly Microsoft.Maui.Controls.Image image;
 		private readonly Label percentLabel;
+		private readonly Label hint;
+		private readonly Border zoomBar;
+		private readonly Border paper;
+		private bool isFullScreen;
+		private Thickness overlayPadding;
 		private double lastPanX;
 		private double lastPanY;
 		private bool isPinching;
+		private bool rebasePan;
 
 		/// <summary>
 		/// Creates the view.
@@ -43,20 +56,24 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			// Bitmaps keep their light background, also in dark mode, on a slightly dimmed paper tile.
-			Border Paper = new()
+			this.paper = new Border
 			{
 				StrokeThickness = 0,
 				StrokeShape = new RoundRectangle { CornerRadius = 12 },
 				Content = this.image
 			};
-			Paper.SetAppThemeColor(VisualElement.BackgroundColorProperty, Colors.White, Color.FromRgb(0xE4, 0xE4, 0xE4));
+			this.paper.SetAppThemeColor(VisualElement.BackgroundColorProperty, Colors.White, Color.FromRgb(0xE4, 0xE4, 0xE4));
 
 			this.stage = new Grid
 			{
 				IsClippedToBounds = true,
 				MinimumHeightRequest = 240,
-				Children = { Paper }
+				Children = { this.paper }
 			};
+
+			// When the area changes size, such as when the phone turns, the image is kept within it.
+			this.stage.SizeChanged += (Sender, Args) =>
+				this.SetZoom(this.image.Scale, this.image.TranslationX, this.image.TranslationY);
 
 			PinchGestureRecognizer Pinch = new();
 			Pinch.PinchUpdated += this.Pinch_PinchUpdated;
@@ -81,15 +98,17 @@ namespace NeuroAccessMaui.UI.Controls
 			this.percentLabel.SetDynamicResource(Label.TextColorProperty, "ContentPrimaryWL");
 			this.UpdatePercent();
 
-			Label Hint = new()
+			this.hint = new Label
 			{
 				Text = ServiceRef.Localizer[nameof(AppResources.ZoomHint)],
 				FontSize = 13,
 				HorizontalTextAlignment = TextAlignment.Center
 			};
-			Hint.SetDynamicResource(Label.TextColorProperty, "ContentSecondaryWL");
+			this.hint.SetDynamicResource(Label.TextColorProperty, "ContentSecondaryWL");
 
-			Grid Layout = new()
+			this.zoomBar = this.CreateZoomBar();
+
+			this.layout = new Grid
 			{
 				RowDefinitions =
 				{
@@ -99,11 +118,58 @@ namespace NeuroAccessMaui.UI.Controls
 				},
 				RowSpacing = 12
 			};
-			Layout.Add(this.stage, 0, 0);
-			Layout.Add(Hint, 0, 1);
-			Layout.Add(this.CreateZoomBar(), 0, 2);
+			this.layout.Add(this.stage, 0, 0);
+			this.layout.Add(this.hint, 0, 1);
+			this.layout.Add(this.zoomBar, 0, 2);
 
-			this.Content = Layout;
+			this.Content = this.layout;
+		}
+
+		/// <summary>
+		/// If the image takes the whole view, edge to edge, with the zoom bar over its lower edge and no hint. Used in
+		/// landscape, where there is little height to share.
+		/// </summary>
+		public bool IsFullScreen
+		{
+			get => this.isFullScreen;
+			set
+			{
+				if (this.isFullScreen == value)
+					return;
+
+				this.isFullScreen = value;
+
+				Grid.SetRowSpan(this.stage, value ? 3 : 1);
+				this.hint.IsVisible = !value;
+				this.layout.RowSpacing = value ? 0 : 12;
+				this.stage.MinimumHeightRequest = value ? 0 : 240;
+				this.paper.StrokeShape = new RoundRectangle { CornerRadius = value ? 0 : 12 };
+				this.UpdateZoomBarMargin();
+			}
+		}
+
+		/// <summary>
+		/// Room to leave around the zoom bar when the image is shown full screen, such as for the system bars the image
+		/// is drawn under.
+		/// </summary>
+		public Thickness OverlayPadding
+		{
+			get => this.overlayPadding;
+			set
+			{
+				this.overlayPadding = value;
+				this.UpdateZoomBarMargin();
+			}
+		}
+
+		/// <summary>
+		/// Lifts the zoom bar off the lower edge when it lies over the image.
+		/// </summary>
+		private void UpdateZoomBarMargin()
+		{
+			this.zoomBar.Margin = this.isFullScreen
+				? new Thickness(this.overlayPadding.Left, 0, this.overlayPadding.Right, this.overlayPadding.Bottom + 12)
+				: new Thickness(0);
 		}
 
 		/// <summary>
@@ -251,11 +317,13 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				case GestureStatus.Started:
 					this.isPinching = true;
+					this.rebasePan = true;
 					return;
 
 				case GestureStatus.Completed:
 				case GestureStatus.Canceled:
 					this.isPinching = false;
+					this.rebasePan = true;
 					return;
 			}
 
@@ -282,6 +350,7 @@ namespace NeuroAccessMaui.UI.Controls
 				case GestureStatus.Started:
 					this.lastPanX = 0;
 					this.lastPanY = 0;
+					this.rebasePan = false;
 					break;
 
 				case GestureStatus.Running:
@@ -291,6 +360,13 @@ namespace NeuroAccessMaui.UI.Controls
 					double Dy = e.TotalY - this.lastPanY;
 					this.lastPanX = e.TotalX;
 					this.lastPanY = e.TotalY;
+
+					// The first report after a pinch, and a jump to another finger, only set where the next move starts from.
+					if (this.rebasePan || Math.Abs(Dx) > maxPanStep || Math.Abs(Dy) > maxPanStep)
+					{
+						this.rebasePan = false;
+						break;
+					}
 
 					if (!this.isPinching && this.image.Scale > minScale)
 						this.SetZoom(this.image.Scale, this.image.TranslationX + Dx, this.image.TranslationY + Dy);
