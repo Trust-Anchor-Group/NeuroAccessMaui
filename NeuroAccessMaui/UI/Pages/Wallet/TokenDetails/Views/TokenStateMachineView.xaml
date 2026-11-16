@@ -445,7 +445,7 @@
 				</controls:TemplatedButton>
 				<BoxView Style="{DynamicResource ListCardRowDivider}" />
 				<controls:TemplatedButton Command="{Binding HistoryReportCommand}"
-										  SemanticProperties.Description="{l:Localize History}"
+										  SemanticProperties.Description="{l:Localize HistoryValueChart}"
 										  SemanticProperties.Hint="{l:Localize HistoryReportDescription}">
 					<Grid ColumnDefinitions="*,Auto"
 						  ColumnSpacing="12"
@@ -454,7 +454,7 @@
 						<VerticalStackLayout Grid.Column="0"
 											 Spacing="3"
 											 VerticalOptions="Center">
-							<Label Text="{l:Localize History}"
+							<Label Text="{l:Localize HistoryValueChart}"
 								   Style="{DynamicResource ListCardRowTitleLabel}" />
 							<Label Text="{l:Localize HistoryReportDescription}"
 								   Style="{DynamicResource ListCardRowDetailLabel}" />
@@ -470,7 +470,7 @@
 				</controls:TemplatedButton>
 				<BoxView Style="{DynamicResource ListCardRowDivider}" />
 				<controls:TemplatedButton Command="{Binding StatesReportCommand}"
-										  SemanticProperties.Description="{l:Localize StateDiagram}"
+										  SemanticProperties.Description="{l:Localize FlowDiagramReport}"
 										  SemanticProperties.Hint="{l:Localize StatesReportDescription}">
 					<Grid ColumnDefinitions="*,Auto"
 						  ColumnSpacing="12"
@@ -479,7 +479,7 @@
 						<VerticalStackLayout Grid.Column="0"
 											 Spacing="3"
 											 VerticalOptions="Center">
-							<Label Text="{l:Localize StateDiagram}"
+							<Label Text="{l:Localize FlowDiagramReport}"
 								   Style="{DynamicResource ListCardRowTitleLabel}" />
 							<Label Text="{l:Localize StatesReportDescription}"
 								   Style="{DynamicResource ListCardRowDetailLabel}" />

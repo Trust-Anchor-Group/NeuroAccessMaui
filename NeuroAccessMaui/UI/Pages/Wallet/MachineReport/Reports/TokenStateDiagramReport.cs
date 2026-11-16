@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		/// Gets the title of report.
 		/// </summary>
 		/// <returns>Title</returns>
-		public override Task<string> GetTitle() => Task.FromResult<string>(ServiceRef.Localizer[nameof(AppResources.StateDiagram)]);
+		public override Task<string> GetTitle() => Task.FromResult<string>(ServiceRef.Localizer[nameof(AppResources.FlowDiagramReport)]);
 
 
 		/// <summary>

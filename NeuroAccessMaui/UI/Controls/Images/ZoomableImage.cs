@@ -18,6 +18,16 @@ namespace NeuroAccessMaui.UI.Controls
 		private readonly double aspectRatio;
 
 		/// <summary>
+		/// The image.
+		/// </summary>
+		public ImageSource Source { get; }
+
+		/// <summary>
+		/// The title for the viewer, if any.
+		/// </summary>
+		public string? Title { get; }
+
+		/// <summary>
 		/// Creates an image that fits its width and opens in a viewer when tapped.
 		/// </summary>
 		/// <param name="Source">The image.</param>
@@ -26,6 +36,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="Title">A title for the viewer, if any.</param>
 		public ZoomableImage(ImageSource Source, int? PixelWidth, int? PixelHeight, string? Title)
 		{
+			this.Source = Source;
+			this.Title = Title;
 			this.aspectRatio = PixelWidth > 0 && PixelHeight > 0 ? (double)PixelHeight.Value / PixelWidth.Value : 0;
 
 			this.image = new Image

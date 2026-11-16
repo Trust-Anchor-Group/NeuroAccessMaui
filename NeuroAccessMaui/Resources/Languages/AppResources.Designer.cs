@@ -14683,6 +14683,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flow diagram.
+        /// </summary>
+        public static string FlowDiagramReport {
+            get {
+                return ResourceManager.GetString("FlowDiagramReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Values.
         /// </summary>
         public static string TokenValues {
@@ -16024,7 +16033,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What happened, and when.
+        ///   Looks up a localized string similar to How the values changed over time.
         /// </summary>
         public static string HistoryReportDescription {
             get {
@@ -16033,7 +16042,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Steps and what moves it on.
+        ///   Looks up a localized string similar to The flow as the server draws it.
         /// </summary>
         public static string StatesReportDescription {
             get {

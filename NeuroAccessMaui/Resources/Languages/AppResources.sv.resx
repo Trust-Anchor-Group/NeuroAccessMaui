@@ -4949,6 +4949,9 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="FlowWhatMovesOn" xml:space="preserve">
     <value>Det här tar den vidare</value>
   </data>
+  <data name="FlowDiagramReport" xml:space="preserve">
+    <value>Flödesdiagram</value>
+  </data>
   <data name="TokenValues" xml:space="preserve">
     <value>Värden</value>
   </data>
@@ -5412,10 +5415,10 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Vad den innehåller nu</value>
   </data>
   <data name="HistoryReportDescription" xml:space="preserve">
-    <value>Vad som hänt, och när</value>
+    <value>Hur värdena har ändrats över tid</value>
   </data>
   <data name="StatesReportDescription" xml:space="preserve">
-    <value>Stegen och vad som tar det vidare</value>
+    <value>Flödet som servern ritar det</value>
   </data>
   <data name="More" xml:space="preserve">
     <value>Mer</value>

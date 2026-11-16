@@ -4868,6 +4868,9 @@ Document read. You can move your iPhone.</value>
   <data name="FlowWhatMovesOn" xml:space="preserve">
     <value>What moves it on</value>
   </data>
+  <data name="FlowDiagramReport" xml:space="preserve">
+    <value>Flow diagram</value>
+  </data>
   <data name="TokenValues" xml:space="preserve">
     <value>Values</value>
   </data>
@@ -5316,10 +5319,10 @@ Document read. You can move your iPhone.</value>
     <value>What it holds now</value>
   </data>
   <data name="HistoryReportDescription" xml:space="preserve">
-    <value>What happened, and when</value>
+    <value>How the values changed over time</value>
   </data>
   <data name="StatesReportDescription" xml:space="preserve">
-    <value>Steps and what moves it on</value>
+    <value>The flow as the server draws it</value>
   </data>
   <data name="More" xml:space="preserve">
     <value>More</value>
