@@ -1218,7 +1218,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 
 		/// <summary>
-		/// Shows the place in the phone's map app.
+		/// Shows the place on OpenStreetMap.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(HasGeoValue))]
 		private async Task OpenMapAsync()
@@ -1228,8 +1228,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			try
 			{
-				await Microsoft.Maui.ApplicationModel.Map.Default.OpenAsync(Position.Latitude, Position.Longitude,
-					new MapLaunchOptions { Name = this.Label });
+				// Maps are OpenStreetMap throughout the app, so the place opens there rather than in the phone's map app.
+				string Latitude = Position.Latitude.ToString("0.######", CultureInfo.InvariantCulture);
+				string Longitude = Position.Longitude.ToString("0.######", CultureInfo.InvariantCulture);
+				Uri Url = new("https://www.openstreetmap.org/?mlat=" + Latitude + "&mlon=" + Longitude + "#map=16/" + Latitude + "/" + Longitude);
+
+				await Browser.Default.OpenAsync(Url, BrowserLaunchMode.SystemPreferred);
 			}
 			catch (Exception Ex)
 			{
