@@ -30,10 +30,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		Review = 60,
 		/// <summary>
-		/// What the user is about to sign: the parties, the contract, the role on offer and the signing window.
-		/// </summary>
-		Summary = 55,
-		/// <summary>
 		/// Choose the role and sign.
 		/// </summary>
 		Sign = 70,

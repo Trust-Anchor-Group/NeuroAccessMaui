@@ -12,10 +12,10 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
-using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.SigningBlockers;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
@@ -151,6 +151,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			base.OnPropertyChanged(e);
 			if (e.PropertyName == nameof(this.IsBusy))
 				this.OnPropertyChanged(nameof(this.CanSign));
+
+			this.OnPageValueChanged(e.PropertyName);
 		}
 
 		[ObservableProperty]
@@ -169,6 +171,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool canStateChange;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsOverviewShown))]
 		private string currentState = nameof(NewContractStep.Loading);
 
 		[ObservableProperty]
@@ -602,10 +605,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		partial void OnContractChanged(ObservableContract? oldValue, ObservableContract? newValue)
 		{
 			if (oldValue is not null)
+			{
 				oldValue.PropertyChanged -= this.Contract_PropertyChanged;
+				oldValue.RoleChanged -= this.Contract_RoleChanged;
+			}
 
 			if (newValue is not null)
+			{
 				newValue.PropertyChanged += this.Contract_PropertyChanged;
+				newValue.RoleChanged += this.Contract_RoleChanged;
+			}
 
 			this.MachineReadableXml = this.IsTechnicalDetailsExpanded ? this.FormatMachineReadable() : null;
 			this.OnOverviewChanged();
@@ -706,7 +715,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// If the user is going through the signing steps: Summary, Review, Role, and Result.
+		/// If the user is signing: the sign sheet, the full text or the values read from it, and the result.
 		/// </summary>
 		[ObservableProperty]
 		private bool isSigningFlow;
@@ -744,7 +753,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		/// <summary>
 		/// Signs the contract in the selected role: confirms with PIN or biometrics, checks again, signs, and shows the result.
-		/// A cancelled or failed confirmation stays on the Role step, and nothing is sent.
+		/// A cancelled or failed confirmation stays on the sign sheet, and nothing is sent.
 		/// </summary>
 		/// <returns>A task that completes when signing has finished or was cancelled.</returns>
 		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(ReadyToSign))]
@@ -863,10 +872,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				ViewContractStep Step = Enum.Parse<ViewContractStep>(this.CurrentState);
 				if (Step == ViewContractStep.Overview || Step == ViewContractStep.Loading)
 					await base.GoBack();
-				else if (this.IsSigningFlow && Step == ViewContractStep.Review)
-					await this.GoToStateAsync(ViewContractStep.Summary);
-				else if (this.IsSigningFlow && Step == ViewContractStep.Sign)
-					await this.GoToStateAsync(ViewContractStep.Review);
+				else if (this.IsSigningFlow && Step is ViewContractStep.Review or ViewContractStep.Parameters)
+					await this.GoToStateAsync(ViewContractStep.Sign);
 				else
 					await this.EndSigningFlowAsync();
 			});
@@ -884,9 +891,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private Task GoToRolesAsync() => this.RunContractActionAsync(() => this.GoToStepAsync(ViewContractStep.Roles));
 
 		/// <summary>
-		/// Starts signing. Checks first what the server would refuse, and lists it instead of starting.
+		/// Opens the sign sheet. Checks first what the server would refuse, and lists it instead of opening.
 		/// </summary>
-		/// <returns>A task that completes when the first step is shown, or the reasons are.</returns>
+		/// <returns>A task that completes when the sign sheet is shown, or the reasons are.</returns>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private Task GoToSignAsync()
 		{
@@ -904,34 +911,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					return;
 				}
 
-				await MainThread.InvokeOnMainThreadAsync(() => this.IsSigningFlow = true);
-				await this.GoToStateAsync(ViewContractStep.Summary);
-			});
-		}
-
-		/// <summary>
-		/// Goes from the summary to the full text.
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanStateChange))]
-		private Task GoToSigningReviewAsync() => this.RunContractActionAsync(this.ShowReviewAsync);
-
-		/// <summary>
-		/// Goes from the full text to choosing the role.
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanStateChange))]
-		private Task GoToSigningRoleAsync()
-		{
-			return this.RunContractActionAsync(async () =>
-			{
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					if (this.SelectedRole is not null)
-						return;
-
-					if (!string.IsNullOrEmpty(this.ProposalRole))
-						this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
-					else if (this.SignableRoles.Count == 1)
-						this.SelectedRole = this.SignableRoles[0];
+					this.IsSigningFlow = true;
+					this.IsContractOk = false;
+					this.SelectSigningRole();
+					this.UpdateFromIdValues();
 				});
 
 				await this.GoToStateAsync(ViewContractStep.Sign);
@@ -939,7 +924,40 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Goes back to choosing the role after a failed attempt.
+		/// Goes from the sign sheet to the full text.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private Task GoToSigningReviewAsync() => this.RunContractActionAsync(this.ShowReviewAsync);
+
+		/// <summary>
+		/// Goes from the full text back to the sign sheet.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private Task GoToSigningRoleAsync()
+		{
+			return this.RunContractActionAsync(async () =>
+			{
+				await MainThread.InvokeOnMainThreadAsync(this.SelectSigningRole);
+				await this.GoToStateAsync(ViewContractStep.Sign);
+			});
+		}
+
+		/// <summary>
+		/// Selects the role to sign as, when none is selected and there is only one, or the user was invited to one.
+		/// </summary>
+		private void SelectSigningRole()
+		{
+			if (this.SelectedRole is not null)
+				return;
+
+			if (!string.IsNullOrEmpty(this.ProposalRole))
+				this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
+			else if (this.SignableRoles.Count == 1)
+				this.SelectedRole = this.SignableRoles[0];
+		}
+
+		/// <summary>
+		/// Goes back to the sign sheet after a failed attempt.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private Task RetrySigningAsync() => this.RunContractActionAsync(() => this.GoToStateAsync(ViewContractStep.Sign));
@@ -1400,6 +1418,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.OnPropertyChanged(nameof(this.CanSign));
 				this.OnPropertyChanged(nameof(this.CanShowSignBar));
 				this.OnPropertyChanged(nameof(this.SigningRolesText));
+				this.OnPageStatusChanged();
 			});
 
 		/// <summary>
@@ -1737,6 +1756,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract?.Parameters is null)
 			{
 				this.ParameterGroups = [];
+				this.PrepareDigest([]);
 				return;
 			}
 
@@ -1755,6 +1775,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			List<ObservableParameter> Calculated = new();
 			List<ObservableParameter> FromIds = new();
 			List<ObservableParameter> Other = new();
+			List<ObservableParameter> Displayed = new();
 
 			foreach (ObservableParameter Parameter in this.Contract.Parameters)
 			{
@@ -1767,6 +1788,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					continue;
 				}
+
+				Displayed.Add(Parameter);
 
 				if (Parameter.IsValueHidden || Parameter.Parameter is ContractReferenceParameter or GeoParameter or AttachmentParameter)
 					Other.Add(Parameter);
@@ -1793,6 +1816,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Groups.Add(new ParameterGroup(ServiceRef.Localizer[nameof(AppResources.Other)], null, Other));
 
 			this.ParameterGroups = Groups;
+			this.PrepareDigest(Displayed);
 		}
 
 		private void PrepareSignableRoles()
@@ -1916,6 +1940,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					this.CanDeclineInvitation = CanDecline;
 					this.CanInviteParts = CanInvite;
 					this.CanManageParts = CanManageParts;
+					this.isCreator = IsCreator;
+					this.OnPageStatusChanged();
 
 					if (RenewedRoles.Count > 0 || this.rolesSignableAsEarlierIdentity.Count > 0)
 					{

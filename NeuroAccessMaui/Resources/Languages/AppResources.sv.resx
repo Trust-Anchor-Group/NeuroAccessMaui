@@ -4641,16 +4641,16 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Personen har avböjt att signera din förfrågan.</value>
   </data>
   <data name="ContractGroupNeedsAction" xml:space="preserve">
-    <value>Väntar på dig</value>
+    <value>Behöver dig</value>
   </data>
   <data name="ContractGroupInProgress" xml:space="preserve">
-    <value>Pågår</value>
+    <value>Väntar på andra</value>
   </data>
   <data name="ContractGroupSigned" xml:space="preserve">
-    <value>Signerade</value>
+    <value>Aktiva</value>
   </data>
   <data name="ContractGroupEnded" xml:space="preserve">
-    <value>Avslutade</value>
+    <value>Avslutade och avböjda</value>
   </data>
   <data name="ContractMarkerInvitation" xml:space="preserve">
     <value>Inbjudan</value>
@@ -4678,6 +4678,213 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="ContractSectionTechnicalDetails" xml:space="preserve">
     <value>Tekniska detaljer</value>
+  </data>
+  <data name="ContractYou" xml:space="preserve">
+    <value>Du</value>
+  </data>
+  <data name="ContractPartSignedOn" xml:space="preserve">
+    <value>Signerade {0}</value>
+  </data>
+  <data name="ContractPartNotSigned" xml:space="preserve">
+    <value>Inte signerat</value>
+  </data>
+  <data name="ContractNoOneYet" xml:space="preserve">
+    <value>Ingen än</value>
+  </data>
+  <data name="ContractStatusNeedsYou" xml:space="preserve">
+    <value>Väntar på din signatur</value>
+  </data>
+  <data name="ContractStatusWaitingForOthers" xml:space="preserve">
+    <value>Väntar på andra</value>
+  </data>
+  <data name="ContractStatusForReading" xml:space="preserve">
+    <value>För läsning</value>
+  </data>
+  <data name="ContractProgress" xml:space="preserve">
+    <value>{0} av {1} har signerat</value>
+  </data>
+  <data name="ContractSignBy" xml:space="preserve">
+    <value>Signera senast {0}</value>
+  </data>
+  <data name="ContractDaysLeft" xml:space="preserve">
+    <value>{0} dagar kvar</value>
+  </data>
+  <data name="ContractOneDayLeft" xml:space="preserve">
+    <value>1 dag kvar</value>
+  </data>
+  <data name="ContractLessThanDayLeft" xml:space="preserve">
+    <value>Mindre än en dag kvar</value>
+  </data>
+  <data name="ContractWaitingForNames" xml:space="preserve">
+    <value>Du har signerat. Väntar på {0}.</value>
+  </data>
+  <data name="ContractWaitingForCount" xml:space="preserve">
+    <value>Du har signerat. {0} signaturer till behövs.</value>
+  </data>
+  <data name="ContractSignedByAllOn" xml:space="preserve">
+    <value>Signerat av alla {0}.</value>
+  </data>
+  <data name="ContractValidUntilSentence" xml:space="preserve">
+    <value>Gäller till {0}.</value>
+  </data>
+  <data name="ContractNoRoleForYou" xml:space="preserve">
+    <value>Du kan läsa kontraktet, men du har ingen roll i det.</value>
+  </data>
+  <data name="ContractNobodyCanSign" xml:space="preserve">
+    <value>Ingen kan signera det nu.</value>
+  </data>
+  <data name="ContractInvitedYou" xml:space="preserve">
+    <value>{0} har bjudit in dig att signera</value>
+  </data>
+  <data name="ContractReadWhole" xml:space="preserve">
+    <value>Läs hela kontraktet</value>
+  </data>
+  <data name="ContractKeyDetails" xml:space="preserve">
+    <value>Viktiga uppgifter</value>
+  </data>
+  <data name="ContractAllDetails" xml:space="preserve">
+    <value>Alla {0} uppgifter</value>
+  </data>
+  <data name="ContractPeople" xml:space="preserve">
+    <value>Personer</value>
+  </data>
+  <data name="ContractReviewAndSignAs" xml:space="preserve">
+    <value>Granska och signera som {0}</value>
+  </data>
+  <data name="ContractReviewAndSign" xml:space="preserve">
+    <value>Granska och signera</value>
+  </data>
+  <data name="ContractSignAs" xml:space="preserve">
+    <value>Signera som {0}</value>
+  </data>
+  <data name="ContractYouSignAs" xml:space="preserve">
+    <value>Du signerar som</value>
+  </data>
+  <data name="ContractWhatYouAgreeTo" xml:space="preserve">
+    <value>Det här godkänner du</value>
+  </data>
+  <data name="ContractFromYourId" xml:space="preserve">
+    <value>Från ditt ID, in i kontraktet</value>
+  </data>
+  <data name="ContractNotInYourId" xml:space="preserve">
+    <value>Finns inte i ditt ID</value>
+  </data>
+  <data name="ContractSeenByAnyone" xml:space="preserve">
+    <value>Alla kan se kontraktet, även uppgifterna från ditt ID.</value>
+  </data>
+  <data name="ContractSeenByDomain" xml:space="preserve">
+    <value>Personer på samma server som skaparen, och personerna i kontraktet, kan se det.</value>
+  </data>
+  <data name="ContractSeenByParts" xml:space="preserve">
+    <value>Bara personerna i kontraktet kan se det.</value>
+  </data>
+  <data name="ContractCantUndo" xml:space="preserve">
+    <value>Det går inte att ångra när alla har signerat.</value>
+  </data>
+  <data name="ContractSignUsesAuth" xml:space="preserve">
+    <value>Använder ditt fingeravtryck, ditt ansikte eller din PIN-kod</value>
+  </data>
+  <data name="ContractNotNow" xml:space="preserve">
+    <value>Inte nu</value>
+  </data>
+  <data name="ContractIHaveRead" xml:space="preserve">
+    <value>Jag har läst kontraktet</value>
+  </data>
+  <data name="ContractStepFill" xml:space="preserve">
+    <value>Fyll i</value>
+  </data>
+  <data name="ContractStepWhoSigns" xml:space="preserve">
+    <value>Vem signerar</value>
+  </data>
+  <data name="ContractStepCheck" xml:space="preserve">
+    <value>Kontrollera och skapa</value>
+  </data>
+  <data name="ContractStepOf" xml:space="preserve">
+    <value>{0} av {1} · {2}</value>
+  </data>
+  <data name="ContractNextStep" xml:space="preserve">
+    <value>Nästa: {0}</value>
+  </data>
+  <data name="ContractCreateAndSignAs" xml:space="preserve">
+    <value>Skapa och signera som {0}</value>
+  </data>
+  <data name="ContractCreateThenInvite" xml:space="preserve">
+    <value>Sedan kan du bjuda in de andra att signera.</value>
+  </data>
+  <data name="ContractFillHint" xml:space="preserve">
+    <value>Fyll i det ni kommer överens om. Värdena kan inte ändras när kontraktet har skapats.</value>
+  </data>
+  <data name="ContractWhoSignsHint" xml:space="preserve">
+    <value>De du väljer får kontraktet i sin app och signerar där. Inget delas innan du skapar det.</value>
+  </data>
+  <data name="ContractInShort" xml:space="preserve">
+    <value>I korthet</value>
+  </data>
+  <data name="ContractOptionsHint" xml:space="preserve">
+    <value>Mallens val är ifyllda. De flesta ändrar dem inte.</value>
+  </data>
+  <data name="ContractWhoCanSeeIt" xml:space="preserve">
+    <value>Vem kan se det</value>
+  </data>
+  <data name="ContractNoDeadline" xml:space="preserve">
+    <value>Ingen sista dag</value>
+  </data>
+  <data name="ContractLasts" xml:space="preserve">
+    <value>Gäller i</value>
+  </data>
+  <data name="ContractSaveOptions" xml:space="preserve">
+    <value>Spara</value>
+  </data>
+  <data name="ContractAnyoneWithLink" xml:space="preserve">
+    <value>Alla med länken</value>
+  </data>
+  <data name="ContractAnyoneWithLinkHint" xml:space="preserve">
+    <value>Alla som får länken kan signera, i varje roll som inte är tagen</value>
+  </data>
+  <data name="ContractChooseWhoSignsAs" xml:space="preserve">
+    <value>Välj vem som signerar som {0}</value>
+  </data>
+  <data name="ContractWhoSignsAs" xml:space="preserve">
+    <value>Vem signerar som {0}?</value>
+  </data>
+  <data name="ContractChooseSignerHint" xml:space="preserve">
+    <value>De får kontraktet i sin app och signerar där.</value>
+  </data>
+  <data name="ContractSignerMe" xml:space="preserve">
+    <value>Jag</value>
+  </data>
+  <data name="ContractSignerMeHint" xml:space="preserve">
+    <value>Du signerar när kontraktet skapas</value>
+  </data>
+  <data name="ContractSignerContact" xml:space="preserve">
+    <value>Någon bland mina kontakter</value>
+  </data>
+  <data name="ContractSignerContactHint" xml:space="preserve">
+    <value>Välj någon du har chattat med eller lagt till</value>
+  </data>
+  <data name="ContractSignerQr" xml:space="preserve">
+    <value>Skanna deras QR-kod</value>
+  </data>
+  <data name="ContractSignerQrHint" xml:space="preserve">
+    <value>De visar sin ID-kod i sin app</value>
+  </data>
+  <data name="ContractRoleDone" xml:space="preserve">
+    <value>Klart</value>
+  </data>
+  <data name="ContractRoleNeedsOne" xml:space="preserve">
+    <value>Behöver 1 person</value>
+  </data>
+  <data name="ContractRoleNeedsMany" xml:space="preserve">
+    <value>Behöver {0} personer</value>
+  </data>
+  <data name="ContractAddedAutomatically" xml:space="preserve">
+    <value>Tillagd automatiskt</value>
+  </data>
+  <data name="ContractRemoveSigner" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="ContractGroupHeader" xml:space="preserve">
+    <value>{0} · {1}</value>
   </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Visa</value>
@@ -4837,6 +5044,9 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="ParameterOnlyPartiesSee" xml:space="preserve">
     <value>Bara parterna ser detta</value>
+  </data>
+  <data name="ParameterMoreAbout" xml:space="preserve">
+    <value>Mer om det här värdet</value>
   </data>
   <data name="ParameterInsideArea" xml:space="preserve">
     <value>Inom det markerade området</value>

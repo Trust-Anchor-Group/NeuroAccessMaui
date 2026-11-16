@@ -205,6 +205,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.CanViewSignature));
 				this.OnPropertyChanged(nameof(this.CanSendProposal));
 				this.OnPropertyChanged(nameof(this.CanRequestIdentityToInvite));
+				this.OnPropertyChanged(nameof(this.SignedText));
 				this.OpenSignatureCommand.NotifyCanExecuteChanged();
 			}
 		}
@@ -223,10 +224,46 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.friendlyName;
 			private set
 			{
-				this.SetProperty(ref this.friendlyName, value);
+				if (this.SetProperty(ref this.friendlyName, value))
+				{
+					this.OnPropertyChanged(nameof(this.DisplayName));
+					this.OnPropertyChanged(nameof(this.Initials));
+				}
 			}
 		}
 		private string? friendlyName = string.Empty;
+
+		/// <summary>
+		/// The name shown for the part in a list of people: "You" for the user, else the part's name.
+		/// </summary>
+		public string DisplayName => this.IsMe ? ServiceRef.Localizer[nameof(AppResources.ContractYou)] : this.FriendlyName ?? string.Empty;
+
+		/// <summary>
+		/// What the round mark next to the part's name shows: "You" for the user, else up to two initials of the name.
+		/// </summary>
+		public string Initials
+		{
+			get
+			{
+				if (this.IsMe)
+					return ServiceRef.Localizer[nameof(AppResources.ContractYou)];
+
+				string Letters = string.Concat((this.FriendlyName ?? string.Empty)
+					.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+					.Where(Word => char.IsLetter(Word[0]))
+					.Take(2)
+					.Select(Word => char.ToUpper(Word[0], System.Globalization.CultureInfo.CurrentCulture)));
+
+				return Letters.Length > 0 ? Letters : "?";
+			}
+		}
+
+		/// <summary>
+		/// When the part signed, such as "Signed 14 Nov", or that they haven't signed.
+		/// </summary>
+		public string SignedText => this.Signature is null
+			? ServiceRef.Localizer[nameof(AppResources.ContractPartNotSigned)]
+			: ServiceRef.Localizer[nameof(AppResources.ContractPartSignedOn), this.Signature.Timestamp.ToLocalTime().ToString("M", System.Globalization.CultureInfo.CurrentCulture)];
 
 		/// <summary>
 		/// If the user can see the part's identity, has asked to see it, or was refused.

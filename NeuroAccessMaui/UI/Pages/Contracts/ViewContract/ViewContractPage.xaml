@@ -37,6 +37,7 @@
 			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
 			<Label Grid.Row="0"
 					 Grid.Column="1"
+					 IsVisible="{Binding IsOverviewShown, Converter={mct:InvertedBoolConverter}}"
 					 Style="{DynamicResource PageTitleLabel}"
 					 Text="{Binding ContractName}"
 					 LineBreakMode="TailTruncation"
@@ -63,8 +64,6 @@
 											 mct:StateView.StateKey="Parameters" />
 				<views:RolesView x:Name="RolesView"
 									  mct:StateView.StateKey="Roles" />
-				<views:SummaryView x:Name="SummaryView"
-										 mct:StateView.StateKey="Summary" />
 				<views:PreviewView x:Name="PreviewView"
 										 mct:StateView.StateKey="Review" />
 				<views:SignView x:Name="SignView"

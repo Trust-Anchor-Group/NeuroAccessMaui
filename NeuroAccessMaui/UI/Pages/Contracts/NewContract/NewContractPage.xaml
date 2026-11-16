@@ -36,25 +36,33 @@
 
 		<controls:Background Grid.Row ="1"/>
 
-		<!-- Top Bar -->
+		<!-- Top bar: back, and the template's name with where the user is in the steps -->
 		<Grid Grid.Row="0"
-			  RowDefinitions="*"
+			  Margin="16,0,16,12"
 			  ColumnDefinitions="auto,*"
-			  ColumnSpacing="8"
-			  Margin="16,0,16,16">
-
-			<controls:SvgButton Grid.Row="0"
-								Grid.Column="0"
-								Command="{Binding BackCommand}"
-								Style="{DynamicResource IconButton}"
-								SvgSource="close.svg" />
-
-			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
-			<Label Grid.Row="0"
-				   Grid.Column="1"
-				   Style="{DynamicResource PageTitleLabel}"
-				   Text="{l:Localize NewContract}"
-				   HorizontalTextAlignment="End" />
+			  ColumnSpacing="12">
+			<controls:ImageButton Grid.Column="0"
+								  VerticalOptions="Center"
+								  Command="{Binding BackCommand}"
+								  Style="{DynamicResource ImageOnlyButton}"
+								  PathData="{x:Static ui:Geometries.BackButtonPath}"
+								  SemanticProperties.Description="{l:Localize Back}" />
+			<VerticalStackLayout Grid.Column="1"
+								 VerticalOptions="Center"
+								 Spacing="2">
+				<Label FontFamily="SpaceGroteskBold"
+					   FontSize="{StaticResource FontSize2xl}"
+					   LineBreakMode="TailTruncation"
+					   MaxLines="2"
+					   SemanticProperties.HeadingLevel="Level1"
+					   Text="{Binding TemplateName}"
+					   TextColor="{DynamicResource ContentPrimaryWL}" />
+				<Label IsVisible="{Binding ShowsWizardBar}"
+					   FontFamily="HaasGroteskMedium"
+					   FontSize="13"
+					   Text="{Binding ProgressText}"
+					   TextColor="{DynamicResource ContentSecondaryWL}" />
+			</VerticalStackLayout>
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"
@@ -64,10 +72,10 @@
 
 			<mct:StateContainer.StateViews>
 				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
-				<views:IntroView x:Name="IntroView" mct:StateView.StateKey="Intro" />
 				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
 				<views:SettingsView x:Name="SettingsView" mct:StateView.StateKey="Settings" />
 				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
+				<views:CheckView x:Name="CheckView" mct:StateView.StateKey="Check" />
 				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
 			</mct:StateContainer.StateViews>
 
@@ -78,54 +86,35 @@
 			</VerticalStackLayout>
 		</Grid>
 
-		<!-- Unified Wizard Bottom Bar in own row -->
-		<Border Grid.Row="2" Style="{DynamicResource BottomBarBorder2}" Margin="0" Padding="0" IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}">
-			<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" Padding="16,8,16,8" ColumnSpacing="{DynamicResource MediumSpacing}" RowSpacing="8">
-
-				<!-- Row 1: Preview Acknowledgment (only visible on preview step) -->
-				<Grid Grid.Row="0"
-					  Grid.ColumnSpan="3"
-					  ColumnDefinitions="Auto,*"
-					  IsVisible="{Binding IsOnPreviewStep}"
-					  ColumnSpacing="{DynamicResource SmallSpacing}"
-					  Padding="{DynamicResource SmallTopMargins}">
-					<CheckBox Grid.Column="0"
-							  IsChecked="{Binding IsContractOk}"
-							  Color="{DynamicResource ContentPrimaryWL}" />
-					<Label Grid.Column="1"
-						   Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
-						   Style="{DynamicResource BottomBarLabel}" />
+		<!-- One main button: the next step, or create on the last one -->
+		<Border Grid.Row="2"
+				Margin="0"
+				Padding="0"
+				IsVisible="{Binding ShowsWizardBar}"
+				Style="{DynamicResource BottomBarBorder2}">
+			<VerticalStackLayout Padding="16,8"
+								 Spacing="6">
+				<Grid ColumnDefinitions="*, auto"
+					  ColumnSpacing="8">
+					<controls:TextButton Grid.Column="0"
+										 IsEnabled="{Binding CanGoNext}"
+										 Command="{Binding GoNextStepCommand}"
+										 Style="{DynamicResource FilledTextButton}"
+										 LabelData="{Binding PrimaryActionText}" />
+					<ActivityIndicator Grid.Column="1"
+									   VerticalOptions="Center"
+									   IsVisible="{Binding IsValidatingParameters}"
+									   IsRunning="{Binding IsValidatingParameters}"
+									   Color="{DynamicResource ContentPrimaryWL}" />
 				</Grid>
-				<!-- Row 1.5: Roles warning when no roles selected -->
-				<Border Grid.Row="1" Grid.ColumnSpan="3"
-						BackgroundColor="{DynamicResource TnPWarningbgWL}"
-						Style="{DynamicResource RoundedBorder}"
-						Padding="8" Stroke="Transparent"
-						IsVisible="{Binding ShowNoRolesWarning}">
-					<Label Text="{l:Localize NoRolesSelectedWarning}"
-						   Style="{DynamicResource BottomBarLabel}"
-						   TextColor="{DynamicResource TnPWarningContentWL}"/>
-				</Border>
-
-				<!-- Row 2: Navigation + Progress + Action -->
-				<controls:TextButton Grid.Row="2"
-									 Grid.Column="0"
-									 Command="{Binding GoPreviousStepCommand}"
-									 IsEnabled="{Binding CanGoBack}"
-									 LabelData="{l:Localize Back}"
-									 Style="{DynamicResource SecondaryButton}"/>
-				<HorizontalStackLayout Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
-					<Label Text="{Binding ProgressText}" Style="{DynamicResource BottomBarLabel}" />
-					<ActivityIndicator IsVisible="{Binding IsValidatingParameters}" IsRunning="{Binding IsValidatingParameters}" Color="{DynamicResource ContentPrimaryWL}" />
-				</HorizontalStackLayout>
-				<controls:TextButton Grid.Row="2"
-									 Grid.Column="2"
-									 Command="{Binding GoNextStepCommand}"
-									 IsEnabled="{Binding CanGoNext}"
-									 Style="{DynamicResource PrimaryButton}"
-									 LabelData="{Binding PrimaryActionText}"/>
-			</Grid>
+				<Label HorizontalTextAlignment="Center"
+					   IsVisible="{Binding IsOnCheckStep}"
+					   FontSize="13"
+					   Text="{l:Localize ContractCreateThenInvite}"
+					   TextColor="{DynamicResource ContentSecondaryWL}" />
+			</VerticalStackLayout>
 		</Border>
+
 
 
 

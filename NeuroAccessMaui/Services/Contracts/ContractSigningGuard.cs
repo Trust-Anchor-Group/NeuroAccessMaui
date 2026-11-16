@@ -221,6 +221,74 @@ namespace NeuroAccessMaui.Services.Contracts
 		}
 
 		/// <summary>
+		/// Gets what a role parameter takes from the user's ID when they sign, so it can be shown before they do. Names and
+		/// addresses the server puts together are put together the same way.
+		/// </summary>
+		/// <param name="Identity">The user's identity.</param>
+		/// <param name="Parameter">The role parameter.</param>
+		/// <returns>The value, an attachment's file name, an empty string for values that come from the signature itself,
+		/// or null when the ID has no such value.</returns>
+		public static string? GetShownValue(LegalIdentity Identity, RoleParameter Parameter)
+		{
+			string Name = Parameter.Property ?? string.Empty;
+
+			if (Parameter.RefersToAttachment)
+			{
+				return Identity.Attachments?.FirstOrDefault(Attachment =>
+					string.Equals(Attachment.FileName, Name, StringComparison.OrdinalIgnoreCase))?.FileName;
+			}
+
+			string Value = GetProperty(Identity, Name);
+			if (!string.IsNullOrEmpty(Value))
+				return Value;
+
+			string Joined = Name.ToLowerInvariant() switch
+			{
+				"fullname" => Join(Identity, " ", PersonalInformation.FirstNameTag, PersonalInformation.MiddleNamesTag, PersonalInformation.LastNamesTag),
+				"fulladdr" => Join(Identity, ", ", PersonalInformation.AddressTag, PersonalInformation.Address2Tag),
+				"fullorgaddr" => Join(Identity, ", ", PersonalInformation.OrganizationAddressTag, PersonalInformation.OrganizationAddress2Tag),
+				_ => string.Empty
+			};
+
+			if (Joined.Length > 0)
+				return Joined;
+
+			string LowerName = Name.ToLowerInvariant();
+			if (LowerName is "first" or "middle" or "last")
+			{
+				string FullName = GetProperty(Identity, PersonalInformation.FullNameTag);
+				if (string.IsNullOrEmpty(FullName))
+					return null;
+
+				LegalIdentity.SeparateNames(FullName, out CaseInsensitiveString First, out CaseInsensitiveString Middle,
+					out CaseInsensitiveString Last);
+
+				CaseInsensitiveString NamePart = LowerName switch
+				{
+					"first" => First,
+					"middle" => Middle,
+					_ => Last
+				};
+
+				return CaseInsensitiveString.IsNullOrEmpty(NamePart) ? null : NamePart.Value;
+			}
+
+			return HasProperty(Identity, Parameter) ? string.Empty : null;
+		}
+
+		/// <summary>
+		/// Joins the values an identity has for some properties.
+		/// </summary>
+		/// <param name="Identity">The identity.</param>
+		/// <param name="Separator">What goes between the values.</param>
+		/// <param name="Names">The property names.</param>
+		/// <returns>The values that are set, joined.</returns>
+		private static string Join(LegalIdentity Identity, string Separator, params string[] Names)
+		{
+			return string.Join(Separator, Names.Select(Name => GetProperty(Identity, Name)).Where(Value => !string.IsNullOrEmpty(Value)));
+		}
+
+		/// <summary>
 		/// Checks if the user's identity has a property or attachment that a role parameter requires.
 		/// Covers the server's pseudo-properties, which it derives from other properties or from the signature.
 		/// </summary>

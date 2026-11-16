@@ -1,72 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <views:BaseViewContractView x:Name="ThisPage"
-									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.SignResultView"
-									 x:DataType="base:ViewContractViewModel"
-									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
+							x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.SignResultView"
+							x:DataType="base:ViewContractViewModel"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views">
 	<Grid RowDefinitions="*, auto">
-		<Border Grid.Row="0"
-				  Style="{DynamicResource BorderSet}"
-				  Margin="{DynamicResource MediumLeftRightMargins}"
-				  VerticalOptions="Center">
-			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-				<Border Style="{DynamicResource RoundedBorder}"
-						  Stroke="Transparent"
-						  Padding="12"
+		<ScrollView Grid.Row="0">
+			<VerticalStackLayout VerticalOptions="Center"
+								 Padding="24"
+								 Spacing="12">
+				<!-- A check when signed, a cross when not -->
+				<Border HorizontalOptions="Center"
+						Padding="0"
+						HeightRequest="72"
+						WidthRequest="72"
+						IsVisible="{Binding IsSignSuccess}"
+						BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+						StrokeShape="RoundRectangle 36"
+						StrokeThickness="0">
+					<Path VerticalOptions="Center"
 						  HorizontalOptions="Center"
-						  BackgroundColor="{DynamicResource TnPSuccessbgWL}"
-						  IsVisible="{Binding IsSignSuccess}">
-					<Label Text="{l:Localize Signed}"
-							 TextColor="{DynamicResource TnPSuccessContentWL}" />
+						  HeightRequest="30"
+						  WidthRequest="30"
+						  Aspect="Uniform"
+						  Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+						  Fill="{DynamicResource TnPSuccessContentWL}" />
 				</Border>
-				<Border Style="{DynamicResource RoundedBorder}"
-						  Stroke="Transparent"
-						  Padding="12"
+				<Border HorizontalOptions="Center"
+						Padding="0"
+						HeightRequest="72"
+						WidthRequest="72"
+						IsVisible="{Binding IsSignFailure}"
+						BackgroundColor="{DynamicResource TnPDangerbgWL}"
+						StrokeShape="RoundRectangle 36"
+						StrokeThickness="0">
+					<Path VerticalOptions="Center"
 						  HorizontalOptions="Center"
-						  BackgroundColor="{DynamicResource TnPDangerbgWL}"
-						  IsVisible="{Binding IsSignFailure}">
-					<Label Text="{l:Localize ContractSignNotSigned}"
-							 TextColor="{DynamicResource TnPDangerContentWL}" />
+						  HeightRequest="30"
+						  WidthRequest="30"
+						  Aspect="Uniform"
+						  Data="{x:Static ui:Geometries.ErrorPath}"
+						  Fill="{DynamicResource TnPDangerContentWL}" />
 				</Border>
-				<Label Text="{Binding SignResultTitle}"
-						 Style="{DynamicResource BoldItemTitleLabel}"
-						 HorizontalTextAlignment="Center"
-						 LineBreakMode="WordWrap" />
-				<Label Text="{Binding SignResultText}"
-						 Style="{DynamicResource InfoLabel}"
-						 HorizontalTextAlignment="Center"
-						 LineBreakMode="WordWrap" />
-			</VerticalStackLayout>
-		</Border>
 
-		<!-- BOTTOM BAR -->
+				<Label HorizontalTextAlignment="Center"
+					   FontFamily="SpaceGroteskBold"
+					   FontSize="{StaticResource FontSize4xl}"
+					   LineBreakMode="WordWrap"
+					   SemanticProperties.HeadingLevel="Level1"
+					   Text="{Binding SignResultTitle}"
+					   TextColor="{DynamicResource ContentPrimaryWL}" />
+				<Label HorizontalTextAlignment="Center"
+					   FontSize="{StaticResource FontSizeMd}"
+					   LineBreakMode="WordWrap"
+					   Text="{Binding SignResultText}"
+					   TextColor="{DynamicResource ContentSecondaryWL}" />
+
+				<!-- How far signing has come, while others still have to sign -->
+				<Border Margin="0,8,0,0"
+						Padding="16,12"
+						IsVisible="{Binding HasProgress}"
+						Style="{DynamicResource ListCardBorder}">
+					<Grid ColumnDefinitions="*, auto"
+						  ColumnSpacing="10">
+						<ProgressBar Grid.Column="0"
+									 VerticalOptions="Center"
+									 Progress="{Binding ProgressValue}"
+									 ProgressColor="{DynamicResource ContentAccessWL}" />
+						<Label Grid.Column="1"
+							   VerticalOptions="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   Text="{Binding ProgressText}"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</Grid>
+				</Border>
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<!-- Done when signed; back, or try again, when not -->
 		<Border Grid.Row="1"
-				  Style="{DynamicResource BottomBarBorder}">
-			<Grid HorizontalOptions="Fill"
-					VerticalOptions="Center"
-					ColumnSpacing="{DynamicResource SmallSpacing}"
-					Padding="{DynamicResource SmallMargins}"
-					ColumnDefinitions="*,*">
-				<controls:TextButton Style="{DynamicResource FilledTextButton}"
-											Grid.ColumnSpan="2"
-											LabelData="{l:Localize ContractSignDone}"
-											Command="{Binding FinishSigningCommand}"
-											IsVisible="{Binding IsSignSuccess}" />
-				<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-											Grid.Column="0"
-											LabelData="{l:Localize Back}"
-											Command="{Binding FinishSigningCommand}"
-											IsVisible="{Binding IsSignFailure}" />
-				<controls:TextButton Style="{DynamicResource FilledTextButton}"
-											Grid.Column="1"
-											LabelData="{l:Localize ContractSignTryAgain}"
-											Command="{Binding RetrySigningCommand}"
-											IsVisible="{Binding IsSignFailure}" />
-			</Grid>
+				Style="{DynamicResource BottomBarBorder}">
+			<VerticalStackLayout Padding="{DynamicResource SmallMargins}"
+								 Spacing="4">
+				<controls:TextButton IsVisible="{Binding IsSignSuccess}"
+									 Command="{Binding FinishSigningCommand}"
+									 Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize ContractSignDone}" />
+				<controls:TextButton IsVisible="{Binding IsSignFailure}"
+									 Command="{Binding RetrySigningCommand}"
+									 Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize ContractSignTryAgain}" />
+				<controls:TextButton IsVisible="{Binding IsSignFailure}"
+									 Command="{Binding FinishSigningCommand}"
+									 Style="{DynamicResource TransparentTextButton}"
+									 LabelData="{l:Localize Back}" />
+			</VerticalStackLayout>
 		</Border>
 	</Grid>
 </views:BaseViewContractView>

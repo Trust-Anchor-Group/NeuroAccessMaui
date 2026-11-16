@@ -1,134 +1,262 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <views:BaseNewContractView x:Name="ThisPage"
-                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.RolesView"
-                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
-                           x:DataType="base:NewContractViewModel"
-                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
-                           xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-                           xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
+						   x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.RolesView"
+						   x:DataType="base:NewContractViewModel"
+						   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						   xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						   xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
+						   xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel">
 
 	<ContentView.Resources>
-		<Style x:Key="RoleTitleLabel" TargetType="Label" BaseResourceKey="BoldItemTitleLabel">
-			<Setter Property="FontSize" Value="{StaticResource FontSizeXl}"/>
-			<Setter Property="HorizontalTextAlignment" Value="Start"/>
-		</Style>
-		<Style x:Key="RoleDescriptionLabel" TargetType="Label" BasedOn="{StaticResource ItemDescriptionLabel}">
-			<Setter Property="FontSize" Value="{StaticResource FontSizeSm}"/>
-			<Setter Property="Margin" Value="0" />
-			<Setter Property="HorizontalTextAlignment" Value="Start"/>
-			<Setter Property="FontFamily" Value="SpaceGroteskMedium" />
-		</Style>
+		<ResourceDictionary>
+			<Style x:Key="RowGrid"
+				   TargetType="Grid">
+				<Setter Property="Padding"
+						Value="16,12" />
+				<Setter Property="ColumnSpacing"
+						Value="12" />
+				<Setter Property="MinimumHeightRequest"
+						Value="56" />
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource SurfaceElevation1WL}" />
+			</Style>
+
+			<!-- The 1 px gaps between the rows of a card show the divider colour as lines -->
+			<Style x:Key="RowsLayout"
+				   TargetType="VerticalStackLayout">
+				<Setter Property="Spacing"
+						Value="1" />
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource SurfaceDividerWL}" />
+			</Style>
+
+			<Style x:Key="PersonNameLabel"
+				   TargetType="Label">
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskSemiBold" />
+				<Setter Property="FontSize"
+						Value="{StaticResource FontSizeMd}" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentPrimaryWL}" />
+			</Style>
+
+			<Style x:Key="PersonDetailLabel"
+				   TargetType="Label">
+				<Setter Property="FontSize"
+						Value="13" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+		</ResourceDictionary>
 	</ContentView.Resources>
 
-	<!-- Roles. A stack instead of a CollectionView, since a CollectionView cell doesn't shrink when the add buttons are hidden. -->
+	<!-- A stack instead of a CollectionView, since a CollectionView cell doesn't shrink when rows are hidden -->
 	<ScrollView>
-		<VerticalStackLayout Margin="{DynamicResource SmallLeftRightMargins}">
-			<Border Style="{DynamicResource BorderSet}">
-				<VerticalStackLayout>
-					<Label Text="{l:Localize SelectRolesYouWillSignAsOptional}" Style="{DynamicResource RoleTitleLabel}"/>
-				</VerticalStackLayout>
-			</Border>
-			<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contract.Roles}">
+		<VerticalStackLayout Padding="16,0,16,24"
+							 Spacing="12">
+			<Label Margin="4,0"
+				   FontSize="{StaticResource FontSizeMd}"
+				   LineBreakMode="WordWrap"
+				   Text="{l:Localize ContractWhoSignsHint}"
+				   TextColor="{DynamicResource ContentSecondaryWL}" />
+
+			<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contract.Roles}"
+								 Spacing="12">
 				<BindableLayout.ItemTemplate>
 					<DataTemplate x:DataType="objectModel:ObservableRole">
-						<Grid>
-							<Border Style="{DynamicResource BorderSet}">
-								<VerticalStackLayout>
-									<Grid ColumnDefinitions="*, auto" RowDefinitions="auto">
-										<Label Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource RoleTitleLabel}"/>
-										<HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
-											<CheckBox IsVisible="{Binding CanSelectMe}" Color="{DynamicResource ContentAccessWL}"
-													 IsChecked="{Binding IsSelectedByMe, Mode=TwoWay}"/>
-											<Label IsVisible="{Binding CanSelectMe}" Text="{l:Localize SignAs}" VerticalTextAlignment="Center" Style="{DynamicResource RoleDescriptionLabel}"/>
-										</HorizontalStackLayout>
-									</Grid>
-									<Label Text="{Binding Description}" Style="{DynamicResource RoleDescriptionLabel}" />
-									<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}" Spacing="0">
-										<BindableLayout.ItemTemplate>
-											<DataTemplate x:DataType="objectModel:ObservablePart">
-												<Border Style="{DynamicResource BorderSet}" Stroke="{DynamicResource InputFieldsSurfaceStroke}">
-													<Grid ColumnDefinitions="*, auto" RowDefinitions="auto,auto">
-														<controls:TemplatedButton Grid.Column="0" Grid.Row="0" Command="{Binding OpenIdentityCommand}">
-															<Label Text="{Binding FriendlyName}"
-																	Style="{DynamicResource RoleDescriptionLabel}"
-																	VerticalOptions="Center"
-																	HorizontalOptions="Center"
-																	TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"/>
-															</controls:TemplatedButton>
-															<VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="4">
-																<Border HorizontalOptions="Center"
-																		Padding="{DynamicResource SmallLeftRightMargins}"
-																		Style="{DynamicResource RoundedBorder}"
-																		BackgroundColor="{DynamicResource TnPWarningbgWL}"
-																		IsVisible="{Binding HasSentPetition}">
-																	<Label Style="{DynamicResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{DynamicResource TnPWarningContentWL}" VerticalOptions="Center"/>
-																</Border>
-																<Label Style="{DynamicResource RoleDescriptionLabel}" Text="{l:Localize IdentityDeclined}" TextColor="{DynamicResource TnPDangerContentWL}"
-																	   HorizontalOptions="Center" IsVisible="{Binding IsIdentityDeclined}"/>
-																<!-- Without the identity, the app has no address to send the invitation to. -->
-																<VerticalStackLayout Spacing="4" IsVisible="{Binding CanRequestIdentityToInvite}">
-																	<Label Style="{DynamicResource RoleDescriptionLabel}" Text="{l:Localize InviteRequestIdentityHint}"
-																		   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
-																	<controls:TextButton LabelData="{l:Localize RequestIdentity}" Style="{DynamicResource TransparentTextButton}"
-																						 HorizontalOptions="Center" Command="{Binding RequestIdentityCommand}"/>
-																</VerticalStackLayout>
-															</VerticalStackLayout>
-															<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
-																	  IsVisible="{Binding ShowRemoveAsMe}"
-																	  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
-																	  CommandParameter="{Binding .}">
-																		<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
-																			<Path WidthRequest="24" HeightRequest="24"
-																			  Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
-																			  Data="{x:Static ui:Geometries.CancelPath}"
-																			  VerticalOptions="Center" HorizontalOptions="Center"/>
-																		</Border>
+						<Border Style="{DynamicResource ListCardBorder}">
+							<VerticalStackLayout Style="{StaticResource RowsLayout}">
 
-																	</controls:TemplatedButton>
+								<!-- The role, what it does, and what it still needs -->
+								<Grid ColumnDefinitions="*, auto"
+									  Style="{StaticResource RowGrid}">
+									<VerticalStackLayout Grid.Column="0"
+														 VerticalOptions="Center"
+														 Spacing="2">
+										<Label FontFamily="SpaceGroteskBold"
+											   FontSize="{StaticResource FontSizeLg}"
+											   LineBreakMode="WordWrap"
+											   SemanticProperties.HeadingLevel="Level2"
+											   Text="{Binding Name}"
+											   TextColor="{DynamicResource ContentPrimaryWL}" />
+										<Label IsVisible="{Binding Description, Converter={mct:IsStringNotNullOrEmptyConverter}}"
+											   LineBreakMode="TailTruncation"
+											   MaxLines="3"
+											   Style="{StaticResource PersonDetailLabel}"
+											   Text="{Binding Description}" />
+									</VerticalStackLayout>
+									<Border Grid.Column="1"
+											VerticalOptions="Start"
+											Padding="10,4"
+											IsVisible="{Binding IsNamedParts, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel}"
+											BackgroundColor="{DynamicResource TnPWarningbgWL}"
+											StrokeShape="RoundRectangle 12"
+											StrokeThickness="0">
+										<Border.Triggers>
+											<DataTrigger Binding="{Binding IsComplete}"
+														 TargetType="Border"
+														 Value="True">
+												<Setter Property="BackgroundColor" Value="{DynamicResource TnPSuccessbgWL}" />
+											</DataTrigger>
+										</Border.Triggers>
+										<Label FontFamily="HaasGroteskMedium"
+											   FontSize="{StaticResource FontSizeXs}"
+											   LineBreakMode="NoWrap"
+											   Text="{Binding NeedsText}"
+											   TextColor="{DynamicResource TnPWarningContentWL}">
+											<Label.Triggers>
+												<DataTrigger Binding="{Binding IsComplete}"
+															 TargetType="Label"
+															 Value="True">
+													<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
+									</Border>
+								</Grid>
 
-																<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
-																	  IsVisible="{Binding ShowRemoveAsThirdParty}"
-																							  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
-																						 CommandParameter="{Binding .}">
-																		<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
-																			<Path WidthRequest="24" HeightRequest="24"
-																			  Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
-																			  Data="{x:Static ui:Geometries.CancelPath}"
-																			  VerticalOptions="Center" HorizontalOptions="Center"/>
-																		</Border>
-
-																	</controls:TemplatedButton>
-
-														</Grid>
+								<!-- Who signs it -->
+								<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}"
+													 Style="{StaticResource RowsLayout}">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="objectModel:ObservablePart">
+											<Grid ColumnDefinitions="auto, *, auto"
+												  Style="{StaticResource RowGrid}">
+												<Border Grid.Column="0"
+														VerticalOptions="Center"
+														Padding="0"
+														HeightRequest="40"
+														WidthRequest="40"
+														BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+														StrokeShape="RoundRectangle 20"
+														StrokeThickness="0">
+													<Border.Triggers>
+														<DataTrigger Binding="{Binding IsMe}"
+																	 TargetType="Border"
+																	 Value="True">
+															<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation2WL}" />
+														</DataTrigger>
+													</Border.Triggers>
+													<Label VerticalOptions="Center"
+														   HorizontalOptions="Center"
+														   FontFamily="SpaceGroteskBold"
+														   FontSize="{StaticResource FontSizeXs}"
+														   LineBreakMode="NoWrap"
+														   Text="{Binding Initials}"
+														   TextColor="{DynamicResource ContentAccessWL}" />
 												</Border>
-											</DataTemplate>
-										</BindableLayout.ItemTemplate>
-									</VerticalStackLayout>
-
-									<!-- In an open contract, nobody is named: anyone who can see it may sign. A stack layout, since a ContentView keeps the size of hidden content. -->
-									<VerticalStackLayout IsVisible="{Binding IsNamedParts, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel}">
-										<Border Style="{DynamicResource BorderSet}"
-												IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}"
-												Stroke="{DynamicResource InputFieldsSurfaceStroke}">
-											<Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource SmallSpacing}">
-												<controls:TextButton Grid.Column="0" LabelData="{l:Localize AddContact}" Style="{DynamicResource TransparentTextButton}"
-																		Command="{Binding AddPartFromContactsCommand}"/>
-												<controls:TextButton Grid.Column="1" LabelData="{l:Localize ScanQRShort}" Style="{DynamicResource TransparentTextButton}"
-																		Command="{Binding AddPartFromQrCommand}"/>
+												<VerticalStackLayout Grid.Column="1"
+																	 VerticalOptions="Center"
+																	 Spacing="2">
+													<Label Style="{StaticResource PersonNameLabel}"
+														   Text="{Binding DisplayName}" />
+													<Label IsVisible="{Binding IsMe}"
+														   Style="{StaticResource PersonDetailLabel}"
+														   Text="{l:Localize ContractSignerMeHint}" />
+													<Label IsVisible="{Binding IsPresetFromArgs}"
+														   Style="{StaticResource PersonDetailLabel}"
+														   Text="{l:Localize ContractAddedAutomatically}" />
+													<Label IsVisible="{Binding HasSentPetition}"
+														   Style="{StaticResource PersonDetailLabel}"
+														   Text="{l:Localize IDRequestSent}"
+														   TextColor="{DynamicResource TnPWarningContentWL}" />
+													<Label IsVisible="{Binding IsIdentityDeclined}"
+														   Style="{StaticResource PersonDetailLabel}"
+														   Text="{l:Localize IdentityDeclined}"
+														   TextColor="{DynamicResource TnPDangerContentWL}" />
+													<!-- Without the identity, the app has no address to send the invitation to -->
+													<Label IsVisible="{Binding CanRequestIdentityToInvite}"
+														   Style="{StaticResource PersonDetailLabel}"
+														   Text="{l:Localize InviteRequestIdentityHint}" />
+													<controls:TextButton HorizontalOptions="Start"
+																		 IsVisible="{Binding CanRequestIdentityToInvite}"
+																		 Command="{Binding RequestIdentityCommand}"
+																		 Style="{DynamicResource TransparentTextButton}"
+																		 LabelData="{l:Localize RequestIdentity}" />
+												</VerticalStackLayout>
+												<!-- Remove, except for people the app added -->
+												<controls:TemplatedButton Grid.Column="2"
+																		  VerticalOptions="Center"
+																		  HeightRequest="48"
+																		  WidthRequest="48"
+																		  IsVisible="{Binding IsPresetFromArgs, Converter={mct:InvertedBoolConverter}}"
+																		  Command="{Binding RemovePartCommand, Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, x:DataType=objectModel:ObservableRole}"
+																		  CommandParameter="{Binding .}"
+																		  SemanticProperties.Description="{l:Localize ContractRemoveSigner}">
+													<Path VerticalOptions="Center"
+														  HorizontalOptions="Center"
+														  HeightRequest="16"
+														  WidthRequest="16"
+														  Aspect="Uniform"
+														  Data="{x:Static ui:Geometries.CancelPath}"
+														  Fill="{DynamicResource ContentSecondaryWL}" />
+												</controls:TemplatedButton>
 											</Grid>
-										</Border>
-									</VerticalStackLayout>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
 								</VerticalStackLayout>
-							</Border>
-						</Grid>
+
+								<!-- In an open contract, anyone with the link can take a role nobody is named for -->
+								<VerticalStackLayout IsVisible="{Binding IsOpenParts, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel}">
+								<Grid ColumnDefinitions="auto, *"
+									  IsVisible="{Binding HasNoParts}"
+									  Style="{StaticResource RowGrid}">
+									<Path Grid.Column="0"
+										  VerticalOptions="Center"
+										  HeightRequest="20"
+										  WidthRequest="20"
+										  Aspect="Uniform"
+										  Data="{x:Static ui:Geometries.ShareIconPath}"
+										  Fill="{DynamicResource ContentAccessWL}" />
+									<VerticalStackLayout Grid.Column="1"
+														 VerticalOptions="Center"
+														 Spacing="2">
+										<Label Style="{StaticResource PersonNameLabel}"
+											   Text="{l:Localize ContractAnyoneWithLink}" />
+										<Label Style="{StaticResource PersonDetailLabel}"
+											   Text="{l:Localize ContractAnyoneWithLinkHint}" />
+									</VerticalStackLayout>
+								</Grid>
+								</VerticalStackLayout>
+
+								<!-- Choose who signs: me, a contact, a scanned ID code, or anyone with the link -->
+								<controls:TemplatedButton IsVisible="{Binding HasReachedMaxCount, Converter={mct:InvertedBoolConverter}}"
+														  Command="{Binding ChooseSignerCommand, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel}"
+														  CommandParameter="{Binding .}">
+									<Grid ColumnDefinitions="auto, *, auto"
+										  Style="{StaticResource RowGrid}">
+										<Label Grid.Column="0"
+											   VerticalOptions="Center"
+											   FontFamily="SpaceGroteskBold"
+											   FontSize="{StaticResource FontSize2xl}"
+											   Text="+"
+											   TextColor="{DynamicResource ContentAccessWL}" />
+										<Label Grid.Column="1"
+											   VerticalOptions="Center"
+											   FontFamily="SpaceGroteskSemiBold"
+											   FontSize="{StaticResource FontSizeMd}"
+											   LineBreakMode="WordWrap"
+											   Text="{Binding ChooseText}"
+											   TextColor="{DynamicResource ContentAccessWL}" />
+										<Label Grid.Column="2"
+											   VerticalOptions="Center"
+											   FontFamily="SpaceGroteskSemiBold"
+											   FontSize="{StaticResource FontSizeXl}"
+											   Text="›"
+											   TextColor="{DynamicResource ContentAccessWL}" />
+									</Grid>
+								</controls:TemplatedButton>
+							</VerticalStackLayout>
+						</Border>
 					</DataTemplate>
 				</BindableLayout.ItemTemplate>
 			</VerticalStackLayout>

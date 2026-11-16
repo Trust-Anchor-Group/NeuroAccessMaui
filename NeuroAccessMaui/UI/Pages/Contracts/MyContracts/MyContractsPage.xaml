@@ -45,7 +45,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ContractRowTemplate" x:DataType="objectmodel:ContractModel">
-			<Border Style="{DynamicResource BorderSet}">
+			<Border Style="{DynamicResource ListCardBorder}" Padding="14,12" Margin="0">
 				<controls:TemplatedButton Padding="0"
 								 Command="{Binding ContractSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
 								 CommandParameter="{Binding .}">
@@ -108,7 +108,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="PetitionRowTemplate" x:DataType="objectmodel:ContractPetitionModel">
-			<Border Style="{DynamicResource BorderSet}">
+			<Border Style="{DynamicResource ListCardBorder}" Padding="14,12" Margin="0">
 				<controls:TemplatedButton Padding="0"
 								 Command="{Binding ContractSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
 								 CommandParameter="{Binding .}">
@@ -213,7 +213,7 @@
 					</CollectionView.ItemsLayout>
 					<CollectionView.GroupHeaderTemplate>
 						<DataTemplate x:DataType="objectmodel:ContractGroupModel">
-							<Label Text="{Binding Title}" Style="{DynamicResource SectionTitleLabel}" Margin="4,16,4,0"/>
+							<Label Text="{Binding HeaderText}" Style="{DynamicResource ListCardSectionLabel}" Margin="8,16,8,0"/>
 						</DataTemplate>
 					</CollectionView.GroupHeaderTemplate>
 					<CollectionView.GroupFooterTemplate>

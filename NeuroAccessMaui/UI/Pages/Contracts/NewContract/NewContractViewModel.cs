@@ -1,3 +1,7 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -8,18 +12,14 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Text;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Script;
 using Waher.Persistence;
-using System.Linq;
+using Waher.Script;
 
 using Timer = System.Timers.Timer;
 
@@ -70,6 +70,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.OnPropertyChanged(nameof(this.IsOnRolesStep));
 			this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
 			this.OnPropertyChanged(nameof(this.CanGoBack));
+			this.OnPropertyChanged(nameof(this.ShowsWizardBar));
+			this.OnPropertyChanged(nameof(this.IsOnCheckStep));
 		}
 
 		// Wizard steps (Phase 1 skeleton)
@@ -121,33 +123,41 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		public ObservableParameter? FirstParameterToFix => this.EditableParameters.FirstOrDefault(Parameter => !IsParameterComplete(Parameter));
 
 		[ObservableProperty]
-		private bool isOnPreviewStep;
-
-		[ObservableProperty]
 		private bool isValidatingParameters;
-
-		// Removed final state concept
-
-		[ObservableProperty]
-		private bool isTransientPreview;
-
-		partial void OnIsTransientPreviewChanged(bool value)
-		{
-			this.OnPropertyChanged(nameof(this.CanGoBack));
-		}
 
 		private Contract? lastCreatedContract;
 
-		public string ProgressText => this.CurrentStep is null ? string.Empty : ServiceRef.Localizer[nameof(AppResources.ContractWizardStepFormat), this.CurrentStep.Index + 1, this.Steps.Count] ?? string.Empty;
+		/// <summary>
+		/// Where the user is in the steps, such as "1 of 3 · Fill in".
+		/// </summary>
+		public string ProgressText => this.CurrentStep is null
+			? string.Empty
+			: ServiceRef.Localizer[nameof(AppResources.ContractStepOf), this.CurrentStep.Index + 1, this.Steps.Count, this.CurrentStep.Title];
 
-		public string PrimaryActionText =>
-			(this.CurrentStep is not null && this.Steps.Count > 0 && this.CurrentStep.Index >= this.Steps.Count - 1)
-				? (ServiceRef.Localizer[nameof(AppResources.Create)] ?? "Create")
-				: (ServiceRef.Localizer[nameof(AppResources.ContractWizardNext)] ?? "Next");
+		/// <summary>
+		/// The main button: the next step, such as "Next: Who signs", or "Create and sign as Seller" on the last step.
+		/// </summary>
+		public string PrimaryActionText
+		{
+			get
+			{
+				if (this.CurrentStep is null)
+					return string.Empty;
 
-		public bool CanGoBack =>
-			(this.CurrentStep?.Index ?? 0) > 0 ||
-			(this.IsTransientPreview && this.CurrentState == nameof(NewContractStep.Preview));
+				if (this.CurrentStep.Index < this.Steps.Count - 1)
+					return ServiceRef.Localizer[nameof(AppResources.ContractNextStep), this.Steps[this.CurrentStep.Index + 1].Title];
+
+				string MyRoles = this.MyRoleNames;
+				return MyRoles.Length > 0
+					? ServiceRef.Localizer[nameof(AppResources.ContractCreateAndSignAs), MyRoles]
+					: ServiceRef.Localizer[nameof(AppResources.Create)];
+			}
+		}
+
+		/// <summary>
+		/// If there is a step before the current one.
+		/// </summary>
+		public bool CanGoBack => (this.CurrentStep?.Index ?? 0) > 0;
 
 		partial void OnCurrentStepChanged(StepDescriptor? oldValue, StepDescriptor? newValue)
 		{
@@ -157,7 +167,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				newValue.IsCurrent = true;
 				newValue.IsVisited = true;
-				this.IsOnPreviewStep = newValue.Key == nameof(NewContractStep.Preview);
 				this.OnPropertyChanged(nameof(this.ProgressText));
 				this.OnPropertyChanged(nameof(this.PrimaryActionText));
 				this.OnPropertyChanged(nameof(this.CanGoBack));
@@ -273,26 +282,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private bool isRolesOk;
 
 		/// <summary>
-		/// If the user has reviewed the contract and sees it as valid.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(CanCreate))]
-		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
-		private bool isContractOk;
-
-		/// <summary>
 		/// If Contract can be created
 		/// </summary>
 
 		public bool CanCreate =>
-			this.IsParametersOk && this.IsRolesOk && this.IsContractOk && this.IsSettingsOk
+			this.IsParametersOk && this.IsRolesOk && this.IsSettingsOk
 			&& this.SelectedContractVisibilityItem is not null;
-
-		partial void OnIsContractOkChanged(bool value)
-		{
-			if (this.CurrentStep?.Key == nameof(NewContractStep.Preview))
-				_ = this.UpdateCurrentStepValidityAsync();
-		}
 
 		#endregion
 
@@ -518,10 +513,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		private void OnSettingsChanged()
 		{
-			if (this.CurrentStep?.Key == nameof(NewContractStep.Settings))
+			if (this.CurrentStep?.Key == nameof(NewContractStep.Check))
 				_ = this.UpdateCurrentStepValidityAsync();
 			else
 				this.CheckSettingsValid();
+
+			this.OnOptionsChanged();
 		}
 
 		/// <summary>
@@ -612,6 +609,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					this.OnPropertyChanged(nameof(this.HasSelectedRoles));
 					this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
+					this.OnPropertyChanged(nameof(this.PrimaryActionText));
 					_ = this.UpdateCurrentStepValidityAsync();
 				};
 
@@ -681,8 +679,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				// Multi-select: do not auto-select any role. Keep user in control.
 
-				await this.GoToState(NewContractStep.Intro);
-				this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Intro));
+				this.CurrentStep = this.Steps.FirstOrDefault();
 			}
 			catch (Exception Ex4)
 			{
@@ -753,18 +750,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.Steps.Count > 0)
 				return;
 
-			string[] Order = [nameof(NewContractStep.Intro), nameof(NewContractStep.Parameters), nameof(NewContractStep.Settings),
-				nameof(NewContractStep.Roles), nameof(NewContractStep.Preview)];
+			// Up to three steps. Filling in is skipped when there is nothing to fill in, and choosing who signs when every
+			// role already has the people it needs, such as those the caller set.
+			List<string> Order = [];
+
+			if (this.InputParameters.Count > 0)
+				Order.Add(nameof(NewContractStep.Parameters));
+
+			if (!this.AreRolesFilledAtStart())
+				Order.Add(nameof(NewContractStep.Roles));
+
+			Order.Add(nameof(NewContractStep.Check));
+
 			int I = 0;
 			foreach (string Key in Order)
 			{
 				Func<Task<bool>>? ValidateFunc = null;
-				if (Key == nameof(NewContractStep.Intro))
-				{
-					// Intro is informational; always valid
-					ValidateFunc = () => Task.FromResult(true);
-				}
-				else if (Key == nameof(NewContractStep.Parameters))
+				if (Key == nameof(NewContractStep.Parameters))
 				{
 					ValidateFunc = () =>
 					{
@@ -773,17 +775,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						return Task.FromResult(Ok);
 					};
 				}
-				else if (Key == nameof(NewContractStep.Settings))
-				{
-					ValidateFunc = () => Task.FromResult(this.CheckSettingsValid());
-				}
 				else if (Key == nameof(NewContractStep.Roles))
 				{
 					ValidateFunc = () => Task.FromResult(this.CheckRolesValid());
 				}
-				else if (Key == nameof(NewContractStep.Preview))
+				else if (Key == nameof(NewContractStep.Check))
 				{
-					ValidateFunc = () => Task.FromResult(this.IsContractOk);
+					ValidateFunc = () => Task.FromResult(this.CheckSettingsValid() && this.CheckRolesValid() && this.IsParametersOk);
 				}
 
 				this.Steps.Add(new StepDescriptor
@@ -805,11 +803,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			return Key switch
 			{
-				nameof(NewContractStep.Intro) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepIntro)],
-				nameof(NewContractStep.Parameters) => ServiceRef.Localizer[nameof(AppResources.SetParametersTitle)],
-				nameof(NewContractStep.Settings) => ServiceRef.Localizer[nameof(AppResources.Settings)],
-				nameof(NewContractStep.Roles) => ServiceRef.Localizer[nameof(AppResources.Roles)],
-				nameof(NewContractStep.Preview) => ServiceRef.Localizer[nameof(AppResources.ContractWizardStepReview)],
+				nameof(NewContractStep.Parameters) => ServiceRef.Localizer[nameof(AppResources.ContractStepFill)],
+				nameof(NewContractStep.Roles) => ServiceRef.Localizer[nameof(AppResources.ContractStepWhoSigns)],
+				nameof(NewContractStep.Check) => ServiceRef.Localizer[nameof(AppResources.ContractStepCheck)],
 				_ => Key
 			};
 		}
@@ -942,10 +938,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				NewContractStep Target = (NewContractStep)Enum.Parse(typeof(NewContractStep), Step.Key);
 				if (Target != NewContractStep.Loading && this.CurrentState != Step.Key)
 				{
-					if (Target == NewContractStep.Preview)
+					if (Target == NewContractStep.Check)
 					{
-						// Ensure preview is generated when entering preview step
-						await this.GoToPreview();
+						await this.GoToCheckAsync();
 					}
 					else if (Target == NewContractStep.Parameters)
 					{
@@ -1024,9 +1019,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.CurrentStep = this.Steps[NextIndex];
 			}
-			else if (this.CurrentStep.Key == nameof(NewContractStep.Preview))
+			else if (this.CurrentStep.Key == nameof(NewContractStep.Check))
 			{
-				_ = this.CreateAsync();
+				await this.CheckCanCreateAsync();
+
+				if (this.EditableParameters.All(IsParameterComplete) && this.AreRoleCountsMet() && this.CheckSettingsValid())
+					await this.CreateAsync();
 			}
 		}
 
@@ -1070,14 +1068,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			if (this.CurrentStep is null)
 				return;
-			// Special case: transient preview -> always return to Intro regardless of CurrentStep pointer
-			if (this.IsTransientPreview && this.CurrentState == nameof(NewContractStep.Preview))
-			{
-				this.IsTransientPreview = false;
-				// Don't advance step progression; just go back to Intro state
-				_ = this.GoToState(NewContractStep.Intro);
-				return;
-			}
 
 			int PrevIndex = this.CurrentStep.Index - 1;
 			if (PrevIndex >= 0)
@@ -1322,7 +1312,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (!await ServiceRef.AuthenticationService.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 			{
-				await this.GoToState(NewContractStep.Preview);
+				await this.GoToState(NewContractStep.Check);
 				return;
 			}
 
@@ -1359,7 +1349,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ContractErrorMessages.GetMessage(Ex),
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				await this.GoToState(NewContractStep.Preview);
+				await this.GoToState(NewContractStep.Check);
 				return;
 			}
 
@@ -1466,9 +1456,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					case NewContractStep.Loading:
 						await base.GoBack();
 						break;
-					case NewContractStep.Preview when this.IsTransientPreview:
-						this.IsTransientPreview = false;
-						await this.GoToState(NewContractStep.Intro);
+					case NewContractStep.Preview:
+						await this.GoToState(NewContractStep.Check);
+						break;
+					case NewContractStep.Settings:
+						await this.SaveOptionsAsync();
 						break;
 					default:
 						if (this.CanGoBack)
@@ -1618,13 +1610,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.GoToState(NewContractStep.Preview);
 		}
 
-		[RelayCommand(CanExecute = nameof(CanStateChange))]
-		private async Task ShowPreviewFromIntro()
-		{
-			this.IsTransientPreview = true;
-			await this.GoToPreview();
-		}
-
 		#endregion
 
 		#region Event Handlers
@@ -1651,6 +1636,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				this.SelectedContractVisibilityItem = oldValue;
 				return;
 			}
+
+			this.OnOptionsChanged();
 		}
 
 		#endregion

@@ -1,5 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
@@ -31,6 +34,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// The localized title of the group.
 		/// </summary>
 		public string Title { get; }
+
+		/// <summary>
+		/// The heading of the group, with how many rows it has, such as "Needs you · 2". A "+" shows that more can be loaded.
+		/// </summary>
+		public string HeaderText => this.Count == 0
+			? this.Title
+			: ServiceRef.Localizer[nameof(AppResources.ContractGroupHeader), this.Title,
+				this.HasMore ? this.Count.ToString(CultureInfo.CurrentCulture) + "+" : this.Count.ToString(CultureInfo.CurrentCulture)];
+
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.PropertyName is nameof(this.Count) or nameof(this.HasMore))
+				base.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.HeaderText)));
+		}
 
 		/// <summary>
 		/// Number of stored contracts read for this group. The next page starts here.

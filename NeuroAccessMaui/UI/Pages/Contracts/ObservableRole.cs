@@ -171,6 +171,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool HasNoParts => this.Parts.Count == 0;
 
 		/// <summary>
+		/// How many more parts the role needs, at least.
+		/// </summary>
+		public int MissingCount => Math.Max(0, this.MinCount - this.Parts.Count);
+
+		/// <summary>
+		/// If the role has the parts it needs.
+		/// </summary>
+		public bool IsComplete => this.MissingCount == 0;
+
+		/// <summary>
+		/// What the role still needs, such as "Needs 1 person", or "Done".
+		/// </summary>
+		public string NeedsText => this.MissingCount switch
+		{
+			0 => ServiceRef.Localizer[nameof(AppResources.ContractRoleDone)],
+			1 => ServiceRef.Localizer[nameof(AppResources.ContractRoleNeedsOne)],
+			_ => ServiceRef.Localizer[nameof(AppResources.ContractRoleNeedsMany), this.MissingCount]
+		};
+
+		/// <summary>
+		/// The link that adds a part, such as "Choose who signs as Buyer".
+		/// </summary>
+		public string ChooseText => ServiceRef.Localizer[nameof(AppResources.ContractChooseWhoSignsAs), this.Name];
+
+		/// <summary>
 		/// If the user is a part in the role.
 		/// </summary>
 		public bool IsMyRole => this.Parts.Any(Part => Part.IsMe);
@@ -357,6 +382,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.OnPropertyChanged(nameof(this.SignaturesText));
 			this.OnPropertyChanged(nameof(this.HasNoParts));
 			this.OnPropertyChanged(nameof(this.IsMyRole));
+			this.OnPropertyChanged(nameof(this.MissingCount));
+			this.OnPropertyChanged(nameof(this.IsComplete));
+			this.OnPropertyChanged(nameof(this.NeedsText));
 		}
 
 		[RelayCommand]

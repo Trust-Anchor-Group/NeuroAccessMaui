@@ -10,7 +10,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts
 		/// <summary>
 		/// Words in parameter names that mean an amount of money.
 		/// </summary>
-		private static readonly string[] amountWords = ["Amount", "Price", "Cost", "Fee", "Total", "Sum", "Value", "Payment", "Deposit", "Commission"];
+		private static readonly string[] amountWords =
+			["Amount", "Price", "Cost", "Fee", "Total", "Sum", "Value", "Payment", "Deposit", "Commission", "Vat", "Tax", "Debt",
+			"Balance", "Charge", "Shipping"];
 
 		private readonly bool isPercent;
 		private readonly Parameter? currencyParameter;
@@ -33,7 +35,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts
 
 		/// <summary>
 		/// Works out the unit of a number. A number whose name or guide speaks of percent is a percentage. An amount, judged
-		/// by its name, is in the currency of a parameter named "Currency", when the contract has one.
+		/// by its name, is in the currency of the contract's currency value: one named "Currency", or else one whose name ends
+		/// with "Currency" or "Unit", such as "PriceUnit".
 		/// </summary>
 		/// <param name="Parameter">The number's parameter.</param>
 		/// <param name="Contract">The contract the parameter belongs to.</param>
@@ -49,10 +52,34 @@ namespace NeuroAccessMaui.UI.Pages.Contracts
 			if (!amountWords.Any(Word => Name.Contains(Word, StringComparison.OrdinalIgnoreCase)))
 				return null;
 
-			Parameter? Currency = Contract.Parameters?.FirstOrDefault(P =>
-				P is StringParameter && string.Equals(P.Name, "Currency", StringComparison.OrdinalIgnoreCase));
+			Parameter? Currency = FindCurrency(Contract);
 
 			return Currency is null ? null : new ParameterUnit(false, Currency);
+		}
+
+		/// <summary>
+		/// Finds the value that holds the contract's currency.
+		/// </summary>
+		/// <param name="Contract">The contract.</param>
+		/// <returns>The parameter, or null when the contract has none.</returns>
+		public static Parameter? FindCurrency(Contract Contract)
+		{
+			Parameter[] Texts = [.. (Contract.Parameters ?? []).Where(P => P is StringParameter or CalcParameter)];
+
+			return Texts.FirstOrDefault(P => string.Equals(P.Name, "Currency", StringComparison.OrdinalIgnoreCase))
+				?? Texts.FirstOrDefault(P => P.Name.EndsWith("Currency", StringComparison.OrdinalIgnoreCase))
+				?? Texts.FirstOrDefault(P => P.Name.EndsWith("Unit", StringComparison.OrdinalIgnoreCase));
+		}
+
+		/// <summary>
+		/// If a parameter holds the contract's currency, so it adds nothing to show next to the amounts.
+		/// </summary>
+		/// <param name="Parameter">The parameter.</param>
+		/// <param name="Contract">The contract.</param>
+		/// <returns>If the parameter is the currency.</returns>
+		public static bool IsCurrency(Parameter Parameter, Contract Contract)
+		{
+			return FindCurrency(Contract) == Parameter;
 		}
 	}
 }

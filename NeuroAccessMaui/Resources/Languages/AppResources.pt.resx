@@ -4641,16 +4641,16 @@ Documento lido. Você pode mover seu iPhone.</value>
     <value>A pessoa recusou assinar sua solicitação.</value>
   </data>
   <data name="ContractGroupNeedsAction" xml:space="preserve">
-    <value>Precisa da sua ação</value>
+    <value>Precisam de você</value>
   </data>
   <data name="ContractGroupInProgress" xml:space="preserve">
-    <value>Em andamento</value>
+    <value>Aguardando outros</value>
   </data>
   <data name="ContractGroupSigned" xml:space="preserve">
-    <value>Assinados</value>
+    <value>Ativos</value>
   </data>
   <data name="ContractGroupEnded" xml:space="preserve">
-    <value>Encerrados</value>
+    <value>Encerrados e recusados</value>
   </data>
   <data name="ContractMarkerInvitation" xml:space="preserve">
     <value>Convite</value>
@@ -4678,6 +4678,213 @@ Documento lido. Você pode mover seu iPhone.</value>
   </data>
   <data name="ContractSectionTechnicalDetails" xml:space="preserve">
     <value>Detalhes técnicos</value>
+  </data>
+  <data name="ContractYou" xml:space="preserve">
+    <value>Você</value>
+  </data>
+  <data name="ContractPartSignedOn" xml:space="preserve">
+    <value>Assinou em {0}</value>
+  </data>
+  <data name="ContractPartNotSigned" xml:space="preserve">
+    <value>Não assinado</value>
+  </data>
+  <data name="ContractNoOneYet" xml:space="preserve">
+    <value>Ninguém ainda</value>
+  </data>
+  <data name="ContractStatusNeedsYou" xml:space="preserve">
+    <value>Aguardando sua assinatura</value>
+  </data>
+  <data name="ContractStatusWaitingForOthers" xml:space="preserve">
+    <value>Aguardando outros</value>
+  </data>
+  <data name="ContractStatusForReading" xml:space="preserve">
+    <value>Somente leitura</value>
+  </data>
+  <data name="ContractProgress" xml:space="preserve">
+    <value>{0} de {1} assinaram</value>
+  </data>
+  <data name="ContractSignBy" xml:space="preserve">
+    <value>Assine até {0}</value>
+  </data>
+  <data name="ContractDaysLeft" xml:space="preserve">
+    <value>Faltam {0} dias</value>
+  </data>
+  <data name="ContractOneDayLeft" xml:space="preserve">
+    <value>Falta 1 dia</value>
+  </data>
+  <data name="ContractLessThanDayLeft" xml:space="preserve">
+    <value>Falta menos de um dia</value>
+  </data>
+  <data name="ContractWaitingForNames" xml:space="preserve">
+    <value>Você assinou. Aguardando {0}.</value>
+  </data>
+  <data name="ContractWaitingForCount" xml:space="preserve">
+    <value>Você assinou. Faltam {0} assinaturas.</value>
+  </data>
+  <data name="ContractSignedByAllOn" xml:space="preserve">
+    <value>Assinado por todos em {0}.</value>
+  </data>
+  <data name="ContractValidUntilSentence" xml:space="preserve">
+    <value>Válido até {0}.</value>
+  </data>
+  <data name="ContractNoRoleForYou" xml:space="preserve">
+    <value>Você pode ler este contrato, mas não tem nenhum papel nele.</value>
+  </data>
+  <data name="ContractNobodyCanSign" xml:space="preserve">
+    <value>Ninguém pode assiná-lo agora.</value>
+  </data>
+  <data name="ContractInvitedYou" xml:space="preserve">
+    <value>{0} convidou você para assinar</value>
+  </data>
+  <data name="ContractReadWhole" xml:space="preserve">
+    <value>Ler o contrato completo</value>
+  </data>
+  <data name="ContractKeyDetails" xml:space="preserve">
+    <value>Dados principais</value>
+  </data>
+  <data name="ContractAllDetails" xml:space="preserve">
+    <value>Todos os {0} dados</value>
+  </data>
+  <data name="ContractPeople" xml:space="preserve">
+    <value>Pessoas</value>
+  </data>
+  <data name="ContractReviewAndSignAs" xml:space="preserve">
+    <value>Revisar e assinar como {0}</value>
+  </data>
+  <data name="ContractReviewAndSign" xml:space="preserve">
+    <value>Revisar e assinar</value>
+  </data>
+  <data name="ContractSignAs" xml:space="preserve">
+    <value>Assinar como {0}</value>
+  </data>
+  <data name="ContractYouSignAs" xml:space="preserve">
+    <value>Você assina como</value>
+  </data>
+  <data name="ContractWhatYouAgreeTo" xml:space="preserve">
+    <value>O que você aceita</value>
+  </data>
+  <data name="ContractFromYourId" xml:space="preserve">
+    <value>Da sua identidade, para o contrato</value>
+  </data>
+  <data name="ContractNotInYourId" xml:space="preserve">
+    <value>Não está na sua identidade</value>
+  </data>
+  <data name="ContractSeenByAnyone" xml:space="preserve">
+    <value>Qualquer pessoa pode ver este contrato, incluindo os dados da sua identidade.</value>
+  </data>
+  <data name="ContractSeenByDomain" xml:space="preserve">
+    <value>Pessoas no mesmo servidor do criador e as pessoas do contrato podem vê-lo.</value>
+  </data>
+  <data name="ContractSeenByParts" xml:space="preserve">
+    <value>Somente as pessoas do contrato podem vê-lo.</value>
+  </data>
+  <data name="ContractCantUndo" xml:space="preserve">
+    <value>Não pode ser desfeito depois que todos assinarem.</value>
+  </data>
+  <data name="ContractSignUsesAuth" xml:space="preserve">
+    <value>Usa sua digital, seu rosto ou seu PIN</value>
+  </data>
+  <data name="ContractNotNow" xml:space="preserve">
+    <value>Agora não</value>
+  </data>
+  <data name="ContractIHaveRead" xml:space="preserve">
+    <value>Li o contrato</value>
+  </data>
+  <data name="ContractStepFill" xml:space="preserve">
+    <value>Preencher</value>
+  </data>
+  <data name="ContractStepWhoSigns" xml:space="preserve">
+    <value>Quem assina</value>
+  </data>
+  <data name="ContractStepCheck" xml:space="preserve">
+    <value>Revisar e criar</value>
+  </data>
+  <data name="ContractStepOf" xml:space="preserve">
+    <value>{0} de {1} · {2}</value>
+  </data>
+  <data name="ContractNextStep" xml:space="preserve">
+    <value>Próximo: {0}</value>
+  </data>
+  <data name="ContractCreateAndSignAs" xml:space="preserve">
+    <value>Criar e assinar como {0}</value>
+  </data>
+  <data name="ContractCreateThenInvite" xml:space="preserve">
+    <value>Depois você pode convidar os outros para assinar.</value>
+  </data>
+  <data name="ContractFillHint" xml:space="preserve">
+    <value>Preencha o que foi combinado. Os valores não podem ser alterados depois que o contrato for criado.</value>
+  </data>
+  <data name="ContractWhoSignsHint" xml:space="preserve">
+    <value>As pessoas escolhidas recebem o contrato no app e assinam lá. Nada é compartilhado antes de você criá-lo.</value>
+  </data>
+  <data name="ContractInShort" xml:space="preserve">
+    <value>Em resumo</value>
+  </data>
+  <data name="ContractOptionsHint" xml:space="preserve">
+    <value>As escolhas do modelo já estão preenchidas. A maioria das pessoas não as altera.</value>
+  </data>
+  <data name="ContractWhoCanSeeIt" xml:space="preserve">
+    <value>Quem pode vê-lo</value>
+  </data>
+  <data name="ContractNoDeadline" xml:space="preserve">
+    <value>Sem prazo</value>
+  </data>
+  <data name="ContractLasts" xml:space="preserve">
+    <value>Dura</value>
+  </data>
+  <data name="ContractSaveOptions" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="ContractAnyoneWithLink" xml:space="preserve">
+    <value>Qualquer pessoa com o link</value>
+  </data>
+  <data name="ContractAnyoneWithLinkHint" xml:space="preserve">
+    <value>Qualquer pessoa que receber o link pode assinar, em cada papel que não estiver ocupado</value>
+  </data>
+  <data name="ContractChooseWhoSignsAs" xml:space="preserve">
+    <value>Escolha quem assina como {0}</value>
+  </data>
+  <data name="ContractWhoSignsAs" xml:space="preserve">
+    <value>Quem assina como {0}?</value>
+  </data>
+  <data name="ContractChooseSignerHint" xml:space="preserve">
+    <value>A pessoa recebe o contrato no app e assina lá.</value>
+  </data>
+  <data name="ContractSignerMe" xml:space="preserve">
+    <value>Eu</value>
+  </data>
+  <data name="ContractSignerMeHint" xml:space="preserve">
+    <value>Você assina quando o contrato é criado</value>
+  </data>
+  <data name="ContractSignerContact" xml:space="preserve">
+    <value>Alguém dos meus contatos</value>
+  </data>
+  <data name="ContractSignerContactHint" xml:space="preserve">
+    <value>Escolha alguém com quem você conversou ou que adicionou</value>
+  </data>
+  <data name="ContractSignerQr" xml:space="preserve">
+    <value>Escanear o código QR</value>
+  </data>
+  <data name="ContractSignerQrHint" xml:space="preserve">
+    <value>A pessoa mostra o código de identidade no app</value>
+  </data>
+  <data name="ContractRoleDone" xml:space="preserve">
+    <value>Pronto</value>
+  </data>
+  <data name="ContractRoleNeedsOne" xml:space="preserve">
+    <value>Falta 1 pessoa</value>
+  </data>
+  <data name="ContractRoleNeedsMany" xml:space="preserve">
+    <value>Faltam {0} pessoas</value>
+  </data>
+  <data name="ContractAddedAutomatically" xml:space="preserve">
+    <value>Adicionado automaticamente</value>
+  </data>
+  <data name="ContractRemoveSigner" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="ContractGroupHeader" xml:space="preserve">
+    <value>{0} · {1}</value>
   </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Mostrar</value>
@@ -4837,6 +5044,9 @@ Documento lido. Você pode mover seu iPhone.</value>
   </data>
   <data name="ParameterOnlyPartiesSee" xml:space="preserve">
     <value>Só as partes veem isto</value>
+  </data>
+  <data name="ParameterMoreAbout" xml:space="preserve">
+    <value>Mais sobre este valor</value>
   </data>
   <data name="ParameterInsideArea" xml:space="preserve">
     <value>Dentro da área marcada</value>

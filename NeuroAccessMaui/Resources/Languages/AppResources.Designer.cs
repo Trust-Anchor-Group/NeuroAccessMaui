@@ -13756,7 +13756,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Needs your action.
+        ///   Looks up a localized string similar to Needs you.
         /// </summary>
         public static string ContractGroupNeedsAction {
             get {
@@ -13765,7 +13765,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In progress.
+        ///   Looks up a localized string similar to Waiting for others.
         /// </summary>
         public static string ContractGroupInProgress {
             get {
@@ -13774,7 +13774,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Signed.
+        ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string ContractGroupSigned {
             get {
@@ -13783,7 +13783,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ended.
+        ///   Looks up a localized string similar to Ended and declined.
         /// </summary>
         public static string ContractGroupEnded {
             get {
@@ -13869,6 +13869,627 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ContractSectionTechnicalDetails {
             get {
                 return ResourceManager.GetString("ContractSectionTechnicalDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string ContractYou {
+            get {
+                return ResourceManager.GetString("ContractYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signed {0}.
+        /// </summary>
+        public static string ContractPartSignedOn {
+            get {
+                return ResourceManager.GetString("ContractPartSignedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not signed.
+        /// </summary>
+        public static string ContractPartNotSigned {
+            get {
+                return ResourceManager.GetString("ContractPartNotSigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No one yet.
+        /// </summary>
+        public static string ContractNoOneYet {
+            get {
+                return ResourceManager.GetString("ContractNoOneYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for your signature.
+        /// </summary>
+        public static string ContractStatusNeedsYou {
+            get {
+                return ResourceManager.GetString("ContractStatusNeedsYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for others.
+        /// </summary>
+        public static string ContractStatusWaitingForOthers {
+            get {
+                return ResourceManager.GetString("ContractStatusWaitingForOthers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For reading.
+        /// </summary>
+        public static string ContractStatusForReading {
+            get {
+                return ResourceManager.GetString("ContractStatusForReading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} signed.
+        /// </summary>
+        public static string ContractProgress {
+            get {
+                return ResourceManager.GetString("ContractProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign by {0}.
+        /// </summary>
+        public static string ContractSignBy {
+            get {
+                return ResourceManager.GetString("ContractSignBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days left.
+        /// </summary>
+        public static string ContractDaysLeft {
+            get {
+                return ResourceManager.GetString("ContractDaysLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 day left.
+        /// </summary>
+        public static string ContractOneDayLeft {
+            get {
+                return ResourceManager.GetString("ContractOneDayLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Less than a day left.
+        /// </summary>
+        public static string ContractLessThanDayLeft {
+            get {
+                return ResourceManager.GetString("ContractLessThanDayLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You signed. Waiting for {0}.
+        /// </summary>
+        public static string ContractWaitingForNames {
+            get {
+                return ResourceManager.GetString("ContractWaitingForNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You signed. {0} more signatures are needed.
+        /// </summary>
+        public static string ContractWaitingForCount {
+            get {
+                return ResourceManager.GetString("ContractWaitingForCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signed by all on {0}.
+        /// </summary>
+        public static string ContractSignedByAllOn {
+            get {
+                return ResourceManager.GetString("ContractSignedByAllOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid until {0}.
+        /// </summary>
+        public static string ContractValidUntilSentence {
+            get {
+                return ResourceManager.GetString("ContractValidUntilSentence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can read this contract, but you have no role in it.
+        /// </summary>
+        public static string ContractNoRoleForYou {
+            get {
+                return ResourceManager.GetString("ContractNoRoleForYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nobody can sign it now.
+        /// </summary>
+        public static string ContractNobodyCanSign {
+            get {
+                return ResourceManager.GetString("ContractNobodyCanSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} invited you to sign.
+        /// </summary>
+        public static string ContractInvitedYou {
+            get {
+                return ResourceManager.GetString("ContractInvitedYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read the whole contract.
+        /// </summary>
+        public static string ContractReadWhole {
+            get {
+                return ResourceManager.GetString("ContractReadWhole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key details.
+        /// </summary>
+        public static string ContractKeyDetails {
+            get {
+                return ResourceManager.GetString("ContractKeyDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All {0} details.
+        /// </summary>
+        public static string ContractAllDetails {
+            get {
+                return ResourceManager.GetString("ContractAllDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to People.
+        /// </summary>
+        public static string ContractPeople {
+            get {
+                return ResourceManager.GetString("ContractPeople", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review and sign as {0}.
+        /// </summary>
+        public static string ContractReviewAndSignAs {
+            get {
+                return ResourceManager.GetString("ContractReviewAndSignAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review and sign.
+        /// </summary>
+        public static string ContractReviewAndSign {
+            get {
+                return ResourceManager.GetString("ContractReviewAndSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign as {0}.
+        /// </summary>
+        public static string ContractSignAs {
+            get {
+                return ResourceManager.GetString("ContractSignAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You sign as.
+        /// </summary>
+        public static string ContractYouSignAs {
+            get {
+                return ResourceManager.GetString("ContractYouSignAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What you agree to.
+        /// </summary>
+        public static string ContractWhatYouAgreeTo {
+            get {
+                return ResourceManager.GetString("ContractWhatYouAgreeTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From your ID, into the contract.
+        /// </summary>
+        public static string ContractFromYourId {
+            get {
+                return ResourceManager.GetString("ContractFromYourId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not in your ID.
+        /// </summary>
+        public static string ContractNotInYourId {
+            get {
+                return ResourceManager.GetString("ContractNotInYourId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anyone can see this contract, including the details from your ID.
+        /// </summary>
+        public static string ContractSeenByAnyone {
+            get {
+                return ResourceManager.GetString("ContractSeenByAnyone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to People on the same server as the creator, and the people in the contract, can see it.
+        /// </summary>
+        public static string ContractSeenByDomain {
+            get {
+                return ResourceManager.GetString("ContractSeenByDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the people in the contract can see it.
+        /// </summary>
+        public static string ContractSeenByParts {
+            get {
+                return ResourceManager.GetString("ContractSeenByParts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It can't be undone once everyone has signed.
+        /// </summary>
+        public static string ContractCantUndo {
+            get {
+                return ResourceManager.GetString("ContractCantUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uses your fingerprint, face or PIN.
+        /// </summary>
+        public static string ContractSignUsesAuth {
+            get {
+                return ResourceManager.GetString("ContractSignUsesAuth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not now.
+        /// </summary>
+        public static string ContractNotNow {
+            get {
+                return ResourceManager.GetString("ContractNotNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have read the contract.
+        /// </summary>
+        public static string ContractIHaveRead {
+            get {
+                return ResourceManager.GetString("ContractIHaveRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in.
+        /// </summary>
+        public static string ContractStepFill {
+            get {
+                return ResourceManager.GetString("ContractStepFill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who signs.
+        /// </summary>
+        public static string ContractStepWhoSigns {
+            get {
+                return ResourceManager.GetString("ContractStepWhoSigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check and create.
+        /// </summary>
+        public static string ContractStepCheck {
+            get {
+                return ResourceManager.GetString("ContractStepCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} · {2}.
+        /// </summary>
+        public static string ContractStepOf {
+            get {
+                return ResourceManager.GetString("ContractStepOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next: {0}.
+        /// </summary>
+        public static string ContractNextStep {
+            get {
+                return ResourceManager.GetString("ContractNextStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create and sign as {0}.
+        /// </summary>
+        public static string ContractCreateAndSignAs {
+            get {
+                return ResourceManager.GetString("ContractCreateAndSignAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Then you can invite the others to sign.
+        /// </summary>
+        public static string ContractCreateThenInvite {
+            get {
+                return ResourceManager.GetString("ContractCreateThenInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in what you agree on. The values can't be changed once the contract is created.
+        /// </summary>
+        public static string ContractFillHint {
+            get {
+                return ResourceManager.GetString("ContractFillHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to People you choose get the contract in their app and sign it there. Nothing is shared before you create it.
+        /// </summary>
+        public static string ContractWhoSignsHint {
+            get {
+                return ResourceManager.GetString("ContractWhoSignsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In short.
+        /// </summary>
+        public static string ContractInShort {
+            get {
+                return ResourceManager.GetString("ContractInShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The template's choices are filled in. Most people don't change them.
+        /// </summary>
+        public static string ContractOptionsHint {
+            get {
+                return ResourceManager.GetString("ContractOptionsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who can see it.
+        /// </summary>
+        public static string ContractWhoCanSeeIt {
+            get {
+                return ResourceManager.GetString("ContractWhoCanSeeIt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No deadline.
+        /// </summary>
+        public static string ContractNoDeadline {
+            get {
+                return ResourceManager.GetString("ContractNoDeadline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lasts.
+        /// </summary>
+        public static string ContractLasts {
+            get {
+                return ResourceManager.GetString("ContractLasts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string ContractSaveOptions {
+            get {
+                return ResourceManager.GetString("ContractSaveOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anyone with the link.
+        /// </summary>
+        public static string ContractAnyoneWithLink {
+            get {
+                return ResourceManager.GetString("ContractAnyoneWithLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anyone who gets the link can sign, in every role that isn't taken.
+        /// </summary>
+        public static string ContractAnyoneWithLinkHint {
+            get {
+                return ResourceManager.GetString("ContractAnyoneWithLinkHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose who signs as {0}.
+        /// </summary>
+        public static string ContractChooseWhoSignsAs {
+            get {
+                return ResourceManager.GetString("ContractChooseWhoSignsAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who signs as {0}?.
+        /// </summary>
+        public static string ContractWhoSignsAs {
+            get {
+                return ResourceManager.GetString("ContractWhoSignsAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They get the contract in their app and sign it there.
+        /// </summary>
+        public static string ContractChooseSignerHint {
+            get {
+                return ResourceManager.GetString("ContractChooseSignerHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Me.
+        /// </summary>
+        public static string ContractSignerMe {
+            get {
+                return ResourceManager.GetString("ContractSignerMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You sign when the contract is created.
+        /// </summary>
+        public static string ContractSignerMeHint {
+            get {
+                return ResourceManager.GetString("ContractSignerMeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Someone in my contacts.
+        /// </summary>
+        public static string ContractSignerContact {
+            get {
+                return ResourceManager.GetString("ContractSignerContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick a person you have chatted with or added.
+        /// </summary>
+        public static string ContractSignerContactHint {
+            get {
+                return ResourceManager.GetString("ContractSignerContactHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan their QR code.
+        /// </summary>
+        public static string ContractSignerQr {
+            get {
+                return ResourceManager.GetString("ContractSignerQr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They show their ID code in their app.
+        /// </summary>
+        public static string ContractSignerQrHint {
+            get {
+                return ResourceManager.GetString("ContractSignerQrHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string ContractRoleDone {
+            get {
+                return ResourceManager.GetString("ContractRoleDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Needs 1 person.
+        /// </summary>
+        public static string ContractRoleNeedsOne {
+            get {
+                return ResourceManager.GetString("ContractRoleNeedsOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Needs {0} people.
+        /// </summary>
+        public static string ContractRoleNeedsMany {
+            get {
+                return ResourceManager.GetString("ContractRoleNeedsMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added automatically.
+        /// </summary>
+        public static string ContractAddedAutomatically {
+            get {
+                return ResourceManager.GetString("ContractAddedAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string ContractRemoveSigner {
+            get {
+                return ResourceManager.GetString("ContractRemoveSigner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} · {1}.
+        /// </summary>
+        public static string ContractGroupHeader {
+            get {
+                return ResourceManager.GetString("ContractGroupHeader", resourceCulture);
             }
         }
         
@@ -14346,6 +14967,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ParameterOnlyPartiesSee {
             get {
                 return ResourceManager.GetString("ParameterOnlyPartiesSee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More about this value.
+        /// </summary>
+        public static string ParameterMoreAbout {
+            get {
+                return ResourceManager.GetString("ParameterMoreAbout", resourceCulture);
             }
         }
         

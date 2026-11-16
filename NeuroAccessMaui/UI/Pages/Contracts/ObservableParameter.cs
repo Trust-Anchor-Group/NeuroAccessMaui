@@ -163,22 +163,72 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public string Guide => string.IsNullOrEmpty(this.Parameter.Guide) ? this.Name : this.Parameter.Guide;
 
 		/// <summary>
-		/// Label that determines the displayed text for the parameter.
+		/// The longest description used as a label. A longer one is replaced by the parameter's guide, when that reads like
+		/// a label, and is shown behind an info mark instead.
+		/// </summary>
+		private const int maxLabelLength = 40;
+
+		/// <summary>
+		/// The text shown for the parameter: its description without the full stop, or its guide when the description is
+		/// long, or its name in words.
 		/// </summary>
 		public string Label
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(this.Description))
-				{
-					if (string.IsNullOrEmpty(this.Guide))
-					{
-						return this.Name;
-					}
-					return this.Guide;
-				}
-				return this.Description;
+				string Text = TrimSentence(this.Description);
+				string? ShortLabel = GetGuideLabel(this.Parameter.Guide);
+
+				if (Text.Length > maxLabelLength && ShortLabel is not null)
+					return ShortLabel;
+
+				if (Text.Length > 0)
+					return Text;
+
+				return ShortLabel ?? Services.Wallet.Tokens.TokenText.ToWords(this.Name);
 			}
+		}
+
+		/// <summary>
+		/// If the description is longer than the label, so it is shown behind an info mark.
+		/// </summary>
+		public bool HasLongDescription => !string.IsNullOrEmpty(this.Description) && this.Label != TrimSentence(this.Description);
+
+		/// <summary>
+		/// Shows the parameter's whole description.
+		/// </summary>
+		[RelayCommand]
+		private Task ShowDescriptionAsync()
+		{
+			return ServiceRef.UiService.DisplayAlert(this.Label, this.Description, ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		}
+
+		/// <summary>
+		/// Removes the full stop and spaces at the end of a sentence, so it can be used as a label.
+		/// </summary>
+		/// <param name="Text">The text.</param>
+		/// <returns>The text without the full stop.</returns>
+		private static string TrimSentence(string? Text)
+		{
+			return (Text ?? string.Empty).Trim().TrimEnd('.', ':').TrimEnd();
+		}
+
+		/// <summary>
+		/// Gets a guide that reads like a label, without a unit in brackets such as "(%)". Guides that show a format, such
+		/// as "P[nY][nM][nD]", aren't labels.
+		/// </summary>
+		/// <param name="Guide">The parameter's guide.</param>
+		/// <returns>The label, or null when the guide isn't one.</returns>
+		private static string? GetGuideLabel(string? Guide)
+		{
+			if (string.IsNullOrWhiteSpace(Guide) || !char.IsLetter(Guide.Trim()[0]) || Guide.Length > maxLabelLength ||
+				Guide.IndexOfAny(['[', ']', '{', '}', '\\', '|', '^', '$']) >= 0)
+			{
+				return null;
+			}
+
+			string Label = System.Text.RegularExpressions.Regex.Replace(Guide, @"\s*\([^)]*\)\s*$", string.Empty).Trim();
+			return Label.Length > 0 ? Label : null;
 		}
 
 		/// <summary>
@@ -192,6 +242,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (this.SetProperty(ref this.description, value))
 				{
 					this.OnPropertyChanged(nameof(this.Label));
+					this.OnPropertyChanged(nameof(this.HasLongDescription));
 					this.OnPropertyChanged(nameof(this.Placeholder));
 				}
 			}
@@ -202,7 +253,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// The example shown in an empty input: the parameter's guide, when the label is its description. When the label is
 		/// the guide itself, the input is left empty instead of repeating it.
 		/// </summary>
-		public string Placeholder => !string.IsNullOrEmpty(this.Description) && !string.IsNullOrEmpty(this.Parameter.Guide)
+		public string Placeholder => !string.IsNullOrEmpty(this.Description) && !string.IsNullOrEmpty(this.Parameter.Guide) &&
+			GetGuideLabel(this.Parameter.Guide) != this.Label
 			? this.Parameter.Guide
 			: string.Empty;
 
@@ -421,6 +473,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// What tapping the row does, or null when the row only shows a value.
 		/// </summary>
 		public virtual System.Windows.Input.ICommand? RowCommand => null;
+
+		/// <summary>
+		/// The unit or currency of a number, such as "SEK" or "%", or an empty string.
+		/// </summary>
+		public virtual string UnitText => string.Empty;
 
 		/// <summary>
 		/// If there is no value to show yet.
@@ -671,6 +728,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		/// <inheritdoc/>
 		protected override string FormatRowValue() => this.DecimalTextWithUnit;
+
+		/// <inheritdoc/>
+		public override string UnitText => this.Unit;
 
 		/// <summary>
 		/// Notifies the numeric editor when the underlying observable value changes.
@@ -1003,6 +1063,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		/// <inheritdoc/>
 		protected override string FormatRowValue() => this.CalcString;
+
+		/// <inheritdoc/>
+		public override string UnitText => this.Value is decimal or double ? this.unit?.Text ?? string.Empty : string.Empty;
 
 		/// <summary>
 		/// Adds the unit, when known, after a calculated number.

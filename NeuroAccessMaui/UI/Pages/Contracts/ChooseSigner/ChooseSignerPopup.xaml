@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Name="ThisPopup"
+				x:Class="NeuroAccessMaui.UI.Pages.Contracts.ChooseSigner.ChooseSignerPopup"
+				x:DataType="viewmodel:ChooseSignerViewModel"
+				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+				xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+				xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+				xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+				xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ChooseSigner">
+
+	<base:BasePopup.Resources>
+		<ResourceDictionary>
+			<!-- One choice: an icon, what it is, and a line on what happens -->
+			<Style x:Key="ChoiceGrid"
+				   TargetType="Grid">
+				<Setter Property="Padding"
+						Value="16,12" />
+				<Setter Property="ColumnSpacing"
+						Value="14" />
+				<Setter Property="MinimumHeightRequest"
+						Value="56" />
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource SurfaceElevation1WL}" />
+			</Style>
+
+			<Style x:Key="ChoiceIconPath"
+				   TargetType="Path">
+				<Setter Property="VerticalOptions"
+						Value="Center" />
+				<Setter Property="HeightRequest"
+						Value="22" />
+				<Setter Property="WidthRequest"
+						Value="22" />
+				<Setter Property="Aspect"
+						Value="Uniform" />
+				<Setter Property="Fill"
+						Value="{DynamicResource ContentAccessWL}" />
+			</Style>
+
+			<Style x:Key="ChoiceTitleLabel"
+				   TargetType="Label">
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskSemiBold" />
+				<Setter Property="FontSize"
+						Value="{StaticResource FontSizeMd}" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentPrimaryWL}" />
+			</Style>
+
+			<Style x:Key="ChoiceHintLabel"
+				   TargetType="Label">
+				<Setter Property="FontSize"
+						Value="13" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+		</ResourceDictionary>
+	</base:BasePopup.Resources>
+
+	<ScrollView VerticalOptions="Center">
+		<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+			<Label FontFamily="SpaceGroteskBold"
+				   FontSize="{StaticResource FontSize3xl}"
+				   LineBreakMode="WordWrap"
+				   SemanticProperties.HeadingLevel="Level1"
+				   Text="{Binding Title}"
+				   TextColor="{DynamicResource ContentPrimaryWL}" />
+			<Label Style="{StaticResource ChoiceHintLabel}"
+				   FontSize="{StaticResource FontSizeSm}"
+				   Text="{l:Localize ContractChooseSignerHint}" />
+
+			<!-- The 1 px gaps between the choices show the divider colour as lines -->
+			<Border Style="{DynamicResource ListCardBorder}">
+				<VerticalStackLayout Spacing="1"
+									 BackgroundColor="{DynamicResource SurfaceDividerWL}">
+					<controls:TemplatedButton IsVisible="{Binding CanChooseMe}"
+											  Command="{Binding ChooseCommand}"
+											  CommandParameter="{x:Static viewmodel:SignerChoice.Me}">
+						<Grid ColumnDefinitions="auto, *"
+							  Style="{StaticResource ChoiceGrid}">
+							<Path Data="{x:Static ui:Geometries.PersonPath}"
+								  Style="{StaticResource ChoiceIconPath}" />
+							<VerticalStackLayout Grid.Column="1"
+												 VerticalOptions="Center"
+												 Spacing="2">
+								<Label Style="{StaticResource ChoiceTitleLabel}"
+									   Text="{l:Localize ContractSignerMe}" />
+								<Label Style="{StaticResource ChoiceHintLabel}"
+									   Text="{l:Localize ContractSignerMeHint}" />
+							</VerticalStackLayout>
+						</Grid>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton Command="{Binding ChooseCommand}"
+											  CommandParameter="{x:Static viewmodel:SignerChoice.Contact}">
+						<Grid ColumnDefinitions="auto, *"
+							  Style="{StaticResource ChoiceGrid}">
+							<Path Data="{x:Static ui:Geometries.UserIconPath}"
+								  Style="{StaticResource ChoiceIconPath}" />
+							<VerticalStackLayout Grid.Column="1"
+												 VerticalOptions="Center"
+												 Spacing="2">
+								<Label Style="{StaticResource ChoiceTitleLabel}"
+									   Text="{l:Localize ContractSignerContact}" />
+								<Label Style="{StaticResource ChoiceHintLabel}"
+									   Text="{l:Localize ContractSignerContactHint}" />
+							</VerticalStackLayout>
+						</Grid>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton Command="{Binding ChooseCommand}"
+											  CommandParameter="{x:Static viewmodel:SignerChoice.QrCode}">
+						<Grid ColumnDefinitions="auto, *"
+							  Style="{StaticResource ChoiceGrid}">
+							<Path Data="{x:Static ui:Geometries.ScanQrIconPath}"
+								  Style="{StaticResource ChoiceIconPath}" />
+							<VerticalStackLayout Grid.Column="1"
+												 VerticalOptions="Center"
+												 Spacing="2">
+								<Label Style="{StaticResource ChoiceTitleLabel}"
+									   Text="{l:Localize ContractSignerQr}" />
+								<Label Style="{StaticResource ChoiceHintLabel}"
+									   Text="{l:Localize ContractSignerQrHint}" />
+							</VerticalStackLayout>
+						</Grid>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton IsVisible="{Binding CanChooseAnyone}"
+											  Command="{Binding ChooseCommand}"
+											  CommandParameter="{x:Static viewmodel:SignerChoice.AnyoneWithLink}">
+						<Grid ColumnDefinitions="auto, *"
+							  Style="{StaticResource ChoiceGrid}">
+							<Path Data="{x:Static ui:Geometries.ShareIconPath}"
+								  Style="{StaticResource ChoiceIconPath}" />
+							<VerticalStackLayout Grid.Column="1"
+												 VerticalOptions="Center"
+												 Spacing="2">
+								<Label Style="{StaticResource ChoiceTitleLabel}"
+									   Text="{l:Localize ContractAnyoneWithLink}" />
+								<Label Style="{StaticResource ChoiceHintLabel}"
+									   Text="{l:Localize ContractAnyoneWithLinkHint}" />
+							</VerticalStackLayout>
+						</Grid>
+					</controls:TemplatedButton>
+				</VerticalStackLayout>
+			</Border>
+
+			<controls:TextButton Command="{Binding CloseCommand}"
+								 Style="{DynamicResource TransparentTextButton}"
+								 LabelData="{l:Localize Cancel}" />
+		</VerticalStackLayout>
+	</ScrollView>
+</base:BasePopup>

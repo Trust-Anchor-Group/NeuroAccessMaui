@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseNewContractView x:Name="ThisPage"
+						   x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.CheckView"
+						   x:DataType="base:NewContractViewModel"
+						   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						   xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
+						   xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel">
+
+	<ContentView.Resources>
+		<ResourceDictionary>
+			<Style x:Key="RowGrid"
+				   TargetType="Grid">
+				<Setter Property="Padding"
+						Value="16,12" />
+				<Setter Property="ColumnSpacing"
+						Value="12" />
+				<Setter Property="MinimumHeightRequest"
+						Value="48" />
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource SurfaceElevation1WL}" />
+			</Style>
+
+			<!-- The 1 px gaps between the rows of a card show the divider colour as lines -->
+			<Style x:Key="RowsLayout"
+				   TargetType="VerticalStackLayout">
+				<Setter Property="Spacing"
+						Value="1" />
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource SurfaceDividerWL}" />
+			</Style>
+
+			<Style x:Key="RowKeyLabel"
+				   TargetType="Label">
+				<Setter Property="VerticalOptions"
+						Value="Center" />
+				<Setter Property="FontSize"
+						Value="{StaticResource FontSizeSm}" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+
+			<Style x:Key="RowValueLabel"
+				   TargetType="Label">
+				<Setter Property="VerticalOptions"
+						Value="Center" />
+				<Setter Property="HorizontalTextAlignment"
+						Value="End" />
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskSemiBold" />
+				<Setter Property="FontSize"
+						Value="{StaticResource FontSizeSm}" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentPrimaryWL}" />
+			</Style>
+
+			<Style x:Key="LinkLabel"
+				   TargetType="Label">
+				<Setter Property="VerticalOptions"
+						Value="Center" />
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskSemiBold" />
+				<Setter Property="FontSize"
+						Value="{StaticResource FontSizeMd}" />
+				<Setter Property="LineBreakMode"
+						Value="WordWrap" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentAccessWL}" />
+			</Style>
+
+			<!-- A section heading with a "Change" link on the right -->
+			<Style x:Key="SectionGrid"
+				   TargetType="Grid">
+				<Setter Property="Margin"
+						Value="8,12,0,0" />
+				<Setter Property="ColumnSpacing"
+						Value="8" />
+			</Style>
+
+			<Style x:Key="SectionLabel"
+				   TargetType="Label">
+				<Setter Property="VerticalOptions"
+						Value="Center" />
+				<Setter Property="FontFamily"
+						Value="SpaceGroteskBold" />
+				<Setter Property="FontSize"
+						Value="{StaticResource FontSizeMd}" />
+				<Setter Property="TextColor"
+						Value="{DynamicResource ContentSecondaryWL}" />
+				<Setter Property="SemanticProperties.HeadingLevel"
+						Value="Level2" />
+			</Style>
+		</ResourceDictionary>
+	</ContentView.Resources>
+
+	<ScrollView>
+		<VerticalStackLayout Padding="16,0,16,24"
+							 Spacing="8">
+
+			<!-- In short: the summary and the key values, as filled in -->
+			<Grid ColumnDefinitions="*, auto"
+				  Style="{StaticResource SectionGrid}">
+				<Label Style="{StaticResource SectionLabel}"
+					   Text="{l:Localize ContractInShort}" />
+				<controls:TemplatedButton Grid.Column="1"
+										  IsVisible="{Binding HasFillStep}"
+										  Command="{Binding GoToStepCommand}"
+										  CommandParameter="Parameters">
+					<Label Margin="8,0"
+						   Style="{StaticResource LinkLabel}"
+						   Text="{l:Localize Change}" />
+				</controls:TemplatedButton>
+			</Grid>
+			<Border Style="{DynamicResource ListCardBorder}">
+				<VerticalStackLayout Style="{StaticResource RowsLayout}">
+					<Label Padding="16,14"
+						   IsVisible="{Binding HasCheckSummary}"
+						   BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+						   FontSize="{StaticResource FontSizeMd}"
+						   LineBreakMode="WordWrap"
+						   Text="{Binding CheckSummaryText}"
+						   TextColor="{DynamicResource ContentPrimaryWL}" />
+					<VerticalStackLayout IsVisible="{Binding HasCheckDetails}"
+										 BindableLayout.ItemTemplateSelector="{StaticResource ParameterRowSelector}"
+										 BindableLayout.ItemsSource="{Binding CheckDetails}"
+										 Style="{StaticResource RowsLayout}" />
+					<controls:TemplatedButton Command="{Binding GoToPreviewCommand}">
+						<Grid ColumnDefinitions="*, auto"
+							  Style="{StaticResource RowGrid}">
+							<Label Style="{StaticResource LinkLabel}"
+								   Text="{l:Localize ContractReadWhole}" />
+							<Label Grid.Column="1"
+								   Style="{StaticResource LinkLabel}"
+								   FontSize="{StaticResource FontSizeXl}"
+								   Text="›" />
+						</Grid>
+					</controls:TemplatedButton>
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- People: who signs each role -->
+			<Grid ColumnDefinitions="*, auto"
+				  Style="{StaticResource SectionGrid}">
+				<Label Style="{StaticResource SectionLabel}"
+					   Text="{l:Localize ContractPeople}" />
+				<controls:TemplatedButton Grid.Column="1"
+										  IsVisible="{Binding HasRolesStep}"
+										  Command="{Binding GoToStepCommand}"
+										  CommandParameter="Roles">
+					<Label Margin="8,0"
+						   Style="{StaticResource LinkLabel}"
+						   Text="{l:Localize Change}" />
+				</controls:TemplatedButton>
+			</Grid>
+			<Border Style="{DynamicResource ListCardBorder}">
+				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contract.Roles}"
+									 Style="{StaticResource RowsLayout}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="objectModel:ObservableRole">
+							<VerticalStackLayout Style="{StaticResource RowsLayout}">
+								<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}"
+													 Style="{StaticResource RowsLayout}">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="objectModel:ObservablePart">
+											<Grid ColumnDefinitions="4*, 6*"
+												  Style="{StaticResource RowGrid}">
+												<Label Style="{StaticResource RowKeyLabel}"
+													   Text="{Binding Role}" />
+												<Label Grid.Column="1"
+													   Style="{StaticResource RowValueLabel}"
+													   Text="{Binding DisplayName}" />
+											</Grid>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</VerticalStackLayout>
+								<!-- A role nobody is named for: anyone with the link signs it, or nobody yet -->
+								<Grid ColumnDefinitions="4*, 6*"
+									  IsVisible="{Binding HasNoParts}"
+									  Style="{StaticResource RowGrid}">
+									<Label Style="{StaticResource RowKeyLabel}"
+										   Text="{Binding Name}" />
+									<Label Grid.Column="1"
+										   IsVisible="{Binding IsOpenParts, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel}"
+										   Style="{StaticResource RowValueLabel}"
+										   Text="{l:Localize ContractAnyoneWithLink}" />
+									<Label Grid.Column="1"
+										   IsVisible="{Binding IsNamedParts, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel}"
+										   Style="{StaticResource RowValueLabel}"
+										   Text="{l:Localize ContractNoOneYet}"
+										   TextColor="{DynamicResource ContentSecondaryWL}" />
+								</Grid>
+							</VerticalStackLayout>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Options: what the template fills in -->
+			<Grid ColumnDefinitions="*, auto"
+				  Style="{StaticResource SectionGrid}">
+				<Label Style="{StaticResource SectionLabel}"
+					   Text="{l:Localize Options}" />
+				<controls:TemplatedButton Grid.Column="1"
+										  Command="{Binding ShowOptionsCommand}">
+					<Label Margin="8,0"
+						   Style="{StaticResource LinkLabel}"
+						   Text="{l:Localize Change}" />
+				</controls:TemplatedButton>
+			</Grid>
+			<Border Style="{DynamicResource ListCardBorder}">
+				<VerticalStackLayout Style="{StaticResource RowsLayout}">
+					<Grid ColumnDefinitions="4*, 6*"
+						  Style="{StaticResource RowGrid}">
+						<Label Style="{StaticResource RowKeyLabel}"
+							   Text="{l:Localize ContractWhoCanSeeIt}" />
+						<Label Grid.Column="1"
+							   Style="{StaticResource RowValueLabel}"
+							   Text="{Binding VisibilityText}" />
+					</Grid>
+					<Grid ColumnDefinitions="4*, 6*"
+						  Style="{StaticResource RowGrid}">
+						<Label Style="{StaticResource RowKeyLabel}"
+							   Text="{l:Localize ContractSettingsSignBefore}" />
+						<Label Grid.Column="1"
+							   Style="{StaticResource RowValueLabel}"
+							   Text="{Binding SignByText}" />
+					</Grid>
+					<Grid ColumnDefinitions="4*, 6*"
+						  Style="{StaticResource RowGrid}">
+						<Label Style="{StaticResource RowKeyLabel}"
+							   Text="{l:Localize ContractLasts}" />
+						<Label Grid.Column="1"
+							   Style="{StaticResource RowValueLabel}"
+							   Text="{Binding LastsText}" />
+					</Grid>
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- What the server would refuse -->
+			<Border Padding="12"
+					IsVisible="{Binding HasSettingsError}"
+					Style="{DynamicResource RoundedBorder}"
+					BackgroundColor="{DynamicResource TnPDangerbgWL}"
+					Stroke="Transparent">
+				<Label LineBreakMode="WordWrap"
+					   Text="{Binding SettingsErrorText}"
+					   TextColor="{DynamicResource TnPDangerContentWL}" />
+			</Border>
+		</VerticalStackLayout>
+	</ScrollView>
+</views:BaseNewContractView>

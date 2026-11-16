@@ -67,6 +67,14 @@
 			<CollectionView.ItemsLayout>
 				<LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
 			</CollectionView.ItemsLayout>
+			<!-- What this step is for -->
+			<CollectionView.Header>
+				<Label Margin="20,0,20,16"
+					   FontSize="{StaticResource FontSizeMd}"
+					   LineBreakMode="WordWrap"
+					   Text="{l:Localize ContractFillHint}"
+					   TextColor="{DynamicResource ContentSecondaryWL}" />
+			</CollectionView.Header>
 			<CollectionView.EmptyView>
 				<Label Text="{l:Localize SomethingWentWrong}" />
 			</CollectionView.EmptyView>

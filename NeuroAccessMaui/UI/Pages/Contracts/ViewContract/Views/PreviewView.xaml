@@ -18,24 +18,14 @@
 			</ScrollView>
 		</Border>
 
-		<!-- While signing, the full text is the second step -->
+		<!-- While signing, the full text is read from the sign sheet, and leads back to it -->
 		<Border Grid.Row="1"
-				  Style="{DynamicResource BottomBarBorder}"
-				  IsVisible="{Binding IsSigningFlow}">
-			<Grid HorizontalOptions="Fill"
-					VerticalOptions="Center"
-					ColumnSpacing="{DynamicResource SmallSpacing}"
-					Padding="{DynamicResource SmallMargins}"
-					ColumnDefinitions="*,*">
-				<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-											Grid.Column="0"
-											LabelData="{l:Localize Back}"
-											Command="{Binding BackCommand}" />
-				<controls:TextButton Style="{DynamicResource FilledTextButton}"
-											Grid.Column="1"
-											LabelData="{l:Localize ContractWizardNext}"
-											Command="{Binding GoToSigningRoleCommand}" />
-			</Grid>
+				IsVisible="{Binding IsSigningFlow}"
+				Style="{DynamicResource BottomBarBorder}">
+			<controls:TextButton Margin="{DynamicResource SmallMargins}"
+								 Command="{Binding GoToSigningRoleCommand}"
+								 Style="{DynamicResource FilledTextButton}"
+								 LabelData="{Binding SignTitle}" />
 		</Border>
 	</Grid>
 </views:BaseViewContractView>

@@ -42,7 +42,22 @@ namespace NeuroAccessMaui.UI.Controls
 						((ParameterHeader)Bindable).textLabel.TextColor = Color;
 				});
 
+		/// <summary>
+		/// What tapping the info mark does: shows the whole description. The mark is shown while this is set.
+		/// </summary>
+		public static readonly BindableProperty InfoCommandProperty =
+			BindableProperty.Create(nameof(InfoCommand), typeof(System.Windows.Input.ICommand), typeof(ParameterHeader), null,
+				propertyChanged: (Bindable, OldValue, NewValue) => ((ParameterHeader)Bindable).UpdateInfo());
+
+		/// <summary>
+		/// If the info mark is shown, because the label is shorter than the description.
+		/// </summary>
+		public static readonly BindableProperty ShowsInfoProperty =
+			BindableProperty.Create(nameof(ShowsInfo), typeof(bool), typeof(ParameterHeader), false,
+				propertyChanged: (Bindable, OldValue, NewValue) => ((ParameterHeader)Bindable).UpdateInfo());
+
 		private readonly Label textLabel;
+		private readonly Grid info;
 		private readonly Border tag;
 		private readonly Path tagIcon;
 		private readonly Label tagLabel;
@@ -88,15 +103,71 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 			this.tag.SetDynamicResource(BackgroundColorProperty, "SurfaceElevation2WL");
 
+			// The info mark is small, but the area that can be tapped is 48 by 48.
+			Path InfoIcon = new()
+			{
+				Data = Geometries.InfoCirclePath,
+				Aspect = Stretch.Uniform,
+				WidthRequest = 16,
+				HeightRequest = 16,
+				HorizontalOptions = LayoutOptions.Center,
+				VerticalOptions = LayoutOptions.Center
+			};
+			InfoIcon.SetDynamicResource(Shape.FillProperty, "ContentSecondaryWL");
+
+			this.info = new Grid
+			{
+				WidthRequest = 48,
+				HeightRequest = 48,
+				Margin = new Thickness(-14, -14, -14, -14),
+				IsVisible = false,
+				Children = { InfoIcon }
+			};
+			TapGestureRecognizer InfoTap = new();
+			InfoTap.Tapped += (Sender, Args) =>
+			{
+				if (this.InfoCommand?.CanExecute(null) == true)
+					this.InfoCommand.Execute(null);
+			};
+			this.info.GestureRecognizers.Add(InfoTap);
+			SemanticProperties.SetDescription(this.info, ServiceRef.Localizer[nameof(AppResources.ParameterMoreAbout)]);
+
 			Grid Layout = new()
 			{
-				ColumnDefinitions = [new ColumnDefinition(GridLength.Star), new ColumnDefinition(GridLength.Auto)],
+				ColumnDefinitions = [new ColumnDefinition(GridLength.Star), new ColumnDefinition(GridLength.Auto), new ColumnDefinition(GridLength.Auto)],
 				ColumnSpacing = 8
 			};
 			Layout.Add(this.textLabel, 0, 0);
-			Layout.Add(this.tag, 1, 0);
+			Layout.Add(this.info, 1, 0);
+			Layout.Add(this.tag, 2, 0);
 
 			this.Content = Layout;
+		}
+
+		/// <summary>
+		/// What tapping the info mark does: shows the whole description. The mark is shown while this is set.
+		/// </summary>
+		public System.Windows.Input.ICommand? InfoCommand
+		{
+			get => (System.Windows.Input.ICommand?)this.GetValue(InfoCommandProperty);
+			set => this.SetValue(InfoCommandProperty, value);
+		}
+
+		/// <summary>
+		/// If the info mark is shown, because the label is shorter than the description.
+		/// </summary>
+		public bool ShowsInfo
+		{
+			get => (bool)this.GetValue(ShowsInfoProperty);
+			set => this.SetValue(ShowsInfoProperty, value);
+		}
+
+		/// <summary>
+		/// Shows the info mark when there is more to read and a way to show it.
+		/// </summary>
+		private void UpdateInfo()
+		{
+			this.info.IsVisible = this.ShowsInfo && this.InfoCommand is not null;
 		}
 
 		/// <summary>
