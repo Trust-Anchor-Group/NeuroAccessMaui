@@ -1,12 +1,13 @@
+using System.Globalization;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Popups.Images
 {
 	/// <summary>
-	/// Shows an image as large as the screen allows. It opens fitted to the screen, and can be zoomed with a pinch or the
-	/// plus and minus buttons, moved by dragging, and fitted again with a double tap or the Fit button.
+	/// Shows an image, such as a chart drawn by the server, on the whole screen. It opens fitted to the screen, and can be
+	/// zoomed with a pinch or the zoom bar, moved by dragging, fitted again with a double tap or Fit, and shared.
 	/// </summary>
 	public class ImageViewerPopup : BasicPopup
 	{
@@ -17,6 +18,9 @@ namespace NeuroAccessMaui.UI.Popups.Images
 
 		private readonly Grid stage;
 		private readonly Microsoft.Maui.Controls.Image image;
+		private readonly Label percentLabel;
+		private readonly string? shareFile;
+		private readonly string title;
 		private double startTranslationX;
 		private double startTranslationY;
 
@@ -28,7 +32,12 @@ namespace NeuroAccessMaui.UI.Popups.Images
 		public ImageViewerPopup(ImageSource Source, string? Title)
 		{
 			this.CardWidthFraction = 1;
-			this.CardMaxHeightFraction = 0.92;
+			this.CardMaxHeightFraction = 1;
+			this.PopupMargin = new Thickness(0);
+			this.CardPadding = new Thickness(12, 12, 12, 20);
+
+			this.title = string.IsNullOrEmpty(Title) ? ServiceRef.Localizer[nameof(AppResources.HistoryValueChart)] : Title;
+			this.shareFile = Source is FileImageSource File && System.IO.File.Exists(File.File) ? File.File : null;
 
 			this.image = new Microsoft.Maui.Controls.Image
 			{
@@ -42,7 +51,7 @@ namespace NeuroAccessMaui.UI.Popups.Images
 			Border Paper = new()
 			{
 				StrokeThickness = 0,
-				StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 12 },
+				StrokeShape = new RoundRectangle { CornerRadius = 12 },
 				Content = this.image
 			};
 			Paper.SetAppThemeColor(VisualElement.BackgroundColorProperty, Colors.White, Color.FromRgb(0xE4, 0xE4, 0xE4));
@@ -66,64 +75,16 @@ namespace NeuroAccessMaui.UI.Popups.Images
 			DoubleTap.Tapped += (Sender, Args) => this.ToggleZoom(Args.GetPosition(this.stage));
 			this.stage.GestureRecognizers.Add(DoubleTap);
 
-			Grid Header = new()
+			this.percentLabel = new Label
 			{
-				ColumnDefinitions =
-				{
-					new ColumnDefinition { Width = GridLength.Star },
-					new ColumnDefinition { Width = GridLength.Auto }
-				}
+				FontFamily = "SpaceGroteskSemiBold",
+				FontSize = 14,
+				MinimumWidthRequest = 48,
+				HorizontalTextAlignment = TextAlignment.Center,
+				VerticalOptions = LayoutOptions.Center
 			};
-			Header.Add(new Label
-			{
-				Text = Title ?? string.Empty,
-				Style = AppStyles.SectionTitleLabel,
-				VerticalOptions = LayoutOptions.Center,
-				LineBreakMode = LineBreakMode.TailTruncation
-			}, 0, 0);
-			Header.Add(new TextButton
-			{
-				LabelData = ServiceRef.Localizer[nameof(AppResources.Close)],
-				Style = AppStyles.SecondaryButton,
-				Command = new Command(async () => await ServiceRef.PopupService.PopAsync())
-			}, 1, 0);
-
-			Grid Controls = new()
-			{
-				ColumnDefinitions =
-				{
-					new ColumnDefinition { Width = GridLength.Auto },
-					new ColumnDefinition { Width = GridLength.Star },
-					new ColumnDefinition { Width = GridLength.Auto },
-					new ColumnDefinition { Width = GridLength.Auto }
-				},
-				ColumnSpacing = AppStyles.SmallSpacing
-			};
-			Controls.Add(new TextButton
-			{
-				LabelData = ServiceRef.Localizer[nameof(AppResources.ZoomFit)],
-				Style = AppStyles.SecondaryButton,
-				Command = new Command(() => this.SetZoom(minScale, 0, 0))
-			}, 0, 0);
-			Controls.Add(new Label
-			{
-				Text = ServiceRef.Localizer[nameof(AppResources.ZoomHint)],
-				Style = AppStyles.InfoLabel,
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalTextAlignment = TextAlignment.Center
-			}, 1, 0);
-			Controls.Add(new TextButton
-			{
-				LabelData = "−",
-				Style = AppStyles.SecondaryButton,
-				Command = new Command(() => this.ZoomAroundCenter(1 / buttonStep))
-			}, 2, 0);
-			Controls.Add(new TextButton
-			{
-				LabelData = "+",
-				Style = AppStyles.SecondaryButton,
-				Command = new Command(() => this.ZoomAroundCenter(buttonStep))
-			}, 3, 0);
+			this.percentLabel.SetDynamicResource(Label.TextColorProperty, "ContentPrimaryWL");
+			this.UpdatePercent();
 
 			Grid Layout = new()
 			{
@@ -131,13 +92,29 @@ namespace NeuroAccessMaui.UI.Popups.Images
 				{
 					new RowDefinition { Height = GridLength.Auto },
 					new RowDefinition { Height = GridLength.Star },
+					new RowDefinition { Height = GridLength.Auto },
 					new RowDefinition { Height = GridLength.Auto }
 				},
-				RowSpacing = AppStyles.SmallSpacing
+				RowSpacing = 12
 			};
-			Layout.Add(Header, 0, 0);
+
+			// The viewer takes the whole screen, apart from a little room for the system bars.
+			DisplayInfo Display = DeviceDisplay.Current.MainDisplayInfo;
+			if (Display.Density > 0)
+				Layout.HeightRequest = Display.Height / Display.Density * 0.9;
+
+			Layout.Add(this.CreateHeader(), 0, 0);
 			Layout.Add(this.stage, 0, 1);
-			Layout.Add(Controls, 0, 2);
+
+			Label Hint = new()
+			{
+				Text = ServiceRef.Localizer[nameof(AppResources.ZoomHint)],
+				FontSize = 13,
+				HorizontalTextAlignment = TextAlignment.Center
+			};
+			Hint.SetDynamicResource(Label.TextColorProperty, "ContentSecondaryWL");
+			Layout.Add(Hint, 0, 2);
+			Layout.Add(this.CreateZoomBar(), 0, 3);
 
 			this.CardContent = Layout;
 		}
@@ -150,6 +127,196 @@ namespace NeuroAccessMaui.UI.Popups.Images
 		public static Task ShowAsync(ImageSource Source, string? Title)
 		{
 			return ServiceRef.PopupService.PushAsync(new ImageViewerPopup(Source, Title));
+		}
+
+		/// <summary>
+		/// Creates the top bar: close, the title with where the image is from, and share.
+		/// </summary>
+		/// <returns>The top bar.</returns>
+		private Grid CreateHeader()
+		{
+			Label TitleLabel = new()
+			{
+				Text = this.title,
+				FontFamily = "SpaceGroteskSemiBold",
+				FontSize = 17,
+				LineBreakMode = LineBreakMode.TailTruncation,
+				MaxLines = 1
+			};
+			TitleLabel.SetDynamicResource(Label.TextColorProperty, "ContentPrimaryWL");
+
+			Label SourceLabel = new()
+			{
+				Text = ServiceRef.Localizer[nameof(AppResources.ZoomFromServer), DateTime.Now.ToString("t", CultureInfo.CurrentCulture)],
+				FontSize = 12
+			};
+			SourceLabel.SetDynamicResource(Label.TextColorProperty, "ContentSecondaryWL");
+
+			Grid Header = new()
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLength.Auto },
+					new ColumnDefinition { Width = GridLength.Star },
+					new ColumnDefinition { Width = GridLength.Auto }
+				},
+				ColumnSpacing = 12
+			};
+			Header.Add(CreateIconButton(Geometries.CancelPath, ServiceRef.Localizer[nameof(AppResources.Close)],
+				() => _ = ServiceRef.PopupService.PopAsync()), 0, 0);
+			Header.Add(new VerticalStackLayout
+			{
+				VerticalOptions = LayoutOptions.Center,
+				Children = { TitleLabel, SourceLabel }
+			}, 1, 0);
+
+			if (this.shareFile is not null)
+			{
+				Header.Add(CreateIconButton(Geometries.ShareIconPath, ServiceRef.Localizer[nameof(AppResources.Share)],
+					() => _ = this.ShareAsync()), 2, 0);
+			}
+
+			return Header;
+		}
+
+		/// <summary>
+		/// Creates the zoom bar at the bottom: zoom out, Fit, how far it is zoomed, and zoom in.
+		/// </summary>
+		/// <returns>The zoom bar.</returns>
+		private Border CreateZoomBar()
+		{
+			Label FitLabel = new()
+			{
+				Text = ServiceRef.Localizer[nameof(AppResources.ZoomFit)],
+				FontFamily = "HaasGroteskMedium",
+				FontSize = 14,
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.Center
+			};
+			FitLabel.SetDynamicResource(Label.TextColorProperty, "ButtonAccessPrimaryContentWL");
+
+			Border Fit = new()
+			{
+				HeightRequest = 40,
+				Padding = new Thickness(16, 0),
+				StrokeThickness = 0,
+				StrokeShape = new RoundRectangle { CornerRadius = 20 },
+				Content = FitLabel
+			};
+			Fit.SetDynamicResource(VisualElement.BackgroundColorProperty, "ButtonAccessPrimarybgWL");
+			AddTap(Fit, () => this.SetZoom(minScale, 0, 0));
+
+			Border Bar = new()
+			{
+				Padding = new Thickness(4),
+				StrokeThickness = 1,
+				StrokeShape = new RoundRectangle { CornerRadius = 24 },
+				HorizontalOptions = LayoutOptions.Center,
+				Content = new HorizontalStackLayout
+				{
+					Spacing = 4,
+					Children =
+					{
+						CreateIconButton(Geometries.ArrowDownPath, ServiceRef.Localizer[nameof(AppResources.ZoomOut)],
+							() => this.ZoomAroundCenter(1 / buttonStep), "−"),
+						Fit,
+						this.percentLabel,
+						CreateIconButton(Geometries.ArrowUpPath, ServiceRef.Localizer[nameof(AppResources.ZoomIn)],
+							() => this.ZoomAroundCenter(buttonStep), "+")
+					}
+				}
+			};
+			Bar.SetDynamicResource(Border.StrokeProperty, "SurfaceDividerWL");
+			Bar.SetDynamicResource(VisualElement.BackgroundColorProperty, "SurfaceElevation1WL");
+
+			return Bar;
+		}
+
+		/// <summary>
+		/// Creates a round 40 point button with an icon, or with a sign such as "+".
+		/// </summary>
+		/// <param name="Icon">The icon, used when there is no sign.</param>
+		/// <param name="Description">What the button does, for screen readers.</param>
+		/// <param name="OnTap">What the button does.</param>
+		/// <param name="Sign">A sign to show instead of the icon, or null.</param>
+		/// <returns>The button.</returns>
+		private static Border CreateIconButton(Geometry Icon, string Description, Action OnTap, string? Sign = null)
+		{
+			View Content;
+
+			if (Sign is null)
+			{
+				Microsoft.Maui.Controls.Shapes.Path IconPath = new()
+				{
+					Data = Icon,
+					Aspect = Stretch.Uniform,
+					WidthRequest = 18,
+					HeightRequest = 18,
+					HorizontalOptions = LayoutOptions.Center,
+					VerticalOptions = LayoutOptions.Center
+				};
+				IconPath.SetDynamicResource(Shape.FillProperty, "ContentPrimaryWL");
+				Content = IconPath;
+			}
+			else
+			{
+				Label SignLabel = new()
+				{
+					Text = Sign,
+					FontFamily = "HaasGroteskMedium",
+					FontSize = 20,
+					HorizontalOptions = LayoutOptions.Center,
+					VerticalOptions = LayoutOptions.Center
+				};
+				SignLabel.SetDynamicResource(Label.TextColorProperty, "ContentPrimaryWL");
+				Content = SignLabel;
+			}
+
+			Border Button = new()
+			{
+				WidthRequest = 40,
+				HeightRequest = 40,
+				Padding = 0,
+				StrokeThickness = 0,
+				StrokeShape = new RoundRectangle { CornerRadius = 20 },
+				VerticalOptions = LayoutOptions.Center,
+				Content = Content
+			};
+			Button.SetDynamicResource(VisualElement.BackgroundColorProperty, "SurfaceElevation2WL");
+			SemanticProperties.SetDescription(Button, Description);
+			AddTap(Button, OnTap);
+
+			return Button;
+		}
+
+		/// <summary>
+		/// Makes a view run an action when tapped.
+		/// </summary>
+		private static void AddTap(View View, Action OnTap)
+		{
+			TapGestureRecognizer Tap = new();
+			Tap.Tapped += (Sender, Args) => OnTap();
+			View.GestureRecognizers.Add(Tap);
+		}
+
+		/// <summary>
+		/// Shares the image with another app.
+		/// </summary>
+		private async Task ShareAsync()
+		{
+			if (this.shareFile is null)
+				return;
+
+			try
+			{
+				byte[] Data = await File.ReadAllBytesAsync(this.shareFile);
+				ServiceRef.PlatformSpecific.ShareImage(Data, this.title, this.title, System.IO.Path.GetFileName(this.shareFile));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
 		}
 
 		private void Pinch_PinchUpdated(object? Sender, PinchGestureUpdatedEventArgs e)
@@ -229,6 +396,15 @@ namespace NeuroAccessMaui.UI.Popups.Images
 			this.image.Scale = Scale;
 			this.image.TranslationX = Math.Clamp(TranslationX, -MaxX, MaxX);
 			this.image.TranslationY = Math.Clamp(TranslationY, -MaxY, MaxY);
+			this.UpdatePercent();
+		}
+
+		/// <summary>
+		/// Shows how far the image is zoomed, such as "250%".
+		/// </summary>
+		private void UpdatePercent()
+		{
+			this.percentLabel.Text = (this.image.Scale * 100).ToString("0", CultureInfo.CurrentCulture) + "%";
 		}
 	}
 }

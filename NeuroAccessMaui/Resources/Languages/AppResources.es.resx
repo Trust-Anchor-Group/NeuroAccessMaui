@@ -4862,6 +4862,15 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="ZoomHint" xml:space="preserve">
     <value>Pellizca para ampliar · toca dos veces para ajustar</value>
   </data>
+  <data name="ZoomFromServer" xml:space="preserve">
+    <value>Del servidor · {0}</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Acercar</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>Alejar</value>
+  </data>
   <data name="ReportImageNotShown" xml:space="preserve">
     <value>No se puede mostrar esta imagen</value>
   </data>

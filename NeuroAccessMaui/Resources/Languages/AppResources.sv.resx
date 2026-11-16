@@ -4862,6 +4862,15 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ZoomHint" xml:space="preserve">
     <value>Nyp för att zooma · dubbeltryck för att anpassa</value>
   </data>
+  <data name="ZoomFromServer" xml:space="preserve">
+    <value>Från servern · {0}</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Zooma in</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>Zooma ut</value>
+  </data>
   <data name="ReportImageNotShown" xml:space="preserve">
     <value>Kan inte visa bilden</value>
   </data>

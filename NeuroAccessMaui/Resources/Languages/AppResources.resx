@@ -4781,6 +4781,15 @@ Document read. You can move your iPhone.</value>
   <data name="ZoomHint" xml:space="preserve">
     <value>Pinch to zoom · double-tap to fit</value>
   </data>
+  <data name="ZoomFromServer" xml:space="preserve">
+    <value>From the server · {0}</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Zoom in</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>Zoom out</value>
+  </data>
   <data name="ReportImageNotShown" xml:space="preserve">
     <value>Can't show this image</value>
   </data>
