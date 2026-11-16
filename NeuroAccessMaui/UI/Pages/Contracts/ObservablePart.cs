@@ -41,11 +41,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <returns>A task representing part initialization.</returns>
 		public async Task InitializeAsync(IdentityReference? PreparedIdentity = null)
 		{
+			// Set Friendly name before anything can go wrong
+			await this.ShowFriendlyNameAsync();
+			await this.LoadIdentityAsync(PreparedIdentity);
+		}
+
+		/// <summary>
+		/// Shows the name the phone knows for the part, without asking the server. The identity can be looked up afterwards
+		/// with <see cref="LoadIdentityAsync"/>.
+		/// </summary>
+		/// <returns>A task that completes when the name is shown.</returns>
+		public async Task ShowFriendlyNameAsync()
+		{
+			string FriendlyName = await this.GetFriendlyNameAsync();
+			await MainThread.InvokeOnMainThreadAsync(() => this.FriendlyName = FriendlyName);
+		}
+
+		/// <summary>
+		/// Looks up the part's identity, and shows its name and whether it can be seen. No identity petition is sent.
+		/// </summary>
+		/// <param name="PreparedIdentity">The identity already looked up by the scanner, or <c>null</c> to look it up here.</param>
+		/// <returns>A task that completes when the identity has been looked up.</returns>
+		public async Task LoadIdentityAsync(IdentityReference? PreparedIdentity = null)
+		{
 			try
 			{
-				// Set Friendly name before anything can go wrong
-				this.FriendlyName = await this.GetFriendlyNameAsync();
-
 				LegalIdentity? Identity = this.identity;
 
 				if (Identity is null)

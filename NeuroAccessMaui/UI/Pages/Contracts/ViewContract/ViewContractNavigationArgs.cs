@@ -52,6 +52,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public Contract? Contract { get; } = Contract;
 
 		/// <summary>
+		/// <c>true</c> if <see cref="Contract"/> was just read from the server, so the page doesn't read it again when it
+		/// opens.
+		/// </summary>
+		public bool IsCurrent { get; init; }
+
+		/// <summary>
 		/// <c>true</c> if the contract is readonly, <c>false</c> otherwise.
 		/// </summary>
 		public bool IsReadOnly { get; } = IsReadOnly;

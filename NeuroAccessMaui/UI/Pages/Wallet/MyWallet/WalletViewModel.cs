@@ -270,7 +270,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			try
 			{
 				IBuyEDalerServiceProvider[] ServiceProviders = await ServiceRef.XmppService.GetServiceProvidersForBuyingEDalerAsync();
-				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				Balance Balance = await GetBalanceAsync();
 
 				// 2. If no providers, navigate to RequestPaymentPage.
 				if (ServiceProviders.Length == 0)
@@ -379,7 +379,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			try
 			{
 				// Prepare a base eDaler URI with current currency. Recipient & amount will be set on SendPaymentPage.
-				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				Balance Balance = await GetBalanceAsync();
 				StringBuilder Sb = new();
 				Sb.Append("edaler:");
 				Sb.Append("cu=");
@@ -510,11 +510,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		#region Private Methods
 
 		/// <summary>
-		/// Loads the current balance from the backend and updates observable properties.
+		/// Shows the current balance. A balance already received over the current connection is shown without asking the
+		/// server, since the server sends every change. A refresh the user asks for always asks the server.
 		/// </summary>
 		/// <param name="Ctx">Task context</param>
 		private async Task LoadBalanceAsync(TaskContext<bool> Ctx)
 		{
+			Balance? KnownBalance = Ctx.IsRefreshing ? null : ServiceRef.XmppService.CurrentEDalerBalance;
+
+			if (KnownBalance is not null)
+			{
+				MainThread.BeginInvokeOnMainThread(() => this.FetchedBalance = KnownBalance);
+				return;
+			}
+
 			ServiceRef.LogService.LogDebug("Refreshing Edaler...");
 
 			if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
@@ -531,6 +540,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			});
 
 			ServiceRef.LogService.LogDebug("Refreshing Edaler Completed");
+		}
+
+		/// <summary>
+		/// Gets the balance, from the current connection when it is known there, or else from the server.
+		/// </summary>
+		/// <returns>The balance.</returns>
+		private static async Task<Balance> GetBalanceAsync()
+		{
+			return ServiceRef.XmppService.CurrentEDalerBalance ?? await ServiceRef.XmppService.GetEDalerBalance();
 		}
 
 		/// <summary>

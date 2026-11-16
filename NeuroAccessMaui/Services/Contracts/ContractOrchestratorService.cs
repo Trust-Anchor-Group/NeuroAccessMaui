@@ -46,6 +46,9 @@ namespace NeuroAccessMaui.Services.Contracts
 		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 		private readonly ConcurrentDictionary<string, string> identityPetitions = new(StringComparer.Ordinal);
 		private readonly ConcurrentDictionary<string, string> contractPetitions = new(StringComparer.Ordinal);
+		private readonly Dictionary<string, CachedIdentityLookup> identityLookups = new(StringComparer.OrdinalIgnoreCase);
+		private readonly object identityLookupsLock = new();
+		private static readonly TimeSpan identityCacheDuration = TimeSpan.FromMinutes(10);
 		private string? lastLegalId;
 
 		public ContractOrchestratorService()
@@ -1186,12 +1189,36 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="LegalId">The id of the legal identity to show.</param>
 		/// <param name="Purpose">The purpose to state if the identity can't be downloaded and needs to be petitioned instead.</param>
 		/// <returns>Legal Identity, if possible to get, null otherwise.</returns>
-		public async Task<LegalIdentity?> TryGetLegalIdentity(string LegalId, string Purpose)
+		/// <remarks>
+		/// Identities that were found are kept for <see cref="identityCacheDuration"/>, and parts of the app asking for the
+		/// same identity at the same time share one request. Protected identities and failed lookups aren't kept, so they
+		/// are asked for again the next time.
+		/// </remarks>
+		public Task<LegalIdentity?> TryGetLegalIdentity(string LegalId, string Purpose)
+		{
+			lock (this.identityLookupsLock)
+			{
+				if (this.identityLookups.TryGetValue(LegalId, out CachedIdentityLookup? Cached) && Cached.Expires > DateTime.UtcNow)
+					return Cached.Lookup;
+
+				CachedIdentityLookup Entry = new(this.LookUpLegalIdentityAsync(LegalId), DateTime.UtcNow.Add(identityCacheDuration));
+				this.identityLookups[LegalId] = Entry;
+				_ = this.ForgetIfNotFoundAsync(LegalId, Entry);
+
+				return Entry.Lookup;
+			}
+		}
+
+		/// <summary>
+		/// Gets a legal identity from the server.
+		/// </summary>
+		/// <param name="LegalId">The id of the legal identity to get.</param>
+		/// <returns>Legal Identity, if possible to get, null otherwise.</returns>
+		private async Task<LegalIdentity?> LookUpLegalIdentityAsync(string LegalId)
 		{
 			try
 			{
-				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
-				return Identity;
+				return await ServiceRef.XmppService.GetLegalIdentity(LegalId);
 			}
 			catch (ForbiddenException)
 			{
@@ -1202,6 +1229,24 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				return null;
+			}
+		}
+
+		/// <summary>
+		/// Removes an identity lookup from the cache when it found nothing, so the identity is asked for again next time.
+		/// </summary>
+		/// <param name="LegalId">The id of the legal identity.</param>
+		/// <param name="Entry">The cached lookup.</param>
+		private async Task ForgetIfNotFoundAsync(string LegalId, CachedIdentityLookup Entry)
+		{
+			LegalIdentity? Identity = await Entry.Lookup;
+			if (Identity is not null)
+				return;
+
+			lock (this.identityLookupsLock)
+			{
+				if (this.identityLookups.TryGetValue(LegalId, out CachedIdentityLookup? Current) && ReferenceEquals(Current, Entry))
+					this.identityLookups.Remove(LegalId);
 			}
 		}
 
@@ -1276,7 +1321,8 @@ namespace NeuroAccessMaui.Services.Contracts
 				{
 					case ContractRefreshStatus.Updated:
 					case ContractRefreshStatus.Unchanged:
-						await this.OpenContractAsync(Result.Contract!, Result.Reference ?? Ref, Options);
+						// The contract was just read, so the page doesn't read it again.
+						await this.OpenContractAsync(Result.Contract!, Result.Reference ?? Ref, Options, true);
 						return true;
 
 					case ContractRefreshStatus.Deleted:
@@ -1364,12 +1410,16 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <summary>
 		/// Opens a contract where it belongs: approved templates in the new-contract wizard, and everything else on the contract page.
 		/// </summary>
-		private async Task OpenContractAsync(Contract Contract, ContractReference? Ref, ContractOpenOptions? Options)
+		/// <param name="Contract">The contract.</param>
+		/// <param name="Ref">The stored contract, if any.</param>
+		/// <param name="Options">How the contract is opened.</param>
+		/// <param name="IsCurrent">If the contract was just read from the server.</param>
+		private async Task OpenContractAsync(Contract Contract, ContractReference? Ref, ContractOpenOptions? Options, bool IsCurrent = false)
 		{
 			if (Contract.PartsMode == ContractParts.TemplateOnly && Contract.State == ContractState.Approved)
 				await this.OpenTemplateAsync(Contract, Options?.ParameterValues);
 			else
-				await this.OpenContractPageAsync(Contract, Ref, Options);
+				await this.OpenContractPageAsync(Contract, Ref, Options, IsCurrent);
 		}
 
 		/// <summary>
@@ -1399,14 +1449,21 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// Opens the contract page. An open invitation that the caller didn't pass is taken from the stored contract, so
 		/// the page shows its banner and preselects the role.
 		/// </summary>
-		private async Task OpenContractPageAsync(Contract Contract, ContractReference? Ref, ContractOpenOptions? Options)
+		/// <param name="Contract">The contract.</param>
+		/// <param name="Ref">The stored contract, if any.</param>
+		/// <param name="Options">How the contract is opened.</param>
+		/// <param name="IsCurrent">If the contract was just read from the server, so the page doesn't read it again.</param>
+		private async Task OpenContractPageAsync(Contract Contract, ContractReference? Ref, ContractOpenOptions? Options, bool IsCurrent = false)
 		{
 			bool HasInvitation = Ref?.HasOpenInvitation == true;
 			string? Role = Options?.InvitedRole ?? (HasInvitation ? Ref!.InvitedRole : null);
 			string? Message = Options?.InvitationMessage ?? (HasInvitation ? Ref!.InvitationMessage : null);
 			string? From = Options?.InvitedBy ?? (HasInvitation ? Ref!.InvitedBy : null);
 
-			ViewContractNavigationArgs Args = new(Contract, Options?.IsReadOnly ?? false, Role, Message, From, null, Ref);
+			ViewContractNavigationArgs Args = new(Contract, Options?.IsReadOnly ?? false, Role, Message, From, null, Ref)
+			{
+				IsCurrent = IsCurrent
+			};
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 				ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop));
@@ -1624,6 +1681,24 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		/// <summary>
+		/// A lookup of a legal identity, kept until it expires.
+		/// </summary>
+		/// <param name="Lookup">The lookup. It returns null when the identity couldn't be read.</param>
+		/// <param name="Expires">When the result should no longer be used.</param>
+		private sealed class CachedIdentityLookup(Task<LegalIdentity?> Lookup, DateTime Expires)
+		{
+			/// <summary>
+			/// The lookup. It returns null when the identity couldn't be read.
+			/// </summary>
+			public Task<LegalIdentity?> Lookup { get; } = Lookup;
+
+			/// <summary>
+			/// When the result should no longer be used.
+			/// </summary>
+			public DateTime Expires { get; } = Expires;
 		}
 	}
 }

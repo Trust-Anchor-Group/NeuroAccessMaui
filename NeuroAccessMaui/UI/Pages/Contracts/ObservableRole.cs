@@ -38,7 +38,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// E.g Sets the description of the role, with the contract language.
 		/// </summary>
 		/// <param name="contract"></param>
-		public async Task InitializeAsync(Contract contract)
+		/// <param name="WaitForIdentities">If the parts' identities are looked up before the method returns. When false,
+		/// they are looked up in the background, and the parts update when they arrive.</param>
+		public async Task InitializeAsync(Contract contract, bool WaitForIdentities = true)
 		{
 			try
 			{
@@ -53,7 +55,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					if (Part.Role == this.Name)
 					{
-						await this.AddPart(Part);
+						await this.AddPart(Part.LegalId, WaitForIdentity: WaitForIdentities);
 					}
 				}
 			}
@@ -239,9 +241,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <param name="Notify">Whether to notify observers that the parts collection changed.</param>
 		/// <param name="PresetFromArgs">Whether the participant was preset by navigation arguments.</param>
 		/// <param name="PreparedIdentity">The identity already looked up by the scanner, if any.</param>
+		/// <param name="WaitForIdentity">If the identity is looked up before the part is added. When false, the part is added
+		/// with the name the phone knows, and the identity is looked up in the background.</param>
 		/// <returns>A task representing participant initialization. No identity petition is sent.</returns>
 		public async Task AddPart(string LegalId, bool Notify = true, bool PresetFromArgs = false,
-			IdentityReference? PreparedIdentity = null)
+			IdentityReference? PreparedIdentity = null, bool WaitForIdentity = true)
 		{
 			//Check if Part Exists
 			if (this.Parts.Any(p => string.Equals(p.LegalId, LegalId, StringComparison.OrdinalIgnoreCase)))
@@ -254,7 +258,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				IsPresetFromArgs = PresetFromArgs,
 				ContractName = this.ContractName
 			};
-			await ObservablePart.InitializeAsync(PreparedIdentity);
+			if (WaitForIdentity)
+				await ObservablePart.InitializeAsync(PreparedIdentity);
+			else
+				await ObservablePart.ShowFriendlyNameAsync();
 
 			//Notify changes
 			TaskCompletionSource TaskCompletionSource = new();
@@ -270,22 +277,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				TaskCompletionSource.SetResult();
 			});
 			await TaskCompletionSource.Task;
+
+			if (!WaitForIdentity)
+				_ = ObservablePart.LoadIdentityAsync(PreparedIdentity);
 		}
 
 		/// <summary>
 		/// Adds a part object to the role.
 		/// </summary>
-		public async Task AddPart(Part part)
+		/// <param name="part">The part to add.</param>
+		/// <param name="WaitForIdentity">If the identity is looked up before the part is added.</param>
+		public async Task AddPart(Part part, bool WaitForIdentity = true)
 		{
-			await this.AddPart(part.LegalId);
+			await this.AddPart(part.LegalId, WaitForIdentity: WaitForIdentity);
 		}
 
 		/// <summary>
 		/// Add a part from a signature, or mark the part as signed if it already exists.
 		/// </summary>
-		public async Task AddPart(ClientSignature signature)
+		/// <param name="signature">The signature.</param>
+		/// <param name="WaitForIdentity">If the identity is looked up before the method returns. When false, it is looked up
+		/// in the background.</param>
+		public async Task AddPart(ClientSignature signature, bool WaitForIdentity = true)
 		{
-			await this.AddPart(signature.LegalId, true);
+			await this.AddPart(signature.LegalId, true, WaitForIdentity: WaitForIdentity);
 			ObservablePart? Found = this.Parts.FirstOrDefault(p => p.LegalId == signature.LegalId);
 			if (Found is not null)
 			{
@@ -294,7 +309,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					Found.Signature = signature;
 					this.OnPartsChanged();
 				});
-				await Found.InitializeAsync();
+
+				// The signature can give the part a name, such as its address.
+				if (WaitForIdentity)
+					await Found.InitializeAsync();
+				else
+					await Found.ShowFriendlyNameAsync();
 			}
 		}
 

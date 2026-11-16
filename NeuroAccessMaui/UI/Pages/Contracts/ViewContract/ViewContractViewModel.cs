@@ -1650,13 +1650,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Contract = Result.Contract;
 			}
 
-			this.Contract = await ObservableContract.CreateAsync(Contract);
+			// The page shows at once. The parts' identities are looked up in the background, and fill in when they arrive.
+			this.Contract = await ObservableContract.CreateAsync(Contract, false);
 
 			// A saved copy keeps encrypted values in their protected form. They show "Loading…" until the current version arrives.
 			ObservableParameter[] Unreadable = [.. this.Contract.Parameters.Where(Parameter => Parameter.IsEncrypted && !Parameter.CanReadValue)];
 			this.showingSavedCopy = Unreadable.Length > 0;
 
-			if (this.args.ContractRef is not null || this.showingSavedCopy)
+			if ((this.args.ContractRef is not null && !this.args.IsCurrent) || this.showingSavedCopy)
 			{
 				foreach (ObservableParameter Parameter in Unreadable)
 					Parameter.IsLoadingValue = true;
@@ -2064,7 +2065,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					this.SelectedRole = null;
 					this.Contract = Wrapper;
-					await this.Contract.InitializeAsync();
+					await this.Contract.InitializeAsync(false);
 				});
 
 				this.showingSavedCopy = false;

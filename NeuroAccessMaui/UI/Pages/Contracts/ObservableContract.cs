@@ -33,17 +33,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Creates a new instance of <see cref="ObservableContract"/> and initializes the roles and parameters.
 		/// </summary>
 		/// <param name="contract">The Contract object to wrap.</param>
-		public static async Task<ObservableContract> CreateAsync(Contract contract)
+		/// <param name="WaitForIdentities">If the identities of the parts are looked up before the method returns. When false,
+		/// the parts show the names the phone knows, and update when their identities arrive.</param>
+		public static async Task<ObservableContract> CreateAsync(Contract contract, bool WaitForIdentities = true)
 		{
 			ObservableContract ContractWrapper = new(contract);
-			await ContractWrapper.InitializeAsync();
+			await ContractWrapper.InitializeAsync(WaitForIdentities);
 			return ContractWrapper;
 		}
 
 		/// <summary>
 		/// Initializes the contract data, such as category and parameters.
 		/// </summary>
-		public async Task InitializeAsync()
+		/// <param name="WaitForIdentities">If the identities of the parts are looked up before the method returns. When false,
+		/// they are looked up in the background.</param>
+		public async Task InitializeAsync(bool WaitForIdentities = true)
 		{
 			this.Category = await ContractModel.GetCategory(this.Contract) ?? string.Empty;
 
@@ -59,7 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					ContractName = this.Category
 				};
-				await ObservableRole.InitializeAsync(this.Contract);
+				await ObservableRole.InitializeAsync(this.Contract, WaitForIdentities);
 				this.Roles.Add(ObservableRole);
 			}
 			if (this.IsTemplate)
@@ -68,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == part.Role);
 					if (Role is not null)
-						await Role.AddPart(part);
+						await Role.AddPart(part, WaitForIdentities);
 				}
 			}
 			else
@@ -77,7 +81,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == signature.Role);
 					if (Role is not null)
-						await Role.AddPart(signature);
+						await Role.AddPart(signature, WaitForIdentities);
 				}
 			}
 

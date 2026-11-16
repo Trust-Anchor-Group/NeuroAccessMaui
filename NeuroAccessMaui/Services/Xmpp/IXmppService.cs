@@ -1401,6 +1401,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Balance? LastEDalerBalance { get; }
 
 		/// <summary>
+		/// The balance last received over the current connection, or null when none has been received since the app
+		/// connected. While connected, the server sends each change of the balance, so it stays current.
+		/// </summary>
+		Balance? CurrentEDalerBalance { get; }
+
+		/// <summary>
 		/// Timepoint of last eDaler event.
 		/// </summary>
 		DateTime LastEDalerEvent { get; }

@@ -123,12 +123,22 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private string? passwordHash;
 		private string? passwordHashMethod;
 		private bool xmppConnected = false;
+		private DateTime connectedSince = DateTime.MaxValue;
 		private DateTime xmppLastStateChange = DateTime.MinValue;
 		private readonly InMemorySniffer? sniffer = new(250, "Connection In-memory sniffer.");
+#if DEBUG
+		private readonly XmppRequestCounter requestCounter = new(GetRequestGroup, ReportRequests);
+#endif
 		private readonly SemaphoreSlim clientSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim createdContractsSemaphore = new SemaphoreSlim(1, 1);
 		private HashSet<string>? createdContractIds;
 		private string? createdContractIdsAccount;
+		private const int maxCachedTokenDescriptions = 200;
+		private readonly Dictionary<string, string> tokenDescriptions = new(StringComparer.OrdinalIgnoreCase);
+		private readonly object tokenDescriptionsLock = new();
+		private readonly object creationAttributesLock = new();
+		private Task<CreationAttributesEventArgs>? creationAttributes;
+		private string? creationAttributesSource;
 		private CancellationTokenSource? activationCancellation;
 		private Task connectionTask = Task.CompletedTask;
 		private EventFilter? xmppFilteredEventSink;
@@ -208,6 +218,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 #if DEBUG_XMPP_LOCAL
 				DebugSniffer LocalSniffer = new(BinaryPresentationMethod.Hexadecimal);
 				this.xmppClient.Add(LocalSniffer);
+#endif
+#if DEBUG
+				this.xmppClient.Add(this.requestCounter);
 #endif
 
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
@@ -605,6 +618,27 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
+#if DEBUG
+		/// <summary>
+		/// Names the screen that is shown, so the request counter can group requests by screen.
+		/// </summary>
+		/// <returns>The name of the page type, or an empty string.</returns>
+		private static string GetRequestGroup()
+		{
+			return ServiceRef.NavigationService.CurrentPage?.GetType().Name ?? string.Empty;
+		}
+
+		/// <summary>
+		/// Writes the requests sent during a screen or a reconnect to the debug output and the log.
+		/// </summary>
+		/// <param name="Summary">The summary from the request counter.</param>
+		private static void ReportRequests(string Summary)
+		{
+			System.Diagnostics.Debug.WriteLine(Summary, "XMPP requests");
+			ServiceRef.LogService.LogDebug(Summary);
+		}
+#endif
+
 		private bool XmppParametersCurrent()
 		{
 			if (this.xmppClient is null)
@@ -822,6 +856,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.LatestConnectionError = string.Empty;
 
 					this.xmppConnected = true;
+					this.connectedSince = DateTime.UtcNow;
+#if DEBUG
+					this.requestCounter.MarkConnected();
+#endif
 
 					this.RecreateReconnectTimer();
 
@@ -901,6 +939,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				case XmppState.Offline:
 				case XmppState.Error:
+					this.connectedSince = DateTime.MaxValue;
+
 					if (this.xmppConnected && !this.IsUnloading)
 					{
 						this.xmppConnected = false;
@@ -5260,6 +5300,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private readonly Dictionary<string, Wallet.Transaction> currentTransactions = [];
 		private Balance? lastBalance = null;
+		private DateTime lastBalanceReceived = DateTime.MinValue;
 		private DateTime lastEDalerEvent = DateTime.MinValue;
 
 		/// <summary>
@@ -5297,6 +5338,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task EDalerClient_BalanceUpdated(object? _, BalanceEventArgs e)
 		{
 			this.lastBalance = e.Balance;
+			this.lastBalanceReceived = DateTime.UtcNow;
 			this.lastEDalerEvent = DateTime.Now;
 
 			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedTitle)];
@@ -5326,6 +5368,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Last reported balance
 		/// </summary>
 		public Balance? LastEDalerBalance => this.lastBalance;
+
+		/// <summary>
+		/// The balance last received over the current connection, or null when none has been received since the app
+		/// connected. While connected, the server sends each change of the balance, so it stays current.
+		/// </summary>
+		public Balance? CurrentEDalerBalance
+		{
+			get
+			{
+				if (!this.IsOnline || this.lastBalanceReceived < this.connectedSince)
+					return null;
+
+				return this.lastBalance;
+			}
+		}
 
 		/// <summary>
 		/// Timepoint of last event.
@@ -5400,9 +5457,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Gets the current account balance.
 		/// </summary>
 		/// <returns>Current account balance.</returns>
-		public Task<Balance> GetEDalerBalance()
+		public async Task<Balance> GetEDalerBalance()
 		{
-			return this.EDalerClient.GetBalanceAsync();
+			Balance Balance = await this.EDalerClient.GetBalanceAsync();
+
+			this.lastBalance = Balance;
+			this.lastBalanceReceived = DateTime.UtcNow;
+
+			return Balance;
 		}
 
 		/// <summary>
@@ -6304,9 +6366,60 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Gets token creation attributes from the broker.
 		/// </summary>
 		/// <returns>Token creation attributes.</returns>
+		/// <remarks>
+		/// The Neuron reads the attributes from its own settings, so they are asked for once per token service while the app
+		/// runs. A request that fails isn't kept, so it is made again the next time.
+		/// </remarks>
 		public Task<CreationAttributesEventArgs> GetNeuroFeatureCreationAttributes()
 		{
-			return this.NeuroFeaturesClient.GetCreationAttributesAsync();
+			string? Source = ServiceRef.TagProfile.NeuroFeaturesJid;
+
+			lock (this.creationAttributesLock)
+			{
+				if (this.creationAttributes is null ||
+					!string.Equals(Source, this.creationAttributesSource, StringComparison.OrdinalIgnoreCase))
+				{
+					Task<CreationAttributesEventArgs> Request = this.NeuroFeaturesClient.GetCreationAttributesAsync();
+
+					this.creationAttributes = Request;
+					this.creationAttributesSource = Source;
+
+					_ = this.ForgetFailedCreationAttributesAsync(Request);
+
+					return Request;
+				}
+
+				return this.creationAttributes;
+			}
+		}
+
+		/// <summary>
+		/// Forgets a request for token creation attributes that failed, so the next caller asks again.
+		/// </summary>
+		/// <param name="Request">The request.</param>
+		private async Task ForgetFailedCreationAttributesAsync(Task<CreationAttributesEventArgs> Request)
+		{
+			bool Ok;
+
+			try
+			{
+				CreationAttributesEventArgs e = await Request;
+				Ok = e.Ok;
+			}
+			catch (Exception)
+			{
+				// The caller that awaits the request handles the error.
+				Ok = false;
+			}
+
+			if (Ok)
+				return;
+
+			lock (this.creationAttributesLock)
+			{
+				if (ReferenceEquals(this.creationAttributes, Request))
+					this.creationAttributes = null;
+			}
 		}
 
 
@@ -6369,13 +6482,37 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="TokenId">Token ID</param>
 		/// <returns>The rendered description.</returns>
+		/// <remarks>
+		/// The Neuron renders the description from the token's description and tags, which don't change, so the rendered
+		/// text is kept for each token while the app runs.
+		/// </remarks>
 		public async Task<VerticalStackLayout> GenerateNeuroFeatureDescriptionMaui(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateDescriptionAsync(TokenId, ReportFormat.Markdown);
-			if (!e.Ok)
-				throw e.StanzaError ?? new Exception(e.ErrorText);
+			string? Markdown;
 
-			return await e.ReportText.MarkdownToMaui();
+			lock (this.tokenDescriptionsLock)
+			{
+				this.tokenDescriptions.TryGetValue(TokenId, out Markdown);
+			}
+
+			if (Markdown is null)
+			{
+				ReportEventArgs e = await this.NeuroFeaturesClient.GenerateDescriptionAsync(TokenId, ReportFormat.Markdown);
+				if (!e.Ok)
+					throw e.StanzaError ?? new Exception(e.ErrorText);
+
+				Markdown = e.ReportText ?? string.Empty;
+
+				lock (this.tokenDescriptionsLock)
+				{
+					if (this.tokenDescriptions.Count >= maxCachedTokenDescriptions)
+						this.tokenDescriptions.Clear();
+
+					this.tokenDescriptions[TokenId] = Markdown;
+				}
+			}
+
+			return await Markdown.MarkdownToMaui();
 		}
 
 
