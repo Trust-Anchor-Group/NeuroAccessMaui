@@ -14566,6 +14566,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Look for new templates.
+        /// </summary>
+        public static string TemplatesLookForNew {
+            get {
+                return ResourceManager.GetString("TemplatesLookForNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show.
         /// </summary>
         public static string ContractShowDetails {

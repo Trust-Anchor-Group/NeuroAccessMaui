@@ -31,6 +31,11 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		Task<string[]> GetCreationTemplatesAsync();
 
 		/// <summary>
+		/// Forgets the templates found by searching the Neuron, so the next lookup searches again.
+		/// </summary>
+		void ForgetSearches();
+
+		/// <summary>
 		/// Fills in a template for an action: the user's roles, the other parties that are known, the trust provider, and
 		/// the token, currency and commission parameters.
 		/// </summary>

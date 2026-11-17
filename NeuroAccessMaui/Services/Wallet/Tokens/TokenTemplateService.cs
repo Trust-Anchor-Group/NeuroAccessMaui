@@ -81,6 +81,15 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		}
 
 		/// <inheritdoc/>
+		public void ForgetSearches()
+		{
+			lock (this.synchObject)
+			{
+				this.searches.Clear();
+			}
+		}
+
+		/// <inheritdoc/>
 		public async Task<NewContractNavigationArgs> PrepareAsync(TokenAction Action, Contract Template, TokenContractContext Context)
 		{
 			CreationAttributesEventArgs Attributes = Context.Attributes ?? await GetAttributesAsync();

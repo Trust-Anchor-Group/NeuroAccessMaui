@@ -14,6 +14,7 @@ using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Popups.QR;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -31,6 +32,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private const int MaxTemplates = 500;
 		private const int TemplatePlaceholderDelayMs = 200;
 		private const int UpToDateDisplayMs = 1500;
+
+		/// <summary>
+		/// Settings key, followed by the Neuron's domain, that remembers that templates for creating tokens have been
+		/// searched for there. After the first search, the picker only searches when the user asks.
+		/// </summary>
+		private const string templatesSearchedKey = "TokenTemplatesSearched.";
+
+		/// <summary>
+		/// How many missing templates are downloaded in one request.
+		/// </summary>
+		private const int templateBatchSize = 25;
 
 		private static readonly ContractListGroup[] groupOrder =
 		[
@@ -179,9 +191,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 			else if (this.IsTemplateList)
 			{
-				// Templates on the phone show at once. Placeholder rows only show if they take a moment, and templates for
-				// creating tokens that are missing are looked for afterwards, while the list can be used.
-				bool LooksForTemplates = this.contractsListMode == ContractsListMode.TokenCreationTemplates;
+				// Templates on the phone show at once. Placeholder rows only show if they take a moment. Templates for
+				// creating tokens are looked for afterwards the first time, while the list can be used, and after that only
+				// when the user asks.
+				bool LooksForTemplates = this.contractsListMode == ContractsListMode.TokenCreationTemplates &&
+					!await HasSearchedTemplatesAsync();
 
 				await MainThread.InvokeOnMainThreadAsync(() => { this.IsCheckingTemplates = LooksForTemplates; });
 				_ = this.ShowTemplatePlaceholderWhenSlowAsync();
@@ -1237,6 +1251,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(ShowTemplateCheckLine))]
+		[NotifyPropertyChangedFor(nameof(CanSearchTemplatesAgain))]
 		private bool isCheckingTemplates;
 
 		/// <summary>
@@ -1272,6 +1287,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		[NotifyPropertyChangedFor(nameof(TemplateDescriptionText))]
 		[NotifyPropertyChangedFor(nameof(ShowTemplateSearch))]
 		[NotifyPropertyChangedFor(nameof(CanSearchTemplatesAgain))]
+		[NotifyPropertyChangedFor(nameof(SearchTemplatesText))]
 		private bool showNoTemplates;
 
 		/// <summary>
@@ -1305,9 +1321,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		public bool ShowTemplateSearch => !this.ShowNoTemplates;
 
 		/// <summary>
-		/// If templates can be looked for again. Only templates for creating tokens are looked for.
+		/// If the user can look for templates on the Neuron. Only templates for creating tokens are looked for, and not
+		/// while a search runs.
 		/// </summary>
-		public bool CanSearchTemplatesAgain => this.ShowNoTemplates && this.contractsListMode == ContractsListMode.TokenCreationTemplates;
+		public bool CanSearchTemplatesAgain => this.contractsListMode == ContractsListMode.TokenCreationTemplates && !this.IsCheckingTemplates;
+
+		/// <summary>
+		/// The button that looks for templates: "Search again" when there are none, else "Look for new templates".
+		/// </summary>
+		public string SearchTemplatesText => this.ShowNoTemplates
+			? ServiceRef.Localizer[nameof(AppResources.SearchAgain)]
+			: ServiceRef.Localizer[nameof(AppResources.TemplatesLookForNew)];
 
 		partial void OnTemplateSearchTextChanged(string? Value)
 		{
@@ -1526,6 +1550,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			try
 			{
+				List<string> Missing = [];
+
 				foreach (string TemplateId in await ServiceRef.TokenTemplateService.GetCreationTemplatesAsync())
 				{
 					try
@@ -1533,11 +1559,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						ContractReference? Existing = await ServiceRef.ContractStore.GetAsync(TemplateId);
 
 						if (Existing is null || !Existing.IsTemplate || !Existing.ContractLoaded)
-						{
-							Contract? Template = await ServiceRef.XmppService.GetContract(TemplateId);
-							if (Template is not null)
-								await ServiceRef.ContractStore.UpsertAsync(Template, ContractOrigin.Opened);
-						}
+							Missing.Add(TemplateId);
 					}
 					catch (Exception Ex)
 					{
@@ -1545,7 +1567,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					}
 				}
 
+				if (Missing.Count > 0)
+					await DownloadTemplatesAsync(Missing);
+
 				Completed = true;
+				await ServiceRef.SettingsService.SaveState(GetTemplatesSearchedKey(), true);
 			}
 			catch (Exception Ex)
 			{
@@ -1658,7 +1684,86 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private Task SearchTemplatesAgainAsync()
 		{
+			ServiceRef.TokenTemplateService.ForgetSearches();
 			return this.CheckForNewTemplatesAsync();
+		}
+
+		/// <summary>
+		/// Gets the settings key that remembers that templates for creating tokens have been searched for on the user's Neuron.
+		/// </summary>
+		/// <returns>The key.</returns>
+		private static string GetTemplatesSearchedKey()
+		{
+			return templatesSearchedKey + (ServiceRef.TagProfile.Domain ?? string.Empty);
+		}
+
+		/// <summary>
+		/// Checks if templates for creating tokens have been searched for on the user's Neuron before.
+		/// </summary>
+		/// <returns>If they have.</returns>
+		private static async Task<bool> HasSearchedTemplatesAsync()
+		{
+			try
+			{
+				return await ServiceRef.SettingsService.RestoreBoolState(GetTemplatesSearchedKey());
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Downloads templates and saves them on the phone, in batches of <see cref="templateBatchSize"/> per request.
+		/// </summary>
+		/// <param name="TemplateIds">The templates to download.</param>
+		private static async Task DownloadTemplatesAsync(IReadOnlyList<string> TemplateIds)
+		{
+			for (int Offset = 0; Offset < TemplateIds.Count; Offset += templateBatchSize)
+				await DownloadTemplateBatchAsync([.. TemplateIds.Skip(Offset).Take(templateBatchSize)]);
+		}
+
+		/// <summary>
+		/// Downloads a batch of templates in one request and saves them on the phone. If the request fails, the batch is
+		/// downloaded one template at a time, so one template that can't be read doesn't stop the others.
+		/// </summary>
+		/// <param name="TemplateIds">The templates to download.</param>
+		private static async Task DownloadTemplateBatchAsync(string[] TemplateIds)
+		{
+			try
+			{
+				ContractsEventArgs e = await ServiceRef.XmppService.ContractsClient.GetContractsAsync(TemplateIds);
+
+				if (e.Ok)
+				{
+					foreach (Contract Template in e.Contracts ?? [])
+					{
+						if (Template is not null)
+							await ServiceRef.ContractStore.UpsertAsync(Template, ContractOrigin.Opened);
+					}
+
+					return;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			foreach (string TemplateId in TemplateIds)
+			{
+				try
+				{
+					Contract? Template = await ServiceRef.XmppService.GetContract(TemplateId);
+					if (Template is not null)
+						await ServiceRef.ContractStore.UpsertAsync(Template, ContractOrigin.Opened);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
 		}
 
 		/// <summary>

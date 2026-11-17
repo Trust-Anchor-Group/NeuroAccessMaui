@@ -4829,6 +4829,9 @@ Document read. You can move your iPhone.</value>
   <data name="ContractFamilyCount" xml:space="preserve">
     <value>{0} contracts</value>
   </data>
+  <data name="TemplatesLookForNew" xml:space="preserve">
+    <value>Look for new templates</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Show</value>
   </data>

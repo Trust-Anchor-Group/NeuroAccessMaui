@@ -4910,6 +4910,9 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="ContractFamilyCount" xml:space="preserve">
     <value>{0} contratos</value>
   </data>
+  <data name="TemplatesLookForNew" xml:space="preserve">
+    <value>Procurar novos modelos</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Mostrar</value>
   </data>

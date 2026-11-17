@@ -280,8 +280,9 @@
 									 LabelData="{l:Localize ScanQR}"
 									 Command="{Binding ScanTemplateQrCommand}"
 									 IsVisible="{Binding ShowNoTemplates}" />
+				<!-- After the first search, the Neuron is only searched again when the user asks -->
 				<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-									 LabelData="{l:Localize SearchAgain}"
+									 LabelData="{Binding SearchTemplatesText}"
 									 Command="{Binding SearchTemplatesAgainCommand}"
 									 IsVisible="{Binding CanSearchTemplatesAgain}" />
 			</VerticalStackLayout>

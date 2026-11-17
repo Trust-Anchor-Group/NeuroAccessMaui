@@ -4910,6 +4910,9 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ContractFamilyCount" xml:space="preserve">
     <value>{0} kontrakt</value>
   </data>
+  <data name="TemplatesLookForNew" xml:space="preserve">
+    <value>Sök efter nya mallar</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Visa</value>
   </data>
