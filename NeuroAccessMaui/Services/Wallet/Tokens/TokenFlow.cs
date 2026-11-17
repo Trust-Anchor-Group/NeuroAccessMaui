@@ -142,6 +142,10 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 					"OnExternalXmlNote" or "OnExternalTextNote" or "OnExternalNote" => (TokenFlowTrigger.ExternalNote, NoteName(Trigger)),
 					"OnContractSignature" or "OnContractSigned" => (TokenFlowTrigger.ContractSigned, null),
 					"OnDestroyed" => (TokenFlowTrigger.Destroyed, null),
+					"OnContractTemplateApproved" => (TokenFlowTrigger.TemplateApproved, NoteName(Trigger)),
+					"OnEntryAdded" => (TokenFlowTrigger.EntryAdded, null),
+					"OnEntryUpdated" => (TokenFlowTrigger.EntryUpdated, null),
+					"OnEntryDeleted" => (TokenFlowTrigger.EntryDeleted, null),
 					_ => (TokenFlowTrigger.Other, null)
 				};
 			}
@@ -150,7 +154,8 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		}
 
 		/// <summary>
-		/// Gets the name of the note an event waits for, when it names one.
+		/// Gets the name an event gives in its local name: the note it waits for, or the contract whose template is
+		/// approved. Null when it names none.
 		/// </summary>
 		private static string? NoteName(XmlElement Trigger)
 		{

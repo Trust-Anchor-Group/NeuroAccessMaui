@@ -172,9 +172,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				TokenFlowTrigger.Condition => Geometries.CalculatorPath,
 				TokenFlowTrigger.Transferred => Geometries.SendPath,
 				TokenFlowTrigger.PaymentReceived or TokenFlowTrigger.PaymentSent => Geometries.MoneyPath,
-				TokenFlowTrigger.OwnerNote or TokenFlowTrigger.ExternalNote => Geometries.TapPath,
+				TokenFlowTrigger.OwnerNote => Geometries.TapPath,
+				TokenFlowTrigger.ExternalNote => Geometries.PersonPath,
 				TokenFlowTrigger.ContractSigned => Geometries.ContractPath,
 				TokenFlowTrigger.Destroyed => Geometries.TrashCanButtonPath,
+				TokenFlowTrigger.TemplateApproved => Geometries.SuccessCheckmarkPath,
+				TokenFlowTrigger.EntryAdded or TokenFlowTrigger.EntryUpdated or TokenFlowTrigger.EntryDeleted => Geometries.ContractEditPath,
 				_ => Geometries.InfoCirclePath
 			};
 		}
@@ -242,8 +245,96 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				case TokenFlowTrigger.Destroyed:
 					return ServiceRef.Localizer[nameof(AppResources.FlowWhenDestroyed)];
 
+				case TokenFlowTrigger.TemplateApproved:
+					return string.IsNullOrEmpty(Exit.Argument)
+						? ServiceRef.Localizer[nameof(AppResources.FlowWhenAnyTemplateApproved)]
+						: ServiceRef.Localizer[nameof(AppResources.FlowWhenTemplateApproved), TokenText.ToWords(Exit.Argument)];
+
+				case TokenFlowTrigger.EntryAdded:
+					return ServiceRef.Localizer[nameof(AppResources.FlowWhenEntryAdded)];
+
+				case TokenFlowTrigger.EntryUpdated:
+					return ServiceRef.Localizer[nameof(AppResources.FlowWhenEntryUpdated)];
+
+				case TokenFlowTrigger.EntryDeleted:
+					return ServiceRef.Localizer[nameof(AppResources.FlowWhenEntryDeleted)];
+
 				default:
 					return ServiceRef.Localizer[nameof(AppResources.FlowWhenEvent)];
+			}
+		}
+
+		/// <summary>
+		/// Says what triggers a way out in a few words, for a label on the flow map next to the trigger's icon, such as
+		/// "Ship order" or "14 days". <see cref="DescribeTrigger"/> gives the whole sentence.
+		/// </summary>
+		/// <param name="Exit">The way out.</param>
+		/// <param name="Variables">The token's values now, by name.</param>
+		/// <returns>The short label.</returns>
+		public static string ShortTrigger(TokenFlowExit Exit, IReadOnlyDictionary<string, object> Variables)
+		{
+			if (Exit.IsFailure)
+				return ServiceRef.Localizer[nameof(AppResources.FlowShortFails)];
+
+			switch (Exit.Trigger)
+			{
+				case TokenFlowTrigger.DateTime:
+					DateTime? When = ToDateTime(Resolve(Exit.Argument, Variables));
+					if (When is DateTime Time)
+					{
+						DateTime Local = Time.Kind == DateTimeKind.Utc ? Time.ToLocalTime() : Time;
+						return Local.ToString("M", CultureInfo.CurrentCulture);
+					}
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortSetDate)];
+
+				case TokenFlowTrigger.Duration:
+					Duration? Length = ToDuration(Resolve(Exit.Argument, Variables));
+					return Length is Duration Span
+						? DurationToString.ToString(Span)
+						: ServiceRef.Localizer[nameof(AppResources.FlowShortSetTime)];
+
+				case TokenFlowTrigger.Condition:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortCondition)];
+
+				case TokenFlowTrigger.Transferred:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortSold)];
+
+				case TokenFlowTrigger.PaymentReceived:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortPaid)];
+
+				case TokenFlowTrigger.PaymentSent:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortPaymentSent)];
+
+				case TokenFlowTrigger.OwnerNote:
+					return string.IsNullOrEmpty(Exit.Argument)
+						? ServiceRef.Localizer[nameof(AppResources.FlowShortOwnerNote)]
+						: TokenText.ToWords(Exit.Argument);
+
+				case TokenFlowTrigger.ExternalNote:
+					return string.IsNullOrEmpty(Exit.Argument)
+						? ServiceRef.Localizer[nameof(AppResources.FlowShortOthersNote)]
+						: TokenText.ToWords(Exit.Argument);
+
+				case TokenFlowTrigger.ContractSigned:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortSigned)];
+
+				case TokenFlowTrigger.Destroyed:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortDestroyed)];
+
+				case TokenFlowTrigger.TemplateApproved:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortTemplateApproved)];
+
+				case TokenFlowTrigger.EntryAdded:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortEntryAdded)];
+
+				case TokenFlowTrigger.EntryUpdated:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortEntryUpdated)];
+
+				case TokenFlowTrigger.EntryDeleted:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortEntryDeleted)];
+
+				default:
+					return ServiceRef.Localizer[nameof(AppResources.FlowShortEvent)];
 			}
 		}
 

@@ -56,6 +56,26 @@ namespace NeuroAccessMaui.Services.Wallet.Tokens
 		Destroyed,
 
 		/// <summary>
+		/// A contract template is approved. The argument is the contract's name, when the event names one.
+		/// </summary>
+		TemplateApproved,
+
+		/// <summary>
+		/// An entry is added to a collection the token follows.
+		/// </summary>
+		EntryAdded,
+
+		/// <summary>
+		/// An entry in a collection the token follows changes.
+		/// </summary>
+		EntryUpdated,
+
+		/// <summary>
+		/// An entry is removed from a collection the token follows.
+		/// </summary>
+		EntryDeleted,
+
+		/// <summary>
 		/// Something else happens.
 		/// </summary>
 		Other

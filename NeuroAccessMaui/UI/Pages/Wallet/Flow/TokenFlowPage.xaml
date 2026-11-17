@@ -20,7 +20,8 @@
 								Grid.ColumnSpan="2"
 								Steps="{Binding Steps}"
 								Variables="{Binding Variables}"
-								SelectedStep="{Binding SelectedStep, Mode=TwoWay}" />
+								SelectedStep="{Binding SelectedStep, Mode=TwoWay}"
+								MarkedExit="{Binding MarkedExit, Mode=TwoWay}" />
 
 		<!-- Its empty space lets touches through to the map when it lies over it -->
 		<Grid x:Name="Header"
@@ -73,60 +74,140 @@
 				StrokeThickness="1"
 				Stroke="{DynamicResource SurfaceDividerWL}"
 				BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-				Padding="20,10,20,24">
+				Padding="10,10,10,24">
 			<VerticalStackLayout Spacing="2">
-				<BoxView x:Name="SheetHandle"
-						 WidthRequest="36"
-						 HeightRequest="4"
-						 CornerRadius="2"
-						 Color="{DynamicResource SurfaceDividerWL}"
-						 HorizontalOptions="Center"
-						 Margin="0,0,0,10" />
-				<Label Text="{Binding SheetTitle}"
-					   FontFamily="SpaceGroteskSemiBold"
-					   FontSize="17"
-					   TextColor="{DynamicResource ContentPrimaryWL}"
-					   SemanticProperties.HeadingLevel="Level2" />
-				<Label Text="{l:Localize FlowWhatMovesOn}"
-					   FontSize="13"
-					   TextColor="{DynamicResource ContentSecondaryWL}"
-					   Margin="0,0,0,6" />
+				<!-- In portrait, a tap or a swipe down on the top of the sheet folds it to its title, so the map gets the room.
+					 The sheet's padding is narrow, so a marked line's rounded fill fits; the header and lines add the rest. -->
+				<Grid x:Name="SheetHeader"
+					  Padding="10,0"
+					  RowDefinitions="Auto,Auto,Auto"
+					  ColumnDefinitions="*,Auto"
+					  ColumnSpacing="8"
+					  BackgroundColor="Transparent">
+					<Grid.GestureRecognizers>
+						<TapGestureRecognizer Tapped="SheetHeader_Tapped" />
+						<SwipeGestureRecognizer Direction="Down"
+												Swiped="SheetHeader_SwipedDown" />
+						<SwipeGestureRecognizer Direction="Up"
+												Swiped="SheetHeader_SwipedUp" />
+					</Grid.GestureRecognizers>
+					<BoxView x:Name="SheetHandle"
+							 Grid.Row="0"
+							 Grid.ColumnSpan="2"
+							 WidthRequest="36"
+							 HeightRequest="4"
+							 CornerRadius="2"
+							 Color="{DynamicResource SurfaceDividerWL}"
+							 HorizontalOptions="Center"
+							 Margin="0,0,0,10" />
+					<Label Grid.Row="1"
+						   Grid.Column="0"
+						   Text="{Binding SheetTitle}"
+						   FontFamily="SpaceGroteskSemiBold"
+						   FontSize="17"
+						   TextColor="{DynamicResource ContentPrimaryWL}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Label Grid.Row="2"
+						   Grid.Column="0"
+						   Text="{l:Localize FlowWhatMovesOn}"
+						   FontSize="13"
+						   TextColor="{DynamicResource ContentSecondaryWL}"
+						   Margin="0,0,0,6" />
+					<!-- Folds and unfolds the sheet. The arrow points the way the sheet will move. -->
+					<Border x:Name="SheetToggle"
+							Grid.Row="1"
+							Grid.RowSpan="2"
+							Grid.Column="1"
+							WidthRequest="48"
+							HeightRequest="48"
+							StrokeShape="RoundRectangle 24"
+							StrokeThickness="0"
+							BackgroundColor="Transparent"
+							VerticalOptions="Center"
+							SemanticProperties.Description="{l:Localize ShowLess}">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Tapped="SheetHeader_Tapped" />
+						</Border.GestureRecognizers>
+						<Path x:Name="SheetToggleArrow"
+							  Data="M6 9L12 15L18 9"
+							  Stroke="{DynamicResource ContentSecondaryWL}"
+							  StrokeThickness="2"
+							  StrokeLineCap="Round"
+							  StrokeLineJoin="Round"
+							  Aspect="Uniform"
+							  WidthRequest="14"
+							  HeightRequest="14"
+							  HorizontalOptions="Center"
+							  VerticalOptions="Center" />
+					</Border>
+				</Grid>
 				<ScrollView x:Name="SheetScroll"
 							MaximumHeightRequest="240">
-					<VerticalStackLayout BindableLayout.ItemsSource="{Binding SheetLines}">
+					<VerticalStackLayout x:Name="SheetLinesView"
+										 BindableLayout.ItemsSource="{Binding SheetLines}">
 						<BindableLayout.ItemTemplate>
 							<DataTemplate x:DataType="viewmodel:TokenFlowSheetLine">
-								<Grid ColumnDefinitions="Auto,*"
-									  ColumnSpacing="12"
-									  Padding="0,10">
-									<Border Grid.Column="0"
-											WidthRequest="36"
-											HeightRequest="36"
-											StrokeShape="RoundRectangle 10"
-											StrokeThickness="0"
-											BackgroundColor="{DynamicResource SurfaceElevation2WL}"
-											VerticalOptions="Center">
-										<Path Data="{Binding Icon}"
-											  Fill="{DynamicResource ContentPrimaryWL}"
-											  Aspect="Uniform"
-											  WidthRequest="18"
-											  HeightRequest="18"
-											  HorizontalOptions="Center"
-											  VerticalOptions="Center" />
-									</Border>
-									<VerticalStackLayout Grid.Column="1"
-														 Spacing="2"
-														 VerticalOptions="Center">
-										<Label Text="{Binding Title}"
-											   FontFamily="HaasGroteskMedium"
-											   FontSize="{StaticResource FontSizeMd}"
-											   TextColor="{DynamicResource ContentPrimaryWL}" />
-										<Label Text="{Binding Subtitle}"
-											   FontSize="13"
-											   TextColor="{DynamicResource ContentSecondaryWL}"
-											   IsVisible="{Binding HasSubtitle}" />
-									</VerticalStackLayout>
-								</Grid>
+								<!-- The way whose arrow label was tapped on the map is marked -->
+								<Border Padding="10"
+										StrokeShape="RoundRectangle 12"
+										StrokeThickness="0"
+										BackgroundColor="Transparent">
+									<Border.Triggers>
+										<DataTrigger TargetType="Border"
+													 Binding="{Binding IsMarked}"
+													 Value="True">
+											<Setter Property="BackgroundColor"
+													Value="{DynamicResource TnPSuccessbgWL}" />
+										</DataTrigger>
+									</Border.Triggers>
+									<Grid ColumnDefinitions="Auto,*"
+										  ColumnSpacing="12">
+										<Border Grid.Column="0"
+												WidthRequest="36"
+												HeightRequest="36"
+												StrokeShape="RoundRectangle 10"
+												StrokeThickness="0"
+												BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+												VerticalOptions="Center">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border"
+															 Binding="{Binding IsMarked}"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource SurfaceElevation1WL}" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Path Data="{Binding Icon}"
+												  Fill="{DynamicResource ContentPrimaryWL}"
+												  Aspect="Uniform"
+												  WidthRequest="18"
+												  HeightRequest="18"
+												  HorizontalOptions="Center"
+												  VerticalOptions="Center">
+												<Path.Triggers>
+													<DataTrigger TargetType="Path"
+																 Binding="{Binding IsMarked}"
+																 Value="True">
+														<Setter Property="Fill"
+																Value="{DynamicResource ContentAccessWL}" />
+													</DataTrigger>
+												</Path.Triggers>
+											</Path>
+										</Border>
+										<VerticalStackLayout Grid.Column="1"
+															 Spacing="2"
+															 VerticalOptions="Center">
+											<Label Text="{Binding Title}"
+												   FontFamily="HaasGroteskMedium"
+												   FontSize="{StaticResource FontSizeMd}"
+												   TextColor="{DynamicResource ContentPrimaryWL}" />
+											<Label Text="{Binding Subtitle}"
+												   FontSize="13"
+												   TextColor="{DynamicResource ContentSecondaryWL}"
+												   IsVisible="{Binding HasSubtitle}" />
+										</VerticalStackLayout>
+									</Grid>
+								</Border>
 							</DataTemplate>
 						</BindableLayout.ItemTemplate>
 					</VerticalStackLayout>

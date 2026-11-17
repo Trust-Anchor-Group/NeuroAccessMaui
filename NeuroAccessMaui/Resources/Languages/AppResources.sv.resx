@@ -5174,6 +5174,69 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="FlowWhenEvent" xml:space="preserve">
     <value>När något händer</value>
   </data>
+  <data name="FlowShortSetDate" xml:space="preserve">
+    <value>Bestämt datum</value>
+  </data>
+  <data name="FlowShortSetTime" xml:space="preserve">
+    <value>Bestämd tid</value>
+  </data>
+  <data name="FlowShortCondition" xml:space="preserve">
+    <value>Villkor uppfyllt</value>
+  </data>
+  <data name="FlowShortSold" xml:space="preserve">
+    <value>Såld</value>
+  </data>
+  <data name="FlowShortPaid" xml:space="preserve">
+    <value>Betald</value>
+  </data>
+  <data name="FlowShortPaymentSent" xml:space="preserve">
+    <value>Betalning skickad</value>
+  </data>
+  <data name="FlowShortOwnerNote" xml:space="preserve">
+    <value>Ägarens anteckning</value>
+  </data>
+  <data name="FlowShortOthersNote" xml:space="preserve">
+    <value>Någon annans anteckning</value>
+  </data>
+  <data name="FlowShortSigned" xml:space="preserve">
+    <value>Signerat</value>
+  </data>
+  <data name="FlowShortDestroyed" xml:space="preserve">
+    <value>Förstörd</value>
+  </data>
+  <data name="FlowShortEvent" xml:space="preserve">
+    <value>Händelse</value>
+  </data>
+  <data name="FlowShortFails" xml:space="preserve">
+    <value>Misslyckas</value>
+  </data>
+  <data name="FlowWhenTemplateApproved" xml:space="preserve">
+    <value>När en mall för {0} godkänns</value>
+  </data>
+  <data name="FlowWhenAnyTemplateApproved" xml:space="preserve">
+    <value>När en kontraktsmall godkänns</value>
+  </data>
+  <data name="FlowShortTemplateApproved" xml:space="preserve">
+    <value>Mall godkänd</value>
+  </data>
+  <data name="FlowWhenEntryAdded" xml:space="preserve">
+    <value>När en post läggs till</value>
+  </data>
+  <data name="FlowWhenEntryUpdated" xml:space="preserve">
+    <value>När en post ändras</value>
+  </data>
+  <data name="FlowWhenEntryDeleted" xml:space="preserve">
+    <value>När en post tas bort</value>
+  </data>
+  <data name="FlowShortEntryAdded" xml:space="preserve">
+    <value>Post tillagd</value>
+  </data>
+  <data name="FlowShortEntryUpdated" xml:space="preserve">
+    <value>Post ändrad</value>
+  </data>
+  <data name="FlowShortEntryDeleted" xml:space="preserve">
+    <value>Post borttagen</value>
+  </data>
   <data name="FlowOr" xml:space="preserve">
     <value>Eller {0}</value>
   </data>
@@ -5632,6 +5695,9 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="ShowMore" xml:space="preserve">
     <value>Visa fler</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Visa färre</value>
   </data>
   <data name="TokensEmptyHeading" xml:space="preserve">
     <value>Inga token än</value>

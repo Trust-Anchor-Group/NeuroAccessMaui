@@ -1,12 +1,11 @@
 namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 {
 	/// <summary>
-	/// Draws the arrows of the flow map, with a short label on each.
+	/// Draws the arrows of the flow map. Their labels are views placed on the map by <see cref="TokenFlowMap"/>, at
+	/// <see cref="GetLabelCenter"/>, so they can wrap and be tapped.
 	/// </summary>
 	public class TokenFlowEdgeDrawable : IDrawable
 	{
-		private const int maxLabelLength = 22;
-		private const float labelFontSize = 10;
 		private const float arrowLength = 8;
 		private const float arrowHalfWidth = 4;
 
@@ -24,7 +23,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 		{
 			Color EdgeColor = GetColor("ContentSecondaryWL", Colors.Gray);
 			Color AccentColor = GetColor("ContentAccessWL", Colors.Teal);
-			Color LabelBackground = GetColor("SurfaceBackgroundWL", Colors.White);
 
 			foreach (TokenFlowEdge Edge in this.Edges)
 			{
@@ -41,41 +39,82 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 				Canvas.DrawPath(Path);
 
 				DrawArrowHead(Canvas, Color, Control2, End);
-				DrawLabel(Canvas, Edge, Start, Control1, Control2, End, EdgeColor, LabelBackground);
 			}
 		}
 
 		/// <summary>
-		/// Works out the curve of an arrow. An arrow down the map runs from the bottom of one card to the top of the next. A
-		/// loop and an arrow back up run out to the right of the cards.
+		/// Gets where an arrow's label goes: the middle of its curve.
+		/// </summary>
+		/// <param name="Edge">The arrow.</param>
+		/// <returns>The middle of the curve, in map coordinates.</returns>
+		public static Point GetLabelCenter(TokenFlowEdge Edge)
+		{
+			(PointF Start, PointF Control1, PointF Control2, PointF End) = GetCurve(Edge);
+
+			return new Point((Start.X + 3 * Control1.X + 3 * Control2.X + End.X) / 8, (Start.Y + 3 * Control1.Y + 3 * Control2.Y + End.Y) / 8);
+		}
+
+		/// <summary>
+		/// Works out the curve of an arrow, by how it runs. See <see cref="TokenFlowRoute"/>.
 		/// </summary>
 		private static (PointF Start, PointF Control1, PointF Control2, PointF End) GetCurve(TokenFlowEdge Edge)
 		{
 			Rect From = Edge.From;
 			Rect To = Edge.To;
 
-			if (Edge.IsLoop)
+			switch (Edge.Route)
 			{
-				PointF Start = new((float)From.Right, (float)(From.Top + From.Height * 0.3));
-				PointF End = new((float)From.Right, (float)(From.Top + From.Height * 0.7));
+				case TokenFlowRoute.Loop:
+					float Side = Edge.OnLeft ? (float)From.Left : (float)From.Right;
+					float Out = Edge.OnLeft ? -44 : 44;
+					PointF LoopStart = new(Side, (float)(From.Top + From.Height * 0.3));
+					PointF LoopEnd = new(Side, (float)(From.Top + From.Height * 0.7));
 
-				return (Start, new PointF(Start.X + 44, Start.Y - 22), new PointF(End.X + 44, End.Y + 22), End);
+					return (LoopStart, new PointF(LoopStart.X + Out, LoopStart.Y - 22), new PointF(LoopEnd.X + Out, LoopEnd.Y + 22), LoopEnd);
+
+				case TokenFlowRoute.Lane:
+					PointF LaneStart = new(Edge.OnLeft ? (float)From.Left : (float)From.Right, (float)From.Center.Y);
+					PointF LaneEnd = new(Edge.OnLeft ? (float)To.Left - 1 : (float)To.Right + 1, (float)To.Center.Y);
+					float LaneX = (float)Edge.LaneX;
+
+					return (LaneStart, new PointF(LaneX, LaneStart.Y), new PointF(LaneX, LaneEnd.Y), LaneEnd);
+
+				case TokenFlowRoute.Beside:
+					bool ToRight = To.Center.X > From.Center.X;
+					float Y = (float)(From.Center.Y + Edge.Shift);
+					PointF BesideStart = new(ToRight ? (float)From.Right : (float)From.Left, Y);
+					PointF BesideEnd = new(ToRight ? (float)To.Left - 1 : (float)To.Right + 1, Y);
+					float Third = (BesideEnd.X - BesideStart.X) / 3;
+
+					return (BesideStart, new PointF(BesideStart.X + Third, Y), new PointF(BesideEnd.X - Third, Y), BesideEnd);
+
+				case TokenFlowRoute.UnderRow:
+					// Arrows to the right run in a shallow curve, and arrows back to the left in a wider, deeper one around it,
+					// so two arrows between the same cards don't lie on top of each other.
+					bool Rightward = To.Center.X > From.Center.X;
+					float Direction = Rightward ? 1 : -1;
+					float Reach = Rightward ? 0.3f : 0.15f;
+					float Dip = Rightward ? 30 : 52;
+					PointF UnderStart = new((float)(From.Center.X + Direction * From.Width * Reach), (float)From.Bottom);
+					PointF UnderEnd = new((float)(To.Center.X - Direction * To.Width * Reach), (float)To.Bottom + 1);
+
+					return (UnderStart, new PointF(UnderStart.X, UnderStart.Y + Dip), new PointF(UnderEnd.X, UnderEnd.Y + Dip), UnderEnd);
+
+				case TokenFlowRoute.Up:
+					// Off the centre of the cards, so it doesn't lie on an arrow down between the same cards.
+					PointF UpStart = new((float)(From.Center.X + From.Width * 0.3), (float)From.Top);
+					PointF UpEnd = new((float)(To.Center.X + To.Width * 0.3), (float)To.Bottom + 1);
+					float UpMiddle = (UpStart.Y + UpEnd.Y) / 2;
+
+					return (UpStart, new PointF(UpStart.X, UpMiddle), new PointF(UpEnd.X, UpMiddle), UpEnd);
+
+				default:
+					PointF DownStart = new((float)From.Center.X, (float)From.Bottom);
+					PointF DownEnd = new((float)To.Center.X, (float)To.Top - 1);
+					float DownMiddle = (DownStart.Y + DownEnd.Y) / 2;
+
+					return (DownStart, new PointF(DownStart.X, DownMiddle), new PointF(DownEnd.X, DownMiddle), DownEnd);
 			}
-
-			if (Edge.IsForward)
-			{
-				PointF Start = new((float)From.Center.X, (float)From.Bottom);
-				PointF End = new((float)To.Center.X, (float)To.Top - 1);
-				float MiddleY = (Start.Y + End.Y) / 2;
-
-				return (Start, new PointF(Start.X, MiddleY), new PointF(End.X, MiddleY), End);
-			}
-
-			PointF BackStart = new((float)From.Right, (float)From.Center.Y);
-			PointF BackEnd = new((float)To.Right + 1, (float)To.Center.Y);
-			float OutX = (float)Math.Max(From.Right, To.Right) + 36;
-
-			return (BackStart, new PointF(OutX, BackStart.Y), new PointF(OutX, BackEnd.Y), BackEnd);
 		}
 
 		/// <summary>
@@ -102,34 +141,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 			Canvas.StrokeDashPattern = null;
 			Canvas.FillColor = Color;
 			Canvas.FillPath(Head);
-		}
-
-		/// <summary>
-		/// Draws the label of an arrow at the middle of its curve, on a small background so it can be read over lines.
-		/// </summary>
-		private static void DrawLabel(ICanvas Canvas, TokenFlowEdge Edge, PointF Start, PointF Control1, PointF Control2, PointF End,
-			Color TextColor, Color Background)
-		{
-			if (string.IsNullOrEmpty(Edge.Label))
-				return;
-
-			string Text = Edge.Label.Length > maxLabelLength ? Edge.Label[..(maxLabelLength - 1)].TrimEnd() + "…" : Edge.Label;
-
-			// The middle of a cubic curve.
-			float X = (Start.X + 3 * Control1.X + 3 * Control2.X + End.X) / 8;
-			float Y = (Start.Y + 3 * Control1.Y + 3 * Control2.Y + End.Y) / 8;
-
-			Canvas.FontSize = labelFontSize;
-			Canvas.Font = Microsoft.Maui.Graphics.Font.DefaultBold;
-
-			SizeF Size = Canvas.GetStringSize(Text, Microsoft.Maui.Graphics.Font.DefaultBold, labelFontSize);
-			RectF Box = new(X - Size.Width / 2 - 5, Y - Size.Height / 2 - 2, Size.Width + 10, Size.Height + 4);
-
-			Canvas.FillColor = Background;
-			Canvas.FillRoundedRectangle(Box, 4);
-
-			Canvas.FontColor = TextColor;
-			Canvas.DrawString(Text, Box, HorizontalAlignment.Center, VerticalAlignment.Center);
 		}
 
 		/// <summary>

@@ -8,7 +8,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 	/// <param name="Icon">The icon that shows what kind of trigger it is.</param>
 	/// <param name="Title">What moves the token on, such as "On 1 Jun 2026".</param>
 	/// <param name="Subtitle">Where it goes, such as "Goes to Done", or an empty string.</param>
-	public sealed record TokenFlowSheetLine(Geometry Icon, string Title, string Subtitle)
+	/// <param name="IsMarked">If the user tapped this way's arrow on the map, so the line is marked.</param>
+	public sealed record TokenFlowSheetLine(Geometry Icon, string Title, string Subtitle, bool IsMarked)
 	{
 		/// <summary>
 		/// If there is a line about where the token goes.

@@ -15358,6 +15358,195 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set date.
+        /// </summary>
+        public static string FlowShortSetDate {
+            get {
+                return ResourceManager.GetString("FlowShortSetDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set time.
+        /// </summary>
+        public static string FlowShortSetTime {
+            get {
+                return ResourceManager.GetString("FlowShortSetTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Condition met.
+        /// </summary>
+        public static string FlowShortCondition {
+            get {
+                return ResourceManager.GetString("FlowShortCondition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sold.
+        /// </summary>
+        public static string FlowShortSold {
+            get {
+                return ResourceManager.GetString("FlowShortSold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid.
+        /// </summary>
+        public static string FlowShortPaid {
+            get {
+                return ResourceManager.GetString("FlowShortPaid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment sent.
+        /// </summary>
+        public static string FlowShortPaymentSent {
+            get {
+                return ResourceManager.GetString("FlowShortPaymentSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owner's note.
+        /// </summary>
+        public static string FlowShortOwnerNote {
+            get {
+                return ResourceManager.GetString("FlowShortOwnerNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Someone's note.
+        /// </summary>
+        public static string FlowShortOthersNote {
+            get {
+                return ResourceManager.GetString("FlowShortOthersNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signed.
+        /// </summary>
+        public static string FlowShortSigned {
+            get {
+                return ResourceManager.GetString("FlowShortSigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destroyed.
+        /// </summary>
+        public static string FlowShortDestroyed {
+            get {
+                return ResourceManager.GetString("FlowShortDestroyed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event.
+        /// </summary>
+        public static string FlowShortEvent {
+            get {
+                return ResourceManager.GetString("FlowShortEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fails.
+        /// </summary>
+        public static string FlowShortFails {
+            get {
+                return ResourceManager.GetString("FlowShortFails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When a {0} template is approved.
+        /// </summary>
+        public static string FlowWhenTemplateApproved {
+            get {
+                return ResourceManager.GetString("FlowWhenTemplateApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When a contract template is approved.
+        /// </summary>
+        public static string FlowWhenAnyTemplateApproved {
+            get {
+                return ResourceManager.GetString("FlowWhenAnyTemplateApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Template approved.
+        /// </summary>
+        public static string FlowShortTemplateApproved {
+            get {
+                return ResourceManager.GetString("FlowShortTemplateApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When an entry is added.
+        /// </summary>
+        public static string FlowWhenEntryAdded {
+            get {
+                return ResourceManager.GetString("FlowWhenEntryAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When an entry changes.
+        /// </summary>
+        public static string FlowWhenEntryUpdated {
+            get {
+                return ResourceManager.GetString("FlowWhenEntryUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When an entry is removed.
+        /// </summary>
+        public static string FlowWhenEntryDeleted {
+            get {
+                return ResourceManager.GetString("FlowWhenEntryDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entry added.
+        /// </summary>
+        public static string FlowShortEntryAdded {
+            get {
+                return ResourceManager.GetString("FlowShortEntryAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entry changed.
+        /// </summary>
+        public static string FlowShortEntryUpdated {
+            get {
+                return ResourceManager.GetString("FlowShortEntryUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entry removed.
+        /// </summary>
+        public static string FlowShortEntryDeleted {
+            get {
+                return ResourceManager.GetString("FlowShortEntryDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Or {0}.
         /// </summary>
         public static string FlowOr {
@@ -16686,6 +16875,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ShowMore {
             get {
                 return ResourceManager.GetString("ShowMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show less.
+        /// </summary>
+        public static string ShowLess {
+            get {
+                return ResourceManager.GetString("ShowLess", resourceCulture);
             }
         }
         

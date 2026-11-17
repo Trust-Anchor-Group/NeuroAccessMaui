@@ -5093,6 +5093,69 @@ Document read. You can move your iPhone.</value>
   <data name="FlowWhenEvent" xml:space="preserve">
     <value>When something happens</value>
   </data>
+  <data name="FlowShortSetDate" xml:space="preserve">
+    <value>Set date</value>
+  </data>
+  <data name="FlowShortSetTime" xml:space="preserve">
+    <value>Set time</value>
+  </data>
+  <data name="FlowShortCondition" xml:space="preserve">
+    <value>Condition met</value>
+  </data>
+  <data name="FlowShortSold" xml:space="preserve">
+    <value>Sold</value>
+  </data>
+  <data name="FlowShortPaid" xml:space="preserve">
+    <value>Paid</value>
+  </data>
+  <data name="FlowShortPaymentSent" xml:space="preserve">
+    <value>Payment sent</value>
+  </data>
+  <data name="FlowShortOwnerNote" xml:space="preserve">
+    <value>Owner's note</value>
+  </data>
+  <data name="FlowShortOthersNote" xml:space="preserve">
+    <value>Someone's note</value>
+  </data>
+  <data name="FlowShortSigned" xml:space="preserve">
+    <value>Signed</value>
+  </data>
+  <data name="FlowShortDestroyed" xml:space="preserve">
+    <value>Destroyed</value>
+  </data>
+  <data name="FlowShortEvent" xml:space="preserve">
+    <value>Event</value>
+  </data>
+  <data name="FlowShortFails" xml:space="preserve">
+    <value>Fails</value>
+  </data>
+  <data name="FlowWhenTemplateApproved" xml:space="preserve">
+    <value>When a {0} template is approved</value>
+  </data>
+  <data name="FlowWhenAnyTemplateApproved" xml:space="preserve">
+    <value>When a contract template is approved</value>
+  </data>
+  <data name="FlowShortTemplateApproved" xml:space="preserve">
+    <value>Template approved</value>
+  </data>
+  <data name="FlowWhenEntryAdded" xml:space="preserve">
+    <value>When an entry is added</value>
+  </data>
+  <data name="FlowWhenEntryUpdated" xml:space="preserve">
+    <value>When an entry changes</value>
+  </data>
+  <data name="FlowWhenEntryDeleted" xml:space="preserve">
+    <value>When an entry is removed</value>
+  </data>
+  <data name="FlowShortEntryAdded" xml:space="preserve">
+    <value>Entry added</value>
+  </data>
+  <data name="FlowShortEntryUpdated" xml:space="preserve">
+    <value>Entry changed</value>
+  </data>
+  <data name="FlowShortEntryDeleted" xml:space="preserve">
+    <value>Entry removed</value>
+  </data>
   <data name="FlowOr" xml:space="preserve">
     <value>Or {0}</value>
   </data>
@@ -5536,6 +5599,9 @@ Document read. You can move your iPhone.</value>
   </data>
   <data name="ShowMore" xml:space="preserve">
     <value>Show more</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Show less</value>
   </data>
   <data name="TokensEmptyHeading" xml:space="preserve">
     <value>No tokens yet</value>
