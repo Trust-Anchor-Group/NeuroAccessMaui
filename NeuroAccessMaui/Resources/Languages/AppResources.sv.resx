@@ -2326,6 +2326,72 @@ Fortsätt bara om du litar på var den kommer ifrån.</value>
   <data name="Chat" xml:space="preserve">
     <value>Chatt</value>
   </data>
+  <data name="ChatAttach" xml:space="preserve">
+    <value>Dela något</value>
+  </data>
+  <data name="ChatDelivered" xml:space="preserve">
+    <value>Levererat</value>
+  </data>
+  <data name="ChatEdit" xml:space="preserve">
+    <value>Redigera</value>
+  </data>
+  <data name="ChatEdited" xml:space="preserve">
+    <value>redigerat</value>
+  </data>
+  <data name="ChatEditing" xml:space="preserve">
+    <value>Redigerar meddelande</value>
+  </data>
+  <data name="ChatEmptyText" xml:space="preserve">
+    <value>Skriv ett meddelande, eller dela ett foto, ett ID, ett kontrakt eller en betalning.</value>
+  </data>
+  <data name="ChatEmptyTitle" xml:space="preserve">
+    <value>Inga meddelanden än</value>
+  </data>
+  <data name="ChatMe" xml:space="preserve">
+    <value>Jag</value>
+  </data>
+  <data name="ChatOnline" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="ChatReply" xml:space="preserve">
+    <value>Svara</value>
+  </data>
+  <data name="ChatReplyingTo" xml:space="preserve">
+    <value>Svarar {0}</value>
+  </data>
+  <data name="ChatReplyingToYourMessage" xml:space="preserve">
+    <value>Svarar på ditt meddelande</value>
+  </data>
+  <data name="ChatScrollToLatest" xml:space="preserve">
+    <value>Gå till senaste meddelandet</value>
+  </data>
+  <data name="ChatSelfEmptyText" xml:space="preserve">
+    <value>Anteckningar du skriver här stannar på den här telefonen. De skickas aldrig.</value>
+  </data>
+  <data name="ChatSelfSubtitle" xml:space="preserve">
+    <value>Bara på den här telefonen</value>
+  </data>
+  <data name="ChatSent" xml:space="preserve">
+    <value>Skickat</value>
+  </data>
+  <data name="ChatShareCamera" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="ChatShareContact" xml:space="preserve">
+    <value>Kontakt</value>
+  </data>
+  <data name="ChatShareMyId" xml:space="preserve">
+    <value>Mitt ID</value>
+  </data>
+  <data name="ChatShareTitle" xml:space="preserve">
+    <value>Dela i chatten</value>
+  </data>
+  <data name="ChatTyping" xml:space="preserve">
+    <value>Skriver…</value>
+  </data>
+  <data name="ContactsMeDescription" xml:space="preserve">
+    <value>Meddelanden till dig själv</value>
+  </data>
   <data name="ConnectToDevice" xml:space="preserve">
     <value>Anslut till enhet</value>
   </data>

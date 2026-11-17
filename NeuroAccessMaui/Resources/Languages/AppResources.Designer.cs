@@ -1150,6 +1150,204 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Share something.
+        /// </summary>
+        public static string ChatAttach {
+            get {
+                return ResourceManager.GetString("ChatAttach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delivered.
+        /// </summary>
+        public static string ChatDelivered {
+            get {
+                return ResourceManager.GetString("ChatDelivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string ChatEdit {
+            get {
+                return ResourceManager.GetString("ChatEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to edited.
+        /// </summary>
+        public static string ChatEdited {
+            get {
+                return ResourceManager.GetString("ChatEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editing message.
+        /// </summary>
+        public static string ChatEditing {
+            get {
+                return ResourceManager.GetString("ChatEditing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write a message, or share a photo, an ID, a contract or a payment..
+        /// </summary>
+        public static string ChatEmptyText {
+            get {
+                return ResourceManager.GetString("ChatEmptyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No messages yet.
+        /// </summary>
+        public static string ChatEmptyTitle {
+            get {
+                return ResourceManager.GetString("ChatEmptyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Me.
+        /// </summary>
+        public static string ChatMe {
+            get {
+                return ResourceManager.GetString("ChatMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online.
+        /// </summary>
+        public static string ChatOnline {
+            get {
+                return ResourceManager.GetString("ChatOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reply.
+        /// </summary>
+        public static string ChatReply {
+            get {
+                return ResourceManager.GetString("ChatReply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replying to {0}.
+        /// </summary>
+        public static string ChatReplyingTo {
+            get {
+                return ResourceManager.GetString("ChatReplyingTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replying to your message.
+        /// </summary>
+        public static string ChatReplyingToYourMessage {
+            get {
+                return ResourceManager.GetString("ChatReplyingToYourMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to latest message.
+        /// </summary>
+        public static string ChatScrollToLatest {
+            get {
+                return ResourceManager.GetString("ChatScrollToLatest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes you write here stay on this phone. They are never sent..
+        /// </summary>
+        public static string ChatSelfEmptyText {
+            get {
+                return ResourceManager.GetString("ChatSelfEmptyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only on this phone.
+        /// </summary>
+        public static string ChatSelfSubtitle {
+            get {
+                return ResourceManager.GetString("ChatSelfSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sent.
+        /// </summary>
+        public static string ChatSent {
+            get {
+                return ResourceManager.GetString("ChatSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string ChatShareCamera {
+            get {
+                return ResourceManager.GetString("ChatShareCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact.
+        /// </summary>
+        public static string ChatShareContact {
+            get {
+                return ResourceManager.GetString("ChatShareContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My ID.
+        /// </summary>
+        public static string ChatShareMyId {
+            get {
+                return ResourceManager.GetString("ChatShareMyId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share in chat.
+        /// </summary>
+        public static string ChatShareTitle {
+            get {
+                return ResourceManager.GetString("ChatShareTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typing….
+        /// </summary>
+        public static string ChatTyping {
+            get {
+                return ResourceManager.GetString("ChatTyping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Messages to yourself.
+        /// </summary>
+        public static string ContactsMeDescription {
+            get {
+                return ResourceManager.GetString("ContactsMeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to City.
         /// </summary>
         public static string City {

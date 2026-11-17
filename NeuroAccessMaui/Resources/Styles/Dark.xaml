@@ -173,4 +173,6 @@
 	<Color x:Key="TnPWarningbgWL">#33f18334</Color>
 	<!-- Inline code, code blocks and table headers in markdown text -->
 	<Color x:Key="MarkdownChipWL">#3a3a3d</Color>
+	<!-- Chat bubbles of messages the user sent -->
+	<Color x:Key="ChatBubbleSentWL">#1b3a30</Color>
 </ResourceDictionary>

@@ -136,10 +136,47 @@
 								Grid.Row="3"/>
 			
 			<ScrollView Grid.Row="3">
-				<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
-								ItemsSource="{Binding Path=FilteredContacts}"
-								ItemTemplate="{StaticResource ContactTemplate}"
-								IsVisible="{Binding ContactsLoader.IsSucceeded}"/>
+				<VerticalStackLayout>
+					<!-- The user: notes to yourself, and your own ID -->
+					<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding ShowsMe}"
+							SemanticProperties.Description="{l:Localize ChatMe}"
+							SemanticProperties.Hint="{l:Localize ContactsMeDescription}">
+						<Grid ColumnDefinitions="auto, *, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
+							<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24" StrokeThickness="0"
+									BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}" InputTransparent="True">
+								<Label Text="{l:Localize ChatMe}" FontFamily="SpaceGroteskSemiBold" FontSize="15" TextColor="White"
+									   HorizontalOptions="Center" VerticalOptions="Center"/>
+							</Border>
+
+							<VerticalStackLayout Grid.Column="1" VerticalOptions="Center" InputTransparent="True">
+								<Label Text="{l:Localize ChatMe}" LineBreakMode="TailTruncation" Style="{DynamicResource Brand2LabelS}"/>
+								<Label Text="{l:Localize ContactsMeDescription}" LineBreakMode="TailTruncation" Style="{DynamicResource Brand2LabelSSecondary}"/>
+							</VerticalStackLayout>
+
+							<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
+												VerticalOptions="Center"
+												Grid.Column="2"
+												SemanticProperties.Description="{l:Localize Chat}"
+												Command="{Binding OpenMyChatCommand}"/>
+
+							<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
+												VerticalOptions="Center"
+												Grid.Column="3"
+												SemanticProperties.Description="{l:Localize LegalId}"
+												Command="{Binding ViewMyIdCommand}"
+												IsVisible="{Binding HasMyId}"/>
+						</Grid>
+
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding OpenMyChatCommand}" />
+						</Border.GestureRecognizers>
+					</Border>
+
+					<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
+									ItemsSource="{Binding Path=FilteredContacts}"
+									ItemTemplate="{StaticResource ContactTemplate}"
+									IsVisible="{Binding ContactsLoader.IsSucceeded}"/>
+				</VerticalStackLayout>
 			</ScrollView>
 		</Grid>
 	</Grid>

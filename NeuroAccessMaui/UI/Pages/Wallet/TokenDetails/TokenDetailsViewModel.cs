@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
@@ -1912,7 +1913,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			if (!await TokenShareFormatter.ConfirmShareAsync(Token, ContactName))
 				return;
 
-			await ChatViewModel.ExecuteSendMessage(string.Empty, TokenShareFormatter.ToChatMarkdown(Token), Contact.BareJid);
+			await ChatSender.SendAsync(Contact.BareJid, TokenShareFormatter.ToChatMarkdown(Token));
 
 			if (Contact.Contact is not null)
 			{

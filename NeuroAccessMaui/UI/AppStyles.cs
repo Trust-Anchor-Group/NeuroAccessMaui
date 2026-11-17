@@ -35,8 +35,6 @@ namespace NeuroAccessMaui.UI
 		private static Style? regularCompositeEntryBorder;
 		private static Style? regularCompositeDatePicker;
 		private static Style? imageOnlyButton;
-		private static Style? sendFrame;
-		private static Style? receiveFrame;
 		private static Style? requiredFieldMarker;
 		private static Style? requiredFieldMarkerSpan;
 		private static Style? tableCellEven;
@@ -375,30 +373,6 @@ namespace NeuroAccessMaui.UI
 			{
 				secondaryImageButton ??= TryGetResource<Style>("SecondaryImageButton");
 				return secondaryImageButton!;
-			}
-		}
-
-		/// <summary>
-		/// Style for send frames
-		/// </summary>
-		public static Style SendFrame
-		{
-			get
-			{
-				sendFrame ??= TryGetResource<Style>("SendFrame");
-				return sendFrame!;
-			}
-		}
-
-		/// <summary>
-		/// Style for receive frames
-		/// </summary>
-		public static Style ReceiveFrame
-		{
-			get
-			{
-				receiveFrame ??= TryGetResource<Style>("ReceiveFrame");
-				return receiveFrame!;
 			}
 		}
 

@@ -15,7 +15,6 @@ using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Converters;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
@@ -71,14 +70,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public ViewContractViewModel()
 		{
 			this.args = ServiceRef.NavigationService.PopLatestArgs<ViewContractNavigationArgs>();
-
-			this.XmppUriClicked = this.CreateUriCommand(UriScheme.Xmpp);
-			this.IotIdUriClicked = this.CreateUriCommand(UriScheme.IotId);
-			this.IotScUriClicked = this.CreateUriCommand(UriScheme.IotSc);
-			this.NeuroFeatureUriClicked = this.CreateUriCommand(UriScheme.NeuroFeature);
-			this.IotDiscoUriClicked = this.CreateUriCommand(UriScheme.IotDisco);
-			this.EDalerUriClicked = this.CreateUriCommand(UriScheme.EDaler);
-			this.HyperlinkClicked = new Command(async p => await this.ExecuteHyperlinkClicked(p));
 		}
 
 		#endregion
@@ -1312,9 +1303,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		#region State Navigation Helpers
 
-		private Command CreateUriCommand(UriScheme Scheme)
-			=> new Command(async Parameter => await this.ExecuteUriClicked(Parameter, Scheme));
-
 		private async Task GoToStepAsync(ViewContractStep Step, Func<Task>? Prepare = null)
 		{
 			await this.GoToStateAsync(ViewContractStep.Loading);
@@ -2200,36 +2188,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		public override string? Link { get; }
 		public override Task<string> Title => Task.FromResult(this.ContractName);
-
-		#endregion
-
-		#region Markdown Link Handlers
-
-		public Command XmppUriClicked { get; }
-		public Command IotIdUriClicked { get; }
-		public Command IotScUriClicked { get; }
-		public Command NeuroFeatureUriClicked { get; }
-		public Command IotDiscoUriClicked { get; }
-		public Command EDalerUriClicked { get; }
-		public Command HyperlinkClicked { get; }
-
-		private Task ExecuteUriClicked(object? Parameter, UriScheme Scheme)
-		{
-			return this.RunContractActionAsync(async () =>
-			{
-				if (Parameter is string Uri)
-					await App.OpenUrlAsync(Uri);
-			});
-		}
-
-		private Task ExecuteHyperlinkClicked(object? Parameter)
-		{
-			return this.RunContractActionAsync(async () =>
-			{
-				if (Parameter is string Url)
-					await App.OpenUrlAsync(Url);
-			});
-		}
 
 		#endregion
 	}

@@ -21,6 +21,7 @@ using EDaler.Events;
 using EDaler.Uris;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Data;
@@ -299,6 +300,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.xmppClient.OnPresence += this.XmppClient_OnPresence;
 
 				this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
+				this.xmppClient.RegisterMessageHandler("received", XmppClient.NamespaceMessageDeliveryReceipts, this.XmppClient_OnReceiptReceived, false);
+				this.xmppClient.RegisterFeature(ChatSender.NamespaceChatStates);
 
 				this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
 					new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
@@ -2082,6 +2085,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
+			ChatState? State = ChatSender.GetChatState(e.Message);
+			if (State.HasValue)
+				ChatEvents.AddChatStatePeer(RemoteBareJid);
+
 			ContactInfo ContactInfo = await ContactInfo.FindByBareJid(RemoteBareJid);
 			string FriendlyName = ContactInfo?.FriendlyName ?? RemoteBareJid;
 			string? ReplaceObjectId = null;
@@ -2163,6 +2170,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
+			if (string.IsNullOrWhiteSpace(Message.PlainText) &&
+				string.IsNullOrWhiteSpace(Message.Markdown) &&
+				string.IsNullOrWhiteSpace(Message.Html))
+			{
+				// Only a chat state, such as that the other party is writing. Nothing to store.
+				if (State.HasValue)
+					ChatEvents.OnChatState(RemoteBareJid, State.Value);
+
+				return;
+			}
+
 			if (!string.IsNullOrEmpty(Message.Markdown))
 			{
 				try
@@ -2219,20 +2237,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
+			ChatEvents.OnMessageStored(Message, !string.IsNullOrEmpty(ReplaceObjectId));
+
+			if (State.HasValue)
+				ChatEvents.OnChatState(RemoteBareJid, State.Value);
+
+			if (ChatEvents.IsChatVisible(RemoteBareJid))
+				return;
+
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (ServiceRef.NavigationService.CurrentPage is ChatPage &&
-					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
-					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
+				try
 				{
-					if (string.IsNullOrEmpty(ReplaceObjectId))
-						await ChatViewModel.MessageAddedAsync(Message);
-					else
-						await ChatViewModel.MessageUpdatedAsync(Message);
-				}
-				else
-				{
-					string Title = ServiceRef.Localizer[nameof(AppResources.NotificationChatTitle), RemoteBareJid];
+					string Title = ServiceRef.Localizer[nameof(AppResources.NotificationChatTitle), FriendlyName];
 					string Body = ServiceRef.Localizer[nameof(AppResources.NotificationChatBody)];
 
 					NotificationIntent Intent = new()
@@ -2248,7 +2265,46 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
 			});
+		}
+
+		/// <summary>
+		/// Marks a sent chat message as delivered, when the other party confirms that it arrived (XEP-0184).
+		/// </summary>
+		private async Task XmppClient_OnReceiptReceived(object? Sender, MessageEventArgs e)
+		{
+			try
+			{
+				string Id = XML.Attribute(e.Content, "id");
+				if (string.IsNullOrEmpty(Id))
+					Id = e.Id;
+
+				if (!Guid.TryParse(Id, out _))
+					return;
+
+				ChatMessage? Message = await Database.TryLoadObject<ChatMessage>(Id);
+
+				if (Message is null ||
+					Message.MessageType != NeuroAccessMaui.UI.Pages.Contacts.Chat.MessageType.Sent ||
+					Message.Delivered != DateTime.MinValue ||
+					!string.Equals(Message.RemoteBareJid?.Value, e.FromBareJID, StringComparison.OrdinalIgnoreCase))
+				{
+					return;
+				}
+
+				Message.Delivered = DateTime.UtcNow;
+				await Database.Update(Message);
+
+				ChatEvents.OnMessageDelivered(Message);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		private Task ContractsClient_ClientMessage(object? Sender, ClientMessageEventArgs e)

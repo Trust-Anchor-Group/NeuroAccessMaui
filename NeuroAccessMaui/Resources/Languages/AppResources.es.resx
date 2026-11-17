@@ -2326,6 +2326,72 @@ Continúa solo si confías en su origen.</value>
   <data name="Chat" xml:space="preserve">
     <value>Charlar</value>
   </data>
+  <data name="ChatAttach" xml:space="preserve">
+    <value>Compartir algo</value>
+  </data>
+  <data name="ChatDelivered" xml:space="preserve">
+    <value>Entregado</value>
+  </data>
+  <data name="ChatEdit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="ChatEdited" xml:space="preserve">
+    <value>editado</value>
+  </data>
+  <data name="ChatEditing" xml:space="preserve">
+    <value>Editando mensaje</value>
+  </data>
+  <data name="ChatEmptyText" xml:space="preserve">
+    <value>Escribe un mensaje, o comparte una foto, una identidad, un contrato o un pago.</value>
+  </data>
+  <data name="ChatEmptyTitle" xml:space="preserve">
+    <value>Aún no hay mensajes</value>
+  </data>
+  <data name="ChatMe" xml:space="preserve">
+    <value>Yo</value>
+  </data>
+  <data name="ChatOnline" xml:space="preserve">
+    <value>En línea</value>
+  </data>
+  <data name="ChatReply" xml:space="preserve">
+    <value>Responder</value>
+  </data>
+  <data name="ChatReplyingTo" xml:space="preserve">
+    <value>Respondiendo a {0}</value>
+  </data>
+  <data name="ChatReplyingToYourMessage" xml:space="preserve">
+    <value>Respondiendo a tu mensaje</value>
+  </data>
+  <data name="ChatScrollToLatest" xml:space="preserve">
+    <value>Ir al último mensaje</value>
+  </data>
+  <data name="ChatSelfEmptyText" xml:space="preserve">
+    <value>Las notas que escribas aquí se quedan en este teléfono. Nunca se envían.</value>
+  </data>
+  <data name="ChatSelfSubtitle" xml:space="preserve">
+    <value>Solo en este teléfono</value>
+  </data>
+  <data name="ChatSent" xml:space="preserve">
+    <value>Enviado</value>
+  </data>
+  <data name="ChatShareCamera" xml:space="preserve">
+    <value>Cámara</value>
+  </data>
+  <data name="ChatShareContact" xml:space="preserve">
+    <value>Contacto</value>
+  </data>
+  <data name="ChatShareMyId" xml:space="preserve">
+    <value>Mi ID</value>
+  </data>
+  <data name="ChatShareTitle" xml:space="preserve">
+    <value>Compartir en el chat</value>
+  </data>
+  <data name="ChatTyping" xml:space="preserve">
+    <value>Escribiendo…</value>
+  </data>
+  <data name="ContactsMeDescription" xml:space="preserve">
+    <value>Mensajes para ti</value>
+  </data>
   <data name="ConnectToDevice" xml:space="preserve">
     <value>Conectar al dispositivo</value>
   </data>

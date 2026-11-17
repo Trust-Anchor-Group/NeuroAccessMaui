@@ -221,6 +221,10 @@ namespace NeuroAccessMaui
 			{
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 			});
+			EditorHandler.Mapper.AppendToMapping("NoUnderlineEditorHandler", (Handler, View) =>
+			{
+				Handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
+			});
 			PickerHandler.Mapper.AppendToMapping("NoUnderlinePickerHandler", (handler, view) =>
 			{
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());

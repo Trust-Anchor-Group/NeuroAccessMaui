@@ -1,6 +1,4 @@
 ﻿using System.Globalization;
-using System.Windows.Input;
-using NeuroAccessMaui.Extensions;
 using Waher.Persistence;
 using Waher.Persistence.Attributes;
 
@@ -23,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 	}
 
 	/// <summary>
-	/// Chat Messages
+	/// A stored chat message.
 	/// </summary>
 	[CollectionName("ChatMessages")]
 	[TypeName(TypeNameSerialization.None)]
@@ -31,233 +29,73 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 	[Index("RemoteBareJid", "RemoteObjectId")]
 	public class ChatMessage : IUniqueItem
 	{
-		private string? objectId = null;
-		private CaseInsensitiveString? remoteBareJid = null;
-		private DateTime created = DateTime.MinValue;
-		private DateTime updated = DateTime.MinValue;
-		private string? remoteObjectId = null;
-		private MessageType messageType = MessageType.Sent;
-		private string plainText = string.Empty;
-		private string markdown = string.Empty;
-		private string html = string.Empty;
-		private object? parsedXaml = null;
-
-		private IChatView? chatView;
-
 		/// <summary>
-		/// Chat Messages
+		/// A stored chat message.
 		/// </summary>
 		public ChatMessage()
 		{
-			this.MessageType = MessageType.Received;
-			this.Updated = DateTime.MinValue;
-
-			this.XmppUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.Xmpp));
-			this.IotIdUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.IotId));
-			this.IotScUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.IotSc));
-			this.NeuroFeatureUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.NeuroFeature));
-			this.IotDiscoUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.IotDisco));
-			this.EDalerUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.EDaler));
-			this.HyperlinkClicked = new Command(async Parameter => await ExecuteHyperlinkClicked(Parameter));
 		}
 
 		/// <inheritdoc/>
 		public string UniqueName => this.ObjectId ?? string.Empty;
 
 		/// <summary>
-		/// Object ID
+		/// Object ID. For sent messages, it is also the ID of the message stanza.
 		/// </summary>
 		[ObjectId]
-		public string? ObjectId
-		{
-			get => this.objectId;
-			set => this.objectId = value;
-		}
+		public string? ObjectId { get; set; }
 
 		/// <summary>
-		/// Remote Bare JID
+		/// Address of the other party.
 		/// </summary>
-		public CaseInsensitiveString? RemoteBareJid
-		{
-			get => this.remoteBareJid;
-			set => this.remoteBareJid = value;
-		}
+		public CaseInsensitiveString? RemoteBareJid { get; set; }
 
 		/// <summary>
-		/// When message was created
+		/// When the message was sent or received.
 		/// </summary>
-		public DateTime Created
-		{
-			get => this.created;
-			set => this.created = value;
-		}
+		public DateTime Created { get; set; } = DateTime.MinValue;
 
 		/// <summary>
-		/// When message was created
+		/// When the message was last corrected, or <see cref="DateTime.MinValue"/>.
 		/// </summary>
 		[DefaultValueDateTimeMinValue]
-		public DateTime Updated
-		{
-			get => this.updated;
-			set => this.updated = value;
-		}
+		public DateTime Updated { get; set; } = DateTime.MinValue;
 
 		/// <summary>
-		/// Remote Objcet ID. If sent by the local user, value will be null or empty.
+		/// When the other party confirmed that a sent message arrived, or <see cref="DateTime.MinValue"/>.
 		/// </summary>
-		public string? RemoteObjectId
-		{
-			get => this.remoteObjectId;
-			set => this.remoteObjectId = value;
-		}
+		[DefaultValueDateTimeMinValue]
+		public DateTime Delivered { get; set; } = DateTime.MinValue;
 
 		/// <summary>
-		/// Message Type
+		/// ID of the message stanza of a received message.
 		/// </summary>
-		public MessageType MessageType
-		{
-			get => this.messageType;
-			set => this.messageType = value;
-		}
+		public string? RemoteObjectId { get; set; }
 
 		/// <summary>
-		/// Plain text of message
+		/// If the message was sent or received.
 		/// </summary>
-		public string PlainText
-		{
-			get => this.plainText;
-			set => this.plainText = value;
-		}
+		public MessageType MessageType { get; set; } = MessageType.Received;
 
 		/// <summary>
-		/// Markdown of message
+		/// Plain text of the message.
 		/// </summary>
-		public string Markdown
-		{
-			get => this.markdown;
-			set => this.markdown = value;
-		}
+		public string PlainText { get; set; } = string.Empty;
 
 		/// <summary>
-		/// HTML of message
+		/// Markdown of the message, if any.
 		/// </summary>
-		public string Html
-		{
-			get => this.html;
-			set
-			{
-				this.html = value;
-				this.parsedXaml = null;
-			}
-		}
+		public string Markdown { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Message Style ID
+		/// HTML of the message, if any.
 		/// </summary>
-		public string StyleId => "Message" + this.messageType.ToString();
-
-		/// <summary>
-		/// Parses the XAML in the message.
-		/// </summary>
-		/// <param name="View"></param>
-		public async Task GenerateXaml(IChatView View)
-		{
-			this.chatView = View;
-
-			if (!string.IsNullOrEmpty(this.markdown))
-			{
-				this.parsedXaml = await this.markdown.MarkdownToParsedXaml();
-				if (this.parsedXaml is VerticalStackLayout Layout)
-					Layout.StyleId = this.StyleId;
-			}
-			else
-			{
-				VerticalStackLayout Layout = new()
-				{
-					StyleId = string.IsNullOrEmpty(this.html) && string.IsNullOrEmpty(this.plainText) ? string.Empty : this.StyleId
-				};
-
-				if (!string.IsNullOrEmpty(this.html))
-				{
-					Layout.Children.Add(new Label()
-					{
-						Text = this.html,
-						TextType = TextType.Html
-					});
-				}
-				else if (!string.IsNullOrEmpty(this.plainText))
-				{
-					Layout.Children.Add(new Label()
-					{
-						Text = this.plainText,
-						TextType = TextType.Text
-					});
-				}
-				this.parsedXaml = Layout;
-			}
-		}
-
-		/// <summary>
-		/// Parsed XAML
-		/// </summary>
-		public object? ParsedXaml => this.parsedXaml;
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the xmpp URI scheme is clicked.
-		/// </summary>
-		public Command XmppUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the iotid URI scheme is clicked.
-		/// </summary>
-		public Command IotIdUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the iotsc URI scheme is clicked.
-		/// </summary>
-		public Command IotScUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the nfeat URI scheme is clicked.
-		/// </summary>
-		public Command NeuroFeatureUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the iotdisco URI scheme is clicked.
-		/// </summary>
-		public Command IotDiscoUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the edaler URI scheme is clicked.
-		/// </summary>
-		public Command EDalerUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a hyperlink in rendered markdown has been clicked.
-		/// </summary>
-		public Command HyperlinkClicked { get; }
-
-		private Task ExecuteUriClicked(object Parameter, UriScheme Scheme)
-		{
-			if (Parameter is string Uri && this.chatView is not null)
-				return this.chatView.ExecuteUriClicked(Uri, Scheme);
-			else
-				return Task.CompletedTask;
-		}
-
-		private static async Task ExecuteHyperlinkClicked(object Parameter)
-		{
-			if (Parameter is not string Url)
-				return;
-
-			await App.OpenUrlAsync(Url);
-		}
+		public string Html { get; set; } = string.Empty;
 
 		/// <inheritdoc/>
 		public override string ToString()
 		{
-			return this.created.ToString(CultureInfo.CurrentCulture);
+			return this.Created.ToString(CultureInfo.CurrentCulture);
 		}
-
 	}
 }

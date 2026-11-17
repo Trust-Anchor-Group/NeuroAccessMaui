@@ -478,7 +478,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 			else
 			{
 				this.selected.TrySetResult(this);
-				await ServiceRef.UiService.GoBackAsync();
+				await ServiceRef.NavigationService.GoBackAsync();
 			}
 		}
 	}

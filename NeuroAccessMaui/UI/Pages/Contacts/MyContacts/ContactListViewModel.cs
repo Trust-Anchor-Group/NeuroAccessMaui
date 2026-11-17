@@ -60,7 +60,19 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		public ObservableTask<int> ContactsLoader => this.contactsLoader;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowsMe))]
 		private bool isViewMode = false;
+
+		/// <summary>
+		/// If the row for the user shows at the top, which opens notes to yourself.
+		/// </summary>
+		public bool ShowsMe => this.IsViewMode && string.IsNullOrWhiteSpace(this.SearchText) &&
+			!string.IsNullOrEmpty(ServiceRef.XmppService.BareJid);
+
+		/// <summary>
+		/// If the user has an ID to show from their row.
+		/// </summary>
+		public bool HasMyId => ServiceRef.TagProfile.LegalIdentity is not null;
 
 		private string? searchText; // backing field
 		/// <summary>
@@ -75,6 +87,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				{
 					this.searchText = value;
 					this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.SearchText)));
+					this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.ShowsMe)));
 					// Trigger debounced filtering
 					this.searchFilterTask.Run();
 				}
@@ -358,6 +371,31 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				i++;
 				Suffix = " " + i.ToString(CultureInfo.InvariantCulture);
 			}
+		}
+
+		/// <summary>
+		/// Opens notes to yourself: a chat with your own address, kept on the phone.
+		/// </summary>
+		[RelayCommand]
+		private async Task OpenMyChat()
+		{
+			string BareJid = ServiceRef.XmppService.BareJid;
+			if (string.IsNullOrEmpty(BareJid))
+				return;
+
+			ChatNavigationArgs Args = new(ServiceRef.TagProfile.LegalIdentity?.Id, BareJid, ServiceRef.Localizer[nameof(AppResources.ChatMe)]);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
+		}
+
+		/// <summary>
+		/// Shows the user's own ID.
+		/// </summary>
+		[RelayCommand]
+		private async Task ViewMyId()
+		{
+			Waher.Networking.XMPP.Contracts.LegalIdentity? Identity = ServiceRef.TagProfile.LegalIdentity;
+			if (Identity is not null)
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 		}
 
 		private bool CanSelectContact => !this.IsViewMode;

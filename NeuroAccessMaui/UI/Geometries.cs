@@ -683,5 +683,22 @@ namespace NeuroAccessMaui.UI
 			M9 11.24V7.5C9 6.12 10.12 5 11.5 5C12.88 5 14 6.12 14 7.5V11.24C15.21 10.43 16 9.06 16 7.5C16 5.01 13.99 3 11.5 3C9.01 3 7 5.01 7 7.5C7 9.06 7.79 10.43 9 11.24Z
 			M18.84 15.87L14.3 13.61C14.13 13.54 13.95 13.5 13.76 13.5H13V7.5C13 6.67 12.33 6 11.5 6C10.67 6 10 6.67 10 7.5V18.24L6.57 17.52C6.49 17.51 6.42 17.49 6.33 17.49C6.02 17.49 5.74 17.62 5.54 17.82L4.75 18.62L9.69 23.56C9.96 23.83 10.34 24 10.75 24H17.54C18.29 24 18.87 23.45 18.98 22.72L19.73 17.45C19.74 17.38 19.75 17.31 19.75 17.25C19.75 16.63 19.37 16.09 18.84 15.87Z
 			""");
+
+		/// <summary>
+		/// An arrow bending back, for replying to a message
+		/// </summary>
+		public static readonly Geometry ReplyPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+			M10 9V5L3 12L10 19V14.9C15 14.9 18.5 16.5 21 20C20 15 17 10 10 9Z
+			""");
+
+		/// <summary>
+		/// A pencil, for changing a text
+		/// </summary>
+		public static readonly Geometry EditPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+			M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25Z
+			M20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z
+			""");
 	}
 }

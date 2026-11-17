@@ -447,11 +447,27 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			return null;
 		}
 
+		/// <summary>
+		/// The second line of a card for a link to something else in the app, such as a thing.
+		/// </summary>
+		private static string? AppSubtitle(string Url)
+		{
+			if (Constants.UriSchemes.GetScheme(Url) == Constants.UriSchemes.IotDisco)
+				return ServiceRef.Localizer[nameof(AppResources.Thing)];
+
+			return null;
+		}
+
 		private static MdEmbed CreateLinkCard(string Url, string? Text, MdAlignment Alignment)
 		{
 			MdEmbedKind Kind = KindOf(Url);
 			string Title = string.IsNullOrWhiteSpace(Text) ? Url : Text;
-			string? Subtitle = Kind == MdEmbedKind.Web ? WebSubtitle(Url) : KindName(Kind);
+			string? Subtitle = Kind switch
+			{
+				MdEmbedKind.Web => WebSubtitle(Url),
+				MdEmbedKind.App => AppSubtitle(Url),
+				_ => KindName(Kind)
+			};
 
 			if (string.Equals(Subtitle, Title, StringComparison.OrdinalIgnoreCase))
 				Subtitle = null;

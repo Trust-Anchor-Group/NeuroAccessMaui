@@ -1,15 +1,20 @@
+using System.ComponentModel;
+using System.Globalization;
+using System.Text;
+using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Chat;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
-using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Converters;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat.Controls;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
@@ -19,1168 +24,1049 @@ using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
-using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroFeatures;
-using SkiaSharp;
-using System.ComponentModel;
-using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Timers;
-using System.Xml;
-using Waher.Content;
-using Waher.Content.Html;
 using Waher.Content.Markdown;
-using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.HttpFileUpload;
+using Waher.Networking.XMPP.Events;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
 	/// <summary>
-	/// The view model to bind to when displaying the list of contacts.
+	/// The view model of a chat with a contact, or of notes to yourself.
 	/// </summary>
-	public partial class ChatViewModel : XmppViewModel, IChatView, ILinkableView
+	/// <remarks>
+	/// Messages are loaded in batches, newest first, and their text is built off the UI thread before the rows are added.
+	/// Messages that arrive or are sent while the chat is open come through <see cref="ChatEvents"/>.
+	/// </remarks>
+	public partial class ChatViewModel : XmppViewModel, ILinkableView
 	{
-		private readonly SortedDictionary<string, LinkedListNode<MessageRecord>> messagesByObjectId = [];
-		private readonly LinkedList<MessageRecord> messages = [];
-		private readonly LinkedList<MessageFrame> frames = [];
-		private readonly ChatPage page;
-		private readonly object synchObject = new();
-		private TaskCompletionSource<bool> waitUntilBound = new();
-		private IView? scrollTo;
+		private const int batchSize = 30;
+		private const int quoteMaxLength = 200;
+		private const int quoteMaxLines = 3;
+		private static readonly TimeSpan groupInterval = TimeSpan.FromMinutes(2);
+		private static readonly TimeSpan pausedAfter = TimeSpan.FromSeconds(5);
+		private static readonly TimeSpan typingTimeout = TimeSpan.FromSeconds(30);
 
-		private class MessageRecord(ChatMessage Message, LinkedListNode<MessageFrame> FrameNode)
+		private readonly Dictionary<string, ChatMessageItem> itemsByObjectId = new(StringComparer.Ordinal);
+		private readonly bool isSelfChat;
+		private DateTime oldestLoaded = DateTime.MaxValue;
+		private bool loadingOlder;
+		private bool isComposing;
+		private bool isAtBottom = true;
+		private CancellationTokenSource? pausedTimer;
+		private CancellationTokenSource? remoteTypingTimer;
+
+		static ChatViewModel()
 		{
-			public ChatMessage Message = Message;
-			public LinkedListNode<MessageFrame> FrameNode = FrameNode;
-
-			public DateTime Created => this.Message.Created;
-			public MessageType MessageType => this.Message.MessageType;
+			ChatAttachments.Register();
 		}
 
 		/// <summary>
-		/// Creates an instance of the <see cref="ChatViewModel"/> class.
+		/// Creates the view model of a chat.
 		/// </summary>
-		/// <param name="Page">Reference to chat page.</param>
 		/// <param name="Args">Navigation arguments</param>
-		public ChatViewModel(ChatPage Page, ChatNavigationArgs? Args)
+		public ChatViewModel(ChatNavigationArgs? Args)
 			: base()
 		{
-			this.page = Page;
-			this.LegalId = Args?.LegalId ?? string.Empty;
-			this.BareJid = Args?.BareJid ?? string.Empty;
-			this.FriendlyName = Args?.FriendlyName ?? string.Empty;
-			this.UniqueId = Args?.UniqueId;
+			this.legalId = Args?.LegalId ?? string.Empty;
+			this.bareJid = Args?.BareJid ?? string.Empty;
+			this.uniqueId = Args?.UniqueId;
+			this.isSelfChat = ChatSender.IsSelf(this.bareJid);
 
-			this.XmppUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.Xmpp));
-			this.IotIdUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotId));
-			this.IotScUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotSc));
-			this.NeuroFeatureUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.NeuroFeature));
-			this.IotDiscoUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotDisco));
-			this.EDalerUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.EDaler));
-			this.HyperlinkClicked = new Command(async Parameter => await ExecuteHyperlinkClicked(Parameter));
+			string Name = this.isSelfChat ? ServiceRef.Localizer[nameof(AppResources.ChatMe)] :
+				string.IsNullOrEmpty(Args?.FriendlyName) ? this.bareJid : Args.FriendlyName;
+
+			this.friendlyName = Name;
+			this.Initials = GetInitials(Name, this.isSelfChat);
+			this.LinkCommand = new AsyncRelayCommand<string>(this.OpenLinkAsync);
+			this.ActionsCommand = new AsyncRelayCommand<ChatMessageItem>(this.ShowMessageActionsAsync);
 		}
 
-		/// <summary>
-		/// Command executed when a multi-media-link with the xmpp URI scheme is clicked.
-		/// </summary>
-		public Command XmppUriClicked { get; }
+		#region Properties
 
 		/// <summary>
-		/// Command executed when a multi-media-link with the iotid URI scheme is clicked.
-		/// </summary>
-		public Command IotIdUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the iotsc URI scheme is clicked.
-		/// </summary>
-		public Command IotScUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the nfeat URI scheme is clicked.
-		/// </summary>
-		public Command NeuroFeatureUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the iotdisco URI scheme is clicked.
-		/// </summary>
-		public Command IotDiscoUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a multi-media-link with the edaler URI scheme is clicked.
-		/// </summary>
-		public Command EDalerUriClicked { get; }
-
-		/// <summary>
-		/// Command executed when a hyperlink in rendered markdown has been clicked.
-		/// </summary>
-		public Command HyperlinkClicked { get; }
-
-		private static async Task ExecuteHyperlinkClicked(object Parameter)
-		{
-			if (Parameter is not string Url)
-				return;
-
-			await App.OpenUrlAsync(Url);
-		}
-
-
-		/// <inheritdoc/>
-		public override async Task OnInitializeAsync()
-		{
-			await base.OnInitializeAsync();
-
-			this.scrollTo = await this.LoadMessagesAsync(false);
-
-			this.waitUntilBound.TrySetResult(true);
-
-			await ServiceRef.NotificationService.DeleteEvents(NotificationEventType.Contacts, this.BareJid);
-
-		}
-
-		/// <inheritdoc/>
-		public override async Task OnDisposeAsync()
-		{
-			await base.OnDisposeAsync();
-
-			this.waitUntilBound = new TaskCompletionSource<bool>();
-		}
-
-		private Task Page_OnAfterAppearing(object Sender, EventArgs e)
-		{
-			if (this.scrollTo is Element)
-			{
-			//	await Task.Delay(100);  // TODO: Why is this necessary? ScrollToAsync does not scroll to end element without it...
-
-			//	await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
-				this.scrollTo = null;
-			}
-
-			return Task.CompletedTask;
-		}
-
-		/// <summary>
-		/// Set the views unique ID
+		/// The view's unique ID.
 		/// </summary>
 		[ObservableProperty]
 		private string? uniqueId;
 
 		/// <summary>
-		/// Bare JID of remote party
+		/// Address of the other party.
 		/// </summary>
 		[ObservableProperty]
-		private string? bareJid;
+		private string bareJid;
 
 		/// <summary>
-		/// Bare JID of remote party
+		/// Legal ID of the other party, if known.
 		/// </summary>
 		[ObservableProperty]
-		private string? legalId;
+		private string legalId;
 
 		/// <summary>
-		/// Friendly name of remote party
+		/// Name of the other party.
 		/// </summary>
 		[ObservableProperty]
-		private string? friendlyName;
+		private string friendlyName;
 
 		/// <summary>
-		/// Current Markdown input.
+		/// Initials on the avatar.
+		/// </summary>
+		public string Initials { get; }
+
+		/// <summary>
+		/// If the chat holds notes to yourself, which stay on the phone.
+		/// </summary>
+		public bool IsSelfChat => this.isSelfChat;
+
+		/// <summary>
+		/// The rows of the chat: messages and days.
+		/// </summary>
+		public ChatItemCollection Items { get; } = [];
+
+		/// <summary>
+		/// Runs when a link or card in a message is tapped.
+		/// </summary>
+		public IAsyncRelayCommand<string> LinkCommand { get; }
+
+		/// <summary>
+		/// Shows what can be done with a message.
+		/// </summary>
+		public IAsyncRelayCommand<ChatMessageItem> ActionsCommand { get; }
+
+		/// <summary>
+		/// If the latest messages are being loaded.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(SendCommand))]
-		[NotifyCanExecuteChangedFor(nameof(CancelCommand))]
-		private string markdownInput = string.Empty;
+		[NotifyPropertyChangedFor(nameof(IsEmpty))]
+		private bool isLoading = true;
 
-		/// <inheritdoc/>
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		/// <summary>
+		/// If the chat has no messages.
+		/// </summary>
+		public bool IsEmpty => !this.IsLoading && this.Items.Count == 0;
+
+		/// <summary>
+		/// Text shown when the chat has no messages.
+		/// </summary>
+		public string EmptyText => this.isSelfChat ?
+			ServiceRef.Localizer[nameof(AppResources.ChatSelfEmptyText)] :
+			ServiceRef.Localizer[nameof(AppResources.ChatEmptyText)];
+
+		/// <summary>
+		/// If there are older messages than those loaded.
+		/// </summary>
+		[ObservableProperty]
+		private bool existsMoreMessages;
+
+		/// <summary>
+		/// If the other party is writing.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(Subtitle))]
+		[NotifyPropertyChangedFor(nameof(HasSubtitle))]
+		private bool isRemoteTyping;
+
+		/// <summary>
+		/// If the other party is online.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(Subtitle))]
+		[NotifyPropertyChangedFor(nameof(HasSubtitle))]
+		private bool isOnline;
+
+		/// <summary>
+		/// The line under the name: if the other party is writing or online, or that notes stay on the phone.
+		/// </summary>
+		public string? Subtitle
 		{
-			base.OnPropertyChanged(e);
-
-			switch (e.PropertyName)
+			get
 			{
-				case nameof(this.MarkdownInput):
-					this.IsWriting = !string.IsNullOrEmpty(this.MarkdownInput);
-					break;
+				if (this.isSelfChat)
+					return ServiceRef.Localizer[nameof(AppResources.ChatSelfSubtitle)];
 
-				case nameof(this.MessageId):
-					this.IsWriting = !string.IsNullOrEmpty(this.MessageId);
-					break;
+				if (this.IsRemoteTyping)
+					return ServiceRef.Localizer[nameof(AppResources.ChatTyping)];
 
-				case nameof(this.IsWriting):
-					this.IsButtonExpanded = false;
-					break;
+				if (this.IsOnline)
+					return ServiceRef.Localizer[nameof(AppResources.ChatOnline)];
 
-				case nameof(this.IsRecordingAudio):
-					// TODO: Audio
-					//
-					//this.IsRecordingPaused = audioRecorder.Value.IsPaused;
-					this.IsWriting = this.IsRecordingAudio;
-
-					//if (audioRecorderTimer is null)
-					//{
-					//	audioRecorderTimer = new System.Timers.Timer(100);
-					//	audioRecorderTimer.Elapsed += this.OnAudioRecorderTimer;
-					//	audioRecorderTimer.AutoReset = true;
-					//}
-					//
-					//audioRecorderTimer.Enabled = this.IsRecordingAudio;
-
-					this.OnPropertyChanged(nameof(RecordingTime));
-					this.CancelCommand.NotifyCanExecuteChanged();
-					break;
-
-				case nameof(this.IsConnected):
-					this.SendCommand.NotifyCanExecuteChanged();
-					this.CancelCommand.NotifyCanExecuteChanged();
-					this.RecordAudioCommand.NotifyCanExecuteChanged();
-					this.TakePhotoCommand.NotifyCanExecuteChanged();
-					this.EmbedFileCommand.NotifyCanExecuteChanged();
-					this.EmbedIdCommand.NotifyCanExecuteChanged();
-					this.EmbedContractCommand.NotifyCanExecuteChanged();
-					this.EmbedMoneyCommand.NotifyCanExecuteChanged();
-					this.EmbedTokenCommand.NotifyCanExecuteChanged();
-					this.EmbedThingCommand.NotifyCanExecuteChanged();
-					break;
+				return null;
 			}
 		}
 
 		/// <summary>
-		/// Current Markdown input.
+		/// If there is a line under the name.
 		/// </summary>
-		[ObservableProperty]
-		private string? messageId;
+		public bool HasSubtitle => !string.IsNullOrEmpty(this.Subtitle);
 
 		/// <summary>
-		/// Current Markdown input.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(LoadMoreMessagesCommand))]
-		private bool existsMoreMessages;
-
-		/// <summary>
-		/// If the user is writing markdown.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(RecordAudioCommand))]
-		[NotifyCanExecuteChangedFor(nameof(TakePhotoCommand))]
-		[NotifyCanExecuteChangedFor(nameof(EmbedFileCommand))]
-		[NotifyCanExecuteChangedFor(nameof(EmbedIdCommand))]
-		[NotifyCanExecuteChangedFor(nameof(EmbedContractCommand))]
-		[NotifyCanExecuteChangedFor(nameof(EmbedMoneyCommand))]
-		[NotifyCanExecuteChangedFor(nameof(EmbedTokenCommand))]
-		[NotifyCanExecuteChangedFor(nameof(EmbedThingCommand))]
-		private bool isWriting;
-
-		/// <summary>
-		/// If the user is recording an audio message
+		/// The text being written.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(SendCommand))]
-		private bool isRecordingAudio;
+		private string markdownInput = string.Empty;
 
 		/// <summary>
-		/// If the audio recording is paused
+		/// The sent message being corrected, if any.
 		/// </summary>
 		[ObservableProperty]
-		private bool isRecordingPaused;
+		[NotifyPropertyChangedFor(nameof(HasContext))]
+		[NotifyPropertyChangedFor(nameof(ContextTitle))]
+		[NotifyPropertyChangedFor(nameof(ContextText))]
+		private ChatMessageItem? editingItem;
 
 		/// <summary>
-		/// If the audio recording is paused
+		/// The message being replied to, if any.
 		/// </summary>
-		public static string RecordingTime
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasContext))]
+		[NotifyPropertyChangedFor(nameof(ContextTitle))]
+		[NotifyPropertyChangedFor(nameof(ContextText))]
+		private ChatMessageItem? replyItem;
+
+		/// <summary>
+		/// If the composer shows a message being corrected or replied to.
+		/// </summary>
+		public bool HasContext => this.EditingItem is not null || this.ReplyItem is not null;
+
+		/// <summary>
+		/// What the composer is doing: correcting or replying.
+		/// </summary>
+		public string ContextTitle
 		{
 			get
 			{
-				// TODO: Audio
-				//
-				//double Milliseconds = audioRecorder.Value.TotalAudioTimeout.TotalMilliseconds - audioRecorder.Value.RecordingTime.TotalMilliseconds;
-				//return (Milliseconds > 0) ? string.Format(CultureInfo.CurrentCulture, "{0:F0}s left", Math.Ceiling(Milliseconds / 1000.0)) : "TIMEOUT";
+				if (this.EditingItem is not null)
+					return ServiceRef.Localizer[nameof(AppResources.ChatEditing)];
+
+				if (this.ReplyItem is not null)
+				{
+					return this.ReplyItem.IsSent ?
+						ServiceRef.Localizer[nameof(AppResources.ChatReplyingToYourMessage)] :
+						ServiceRef.Localizer[nameof(AppResources.ChatReplyingTo), this.FriendlyName];
+				}
 
 				return string.Empty;
 			}
 		}
 
 		/// <summary>
-		/// External message has been received
+		/// The start of the message being corrected or replied to.
 		/// </summary>
-		/// <param name="Message">Message</param>
-		public async Task MessageAddedAsync(ChatMessage Message)
-		{
-			if(Message.ParsedXaml is null)
-					await Message.GenerateXaml(this);
-
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				IView? View = await this.MessageAddedMainThread(Message, true);
-
-				if (View is Element)
-				{
-       			await Task.Delay(25);
-					double Width = this.page.ScrollView.ScrollX;
-					double Height = this.page.ScrollView.ContentSize.Height;
-					await this.page.ScrollView.ScrollToAsync(Width, Height, true);	
-				}
-			});
-		}
-
-		private async Task<IView?> MessageAddedMainThread(ChatMessage Message, bool Historic)
-		{
-			this.HasMessages = true;
-
-			TaskCompletionSource<IView?> Result = new();
-
-			try
-			{
-				if(Message.ParsedXaml is null)
-					await Message.GenerateXaml(this);   // Makes sure XAML is generated
-
-				lock (this.synchObject)
-				{
-					LinkedListNode<MessageRecord>? MessageNode = Historic ? this.messages.Last : this.messages.First;
-					LinkedListNode<MessageFrame>? FrameNode;
-					MessageFrame? Frame;
-					MessageRecord Rec;
-					IView? View;
-					// int i;
-					if (MessageNode is null)
-					{
-
-						Frame = MessageFrame.Create(Message);
-						View = Frame.AddLast(Message);
-						this.page.Messages.Add(Frame);
-
-						FrameNode = this.frames.AddLast(Frame);
-
-						Rec = new(Message, FrameNode);
-						MessageNode = this.messages.AddLast(Rec);
-					}
-					else if (Historic)
-					{
-						while (MessageNode is not null && Message.Created > MessageNode.Value.Created)
-							MessageNode = MessageNode.Next;
-						if (MessageNode is null)
-						{
-							FrameNode = this.frames.Last!;
-
-							if (FrameNode.Value.MessageType != Message.MessageType)
-							{
-								FrameNode = this.frames.AddLast(MessageFrame.Create(Message));
-								this.page.Messages.Add(FrameNode.Value);
-							}
-
-							View = FrameNode.Value.AddLast(Message);
-
-							Rec = new(Message, FrameNode);
-							MessageNode = this.messages.AddLast(Rec);
-						}
-						else
-						{
-							View = null;
-							// TODO
-						}
-					}
-					else
-					{
-						while (MessageNode is not null && Message.Created < MessageNode.Value.Created)
-							MessageNode = MessageNode.Previous;
-
-						if (MessageNode is null)
-						{
-							FrameNode = this.frames.First!;
-
-							if (FrameNode.Value.MessageType != Message.MessageType)
-							{
-								FrameNode = this.frames.AddFirst(MessageFrame.Create(Message));
-								this.page.Messages.Insert(0, FrameNode.Value);
-							}
-
-							View = FrameNode.Value.AddFirst(Message);
-
-							Rec = new(Message, FrameNode);
-							MessageNode = this.messages.AddFirst(Rec);
-						}
-						else
-						{
-							View = null;
-							// TODO
-						}
-					}
-
-					Result.TrySetResult(View);
-
-					{
-
-
-						//else if (MessageNode.Value.ParsedXaml is IView PrevMessageXaml &&
-						//	(i = this.page.Messages.IndexOf(PrevMessageXaml)) >= 0)
-						//{
-						//	if (MessageNode.Value.ObjectId == Message.ObjectId)
-						//	{
-						//		this.page.Messages.RemoveAt(i);
-						//		this.page.Messages.Insert(i, MessageXaml);
-						//
-						//		MessageNode.Value = Message;
-						//	}
-						//	else
-						//	{
-						//		this.page.Messages.Insert(i + 1, MessageXaml);
-						//		MessageNode = this.messages.AddAfter(MessageNode, Message);
-						//	}
-						//}
-						//else
-						//{
-						//	MessageNode = this.messages.AddLast(Message);
-						//	this.page.Messages.Children.Add(MessageXaml);
-						//}
-					}
-
-					this.messagesByObjectId[Message.ObjectId ?? string.Empty] = MessageNode;
-				}
-			}
-			catch (Exception Ex)
-			{
-				Result.TrySetException(Ex);
-			}
-
-			return await Result.Task;
-		}
+		public string ContextText => Shorten((this.EditingItem ?? this.ReplyItem)?.Message.PlainText ?? string.Empty);
 
 		/// <summary>
-		/// External message has been updated
+		/// If a message is being sent, or an image prepared.
 		/// </summary>
-		/// <param name="Message">Message</param>
-		public async Task MessageUpdatedAsync(ChatMessage Message)
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(SendCommand))]
+		[NotifyCanExecuteChangedFor(nameof(AttachCommand))]
+		private bool isSending;
+
+		/// <summary>
+		/// If the button that scrolls to the latest message shows.
+		/// </summary>
+		[ObservableProperty]
+		private bool showsScrollToLatest;
+
+		/// <summary>
+		/// If messages have arrived below what is on screen.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasUnseenMessages;
+
+		#endregion
+
+		#region Events to the page
+
+		/// <summary>
+		/// Asks the page to scroll to the latest message. The argument says if the scrolling is animated.
+		/// </summary>
+		public event EventHandler<bool>? ScrollToEndRequested;
+
+		/// <summary>
+		/// Tells the page that older rows were added at the top, so it can keep what was on screen in place. The argument is
+		/// the number of rows added.
+		/// </summary>
+		public event EventHandler<int>? OlderRowsAdded;
+
+		/// <summary>
+		/// Asks the page to focus the text field.
+		/// </summary>
+		public event EventHandler? FocusComposerRequested;
+
+		#endregion
+
+		#region Life cycle
+
+		/// <inheritdoc/>
+		public override async Task OnInitializeAsync()
 		{
+			await base.OnInitializeAsync();
+
+			ChatEvents.MessageStored += this.ChatEvents_MessageStored;
+			ChatEvents.MessageDelivered += this.ChatEvents_MessageDelivered;
+			ChatEvents.ChatStateChanged += this.ChatEvents_ChatStateChanged;
+			ServiceRef.XmppService.OnPresence += this.XmppService_OnPresence;
+
+			this.UpdatePresence();
+
+			await this.LoadLatestAsync();
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnDisposeAsync()
+		{
+			ChatEvents.MessageStored -= this.ChatEvents_MessageStored;
+			ChatEvents.MessageDelivered -= this.ChatEvents_MessageDelivered;
+			ChatEvents.ChatStateChanged -= this.ChatEvents_ChatStateChanged;
+			ServiceRef.XmppService.OnPresence -= this.XmppService_OnPresence;
+
+			this.pausedTimer?.Cancel();
+			this.remoteTypingTimer?.Cancel();
+
+			await base.OnDisposeAsync();
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnAppearingAsync()
+		{
+			await base.OnAppearingAsync();
+
+			ChatEvents.SetVisibleChat(this.BareJid);
+
 			try
 			{
-				await Message.GenerateXaml(this);
+				await ServiceRef.NotificationService.DeleteEvents(NotificationEventType.Contacts, this.BareJid);
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnDisappearingAsync()
+		{
+			ChatEvents.ClearVisibleChat(this.BareJid);
+
+			if (this.isComposing)
+				this.SetComposing(false, ChatState.Paused);
+
+			await base.OnDisappearingAsync();
+		}
+
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.PropertyName == nameof(this.IsConnected))
+			{
+				this.SendCommand.NotifyCanExecuteChanged();
+				this.AttachCommand.NotifyCanExecuteChanged();
+			}
+		}
+
+		#endregion
+
+		#region Loading
+
+		private async Task LoadLatestAsync()
+		{
+			try
+			{
+				IEnumerable<ChatMessage> Found = await Database.Find<ChatMessage>(0, batchSize,
+					new FilterFieldEqualTo("RemoteBareJid", this.BareJid), "-Created");
+
+				List<ChatMessage> Messages = [.. Found];
+				Messages.Reverse();
+
+				List<ChatItem> Rows = await this.BuildRowsAsync(Messages);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.itemsByObjectId.Clear();
+					this.Register(Rows);
+					this.Items.Reset(Rows);
+
+					this.oldestLoaded = Messages.Count > 0 ? Messages[0].Created : DateTime.MaxValue;
+					this.ExistsMoreMessages = Messages.Count >= batchSize;
+					this.IsLoading = false;
+					this.OnPropertyChanged(nameof(this.IsEmpty));
+
+					this.ScrollToEndRequested?.Invoke(this, false);
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsLoading = false);
+			}
+		}
+
+		private async Task LoadOlderAsync()
+		{
+			if (this.loadingOlder || !this.ExistsMoreMessages)
 				return;
+
+			this.loadingOlder = true;
+
+			try
+			{
+				IEnumerable<ChatMessage> Found = await Database.Find<ChatMessage>(0, batchSize, new FilterAnd(
+					new FilterFieldEqualTo("RemoteBareJid", this.BareJid),
+					new FilterFieldLesserThan("Created", this.oldestLoaded)), "-Created");
+
+				List<ChatMessage> Messages = [.. Found];
+				Messages.Reverse();
+
+				List<ChatItem> Rows = await this.BuildRowsAsync(Messages);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.ExistsMoreMessages = Messages.Count >= batchSize;
+
+					if (Messages.Count == 0)
+						return;
+
+					this.oldestLoaded = Messages[0].Created;
+
+					// The day of the first loaded row is shown again at the top of the new rows.
+					ChatMessage Last = Messages[^1];
+					int Removed = 0;
+
+					if (this.Items.Count > 0 && this.Items[0] is ChatDayItem Day && Day.Timestamp == Last.Created.ToLocalTime().Date)
+					{
+						this.Items.RemoveAt(0);
+						Removed = 1;
+					}
+
+					if (this.Items.Count > 0 && this.Items[0] is ChatMessageItem First)
+						First.IsFirstInGroup = StartsGroup(First.Message, Last);
+
+					this.Register(Rows);
+					this.Items.InsertRange(0, Rows);
+
+					this.OlderRowsAdded?.Invoke(this, Rows.Count - Removed);
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			finally
+			{
+				this.loadingOlder = false;
+			}
+		}
+
+		/// <summary>
+		/// Builds the rows of messages, oldest first, with a row for each day. The texts are built in parallel, off the UI
+		/// thread.
+		/// </summary>
+		private async Task<List<ChatItem>> BuildRowsAsync(List<ChatMessage> Messages)
+		{
+			MarkdownModel[] Models = await Task.WhenAll(Messages.Select(ChatMessageItem.BuildModelAsync));
+			List<ChatItem> Rows = new(Messages.Count + 4);
+			ChatMessage? Previous = null;
+
+			for (int i = 0; i < Messages.Count; i++)
+			{
+				ChatMessage Message = Messages[i];
+				DateTime Day = Message.Created.ToLocalTime().Date;
+
+				if (Previous is null || Previous.Created.ToLocalTime().Date != Day)
+					Rows.Add(new ChatDayItem(Day));
+
+				Rows.Add(new ChatMessageItem(Message, Models[i], this.isSelfChat, this.LinkCommand, this.ActionsCommand)
+				{
+					IsFirstInGroup = StartsGroup(Message, Previous)
+				});
+
+				Previous = Message;
 			}
 
-			if (Message.ParsedXaml is not IView MessageXaml || string.IsNullOrEmpty(Message.ObjectId))
+			return Rows;
+		}
+
+		private void Register(IEnumerable<ChatItem> Rows)
+		{
+			foreach (ChatItem Row in Rows)
+			{
+				if (Row is ChatMessageItem Item && !string.IsNullOrEmpty(Item.ObjectId))
+					this.itemsByObjectId[Item.ObjectId] = Item;
+			}
+		}
+
+		/// <summary>
+		/// If a message starts a new run: another day, another party, or a while after the one before.
+		/// </summary>
+		private static bool StartsGroup(ChatMessage Message, ChatMessage? Previous)
+		{
+			return Previous is null ||
+				Previous.MessageType != Message.MessageType ||
+				Previous.Created.ToLocalTime().Date != Message.Created.ToLocalTime().Date ||
+				(Message.Created - Previous.Created).Duration() > groupInterval;
+		}
+
+		/// <summary>
+		/// Called by the page when the list has scrolled.
+		/// </summary>
+		/// <param name="FirstVisible">Index of the first row on screen.</param>
+		/// <param name="LastVisible">Index of the last row on screen.</param>
+		public void OnListScrolled(int FirstVisible, int LastVisible)
+		{
+			this.isAtBottom = LastVisible >= this.Items.Count - 2;
+			this.ShowsScrollToLatest = !this.isAtBottom && this.Items.Count > 0;
+
+			if (this.isAtBottom)
+				this.HasUnseenMessages = false;
+
+			if (FirstVisible <= 2 && this.ExistsMoreMessages && !this.IsLoading)
+				_ = this.LoadOlderAsync();
+		}
+
+		#endregion
+
+		#region Messages from the connection
+
+		private void ChatEvents_MessageStored(object? Sender, ChatMessageEventArgs e)
+		{
+			if (!string.Equals(e.RemoteBareJid, this.BareJid, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			_ = this.ShowStoredMessageAsync(e.Message, e.IsUpdate);
+		}
+
+		private async Task ShowStoredMessageAsync(ChatMessage Message, bool IsUpdate)
+		{
+			try
+			{
+				MarkdownModel Model = await ChatMessageItem.BuildModelAsync(Message);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					string ObjectId = Message.ObjectId ?? string.Empty;
+
+					if (this.itemsByObjectId.TryGetValue(ObjectId, out ChatMessageItem? Existing))
+					{
+						Existing.Update(Message, Model);
+						return;
+					}
+
+					if (IsUpdate)
+						return;     // A correction of a message that is not loaded.
+
+					if (Message.MessageType == MessageType.Received)
+						this.IsRemoteTyping = false;
+
+					ChatMessage? Previous = null;
+					for (int i = this.Items.Count - 1; i >= 0; i--)
+					{
+						if (this.Items[i] is ChatMessageItem Row)
+						{
+							Previous = Row.Message;
+							break;
+						}
+					}
+
+					DateTime Day = Message.Created.ToLocalTime().Date;
+
+					if (Previous is null || Previous.Created.ToLocalTime().Date != Day)
+						this.Items.Add(new ChatDayItem(Day));
+
+					ChatMessageItem Item = new(Message, Model, this.isSelfChat, this.LinkCommand, this.ActionsCommand)
+					{
+						IsFirstInGroup = StartsGroup(Message, Previous)
+					};
+
+					if (!string.IsNullOrEmpty(ObjectId))
+						this.itemsByObjectId[ObjectId] = Item;
+
+					this.Items.Add(Item);
+					this.OnPropertyChanged(nameof(this.IsEmpty));
+
+					if (this.isAtBottom || Item.IsSent)
+						this.ScrollToEndRequested?.Invoke(this, true);
+					else
+						this.HasUnseenMessages = true;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private void ChatEvents_MessageDelivered(object? Sender, ChatMessageEventArgs e)
+		{
+			if (!string.Equals(e.RemoteBareJid, this.BareJid, StringComparison.OrdinalIgnoreCase))
 				return;
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				try
-				{
-					lock (this.synchObject)
-					{
-						int Index;
-
-						if (this.messagesByObjectId.TryGetValue(Message.ObjectId, out LinkedListNode<MessageRecord>? Node) &&
-							Node.Value.Message.ParsedXaml is IView PrevMessageXaml &&
-							PrevMessageXaml.Parent is VerticalStackLayout Parent &&
-							(Index = Parent.IndexOf(PrevMessageXaml)) >= 0)
-						{
-							Parent.RemoveAt(Index);
-							Parent.Insert(Index, MessageXaml);
-
-							Node.Value.Message = Message;
-
-							// TODO: Update XAML
-						}
-					}
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-				}
+				if (this.itemsByObjectId.TryGetValue(e.Message.ObjectId ?? string.Empty, out ChatMessageItem? Item))
+					Item.MarkDelivered();
 			});
 		}
 
-		private async Task<IView?> LoadMessagesAsync(bool LoadMore = true)
+		private void ChatEvents_ChatStateChanged(object? Sender, ChatStateEventArgs e)
 		{
-			IEnumerable<ChatMessage>? Messages = null;
-			int C = Constants.BatchSizes.MessageBatchSize;
-			DateTime LastTime;
-			ChatMessage[] A;
+			if (!string.Equals(e.RemoteBareJid, this.BareJid, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			bool Typing = e.State == ChatState.Composing;
+
+			this.remoteTypingTimer?.Cancel();
+			this.remoteTypingTimer = null;
+
+			if (Typing)
+			{
+				// If the other party leaves without saying so, the indicator goes away by itself.
+				CancellationTokenSource Timer = new();
+				this.remoteTypingTimer = Timer;
+
+				_ = Task.Delay(typingTimeout, Timer.Token).ContinueWith(T =>
+				{
+					if (!T.IsCanceled)
+						MainThread.BeginInvokeOnMainThread(() => this.IsRemoteTyping = false);
+				}, TaskScheduler.Default);
+			}
+
+			MainThread.BeginInvokeOnMainThread(() => this.IsRemoteTyping = Typing);
+		}
+
+		private Task XmppService_OnPresence(object? Sender, PresenceEventArgs e)
+		{
+			if (string.Equals(e.FromBareJID, this.BareJid, StringComparison.OrdinalIgnoreCase))
+				MainThread.BeginInvokeOnMainThread(this.UpdatePresence);
+
+			return Task.CompletedTask;
+		}
+
+		private void UpdatePresence()
+		{
+			if (this.isSelfChat)
+			{
+				this.IsOnline = false;
+				return;
+			}
 
 			try
 			{
-				this.ExistsMoreMessages = false;
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.BareJid);
 
-				lock (this.synchObject)
-				{
-					LastTime = LoadMore && this.messages.First is not null ? this.messages.First.Value.Created : DateTime.MaxValue;
-				}
+				this.IsOnline = Item is not null &&
+					(Item.State == SubscriptionState.To || Item.State == SubscriptionState.Both) &&
+					Item.HasLastPresence &&
+					(Item.LastPresence.Availability == Availability.Online || Item.LastPresence.Availability == Availability.Chat);
+			}
+			catch (Exception)
+			{
+				this.IsOnline = false;
+			}
+		}
 
-				Messages = await Database.Find<ChatMessage>(0, Constants.BatchSizes.MessageBatchSize, new FilterAnd(
-					new FilterFieldEqualTo("RemoteBareJid", this.BareJid),
-					new FilterFieldLesserThan("Created", LastTime)), "-Created");
+		#endregion
 
-				A = [.. Messages];
-				C -= A.Length;
+		#region Writing and sending
 
-				if (!LoadMore)
-					Array.Reverse(A);
+		partial void OnMarkdownInputChanged(string value)
+		{
+			if (this.isSelfChat)
+				return;
+
+			if (string.IsNullOrEmpty(value))
+			{
+				if (this.isComposing)
+					this.SetComposing(false, ChatState.Active);
+
+				return;
+			}
+
+			if (!this.isComposing)
+				this.SetComposing(true, ChatState.Composing);
+
+			// Paused when the user stops writing for a while.
+			this.pausedTimer?.Cancel();
+			CancellationTokenSource Timer = new();
+			this.pausedTimer = Timer;
+
+			_ = Task.Delay(pausedAfter, Timer.Token).ContinueWith(T =>
+			{
+				if (!T.IsCanceled)
+					MainThread.BeginInvokeOnMainThread(() => this.SetComposing(false, ChatState.Paused));
+			}, TaskScheduler.Default);
+		}
+
+		private void SetComposing(bool Composing, ChatState State)
+		{
+			if (!Composing)
+			{
+				this.pausedTimer?.Cancel();
+				this.pausedTimer = null;
+			}
+
+			if (this.isComposing == Composing)
+				return;
+
+			this.isComposing = Composing;
+			ChatSender.SendChatState(this.BareJid, State);
+		}
+
+		private bool CanSend()
+		{
+			return (this.IsConnected || this.isSelfChat) && !this.IsSending && !string.IsNullOrWhiteSpace(this.MarkdownInput);
+		}
+
+		/// <summary>
+		/// Sends what has been written, or the correction of a sent message.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanSend))]
+		private async Task Send()
+		{
+			string Text = this.MarkdownInput.TrimEnd();
+			if (string.IsNullOrWhiteSpace(Text))
+				return;
+
+			string? ReplaceObjectId = this.EditingItem?.ObjectId;
+
+			if (this.ReplyItem is not null)
+				Text = Quote(this.ReplyItem.Message) + Environment.NewLine + Environment.NewLine + Text;
+
+			this.isComposing = false;
+			this.pausedTimer?.Cancel();
+			this.pausedTimer = null;
+
+			this.IsSending = true;
+
+			try
+			{
+				await ChatSender.SendAsync(this.BareJid, Text, ReplaceObjectId);
+
+				this.MarkdownInput = string.Empty;
+				this.EditingItem = null;
+				this.ReplyItem = null;
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
-				this.ExistsMoreMessages = false;
-				return null;
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
-
-			TaskCompletionSource<IView?> Result = new();
-
-			MainThread.BeginInvokeOnMainThread(async () =>
+			finally
 			{
-				try
-				{
-					IView? Last = null;
-
-					foreach (ChatMessage Message in A)
-						Last = await this.MessageAddedMainThread(Message, true);
-
-					this.ExistsMoreMessages = C <= 0;
-
-					Result.TrySetResult(Last);
-				}
-				catch (Exception Ex)
-				{
-					Result.TrySetException(Ex);
-				}
-			});
-
-			return await Result.Task;
+				this.IsSending = false;
+			}
 		}
 
-		[ObservableProperty]
-		private bool hasMessages = false;
-
 		/// <summary>
-		/// If the button is expanded
-		/// </summary>
-		[ObservableProperty]
-		private bool isButtonExpanded;
-
-		/// <summary>
-		/// Toggles command buttons
+		/// Stops correcting or replying to a message.
 		/// </summary>
 		[RelayCommand]
-		private void ExpandButtons()
+		private void CancelContext()
 		{
-			this.IsButtonExpanded = !this.IsButtonExpanded;
+			if (this.EditingItem is not null)
+				this.MarkdownInput = string.Empty;
+
+			this.EditingItem = null;
+			this.ReplyItem = null;
 		}
 
 		/// <summary>
-		/// The command to bind to for loading more messages.
+		/// Scrolls to the latest message.
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteLoadMoreMessages))]
-		private Task<IView?> LoadMoreMessages()
+		[RelayCommand]
+		private void ScrollToLatest()
 		{
-			return this.LoadMessagesAsync(true);
+			this.HasUnseenMessages = false;
+			this.ScrollToEndRequested?.Invoke(this, true);
 		}
 
-		private bool CanExecuteLoadMoreMessages()
+		private static string Quote(ChatMessage Message)
 		{
-			return this.ExistsMoreMessages && this.page.Messages.Count > 0;
-		}
+			string Text = Shorten(Message.PlainText);
+			StringBuilder Result = new();
 
-		private bool CanExecuteSendMessage()
-		{
-			return this.IsConnected && (!string.IsNullOrEmpty(this.MarkdownInput) || this.IsRecordingAudio);
-		}
-
-		/// <summary>
-		/// The command to bind to for sending user input
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteSendMessage))]
-		private async Task Send()
-		{
-			if (this.IsRecordingAudio)
+			foreach (string Row in Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n'))
 			{
-				// TODO: Audio
-				//
-				// try
-				// {
-				// 	await audioRecorder.Value.StopRecording();
-				// 	string audioPath = await this.audioRecorderTask!;
-				// 
-				// 	if (audioPath is not null)
-				// 		await this.EmbedMedia(audioPath, true);
-				// }
-				// catch (Exception ex)
-				// {
-				// 	ServiceRef.LogService.LogException(ex);
-				// }
-				// finally
-				// {
-				// 	this.IsRecordingAudio = false;
-				// }
+				if (Result.Length > 0)
+					Result.AppendLine();
+
+				Result.Append("> ");
+				Result.Append(MarkdownDocument.Encode(Row));
 			}
-			else
+
+			return Result.ToString();
+		}
+
+		/// <summary>
+		/// The start of a text: its first lines, at most a few hundred characters.
+		/// </summary>
+		private static string Shorten(string Text)
+		{
+			string[] Rows = Text.Trim().Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+			string Result = string.Join("\n", Rows.Take(quoteMaxLines));
+			bool Cut = Rows.Length > quoteMaxLines;
+
+			if (Result.Length > quoteMaxLength)
 			{
-				await this.ExecuteSendMessage(this.MessageId, this.MarkdownInput);
-				await this.Cancel();
+				Result = Result[..quoteMaxLength].TrimEnd();
+				Cut = true;
 			}
+
+			return Cut ? Result + "…" : Result;
 		}
 
-		private Task ExecuteSendMessage(string? ReplaceObjectId, string MarkdownInput)
+		#endregion
+
+		#region Message actions
+
+		private async Task ShowMessageActionsAsync(ChatMessageItem? Item)
 		{
-			return ExecuteSendMessage(ReplaceObjectId, MarkdownInput, this.BareJid!, this);
+			if (Item is null)
+				return;
+
+			ServiceRef.LogService.LogDebug("ChatMessageActionsOpened", new KeyValuePair<string, object?>("Sent", Item.IsSent));
+
+			List<ChatSheetAction> Actions =
+			[
+				new(ServiceRef.Localizer[nameof(AppResources.MarkdownCopy)], Geometries.ClipboardIconPath, async () =>
+				{
+					string Text = string.IsNullOrEmpty(Item.Message.Markdown) ? Item.Message.PlainText : Item.Message.Markdown;
+					await Clipboard.SetTextAsync(Text);
+				})
+			];
+
+			if (!this.isSelfChat)
+			{
+				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.ChatReply)], Geometries.ReplyPath, () =>
+				{
+					this.EditingItem = null;
+					this.ReplyItem = Item;
+					this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
+					return Task.CompletedTask;
+				}));
+			}
+
+			if (Item.IsSent)
+			{
+				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.ChatEdit)], Geometries.EditPath, () =>
+				{
+					this.ReplyItem = null;
+					this.EditingItem = Item;
+					this.MarkdownInput = string.IsNullOrEmpty(Item.Message.Markdown) ?
+						MarkdownDocument.Encode(Item.Message.PlainText) : Item.Message.Markdown;
+					this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
+					return Task.CompletedTask;
+				}));
+			}
+
+			await ChatSheetPopup.ShowAsync(null, Actions, false);
+		}
+
+		#endregion
+
+		#region Sharing
+
+		private bool CanAttach()
+		{
+			return (this.IsConnected || this.isSelfChat) && !this.IsSending;
 		}
 
 		/// <summary>
-		/// Sends a Markdown-formatted chat message
+		/// Shows what can be shared in the chat.
 		/// </summary>
-		/// <param name="ReplaceObjectId">ID of message being updated, or the empty string.</param>
-		/// <param name="MarkdownInput">Markdown input.</param>
-		/// <param name="BareJid">Bare JID of recipient.</param>
-		public static Task ExecuteSendMessage(string? ReplaceObjectId, string MarkdownInput, string BareJid)
+		[RelayCommand(CanExecute = nameof(CanAttach))]
+		private async Task Attach()
 		{
-			return ExecuteSendMessage(ReplaceObjectId, MarkdownInput, BareJid, null);
+			List<ChatSheetAction> Actions =
+			[
+				new(ServiceRef.Localizer[nameof(AppResources.Photos)], Geometries.CameraImageButtonPath, this.PickPhotoAsync),
+				new(ServiceRef.Localizer[nameof(AppResources.ChatShareCamera)], Geometries.CameraPath, this.TakePhotoAsync),
+				new(ServiceRef.Localizer[nameof(AppResources.ChatShareContact)], Geometries.PersonPath, this.ShareContactAsync)
+			];
+
+			if (ServiceRef.TagProfile.LegalIdentity is not null)
+				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.ChatShareMyId)], Geometries.ShowIdIconPath, this.ShareMyIdAsync));
+
+			Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.MarkdownContract)], Geometries.ContractPath, this.ShareContractAsync));
+
+			if (!this.isSelfChat)
+				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.Payment)], Geometries.MoneyPath, this.SharePaymentAsync));
+
+			Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.MarkdownToken)], Geometries.TokenPath, this.ShareTokenAsync));
+			Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.Thing)], Geometries.ThingPath, this.ShareThingAsync));
+
+			await ChatSheetPopup.ShowAsync(ServiceRef.Localizer[nameof(AppResources.ChatShareTitle)], Actions, true);
 		}
 
-		/// <summary>
-		/// Sends a Markdown-formatted chat message
-		/// </summary>
-		/// <param name="ReplaceObjectId">ID of message being updated, or the empty string.</param>
-		/// <param name="MarkdownInput">Markdown input.</param>
-		/// <param name="BareJid">Bare JID of recipient.</param>
-		/// <param name="ChatViewModel">Optional chat view model.</param>
-		public static async Task ExecuteSendMessage(string? ReplaceObjectId, string MarkdownInput, string BareJid, ChatViewModel? ChatViewModel)
+		private async Task SendMarkdownAsync(string Markdown)
 		{
 			try
 			{
-				if (string.IsNullOrEmpty(MarkdownInput))
-					return;
-
-				MarkdownSettings Settings = new()
-				{
-					AllowScriptTag = false,
-					EmbedEmojis = false,    // TODO: Emojis
-					AudioAutoplay = false,
-					AudioControls = false,
-					ParseMetaData = false,
-					VideoAutoplay = false,
-					VideoControls = false
-				};
-
-				MarkdownDocument Doc = await MarkdownDocument.CreateAsync(MarkdownInput, Settings);
-
-				ChatMessage Message = new()
-				{
-					Created = DateTime.UtcNow,
-					RemoteBareJid = BareJid,
-					RemoteObjectId = string.Empty,
-
-					MessageType = MessageType.Sent,
-					Html = HtmlDocument.GetBody(await Doc.GenerateHTML()),
-					PlainText = (await Doc.GeneratePlainText()).Trim(),
-					Markdown = MarkdownInput
-				};
-
-				StringBuilder Xml = new();
-
-				Xml.Append("<content xmlns=\"urn:xmpp:content\" type=\"text/markdown\">");
-				Xml.Append(XML.Encode(MarkdownInput));
-				Xml.Append("</content><html xmlns='http://jabber.org/protocol/xhtml-im'><body xmlns='http://www.w3.org/1999/xhtml'>");
-
-				HtmlDocument HtmlDoc = new("<root>" + Message.Html + "</root>");
-
-				foreach (HtmlNode N in (HtmlDoc.Body ?? HtmlDoc.Root).Children)
-					N.Export(Xml);
-
-				Xml.Append("</body></html>");
-
-				if (!string.IsNullOrEmpty(ReplaceObjectId))
-				{
-					Xml.Append("<replace id='");
-					Xml.Append(ReplaceObjectId);
-					Xml.Append("' xmlns='urn:xmpp:message-correct:0'/>");
-				}
-
-				if (string.IsNullOrEmpty(ReplaceObjectId))
-				{
-					await Database.Insert(Message);
-
-					if (ChatViewModel is not null)
-						await ChatViewModel.MessageAddedAsync(Message);
-				}
-				else
-				{
-					ChatMessage Old = await Database.TryLoadObject<ChatMessage>(ReplaceObjectId);
-
-					if (Old is null)
-					{
-						ReplaceObjectId = null;
-						await Database.Insert(Message);
-
-						if (ChatViewModel is not null)
-							await ChatViewModel.MessageAddedAsync(Message);
-					}
-					else
-					{
-						Old.Updated = Message.Created;
-						Old.Html = Message.Html;
-						Old.PlainText = Message.PlainText;
-						Old.Markdown = Message.Markdown;
-
-						await Database.Update(Old);
-
-						Message = Old;
-
-						if (ChatViewModel is not null)
-							await ChatViewModel.MessageUpdatedAsync(Message);
-					}
-				}
-				ServiceRef.XmppService.SendMessage(QoSLevel.Unacknowledged, Waher.Networking.XMPP.MessageType.Chat, Message.ObjectId ?? string.Empty,
-					BareJid, Xml.ToString(), Message.PlainText, string.Empty, string.Empty, string.Empty, string.Empty, null, null);
+				await ChatSender.SendAsync(this.BareJid, Markdown);
 			}
 			catch (Exception Ex)
 			{
+				ServiceRef.LogService.LogException(Ex);
 				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
-		/// <summary>
-		/// The command to bind for pausing/resuming the audio recording
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecutePauseResume))]
-		private Task PauseResume()
+		private async Task PickPhotoAsync()
 		{
-			// TODO: Audio
-			//
-			// if (audioRecorder.Value.IsPaused)
-			// 	await audioRecorder.Value.Resume();
-			// else
-			// 	await audioRecorder.Value.Pause();
-			// 
-			// this.IsRecordingPaused = audioRecorder.Value.IsPaused;
-
-			return Task.CompletedTask;
-		}
-
-		private static bool CanExecutePauseResume()
-		{
-			// TODO: Audio
-			//
-			// return this.IsRecordingAudio && audioRecorder.Value.IsRecording;
-			return false;
-		}
-
-		private bool CanExecuteCancelMessage()
-		{
-			return this.IsConnected && (!string.IsNullOrEmpty(this.MarkdownInput) || this.IsRecordingAudio);
-		}
-
-		/// <summary>
-		/// The command to bind to for sending user input
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteCancelMessage))]
-		private Task Cancel()
-		{
-			if (this.IsRecordingAudio)
+			if (!this.isSelfChat && !ServiceRef.XmppService.FileUploadIsSupported)
 			{
-				// TODO: Audio
-				//
-				// try
-				// {
-				// 	return audioRecorder.Value.StopRecording();
-				// }
-				// catch (Exception ex)
-				// {
-				// 	ServiceRef.LogService.LogException(ex);
-				// }
-				// finally
-				// {
-				// 	this.IsRecordingAudio = false;
-				// }
-			}
-			else
-			{
-				this.MarkdownInput = string.Empty;
-				this.MessageId = string.Empty;
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PickPhoto)],
+					ServiceRef.Localizer[nameof(AppResources.SelectingAPhotoIsNotSupported)]);
+				return;
 			}
 
-			return Task.CompletedTask;
+			IReadOnlyList<FileResult> Picked = await MediaPicker.PickPhotosAsync(new MediaPickerOptions()
+			{
+				SelectionLimit = 1
+			});
+			FileResult? Photo = Picked.FirstOrDefault();
+
+			if (Photo is not null)
+				await this.SendPhotoAsync(Photo.FullPath, false);
 		}
 
-		// TODO: Audio
-		// 
-		// private static System.Timers.Timer audioRecorderTimer;
-		// 
-		// private static readonly Lazy<AudioRecorderService> audioRecorder = new(() =>
-		// {
-		// 	return new AudioRecorderService()
-		// 	{
-		// 		StopRecordingOnSilence = false,
-		// 		StopRecordingAfterTimeout = true,
-		// 		TotalAudioTimeout = TimeSpan.FromSeconds(60)
-		// 	};
-		// }, LazyThreadSafetyMode.PublicationOnly);
-		//
-		//private readonly Task<string>? audioRecorderTask = null;
-
-		private bool CanExecuteRecordAudio()
+		private async Task TakePhotoAsync()
 		{
-			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
-		}
-
-		private void OnAudioRecorderTimer(object? source, ElapsedEventArgs e)
-		{
-			this.OnPropertyChanged(nameof(RecordingTime));
-
-			// TODO: Audio
-			//
-			// this.IsRecordingPaused = audioRecorder.Value.IsPaused;
-		}
-
-		[RelayCommand(CanExecute = nameof(CanExecuteRecordAudio))]
-		private async Task RecordAudio()
-		{
-			if (!ServiceRef.XmppService.FileUploadIsSupported)
+			if (!this.isSelfChat && !ServiceRef.XmppService.FileUploadIsSupported)
 			{
 				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
 					ServiceRef.Localizer[nameof(AppResources.ServerDoesNotSupportFileUpload)]);
 				return;
 			}
+
+			if (!await ServiceRef.PermissionService.CheckCameraPermissionAsync())
+				return;
+
+			FileResult? Captured;
 
 			try
 			{
-				PermissionStatus Status = await Permissions.RequestAsync<Permissions.Microphone>();
-
-				if (Status == PermissionStatus.Granted)
+				if (DeviceInfo.Platform == DevicePlatform.iOS)
 				{
-					// TODO: Audio
-					//
-					// this.audioRecorderTask = await audioRecorder.Value.StartRecording();
-					// this.IsRecordingAudio = true;
-				}
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		private bool CanExecuteTakePhoto()
-		{
-			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
-		}
-
-		/// <summary>
-		/// Command to take and send a photo
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteTakePhoto))]
-		private async Task TakePhoto()
-		{
-			if (!ServiceRef.XmppService.FileUploadIsSupported)
-			{
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
-					ServiceRef.Localizer[nameof(AppResources.ServerDoesNotSupportFileUpload)]);
-				return;
-			}
-
-			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
-			if (!Permitted)
-				return;
-
-			if (DeviceInfo.Platform == DevicePlatform.iOS)
-			{
-				FileResult? CapturedPhoto;
-
-				try
-				{
-					CapturedPhoto = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
+					Captured = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
 					{
 						Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoToShare)]
 					});
 				}
-				catch (Exception Ex)
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
-						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + Ex.Message);
-					return;
-				}
-
-				if (CapturedPhoto is not null)
-				{
-					try
-					{
-						await this.EmbedMedia(CapturedPhoto.FullPath, true);
-					}
-					catch (Exception Ex)
-					{
-						await ServiceRef.UiService.DisplayException(Ex);
-					}
-				}
+				else
+					Captured = await MediaPicker.CapturePhotoAsync();
 			}
-			else
+			catch (Exception Ex)
 			{
-				FileResult? CapturedPhoto;
-
-				try
-				{
-					CapturedPhoto = await MediaPicker.CapturePhotoAsync();
-					if (CapturedPhoto is null)
-						return;
-				}
-				catch (Exception Ex)
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
-						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + Ex.Message);
-					return;
-				}
-
-				if (CapturedPhoto is not null)
-				{
-					try
-					{
-						await this.EmbedMedia(CapturedPhoto.FullPath, true);
-					}
-					catch (Exception Ex)
-					{
-						await ServiceRef.UiService.DisplayException(Ex);
-					}
-				}
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
+					ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + Ex.Message);
+				return;
 			}
+
+			if (Captured is not null)
+				await this.SendPhotoAsync(Captured.FullPath, true);
 		}
 
-		private async Task EmbedMedia(string FilePath, bool DeleteFile)
+		private async Task SendPhotoAsync(string FilePath, bool DeleteFile)
 		{
+			this.IsSending = true;
+
 			try
 			{
-				byte[] Bin = File.ReadAllBytes(FilePath);
-				if (!InternetContent.TryGetContentType(Path.GetExtension(FilePath), out string ContentType))
-					ContentType = "application/octet-stream";
-
-				if (Bin.Length > ServiceRef.TagProfile.HttpFileUploadMaxSize)
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.PhotoIsTooLarge)]);
-					return;
-				}
-
-				// Taking or picking photos switches to another app, so ID app has to reconnect again after.
-				if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain ?? string.Empty]);
-					return;
-				}
-
+				byte[] Data = await File.ReadAllBytesAsync(FilePath);
 				string FileName = Path.GetFileName(FilePath);
 
-				// Encrypting image
+				string Markdown = this.isSelfChat ?
+					await ChatAttachments.StoreNoteImageAsync(Data, FileName) :
+					await ChatAttachments.UploadImageAsync(Data, FileName);
 
-				using RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
-				byte[] Key = new byte[16];
-				byte[] IV = new byte[16];
-
-				Rnd.GetBytes(Key);
-				Rnd.GetBytes(IV);
-
-				Aes Aes = Aes.Create();
-				Aes.BlockSize = 128;
-				Aes.KeySize = 256;
-				Aes.Mode = CipherMode.CBC;
-				Aes.Padding = PaddingMode.PKCS7;
-
-				using ICryptoTransform Transform = Aes.CreateEncryptor(Key, IV);
-				Bin = Transform.TransformFinalBlock(Bin, 0, Bin.Length);
-
-				// Preparing File upload service that content uploaded next is encrypted, and can be stored in encrypted storage.
-
-				StringBuilder Xml = new();
-
-				Xml.Append("<prepare xmlns='http://waher.se/Schema/EncryptedStorage.xsd' filename='");
-				Xml.Append(XML.Encode(FileName));
-				Xml.Append("' size='");
-				Xml.Append(Bin.Length.ToString(CultureInfo.InvariantCulture));
-				Xml.Append("' content-type='application/octet-stream'/>");
-
-				await ServiceRef.XmppService.IqSetAsync(ServiceRef.TagProfile.HttpFileUploadJid!, Xml.ToString());
-				// Empty response expected. Errors cause an exception to be raised.
-
-				// Requesting upload slot
-
-				HttpFileUploadEventArgs Slot = await ServiceRef.XmppService.RequestUploadSlotAsync(
-					FileName, "application/octet-stream", Bin.Length);
-
-				if (!Slot.Ok)
-					throw Slot.StanzaError ?? new Exception(Slot.ErrorText);
-
-				// Uploading encrypted image
-
-				await Slot.PUT(Bin, "application/octet-stream", (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
-
-				// Generating Markdown message to send to recipient
-
-				StringBuilder Markdown = new();
-
-				Markdown.Append("![");
-				Markdown.Append(MarkdownDocument.Encode(FileName));
-				Markdown.Append("](");
-				Markdown.Append(Constants.UriSchemes.Aes256);
-				Markdown.Append(':');
-				Markdown.Append(Convert.ToBase64String(Key));
-				Markdown.Append(':');
-				Markdown.Append(Convert.ToBase64String(IV));
-				Markdown.Append(':');
-				Markdown.Append(ContentType);
-				Markdown.Append(':');
-				Markdown.Append(Slot.GetUrl);
-
-				SKImageInfo ImageInfo = SKBitmap.DecodeBounds(Bin);
-				if (!ImageInfo.IsEmpty)
-				{
-					Markdown.Append(' ');
-					Markdown.Append(ImageInfo.Width.ToString(CultureInfo.InvariantCulture));
-					Markdown.Append(' ');
-					Markdown.Append(ImageInfo.Height.ToString(CultureInfo.InvariantCulture));
-				}
-
-				Markdown.Append(')');
-
-				await this.ExecuteSendMessage(string.Empty, Markdown.ToString());
-
-				// TODO: End-to-End encryption, or using Elliptic Curves of recipient together with sender to deduce shared secret.
+				await ChatSender.SendAsync(this.BareJid, Markdown);
 
 				if (DeleteFile)
 					File.Delete(FilePath);
 			}
 			catch (Exception Ex)
 			{
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message);
 				ServiceRef.LogService.LogException(Ex);
-				return;
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message);
 			}
-		}
-
-		private bool CanExecuteEmbedFile()
-		{
-			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
-		}
-
-		/// <summary>
-		/// Command to embed a file
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteEmbedFile))]
-		private async Task EmbedFile()
-		{
-			if (!ServiceRef.XmppService.FileUploadIsSupported)
+			finally
 			{
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PickPhoto)], ServiceRef.Localizer[nameof(AppResources.SelectingAPhotoIsNotSupported)]);
-				return;
+				this.IsSending = false;
 			}
-
-			FileResult? PickedPhoto = await MediaPicker.PickPhotoAsync();
-
-			if (PickedPhoto is not null)
-				await this.EmbedMedia(PickedPhoto.FullPath, false);
 		}
 
-		private bool CanExecuteEmbedId()
+		private async Task ShareContactAsync()
 		{
-			return this.IsConnected && !this.IsWriting;
-		}
-
-		/// <summary>
-		/// Command to embed a reference to a legal ID
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteEmbedId))]
-		private async Task EmbedId()
-		{
-			TaskCompletionSource<ContactInfoModel?> SelectedContact = new();
-			ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.SelectContactToPay)], SelectedContact)
+			TaskCompletionSource<ContactInfoModel?> Selected = new();
+			ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.SelectContact)], Selected)
 			{
 				CanScanQrCode = true
 			};
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
-			ContactInfoModel? Contact = await SelectedContact.Task;
+			ContactInfoModel? Contact = await Selected.Task;
 			if (Contact is null)
 				return;
 
-			await this.waitUntilBound.Task;     // Wait until view is bound again.
-
 			if (Contact.LegalIdentity is not null)
-			{
-				StringBuilder Markdown = new();
-
-				Markdown.Append("```");
-				Markdown.AppendLine(Constants.UriSchemes.IotId);
-
-				Contact.LegalIdentity.Serialize(Markdown, true, true, true, true, true, true, true);
-
-				Markdown.AppendLine();
-				Markdown.AppendLine("```");
-
-				await this.ExecuteSendMessage(string.Empty, Markdown.ToString());
-				return;
-			}
-
-			if (!string.IsNullOrEmpty(Contact.LegalId))
-			{
-				await this.ExecuteSendMessage(string.Empty, "![" + MarkdownDocument.Encode(Contact.FriendlyName) + "](" + ContractsClient.LegalIdUriString(Contact.LegalId) + ")");
-				return;
-			}
-
-			if (!string.IsNullOrEmpty(Contact.BareJid))
-			{
-				await this.ExecuteSendMessage(string.Empty, "![" + MarkdownDocument.Encode(Contact.FriendlyName) + "](xmpp:" + Contact.BareJid + "?subscribe)");
-				return;
-			}
+				await this.SendMarkdownAsync(IdentityMarkdown(Contact.LegalIdentity));
+			else if (!string.IsNullOrEmpty(Contact.LegalId))
+				await this.SendMarkdownAsync("![" + MarkdownDocument.Encode(Contact.FriendlyName) + "](" + ContractsClient.LegalIdUriString(Contact.LegalId) + ")");
+			else if (!string.IsNullOrEmpty(Contact.BareJid))
+				await this.SendMarkdownAsync("![" + MarkdownDocument.Encode(Contact.FriendlyName) + "](xmpp:" + Contact.BareJid + "?subscribe)");
 		}
 
-		private bool CanExecuteEmbedContract()
+		private Task ShareMyIdAsync()
 		{
-			return this.IsConnected && !this.IsWriting;
+			LegalIdentity? Identity = ServiceRef.TagProfile.LegalIdentity;
+			return Identity is null ? Task.CompletedTask : this.SendMarkdownAsync(IdentityMarkdown(Identity));
 		}
 
-		/// <summary>
-		/// Command to embed a reference to a smart contract
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteEmbedContract))]
-		private async Task EmbedContract()
+		private static string IdentityMarkdown(LegalIdentity Identity)
 		{
-			TaskCompletionSource<Contract?> SelectedContract = new();
-			MyContractsNavigationArgs Args = new(ContractsListMode.Contracts, SelectedContract);
+			StringBuilder Markdown = new();
+
+			Markdown.Append("```");
+			Markdown.AppendLine(Constants.UriSchemes.IotId);
+			Identity.Serialize(Markdown, true, true, true, true, true, true, true);
+			Markdown.AppendLine();
+			Markdown.AppendLine("```");
+
+			return Markdown.ToString();
+		}
+
+		private async Task ShareContractAsync()
+		{
+			TaskCompletionSource<Contract?> Selected = new();
+			MyContractsNavigationArgs Args = new(ContractsListMode.Contracts, Selected);
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 
-			Contract? Contract = await SelectedContract.Task;
+			Contract? Contract = await Selected.Task;
 			if (Contract is null)
 				return;
-
-			await this.waitUntilBound.Task;     // Wait until view is bound again.
 
 			StringBuilder Markdown = new();
 
 			Markdown.Append("```");
 			Markdown.AppendLine(Constants.UriSchemes.IotSc);
-
 			Contract.Serialize(Markdown, true, true, true, true, true, true, true);
-
 			Markdown.AppendLine();
 			Markdown.AppendLine("```");
 
-			await this.ExecuteSendMessage(string.Empty, Markdown.ToString());
+			await this.SendMarkdownAsync(Markdown.ToString());
 		}
 
-		private bool CanExecuteEmbedMoney()
-		{
-			return this.IsConnected && !this.IsWriting;
-		}
-
-		/// <summary>
-		/// Command to embed a payment
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteEmbedMoney))]
-		private async Task EmbedMoney()
+		private async Task SharePaymentAsync()
 		{
 			StringBuilder Sb = new();
 
@@ -1208,15 +1094,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				return;
 
 			TaskCompletionSource<string?> UriToSend = new();
-			EDalerUriNavigationArgs Args = new(Parsed, this.FriendlyName ?? string.Empty, UriToSend);
+			EDalerUriNavigationArgs Args = new(Parsed, this.FriendlyName, UriToSend);
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
 
 			string? Uri = await UriToSend.Task;
 			if (string.IsNullOrEmpty(Uri) || !EDalerUri.TryParse(Uri, out Parsed))
 				return;
-
-			await this.waitUntilBound.Task;     // Wait until view is bound again.
 
 			Sb.Clear();
 			Sb.Append(MoneyToString.ToString(Parsed.Amount));
@@ -1231,45 +1115,26 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			Sb.Append(' ');
 			Sb.Append(Parsed.Currency);
 
-			await this.ExecuteSendMessage(string.Empty, "![" + Sb.ToString() + "](" + Uri + ")");
+			await this.SendMarkdownAsync("![" + Sb.ToString() + "](" + Uri + ")");
 		}
 
-		private bool CanExecuteEmbedToken()
-		{
-			return this.IsConnected && !this.IsWriting;
-		}
-
-		/// <summary>
-		/// Command to embed a token reference
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteEmbedToken))]
-		private async Task EmbedToken()
+		private async Task ShareTokenAsync()
 		{
 			MyTokensNavigationArgs Args = new();
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
 
 			TokenItem? Selected = await Args.TokenItemProvider.Task;
-
 			if (Selected is null)
 				return;
 
-			if (!await TokenShareFormatter.ConfirmShareAsync(Selected.Token, this.FriendlyName ?? this.BareJid ?? string.Empty))
+			if (!this.isSelfChat && !await TokenShareFormatter.ConfirmShareAsync(Selected.Token, this.FriendlyName))
 				return;
 
-			await this.ExecuteSendMessage(string.Empty, TokenShareFormatter.ToChatMarkdown(Selected.Token));
+			await this.SendMarkdownAsync(TokenShareFormatter.ToChatMarkdown(Selected.Token));
 		}
 
-		private bool CanExecuteEmbedThing()
-		{
-			return this.IsConnected && !this.IsWriting;
-		}
-
-		/// <summary>
-		/// Command to embed a reference to a thing
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteEmbedThing))]
-		private async Task EmbedThing()
+		private async Task ShareThingAsync()
 		{
 			TaskCompletionSource<ContactInfoModel?> ThingToShare = new();
 			MyThingsNavigationArgs Args = new(ThingToShare);
@@ -1277,152 +1142,149 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyThingsPage), Args, BackMethod.Pop);
 
 			ContactInfoModel? Thing = await ThingToShare.Task;
-			if (Thing is null)
+			string? BareJid = Thing?.BareJid?.Value;
+			if (Thing is null || string.IsNullOrEmpty(BareJid))
 				return;
-
-			await this.waitUntilBound.Task;     // Wait until view is bound again.
 
 			StringBuilder Sb = new();
 
 			Sb.Append("![");
-			Sb.Append(MarkdownDocument.Encode(Thing.FriendlyName));
-			Sb.Append("](iotdisco:JID=");
-			Sb.Append(Thing.BareJid);
-
-			if (!string.IsNullOrEmpty(Thing.SourceId))
-			{
-				Sb.Append(";SID=");
-				Sb.Append(Thing.SourceId);
-			}
-
-			if (!string.IsNullOrEmpty(Thing.Partition))
-			{
-				Sb.Append(";PT=");
-				Sb.Append(Thing.Partition);
-			}
-
-			if (!string.IsNullOrEmpty(Thing.NodeId))
-			{
-				Sb.Append(";NID=");
-				Sb.Append(Thing.NodeId);
-			}
-
+			Sb.Append(MarkdownDocument.Encode(string.IsNullOrWhiteSpace(Thing.FriendlyName) ? BareJid : Thing.FriendlyName));
+			Sb.Append("](");
+			Sb.Append(ThingLink(BareJid, Thing.SourceId, Thing.Partition, Thing.NodeId));
 			Sb.Append(')');
 
-			await this.ExecuteSendMessage(string.Empty, Sb.ToString());
+			await this.SendMarkdownAsync(Sb.ToString());
 		}
 
 		/// <summary>
-		/// Command executed when a message has been selected (or deselected) in the list view.
+		/// Makes the iotdisco link of a thing. The values are escaped, as the thing registry reads them, so node IDs with
+		/// spaces, semicolons or parentheses keep the link, and the markdown around it, whole.
 		/// </summary>
-		[RelayCommand]
-		private Task MessageSelected(object Parameter)
+		private static string ThingLink(string BareJid, string? SourceId, string? Partition, string? NodeId)
 		{
-			if (Parameter is ChatMessage Message)
+			StringBuilder Sb = new();
+
+			Sb.Append(Constants.UriSchemes.IotDisco);
+			Sb.Append(":JID=");
+			Sb.Append(Uri.EscapeDataString(BareJid));
+
+			if (!string.IsNullOrEmpty(SourceId))
 			{
-				// TODO: Audio
-				//
-				// if (Message.ParsedXaml is View View)
-				// {
-				// 	AudioPlayerControl AudioPlayer = View.Descendants().OfType<AudioPlayerControl>().FirstOrDefault();
-				// 	if (AudioPlayer is not null)
-				// 	{
-				// 		return Task.CompletedTask;
-				// 	}
-				// }
-
-				switch (Message.MessageType)
-				{
-
-					case MessageType.Sent:
-						this.MessageId = Message.ObjectId;
-						this.MarkdownInput = Message.Markdown;
-						break;
-
-
-					case MessageType.Received:
-						string S = Message.Markdown;
-						if (string.IsNullOrEmpty(S))
-							S = MarkdownDocument.Encode(Message.PlainText);
-
-						string[] Rows = S.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
-
-						StringBuilder Quote = new();
-
-						foreach (string Row in Rows)
-						{
-							Quote.Append("> ");
-							Quote.AppendLine(Row);
-						}
-
-						Quote.AppendLine();
-
-						this.MessageId = string.Empty;
-						this.MarkdownInput = Quote.ToString();
-						break;
-				}
+				Sb.Append(";SID=");
+				Sb.Append(Uri.EscapeDataString(SourceId));
 			}
 
-			return Task.CompletedTask;
+			if (!string.IsNullOrEmpty(Partition))
+			{
+				Sb.Append(";PT=");
+				Sb.Append(Uri.EscapeDataString(Partition));
+			}
+
+			if (!string.IsNullOrEmpty(NodeId))
+			{
+				Sb.Append(";NID=");
+				Sb.Append(Uri.EscapeDataString(NodeId));
+			}
+
+			return Sb.ToString();
+		}
+
+		#endregion
+
+		#region Links
+
+		/// <summary>
+		/// Opens a link or card in a message. Identities, contracts and tokens sent in the message itself open from there.
+		/// </summary>
+		private async Task OpenLinkAsync(string? Uri)
+		{
+			if (string.IsNullOrEmpty(Uri))
+				return;
+
+			try
+			{
+				string? Scheme = Constants.UriSchemes.GetScheme(Uri);
+
+				if (Scheme == Constants.UriSchemes.Xmpp)
+				{
+					await ProcessXmppUri(Uri);
+					return;
+				}
+
+				int i = Uri.IndexOf(':');
+				string Xml = i < 0 ? string.Empty : Uri[(i + 1)..].Trim();
+
+				if (Xml.StartsWith('<') && Xml.EndsWith('>'))
+				{
+					XmlDocument Doc = new()
+					{
+						PreserveWhitespace = true
+					};
+					Doc.LoadXml(Xml);
+
+					switch (Scheme)
+					{
+						case Constants.UriSchemes.IotId:
+							LegalIdentity Identity = LegalIdentity.Parse(Doc.DocumentElement);
+							await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity), BackMethod.Pop);
+							return;
+
+						case Constants.UriSchemes.IotSc:
+							ParsedContract? Parsed = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient, true);
+							if (Parsed?.Contract is null)
+								throw new Exception(ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeOpened)]);
+
+							await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(Parsed.Contract, false), BackMethod.Pop);
+							return;
+
+						case Constants.UriSchemes.NeuroFeature:
+							Token? Token = await Token.TryParse(Doc.DocumentElement);
+							if (Token is null)
+								throw new Exception(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
+
+							// A shared copy is only shown as genuine after it has been checked with the token's Neuron.
+							await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(Token.TokenId, Token);
+							return;
+					}
+				}
+
+				await App.OpenUrlAsync(Uri);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
 		}
 
 		/// <summary>
-		/// Called when a Multi-media URI link using the XMPP URI scheme.
+		/// Opens the contact's card, or the user's own ID in notes to yourself.
 		/// </summary>
-		/// <param name="Uri">URI</param>
-		/// <param name="Scheme">URI Scheme</param>
-		public async Task ExecuteUriClicked(string Uri, UriScheme Scheme)
+		[RelayCommand]
+		private async Task OpenContact()
 		{
 			try
 			{
-				if (Scheme == UriScheme.Xmpp)
-					await ProcessXmppUri(Uri);
+				if (this.isSelfChat)
+				{
+					LegalIdentity? Own = ServiceRef.TagProfile.LegalIdentity;
+					if (Own is not null)
+						await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Own));
+
+					return;
+				}
+
+				ContactInfo? Info = await ContactInfo.FindByBareJid(this.BareJid);
+
+				if (Info?.LegalIdentity is not null)
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Info.LegalIdentity));
 				else
 				{
-					int I = Uri.IndexOf(':');
-					if (I < 0)
-						return;
+					string? Id = string.IsNullOrEmpty(Info?.LegalId) ? this.LegalId : Info.LegalId;
 
-					string S = Uri[(I + 1)..].Trim();
-					if (S.StartsWith('<') && S.EndsWith('>'))  // XML
-					{
-						XmlDocument Doc = new()
-						{
-							PreserveWhitespace = true
-						};
-						Doc.LoadXml(S);
-
-						switch (Scheme)
-						{
-							case UriScheme.IotId:
-								LegalIdentity Id = LegalIdentity.Parse(Doc.DocumentElement);
-								ViewIdentityNavigationArgs ViewIdentityArgs = new(Id);
-
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs, BackMethod.Pop);
-								break;
-
-							case UriScheme.IotSc:
-								ParsedContract ParsedContract = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient, true);
-								ViewContractNavigationArgs ViewContractArgs = new(ParsedContract.Contract, false);
-
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), ViewContractArgs, BackMethod.Pop);
-								break;
-
-							case UriScheme.NeuroFeature:
-								Token? ParsedToken = await Token.TryParse(Doc.DocumentElement);
-								if (ParsedToken is null)
-									throw new Exception(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
-
-								// A shared copy is only shown as genuine after it has been checked with the token's Neuron.
-								await ServiceRef.NeuroWalletOrchestratorService.OpenTokenAsync(ParsedToken.TokenId, ParsedToken);
-								break;
-
-							default:
-								return;
-						}
-					}
-					else
-						await QrCode.OpenUrl(Uri);
+					if (!string.IsNullOrEmpty(Id))
+						await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Id, ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
 				}
 			}
 			catch (Exception Ex)
@@ -1483,18 +1345,33 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					}
 					return true;
 
-				case "unsubscribe":
-					// TODO
-					return false;
-
-				case "remove":
-					ServiceRef.XmppService.GetRosterItem(Jid);
-					// TODO
-					return false;
-
 				default:
 					return false;
 			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Initials of a name: the first letters of its first two words, or the name itself if it is short, such as "Me".
+		/// </summary>
+		private static string GetInitials(string Name, bool Whole)
+		{
+			Name = Name.Trim();
+
+			if (Whole && Name.Length <= 3)
+				return Name;
+
+			if (Name.Contains('@'))
+				return Name.Length > 0 ? char.ToUpper(Name[0], CultureInfo.CurrentCulture).ToString() : string.Empty;
+
+			string[] Words = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			StringBuilder Result = new();
+
+			foreach (string Word in Words.Take(2))
+				Result.Append(char.ToUpper(Word[0], CultureInfo.CurrentCulture));
+
+			return Result.ToString();
 		}
 
 		#region ILinkableView
@@ -1502,7 +1379,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// If the current view is linkable.
 		/// </summary>
-		public bool IsLinkable => true;
+		public bool IsLinkable => !this.isSelfChat;
 
 		/// <summary>
 		/// If App links should be encoded with the link.
@@ -1517,7 +1394,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public Task<string> Title => Task.FromResult<string>(this.FriendlyName ?? string.Empty);
+		public Task<string> Title => Task.FromResult(this.FriendlyName);
 
 		/// <summary>
 		/// If linkable view has media associated with link.
@@ -1535,6 +1412,5 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		public string? MediaContentType => null;
 
 		#endregion
-
 	}
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -202,7 +203,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 				Markdown.Append(this.QrCodeUri);
 				Markdown.Append(')');
 
-				await ChatViewModel.ExecuteSendMessage(string.Empty, Markdown.ToString(), Contact.BareJid);
+				await ChatSender.SendAsync(Contact.BareJid, Markdown.ToString());
 
 				if (Contact.Contact is not null)
 				{
