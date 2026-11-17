@@ -1220,7 +1220,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.OnPropertyChanged(nameof(this.ContractReferenceValue));
 				this.OnPropertyChanged(nameof(this.HasContract));
 				this.OnPropertyChanged(nameof(this.CanPasteId));
-				this.OnPropertyChanged(nameof(this.ShowsHintSeparator));
 				this.OnPropertyChanged(nameof(this.ContractTitle));
 				this.OnPropertyChanged(nameof(this.ContractSubtitle));
 				_ = this.LoadReferencedContractAsync();
@@ -1253,7 +1252,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanPasteId))]
-		[NotifyPropertyChangedFor(nameof(ShowsHintSeparator))]
 		private bool isPastingId;
 
 		/// <summary>
@@ -1270,11 +1268,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// If the contract can be created without choosing a contract here.
 		/// </summary>
 		public bool IsOptional => !((ContractReferenceParameter)this.Parameter).Required;
-
-		/// <summary>
-		/// If "Optional" and "Paste ID" are both shown, with a dot between them.
-		/// </summary>
-		public bool ShowsHintSeparator => this.IsOptional && this.CanPasteId;
 
 		/// <inheritdoc/>
 		public override System.Windows.Input.ICommand? RowCommand => this.OpenContractCommand;
@@ -1293,7 +1286,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			: this.ContractReferenceValue;
 
 		/// <summary>
-		/// The chosen contract's state and when it last changed, when the phone has it.
+		/// The chosen contract's state and when it last changed, such as "Signed, 12 Nov", when the phone has it.
 		/// </summary>
 		public string ContractSubtitle
 		{
@@ -1303,7 +1296,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					return string.Empty;
 
 				string[] Parts = [Model.StateText, Model.LastChangedText];
-				return string.Join(" · ", Parts.Where(Text => !string.IsNullOrEmpty(Text)));
+				return string.Join(", ", Parts.Where(Text => !string.IsNullOrEmpty(Text)));
 			}
 		}
 

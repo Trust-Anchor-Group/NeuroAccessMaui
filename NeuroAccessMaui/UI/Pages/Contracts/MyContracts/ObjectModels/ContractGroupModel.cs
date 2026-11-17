@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public int ItemCount => this.petitions.Count + this.contracts.Count;
 
 		/// <summary>
-		/// The heading of the group, with how many contracts it has, such as "Needs you · 2". A "+" shows that more can be
+		/// The heading of the group, with how many contracts it has, such as "Needs you (2)". A "+" shows that more can be
 		/// loaded.
 		/// </summary>
 		public string HeaderText => this.ItemCount == 0

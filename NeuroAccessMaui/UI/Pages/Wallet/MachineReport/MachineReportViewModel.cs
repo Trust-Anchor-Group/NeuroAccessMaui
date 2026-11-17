@@ -129,7 +129,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		public bool CanShare => ImageShare.GetFile(this.ReportImage) is not null;
 
 		/// <summary>
-		/// Where the report comes from and when, such as "From the server · 10:42".
+		/// Where the report comes from and when, such as "From the server at 10:42".
 		/// </summary>
 		[ObservableProperty]
 		private string sourceText = string.Empty;

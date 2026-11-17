@@ -475,16 +475,12 @@
 					</HorizontalStackLayout>
 				</Border>
 
-				<!-- "Optional · Paste ID" -->
-				<HorizontalStackLayout Spacing="4">
+				<!-- "Optional", and a link to paste the contract's ID -->
+				<HorizontalStackLayout Spacing="16">
 					<Label Text="{l:Localize Optional}"
 						   Style="{DynamicResource ParameterHintLabel}"
 						   VerticalOptions="Center"
 						   IsVisible="{Binding IsOptional}" />
-					<Label Text="·"
-						   Style="{DynamicResource ParameterHintLabel}"
-						   VerticalOptions="Center"
-						   IsVisible="{Binding ShowsHintSeparator}" />
 					<Label Text="{l:Localize ParameterPasteId}"
 						   FontFamily="HaasGroteskMedium"
 						   FontSize="{StaticResource FontSizeSm}"

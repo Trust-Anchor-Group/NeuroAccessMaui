@@ -4800,7 +4800,7 @@ Documento leído. Ya puedes mover tu iPhone.</value>
     <value>Revisar y crear</value>
   </data>
   <data name="ContractStepOf" xml:space="preserve">
-    <value>{0} de {1} · {2}</value>
+    <value>Paso {0} de {1}: {2}</value>
   </data>
   <data name="ContractNextStep" xml:space="preserve">
     <value>Siguiente: {0}</value>
@@ -4884,7 +4884,7 @@ Documento leído. Ya puedes mover tu iPhone.</value>
     <value>Quitar</value>
   </data>
   <data name="ContractGroupHeader" xml:space="preserve">
-    <value>{0} · {1}</value>
+    <value>{0} ({1})</value>
   </data>
   <data name="ContractsEmptyHeading" xml:space="preserve">
     <value>Aún no hay contratos</value>
@@ -5097,10 +5097,10 @@ Documento leído. Ya puedes mover tu iPhone.</value>
     <value>Ajustar</value>
   </data>
   <data name="ZoomHint" xml:space="preserve">
-    <value>Pellizca para ampliar · toca dos veces para ajustar</value>
+    <value>Pellizca para ampliar, toca dos veces para ajustar</value>
   </data>
   <data name="ZoomFromServer" xml:space="preserve">
-    <value>Del servidor · {0}</value>
+    <value>Del servidor a las {0}</value>
   </data>
   <data name="ZoomIn" xml:space="preserve">
     <value>Acercar</value>
@@ -5208,7 +5208,7 @@ Documento leído. Ya puedes mover tu iPhone.</value>
     <value>{0} filas</value>
   </data>
   <data name="ValuesLiveUpdated" xml:space="preserve">
-    <value>En vivo · actualizado {0}</value>
+    <value>En vivo, actualizado {0}</value>
   </data>
   <data name="ValuesUpdated" xml:space="preserve">
     <value>Actualizado {0}</value>
@@ -5451,10 +5451,10 @@ Documento leído. Ya puedes mover tu iPhone.</value>
     <value>No se pudieron cargar tus tokens.</value>
   </data>
   <data name="TokenCountAndValue" xml:space="preserve">
-    <value>{0} tokens · {1} {2}</value>
+    <value>{0} tokens con un valor de {1} {2}</value>
   </data>
   <data name="OneTokenAndValue" xml:space="preserve">
-    <value>1 token · {0} {1}</value>
+    <value>1 token con un valor de {0} {1}</value>
   </data>
   <data name="TokenUnreadCount" xml:space="preserve">
     <value>{0} sin leer</value>
@@ -5623,6 +5623,15 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   </data>
   <data name="TokensLoading" xml:space="preserve">
     <value>Cargando tus tokens</value>
+  </data>
+  <data name="TokensLoadingMore" xml:space="preserve">
+    <value>Cargando más tokens…</value>
+  </data>
+  <data name="TokenFamilyCount" xml:space="preserve">
+    <value>{0} tokens</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Mostrar más</value>
   </data>
   <data name="TokensEmptyHeading" xml:space="preserve">
     <value>Aún no hay tokens</value>

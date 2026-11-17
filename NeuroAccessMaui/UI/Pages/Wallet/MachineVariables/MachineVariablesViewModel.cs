@@ -264,7 +264,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		private bool isLive;
 
 		/// <summary>
-		/// When the values were last updated, such as "Live · updated 14:05".
+		/// When the values were last updated, such as "Live, updated 14:05".
 		/// </summary>
 		[ObservableProperty]
 		private string liveText = string.Empty;

@@ -14233,7 +14233,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} of {1} · {2}.
+        ///   Looks up a localized string similar to Step {0} of {1}: {2}.
         /// </summary>
         public static string ContractStepOf {
             get {
@@ -14485,7 +14485,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} · {1}.
+        ///   Looks up a localized string similar to {0} ({1}).
         /// </summary>
         public static string ContractGroupHeader {
             get {
@@ -15124,7 +15124,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pinch to zoom · double-tap to fit.
+        ///   Looks up a localized string similar to Pinch to zoom, double-tap to fit.
         /// </summary>
         public static string ZoomHint {
             get {
@@ -15133,7 +15133,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to From the server · {0}.
+        ///   Looks up a localized string similar to From the server at {0}.
         /// </summary>
         public static string ZoomFromServer {
             get {
@@ -15457,7 +15457,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Live · updated {0}.
+        ///   Looks up a localized string similar to Live, updated {0}.
         /// </summary>
         public static string ValuesLiveUpdated {
             get {
@@ -16141,7 +16141,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} tokens · {1} {2}.
+        ///   Looks up a localized string similar to {0} tokens worth {1} {2}.
         /// </summary>
         public static string TokenCountAndValue {
             get {
@@ -16150,7 +16150,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1 token · {0} {1}.
+        ///   Looks up a localized string similar to 1 token worth {0} {1}.
         /// </summary>
         public static string OneTokenAndValue {
             get {
@@ -16659,6 +16659,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string TokensLoading {
             get {
                 return ResourceManager.GetString("TokensLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading more tokens….
+        /// </summary>
+        public static string TokensLoadingMore {
+            get {
+                return ResourceManager.GetString("TokensLoadingMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} tokens.
+        /// </summary>
+        public static string TokenFamilyCount {
+            get {
+                return ResourceManager.GetString("TokenFamilyCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show more.
+        /// </summary>
+        public static string ShowMore {
+            get {
+                return ResourceManager.GetString("ShowMore", resourceCulture);
             }
         }
         

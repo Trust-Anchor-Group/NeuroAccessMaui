@@ -7,6 +7,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
@@ -34,6 +35,22 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// The most tokens loaded for a search. Above this, search covers only the tokens loaded.
 		/// </summary>
 		private const int SearchLimit = 500;
+
+		/// <summary>
+		/// How many tokens each request asks for when a page added no rows, because its tokens folded into rows already
+		/// listed, and when an unfolded row loads more of its tokens.
+		/// </summary>
+		private const int fillBatchSize = 50;
+
+		/// <summary>
+		/// The fewest rows that fill the screen. A shorter list can't be scrolled, so more tokens load at once.
+		/// </summary>
+		private const int minFilledRows = 12;
+
+		/// <summary>
+		/// The most tokens loaded at once while looking for new rows. After that, the user taps "Load more".
+		/// </summary>
+		private const int fillLimit = 200;
 
 		/// <summary>
 		/// How long typing has to pause before the search runs.
@@ -113,6 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			this.OnPropertyChanged(nameof(this.ShowLoadError));
 			this.OnPropertyChanged(nameof(this.TokenStatusText));
 			this.OnPropertyChanged(nameof(this.ShowTokenStatus));
+			this.OnPropertyChanged(nameof(this.ShowLoadMore));
 			this.NotifyTokenCountChanged();
 		}
 
@@ -156,7 +174,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 					this.IsSearchLimited = false;
 
 					this.UpdateCategories();
-					this.ApplyFilter();
+					this.ShowRows();
 				});
 			}
 			finally
@@ -168,6 +186,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			{
 				if (this.IsFiltering && !this.reachedEnd)
 					this.EnsureAllLoaded();
+				else
+					this.FillScreen();
 			});
 		}
 
@@ -202,6 +222,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 					this.HasMoreTokens = !this.reachedEnd;
 
 					this.UpdateCategories();
+
+					if (!this.IsFiltering)
+						this.ShowRows();
 				});
 
 				return !this.reachedEnd;
@@ -210,6 +233,60 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			{
 				this.pageLock.Release();
 			}
+		}
+
+		/// <summary>
+		/// Loads pages of tokens until the list has new rows and fills the screen. Tokens of a kind already listed fold into
+		/// its row, so a page can add no rows. Then the next page loads at once, with more tokens per request, up to
+		/// <see cref="fillLimit"/> tokens. Called on the main thread.
+		/// </summary>
+		/// <param name="BatchSize">How many tokens the first request asks for.</param>
+		private async Task LoadMoreRowsAsync(int BatchSize)
+		{
+			if (this.IsLoadingMore)
+				return;
+
+			int Generation = this.listGeneration;
+
+			this.IsLoadingMore = true;
+			try
+			{
+				int RowsBefore = this.Rows.Count;
+				int TokensBefore = this.allTokens.Count;
+
+				while (Generation == this.listGeneration && !this.IsFiltering && this.allTokens.Count - TokensBefore < fillLimit)
+				{
+					if (!await this.LoadNextPageAsync(BatchSize))
+						break;
+
+					if (this.Rows.Count > RowsBefore && this.Rows.Count >= minFilledRows)
+						break;
+
+					BatchSize = fillBatchSize;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			finally
+			{
+				this.IsLoadingMore = false;
+			}
+
+			// The list was reloaded meanwhile, so the new list fills the screen now.
+			if (Generation != this.listGeneration)
+				this.FillScreen();
+		}
+
+		/// <summary>
+		/// Loads more tokens at once when the rows don't fill the screen, so the list can't be scrolled to load them.
+		/// Called on the main thread.
+		/// </summary>
+		private void FillScreen()
+		{
+			if (this.HasMoreTokens && !this.IsFiltering && this.Rows.Count < minFilledRows)
+				_ = this.LoadMoreRowsAsync(fillBatchSize);
 		}
 
 		/// <summary>
@@ -237,7 +314,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 						break;
 
 					if (this.IsFiltering)
-						await MainThread.InvokeOnMainThreadAsync(this.ApplyFilter);
+						await MainThread.InvokeOnMainThreadAsync(this.ShowRows);
 				}
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
@@ -246,7 +323,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 						return;
 
 					this.IsSearchLimited = !this.reachedEnd;
-					this.ApplyFilter();
+					this.ShowRows();
 				});
 			}
 			catch (Exception Ex)
@@ -285,8 +362,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		}
 
 		/// <summary>
-		/// Adds tokens received from the server to the end of the list, skipping tokens that are already in it.
-		/// Called on the main thread.
+		/// Adds tokens received from the server to the end of the loaded tokens, skipping tokens that are already in it.
+		/// They are shown by <see cref="ShowRows"/>. Called on the main thread.
 		/// </summary>
 		/// <param name="Tokens">Tokens received from the server.</param>
 		/// <param name="Offset">The offset the tokens were requested from.</param>
@@ -299,11 +376,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 				if (!this.loadedTokenIds.Add(Token.TokenId))
 					continue;
 
-				TokenItem Item = this.CreateItem(Token);
-				this.allTokens.Add(Item);
-
-				if (!this.IsFiltering)
-					this.Tokens.Add(Item);
+				this.allTokens.Add(this.CreateItem(Token));
 			}
 
 			this.NotifyTokenCountChanged();
@@ -360,26 +433,26 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		private void FilterChanged()
 		{
 			this.OnPropertyChanged(nameof(this.IsFiltering));
-			this.ApplyFilter();
+			this.OnPropertyChanged(nameof(this.ShowLoadMore));
+			this.ShowRows();
 
 			if (this.IsFiltering && !this.reachedEnd)
 				this.EnsureAllLoaded();
+			else
+				this.FillScreen();
 		}
 
 		/// <summary>
-		/// Shows the loaded tokens that match the search and category filter. Called on the main thread.
+		/// Shows the loaded tokens that match the search and category filter, with tokens of the same kind folded into one
+		/// row. Called on the main thread.
 		/// </summary>
-		private void ApplyFilter()
+		private void ShowRows()
 		{
-			ObservableCollection<TokenItem> Matches = [];
+			List<TokenItem> Shown = this.IsFiltering ? [.. this.allTokens.Where(this.Matches)] : this.allTokens;
 
-			foreach (TokenItem Item in this.allTokens)
-			{
-				if (this.Matches(Item))
-					Matches.Add(Item);
-			}
-
-			this.Tokens = Matches;
+			// While a search is applied, the whole wallet is loaded, so no fold continues on the server's next page.
+			this.Rows.Show(Shown, this.HasMoreTokens && !this.IsFiltering);
+			this.OnPropertyChanged(nameof(this.ShowNoMatches));
 		}
 
 		/// <summary>
@@ -456,13 +529,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 				// The server lists the newest token first, so every loaded token moves one position down.
 				this.serverOffset++;
 
-				TokenItem Item = this.CreateItem(e.Token);
-				this.allTokens.Insert(0, Item);
-
-				if (this.Matches(Item))
-					this.Tokens.Insert(0, Item);
+				this.allTokens.Insert(0, this.CreateItem(e.Token));
 
 				this.UpdateCategories();
+				this.ShowRows();
 				this.NotifyTokenCountChanged();
 			});
 
@@ -482,9 +552,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 				this.serverOffset = Math.Max(0, this.serverOffset - 1);
 
 				RemoveToken(this.allTokens, e.Token.TokenId);
-				RemoveToken(this.Tokens, e.Token.TokenId);
 
 				this.UpdateCategories();
+				this.ShowRows();
 				this.NotifyTokenCountChanged();
 			});
 
@@ -550,11 +620,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		private string? loadErrorText;
 
 		/// <summary>
-		/// The tokens shown: every loaded token, or those that match the search and category filter.
+		/// The rows shown: every loaded token, or those that match the search and category filter, with tokens of the same
+		/// kind folded into one row.
 		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(ShowNoMatches))]
-		private ObservableCollection<TokenItem> tokens = [];
+		public TokenRowCollection Rows { get; } = new();
 
 		/// <summary>
 		/// Categories of the loaded tokens, to filter by.
@@ -653,13 +722,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// <summary>
 		/// If a search or filter matched none of the tokens.
 		/// </summary>
-		public bool ShowNoMatches => this.allTokens.Count > 0 && this.Tokens.Count == 0 && this.IsFiltering && !this.IsLoadingAll;
+		public bool ShowNoMatches => this.allTokens.Count > 0 && this.Rows.Count == 0 && this.IsFiltering && !this.IsLoadingAll;
 
 		/// <summary>
 		/// If the server may have more tokens to load while scrolling.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowLoadMore))]
 		private bool hasMoreTokens;
+
+		/// <summary>
+		/// If more tokens are being loaded, after the first page.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowLoadMore))]
+		private bool isLoadingMore;
+
+		/// <summary>
+		/// If the "Load more" button shows below the list. More tokens also load while scrolling, but folding can keep the
+		/// list too short to scroll.
+		/// </summary>
+		public bool ShowLoadMore => this.IsLoaded && this.HasMoreTokens && !this.IsLoadingMore && !this.IsFiltering;
 
 		/// <summary>
 		/// If the whole wallet is being loaded for a search.
@@ -731,22 +814,52 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		}
 
 		/// <summary>
-		/// Loads more tokens, when the user scrolls near the end of the list. While a search or filter is applied, the
-		/// whole wallet is loaded instead.
+		/// Loads more tokens, when the user scrolls near the end of the list or taps "Load more". While a search or filter
+		/// is applied, the whole wallet is loaded instead.
 		/// </summary>
 		[RelayCommand]
-		private async Task LoadMoreTokens()
+		private Task LoadMoreTokensAsync()
 		{
 			if (!this.HasMoreTokens || this.IsFiltering)
+				return Task.CompletedTask;
+
+			return this.LoadMoreRowsAsync(Constants.BatchSizes.TokenBatchSize);
+		}
+
+		/// <summary>
+		/// Loads more tokens of an unfolded row's kind, when the user taps "Show more" under its tokens. Pages load until
+		/// more of them turn up, up to <see cref="fillLimit"/> tokens.
+		/// </summary>
+		/// <param name="Row">The "Show more" row.</param>
+		[RelayCommand]
+		private async Task ShowMoreInFamilyAsync(TokenFamilyMoreItem? Row)
+		{
+			if (Row is null || this.IsLoadingMore || this.Rows.FindFamily(Row.FamilyKey) is not TokenFamilyItem Family)
 				return;
 
+			int Generation = this.listGeneration;
+			int MembersBefore = Family.Members.Count;
+			int TokensBefore = this.allTokens.Count;
+
+			this.IsLoadingMore = true;
+			Row.IsLoading = true;
 			try
 			{
-				await this.LoadNextPageAsync(Constants.BatchSizes.TokenBatchSize);
+				while (Generation == this.listGeneration && !this.IsFiltering && this.allTokens.Count - TokensBefore < fillLimit)
+				{
+					if (!await this.LoadNextPageAsync(fillBatchSize) || Family.Members.Count > MembersBefore)
+						break;
+				}
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.ToastService.ShowTextAsync(GetLoadErrorText(Ex));
+			}
+			finally
+			{
+				Row.IsLoading = false;
+				this.IsLoadingMore = false;
 			}
 		}
 

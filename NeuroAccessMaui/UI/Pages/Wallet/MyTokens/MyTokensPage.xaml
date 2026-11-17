@@ -8,9 +8,126 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
+							 xmlns:tokenmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels"
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens.Views"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens">
+
+	<VisualElement.Resources>
+		<!-- A token -->
+		<DataTemplate x:Key="TokenRowTemplate"
+					  x:DataType="objectmodel:TokenItem">
+			<views:TokenListRowView />
+		</DataTemplate>
+
+		<!-- Tokens of the same kind, folded into one row -->
+		<DataTemplate x:Key="FamilyRowTemplate"
+					  x:DataType="tokenmodel:TokenFamilyItem">
+			<views:TokenFamilyRowView />
+		</DataTemplate>
+
+		<!-- One token under an unfolded row, told apart by its number in its batch and when it was created -->
+		<DataTemplate x:Key="MemberRowTemplate"
+					  x:DataType="tokenmodel:TokenFamilyMemberItem">
+			<Grid>
+				<controls:ListCardSegment Position="{Binding CardPosition}"
+										  FillColor="{DynamicResource SurfaceElevation1WL}"
+										  StrokeColor="{DynamicResource SurfaceDividerWL}" />
+				<controls:TemplatedButton Command="{Binding Token.ClickedCommand}"
+										  SemanticProperties.Description="{Binding Token.AccessibleDescription}">
+					<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+						  ColumnSpacing="10"
+						  Padding="74,0,18,0"
+						  MinimumHeightRequest="52">
+						<Grid Grid.Column="0"
+							  ColumnDefinitions="Auto,*"
+							  ColumnSpacing="10"
+							  VerticalOptions="Center">
+							<Label Grid.Column="0"
+								   VerticalOptions="Center"
+								   FontSize="{StaticResource FontSizeMd}"
+								   LineBreakMode="NoWrap"
+								   Text="{Binding Title}"
+								   TextColor="{DynamicResource ContentPrimaryWL}" />
+							<Label Grid.Column="1"
+								   VerticalOptions="Center"
+								   Style="{DynamicResource ListCardRowDetailLabel}"
+								   Text="{Binding Detail}" />
+						</Grid>
+						<Border Grid.Column="1"
+								IsVisible="{Binding ShowsExpiry}"
+								Style="{DynamicResource ListCardPillBorder}"
+								BackgroundColor="{DynamicResource TnPWarningbgWL}">
+							<Label Style="{DynamicResource ListCardPillLabel}"
+								   Text="{Binding Token.ExpiryText}"
+								   TextColor="{DynamicResource TnPWarningContentWL}" />
+						</Border>
+						<Label Grid.Column="2"
+							   VerticalOptions="Center"
+							   IsVisible="{Binding ShowsValue}"
+							   LineBreakMode="NoWrap"
+							   Style="{DynamicResource ListCardRowDetailLabel}">
+							<Label.FormattedText>
+								<FormattedString>
+									<Span Text="{Binding Token.Value, Converter={converters:MoneyToString}}" />
+									<Span Text=" " />
+									<Span Text="{Binding Token.Currency}" />
+								</FormattedString>
+							</Label.FormattedText>
+						</Label>
+						<!-- Unread notifications about the token -->
+						<Ellipse Grid.Column="3"
+								 VerticalOptions="Center"
+								 HeightRequest="8"
+								 WidthRequest="8"
+								 IsVisible="{Binding Token.HasUnread}"
+								 Fill="{DynamicResource TnPDangerFigureWL}" />
+						<controls:SvgView Grid.Column="4"
+										  VerticalOptions="Center"
+										  HeightRequest="12"
+										  WidthRequest="12"
+										  AutomationProperties.IsInAccessibleTree="False"
+										  Source="arrow_forward_ios.svg"
+										  TintColor="{DynamicResource ContentSecondaryWL}" />
+					</Grid>
+				</controls:TemplatedButton>
+			</Grid>
+		</DataTemplate>
+
+		<!-- At the end of an unfolded row, when the server may have more tokens of its kind -->
+		<DataTemplate x:Key="MoreRowTemplate"
+					  x:DataType="tokenmodel:TokenFamilyMoreItem">
+			<Grid>
+				<controls:ListCardSegment Position="{Binding CardPosition}"
+										  FillColor="{DynamicResource SurfaceElevation1WL}"
+										  StrokeColor="{DynamicResource SurfaceDividerWL}" />
+				<controls:TemplatedButton Command="{Binding ShowMoreInFamilyCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyTokensViewModel}}, x:DataType=viewmodel:MyTokensViewModel}"
+										  CommandParameter="{Binding .}"
+										  IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+										  SemanticProperties.Description="{l:Localize ShowMore}">
+					<Grid Padding="74,0,18,0"
+						  MinimumHeightRequest="48">
+						<Label VerticalOptions="Center"
+							   Style="{DynamicResource ListCardRowLinkLabel}"
+							   Text="{l:Localize ShowMore}"
+							   IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
+						<Label VerticalOptions="Center"
+							   Style="{DynamicResource ListCardRowDetailLabel}"
+							   Text="{l:Localize TokensLoadingMore}"
+							   IsVisible="{Binding IsLoading}" />
+					</Grid>
+				</controls:TemplatedButton>
+			</Grid>
+		</DataTemplate>
+
+		<viewmodel:TokenListItemTemplateSelector x:Key="TokenListItemTemplateSelector"
+												 TokenTemplate="{StaticResource TokenRowTemplate}"
+												 FamilyTemplate="{StaticResource FamilyRowTemplate}"
+												 MemberTemplate="{StaticResource MemberRowTemplate}"
+												 MoreTemplate="{StaticResource MoreRowTemplate}" />
+	</VisualElement.Resources>
+
 	<!-- Built like the identity flow: the search, category chips, one card with the tokens, and a sticky footer. -->
 	<controls:IdentityFlowShell Title="{Binding PageTitle}"
 								ShowLeadingAction="True"
@@ -145,7 +262,8 @@
 															IsVisible="False"
 															controls:Reveal.IsShown="{Binding ShowTokenList}"
 															controls:ListCard.IsEnabled="True"
-															ItemsSource="{Binding Tokens}"
+															ItemsSource="{Binding Rows}"
+															ItemTemplate="{StaticResource TokenListItemTemplateSelector}"
 															SelectionMode="None"
 															ItemSizingStrategy="MeasureAllItems"
 															RemainingItemsThreshold="3"
@@ -154,15 +272,21 @@
 									<LinearItemsLayout Orientation="Vertical"
 													   ItemSpacing="0" />
 								</CollectionView.ItemsLayout>
-								<CollectionView.ItemTemplate>
-									<DataTemplate x:DataType="objectmodel:TokenItem">
-										<views:TokenListRowView />
-									</DataTemplate>
-								</CollectionView.ItemTemplate>
+								<!-- More tokens load while scrolling. The button is for when folding keeps the list too short to scroll. -->
 								<CollectionView.Footer>
-									<BoxView HeightRequest="16"
-											 Color="Transparent"
-											 AutomationProperties.IsInAccessibleTree="False" />
+									<Grid Padding="0,8,0,16"
+										  MinimumHeightRequest="16">
+										<controls:TextButton HorizontalOptions="Center"
+															 Style="{DynamicResource TransparentTextButton}"
+															 LabelData="{l:Localize LoadMore}"
+															 Command="{Binding LoadMoreTokensCommand}"
+															 IsVisible="{Binding ShowLoadMore}" />
+										<Label HorizontalOptions="Center"
+											   VerticalOptions="Center"
+											   Style="{DynamicResource ListCardStatusLabel}"
+											   Text="{l:Localize TokensLoadingMore}"
+											   IsVisible="{Binding IsLoadingMore}" />
+									</Grid>
 								</CollectionView.Footer>
 							</controls:LoadingCollectionView>
 

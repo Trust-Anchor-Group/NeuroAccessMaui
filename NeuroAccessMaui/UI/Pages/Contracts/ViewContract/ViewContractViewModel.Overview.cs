@@ -215,7 +215,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public bool HasDeadline => this.IsOpenForSigning && this.Contract?.Contract.SignBefore.HasValue == true;
 
 		/// <summary>
-		/// The signing deadline and the time left, such as "Sign by 30 November · 3 days left".
+		/// The signing deadline and the time left, such as "Sign by 30 November (3 days left)".
 		/// </summary>
 		public string DeadlineText
 		{
@@ -229,13 +229,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				string Text = ServiceRef.Localizer[nameof(AppResources.ContractSignBy), FormatDay(Before)];
 
 				if (Left.TotalDays >= 2)
-					return Text + " · " + ServiceRef.Localizer[nameof(AppResources.ContractDaysLeft), (int)Math.Floor(Left.TotalDays)];
+					return Text + " (" + ServiceRef.Localizer[nameof(AppResources.ContractDaysLeft), (int)Math.Floor(Left.TotalDays)] + ")";
 
 				if (Left.TotalDays >= 1)
-					return Text + " · " + ServiceRef.Localizer[nameof(AppResources.ContractOneDayLeft)];
+					return Text + " (" + ServiceRef.Localizer[nameof(AppResources.ContractOneDayLeft)] + ")";
 
 				if (Left > TimeSpan.Zero)
-					return Text + " · " + ServiceRef.Localizer[nameof(AppResources.ContractLessThanDayLeft)];
+					return Text + " (" + ServiceRef.Localizer[nameof(AppResources.ContractLessThanDayLeft)] + ")";
 
 				return Text;
 			}

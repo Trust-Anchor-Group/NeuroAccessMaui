@@ -128,7 +128,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private Contract? lastCreatedContract;
 
 		/// <summary>
-		/// Where the user is in the steps, such as "1 of 3 · Fill in".
+		/// Where the user is in the steps, such as "Step 1 of 3: Fill in".
 		/// </summary>
 		public string ProgressText => this.CurrentStep is null
 			? string.Empty

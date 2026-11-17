@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="NeuroAccessMaui.UI.Pages.Wallet.MyTokens.Views.TokenFamilyRowView"
+			 x:DataType="objectmodel:TokenFamilyItem"
+			 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+			 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+			 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels">
+	<!-- Tokens of the same kind as one row of the list card. A tap unfolds them. -->
+	<Grid>
+		<controls:ListCardSegment Position="{Binding CardPosition}"
+								  FillColor="{DynamicResource SurfaceElevation1WL}"
+								  StrokeColor="{DynamicResource SurfaceDividerWL}" />
+
+		<controls:TemplatedButton Command="{Binding ToggleCommand}"
+								  SemanticProperties.Description="{Binding AccessibleDescription}">
+			<Grid ColumnDefinitions="44,*,Auto"
+				  ColumnSpacing="14"
+				  Padding="16,14"
+				  MinimumHeightRequest="76">
+				<!-- The first token's glyph on a tinted tile, with the unread badge of all of them on its corner -->
+				<Grid Grid.Column="0"
+					  WidthRequest="44"
+					  HeightRequest="44"
+					  VerticalOptions="Center">
+					<Border Style="{DynamicResource ListCardTileBorder}">
+						<Grid>
+							<Image Source="{Binding Leader.GlyphImage}"
+								   IsVisible="{Binding Leader.HasGlyphImage}"
+								   WidthRequest="32"
+								   HeightRequest="32"
+								   Aspect="AspectFit"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center"
+								   AutomationProperties.IsInAccessibleTree="False" />
+							<Path Data="{x:Static ui:Geometries.TokenPath}"
+								  IsVisible="{Binding Leader.ShowGlyphPlaceholder}"
+								  Fill="{DynamicResource ContentAccessWL}"
+								  Aspect="Uniform"
+								  WidthRequest="22"
+								  HeightRequest="22"
+								  HorizontalOptions="Center"
+								  VerticalOptions="Center"
+								  AutomationProperties.IsInAccessibleTree="False" />
+						</Grid>
+					</Border>
+					<controls:Badge Text="{Binding UnreadCount}"
+									IsVisible="{Binding HasUnread}"
+									BackgroundColor="{DynamicResource TnPDangerFigureWL}"
+									TextColor="{DynamicResource TnPNeutralv750ContentWL}"
+									FontFamily="HaasGroteskRegular"
+									FontSize="{StaticResource FontSizeXs}"
+									TextMargin="4,2"
+									Stroke="{DynamicResource SurfaceElevation1WL}"
+									InputTransparent="True"
+									HorizontalOptions="End"
+									VerticalOptions="Start"
+									TranslationX="9"
+									TranslationY="-7"
+									AutomationProperties.IsInAccessibleTree="False" />
+				</Grid>
+
+				<!-- Name, then how many with an arrow that turns when unfolded, expiry and category -->
+				<VerticalStackLayout Grid.Column="1"
+									 Spacing="4"
+									 VerticalOptions="Center">
+					<Label Text="{Binding FriendlyName}"
+						   Style="{DynamicResource ListCardRowTitleLabel}" />
+					<Grid ColumnDefinitions="Auto,Auto,*">
+						<Border Grid.Column="0"
+								HorizontalOptions="Start"
+								Padding="9,0,6,0"
+								Margin="0,0,8,0"
+								HeightRequest="22"
+								Style="{DynamicResource ListCardPillBorder}"
+								BackgroundColor="{DynamicResource TnPInfobgWL}">
+							<Border.Triggers>
+								<DataTrigger TargetType="Border"
+											 Binding="{Binding IsExpanded}"
+											 Value="True">
+									<Setter Property="BackgroundColor"
+											Value="{DynamicResource ContentPrimaryWL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<HorizontalStackLayout Spacing="4">
+								<Label Text="{Binding CountText}"
+									   Style="{DynamicResource ListCardPillLabel}"
+									   TextColor="{DynamicResource ContentPrimaryWL}">
+									<Label.Triggers>
+										<DataTrigger TargetType="Label"
+													 Binding="{Binding IsExpanded}"
+													 Value="True">
+											<Setter Property="TextColor"
+													Value="{DynamicResource ContentPrimaryInverted}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+								<controls:SvgView VerticalOptions="Center"
+												  WidthRequest="10"
+												  HeightRequest="10"
+												  Rotation="90"
+												  Source="arrow_forward_ios.svg"
+												  TintColor="{DynamicResource ContentPrimaryWL}"
+												  AutomationProperties.IsInAccessibleTree="False">
+									<controls:SvgView.Triggers>
+										<DataTrigger TargetType="controls:SvgView"
+													 Binding="{Binding IsExpanded}"
+													 Value="True">
+											<Setter Property="Rotation"
+													Value="-90" />
+											<Setter Property="TintColor"
+													Value="{DynamicResource ContentPrimaryInverted}" />
+										</DataTrigger>
+									</controls:SvgView.Triggers>
+								</controls:SvgView>
+							</HorizontalStackLayout>
+						</Border>
+						<Border Grid.Column="1"
+								Style="{DynamicResource ListCardPillBorder}"
+								Margin="0,0,8,0"
+								IsVisible="{Binding HasExpiryText}"
+								BackgroundColor="{DynamicResource TnPWarningbgWL}">
+							<Border.Triggers>
+								<DataTrigger TargetType="Border"
+											 Binding="{Binding IsExpired}"
+											 Value="True">
+									<Setter Property="BackgroundColor"
+											Value="{DynamicResource TnPDangerbgWL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<Label Text="{Binding ExpiryText}"
+								   Style="{DynamicResource ListCardPillLabel}"
+								   TextColor="{DynamicResource TnPWarningContentWL}">
+								<Label.Triggers>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding IsExpired}"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource TnPDangerContentWL}" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+						</Border>
+						<Label Grid.Column="2"
+							   VerticalOptions="Center"
+							   Text="{Binding Category}"
+							   IsVisible="{Binding HasCategory}"
+							   Style="{DynamicResource ListCardRowDetailLabel}" />
+					</Grid>
+				</VerticalStackLayout>
+
+				<!-- Value of them all, and currency -->
+				<VerticalStackLayout Grid.Column="2"
+									 Spacing="0"
+									 VerticalOptions="Center"
+									 HorizontalOptions="End">
+					<Label Text="{Binding TotalText}"
+						   Style="{DynamicResource ListCardRowTitleLabel}"
+						   HorizontalOptions="End"
+						   HorizontalTextAlignment="End"
+						   LineBreakMode="NoWrap" />
+					<Label Text="{Binding Currency}"
+						   Style="{DynamicResource ListCardRowDetailLabel}"
+						   HorizontalOptions="End"
+						   HorizontalTextAlignment="End"
+						   LineBreakMode="NoWrap" />
+				</VerticalStackLayout>
+			</Grid>
+		</controls:TemplatedButton>
+	</Grid>
+</ContentView>

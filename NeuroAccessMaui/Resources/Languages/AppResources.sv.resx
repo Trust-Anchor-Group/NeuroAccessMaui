@@ -4800,7 +4800,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Kontrollera och skapa</value>
   </data>
   <data name="ContractStepOf" xml:space="preserve">
-    <value>{0} av {1} · {2}</value>
+    <value>Steg {0} av {1}: {2}</value>
   </data>
   <data name="ContractNextStep" xml:space="preserve">
     <value>Nästa: {0}</value>
@@ -4884,7 +4884,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Ta bort</value>
   </data>
   <data name="ContractGroupHeader" xml:space="preserve">
-    <value>{0} · {1}</value>
+    <value>{0} ({1})</value>
   </data>
   <data name="ContractsEmptyHeading" xml:space="preserve">
     <value>Inga kontrakt än</value>
@@ -5097,10 +5097,10 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Anpassa</value>
   </data>
   <data name="ZoomHint" xml:space="preserve">
-    <value>Nyp för att zooma · dubbeltryck för att anpassa</value>
+    <value>Nyp för att zooma, dubbeltryck för att anpassa</value>
   </data>
   <data name="ZoomFromServer" xml:space="preserve">
-    <value>Från servern · {0}</value>
+    <value>Från servern kl. {0}</value>
   </data>
   <data name="ZoomIn" xml:space="preserve">
     <value>Zooma in</value>
@@ -5208,7 +5208,7 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>{0} rader</value>
   </data>
   <data name="ValuesLiveUpdated" xml:space="preserve">
-    <value>Live · uppdaterad {0}</value>
+    <value>Live, uppdaterad {0}</value>
   </data>
   <data name="ValuesUpdated" xml:space="preserve">
     <value>Uppdaterad {0}</value>
@@ -5451,10 +5451,10 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
     <value>Dina token kunde inte laddas.</value>
   </data>
   <data name="TokenCountAndValue" xml:space="preserve">
-    <value>{0} token · {1} {2}</value>
+    <value>{0} token värda {1} {2}</value>
   </data>
   <data name="OneTokenAndValue" xml:space="preserve">
-    <value>1 token · {0} {1}</value>
+    <value>1 token värd {0} {1}</value>
   </data>
   <data name="TokenUnreadCount" xml:space="preserve">
     <value>{0} olästa</value>
@@ -5623,6 +5623,15 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="TokensLoading" xml:space="preserve">
     <value>Laddar dina token</value>
+  </data>
+  <data name="TokensLoadingMore" xml:space="preserve">
+    <value>Laddar fler token…</value>
+  </data>
+  <data name="TokenFamilyCount" xml:space="preserve">
+    <value>{0} token</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Visa fler</value>
   </data>
   <data name="TokensEmptyHeading" xml:space="preserve">
     <value>Inga token än</value>
