@@ -117,6 +117,87 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChatCloseShare" xml:space="preserve">
+    <value>Fechar compartilhamento</value>
+  </data>
+  <data name="ChatDeleteFromPhone" xml:space="preserve">
+    <value>Excluir deste celular</value>
+  </data>
+  <data name="ChatFormatBold" xml:space="preserve">
+    <value>Negrito</value>
+  </data>
+  <data name="ChatFormatBulletList" xml:space="preserve">
+    <value>Lista com marcadores</value>
+  </data>
+  <data name="ChatFormatCode" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="ChatFormatCodeBlock" xml:space="preserve">
+    <value>Bloco de código</value>
+  </data>
+  <data name="ChatFormatItalic" xml:space="preserve">
+    <value>Itálico</value>
+  </data>
+  <data name="ChatFormatLink" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="ChatFormatNumberedList" xml:space="preserve">
+    <value>Lista numerada</value>
+  </data>
+  <data name="ChatFormatQuote" xml:space="preserve">
+    <value>Citação</value>
+  </data>
+  <data name="ChatFormatStrikethrough" xml:space="preserve">
+    <value>Tachado</value>
+  </data>
+  <data name="ChatForward" xml:space="preserve">
+    <value>Encaminhar</value>
+  </data>
+  <data name="ChatForwarded" xml:space="preserve">
+    <value>Encaminhado</value>
+  </data>
+  <data name="ChatForwardNotPossible" xml:space="preserve">
+    <value>Você não pode enviar mensagens para este contato.</value>
+  </data>
+  <data name="ChatForwardTo" xml:space="preserve">
+    <value>Encaminhar para</value>
+  </data>
+  <data name="ChatHideFormatting" xml:space="preserve">
+    <value>Ocultar formatação</value>
+  </data>
+  <data name="ChatInfoDelivered" xml:space="preserve">
+    <value>Entregue {0}</value>
+  </data>
+  <data name="ChatInfoReceived" xml:space="preserve">
+    <value>Recebido {0}</value>
+  </data>
+  <data name="ChatInfoSaved" xml:space="preserve">
+    <value>Salvo {0}</value>
+  </data>
+  <data name="ChatInfoSent" xml:space="preserve">
+    <value>Enviado {0}</value>
+  </data>
+  <data name="ChatMessageActions" xml:space="preserve">
+    <value>Ações da mensagem</value>
+  </data>
+  <data name="ChatPreview" xml:space="preserve">
+    <value>Pré-visualização</value>
+  </data>
+  <data name="ChatShowFormatting" xml:space="preserve">
+    <value>Mostrar formatação</value>
+  </data>
+  <data name="ChatTimeOnDay" xml:space="preserve">
+    <value>{0} às {1}</value>
+  </data>
+  <data name="ChatTimeToday" xml:space="preserve">
+    <value>hoje às {0}</value>
+  </data>
+  <data name="ChatTimeYesterday" xml:space="preserve">
+    <value>ontem às {0}</value>
+  </data>
+  <data name="ChatYou" xml:space="preserve">
+    <value>Você</value>
+  </data>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Selecione os papéis com os quais irá assinar (opcional)</value>
   </data>

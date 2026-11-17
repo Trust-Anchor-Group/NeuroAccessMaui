@@ -1159,6 +1159,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close sharing.
+        /// </summary>
+        public static string ChatCloseShare {
+            get {
+                return ResourceManager.GetString("ChatCloseShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete from this phone.
+        /// </summary>
+        public static string ChatDeleteFromPhone {
+            get {
+                return ResourceManager.GetString("ChatDeleteFromPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delivered.
         /// </summary>
         public static string ChatDelivered {
@@ -1213,6 +1231,168 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bold.
+        /// </summary>
+        public static string ChatFormatBold {
+            get {
+                return ResourceManager.GetString("ChatFormatBold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bulleted list.
+        /// </summary>
+        public static string ChatFormatBulletList {
+            get {
+                return ResourceManager.GetString("ChatFormatBulletList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code.
+        /// </summary>
+        public static string ChatFormatCode {
+            get {
+                return ResourceManager.GetString("ChatFormatCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code block.
+        /// </summary>
+        public static string ChatFormatCodeBlock {
+            get {
+                return ResourceManager.GetString("ChatFormatCodeBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Italic.
+        /// </summary>
+        public static string ChatFormatItalic {
+            get {
+                return ResourceManager.GetString("ChatFormatItalic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link.
+        /// </summary>
+        public static string ChatFormatLink {
+            get {
+                return ResourceManager.GetString("ChatFormatLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Numbered list.
+        /// </summary>
+        public static string ChatFormatNumberedList {
+            get {
+                return ResourceManager.GetString("ChatFormatNumberedList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quote.
+        /// </summary>
+        public static string ChatFormatQuote {
+            get {
+                return ResourceManager.GetString("ChatFormatQuote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strikethrough.
+        /// </summary>
+        public static string ChatFormatStrikethrough {
+            get {
+                return ResourceManager.GetString("ChatFormatStrikethrough", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward.
+        /// </summary>
+        public static string ChatForward {
+            get {
+                return ResourceManager.GetString("ChatForward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forwarded.
+        /// </summary>
+        public static string ChatForwarded {
+            get {
+                return ResourceManager.GetString("ChatForwarded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can't send messages to this contact..
+        /// </summary>
+        public static string ChatForwardNotPossible {
+            get {
+                return ResourceManager.GetString("ChatForwardNotPossible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward to.
+        /// </summary>
+        public static string ChatForwardTo {
+            get {
+                return ResourceManager.GetString("ChatForwardTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide formatting.
+        /// </summary>
+        public static string ChatHideFormatting {
+            get {
+                return ResourceManager.GetString("ChatHideFormatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delivered {0}.
+        /// </summary>
+        public static string ChatInfoDelivered {
+            get {
+                return ResourceManager.GetString("ChatInfoDelivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received {0}.
+        /// </summary>
+        public static string ChatInfoReceived {
+            get {
+                return ResourceManager.GetString("ChatInfoReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved {0}.
+        /// </summary>
+        public static string ChatInfoSaved {
+            get {
+                return ResourceManager.GetString("ChatInfoSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sent {0}.
+        /// </summary>
+        public static string ChatInfoSent {
+            get {
+                return ResourceManager.GetString("ChatInfoSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Me.
         /// </summary>
         public static string ChatMe {
@@ -1222,11 +1402,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message actions.
+        /// </summary>
+        public static string ChatMessageActions {
+            get {
+                return ResourceManager.GetString("ChatMessageActions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
         public static string ChatOnline {
             get {
                 return ResourceManager.GetString("ChatOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string ChatPreview {
+            get {
+                return ResourceManager.GetString("ChatPreview", resourceCulture);
             }
         }
         
@@ -1330,11 +1528,56 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show formatting.
+        /// </summary>
+        public static string ChatShowFormatting {
+            get {
+                return ResourceManager.GetString("ChatShowFormatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} at {1}.
+        /// </summary>
+        public static string ChatTimeOnDay {
+            get {
+                return ResourceManager.GetString("ChatTimeOnDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to today at {0}.
+        /// </summary>
+        public static string ChatTimeToday {
+            get {
+                return ResourceManager.GetString("ChatTimeToday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to yesterday at {0}.
+        /// </summary>
+        public static string ChatTimeYesterday {
+            get {
+                return ResourceManager.GetString("ChatTimeYesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Typing….
         /// </summary>
         public static string ChatTyping {
             get {
                 return ResourceManager.GetString("ChatTyping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string ChatYou {
+            get {
+                return ResourceManager.GetString("ChatYou", resourceCulture);
             }
         }
         

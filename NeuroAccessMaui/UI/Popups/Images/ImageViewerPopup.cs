@@ -17,6 +17,7 @@ namespace NeuroAccessMaui.UI.Popups.Images
 
 		private readonly ImageSource source;
 		private readonly string title;
+		private readonly string? subtitle;
 		private readonly Grid layout;
 		private readonly Grid header;
 		private readonly Border titleBox;
@@ -28,7 +29,9 @@ namespace NeuroAccessMaui.UI.Popups.Images
 		/// </summary>
 		/// <param name="Source">The image.</param>
 		/// <param name="Title">A title shown above the image, if any.</param>
-		public ImageViewerPopup(ImageSource Source, string? Title)
+		/// <param name="Subtitle">The line under the title. Null shows that the image is from the server, and an empty text
+		/// shows no line.</param>
+		public ImageViewerPopup(ImageSource Source, string? Title, string? Subtitle = null)
 		{
 			this.CardWidthFraction = 1;
 			this.CardMaxHeightFraction = 1;
@@ -37,6 +40,7 @@ namespace NeuroAccessMaui.UI.Popups.Images
 
 			this.source = Source;
 			this.title = string.IsNullOrEmpty(Title) ? ServiceRef.Localizer[nameof(AppResources.HistoryValueChart)] : Title;
+			this.subtitle = Subtitle;
 
 			this.titleBox = new Border
 			{
@@ -125,9 +129,11 @@ namespace NeuroAccessMaui.UI.Popups.Images
 		/// </summary>
 		/// <param name="Source">The image.</param>
 		/// <param name="Title">A title shown above the image, if any.</param>
-		public static Task ShowAsync(ImageSource Source, string? Title)
+		/// <param name="Subtitle">The line under the title. Null shows that the image is from the server, and an empty text
+		/// shows no line.</param>
+		public static Task ShowAsync(ImageSource Source, string? Title, string? Subtitle = null)
 		{
-			return ServiceRef.PopupService.PushAsync(new ImageViewerPopup(Source, Title));
+			return ServiceRef.PopupService.PushAsync(new ImageViewerPopup(Source, Title, Subtitle));
 		}
 
 		/// <summary>
@@ -148,7 +154,9 @@ namespace NeuroAccessMaui.UI.Popups.Images
 
 			Label SourceLabel = new()
 			{
-				Text = ServiceRef.Localizer[nameof(AppResources.ZoomFromServer), DateTime.Now.ToString("t", CultureInfo.CurrentCulture)],
+				Text = this.subtitle ??
+					ServiceRef.Localizer[nameof(AppResources.ZoomFromServer), DateTime.Now.ToString("t", CultureInfo.CurrentCulture)],
+				IsVisible = this.subtitle is null || this.subtitle.Length > 0,
 				FontSize = 12
 			};
 			SourceLabel.SetDynamicResource(Label.TextColorProperty, "ContentSecondaryWL");

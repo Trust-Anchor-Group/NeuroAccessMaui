@@ -43,16 +43,19 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		}
 
 		/// <summary>
-		/// Shows the actions of the message in a row of the list.
+		/// Shows the menu of the message in a row of the list, next to the row.
 		/// </summary>
 		/// <param name="Position">Position of the row.</param>
+		/// <param name="Row">The row's view.</param>
 		/// <returns>If the row is a message.</returns>
-		private bool OnMessageLongPressed(int Position)
+		private bool OnMessageLongPressed(int Position, AView Row)
 		{
 			ChatViewModel ViewModel = this.viewModel;
 
 			if (Position < 0 || Position >= ViewModel.Items.Count || ViewModel.Items[Position] is not ChatMessageItem Item)
 				return false;
+
+			this.menuAnchor = this.RowBounds(Row);
 
 			if (ViewModel.ActionsCommand.CanExecute(Item))
 				ViewModel.ActionsCommand.Execute(Item);
@@ -61,12 +64,32 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		}
 
 		/// <summary>
+		/// Where a row of the list is on the page, in the page's units.
+		/// </summary>
+		private Rect? RowBounds(AView Row)
+		{
+			if (this.Root.Handler?.PlatformView is not AView Page)
+				return null;
+
+			int[] RowAt = new int[2];
+			int[] PageAt = new int[2];
+			Row.GetLocationInWindow(RowAt);
+			Page.GetLocationInWindow(PageAt);
+
+			float Density = Row.Resources?.DisplayMetrics?.Density ?? 1;
+			if (Density <= 0)
+				Density = 1;
+
+			return new Rect((RowAt[0] - PageAt[0]) / Density, (RowAt[1] - PageAt[1]) / Density, Row.Width / Density, Row.Height / Density);
+		}
+
+		/// <summary>
 		/// Watches the touches of the message list for a press that is held, without taking them from the rows until then.
 		/// </summary>
 		private sealed class MessageLongPressListener : Java.Lang.Object, RecyclerView.IOnItemTouchListener
 		{
 			private readonly RecyclerView list;
-			private readonly Func<int, bool> onLongPress;
+			private readonly Func<int, AView, bool> onLongPress;
 			private readonly GestureDetector detector;
 			private bool holding;
 			private bool released;
@@ -75,8 +98,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			/// Watches the touches of a message list.
 			/// </summary>
 			/// <param name="List">The list.</param>
-			/// <param name="OnLongPress">Called with the position of a row that is held. Returns if the row is a message.</param>
-			public MessageLongPressListener(RecyclerView List, Func<int, bool> OnLongPress)
+			/// <param name="OnLongPress">Called with the position and view of a row that is held. Returns if the row is a message.</param>
+			public MessageLongPressListener(RecyclerView List, Func<int, AView, bool> OnLongPress)
 			{
 				this.list = List;
 				this.onLongPress = OnLongPress;
@@ -121,7 +144,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					return;
 
 				int Position = this.list.GetChildAdapterPosition(Row);
-				if (Position == RecyclerView.NoPosition || !this.onLongPress(Position))
+				if (Position == RecyclerView.NoPosition || !this.onLongPress(Position, Row))
 					return;
 
 				this.holding = true;

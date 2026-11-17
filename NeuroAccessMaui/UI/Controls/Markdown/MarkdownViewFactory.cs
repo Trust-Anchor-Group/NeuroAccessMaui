@@ -11,8 +11,16 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 	/// </summary>
 	internal sealed class MarkdownViewFactory
 	{
+		private static readonly Color onAccentText = Colors.White;
+		private static readonly Color onAccentMuted = Color.FromArgb("#D9FFFFFF");
+		private static readonly Color onAccentChip = Color.FromArgb("#26FFFFFF");
+		private static readonly Color onAccentCard = Color.FromArgb("#1FFFFFFF");
+		private static readonly Color onAccentLine = Color.FromArgb("#4DFFFFFF");
+
 		private readonly MarkdownMetrics metrics;
 		private readonly ICommand linkCommand;
+		private readonly MarkdownTone tone;
+		private readonly string? imageSubtitle;
 
 		/// <summary>
 		/// How a block is shown where it is.
@@ -26,14 +34,52 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		/// </summary>
 		/// <param name="Metrics">Sizes and gaps.</param>
 		/// <param name="OnLink">Called with the link when a link or a card is tapped.</param>
-		public MarkdownViewFactory(MarkdownMetrics Metrics, Action<string> OnLink)
+		/// <param name="Tone">What the text is shown on.</param>
+		/// <param name="ImageSubtitle">The line under the title when an image is opened in the viewer. Null shows where the
+		/// image is from, and an empty text shows no line.</param>
+		public MarkdownViewFactory(MarkdownMetrics Metrics, Action<string> OnLink, MarkdownTone Tone = MarkdownTone.Default,
+			string? ImageSubtitle = null)
 		{
 			this.metrics = Metrics;
+			this.tone = Tone;
+			this.imageSubtitle = ImageSubtitle;
 			this.linkCommand = new Command<string>(Url =>
 			{
 				if (!string.IsNullOrEmpty(Url))
 					OnLink(Url);
 			});
+		}
+
+		/// <summary>
+		/// Gives a view one of the text's colors: the theme's color, or on an accent surface, its white counterpart.
+		/// </summary>
+		/// <param name="Target">The view or span.</param>
+		/// <param name="Property">The color property.</param>
+		/// <param name="Key">One of the keys in <see cref="MarkdownColors"/>.</param>
+		private void SetColor(Element Target, BindableProperty Property, string Key)
+		{
+			Color? OnAccent = this.tone == MarkdownTone.OnAccent ? OnAccentColor(Key) : null;
+
+			if (OnAccent is not null)
+				Target.SetValue(Property, OnAccent);
+			else
+				Target.SetDynamicResource(Property, Key);
+		}
+
+		/// <summary>
+		/// The color used on an accent surface in place of a theme color, or null to keep the theme color, as warnings do.
+		/// </summary>
+		private static Color? OnAccentColor(string Key)
+		{
+			return Key switch
+			{
+				MarkdownColors.Text or MarkdownColors.Accent or MarkdownColors.Danger => onAccentText,
+				MarkdownColors.Muted => onAccentMuted,
+				MarkdownColors.Chip or MarkdownColors.AccentBackground => onAccentChip,
+				MarkdownColors.Card => onAccentCard,
+				MarkdownColors.Line => onAccentLine,
+				_ => null
+			};
 		}
 
 		/// <summary>
@@ -78,7 +124,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				MdCode Code => this.CreateCode(Code),
 				MdTable Table => this.CreateTable(Table, Context),
 				MdRule => this.CreateRule(),
-				MdImage Image => new MarkdownImageView(Image, this.metrics),
+				MdImage Image => new MarkdownImageView(Image, this.metrics, this.imageSubtitle),
 				MdEmbed Embed => this.CreateEmbed(Embed),
 				MdHtml Html => this.CreateHtml(Html, Context),
 				MdNotice Notice => this.CreateNotice(Notice.Text, Context),
@@ -129,7 +175,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				LineBreakMode = LineBreakMode.WordWrap,
 				HorizontalTextAlignment = ToTextAlignment(Alignment)
 			};
-			Label.SetDynamicResource(Label.TextColorProperty, Context.Muted ? MarkdownColors.Muted : MarkdownColors.Text);
+			this.SetColor(Label, Label.TextColorProperty, Context.Muted ? MarkdownColors.Muted : MarkdownColors.Text);
 
 			this.SetText(Label, Runs, Size, false);
 
@@ -182,14 +228,14 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			{
 				Span.Text = " " + Run.Text + " ";
 				Span.FontFamily = MarkdownFonts.InlineCode;
-				Span.SetDynamicResource(Span.BackgroundColorProperty, MarkdownColors.Chip);
+				this.SetColor(Span, Span.BackgroundColorProperty, MarkdownColors.Chip);
 			}
 			else if (Style.HasFlag(MdTextStyle.Tag))
 			{
 				Span.Text = " " + Run.Text + " ";
 				Span.FontFamily = MarkdownFonts.Medium;
 				Span.FontSize = Size - 2;
-				Span.SetDynamicResource(Span.BackgroundColorProperty, MarkdownColors.Chip);
+				this.SetColor(Span, Span.BackgroundColorProperty, MarkdownColors.Chip);
 			}
 
 			if (Run.Link is not null)
@@ -200,7 +246,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 					Decorations |= TextDecorations.Underline;
 
 				if (!Style.HasFlag(MdTextStyle.Placeholder))
-					Span.SetDynamicResource(Span.TextColorProperty, MarkdownColors.Accent);
+					this.SetColor(Span, Span.TextColorProperty, MarkdownColors.Accent);
 
 				Span.GestureRecognizers.Add(new TapGestureRecognizer
 				{
@@ -227,7 +273,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				LineBreakMode = LineBreakMode.WordWrap,
 				HorizontalTextAlignment = ToTextAlignment(Heading.Alignment)
 			};
-			Label.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Text);
+			this.SetColor(Label, Label.TextColorProperty, MarkdownColors.Text);
 			SemanticProperties.SetHeadingLevel(Label, (SemanticHeadingLevel)Heading.Level);
 
 			this.SetText(Label, Heading.Runs, Size, true);
@@ -244,7 +290,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				FontSize = this.TextSize(Context),
 				LineBreakMode = LineBreakMode.WordWrap
 			};
-			Label.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Danger);
+			this.SetColor(Label, Label.TextColorProperty, MarkdownColors.Danger);
 
 			return Label;
 		}
@@ -260,7 +306,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				LineBreakMode = LineBreakMode.WordWrap,
 				HorizontalTextAlignment = ToTextAlignment(Html.Alignment)
 			};
-			Label.SetDynamicResource(Label.TextColorProperty, Context.Muted ? MarkdownColors.Muted : MarkdownColors.Text);
+			this.SetColor(Label, Label.TextColorProperty, Context.Muted ? MarkdownColors.Muted : MarkdownColors.Text);
 
 			return Label;
 		}
@@ -287,7 +333,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				};
 
 				View Marker = List.Kind == MdListKind.Task ?
-					CreateCheckBox(Item.Checked ?? false) :
+					this.CreateCheckBox(Item.Checked ?? false) :
 					this.CreateMarker(Item.Marker, List.Kind == MdListKind.Numbered, Size);
 
 				Row.Add(Marker, 0, 0);
@@ -313,7 +359,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				HorizontalTextAlignment = Numbered ? Microsoft.Maui.TextAlignment.End : Microsoft.Maui.TextAlignment.Center,
 				VerticalOptions = LayoutOptions.Start
 			};
-			Label.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Muted);
+			this.SetColor(Label, Label.TextColorProperty, MarkdownColors.Muted);
 			SemanticProperties.SetDescription(Label, Numbered ? Marker : string.Empty);
 
 			if (!Numbered)
@@ -322,7 +368,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			return Label;
 		}
 
-		private static View CreateCheckBox(bool Checked)
+		private View CreateCheckBox(bool Checked)
 		{
 			Border Box = new()
 			{
@@ -337,8 +383,8 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 
 			if (Checked)
 			{
-				Box.SetDynamicResource(Border.StrokeProperty, MarkdownColors.Accent);
-				Box.SetDynamicResource(VisualElement.BackgroundColorProperty, MarkdownColors.Accent);
+				this.SetColor(Box, Border.StrokeProperty, MarkdownColors.Accent);
+				this.SetColor(Box, VisualElement.BackgroundColorProperty, MarkdownColors.Accent);
 
 				Label Check = new()
 				{
@@ -349,14 +395,16 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 					HorizontalTextAlignment = Microsoft.Maui.TextAlignment.Center,
 					VerticalTextAlignment = Microsoft.Maui.TextAlignment.Center
 				};
-				Check.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Surface);
+				// On an accent surface the box is white, so the check takes the accent color.
+				Check.SetDynamicResource(Label.TextColorProperty,
+					this.tone == MarkdownTone.OnAccent ? MarkdownColors.Accent : MarkdownColors.Surface);
 				AutomationProperties.SetIsInAccessibleTree(Check, false);
 
 				Box.Content = Check;
 			}
 			else
 			{
-				Box.SetDynamicResource(Border.StrokeProperty, MarkdownColors.Muted);
+				this.SetColor(Box, Border.StrokeProperty, MarkdownColors.Muted);
 				Box.BackgroundColor = Colors.Transparent;
 			}
 
@@ -389,8 +437,8 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 					Context with { Muted = Frame.Kind == MdFrameKind.Quote || Context.Muted })
 			};
 
-			Border.SetDynamicResource(VisualElement.BackgroundColorProperty, MarkdownColors.Card);
-			Border.SetDynamicResource(Border.StrokeProperty, Frame.Kind switch
+			this.SetColor(Border, VisualElement.BackgroundColorProperty, MarkdownColors.Card);
+			this.SetColor(Border, Border.StrokeProperty, Frame.Kind switch
 			{
 				MdFrameKind.Inserted => MarkdownColors.Inserted,
 				MdFrameKind.Deleted => MarkdownColors.Deleted,
@@ -407,7 +455,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				HeightRequest = 1,
 				Margin = new Thickness(0, 4)
 			};
-			Rule.SetDynamicResource(BoxView.ColorProperty, MarkdownColors.Line);
+			this.SetColor(Rule, BoxView.ColorProperty, MarkdownColors.Line);
 
 			return Rule;
 		}
@@ -426,7 +474,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				Margin = new Thickness(14, 0, 0, 0),
 				LineBreakMode = LineBreakMode.TailTruncation
 			};
-			Language.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Muted);
+			this.SetColor(Language, Label.TextColorProperty, MarkdownColors.Muted);
 
 			Label CodeLabel = new()
 			{
@@ -436,7 +484,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				LineHeight = 1.2,
 				LineBreakMode = LineBreakMode.NoWrap
 			};
-			CodeLabel.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Text);
+			this.SetColor(CodeLabel, Label.TextColorProperty, MarkdownColors.Text);
 
 			ScrollView Scroll = new()
 			{
@@ -475,7 +523,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				Padding = 0,
 				Content = Layout
 			};
-			Card.SetDynamicResource(VisualElement.BackgroundColorProperty, MarkdownColors.Chip);
+			this.SetColor(Card, VisualElement.BackgroundColorProperty, MarkdownColors.Chip);
 
 			return Card;
 		}
@@ -592,7 +640,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 						VerticalOptions = Row.IsHeader ? LayoutOptions.Fill : LayoutOptions.Start,
 						HeightRequest = Row.IsHeader ? -1 : 1
 					};
-					Background.SetDynamicResource(BoxView.ColorProperty, Row.IsHeader ? MarkdownColors.Chip : MarkdownColors.Line);
+					this.SetColor(Background, BoxView.ColorProperty, Row.IsHeader ? MarkdownColors.Chip : MarkdownColors.Line);
 					Cells.Add(Background, 0, RowIndex);
 					Microsoft.Maui.Controls.Grid.SetColumnSpan(Background, Math.Max(1, Table.Columns));
 				}
@@ -612,7 +660,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 							MaximumWidthRequest = 280,
 							HorizontalTextAlignment = ToTextAlignment(Cell.Alignment)
 						};
-						Label.SetDynamicResource(Label.TextColorProperty, Context.Muted ? MarkdownColors.Muted : MarkdownColors.Text);
+						this.SetColor(Label, Label.TextColorProperty, Context.Muted ? MarkdownColors.Muted : MarkdownColors.Text);
 						this.SetText(Label, Cell.Runs, Size, false);
 						Content = Label;
 					}
@@ -663,8 +711,8 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				Padding = 0,
 				Content = Scroll
 			};
-			Card.SetDynamicResource(VisualElement.BackgroundColorProperty, MarkdownColors.Card);
-			Card.SetDynamicResource(Border.StrokeProperty, MarkdownColors.Line);
+			this.SetColor(Card, VisualElement.BackgroundColorProperty, MarkdownColors.Card);
+			this.SetColor(Card, Border.StrokeProperty, MarkdownColors.Line);
 
 			if (Table.Caption is null)
 				return Card;
@@ -676,7 +724,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 				FontSize = this.metrics.SmallSize,
 				LineBreakMode = LineBreakMode.WordWrap
 			};
-			Caption.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Muted);
+			this.SetColor(Caption, Label.TextColorProperty, MarkdownColors.Muted);
 
 			return new VerticalStackLayout
 			{
@@ -840,7 +888,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 					HorizontalTextAlignment = Microsoft.Maui.TextAlignment.End,
 					VerticalOptions = LayoutOptions.Start
 				};
-				Number.SetDynamicResource(Label.TextColorProperty, MarkdownColors.Accent);
+				this.SetColor(Number, Label.TextColorProperty, MarkdownColors.Accent);
 
 				Row.Add(Number, 0, 0);
 				Row.Add(this.CreateBlocks(Footnote.Blocks, this.metrics.ListSpacing, Small), 1, 0);

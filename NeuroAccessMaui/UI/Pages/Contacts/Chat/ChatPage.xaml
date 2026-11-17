@@ -5,7 +5,6 @@
 					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -13,126 +12,194 @@
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
 
 	<VisualElement.Resources>
-		<!-- A message from the other party: on the left, on a card with a line around it -->
+		<!-- The time and checks on the accent bubbles of sent messages -->
+		<Color x:Key="ChatOnAccentMeta">#E0FFFFFF</Color>
+		<!-- The chat behind an open message menu, dimmed with the text colour -->
+		<Color x:Key="ChatDim">#73181F25</Color>
+
+		<Style x:Key="ChatIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<!-- A message from the other party: on the left, on a card with a line around it. Swiping it right replies. -->
 		<DataTemplate x:Key="ReceivedTemplate"
 					  x:DataType="viewmodel:ChatMessageItem">
-			<Grid Padding="{Binding Spacing}"
-				  ColumnDefinitions="*,56">
-				<Border x:Name="Bubble"
-						HorizontalOptions="Start"
-						Padding="12,8,12,6"
-						StrokeThickness="1"
-						Stroke="{DynamicResource SurfaceDividerWL}"
-						BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-						StrokeShape="RoundRectangle 18,18,6,18">
-					<!-- Behaviors get no binding context of their own, so it comes from the bubble. The text keeps its taps,
-						 so links and cards in it open. On Android the page opens the actions itself, also from links and cards. -->
-					<Border.Behaviors>
-						<mct:TouchBehavior IsEnabled="{OnPlatform Android=False, Default=True}"
-										   BindingContext="{Binding Source={x:Reference Bubble}, Path=BindingContext, x:DataType=Border}"
-										   LongPressCommand="{Binding ActionsCommand}"
-										   LongPressCommandParameter="{Binding .}"
-										   ShouldMakeChildrenInputTransparent="False" />
-					</Border.Behaviors>
-					<VerticalStackLayout Spacing="2">
-						<md:MarkdownView Model="{Binding Model}"
-										 Mode="Inline"
-										 Density="Compact"
-										 LinkCommand="{Binding LinkCommand}" />
-						<HorizontalStackLayout HorizontalOptions="End"
-											   Spacing="6">
-							<Label Text="{l:Localize ChatEdited}"
-								   IsVisible="{Binding IsEdited}"
-								   FontFamily="HaasGroteskRegular"
-								   FontSize="12"
-								   TextColor="{DynamicResource ContentSecondaryWL}" />
-							<Label Text="{Binding TimeText}"
-								   FontFamily="HaasGroteskRegular"
-								   FontSize="12"
-								   TextColor="{DynamicResource ContentSecondaryWL}" />
-						</HorizontalStackLayout>
-					</VerticalStackLayout>
-				</Border>
-			</Grid>
+			<SwipeView BackgroundColor="Transparent"
+					   Threshold="72">
+				<SwipeView.LeftItems>
+					<SwipeItems Mode="Execute">
+						<SwipeItemView IsVisible="{Binding CanReply}"
+									   Command="{Binding ReplyCommand}"
+									   CommandParameter="{Binding .}"
+									   SemanticProperties.Description="{l:Localize ChatReply}">
+							<Grid WidthRequest="56">
+								<Path Data="M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 6 6v5"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource ChatIcon}" />
+							</Grid>
+						</SwipeItemView>
+					</SwipeItems>
+				</SwipeView.LeftItems>
+				<Grid Padding="{Binding Spacing}"
+					  ColumnDefinitions="*,56">
+					<Border x:Name="Bubble"
+							HorizontalOptions="Start"
+							Padding="{Binding BubblePadding}"
+							StrokeThickness="1"
+							Stroke="{DynamicResource SurfaceDividerWL}"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}">
+						<Border.StrokeShape>
+							<RoundRectangle CornerRadius="{Binding Corners}" />
+						</Border.StrokeShape>
+						<!-- Behaviors get no binding context of their own, so it comes from the bubble. The text keeps its taps,
+							 so links and cards in it open. On Android the page opens the menu itself, also from links and cards. -->
+						<Border.Behaviors>
+							<mct:TouchBehavior IsEnabled="{OnPlatform Android=False, Default=True}"
+											   BindingContext="{Binding Source={x:Reference Bubble}, Path=BindingContext, x:DataType=Border}"
+											   LongPressCommand="{Binding ActionsCommand}"
+											   LongPressCommandParameter="{Binding .}"
+											   ShouldMakeChildrenInputTransparent="False" />
+						</Border.Behaviors>
+						<VerticalStackLayout Spacing="2">
+							<md:MarkdownView Model="{Binding Model}"
+											 Mode="Inline"
+											 Density="Compact"
+											 ImageSubtitle="{Binding ImageSubtitle}"
+											 LinkCommand="{Binding LinkCommand}" />
+							<HorizontalStackLayout HorizontalOptions="End"
+												   Margin="{Binding MetaMargin}"
+												   Spacing="4">
+								<Label Text="{l:Localize ChatEdited}"
+									   IsVisible="{Binding IsEdited}"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="12"
+									   TextColor="{DynamicResource ContentSecondaryWL}" />
+								<Label Text="{Binding TimeText}"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="12"
+									   TextColor="{DynamicResource ContentSecondaryWL}" />
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+				</Grid>
+			</SwipeView>
 		</DataTemplate>
 
-		<!-- A message the user sent: on the right, on an accent tint, with whether it was delivered -->
+		<!-- A message the user sent: on the right, white on the accent colour, with whether it was delivered -->
 		<DataTemplate x:Key="SentTemplate"
 					  x:DataType="viewmodel:ChatMessageItem">
-			<Grid Padding="{Binding Spacing}"
-				  ColumnDefinitions="56,*">
-				<Border x:Name="Bubble"
-						Grid.Column="1"
-						HorizontalOptions="End"
-						Padding="12,8,12,6"
-						StrokeThickness="0"
-						BackgroundColor="{DynamicResource ChatBubbleSentWL}"
-						StrokeShape="RoundRectangle 18,18,18,6">
-					<!-- Behaviors get no binding context of their own, so it comes from the bubble. The text keeps its taps,
-						 so links and cards in it open. On Android the page opens the actions itself, also from links and cards. -->
-					<Border.Behaviors>
-						<mct:TouchBehavior IsEnabled="{OnPlatform Android=False, Default=True}"
-										   BindingContext="{Binding Source={x:Reference Bubble}, Path=BindingContext, x:DataType=Border}"
-										   LongPressCommand="{Binding ActionsCommand}"
-										   LongPressCommandParameter="{Binding .}"
-										   ShouldMakeChildrenInputTransparent="False" />
-					</Border.Behaviors>
-					<VerticalStackLayout Spacing="2">
-						<md:MarkdownView Model="{Binding Model}"
-										 Mode="Inline"
-										 Density="Compact"
-										 LinkCommand="{Binding LinkCommand}" />
-						<HorizontalStackLayout HorizontalOptions="End"
-											   Spacing="6">
-							<Label Text="{l:Localize ChatEdited}"
-								   IsVisible="{Binding IsEdited}"
-								   FontFamily="HaasGroteskRegular"
-								   FontSize="12"
-								   TextColor="{DynamicResource ContentSecondaryWL}" />
-							<Label Text="{Binding TimeText}"
-								   FontFamily="HaasGroteskRegular"
-								   FontSize="12"
-								   TextColor="{DynamicResource ContentSecondaryWL}" />
-							<Grid IsVisible="{Binding ShowsStatus}"
-								  WidthRequest="18"
-								  HeightRequest="14"
-								  VerticalOptions="Center"
-								  SemanticProperties.Description="{Binding StatusText}">
-								<!-- One check: sent -->
-								<Path Data="M5,12 L10,17 L20,7"
-									  Aspect="Uniform"
+			<SwipeView BackgroundColor="Transparent"
+					   Threshold="72">
+				<SwipeView.LeftItems>
+					<SwipeItems Mode="Execute">
+						<SwipeItemView IsVisible="{Binding CanReply}"
+									   Command="{Binding ReplyCommand}"
+									   CommandParameter="{Binding .}"
+									   SemanticProperties.Description="{l:Localize ChatReply}">
+							<Grid WidthRequest="56">
+								<Path Data="M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 6 6v5"
 									  Stroke="{DynamicResource ContentSecondaryWL}"
-									  StrokeThickness="2"
-									  StrokeLineCap="Round"
-									  StrokeLineJoin="Round"
-									  WidthRequest="12"
-									  HeightRequest="10"
-									  HorizontalOptions="Center"
-									  VerticalOptions="Center"
-									  IsVisible="{Binding IsDelivered, Converter={StaticResource InvertedBoolConverter}}" />
-								<!-- Two checks: delivered -->
-								<Path Data="M2,12 L7,17 L17,7 M12,16 L13,17 L23,7"
-									  Aspect="Uniform"
-									  Stroke="{DynamicResource ContentSecondaryWL}"
-									  StrokeThickness="2"
-									  StrokeLineCap="Round"
-									  StrokeLineJoin="Round"
-									  WidthRequest="17"
-									  HeightRequest="10"
-									  HorizontalOptions="Center"
-									  VerticalOptions="Center"
-									  IsVisible="{Binding IsDelivered}" />
+									  Style="{StaticResource ChatIcon}" />
 							</Grid>
-						</HorizontalStackLayout>
-					</VerticalStackLayout>
-				</Border>
-			</Grid>
+						</SwipeItemView>
+					</SwipeItems>
+				</SwipeView.LeftItems>
+				<Grid Padding="{Binding Spacing}"
+					  ColumnDefinitions="56,*">
+					<Border x:Name="Bubble"
+							Grid.Column="1"
+							HorizontalOptions="End"
+							Padding="{Binding BubblePadding}"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}">
+						<Border.StrokeShape>
+							<RoundRectangle CornerRadius="{Binding Corners}" />
+						</Border.StrokeShape>
+						<!-- Behaviors get no binding context of their own, so it comes from the bubble. The text keeps its taps,
+							 so links and cards in it open. On Android the page opens the menu itself, also from links and cards. -->
+						<Border.Behaviors>
+							<mct:TouchBehavior IsEnabled="{OnPlatform Android=False, Default=True}"
+											   BindingContext="{Binding Source={x:Reference Bubble}, Path=BindingContext, x:DataType=Border}"
+											   LongPressCommand="{Binding ActionsCommand}"
+											   LongPressCommandParameter="{Binding .}"
+											   ShouldMakeChildrenInputTransparent="False" />
+						</Border.Behaviors>
+						<VerticalStackLayout Spacing="2">
+							<md:MarkdownView Model="{Binding Model}"
+											 Mode="Inline"
+											 Density="Compact"
+											 Tone="OnAccent"
+											 ImageSubtitle="{Binding ImageSubtitle}"
+											 LinkCommand="{Binding LinkCommand}" />
+							<HorizontalStackLayout HorizontalOptions="End"
+												   Margin="{Binding MetaMargin}"
+												   Spacing="4">
+								<Label Text="{l:Localize ChatEdited}"
+									   IsVisible="{Binding IsEdited}"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="12"
+									   TextColor="{StaticResource ChatOnAccentMeta}" />
+								<Label Text="{Binding TimeText}"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="12"
+									   TextColor="{StaticResource ChatOnAccentMeta}" />
+								<Grid IsVisible="{Binding ShowsStatus}"
+									  WidthRequest="18"
+									  HeightRequest="14"
+									  VerticalOptions="Center"
+									  SemanticProperties.Description="{Binding StatusText}">
+									<!-- One check: sent -->
+									<Path Data="M5,12 L10,17 L20,7"
+										  Aspect="Uniform"
+										  Stroke="{StaticResource ChatOnAccentMeta}"
+										  StrokeThickness="2"
+										  StrokeLineCap="Round"
+										  StrokeLineJoin="Round"
+										  WidthRequest="12"
+										  HeightRequest="10"
+										  HorizontalOptions="Center"
+										  VerticalOptions="Center"
+										  IsVisible="{Binding IsDelivered, Converter={StaticResource InvertedBoolConverter}}" />
+									<!-- Two checks: delivered -->
+									<Path Data="M2,12 L7,17 L17,7 M12,16 L13,17 L23,7"
+										  Aspect="Uniform"
+										  Stroke="{StaticResource ChatOnAccentMeta}"
+										  StrokeThickness="2"
+										  StrokeLineCap="Round"
+										  StrokeLineJoin="Round"
+										  WidthRequest="17"
+										  HeightRequest="10"
+										  HorizontalOptions="Center"
+										  VerticalOptions="Center"
+										  IsVisible="{Binding IsDelivered}" />
+								</Grid>
+							</HorizontalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+				</Grid>
+			</SwipeView>
 		</DataTemplate>
 
 		<!-- The day of the messages below -->
 		<DataTemplate x:Key="DayTemplate"
 					  x:DataType="viewmodel:ChatDayItem">
-			<Grid Padding="16,14,16,6">
+			<Grid Padding="16,14,16,4">
 				<Border HorizontalOptions="Center"
 						Padding="12,4"
 						StrokeThickness="0"
@@ -153,20 +220,27 @@
 											DayTemplate="{StaticResource DayTemplate}" />
 	</VisualElement.Resources>
 
-	<Grid RowDefinitions="Auto,*,Auto,Auto"
+	<Grid x:Name="Root"
+		  RowDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto"
 		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<!-- Header: back, and who the chat is with. Tapping the name opens their card. -->
 		<Grid Grid.Row="0"
-			  ColumnDefinitions="Auto,*"
-			  ColumnSpacing="8"
-			  Padding="16,12,16,10">
-			<controls:ImageButton Grid.Column="0"
-								  VerticalOptions="Center"
-								  Command="{Binding GoBackCommand}"
-								  Style="{DynamicResource ImageOnlyButton}"
-								  PathData="{x:Static ui:Geometries.BackButtonPath}"
-								  SemanticProperties.Description="{l:Localize Back}" />
+			  ColumnDefinitions="48,*"
+			  Padding="8,10,16,10"
+			  ColumnSpacing="2">
+			<controls:TemplatedButton Grid.Column="0"
+									  VerticalOptions="Center"
+									  Command="{Binding GoBackCommand}"
+									  SemanticProperties.Description="{l:Localize Back}">
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Path Data="M15 18l-6-6 6-6"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource ChatIcon}" />
+				</Grid>
+			</controls:TemplatedButton>
 
 			<controls:TemplatedButton Grid.Column="1"
 									  HorizontalOptions="Start"
@@ -183,21 +257,21 @@
 								StrokeShape="RoundRectangle 20"
 								BackgroundColor="{DynamicResource TnPSuccessbgWL}">
 							<Label Text="{Binding Initials}"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center"
 								   FontFamily="SpaceGroteskSemiBold"
 								   FontSize="15"
-								   TextColor="{DynamicResource ContentAccessWL}"
-								   HorizontalOptions="Center"
-								   VerticalOptions="Center" />
+								   TextColor="{DynamicResource ContentAccessWL}" />
 						</Border>
-						<Border WidthRequest="12"
-								HeightRequest="12"
-								HorizontalOptions="End"
+						<Border HorizontalOptions="End"
 								VerticalOptions="End"
+								WidthRequest="12"
+								HeightRequest="12"
+								IsVisible="{Binding IsOnline}"
 								StrokeThickness="2"
 								Stroke="{DynamicResource SurfaceBackgroundWL}"
 								StrokeShape="RoundRectangle 6"
-								BackgroundColor="{DynamicResource TnPSuccessFigureWL}"
-								IsVisible="{Binding IsOnline}" />
+								BackgroundColor="{DynamicResource TnPSuccessFigureWL}" />
 					</Grid>
 					<VerticalStackLayout Grid.Column="1"
 										 VerticalOptions="Center"
@@ -205,25 +279,36 @@
 						<Label Text="{Binding FriendlyName}"
 							   FontFamily="HaasGroteskMedium"
 							   FontSize="17"
-							   MaxLines="1"
 							   LineBreakMode="TailTruncation"
+							   MaxLines="1"
 							   TextColor="{DynamicResource ContentPrimaryWL}"
 							   SemanticProperties.HeadingLevel="Level1" />
 						<Label Text="{Binding Subtitle}"
 							   IsVisible="{Binding HasSubtitle}"
 							   FontFamily="HaasGroteskRegular"
 							   FontSize="13"
-							   MaxLines="1"
 							   LineBreakMode="TailTruncation"
-							   TextColor="{DynamicResource ContentSecondaryWL}" />
+							   MaxLines="1"
+							   TextColor="{DynamicResource ContentSecondaryWL}">
+							<Label.Triggers>
+								<DataTrigger Binding="{Binding IsRemoteTyping}"
+											 TargetType="Label"
+											 Value="True">
+									<Setter Property="TextColor"
+											Value="{DynamicResource ContentAccessWL}" />
+									<Setter Property="FontFamily"
+											Value="HaasGroteskMedium" />
+								</DataTrigger>
+							</Label.Triggers>
+						</Label>
 					</VerticalStackLayout>
 				</Grid>
 			</controls:TemplatedButton>
 
 			<BoxView Grid.ColumnSpan="2"
-					 HeightRequest="1"
-					 Margin="-16,0,-16,-10"
 					 VerticalOptions="End"
+					 Margin="-8,0,-16,-10"
+					 HeightRequest="1"
 					 Color="{DynamicResource SurfaceDividerWL}" />
 		</Grid>
 
@@ -232,77 +317,113 @@
 			<CollectionView x:Name="MessageList"
 							ItemsSource="{Binding Items}"
 							ItemTemplate="{StaticResource ChatItemTemplates}"
-							SelectionMode="None"
 							ItemSizingStrategy="MeasureAllItems"
 							ItemsUpdatingScrollMode="KeepItemsInView"
+							SelectionMode="None"
 							Scrolled="MessageList_Scrolled">
 				<CollectionView.ItemsLayout>
-					<LinearItemsLayout Orientation="Vertical"
-									   ItemSpacing="0" />
+					<LinearItemsLayout ItemSpacing="0"
+									   Orientation="Vertical" />
 				</CollectionView.ItemsLayout>
+				<CollectionView.Footer>
+					<BoxView HeightRequest="8"
+							 Color="Transparent" />
+				</CollectionView.Footer>
 			</CollectionView>
 
-			<VerticalStackLayout IsVisible="{Binding IsEmpty}"
-								 VerticalOptions="Center"
+			<VerticalStackLayout VerticalOptions="Center"
 								 Padding="32"
-								 Spacing="8">
+								 Spacing="8"
+								 IsVisible="{Binding IsEmpty}">
 				<Label Text="{l:Localize ChatEmptyTitle}"
+					   HorizontalTextAlignment="Center"
 					   FontFamily="SpaceGroteskBold"
 					   FontSize="20"
-					   HorizontalTextAlignment="Center"
 					   TextColor="{DynamicResource ContentPrimaryWL}" />
 				<Label Text="{Binding EmptyText}"
+					   HorizontalTextAlignment="Center"
 					   FontFamily="HaasGroteskRegular"
 					   FontSize="15"
-					   HorizontalTextAlignment="Center"
 					   TextColor="{DynamicResource ContentSecondaryWL}" />
 			</VerticalStackLayout>
 
-			<ActivityIndicator IsRunning="{Binding IsLoading}"
-							   IsVisible="{Binding IsLoading}"
+			<ActivityIndicator VerticalOptions="Center"
 							   HorizontalOptions="Center"
-							   VerticalOptions="Center"
+							   IsVisible="{Binding IsLoading}"
+							   IsRunning="{Binding IsLoading}"
 							   Color="{DynamicResource ContentPrimaryWL}" />
 
 			<!-- Back to the latest message, with a dot when new messages have arrived -->
-			<controls:TemplatedButton HorizontalOptions="End"
-									  VerticalOptions="End"
+			<controls:TemplatedButton VerticalOptions="End"
+									  HorizontalOptions="End"
 									  Margin="0,0,12,8"
-									  Command="{Binding ScrollToLatestCommand}"
 									  IsVisible="{Binding ShowsScrollToLatest}"
+									  Command="{Binding ScrollToLatestCommand}"
 									  SemanticProperties.Description="{l:Localize ChatScrollToLatest}">
-				<Grid WidthRequest="44"
-					  HeightRequest="44"
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
 					  InputTransparent="True">
 					<Border StrokeThickness="1"
 							Stroke="{DynamicResource SurfaceDividerWL}"
-							StrokeShape="RoundRectangle 22"
+							StrokeShape="RoundRectangle 24"
 							BackgroundColor="{DynamicResource SurfaceElevation1WL}">
-						<Path Data="{x:Static ui:Geometries.ArrowDownPath}"
-							  Fill="{DynamicResource ContentPrimaryWL}"
-							  Aspect="Uniform"
-							  WidthRequest="14"
-							  HeightRequest="9"
-							  HorizontalOptions="Center"
-							  VerticalOptions="Center" />
+						<Path Data="M6 9l6 6 6-6"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
 					</Border>
-					<Border WidthRequest="12"
-							HeightRequest="12"
-							HorizontalOptions="End"
+					<Border HorizontalOptions="End"
 							VerticalOptions="Start"
+							WidthRequest="12"
+							HeightRequest="12"
+							IsVisible="{Binding HasUnseenMessages}"
 							StrokeThickness="0"
 							StrokeShape="RoundRectangle 6"
-							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
-							IsVisible="{Binding HasUnseenMessages}" />
+							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}" />
 				</Grid>
 			</controls:TemplatedButton>
 		</Grid>
 
+		<!-- How the text being written will look, while it has formatting -->
+		<VerticalStackLayout Grid.Row="2"
+							 HorizontalOptions="End"
+							 Padding="12,4,12,8"
+							 Spacing="4"
+							 IsVisible="{Binding ShowsPreview}">
+			<HorizontalStackLayout HorizontalOptions="End"
+								   Padding="0,0,4,0"
+								   Spacing="5">
+				<Path Data="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 9a3 3 0 1 1 0 6a3 3 0 1 1 0-6"
+					  Stroke="{DynamicResource ContentSecondaryWL}"
+					  Style="{StaticResource ChatIcon}"
+					  Scale="0.67"
+					  Margin="-4" />
+				<Label Text="{l:Localize ChatPreview}"
+					   VerticalOptions="Center"
+					   FontFamily="HaasGroteskMedium"
+					   FontSize="12"
+					   TextColor="{DynamicResource ContentSecondaryWL}" />
+			</HorizontalStackLayout>
+			<Border HorizontalOptions="End"
+					Padding="12,8,12,8"
+					MaximumWidthRequest="320"
+					StrokeThickness="1.5"
+					StrokeDashArray="4,3"
+					Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+					BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+					StrokeShape="RoundRectangle 18,18,18,6">
+				<ScrollView MaximumHeightRequest="180">
+					<md:MarkdownView Model="{Binding PreviewModel}"
+									 Mode="Inline"
+									 Density="Compact" />
+				</ScrollView>
+			</Border>
+		</VerticalStackLayout>
+
 		<!-- The message being corrected or replied to -->
-		<Grid Grid.Row="2"
+		<Grid Grid.Row="3"
 			  ColumnDefinitions="4,*,48"
-			  ColumnSpacing="10"
 			  Padding="16,8,8,0"
+			  ColumnSpacing="10"
 			  IsVisible="{Binding HasContext}">
 			<BoxView Grid.Column="0"
 					 WidthRequest="4"
@@ -317,77 +438,146 @@
 				<Label Text="{Binding ContextText}"
 					   FontFamily="HaasGroteskRegular"
 					   FontSize="14"
-					   MaxLines="1"
 					   LineBreakMode="TailTruncation"
+					   MaxLines="1"
 					   TextColor="{DynamicResource ContentSecondaryWL}" />
 			</VerticalStackLayout>
 			<controls:TemplatedButton Grid.Column="2"
 									  Command="{Binding CancelContextCommand}"
 									  SemanticProperties.Description="{l:Localize Cancel}">
-				<Path Data="{x:Static ui:Geometries.CancelPath}"
-					  Fill="{DynamicResource ContentPrimaryWL}"
-					  Aspect="Uniform"
-					  WidthRequest="14"
-					  HeightRequest="14"
-					  HorizontalOptions="Center"
-					  VerticalOptions="Center"
-					  InputTransparent="True" />
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Path Data="M17 7L7 17M7 7l10 10"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource ChatIcon}" />
+				</Grid>
 			</controls:TemplatedButton>
 		</Grid>
 
-		<!-- Composer: share, the text, and send -->
-		<Grid Grid.Row="3"
+		<!-- Composer: share, the text with its formatting button, and send -->
+		<Grid Grid.Row="4"
 			  ColumnDefinitions="48,*,48"
-			  ColumnSpacing="8"
-			  Padding="12,10,12,12">
+			  Padding="8,10,8,10"
+			  ColumnSpacing="6">
 			<BoxView Grid.ColumnSpan="3"
-					 HeightRequest="1"
-					 Margin="-12,-10,-12,0"
 					 VerticalOptions="Start"
+					 Margin="-8,-10,-8,0"
+					 HeightRequest="1"
 					 Color="{DynamicResource SurfaceDividerWL}" />
 
 			<controls:TemplatedButton Grid.Column="0"
 									  VerticalOptions="End"
 									  Command="{Binding AttachCommand}"
 									  SemanticProperties.Description="{l:Localize ChatAttach}">
-				<Border WidthRequest="48"
-						HeightRequest="48"
-						StrokeThickness="1"
-						Stroke="{DynamicResource SurfaceDividerWL}"
-						StrokeShape="RoundRectangle 14"
-						BackgroundColor="{DynamicResource SurfaceElevation1WL}"
-						InputTransparent="True">
-					<Path Data="M12,5 L12,19 M5,12 L19,12"
-						  Aspect="Uniform"
-						  Stroke="{DynamicResource ContentPrimaryWL}"
-						  StrokeThickness="2"
-						  StrokeLineCap="Round"
-						  WidthRequest="16"
-						  HeightRequest="16"
-						  HorizontalOptions="Center"
-						  VerticalOptions="Center" />
-				</Border>
+				<controls:TemplatedButton.Triggers>
+					<DataTrigger Binding="{Binding IsShareTrayOpen}"
+								 TargetType="controls:TemplatedButton"
+								 Value="True">
+						<Setter Property="SemanticProperties.Description"
+								Value="{l:Localize ChatCloseShare}" />
+					</DataTrigger>
+				</controls:TemplatedButton.Triggers>
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Border IsVisible="{Binding IsShareTrayOpen, Converter={StaticResource InvertedBoolConverter}}"
+							StrokeThickness="0"
+							StrokeShape="RoundRectangle 24"
+							BackgroundColor="{DynamicResource MarkdownChipWL}">
+						<Path Data="M12 5v14M5 12h14"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
+					</Border>
+					<Border IsVisible="{Binding IsShareTrayOpen}"
+							StrokeThickness="0"
+							StrokeShape="RoundRectangle 24"
+							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}">
+						<Path Data="M17 7L7 17M7 7l10 10"
+							  Stroke="White"
+							  StrokeThickness="2.2"
+							  Style="{StaticResource ChatIcon}" />
+					</Border>
+				</Grid>
 			</controls:TemplatedButton>
 
 			<Border Grid.Column="1"
 					MinimumHeightRequest="48"
-					Padding="14,0"
+					Padding="16,0,0,0"
 					StrokeThickness="1"
 					Stroke="{DynamicResource SurfaceDividerWL}"
-					StrokeShape="RoundRectangle 24"
-					BackgroundColor="{DynamicResource SurfaceElevation1WL}">
-				<Editor x:Name="Composer"
-						Text="{Binding MarkdownInput}"
-						Placeholder="{l:Localize Message}"
-						AutoSize="TextChanges"
-						MaximumHeightRequest="140"
-						Keyboard="Chat"
-						FontFamily="HaasGroteskRegular"
-						FontSize="16"
-						VerticalOptions="Center"
-						BackgroundColor="Transparent"
-						TextColor="{DynamicResource ContentPrimaryWL}"
-						PlaceholderColor="{DynamicResource ContentSecondaryWL}" />
+					BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+					StrokeShape="RoundRectangle 24">
+				<Border.Triggers>
+					<DataTrigger Binding="{Binding IsComposerFocused}"
+								 TargetType="Border"
+								 Value="True">
+						<Setter Property="Stroke"
+								Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+						<Setter Property="StrokeThickness"
+								Value="1.5" />
+					</DataTrigger>
+				</Border.Triggers>
+				<Grid ColumnDefinitions="*,48">
+					<Editor x:Name="Composer"
+							Grid.Column="0"
+							VerticalOptions="Center"
+							MaximumHeightRequest="140"
+							Text="{Binding MarkdownInput}"
+							Placeholder="{l:Localize Message}"
+							AutoSize="TextChanges"
+							Keyboard="Chat"
+							FontFamily="HaasGroteskRegular"
+							FontSize="16"
+							BackgroundColor="Transparent"
+							TextColor="{DynamicResource ContentPrimaryWL}"
+							PlaceholderColor="{DynamicResource ContentSecondaryWL}"
+							Focused="Composer_Focused"
+							Unfocused="Composer_Unfocused" />
+					<controls:TemplatedButton Grid.Column="1"
+											  VerticalOptions="End"
+											  Command="{Binding ToggleFormatBarCommand}"
+											  SemanticProperties.Description="{l:Localize ChatShowFormatting}">
+						<controls:TemplatedButton.Triggers>
+							<DataTrigger Binding="{Binding IsFormatBarOpen}"
+										 TargetType="controls:TemplatedButton"
+										 Value="True">
+								<Setter Property="SemanticProperties.Description"
+										Value="{l:Localize ChatHideFormatting}" />
+							</DataTrigger>
+						</controls:TemplatedButton.Triggers>
+						<Border WidthRequest="48"
+								HeightRequest="48"
+								InputTransparent="True"
+								StrokeThickness="0"
+								BackgroundColor="Transparent"
+								StrokeShape="RoundRectangle 24">
+							<Border.Triggers>
+								<DataTrigger Binding="{Binding IsFormatBarOpen}"
+											 TargetType="Border"
+											 Value="True">
+									<Setter Property="BackgroundColor"
+											Value="{DynamicResource TnPSuccessbgWL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<Label Text="Aa"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center"
+								   FontFamily="SpaceGroteskSemiBold"
+								   FontSize="17"
+								   TextColor="{DynamicResource ContentSecondaryWL}">
+								<Label.Triggers>
+									<DataTrigger Binding="{Binding IsFormatBarOpen}"
+												 TargetType="Label"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource ContentAccessWL}" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+						</Border>
+					</controls:TemplatedButton>
+				</Grid>
 			</Border>
 
 			<controls:TemplatedButton Grid.Column="2"
@@ -395,28 +585,516 @@
 									  Command="{Binding SendCommand}"
 									  SemanticProperties.Description="{l:Localize Send}">
 				<controls:TemplatedButton.Triggers>
-					<Trigger TargetType="controls:TemplatedButton"
-							 Property="IsEnabled"
-							 Value="False">
-						<Setter Property="Opacity"
-								Value="0.4" />
+					<Trigger Property="IsEnabled" TargetType="controls:TemplatedButton" Value="False">
+						<Setter Property="Opacity" Value="0.4" />
 					</Trigger>
 				</controls:TemplatedButton.Triggers>
 				<Border WidthRequest="48"
 						HeightRequest="48"
+						InputTransparent="True"
 						StrokeThickness="0"
-						StrokeShape="RoundRectangle 24"
 						BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
-						InputTransparent="True">
-					<Path Data="{x:Static ui:Geometries.SendPath}"
-						  Fill="White"
-						  Aspect="Uniform"
-						  WidthRequest="20"
-						  HeightRequest="20"
-						  HorizontalOptions="Center"
-						  VerticalOptions="Center" />
+						StrokeShape="RoundRectangle 24">
+					<Path Data="M12 19V5M5 12l7-7 7 7"
+						  Stroke="White"
+						  StrokeThickness="2.2"
+						  Style="{StaticResource ChatIcon}" />
 				</Border>
 			</controls:TemplatedButton>
+		</Grid>
+
+		<!-- Formatting bar, above the keyboard. It scrolls sideways. -->
+		<ScrollView Grid.Row="5"
+					IsVisible="{Binding IsFormatBarOpen}"
+					Orientation="Horizontal"
+					HorizontalScrollBarVisibility="Never">
+			<HorizontalStackLayout Padding="8,0,8,6"
+								   Spacing="4">
+				<controls:TemplatedButton CommandParameter="Bold"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatBold}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Label Text="B"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center"
+							   FontFamily="HaasGroteskBold"
+							   FontSize="18"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="Italic"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatItalic}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Label Text="I"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center"
+							   FontAttributes="Italic"
+							   FontSize="18"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="Strikethrough"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatStrikethrough}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Label Text="S"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="18"
+							   TextDecorations="Strikethrough"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="Code"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatCode}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M8 8l-4 4 4 4M16 8l4 4-4 4"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="Link"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatLink}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1 M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="BulletList"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatBulletList}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M9 6h11M9 12h11M9 18h11M4.5 6h0.01M4.5 12h0.01M4.5 18h0.01"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="NumberedList"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatNumberedList}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M10 6h10M10 12h10M10 18h10M4 4.5l1.5-1V9M3.5 14.5c0.4-1 2.6-1 2.6 0.4 0 1-2.6 2-2.6 3.1h2.7"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="Quote"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatQuote}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M10 7H5v5h5zM10 12c0 3-1.5 5-4.5 6M19 7h-5v5h5zM19 12c0 3-1.5 5-4.5 6"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton CommandParameter="CodeBlock"
+										  Clicked="FormatButton_Clicked"
+										  SemanticProperties.Description="{l:Localize ChatFormatCodeBlock}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M9 10l-2 2 2 2M15 10l2 2-2 2"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+			</HorizontalStackLayout>
+		</ScrollView>
+
+		<!-- What can be shared, in place of the keyboard -->
+		<Grid Grid.Row="6"
+			  RowDefinitions="Auto,*"
+			  Padding="16,16,16,20"
+			  HeightRequest="288"
+			  RowSpacing="12"
+			  IsVisible="{Binding IsShareTrayOpen}"
+			  BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+			  SemanticProperties.Description="{l:Localize ChatShareTitle}">
+			<BoxView Grid.RowSpan="2"
+					 VerticalOptions="Start"
+					 Margin="-16,-16,-16,0"
+					 HeightRequest="1"
+					 Color="{DynamicResource SurfaceDividerWL}" />
+
+			<Grid Grid.Row="0"
+				  ColumnDefinitions="*,*"
+				  ColumnSpacing="8">
+				<controls:TemplatedButton Grid.Column="0"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="Photos"
+										  SemanticProperties.Description="{l:Localize Photos}">
+					<Border MinimumHeightRequest="56"
+							InputTransparent="True"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource MarkdownChipWL}"
+							StrokeShape="RoundRectangle 16">
+						<HorizontalStackLayout HorizontalOptions="Center"
+											   Spacing="10">
+							<Path Data="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M9 8a2 2 0 1 1 0 4a2 2 0 1 1 0-4 M21 17l-5-5L5 20"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+							<Label Text="{l:Localize Photos}"
+								   VerticalOptions="Center"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="15"
+								   TextColor="{DynamicResource ContentPrimaryWL}" />
+						</HorizontalStackLayout>
+					</Border>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton Grid.Column="1"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="Camera"
+										  SemanticProperties.Description="{l:Localize ChatShareCamera}">
+					<Border MinimumHeightRequest="56"
+							InputTransparent="True"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource MarkdownChipWL}"
+							StrokeShape="RoundRectangle 16">
+						<HorizontalStackLayout HorizontalOptions="Center"
+											   Spacing="10">
+							<Path Data="M3 8h4l2-3h6l2 3h4v12H3z M12 9a4 4 0 1 1 0 8a4 4 0 1 1 0-8"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+							<Label Text="{l:Localize ChatShareCamera}"
+								   VerticalOptions="Center"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="15"
+								   TextColor="{DynamicResource ContentPrimaryWL}" />
+						</HorizontalStackLayout>
+					</Border>
+				</controls:TemplatedButton>
+			</Grid>
+
+			<FlexLayout Grid.Row="1"
+						Wrap="Wrap"
+						AlignContent="Start"
+						AlignItems="Start">
+				<controls:TemplatedButton FlexLayout.Basis="33.33%"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="Contact"
+										  SemanticProperties.Description="{l:Localize ChatShareContact}">
+					<VerticalStackLayout Padding="4,6"
+										 MinimumHeightRequest="88"
+										 Spacing="8"
+										 InputTransparent="True">
+						<Border HorizontalOptions="Center"
+								WidthRequest="52"
+								HeightRequest="52"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 26">
+							<Path Data="M12 4a4 4 0 1 1 0 8a4 4 0 1 1 0-8 M4 21a8 8 0 0 1 16 0"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+						</Border>
+						<Label Text="{l:Localize ChatShareContact}"
+							   HorizontalTextAlignment="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</VerticalStackLayout>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton FlexLayout.Basis="33.33%"
+										  IsVisible="{Binding CanShareMyId}"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="MyId"
+										  SemanticProperties.Description="{l:Localize ChatShareMyId}">
+					<VerticalStackLayout Padding="4,6"
+										 MinimumHeightRequest="88"
+										 Spacing="8"
+										 InputTransparent="True">
+						<Border HorizontalOptions="Center"
+								WidthRequest="52"
+								HeightRequest="52"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 26">
+							<Path Data="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z M9 9a2 2 0 1 1 0 4a2 2 0 1 1 0-4 M6 16a3 3 0 0 1 6 0 M14 10h4 M14 14h4"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+						</Border>
+						<Label Text="{l:Localize ChatShareMyId}"
+							   HorizontalTextAlignment="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</VerticalStackLayout>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton FlexLayout.Basis="33.33%"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="Contract"
+										  SemanticProperties.Description="{l:Localize MarkdownContract}">
+					<VerticalStackLayout Padding="4,6"
+										 MinimumHeightRequest="88"
+										 Spacing="8"
+										 InputTransparent="True">
+						<Border HorizontalOptions="Center"
+								WidthRequest="52"
+								HeightRequest="52"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 26">
+							<Path Data="M14 3H6v18h12V7l-4-4z M14 3v4h4 M9 13h6 M9 17h6"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+						</Border>
+						<Label Text="{l:Localize MarkdownContract}"
+							   HorizontalTextAlignment="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</VerticalStackLayout>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton FlexLayout.Basis="33.33%"
+										  IsVisible="{Binding CanSharePayment}"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="Payment"
+										  SemanticProperties.Description="{l:Localize Payment}">
+					<VerticalStackLayout Padding="4,6"
+										 MinimumHeightRequest="88"
+										 Spacing="8"
+										 InputTransparent="True">
+						<Border HorizontalOptions="Center"
+								WidthRequest="52"
+								HeightRequest="52"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 26">
+							<Path Data="M7 17L17 7 M9 7h8v8"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+						</Border>
+						<Label Text="{l:Localize Payment}"
+							   HorizontalTextAlignment="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</VerticalStackLayout>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton FlexLayout.Basis="33.33%"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="Token"
+										  SemanticProperties.Description="{l:Localize MarkdownToken}">
+					<VerticalStackLayout Padding="4,6"
+										 MinimumHeightRequest="88"
+										 Spacing="8"
+										 InputTransparent="True">
+						<Border HorizontalOptions="Center"
+								WidthRequest="52"
+								HeightRequest="52"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 26">
+							<Path Data="M12 2l8.5 5v10L12 22l-8.5-5V7z"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+						</Border>
+						<Label Text="{l:Localize MarkdownToken}"
+							   HorizontalTextAlignment="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</VerticalStackLayout>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton FlexLayout.Basis="33.33%"
+										  Command="{Binding ShareCommand}"
+										  CommandParameter="Thing"
+										  SemanticProperties.Description="{l:Localize Thing}">
+					<VerticalStackLayout Padding="4,6"
+										 MinimumHeightRequest="88"
+										 Spacing="8"
+										 InputTransparent="True">
+						<Border HorizontalOptions="Center"
+								WidthRequest="52"
+								HeightRequest="52"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 26">
+							<Path Data="M9 7h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z M10 3v4 M14 3v4 M10 17v4 M14 17v4 M3 10h4 M3 14h4 M17 10h4 M17 14h4"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource ChatIcon}" />
+						</Border>
+						<Label Text="{l:Localize Thing}"
+							   HorizontalTextAlignment="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="13"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</VerticalStackLayout>
+				</controls:TemplatedButton>
+			</FlexLayout>
+		</Grid>
+
+		<!-- The menu of a message: the chat dims, the message is lifted, and the menu opens next to it -->
+		<Grid x:Name="MenuLayer"
+			  Grid.RowSpan="7"
+			  IsVisible="False"
+			  Opacity="0">
+			<BoxView Color="{StaticResource ChatDim}"
+					 SemanticProperties.Description="{l:Localize Close}">
+				<BoxView.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding CloseMenuCommand}" />
+				</BoxView.GestureRecognizers>
+			</BoxView>
+			<AbsoluteLayout x:Name="MenuCanvas"
+							InputTransparent="True"
+							CascadeInputTransparent="False">
+				<ContentView x:Name="LiftedHost"
+							 AbsoluteLayout.LayoutBounds="0,0,1,AutoSize"
+							 AbsoluteLayout.LayoutFlags="WidthProportional"
+							 InputTransparent="True" />
+				<Border x:Name="MenuCard"
+						AbsoluteLayout.LayoutBounds="0,0,250,AutoSize"
+						Padding="0,6"
+						StrokeThickness="0"
+						BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+						StrokeShape="RoundRectangle 18"
+						SemanticProperties.Description="{l:Localize ChatMessageActions}">
+					<Border.Shadow>
+						<Shadow Brush="Black"
+								Offset="0,12"
+								Radius="32"
+								Opacity="0.24" />
+					</Border.Shadow>
+					<VerticalStackLayout>
+						<HorizontalStackLayout Padding="16,8,16,10"
+											   Spacing="8"
+											   IsVisible="{Binding MenuHasInfo}">
+							<Path Data="M2 12l5 5L17 7M12 16l1 1L23 7"
+								  IsVisible="{Binding MenuShowsDelivered}"
+								  Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+								  StrokeThickness="2.2"
+								  Style="{StaticResource ChatIcon}"
+								  Scale="0.67"
+								  Margin="-4" />
+							<Label Text="{Binding MenuInfo}"
+								   VerticalOptions="Center"
+								   FontFamily="HaasGroteskRegular"
+								   FontSize="13"
+								   TextColor="{DynamicResource ContentSecondaryWL}" />
+						</HorizontalStackLayout>
+						<BoxView HeightRequest="1"
+								 IsVisible="{Binding MenuHasInfo}"
+								 Color="{DynamicResource SurfaceDividerWL}" />
+
+						<controls:TemplatedButton IsVisible="{Binding MenuCanReply}"
+												  Command="{Binding ReplyToMenuItemCommand}"
+												  SemanticProperties.Description="{l:Localize ChatReply}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,0"
+								  MinimumHeightRequest="48"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 6 6v5"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource ChatIcon}" />
+								<Label Grid.Column="1"
+									   Text="{l:Localize ChatReply}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="16"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+						<controls:TemplatedButton Command="{Binding CopyMenuItemCommand}"
+												  SemanticProperties.Description="{l:Localize MarkdownCopy}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,0"
+								  MinimumHeightRequest="48"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M11 9h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource ChatIcon}" />
+								<Label Grid.Column="1"
+									   Text="{l:Localize MarkdownCopy}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="16"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+						<controls:TemplatedButton IsVisible="{Binding MenuCanEdit}"
+												  Command="{Binding EditMenuItemCommand}"
+												  SemanticProperties.Description="{l:Localize ChatEdit}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,0"
+								  MinimumHeightRequest="48"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource ChatIcon}" />
+								<Label Grid.Column="1"
+									   Text="{l:Localize ChatEdit}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="16"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+						<controls:TemplatedButton Command="{Binding ForwardMenuItemCommand}"
+												  SemanticProperties.Description="{l:Localize ChatForward}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,0"
+								  MinimumHeightRequest="48"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M15 14l5-5-5-5 M20 9H10a6 6 0 0 0-6 6v5"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource ChatIcon}" />
+								<Label Grid.Column="1"
+									   Text="{l:Localize ChatForward}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="16"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+						<BoxView Margin="0,4"
+								 HeightRequest="1"
+								 Color="{DynamicResource SurfaceDividerWL}" />
+						<controls:TemplatedButton Command="{Binding DeleteMenuItemCommand}"
+												  SemanticProperties.Description="{l:Localize ChatDeleteFromPhone}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,0"
+								  MinimumHeightRequest="48"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M3 6h18 M8 6V4h8v2 M19 6l-1 14H6L5 6 M10 11v6 M14 11v6"
+									  Stroke="{DynamicResource TnPDangerContentWL}"
+									  Style="{StaticResource ChatIcon}" />
+								<Label Grid.Column="1"
+									   Text="{l:Localize ChatDeleteFromPhone}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="16"
+									   TextColor="{DynamicResource TnPDangerContentWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+					</VerticalStackLayout>
+				</Border>
+			</AbsoluteLayout>
 		</Grid>
 	</Grid>
 </base:BaseContentPage>

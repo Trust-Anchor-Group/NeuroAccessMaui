@@ -13,6 +13,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 	/// </summary>
 	public sealed partial class ChatMessageItem : ChatItem
 	{
+		private const double cornerRadius = 18;
+		private const double tailRadius = 6;
+		private static readonly Thickness textPadding = new(12, 8, 12, 6);
+		private static readonly Thickness mediaPadding = new(4, 4, 4, 6);
+
 		private readonly bool isSelfChat;
 
 		/// <summary>
@@ -23,7 +28,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <param name="IsSelfChat">If the chat holds notes to yourself, which are never sent and have no delivery status.</param>
 		/// <param name="LinkCommand">Runs when a link or card in the message is tapped.</param>
 		/// <param name="ActionsCommand">Shows what can be done with the message.</param>
-		public ChatMessageItem(ChatMessage Message, MarkdownModel Model, bool IsSelfChat, ICommand LinkCommand, ICommand ActionsCommand)
+		/// <param name="ReplyCommand">Starts a reply to the message, as when it is swiped.</param>
+		public ChatMessageItem(ChatMessage Message, MarkdownModel Model, bool IsSelfChat, ICommand LinkCommand, ICommand ActionsCommand,
+			ICommand ReplyCommand)
 			: base(Message.Created.ToLocalTime())
 		{
 			this.Message = Message;
@@ -31,6 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.isSelfChat = IsSelfChat;
 			this.LinkCommand = LinkCommand;
 			this.ActionsCommand = ActionsCommand;
+			this.ReplyCommand = ReplyCommand;
 			this.isDelivered = Message.Delivered != DateTime.MinValue;
 			this.isEdited = Message.Updated != DateTime.MinValue;
 		}
@@ -51,9 +59,17 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		public bool IsSent => this.Message.MessageType == MessageType.Sent;
 
 		/// <summary>
+		/// If the message can be replied to. Notes to yourself can't.
+		/// </summary>
+		public bool CanReply => !this.isSelfChat;
+
+		/// <summary>
 		/// The message's text, built for a <see cref="MarkdownView"/>.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsMediaOnly))]
+		[NotifyPropertyChangedFor(nameof(BubblePadding))]
+		[NotifyPropertyChangedFor(nameof(MetaMargin))]
 		private MarkdownModel model;
 
 		/// <summary>
@@ -74,17 +90,62 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(Spacing))]
+		[NotifyPropertyChangedFor(nameof(Corners))]
 		private bool isFirstInGroup = true;
 
 		/// <summary>
-		/// Room around the message.
+		/// If the message ends a run of messages from the same party, so its bubble gets a tail.
 		/// </summary>
-		public Thickness Spacing => this.IsFirstInGroup ? new Thickness(16, 8, 16, 0) : new Thickness(16, 2, 16, 0);
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(Corners))]
+		private bool isLastInGroup = true;
+
+		/// <summary>
+		/// Room around the message: more above the first message of a run.
+		/// </summary>
+		public Thickness Spacing => this.IsFirstInGroup ? new Thickness(12, 10, 12, 0) : new Thickness(12, 2, 12, 0);
+
+		/// <summary>
+		/// The corners of the bubble. On the sender's side, a message that follows another of the same run has a joined top
+		/// corner, and the last one of the run has a tail at the bottom.
+		/// </summary>
+		public CornerRadius Corners
+		{
+			get
+			{
+				double Top = this.IsFirstInGroup ? cornerRadius : tailRadius;
+				double Bottom = this.IsLastInGroup ? tailRadius : cornerRadius;
+
+				return this.IsSent ?
+					new CornerRadius(cornerRadius, Top, cornerRadius, Bottom) :
+					new CornerRadius(Top, cornerRadius, Bottom, cornerRadius);
+			}
+		}
+
+		/// <summary>
+		/// If the message is only a photo or a card, which then fills the bubble.
+		/// </summary>
+		public bool IsMediaOnly => this.Model.Blocks.Count == 1 && this.Model.Blocks[0] is MdImage or MdEmbed;
+
+		/// <summary>
+		/// Room between the bubble and its content.
+		/// </summary>
+		public Thickness BubblePadding => this.IsMediaOnly ? mediaPadding : textPadding;
+
+		/// <summary>
+		/// Room around the time and status, which keeps them clear of the bubble's edge when a photo or card fills it.
+		/// </summary>
+		public Thickness MetaMargin => this.IsMediaOnly ? new Thickness(8, 0) : new Thickness(0);
 
 		/// <summary>
 		/// When the message was written, as shown.
 		/// </summary>
 		public string TimeText => this.Timestamp.ToString("t", CultureInfo.CurrentCulture);
+
+		/// <summary>
+		/// The line under a photo of the message in the image viewer: who sent it, and when.
+		/// </summary>
+		public string? ImageSubtitle { get; init; }
 
 		/// <summary>
 		/// If the message shows if it has been delivered.
@@ -109,6 +170,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		public ICommand ActionsCommand { get; }
 
 		/// <summary>
+		/// Starts a reply to the message.
+		/// </summary>
+		public ICommand ReplyCommand { get; }
+
+		/// <summary>
 		/// Shows a corrected message.
 		/// </summary>
 		/// <param name="Message">The stored message.</param>
@@ -127,6 +193,27 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		public void MarkDelivered()
 		{
 			this.IsDelivered = true;
+		}
+
+		/// <summary>
+		/// A moment, as said in a sentence: today or yesterday at a time, or a date at a time.
+		/// </summary>
+		/// <param name="Moment">The moment, in UTC or local time.</param>
+		/// <returns>The moment, as words.</returns>
+		public static string FormatMoment(DateTime Moment)
+		{
+			DateTime Local = Moment.Kind == DateTimeKind.Utc ? Moment.ToLocalTime() : Moment;
+			CultureInfo Culture = CultureInfo.CurrentCulture;
+			string Time = Local.ToString("t", Culture);
+
+			if (Local.Date == DateTime.Today)
+				return ServiceRef.Localizer[nameof(AppResources.ChatTimeToday), Time];
+
+			if (Local.Date == DateTime.Today.AddDays(-1))
+				return ServiceRef.Localizer[nameof(AppResources.ChatTimeYesterday), Time];
+
+			string Day = Local.Year == DateTime.Today.Year ? Local.ToString("M", Culture) : Local.ToString("d", Culture);
+			return ServiceRef.Localizer[nameof(AppResources.ChatTimeOnDay), Day, Time];
 		}
 
 		/// <summary>

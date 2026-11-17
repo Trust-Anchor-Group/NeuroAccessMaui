@@ -12,6 +12,7 @@ using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Converters;
@@ -50,6 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private static readonly TimeSpan groupInterval = TimeSpan.FromMinutes(2);
 		private static readonly TimeSpan pausedAfter = TimeSpan.FromSeconds(5);
 		private static readonly TimeSpan typingTimeout = TimeSpan.FromSeconds(30);
+		private static readonly TimeSpan previewDelay = TimeSpan.FromMilliseconds(250);
 
 		private readonly Dictionary<string, ChatMessageItem> itemsByObjectId = new(StringComparer.Ordinal);
 		private readonly bool isSelfChat;
@@ -59,6 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private bool isAtBottom = true;
 		private CancellationTokenSource? pausedTimer;
 		private CancellationTokenSource? remoteTypingTimer;
+		private CancellationTokenSource? previewTimer;
 
 		static ChatViewModel()
 		{
@@ -83,7 +86,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.friendlyName = Name;
 			this.Initials = GetInitials(Name, this.isSelfChat);
 			this.LinkCommand = new AsyncRelayCommand<string>(this.OpenLinkAsync);
-			this.ActionsCommand = new AsyncRelayCommand<ChatMessageItem>(this.ShowMessageActionsAsync);
+			this.ActionsCommand = new RelayCommand<ChatMessageItem>(this.OpenMenu);
+			this.ReplyCommand = new RelayCommand<ChatMessageItem>(this.StartReply);
 		}
 
 		#region Properties
@@ -133,9 +137,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		public IAsyncRelayCommand<string> LinkCommand { get; }
 
 		/// <summary>
-		/// Shows what can be done with a message.
+		/// Shows what can be done with a message, in a menu next to it.
 		/// </summary>
-		public IAsyncRelayCommand<ChatMessageItem> ActionsCommand { get; }
+		public IRelayCommand<ChatMessageItem> ActionsCommand { get; }
+
+		/// <summary>
+		/// Starts a reply to a message, as when it is swiped.
+		/// </summary>
+		public IRelayCommand<ChatMessageItem> ReplyCommand { get; }
 
 		/// <summary>
 		/// If the latest messages are being loaded.
@@ -279,6 +288,107 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		[ObservableProperty]
 		private bool hasUnseenMessages;
 
+		/// <summary>
+		/// If the panel of things to share shows, in place of the keyboard.
+		/// </summary>
+		[ObservableProperty]
+		private bool isShareTrayOpen;
+
+		/// <summary>
+		/// If the user's ID can be shared.
+		/// </summary>
+		public bool CanShareMyId => ServiceRef.TagProfile.LegalIdentity is not null;
+
+		/// <summary>
+		/// If a payment can be shared. Notes to yourself have no one to pay.
+		/// </summary>
+		public bool CanSharePayment => !this.isSelfChat;
+
+		/// <summary>
+		/// If the formatting bar shows under the text field.
+		/// </summary>
+		[ObservableProperty]
+		private bool isFormatBarOpen;
+
+		/// <summary>
+		/// If the text field has the focus.
+		/// </summary>
+		[ObservableProperty]
+		private bool isComposerFocused;
+
+		/// <summary>
+		/// The text being written, as it will look when sent, while it has formatting.
+		/// </summary>
+		[ObservableProperty]
+		private MarkdownModel? previewModel;
+
+		/// <summary>
+		/// If the preview of the text being written shows.
+		/// </summary>
+		[ObservableProperty]
+		private bool showsPreview;
+
+		/// <summary>
+		/// The message whose menu is open, if any.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsMenuOpen))]
+		[NotifyPropertyChangedFor(nameof(MenuInfo))]
+		[NotifyPropertyChangedFor(nameof(MenuHasInfo))]
+		[NotifyPropertyChangedFor(nameof(MenuCanReply))]
+		[NotifyPropertyChangedFor(nameof(MenuCanEdit))]
+		[NotifyPropertyChangedFor(nameof(MenuShowsDelivered))]
+		private ChatMessageItem? menuItem;
+
+		/// <summary>
+		/// If the menu of a message is open.
+		/// </summary>
+		public bool IsMenuOpen => this.MenuItem is not null;
+
+		/// <summary>
+		/// The first line of the menu: when the message was delivered, sent, saved or received.
+		/// </summary>
+		public string MenuInfo
+		{
+			get
+			{
+				ChatMessage? Message = this.MenuItem?.Message;
+				if (Message is null)
+					return string.Empty;
+
+				if (this.isSelfChat)
+					return ServiceRef.Localizer[nameof(AppResources.ChatInfoSaved), ChatMessageItem.FormatMoment(Message.Created)];
+
+				if (Message.MessageType != MessageType.Sent)
+					return ServiceRef.Localizer[nameof(AppResources.ChatInfoReceived), ChatMessageItem.FormatMoment(Message.Created)];
+
+				if (Message.Delivered != DateTime.MinValue)
+					return ServiceRef.Localizer[nameof(AppResources.ChatInfoDelivered), ChatMessageItem.FormatMoment(Message.Delivered)];
+
+				return ServiceRef.Localizer[nameof(AppResources.ChatInfoSent), ChatMessageItem.FormatMoment(Message.Created)];
+			}
+		}
+
+		/// <summary>
+		/// If the menu has a first line.
+		/// </summary>
+		public bool MenuHasInfo => this.MenuItem is not null;
+
+		/// <summary>
+		/// If the menu's first line shows the two checks of a delivered message.
+		/// </summary>
+		public bool MenuShowsDelivered => this.MenuItem is not null && this.MenuItem.IsSent && this.MenuItem.IsDelivered && !this.isSelfChat;
+
+		/// <summary>
+		/// If the message in the menu can be replied to.
+		/// </summary>
+		public bool MenuCanReply => this.MenuItem is not null && !this.isSelfChat;
+
+		/// <summary>
+		/// If the message in the menu can be corrected: only the user's own.
+		/// </summary>
+		public bool MenuCanEdit => this.MenuItem?.IsSent ?? false;
+
 		#endregion
 
 		#region Events to the page
@@ -298,6 +408,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// Asks the page to focus the text field.
 		/// </summary>
 		public event EventHandler? FocusComposerRequested;
+
+		/// <summary>
+		/// Asks the page to hide the keyboard, as when the share panel opens in its place.
+		/// </summary>
+		public event EventHandler? HideKeyboardRequested;
 
 		#endregion
 
@@ -328,8 +443,29 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			this.pausedTimer?.Cancel();
 			this.remoteTypingTimer?.Cancel();
+			this.previewTimer?.Cancel();
 
 			await base.OnDisposeAsync();
+		}
+
+		/// <summary>
+		/// Closes the menu of a message or the share panel, if one is open, and otherwise leaves the chat.
+		/// </summary>
+		public override async Task GoBack()
+		{
+			if (this.MenuItem is not null)
+			{
+				this.MenuItem = null;
+				return;
+			}
+
+			if (this.IsShareTrayOpen)
+			{
+				this.IsShareTrayOpen = false;
+				return;
+			}
+
+			await base.GoBack();
 		}
 
 		/// <inheritdoc/>
@@ -393,6 +529,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					this.itemsByObjectId.Clear();
 					this.Register(Rows);
 					this.Items.Reset(Rows);
+					this.RefreshGroups();
 
 					this.oldestLoaded = Messages.Count > 0 ? Messages[0].Created : DateTime.MaxValue;
 					this.ExistsMoreMessages = Messages.Count >= batchSize;
@@ -446,11 +583,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 						Removed = 1;
 					}
 
-					if (this.Items.Count > 0 && this.Items[0] is ChatMessageItem First)
-						First.IsFirstInGroup = StartsGroup(First.Message, Last);
-
 					this.Register(Rows);
 					this.Items.InsertRange(0, Rows);
+					this.RefreshGroups();
 
 					this.OlderRowsAdded?.Invoke(this, Rows.Count - Removed);
 				});
@@ -483,15 +618,54 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				if (Previous is null || Previous.Created.ToLocalTime().Date != Day)
 					Rows.Add(new ChatDayItem(Day));
 
-				Rows.Add(new ChatMessageItem(Message, Models[i], this.isSelfChat, this.LinkCommand, this.ActionsCommand)
-				{
-					IsFirstInGroup = StartsGroup(Message, Previous)
-				});
-
+				Rows.Add(this.CreateItem(Message, Models[i]));
 				Previous = Message;
 			}
 
 			return Rows;
+		}
+
+		private ChatMessageItem CreateItem(ChatMessage Message, MarkdownModel Model)
+		{
+			string Sender = Message.MessageType == MessageType.Sent ?
+				ServiceRef.Localizer[nameof(AppResources.ChatYou)] : this.FriendlyName;
+
+			return new ChatMessageItem(Message, Model, this.isSelfChat, this.LinkCommand, this.ActionsCommand, this.ReplyCommand)
+			{
+				ImageSubtitle = Sender + ", " + ChatMessageItem.FormatMoment(Message.Created)
+			};
+		}
+
+		/// <summary>
+		/// Works out which messages start and end a run of messages, so bubbles get their spacing and corners, and removes
+		/// days that have no messages left.
+		/// </summary>
+		private void RefreshGroups()
+		{
+			for (int i = this.Items.Count - 1; i >= 0; i--)
+			{
+				if (this.Items[i] is ChatDayItem && (i + 1 >= this.Items.Count || this.Items[i + 1] is ChatDayItem))
+					this.Items.RemoveAt(i);
+			}
+
+			ChatMessageItem? Previous = null;
+
+			foreach (ChatItem Row in this.Items)
+			{
+				if (Row is not ChatMessageItem Item)
+					continue;
+
+				bool Starts = StartsGroup(Item.Message, Previous?.Message);
+				Item.IsFirstInGroup = Starts;
+
+				if (Previous is not null)
+					Previous.IsLastInGroup = Starts;
+
+				Previous = Item;
+			}
+
+			if (Previous is not null)
+				Previous.IsLastInGroup = true;
 		}
 
 		private void Register(IEnumerable<ChatItem> Rows)
@@ -580,15 +754,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					if (Previous is null || Previous.Created.ToLocalTime().Date != Day)
 						this.Items.Add(new ChatDayItem(Day));
 
-					ChatMessageItem Item = new(Message, Model, this.isSelfChat, this.LinkCommand, this.ActionsCommand)
-					{
-						IsFirstInGroup = StartsGroup(Message, Previous)
-					};
+					ChatMessageItem Item = this.CreateItem(Message, Model);
 
 					if (!string.IsNullOrEmpty(ObjectId))
 						this.itemsByObjectId[ObjectId] = Item;
 
 					this.Items.Add(Item);
+					this.RefreshGroups();
 					this.OnPropertyChanged(nameof(this.IsEmpty));
 
 					if (this.isAtBottom || Item.IsSent)
@@ -678,6 +850,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		partial void OnMarkdownInputChanged(string value)
 		{
+			this.SchedulePreview(value);
+
 			if (this.isSelfChat)
 				return;
 
@@ -702,6 +876,56 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				if (!T.IsCanceled)
 					MainThread.BeginInvokeOnMainThread(() => this.SetComposing(false, ChatState.Paused));
 			}, TaskScheduler.Default);
+		}
+
+		/// <summary>
+		/// Shows how the text being written will look, once the user has stopped typing for a moment, while it has
+		/// formatting. The preview is built off the UI thread.
+		/// </summary>
+		private void SchedulePreview(string Text)
+		{
+			this.previewTimer?.Cancel();
+			this.previewTimer = null;
+
+			if (!ChatFormatting.HasFormatting(Text))
+			{
+				this.ShowsPreview = false;
+				this.PreviewModel = null;
+				return;
+			}
+
+			CancellationTokenSource Timer = new();
+			this.previewTimer = Timer;
+
+			_ = Task.Run(async () =>
+			{
+				try
+				{
+					await Task.Delay(previewDelay, Timer.Token);
+
+					MarkdownModel Model = await MarkdownModel.FromMarkdownAsync(ChatMarkdown.KeepLineBreaks(Text));
+
+					if (Timer.IsCancellationRequested)
+						return;
+
+					MainThread.BeginInvokeOnMainThread(() =>
+					{
+						if (Timer.IsCancellationRequested)
+							return;
+
+						this.PreviewModel = Model;
+						this.ShowsPreview = true;
+					});
+				}
+				catch (TaskCanceledException)
+				{
+					// A newer text replaced this one.
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			});
 		}
 
 		private void SetComposing(bool Composing, ChatState State)
@@ -826,47 +1050,184 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		#region Message actions
 
-		private async Task ShowMessageActionsAsync(ChatMessageItem? Item)
+		/// <summary>
+		/// Opens the menu of a message, next to it. The page shows the message lifted over the dimmed chat.
+		/// </summary>
+		private void OpenMenu(ChatMessageItem? Item)
 		{
 			if (Item is null)
 				return;
 
 			ServiceRef.LogService.LogDebug("ChatMessageActionsOpened", new KeyValuePair<string, object?>("Sent", Item.IsSent));
 
-			List<ChatSheetAction> Actions =
-			[
-				new(ServiceRef.Localizer[nameof(AppResources.MarkdownCopy)], Geometries.ClipboardIconPath, async () =>
-				{
-					string Text = string.IsNullOrEmpty(Item.Message.Markdown) ? Item.Message.PlainText : Item.Message.Markdown;
-					await Clipboard.SetTextAsync(Text);
-				})
-			];
+			this.IsShareTrayOpen = false;
+			this.HideKeyboardRequested?.Invoke(this, EventArgs.Empty);
+			this.MenuItem = Item;
+		}
 
-			if (!this.isSelfChat)
+		/// <summary>
+		/// Closes the menu of a message.
+		/// </summary>
+		[RelayCommand]
+		private void CloseMenu()
+		{
+			this.MenuItem = null;
+		}
+
+		/// <summary>
+		/// Starts a reply to a message.
+		/// </summary>
+		private void StartReply(ChatMessageItem? Item)
+		{
+			if (Item is null || this.isSelfChat)
+				return;
+
+			this.EditingItem = null;
+			this.ReplyItem = Item;
+			this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
+		}
+
+		/// <summary>
+		/// Replies to the message in the menu.
+		/// </summary>
+		[RelayCommand]
+		private void ReplyToMenuItem()
+		{
+			ChatMessageItem? Item = this.MenuItem;
+			this.MenuItem = null;
+			this.StartReply(Item);
+		}
+
+		/// <summary>
+		/// Copies the text of the message in the menu.
+		/// </summary>
+		[RelayCommand]
+		private async Task CopyMenuItem()
+		{
+			ChatMessageItem? Item = this.MenuItem;
+			this.MenuItem = null;
+
+			if (Item is null)
+				return;
+
+			try
 			{
-				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.ChatReply)], Geometries.ReplyPath, () =>
+				await Clipboard.SetTextAsync(MarkdownOf(Item.Message));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Corrects the message in the menu: its text goes back into the text field.
+		/// </summary>
+		[RelayCommand]
+		private void EditMenuItem()
+		{
+			ChatMessageItem? Item = this.MenuItem;
+			this.MenuItem = null;
+
+			if (Item is null || !Item.IsSent)
+				return;
+
+			this.ReplyItem = null;
+			this.EditingItem = Item;
+			this.MarkdownInput = MarkdownOf(Item.Message);
+			this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
+		}
+
+		/// <summary>
+		/// Sends the message in the menu to another contact, picked from the contact list.
+		/// </summary>
+		[RelayCommand]
+		private async Task ForwardMenuItem()
+		{
+			ChatMessageItem? Item = this.MenuItem;
+			this.MenuItem = null;
+
+			if (Item is null)
+				return;
+
+			try
+			{
+				TaskCompletionSource<ContactInfoModel?> Selected = new();
+				ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.ChatForwardTo)], Selected);
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+
+				ContactInfoModel? Contact = await Selected.Task;
+				if (Contact is null)
+					return;
+
+				string? To = Contact.BareJid?.Value;
+				if (string.IsNullOrEmpty(To))
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ChatForwardNotPossible)]);
+					return;
+				}
+
+				// Photos kept only on this phone, as in notes to yourself, are uploaded first, so the contact can see them.
+				string Markdown = MarkdownOf(Item.Message);
+				if (!ChatSender.IsSelf(To))
+					Markdown = await ChatAttachments.UploadLocalImagesAsync(Markdown);
+
+				await ChatSender.SendAsync(To, Markdown);
+				await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.ChatForwarded)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Deletes the message in the menu from this phone. The other party keeps their copy.
+		/// </summary>
+		[RelayCommand]
+		private async Task DeleteMenuItem()
+		{
+			ChatMessageItem? Item = this.MenuItem;
+			this.MenuItem = null;
+
+			if (Item is null)
+				return;
+
+			try
+			{
+				await Database.Delete(Item.Message);
+
+				if (this.EditingItem == Item)
 				{
 					this.EditingItem = null;
-					this.ReplyItem = Item;
-					this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
-					return Task.CompletedTask;
-				}));
-			}
+					this.MarkdownInput = string.Empty;
+				}
 
-			if (Item.IsSent)
-			{
-				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.ChatEdit)], Geometries.EditPath, () =>
-				{
+				if (this.ReplyItem == Item)
 					this.ReplyItem = null;
-					this.EditingItem = Item;
-					this.MarkdownInput = string.IsNullOrEmpty(Item.Message.Markdown) ?
-						MarkdownDocument.Encode(Item.Message.PlainText) : Item.Message.Markdown;
-					this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
-					return Task.CompletedTask;
-				}));
-			}
 
-			await ChatSheetPopup.ShowAsync(null, Actions, false);
+				this.itemsByObjectId.Remove(Item.ObjectId);
+				this.Items.Remove(Item);
+				this.RefreshGroups();
+				this.OnPropertyChanged(nameof(this.IsEmpty));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// The markdown of a message, or its plain text written as markdown.
+		/// </summary>
+		private static string MarkdownOf(ChatMessage Message)
+		{
+			return string.IsNullOrEmpty(Message.Markdown) ? MarkdownDocument.Encode(Message.PlainText) : Message.Markdown;
 		}
 
 		#endregion
@@ -879,30 +1240,103 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		}
 
 		/// <summary>
-		/// Shows what can be shared in the chat.
+		/// Opens the panel of things to share in place of the keyboard, or closes it.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanAttach))]
-		private async Task Attach()
+		private void Attach()
 		{
-			List<ChatSheetAction> Actions =
-			[
-				new(ServiceRef.Localizer[nameof(AppResources.Photos)], Geometries.CameraImageButtonPath, this.PickPhotoAsync),
-				new(ServiceRef.Localizer[nameof(AppResources.ChatShareCamera)], Geometries.CameraPath, this.TakePhotoAsync),
-				new(ServiceRef.Localizer[nameof(AppResources.ChatShareContact)], Geometries.PersonPath, this.ShareContactAsync)
-			];
+			if (this.IsShareTrayOpen)
+			{
+				this.IsShareTrayOpen = false;
+				this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
+				return;
+			}
 
-			if (ServiceRef.TagProfile.LegalIdentity is not null)
-				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.ChatShareMyId)], Geometries.ShowIdIconPath, this.ShareMyIdAsync));
+			this.IsFormatBarOpen = false;
+			this.HideKeyboardRequested?.Invoke(this, EventArgs.Empty);
+			this.IsShareTrayOpen = true;
+			this.OnPropertyChanged(nameof(this.CanShareMyId));
+		}
 
-			Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.MarkdownContract)], Geometries.ContractPath, this.ShareContractAsync));
+		/// <summary>
+		/// Called by the page when the text field gets or loses the focus. Typing closes the share panel.
+		/// </summary>
+		/// <param name="Focused">If the text field has the focus.</param>
+		public void OnComposerFocusChanged(bool Focused)
+		{
+			this.IsComposerFocused = Focused;
 
-			if (!this.isSelfChat)
-				Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.Payment)], Geometries.MoneyPath, this.SharePaymentAsync));
+			if (Focused)
+				this.IsShareTrayOpen = false;
+		}
 
-			Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.MarkdownToken)], Geometries.TokenPath, this.ShareTokenAsync));
-			Actions.Add(new(ServiceRef.Localizer[nameof(AppResources.Thing)], Geometries.ThingPath, this.ShareThingAsync));
+		/// <summary>
+		/// Shows or hides the formatting bar.
+		/// </summary>
+		[RelayCommand]
+		private void ToggleFormatBar()
+		{
+			this.IsFormatBarOpen = !this.IsFormatBarOpen;
 
-			await ChatSheetPopup.ShowAsync(ServiceRef.Localizer[nameof(AppResources.ChatShareTitle)], Actions, true);
+			if (this.IsFormatBarOpen)
+			{
+				this.IsShareTrayOpen = false;
+				this.FocusComposerRequested?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		/// <summary>
+		/// Shares something from the share panel, which closes.
+		/// </summary>
+		/// <param name="Kind">What to share: Photos, Camera, Contact, MyId, Contract, Payment, Token or Thing.</param>
+		[RelayCommand]
+		private async Task Share(string? Kind)
+		{
+			this.IsShareTrayOpen = false;
+
+			try
+			{
+				switch (Kind)
+				{
+					case "Photos":
+						await this.PickPhotoAsync();
+						break;
+
+					case "Camera":
+						await this.TakePhotoAsync();
+						break;
+
+					case "Contact":
+						await this.ShareContactAsync();
+						break;
+
+					case "MyId":
+						await this.ShareMyIdAsync();
+						break;
+
+					case "Contract":
+						await this.ShareContractAsync();
+						break;
+
+					case "Payment":
+						if (!this.isSelfChat)
+							await this.SharePaymentAsync();
+						break;
+
+					case "Token":
+						await this.ShareTokenAsync();
+						break;
+
+					case "Thing":
+						await this.ShareThingAsync();
+						break;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
 		}
 
 		private async Task SendMarkdownAsync(string Markdown)

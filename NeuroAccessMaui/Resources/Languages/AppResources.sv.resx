@@ -117,6 +117,87 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChatCloseShare" xml:space="preserve">
+    <value>Stäng delning</value>
+  </data>
+  <data name="ChatDeleteFromPhone" xml:space="preserve">
+    <value>Radera från den här telefonen</value>
+  </data>
+  <data name="ChatFormatBold" xml:space="preserve">
+    <value>Fetstil</value>
+  </data>
+  <data name="ChatFormatBulletList" xml:space="preserve">
+    <value>Punktlista</value>
+  </data>
+  <data name="ChatFormatCode" xml:space="preserve">
+    <value>Kod</value>
+  </data>
+  <data name="ChatFormatCodeBlock" xml:space="preserve">
+    <value>Kodblock</value>
+  </data>
+  <data name="ChatFormatItalic" xml:space="preserve">
+    <value>Kursiv</value>
+  </data>
+  <data name="ChatFormatLink" xml:space="preserve">
+    <value>Länk</value>
+  </data>
+  <data name="ChatFormatNumberedList" xml:space="preserve">
+    <value>Numrerad lista</value>
+  </data>
+  <data name="ChatFormatQuote" xml:space="preserve">
+    <value>Citat</value>
+  </data>
+  <data name="ChatFormatStrikethrough" xml:space="preserve">
+    <value>Genomstruken</value>
+  </data>
+  <data name="ChatForward" xml:space="preserve">
+    <value>Vidarebefordra</value>
+  </data>
+  <data name="ChatForwarded" xml:space="preserve">
+    <value>Vidarebefordrat</value>
+  </data>
+  <data name="ChatForwardNotPossible" xml:space="preserve">
+    <value>Du kan inte skicka meddelanden till den här kontakten.</value>
+  </data>
+  <data name="ChatForwardTo" xml:space="preserve">
+    <value>Vidarebefordra till</value>
+  </data>
+  <data name="ChatHideFormatting" xml:space="preserve">
+    <value>Dölj formatering</value>
+  </data>
+  <data name="ChatInfoDelivered" xml:space="preserve">
+    <value>Levererat {0}</value>
+  </data>
+  <data name="ChatInfoReceived" xml:space="preserve">
+    <value>Mottaget {0}</value>
+  </data>
+  <data name="ChatInfoSaved" xml:space="preserve">
+    <value>Sparat {0}</value>
+  </data>
+  <data name="ChatInfoSent" xml:space="preserve">
+    <value>Skickat {0}</value>
+  </data>
+  <data name="ChatMessageActions" xml:space="preserve">
+    <value>Åtgärder för meddelandet</value>
+  </data>
+  <data name="ChatPreview" xml:space="preserve">
+    <value>Förhandsvisning</value>
+  </data>
+  <data name="ChatShowFormatting" xml:space="preserve">
+    <value>Visa formatering</value>
+  </data>
+  <data name="ChatTimeOnDay" xml:space="preserve">
+    <value>{0} kl. {1}</value>
+  </data>
+  <data name="ChatTimeToday" xml:space="preserve">
+    <value>i dag kl. {0}</value>
+  </data>
+  <data name="ChatTimeYesterday" xml:space="preserve">
+    <value>i går kl. {0}</value>
+  </data>
+  <data name="ChatYou" xml:space="preserve">
+    <value>Du</value>
+  </data>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Välj roller du vill signera som (valfritt)</value>
   </data>

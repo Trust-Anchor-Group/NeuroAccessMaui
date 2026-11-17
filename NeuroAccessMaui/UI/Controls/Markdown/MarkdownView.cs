@@ -84,6 +84,14 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		public static readonly BindableProperty LinkCommandProperty = BindableProperty.Create(
 			nameof(LinkCommand), typeof(ICommand), typeof(MarkdownView), null);
 
+		/// <summary>See <see cref="Tone"/>.</summary>
+		public static readonly BindableProperty ToneProperty = BindableProperty.Create(
+			nameof(Tone), typeof(MarkdownTone), typeof(MarkdownView), MarkdownTone.Default, propertyChanged: OnLayoutChanged);
+
+		/// <summary>See <see cref="ImageSubtitle"/>.</summary>
+		public static readonly BindableProperty ImageSubtitleProperty = BindableProperty.Create(
+			nameof(ImageSubtitle), typeof(string), typeof(MarkdownView), null, propertyChanged: OnLayoutChanged);
+
 		private static readonly BindablePropertyKey isBuildingPropertyKey = BindableProperty.CreateReadOnly(
 			nameof(IsBuilding), typeof(bool), typeof(MarkdownView), false);
 
@@ -198,6 +206,26 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		{
 			get => (ICommand?)this.GetValue(LinkCommandProperty);
 			set => this.SetValue(LinkCommandProperty, value);
+		}
+
+		/// <summary>
+		/// What the text is shown on: the page's own surfaces, or a surface in the accent color, such as a sent chat
+		/// message, where the text is white. Cards and images keep their own look.
+		/// </summary>
+		public MarkdownTone Tone
+		{
+			get => (MarkdownTone)this.GetValue(ToneProperty);
+			set => this.SetValue(ToneProperty, value);
+		}
+
+		/// <summary>
+		/// The line under the title when an image is opened in the viewer, such as who sent it and when. Null shows where
+		/// the image is from, as for a chart drawn by the server, and an empty text shows no line.
+		/// </summary>
+		public string? ImageSubtitle
+		{
+			get => (string?)this.GetValue(ImageSubtitleProperty);
+			set => this.SetValue(ImageSubtitleProperty, value);
 		}
 
 		/// <summary>
@@ -336,7 +364,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		{
 			get
 			{
-				this.factory ??= new MarkdownViewFactory(MarkdownMetrics.For(this.Density), this.OnLinkTapped);
+				this.factory ??= new MarkdownViewFactory(MarkdownMetrics.For(this.Density), this.OnLinkTapped, this.Tone, this.ImageSubtitle);
 				return this.factory;
 			}
 		}

@@ -22,6 +22,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 
 		private readonly MdImage image;
 		private readonly MarkdownMetrics metrics;
+		private readonly string? subtitle;
 		private readonly Border placeholder;
 		private double aspectRatio;
 		private bool loading;
@@ -31,10 +32,13 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		/// </summary>
 		/// <param name="Image">The image.</param>
 		/// <param name="Metrics">Sizes and gaps.</param>
-		public MarkdownImageView(MdImage Image, MarkdownMetrics Metrics)
+		/// <param name="Subtitle">The line under the title when the image is opened in the viewer. Null shows where the
+		/// image is from, and an empty text shows no line.</param>
+		public MarkdownImageView(MdImage Image, MarkdownMetrics Metrics, string? Subtitle = null)
 		{
 			this.image = Image;
 			this.metrics = Metrics;
+			this.subtitle = Subtitle;
 
 			int? Width = Image.Source.Width;
 			int? Height = Image.Source.Height;
@@ -104,7 +108,8 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 
 		private void ShowImage(MdImageData Data)
 		{
-			ZoomableImage Image = new(Data.ToImageSource(), Data.Width, Data.Height, this.image.Description ?? this.image.Caption);
+			ZoomableImage Image = new(Data.ToImageSource(), Data.Width, Data.Height, this.image.Description ?? this.image.Caption,
+				this.subtitle);
 			AutomationProperties.SetIsInAccessibleTree(Image, false);
 
 			if (string.IsNullOrEmpty(this.image.Caption))

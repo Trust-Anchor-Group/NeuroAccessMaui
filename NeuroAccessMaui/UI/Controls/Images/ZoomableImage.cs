@@ -28,16 +28,24 @@ namespace NeuroAccessMaui.UI.Controls
 		public string? Title { get; }
 
 		/// <summary>
+		/// The line under the title in the viewer. Null shows where the image is from, and an empty text shows no line.
+		/// </summary>
+		public string? Subtitle { get; }
+
+		/// <summary>
 		/// Creates an image that fits its width and opens in a viewer when tapped.
 		/// </summary>
 		/// <param name="Source">The image.</param>
 		/// <param name="PixelWidth">The image's width in pixels, if known.</param>
 		/// <param name="PixelHeight">The image's height in pixels, if known.</param>
 		/// <param name="Title">A title for the viewer, if any.</param>
-		public ZoomableImage(ImageSource Source, int? PixelWidth, int? PixelHeight, string? Title)
+		/// <param name="Subtitle">The line under the title in the viewer. Null shows where the image is from, and an empty
+		/// text shows no line.</param>
+		public ZoomableImage(ImageSource Source, int? PixelWidth, int? PixelHeight, string? Title, string? Subtitle = null)
 		{
 			this.Source = Source;
 			this.Title = Title;
+			this.Subtitle = Subtitle;
 			this.aspectRatio = PixelWidth > 0 && PixelHeight > 0 ? (double)PixelHeight.Value / PixelWidth.Value : 0;
 
 			this.image = new Image
@@ -62,7 +70,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				try
 				{
-					await ImageViewerPopup.ShowAsync(Source, Title);
+					await ImageViewerPopup.ShowAsync(Source, Title, Subtitle);
 				}
 				catch (Exception Ex)
 				{

@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Content;
 using NeuroAccessMaui.UI.Controls.Markdown;
@@ -16,7 +17,7 @@ namespace NeuroAccessMaui.Services.Chat
 	/// Sends and shows images in chats. Images are encrypted before they are uploaded, and the key travels in the message,
 	/// as an <c>aes256:</c> link.
 	/// </summary>
-	public static class ChatAttachments
+	public static partial class ChatAttachments
 	{
 		private const int MaxImageSide = 2048;
 		private const int JpegQuality = 85;
@@ -145,6 +146,45 @@ namespace NeuroAccessMaui.Services.Chat
 
 			return ImageMarkdown(Name, new Uri(FilePath).AbsoluteUri, Width, Height);
 		}
+
+		/// <summary>
+		/// Uploads the images of a message that are kept only on this phone, as in notes to yourself, and links to the
+		/// uploaded copies instead, so the message can be sent to someone else. Other images are left as they are.
+		/// </summary>
+		/// <param name="Markdown">Markdown of the message.</param>
+		/// <returns>Markdown that links to uploaded images.</returns>
+		/// <exception cref="InvalidOperationException">If an image is too large, or the app can't connect. The message
+		/// can be shown to the user.</exception>
+		public static async Task<string> UploadLocalImagesAsync(string Markdown)
+		{
+			MatchCollection Matches = LocalImage().Matches(Markdown);
+			if (Matches.Count == 0)
+				return Markdown;
+
+			StringBuilder Result = new();
+			int Pos = 0;
+
+			foreach (Match M in Matches)
+			{
+				if (!Uri.TryCreate(M.Groups["Link"].Value, UriKind.Absolute, out Uri? Link) || !Link.IsFile || !File.Exists(Link.LocalPath))
+					continue;
+
+				// The name is written as markdown in the link; without its escapes it is the file name again.
+				string Name = string.IsNullOrWhiteSpace(M.Groups["Name"].Value) ?
+					Path.GetFileName(Link.LocalPath) : Regex.Replace(M.Groups["Name"].Value, @"\\(.)", "$1");
+				byte[] Data = await File.ReadAllBytesAsync(Link.LocalPath);
+
+				Result.Append(Markdown, Pos, M.Index - Pos);
+				Result.Append(await UploadImageAsync(Data, Name));
+				Pos = M.Index + M.Length;
+			}
+
+			Result.Append(Markdown, Pos, Markdown.Length - Pos);
+			return Result.ToString();
+		}
+
+		[GeneratedRegex(@"!\[(?<Name>[^\]]*)\]\((?<Link>file:[^\s)]+)[^)]*\)")]
+		private static partial Regex LocalImage();
 
 		private static string ImageMarkdown(string Name, string Link, int Width, int Height)
 		{
