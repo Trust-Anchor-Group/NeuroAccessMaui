@@ -102,13 +102,14 @@
 				Value="Center" />
 	</Style>
 
-	<!-- Small pills inside a row, such as "New" or an expiry -->
+	<!-- Small pills inside a row, such as "New" or an expiry. Pills and chips have a smallest height, not a fixed one,
+		 so their text isn't cut off when the phone uses large text. -->
 	<Style x:Key="ListCardPillBorder"
 		   ApplyToDerivedTypes="False"
 		   TargetType="Border">
 		<Setter Property="Padding"
 				Value="8,0" />
-		<Setter Property="HeightRequest"
+		<Setter Property="MinimumHeightRequest"
 				Value="20" />
 		<Setter Property="BackgroundColor"
 				Value="{DynamicResource TnPSuccessbgWL}" />
@@ -143,7 +144,7 @@
 	<Style x:Key="ListCardChipBorder"
 		   ApplyToDerivedTypes="False"
 		   TargetType="Border">
-		<Setter Property="HeightRequest"
+		<Setter Property="MinimumHeightRequest"
 				Value="40" />
 		<Setter Property="Padding"
 				Value="16,0" />
@@ -333,7 +334,7 @@
 	<Style x:Key="ListCardHeroChipBorder"
 		   ApplyToDerivedTypes="False"
 		   TargetType="Border">
-		<Setter Property="HeightRequest"
+		<Setter Property="MinimumHeightRequest"
 				Value="24" />
 		<Setter Property="Padding"
 				Value="10,0" />

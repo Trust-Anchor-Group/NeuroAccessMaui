@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.UI.Controls.Toasts;
+﻿using NeuroAccessMaui.UI.Controls;
+using NeuroAccessMaui.UI.Controls.Toasts;
 
 namespace NeuroAccessMaui.Services.UI.Toasts
 {
@@ -39,6 +40,7 @@ namespace NeuroAccessMaui.Services.UI.Toasts
 					return;
 
 				await ToastService.ShowAsync(Toast);
+				ScreenReader.Announce(Message);
 			}
 			catch (Exception Ex)
 			{

@@ -12,6 +12,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
@@ -826,6 +827,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			});
 
 			await this.GoToStateAsync(ViewContractStep.Result);
+			ScreenReader.Announce(this.SignResultTitle + ". " + this.SignResultText);
 		}
 
 		/// <summary>

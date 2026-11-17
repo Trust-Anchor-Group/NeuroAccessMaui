@@ -16,7 +16,7 @@
 		<controls:Background Grid.RowSpan="2"/>
 
 		<Grid ColumnDefinitions="auto, *" Margin="16,8,16,8">
-			<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+			<controls:SvgButton SemanticProperties.Description="{l:Localize Close}" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 								Style="{DynamicResource IconButton}" SvgSource="close.svg"/>
 
 			<Label Text="{l:Localize SendPayment}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1" HorizontalOptions="End"/>
@@ -122,7 +122,7 @@
 												</controls:SvgView>
 											</Border>
 											<Label Text="{Binding ToContact.FriendlyName}" Grid.Column="1" LineBreakMode="TailTruncation" VerticalOptions="Center" FontSize="{StaticResource FontSizeSm}"/>
-											<controls:SvgButton SvgSource="close.svg" Grid.Column="2" HeightRequest="32" WidthRequest="32" Command="{Binding ClearRecipientCommand}"/>
+											<controls:SvgButton SemanticProperties.Description="{l:Localize Clear}" SvgSource="close.svg" Grid.Column="2" HeightRequest="32" WidthRequest="32" Command="{Binding ClearRecipientCommand}"/>
 										</Grid>
 									</Border>
 								</controls:ConditionView.True>
@@ -137,13 +137,13 @@
 								</controls:ConditionView.False>
 							</controls:ConditionView>
 
-							<controls:SvgButton Command="{Binding SelectRecipientCommand}"
+							<controls:SvgButton SemanticProperties.Description="{l:Localize SelectContact}" Command="{Binding SelectRecipientCommand}"
 												SvgSource="person.svg"
 												Style="{DynamicResource IconButtonOnBackground}"
 												WidthRequest="56"
 												Grid.Row="1" Grid.Column="1"/>
 
-							<controls:SvgButton Command="{Binding ScanQrCommand}"
+							<controls:SvgButton SemanticProperties.Description="{l:Localize ScanQRCode}" Command="{Binding ScanQrCommand}"
 												SvgSource="qr.svg"
 												Style="{DynamicResource IconButtonOnBackground}"
 												WidthRequest="56"

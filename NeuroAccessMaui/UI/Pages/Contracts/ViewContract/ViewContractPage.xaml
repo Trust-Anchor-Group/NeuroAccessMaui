@@ -28,7 +28,7 @@
 				Margin="16,0,16,16">
 
 
-			<controls:SvgButton Grid.Row="0"
+			<controls:SvgButton SemanticProperties.Description="{l:Localize Close}" Grid.Row="0"
 								Grid.Column="0"
 								Command="{Binding BackCommand}"
 								Style="{DynamicResource IconButton}"
@@ -43,7 +43,7 @@
 					 LineBreakMode="TailTruncation"
 					 MaxLines="2"
 					 HorizontalTextAlignment="Center" />
-			<controls:SvgButton Grid.Row="0"
+			<controls:SvgButton SemanticProperties.Description="{l:Localize Share}" Grid.Row="0"
 								Grid.Column="2"
 								Command="{Binding ShareCommand}"
 								Style="{DynamicResource IconButton}"

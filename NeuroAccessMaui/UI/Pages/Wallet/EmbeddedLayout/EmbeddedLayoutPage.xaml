@@ -15,7 +15,7 @@
 		<controls:Background Grid.RowSpan="2"/>
 
 		<Grid ColumnDefinitions="auto, *"  Margin="16,8,16,8" ColumnSpacing="16">
-			<controls:SvgButton HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
+			<controls:SvgButton SemanticProperties.Description="{l:Localize Close}" HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
 								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 		</Grid>
 

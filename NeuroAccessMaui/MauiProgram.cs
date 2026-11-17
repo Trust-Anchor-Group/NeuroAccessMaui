@@ -152,6 +152,9 @@ namespace NeuroAccessMaui
 
 		private static void InitMauiControlsHandlers()
 		{
+			// Views marked as buttons get the button role for screen readers, again each time their semantics are set.
+			ViewHandler.ViewMapper.AppendToMapping(nameof(IView.Semantics), (Handler, View) => ButtonRole.Apply(Handler, View));
+
 			    // Layouts (Grid, StackLayout, etc.)
 			LayoutHandler.Mapper.AppendToMapping("GlobalIgnoreSafeArea", (handler, view) =>
 			{

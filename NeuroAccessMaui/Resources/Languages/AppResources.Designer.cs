@@ -15547,6 +15547,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}, from {1} to {2}.
+        /// </summary>
+        public static string FlowArrowDescription {
+            get {
+                return ResourceManager.GetString("FlowArrowDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}, stays in {1}.
+        /// </summary>
+        public static string FlowArrowStaysDescription {
+            get {
+                return ResourceManager.GetString("FlowArrowStaysDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Or {0}.
         /// </summary>
         public static string FlowOr {
@@ -16861,6 +16879,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} more tokens loaded.
+        /// </summary>
+        public static string TokensLoadedAnnouncement {
+            get {
+                return ResourceManager.GetString("TokensLoadedAnnouncement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} tokens.
         /// </summary>
         public static string TokenFamilyCount {
@@ -16884,6 +16911,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ShowLess {
             get {
                 return ResourceManager.GetString("ShowLess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Clear {
+            get {
+                return ResourceManager.GetString("Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
             }
         }
         

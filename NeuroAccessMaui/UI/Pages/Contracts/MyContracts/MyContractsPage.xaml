@@ -21,7 +21,7 @@
 				<controls:ListCardSegment Position="{Binding CardPosition}"
 										  FillColor="{DynamicResource SurfaceElevation1WL}"
 										  StrokeColor="{DynamicResource SurfaceDividerWL}" />
-				<Grid ColumnDefinitions="44,*,44"
+				<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="44,*,44"
 					  ColumnSpacing="14"
 					  Padding="16,14,6,14"
 					  MinimumHeightRequest="76"
@@ -45,7 +45,7 @@
 						<Label Style="{DynamicResource ListCardRowDetailLabel}"
 							   Text="{Binding LastChangedText}" />
 					</VerticalStackLayout>
-					<controls:SvgButton Grid.Column="2"
+					<controls:SvgButton SemanticProperties.Description="{l:Localize Share}" Grid.Column="2"
 										VerticalOptions="Center"
 										HeightRequest="44"
 										WidthRequest="44"
@@ -298,7 +298,7 @@
 								<!-- How many, with an arrow that turns when unfolded -->
 								<Border HorizontalOptions="Start"
 										Padding="9,0,6,0"
-										HeightRequest="22"
+										MinimumHeightRequest="22"
 										Style="{DynamicResource ListCardPillBorder}"
 										BackgroundColor="{DynamicResource TnPInfobgWL}">
 									<Border.Triggers>
@@ -481,7 +481,7 @@
 							 IsRefreshing="{Binding IsRefreshing}">
 					<Grid>
 						<!-- A search that found nothing -->
-						<Label VerticalOptions="Start"
+						<Label controls:ScreenReader.AnnouncesChanges="True" VerticalOptions="Start"
 							   Margin="24,16,24,0"
 							   IsVisible="{Binding ShowNoMatches}"
 							   Style="{DynamicResource IdentityFlowBodySecondaryLabel}"

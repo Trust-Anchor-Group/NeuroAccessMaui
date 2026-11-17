@@ -18,7 +18,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="PendingPaymentTemplate" x:DataType="objectmodel:PendingPaymentItem">
-			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto">
+			<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="2*,*" RowDefinitions="auto,auto">
 				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="{StaticResource FontSizeXl}"/>
 				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=ExpiresStr}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Italic"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="TailTruncation" TextColor="{DynamicResource InputFieldsContentDangerv500}" HorizontalTextAlignment="End">
@@ -38,7 +38,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="AccountEventTemplate" x:DataType="objectmodel:AccountEventItem">
-			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto,auto">
+			<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="2*,*" RowDefinitions="auto,auto,auto">
 				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="{StaticResource FontSizeXl}"/>
 				<Label Grid.Row="0" Grid.Column="1" FontSize="{StaticResource FontSizeDisplayXl}" Padding="0,-25,0,-25"
 					   Text="•"  HorizontalOptions="Start" VerticalOptions="Center" IsVisible="{Binding New}"
@@ -81,7 +81,7 @@
 		<controls:Background Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
 		<Grid ColumnDefinitions="*, *" Margin="{DynamicResource MediumMargins}">
-			<controls:SvgButton
+			<controls:SvgButton SemanticProperties.Description="{l:Localize Close}"
 					Command="{Binding GoBackCommand}"
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"

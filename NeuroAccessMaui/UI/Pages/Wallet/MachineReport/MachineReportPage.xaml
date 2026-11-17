@@ -31,6 +31,7 @@
 					<!-- A report that is one image opens where it can be zoomed and moved straight away -->
 					<controls:ZoomImageView x:Name="ZoomView"
 											Source="{Binding ReportImage}"
+											ImageDescription="{Binding Title}"
 											IsVisible="{Binding IsImageReport}"
 											Margin="12,0,12,20" />
 					<ScrollView x:Name="ReportScrollView" IsVisible="{Binding IsTextReport}">
@@ -55,7 +56,7 @@
 			  VerticalOptions="Start"
 			  InputTransparent="True"
 			  CascadeInputTransparent="False">
-			<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+			<controls:SvgButton SemanticProperties.Description="{l:Localize Close}" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 
 			<Border x:Name="TitleBox"

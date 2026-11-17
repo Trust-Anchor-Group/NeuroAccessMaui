@@ -42,7 +42,7 @@
 				</controls:CompositeEntry>
 
 				<!-- What the list is doing: looking for templates, checking for new ones, or up to date -->
-				<Label Grid.Row="2"
+				<Label controls:ScreenReader.AnnouncesChanges="True" Grid.Row="2"
 					   Margin="20,16,20,0"
 					   Style="{DynamicResource ListCardStatusLabel}"
 					   Text="{Binding TemplateStatusText}"
@@ -69,7 +69,7 @@
 																	  StrokeColor="{DynamicResource SurfaceDividerWL}" />
 											<VerticalStackLayout>
 												<!-- The template. A tap uses its newest version. -->
-												<Grid ColumnDefinitions="44,*,44"
+												<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="44,*,44"
 													  ColumnSpacing="14"
 													  Padding="16,14,6,14"
 													  MinimumHeightRequest="76"
@@ -101,7 +101,7 @@
 																					  CommandParameter="{Binding .}"
 																					  SemanticProperties.Description="{Binding ToggleDescription}">
 																<Border Style="{DynamicResource ListCardPillBorder}"
-																		HeightRequest="22"
+																		MinimumHeightRequest="22"
 																		Padding="9,0,6,0"
 																		BackgroundColor="{DynamicResource TnPInfobgWL}">
 																	<Border.Triggers>
@@ -184,7 +184,7 @@
 																		 Margin="74,0,1,0"
 																		 Color="{DynamicResource SurfaceDividerWL}"
 																		 IsVisible="{Binding ShowsDivider}" />
-																<Grid Grid.Row="1"
+																<Grid controls:ButtonRole.IsButton="True" Grid.Row="1"
 																	  ColumnDefinitions="*,Auto,Auto"
 																	  ColumnSpacing="10"
 																	  Padding="74,0,18,0"
@@ -257,7 +257,7 @@
 						</Border>
 
 						<!-- A search that matched nothing -->
-						<Label Margin="4,8,4,0"
+						<Label controls:ScreenReader.AnnouncesChanges="True" Margin="4,8,4,0"
 							   VerticalOptions="Start"
 							   Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
 							   Text="{l:Localize NoMatchingTemplates}"

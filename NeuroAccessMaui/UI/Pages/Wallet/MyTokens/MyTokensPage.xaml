@@ -226,7 +226,7 @@
 				</ScrollView>
 
 				<!-- What the list is doing: loading, searching all tokens, or how many tokens a search covers -->
-				<Label Grid.Row="2"
+				<Label controls:ScreenReader.AnnouncesChanges="True" Grid.Row="2"
 					   Margin="20,16,20,0"
 					   Style="{DynamicResource ListCardStatusLabel}"
 					   Text="{Binding TokenStatusText}"
@@ -281,7 +281,7 @@
 															 LabelData="{l:Localize LoadMore}"
 															 Command="{Binding LoadMoreTokensCommand}"
 															 IsVisible="{Binding ShowLoadMore}" />
-										<Label HorizontalOptions="Center"
+										<Label controls:ScreenReader.AnnouncesChanges="True" HorizontalOptions="Center"
 											   VerticalOptions="Center"
 											   Style="{DynamicResource ListCardStatusLabel}"
 											   Text="{l:Localize TokensLoadingMore}"
@@ -331,7 +331,7 @@
 							</VerticalStackLayout>
 
 							<!-- A search or filter that matched nothing -->
-							<Label Margin="20,16,20,0"
+							<Label controls:ScreenReader.AnnouncesChanges="True" Margin="20,16,20,0"
 								   VerticalOptions="Start"
 								   Style="{DynamicResource IdentityFlowBodySecondaryLabel}"
 								   Text="{l:Localize NoMatchingTokens}"

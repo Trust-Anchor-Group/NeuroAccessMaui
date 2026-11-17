@@ -159,7 +159,7 @@
 			</Border>
 
 			<!-- The whole flow, with what moves it on from each step -->
-			<Grid ColumnDefinitions="*,Auto"
+			<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="*,Auto"
 				  Padding="4,0"
 				  MinimumHeightRequest="48"
 				  SemanticProperties.Description="{l:Localize FlowSeeAll}">

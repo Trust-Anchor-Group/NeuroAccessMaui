@@ -2,6 +2,7 @@ using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
 
@@ -45,6 +46,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 		private const double laneStep = 14;
 		private const double minScale = 0.3;
 		private const double maxScale = 2.5;
+
+		/// <summary>
+		/// How much each tap on a zoom button, or a double-tap on the map, zooms.
+		/// </summary>
+		private const double zoomStep = 1.5;
 
 		/// <summary>
 		/// The space each arrow label sits in, centred on its arrow. A label is at most as wide as a card, and its tap area
@@ -118,6 +124,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 		private double lastPanY;
 		private bool isPinching;
 		private bool rebasePan;
+		private Point? lastPinchOrigin;
 		private bool hasFitted;
 
 		/// <summary>
@@ -131,6 +138,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 				InputTransparent = true
 			};
 
+			// The arrows' labels say what the arrows show, so screen readers skip the drawing.
+			AutomationProperties.SetIsInAccessibleTree(this.edges, false);
+
 			this.content = new AbsoluteLayout
 			{
 				AnchorX = 0,
@@ -139,10 +149,26 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 				VerticalOptions = LayoutOptions.Start
 			};
 
+			// Zooming also works with one finger or a screen reader: with these buttons, or a double-tap on the map.
+			VerticalStackLayout ZoomButtons = new()
+			{
+				Spacing = 8,
+				Margin = new Thickness(12),
+				HorizontalOptions = LayoutOptions.End,
+				VerticalOptions = LayoutOptions.End,
+				Children =
+				{
+					ZoomImageView.CreateRoundButton(null, ServiceRef.Localizer[nameof(AppResources.ZoomIn)],
+						() => this.ZoomAround(zoomStep, null), "+"),
+					ZoomImageView.CreateRoundButton(null, ServiceRef.Localizer[nameof(AppResources.ZoomOut)],
+						() => this.ZoomAround(1 / zoomStep, null), "−")
+				}
+			};
+
 			this.viewport = new Grid
 			{
 				IsClippedToBounds = true,
-				Children = { this.content }
+				Children = { this.content, ZoomButtons }
 			};
 
 			PinchGestureRecognizer Pinch = new();
@@ -152,6 +178,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 			PanGestureRecognizer Pan = new();
 			Pan.PanUpdated += this.Pan_PanUpdated;
 			this.viewport.GestureRecognizers.Add(Pan);
+
+			TapGestureRecognizer DoubleTap = new() { NumberOfTapsRequired = 2 };
+			DoubleTap.Tapped += (Sender, Args) => this.ZoomAround(zoomStep, Args.GetPosition(this.viewport));
+			this.viewport.GestureRecognizers.Add(DoubleTap);
 
 			this.viewport.SizeChanged += (Sender, Args) =>
 			{
@@ -281,26 +311,30 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 			this.content.Add(this.edges);
 			AbsoluteLayout.SetLayoutBounds(this.edges, new Rect(0, 0, this.contentWidth, this.contentHeight));
 
+			IReadOnlyList<TokenFlowEdge> Edges = this.drawable.Edges;
+			Point[] Centers = [.. Edges.Select(TokenFlowEdgeDrawable.GetLabelCenter)];
+			double[] Widths = GetLabelWidths(Centers, [.. Edges.Select(Edge => Edge.Route == TokenFlowRoute.Beside ? besideGap - 16 : nodeWidth)]);
+
+			// Each card is followed by the labels of the arrows that leave it, so a screen reader reads a step and then its
+			// ways on. Labels sit in the space between cards, so a later card doesn't cover them.
 			foreach (TokenFlowStepItem Step in Steps)
 			{
 				Border Card = this.CreateCard(Step);
 				this.cards[Step] = Card;
 				this.content.Add(Card);
 				AbsoluteLayout.SetLayoutBounds(Card, Bounds[Step.Id]);
-			}
 
-			// Labels go on top, so they can be tapped where they reach over a card.
-			IReadOnlyList<TokenFlowEdge> Edges = this.drawable.Edges;
-			Point[] Centers = [.. Edges.Select(TokenFlowEdgeDrawable.GetLabelCenter)];
-			double[] Widths = GetLabelWidths(Centers, [.. Edges.Select(Edge => Edge.Route == TokenFlowRoute.Beside ? besideGap - 16 : nodeWidth)]);
+				for (int i = 0; i < Edges.Count; i++)
+				{
+					if (Edges[i].FromStep != Step)
+						continue;
 
-			for (int i = 0; i < Edges.Count; i++)
-			{
-				EdgeLabel LabelView = this.CreateLabel(Edges[i], Widths[i]);
-				this.labels.Add(LabelView);
-				this.content.Add(LabelView.Holder);
-				AbsoluteLayout.SetLayoutBounds(LabelView.Holder,
-					new Rect(Centers[i].X - Widths[i] / 2, Centers[i].Y - labelBoxHeight / 2, Widths[i], labelBoxHeight));
+					EdgeLabel LabelView = this.CreateLabel(Edges[i], Widths[i]);
+					this.labels.Add(LabelView);
+					this.content.Add(LabelView.Holder);
+					AbsoluteLayout.SetLayoutBounds(LabelView.Holder,
+						new Rect(Centers[i].X - Widths[i] / 2, Centers[i].Y - labelBoxHeight / 2, Widths[i], labelBoxHeight));
+				}
 			}
 
 			this.content.WidthRequest = this.contentWidth;
@@ -397,9 +431,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 
 					// All ways to the same step share one arrow, so its label names each of them.
 					List<TokenFlowExit> Exits = [.. Group.Distinct()];
-					string Label = Group.Key.IsFailure
+					string Trigger = Group.Key.IsFailure
 						? ServiceRef.Localizer[nameof(AppResources.FlowIncomingFailure)]
 						: string.Join(", ", Exits.Select(Exit => TokenFlowStepItem.DescribeTrigger(Exit, Variables)).Distinct());
+
+					// Screen readers also hear where the arrow goes from and to, since they can't follow it.
+					string TargetName = Steps.FirstOrDefault(Other => Other.Id == Group.Key.Target)?.Name ?? Group.Key.Target;
+					string Label = Group.Key.Target == Step.Id
+						? ServiceRef.Localizer[nameof(AppResources.FlowArrowStaysDescription), Trigger, Step.Name]
+						: ServiceRef.Localizer[nameof(AppResources.FlowArrowDescription), Trigger, Step.Name, TargetName];
 					string ShortLabel = string.Join(", ", Exits.Select(Exit => TokenFlowStepItem.ShortTrigger(Exit, Variables)).Distinct());
 
 					(TokenFlowRoute Route, bool OnLeft, double LaneX) = GetRoute(Step.Id, Group.Key.Target, Rows, Bounds, Depths,
@@ -522,6 +562,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 				this.SelectionTapped?.Invoke(this, EventArgs.Empty);
 			};
 			Card.GestureRecognizers.Add(Tap);
+			ButtonRole.SetIsButton(Card, true);
 
 			SemanticProperties.SetDescription(Card, string.IsNullOrEmpty(Detail) ? Step.Name : Step.Name + ", " + Detail);
 
@@ -614,6 +655,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 				this.SelectionTapped?.Invoke(this, EventArgs.Empty);
 			};
 			Target.GestureRecognizers.Add(Tap);
+			ButtonRole.SetIsButton(Target, true);
 
 			SemanticProperties.SetDescription(Target, Edge.Label);
 
@@ -674,6 +716,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 				case GestureStatus.Started:
 					this.isPinching = true;
 					this.rebasePan = true;
+					this.lastPinchOrigin = null;
 					return;
 
 				case GestureStatus.Completed:
@@ -683,6 +726,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 					return;
 			}
 
+			double OriginX = e.ScaleOrigin.X * this.viewport.Width;
+			double OriginY = e.ScaleOrigin.Y * this.viewport.Height;
+			(double MoveX, double MoveY) = ZoomImageView.GetPinchMove(this.lastPinchOrigin, OriginX, OriginY);
+			this.lastPinchOrigin = new Point(OriginX, OriginY);
+
 			// Android can report a very large or small step when a finger is lifted. Such a step is not a real pinch.
 			if (e.Scale < 0.5 || e.Scale > 2)
 				return;
@@ -690,12 +738,26 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.Flow
 			double Scale = Math.Clamp(this.content.Scale * e.Scale, minScale, maxScale);
 			double Factor = Scale / this.content.Scale;
 
-			// Zoom around the point between the fingers, so it stays under them.
-			double OriginX = e.ScaleOrigin.X * this.viewport.Width;
-			double OriginY = e.ScaleOrigin.Y * this.viewport.Height;
+			// The map moves with the fingers, and zooms around the point between them, so it stays under them.
+			this.content.Scale = Scale;
+			this.MoveTo(OriginX - (OriginX - (this.content.TranslationX + MoveX)) * Factor,
+				OriginY - (OriginY - (this.content.TranslationY + MoveY)) * Factor);
+		}
+
+		/// <summary>
+		/// Zooms in or out around a point, such as where the map was double-tapped, or around the middle of the view.
+		/// </summary>
+		/// <param name="Factor">How much to zoom, above 1 to zoom in.</param>
+		/// <param name="Point">The point to zoom around, in view coordinates, or null for the middle.</param>
+		private void ZoomAround(double Factor, Point? Point)
+		{
+			double Scale = Math.Clamp(this.content.Scale * Factor, minScale, maxScale);
+			double Applied = Scale / this.content.Scale;
+			double OriginX = Point?.X ?? this.viewport.Width / 2;
+			double OriginY = Point?.Y ?? this.viewport.Height / 2;
 
 			this.content.Scale = Scale;
-			this.MoveTo(OriginX - (OriginX - this.content.TranslationX) * Factor, OriginY - (OriginY - this.content.TranslationY) * Factor);
+			this.MoveTo(OriginX - (OriginX - this.content.TranslationX) * Applied, OriginY - (OriginY - this.content.TranslationY) * Applied);
 		}
 
 		private void Pan_PanUpdated(object? Sender, PanUpdatedEventArgs e)

@@ -6,6 +6,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
@@ -264,6 +265,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 
 					BatchSize = fillBatchSize;
 				}
+
+				AnnounceLoaded(this.allTokens.Count - TokensBefore);
 			}
 			catch (Exception Ex)
 			{
@@ -277,6 +280,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			// The list was reloaded meanwhile, so the new list fills the screen now.
 			if (Generation != this.listGeneration)
 				this.FillScreen();
+		}
+
+		/// <summary>
+		/// Tells screen reader users how many tokens were added to the list, since they can't see it grow.
+		/// </summary>
+		/// <param name="Count">How many tokens were loaded.</param>
+		private static void AnnounceLoaded(int Count)
+		{
+			if (Count > 0)
+				ScreenReader.Announce(ServiceRef.Localizer[nameof(AppResources.TokensLoadedAnnouncement), Count]);
 		}
 
 		/// <summary>
@@ -850,6 +863,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 					if (!await this.LoadNextPageAsync(fillBatchSize) || Family.Members.Count > MembersBefore)
 						break;
 				}
+
+				AnnounceLoaded(this.allTokens.Count - TokensBefore);
 			}
 			catch (Exception Ex)
 			{

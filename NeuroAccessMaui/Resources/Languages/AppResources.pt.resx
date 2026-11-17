@@ -5237,6 +5237,12 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="FlowShortEntryDeleted" xml:space="preserve">
     <value>Entrada removida</value>
   </data>
+  <data name="FlowArrowDescription" xml:space="preserve">
+    <value>{0}, de {1} para {2}</value>
+  </data>
+  <data name="FlowArrowStaysDescription" xml:space="preserve">
+    <value>{0}, fica em {1}</value>
+  </data>
   <data name="FlowOr" xml:space="preserve">
     <value>Ou {0}</value>
   </data>
@@ -5690,6 +5696,9 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="TokensLoadingMore" xml:space="preserve">
     <value>Carregando mais tokens…</value>
   </data>
+  <data name="TokensLoadedAnnouncement" xml:space="preserve">
+    <value>Mais {0} tokens carregados</value>
+  </data>
   <data name="TokenFamilyCount" xml:space="preserve">
     <value>{0} tokens</value>
   </data>
@@ -5698,6 +5707,12 @@ Documento lido. Você pode mover seu iPhone.</value>
   </data>
   <data name="ShowLess" xml:space="preserve">
     <value>Mostrar menos</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Limpar</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Atualizar</value>
   </data>
   <data name="TokensEmptyHeading" xml:space="preserve">
     <value>Ainda não há tokens</value>

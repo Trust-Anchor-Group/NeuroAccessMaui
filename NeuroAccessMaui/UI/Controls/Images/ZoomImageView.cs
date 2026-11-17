@@ -29,6 +29,14 @@ namespace NeuroAccessMaui.UI.Controls
 			BindableProperty.Create(nameof(Source), typeof(ImageSource), typeof(ZoomImageView), null,
 				propertyChanged: (Bindable, OldValue, NewValue) => ((ZoomImageView)Bindable).image.Source = NewValue as ImageSource);
 
+		/// <summary>
+		/// What the image shows, read by screen readers, such as a report's title.
+		/// </summary>
+		public static readonly BindableProperty ImageDescriptionProperty =
+			BindableProperty.Create(nameof(ImageDescription), typeof(string), typeof(ZoomImageView), null,
+				propertyChanged: (Bindable, OldValue, NewValue) =>
+					SemanticProperties.SetDescription(((ZoomImageView)Bindable).image, NewValue as string));
+
 		private readonly Grid layout;
 		private readonly Grid stage;
 		private readonly Microsoft.Maui.Controls.Image image;
@@ -42,6 +50,7 @@ namespace NeuroAccessMaui.UI.Controls
 		private double lastPanY;
 		private bool isPinching;
 		private bool rebasePan;
+		private Point? lastPinchOrigin;
 
 		/// <summary>
 		/// Creates the view.
@@ -182,6 +191,15 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
+		/// What the image shows, read by screen readers, such as a report's title.
+		/// </summary>
+		public string? ImageDescription
+		{
+			get => (string?)this.GetValue(ImageDescriptionProperty);
+			set => this.SetValue(ImageDescriptionProperty, value);
+		}
+
+		/// <summary>
 		/// Fits the whole image in view again.
 		/// </summary>
 		public void Fit()
@@ -241,6 +259,7 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 			Button.SetDynamicResource(VisualElement.BackgroundColorProperty, "SurfaceElevation2WL");
 			SemanticProperties.SetDescription(Button, Description);
+			ButtonRole.SetIsButton(Button, true);
 			AddTap(Button, OnTap);
 
 			return Button;
@@ -272,6 +291,7 @@ namespace NeuroAccessMaui.UI.Controls
 				Content = FitLabel
 			};
 			FitButton.SetDynamicResource(VisualElement.BackgroundColorProperty, "ButtonAccessPrimarybgWL");
+			ButtonRole.SetIsButton(FitButton, true);
 			AddTap(FitButton, this.Fit);
 
 			Border Bar = new()
@@ -318,6 +338,7 @@ namespace NeuroAccessMaui.UI.Controls
 				case GestureStatus.Started:
 					this.isPinching = true;
 					this.rebasePan = true;
+					this.lastPinchOrigin = null;
 					return;
 
 				case GestureStatus.Completed:
@@ -327,6 +348,12 @@ namespace NeuroAccessMaui.UI.Controls
 					return;
 			}
 
+			// The point between the fingers, relative to the middle of the image's area.
+			double OriginX = (e.ScaleOrigin.X - 0.5) * this.stage.Width;
+			double OriginY = (e.ScaleOrigin.Y - 0.5) * this.stage.Height;
+			(double MoveX, double MoveY) = GetPinchMove(this.lastPinchOrigin, OriginX, OriginY);
+			this.lastPinchOrigin = new Point(OriginX, OriginY);
+
 			// Android can report a very large or small step when a finger is lifted. Such a step is not a real pinch.
 			if (e.Scale < 0.5 || e.Scale > 2)
 				return;
@@ -334,13 +361,29 @@ namespace NeuroAccessMaui.UI.Controls
 			double Scale = Math.Clamp(this.image.Scale * e.Scale, minScale, maxScale);
 			double Factor = Scale / this.image.Scale;
 
-			// Zoom around the point between the fingers, so it stays under them.
-			double OriginX = (e.ScaleOrigin.X - 0.5) * this.stage.Width;
-			double OriginY = (e.ScaleOrigin.Y - 0.5) * this.stage.Height;
-
+			// The image moves with the fingers, and zooms around the point between them, so it stays under them.
 			this.SetZoom(Scale,
-				OriginX - (OriginX - this.image.TranslationX) * Factor,
-				OriginY - (OriginY - this.image.TranslationY) * Factor);
+				OriginX - (OriginX - (this.image.TranslationX + MoveX)) * Factor,
+				OriginY - (OriginY - (this.image.TranslationY + MoveY)) * Factor);
+		}
+
+		/// <summary>
+		/// Gets how far the point between two pinching fingers moved since the last report, so the content can move with
+		/// them. A jump, such as when a finger is lifted, doesn't count.
+		/// </summary>
+		/// <param name="Last">Where the point was at the last report, or null at the first.</param>
+		/// <param name="X">Where the point is now, across.</param>
+		/// <param name="Y">Where the point is now, down.</param>
+		/// <returns>How far it moved.</returns>
+		public static (double X, double Y) GetPinchMove(Point? Last, double X, double Y)
+		{
+			if (Last is not Point Previous)
+				return (0, 0);
+
+			double MoveX = X - Previous.X;
+			double MoveY = Y - Previous.Y;
+
+			return Math.Abs(MoveX) > maxPanStep || Math.Abs(MoveY) > maxPanStep ? (0, 0) : (MoveX, MoveY);
 		}
 
 		private void Pan_PanUpdated(object? Sender, PanUpdatedEventArgs e)

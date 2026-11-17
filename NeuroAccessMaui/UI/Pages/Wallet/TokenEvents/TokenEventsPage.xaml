@@ -527,7 +527,7 @@
 										   TextColor="{DynamicResource ContentSecondaryWL}" />
 									<!-- Chips that narrow the history to a kind of event -->
 									<HorizontalStackLayout Spacing="8">
-										<Grid MinimumHeightRequest="48"
+										<Grid controls:ButtonRole.IsButton="True" MinimumHeightRequest="48"
 											  MinimumWidthRequest="48">
 											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
@@ -556,7 +556,7 @@
 												</Label>
 											</Border>
 										</Grid>
-										<Grid MinimumHeightRequest="48"
+										<Grid controls:ButtonRole.IsButton="True" MinimumHeightRequest="48"
 											  MinimumWidthRequest="48">
 											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
@@ -585,7 +585,7 @@
 												</Label>
 											</Border>
 										</Grid>
-										<Grid MinimumHeightRequest="48"
+										<Grid controls:ButtonRole.IsButton="True" MinimumHeightRequest="48"
 											  MinimumWidthRequest="48">
 											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"
@@ -614,7 +614,7 @@
 												</Label>
 											</Border>
 										</Grid>
-										<Grid MinimumHeightRequest="48"
+										<Grid controls:ButtonRole.IsButton="True" MinimumHeightRequest="48"
 											  MinimumWidthRequest="48">
 											<Grid.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding SelectFilterCommand}"

@@ -20,7 +20,7 @@
 
 		<DataTemplate x:Key="PendingPaymentTemplate"
 					  x:DataType="objectmodel:PendingPaymentItem">
-			<Grid ColumnDefinitions="2*,*"
+			<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="2*,*"
 				  RowDefinitions="auto,auto">
 				<Label Grid.Column="0"
 					   Grid.Row="0"
@@ -64,7 +64,7 @@
 
 		<DataTemplate x:Key="AccountEventTemplate"
 					  x:DataType="objectmodel:AccountEventItem">
-			<Grid ColumnDefinitions="2*,*"
+			<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="2*,*"
 				  RowDefinitions="auto,auto,auto">
 				<Label Grid.Column="0"
 					   Grid.Row="0"
@@ -153,7 +153,7 @@
 			  ColumnDefinitions="auto,*,auto">
 
 			<!--
-			<controls:SvgButton Command="{Binding GoBackCommand}"
+			<controls:SvgButton SemanticProperties.Description="{l:Localize Close}" Command="{Binding GoBackCommand}"
 								SvgSource="close.svg"
 								Style="{DynamicResource IconButton}"/>
 			-->

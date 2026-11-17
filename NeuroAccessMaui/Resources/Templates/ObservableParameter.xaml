@@ -431,7 +431,7 @@
 								   LineBreakMode="TailTruncation"
 								   MaxLines="1" />
 						</VerticalStackLayout>
-						<Label Grid.Column="2"
+						<Label controls:ButtonRole.IsButton="True" Grid.Column="2"
 							   Text="{l:Localize Change}"
 							   FontFamily="HaasGroteskMedium"
 							   FontSize="{StaticResource FontSizeSm}"
@@ -449,7 +449,7 @@
 				</Border>
 
 				<!-- Nothing chosen yet: a dashed row to choose one -->
-				<Border StrokeShape="RoundRectangle 12"
+				<Border controls:ButtonRole.IsButton="True" StrokeShape="RoundRectangle 12"
 						StrokeThickness="1"
 						StrokeDashArray="4,3"
 						Stroke="{DynamicResource InputFieldsSurfaceStroke}"
@@ -481,7 +481,7 @@
 						   Style="{DynamicResource ParameterHintLabel}"
 						   VerticalOptions="Center"
 						   IsVisible="{Binding IsOptional}" />
-					<Label Text="{l:Localize ParameterPasteId}"
+					<Label controls:ButtonRole.IsButton="True" Text="{l:Localize ParameterPasteId}"
 						   FontFamily="HaasGroteskMedium"
 						   FontSize="{StaticResource FontSizeSm}"
 						   TextColor="{DynamicResource ContentAccessWL}"
@@ -520,7 +520,7 @@
 										  IsTransient="{Binding IsTransient}" />
 
 				<!-- The place on a map, with the allowed area dashed. Tapping it opens the map to pick the place. -->
-				<Border StrokeShape="RoundRectangle 12"
+				<Border controls:ButtonRole.IsButton="True" StrokeShape="RoundRectangle 12"
 						StrokeThickness="0"
 						HeightRequest="170"
 						IsVisible="{Binding HasMap}">
@@ -589,7 +589,7 @@
 		 value that opens a contract or a place is a link. -->
 	<DataTemplate x:Key="ParameterRowTemplate"
 				  x:DataType="objectModel:ObservableParameter">
-		<Grid ColumnDefinitions="4*,6*"
+		<Grid controls:ButtonRole.IsButton="True" ColumnDefinitions="4*,6*"
 			  ColumnSpacing="12"
 			  Padding="16,12"
 			  MinimumHeightRequest="48"
@@ -718,7 +718,7 @@
 							   FontSize="11"
 							   TextColor="{DynamicResource ContentAccessWL}" />
 					</Border>
-					<Label Text="{l:Localize ParameterOpenMap}"
+					<Label controls:ButtonRole.IsButton="True" Text="{l:Localize ParameterOpenMap}"
 						   FontFamily="HaasGroteskMedium"
 						   FontSize="13"
 						   TextColor="{DynamicResource ContentAccessWL}"

@@ -39,12 +39,12 @@
 				IsVisible="{Binding HasParameterFixes}">
 			<Grid ColumnDefinitions="*,Auto"
 				  ColumnSpacing="{DynamicResource SmallSpacing}">
-				<Label Grid.Column="0"
+				<Label controls:ScreenReader.AnnouncesChanges="True" Grid.Column="0"
 					   Text="{Binding ParameterFixText}"
 					   TextColor="{DynamicResource TnPDangerContentWL}"
 					   FontSize="{StaticResource FontSizeMd}"
 					   VerticalOptions="Center" />
-				<Label Grid.Column="1"
+				<Label controls:ButtonRole.IsButton="True" Grid.Column="1"
 					   Text="{l:Localize ParameterFixShow}"
 					   TextColor="{DynamicResource TnPDangerContentWL}"
 					   FontFamily="SpaceGroteskSemiBold"

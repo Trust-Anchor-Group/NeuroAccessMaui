@@ -71,7 +71,7 @@
 								HorizontalOptions="Start"
 								Padding="9,0,6,0"
 								Margin="0,0,8,0"
-								HeightRequest="22"
+								MinimumHeightRequest="22"
 								Style="{DynamicResource ListCardPillBorder}"
 								BackgroundColor="{DynamicResource TnPInfobgWL}">
 							<Border.Triggers>

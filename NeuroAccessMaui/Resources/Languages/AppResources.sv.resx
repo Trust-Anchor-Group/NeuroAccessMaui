@@ -5237,6 +5237,12 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="FlowShortEntryDeleted" xml:space="preserve">
     <value>Post borttagen</value>
   </data>
+  <data name="FlowArrowDescription" xml:space="preserve">
+    <value>{0}, från {1} till {2}</value>
+  </data>
+  <data name="FlowArrowStaysDescription" xml:space="preserve">
+    <value>{0}, stannar i {1}</value>
+  </data>
   <data name="FlowOr" xml:space="preserve">
     <value>Eller {0}</value>
   </data>
@@ -5690,6 +5696,9 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="TokensLoadingMore" xml:space="preserve">
     <value>Laddar fler token…</value>
   </data>
+  <data name="TokensLoadedAnnouncement" xml:space="preserve">
+    <value>{0} token till har laddats</value>
+  </data>
   <data name="TokenFamilyCount" xml:space="preserve">
     <value>{0} token</value>
   </data>
@@ -5698,6 +5707,12 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   </data>
   <data name="ShowLess" xml:space="preserve">
     <value>Visa färre</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Rensa</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Uppdatera</value>
   </data>
   <data name="TokensEmptyHeading" xml:space="preserve">
     <value>Inga token än</value>

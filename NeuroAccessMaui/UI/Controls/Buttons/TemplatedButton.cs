@@ -25,6 +25,9 @@ namespace NeuroAccessMaui.UI.Controls
 			this.MinimumHeightRequest = MinimumTouchSize;
 			this.MinimumWidthRequest = MinimumTouchSize;
 
+			// Screen readers say "button" for it.
+			ButtonRole.SetIsButton(this, true);
+
 			TapGestureRecognizer TapRecognizer = new();
 			TapRecognizer.Tapped += this.OnTapped;
 			this.GestureRecognizers.Add(TapRecognizer);

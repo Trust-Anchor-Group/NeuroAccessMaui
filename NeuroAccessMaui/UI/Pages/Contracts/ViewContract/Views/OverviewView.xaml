@@ -672,7 +672,7 @@
 									  ColumnSpacing="12">
 									<Label Style="{StaticResource RowKeyLabel}"
 										   Text="{l:Localize ContractId}" />
-									<Label Grid.Column="1"
+									<Label controls:ButtonRole.IsButton="True" Grid.Column="1"
 										   LineBreakMode="CharacterWrap"
 										   Style="{StaticResource RowValueLabel}"
 										   Text="{Binding Contract.ContractId}">
@@ -692,7 +692,7 @@
 										   Text="{Binding Visibility}" />
 								</Grid>
 
-								<Image x:Name="QrCode"
+								<Image controls:ButtonRole.IsButton="True" x:Name="QrCode"
 									   HorizontalOptions="Center"
 									   HeightRequest="{Binding QrCodeHeight}"
 									   WidthRequest="{Binding QrCodeWidth}"

@@ -46,7 +46,7 @@ namespace NeuroAccessMaui.UI.Popups.Images
 				HorizontalOptions = LayoutOptions.Start
 			};
 			this.header = this.CreateHeader();
-			this.zoomView = new ZoomImageView { Source = Source };
+			this.zoomView = new ZoomImageView { Source = Source, ImageDescription = this.title };
 
 			this.layout = new Grid
 			{
