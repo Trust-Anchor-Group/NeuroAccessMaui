@@ -106,6 +106,10 @@ namespace NeuroAccessMaui.UI.Popups
 			AbsoluteLayout.SetLayoutFlags(this.popupContainer, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None);
 			this.root.Children.Add(this.popupContainer);
 
+			// The popup's place is worked out from its content's size, so it is worked out again when the content changes
+			// size, such as when values or editors arrive after the popup is shown.
+			this.popupContainer.MeasureInvalidated += this.PopupContainer_MeasureInvalidated;
+
 			base.Content = this.root;
 		}
 
@@ -259,6 +263,14 @@ namespace NeuroAccessMaui.UI.Popups
 			}
 
 			this.BackgroundTapped?.Invoke(this, EventArgs.Empty);
+		}
+
+		/// <summary>
+		/// Places the popup again when its content changes size.
+		/// </summary>
+		private void PopupContainer_MeasureInvalidated(object? Sender, EventArgs e)
+		{
+			this.UpdatePopupLayout(this.Width, this.Height);
 		}
 
 		private void UpdatePopupLayout(double width, double height)

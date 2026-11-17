@@ -1,10 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Text;
+using System.Web;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Converters;
@@ -20,15 +25,12 @@ using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Pages.Wallet.XmlViewer;
+using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.UI.Popups.Tokens.NoteCommand;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.NoteCommands;
 using NeuroFeatures.Tags;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Text;
-using System.Web;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -1001,7 +1003,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			NoteCommandViewModel ViewModel = new(Item, TokenId);
 			await ViewModel.LoadAsync();
-			await ServiceRef.PopupService.PushAsync(new NoteCommandPopup(ViewModel));
+			// The popup service places popups by these options, so the sheet asks to rise from the bottom edge here.
+			PopupOptions Options = new()
+			{
+				Placement = PopupPlacement.Bottom,
+				ShowTransition = PopupTransition.SlideUp
+			};
+
+			await ServiceRef.PopupService.PushAsync(new NoteCommandPopup(ViewModel), Options);
 			await ViewModel.Result;
 		}
 

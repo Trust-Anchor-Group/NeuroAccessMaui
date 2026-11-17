@@ -41,7 +41,10 @@
 
     <!-- Like the other popups, the scroll view is centered, so it is as tall as its content instead of the sheet's
          highest. -->
-    <ScrollView VerticalOptions="Center">
+    <!-- The shell keeps the sheet clear of the system bars, so the scroll view adds no room for them. Without this, it
+         adds room for the status bar while the sheet slides in, which pushes the button out of the sheet. -->
+    <ScrollView VerticalOptions="Center"
+                SafeAreaEdges="None">
         <VerticalStackLayout Spacing="18">
             <!-- The command's name and what it does, with a close button -->
             <Grid ColumnDefinitions="*,44"

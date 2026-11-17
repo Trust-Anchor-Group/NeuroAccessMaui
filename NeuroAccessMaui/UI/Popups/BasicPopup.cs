@@ -162,6 +162,31 @@ namespace NeuroAccessMaui.UI.Popups
 
 		private void OnSizeChanged(object? sender, System.EventArgs e) => this.UpdateCardSizing();
 
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? PropertyName = null)
+		{
+			base.OnPropertyChanged(PropertyName);
+
+			if (PropertyName == nameof(this.Placement))
+				this.cardFrame.VerticalOptions = GetCardAlignment(this.Placement);
+		}
+
+		/// <summary>
+		/// Gets where the card sits in the popup's area: against the edge it is placed at. The area can be taller than the
+		/// card, so a sheet placed at the bottom would otherwise float in the middle of the screen.
+		/// </summary>
+		/// <param name="Placement">Where the popup is placed.</param>
+		/// <returns>The card's vertical alignment.</returns>
+		private static LayoutOptions GetCardAlignment(PopupPlacement Placement)
+		{
+			return Placement switch
+			{
+				PopupPlacement.Bottom or PopupPlacement.BottomLeft or PopupPlacement.BottomRight => LayoutOptions.End,
+				PopupPlacement.Top or PopupPlacement.TopLeft or PopupPlacement.TopRight => LayoutOptions.Start,
+				_ => LayoutOptions.Center
+			};
+		}
+
 		private void UpdateCardSizing()
 		{
 			if (this.Width <= 0 || this.Height <= 0)
