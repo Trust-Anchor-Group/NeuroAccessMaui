@@ -89,9 +89,14 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 
 		private async Task RenderFootnotes()
 		{
+			// A text without footnotes has no footnote order.
+			IEnumerable<string>? Order = this.document.FootnoteOrder;
+			if (Order is null)
+				return;
+
 			List<MdFootnote> Items = [];
 
-			foreach (string Key in this.document.FootnoteOrder)
+			foreach (string Key in Order)
 			{
 				if (!this.document.TryGetFootnoteNumber(Key, out int Number) ||
 					!this.document.TryGetFootnote(Key, out Footnote Note) ||
