@@ -23,12 +23,12 @@ namespace NeuroAccessMaui.UI.Controls
 
 			// 1) Create underlying Map and add OSM raster tile layer
 			Map map = new Map();
-			map.Layers.Add(OpenStreetMap.CreateTileLayer());                   // :contentReference[oaicite:4]{index=4}
+			map.Layers.Add(OpenStreetMap.CreateTileLayer());
 			/*
 			// 2) Register custom style renderer
 			this.mapControl.S
 			this.mapControl.Renderer.StyleRenderers
-					  .Add(typeof(DataUriStyle), new DataUriStyleRenderer()); // :contentReference[oaicite:5]{index=5}
+					  .Add(typeof(DataUriStyle), new DataUriStyleRenderer());
 			*/
 			this.mapControl.Map = map;
 
@@ -134,7 +134,7 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			this.Map.Navigator.RotationLock = this.LockRotation;
 			this.Map.Navigator.PanLock = this.LockPan;
-			this.Map.Navigator.ZoomLock = this.LockZoom;                         // :contentReference[oaicite:11]{index=11}
+			this.Map.Navigator.ZoomLock = this.LockZoom;
 		}
 
 		#endregion
