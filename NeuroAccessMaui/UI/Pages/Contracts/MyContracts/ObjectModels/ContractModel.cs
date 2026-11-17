@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Text;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
-using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Converters;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
@@ -17,7 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 	/// <summary>
 	/// The data model for a row in the list of contracts or templates.
 	/// </summary>
-	public class ContractModel : IUniqueItem, INotifyPropertyChanged
+	public class ContractModel : IUniqueItem, INotifyPropertyChanged, IListCardItem
 	{
 		private readonly string contractId;
 		private ContractReference contractRef;
@@ -262,6 +264,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public bool IsUnread => this.contractRef.IsUnread;
 
 		/// <summary>
+		/// When the contract was created, as a local date and time. It tells contracts with the same name apart.
+		/// </summary>
+		public string CreatedText
+		{
+			get
+			{
+				DateTime Created = this.contractRef.Created;
+				if (Created == DateTime.MinValue)
+					return string.Empty;
+
+				DateTime Local = Created.Kind switch
+				{
+					DateTimeKind.Local => Created,
+					DateTimeKind.Utc => Created.ToLocalTime(),
+					_ => DateTime.SpecifyKind(Created, DateTimeKind.Utc).ToLocalTime()
+				};
+
+				return Local.ToString("g", CultureInfo.CurrentCulture);
+			}
+		}
+
+		/// <summary>
 		/// A short marker saying what the user needs to do: "Invitation" or "Needs your signature".
 		/// </summary>
 		public string MarkerText
@@ -282,6 +306,67 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// If there is a marker to show.
 		/// </summary>
 		public bool HasMarker => !string.IsNullOrEmpty(this.MarkerText);
+
+		/// <summary>
+		/// The pill on the row: what the user needs to do, or how an ended contract ended.
+		/// </summary>
+		public string PillText => this.HasMarker
+			? this.MarkerText
+			: this.Group == ContractListGroup.Ended ? this.StateText : string.Empty;
+
+		/// <summary>
+		/// If the row has a pill.
+		/// </summary>
+		public bool HasPill => this.PillText.Length > 0;
+
+		/// <summary>
+		/// The line under the title: the other parties by name, else the user's role, else the state. Parties known only by
+		/// their ID are left out, since an ID says nothing to the user.
+		/// </summary>
+		public string DetailText
+		{
+			get
+			{
+				string Names = string.Join(", ", this.PartyNames
+					.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+					.Where(Name => !(Name.Contains('@') && !Name.Contains(' '))));
+
+				if (Names.Length > 0)
+					return Names;
+
+				if (this.HasMyRole)
+					return this.MyRoleText;
+
+				return this.Group == ContractListGroup.Ended ? string.Empty : this.StateText;
+			}
+		}
+
+		/// <summary>
+		/// The first letter of the contract's name, shown on the tile in front of a template.
+		/// </summary>
+		public string Monogram
+		{
+			get
+			{
+				string Name = this.DisplayName.Trim();
+				return Name.Length == 0 ? "?" : char.ToUpper(Name[0], CultureInfo.CurrentCulture).ToString();
+			}
+		}
+
+		/// <inheritdoc/>
+		public ListCardPosition CardPosition
+		{
+			get => this.cardPosition;
+			set
+			{
+				if (this.cardPosition == value)
+					return;
+
+				this.cardPosition = value;
+				this.OnPropertyChanged(nameof(this.CardPosition));
+			}
+		}
+		private ListCardPosition cardPosition;
 
 		/// <summary>
 		/// Replaces the stored contract the row shows, and updates every displayed value.

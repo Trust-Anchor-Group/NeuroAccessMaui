@@ -4826,6 +4826,9 @@ Document read. You can move your iPhone.</value>
   <data name="ContractPickerEmptyHint" xml:space="preserve">
     <value>Create one and get it signed first, then come back and pick it.</value>
   </data>
+  <data name="ContractFamilyCount" xml:space="preserve">
+    <value>{0} contracts</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Show</value>
   </data>

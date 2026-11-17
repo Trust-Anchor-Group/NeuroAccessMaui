@@ -524,7 +524,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					// Removed, or deleted on the server without a kept copy.
 					if (Row is not null && OldGroup is not null)
 					{
-						OldGroup.Remove(Row);
+						OldGroup.RemoveContract(Row);
 						OldGroup.LoadedCount = Math.Max(0, OldGroup.LoadedCount - 1);
 
 						if (OldGroup.Count == 0 && OldGroup.HasMore)
@@ -548,7 +548,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 					if (Row is not null && OldGroup is not null)
 					{
-						OldGroup.Remove(Row);
+						OldGroup.RemoveContract(Row);
 						OldGroup.LoadedCount = Math.Max(0, OldGroup.LoadedCount - 1);
 						Row.Update(Ref);
 					}
@@ -828,6 +828,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			{
 				this.loadLock.Release();
 			}
+		}
+
+		/// <summary>
+		/// Unfolds or folds contracts with the same name in the inbox.
+		/// </summary>
+		/// <param name="Parameter">The folded row.</param>
+		[RelayCommand]
+		private void ToggleFamily(object? Parameter)
+		{
+			if (Parameter is ContractFamilyModel Family)
+				Family.IsExpanded = !Family.IsExpanded;
 		}
 
 		/// <summary>

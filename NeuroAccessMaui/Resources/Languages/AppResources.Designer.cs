@@ -14557,6 +14557,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} contracts.
+        /// </summary>
+        public static string ContractFamilyCount {
+            get {
+                return ResourceManager.GetString("ContractFamilyCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show.
         /// </summary>
         public static string ContractShowDetails {

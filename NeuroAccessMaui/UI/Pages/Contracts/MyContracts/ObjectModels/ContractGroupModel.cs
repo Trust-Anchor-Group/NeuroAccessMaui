@@ -4,14 +4,19 @@ using System.Globalization;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 {
 	/// <summary>
 	/// One group of the contracts inbox. Holds the loaded rows, contract requests first and then contracts sorted by last change.
+	/// In the groups where nothing waits for the user, Active and Ended, contracts with the same name fold into one row.
 	/// </summary>
 	public class ContractGroupModel : ObservableCollection<object>
 	{
+		private readonly List<ContractPetitionModel> petitions = [];
+		private readonly List<ContractModel> contracts = [];
+		private readonly Dictionary<string, ContractFamilyModel> families = new(StringComparer.CurrentCultureIgnoreCase);
 		private bool hasMore;
 
 		/// <summary>
@@ -36,12 +41,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public string Title { get; }
 
 		/// <summary>
-		/// The heading of the group, with how many rows it has, such as "Needs you · 2". A "+" shows that more can be loaded.
+		/// If contracts with the same name fold into one row: only where nothing waits for the user.
 		/// </summary>
-		public string HeaderText => this.Count == 0
+		public bool FoldsSimilar => this.Group is ContractListGroup.Signed or ContractListGroup.Ended;
+
+		/// <summary>
+		/// How many contracts and requests the group holds, folded or not.
+		/// </summary>
+		public int ItemCount => this.petitions.Count + this.contracts.Count;
+
+		/// <summary>
+		/// The heading of the group, with how many contracts it has, such as "Needs you · 2". A "+" shows that more can be
+		/// loaded.
+		/// </summary>
+		public string HeaderText => this.ItemCount == 0
 			? this.Title
 			: ServiceRef.Localizer[nameof(AppResources.ContractGroupHeader), this.Title,
-				this.HasMore ? this.Count.ToString(CultureInfo.CurrentCulture) + "+" : this.Count.ToString(CultureInfo.CurrentCulture)];
+				this.HasMore ? this.ItemCount.ToString(CultureInfo.CurrentCulture) + "+" : this.ItemCount.ToString(CultureInfo.CurrentCulture)];
+
+		/// <inheritdoc/>
+		protected override void OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			base.OnCollectionChanged(e);
+
+			// The rows of a group are drawn as one card.
+			ListCard.UpdatePositions(this);
+		}
 
 		/// <inheritdoc/>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -74,7 +99,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		}
 
 		/// <summary>
-		/// Finds the row of a contract.
+		/// Finds the row of a contract, also when it is folded with others.
 		/// </summary>
 		/// <param name="ContractId">The contract ID.</param>
 		/// <returns>The row, or null if the contract isn't in this group.</returns>
@@ -83,13 +108,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			if (string.IsNullOrEmpty(ContractId))
 				return null;
 
-			foreach (object Item in this)
-			{
-				if (Item is ContractModel Model && string.Equals(Model.ContractId, ContractId, StringComparison.OrdinalIgnoreCase))
-					return Model;
-			}
-
-			return null;
+			return this.contracts.FirstOrDefault(Model => string.Equals(Model.ContractId, ContractId, StringComparison.OrdinalIgnoreCase));
 		}
 
 		/// <summary>
@@ -99,28 +118,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <param name="References">The stored contracts, sorted by last change.</param>
 		public void SetContracts(IReadOnlyList<ContractReference> References)
 		{
-			List<ContractModel> Current = [.. this.OfType<ContractModel>()];
-
-			bool Same = Current.Count == References.Count;
-			for (int i = 0; Same && i < Current.Count; i++)
+			bool Same = this.contracts.Count == References.Count;
+			for (int i = 0; Same && i < this.contracts.Count; i++)
 			{
-				if (!string.Equals(Current[i].ContractId, References[i].ContractId?.Value, StringComparison.OrdinalIgnoreCase))
+				if (!string.Equals(this.contracts[i].ContractId, References[i].ContractId?.Value, StringComparison.OrdinalIgnoreCase))
 					Same = false;
 			}
 
 			if (Same)
 			{
-				for (int i = 0; i < Current.Count; i++)
-					Current[i].Update(References[i]);
+				for (int i = 0; i < this.contracts.Count; i++)
+					this.contracts[i].Update(References[i]);
+			}
+			else
+			{
+				this.contracts.Clear();
 
-				return;
+				foreach (ContractReference Ref in References)
+					this.contracts.Add(new ContractModel(Ref));
 			}
 
-			foreach (ContractModel Model in Current)
-				this.Remove(Model);
-
-			foreach (ContractReference Ref in References)
-				this.Add(new ContractModel(Ref));
+			this.Rebuild();
 		}
 
 		/// <summary>
@@ -132,8 +150,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			foreach (ContractReference Ref in References)
 			{
 				if (this.FindContract(Ref.ContractId?.Value) is null)
-					this.Add(new ContractModel(Ref));
+					this.contracts.Add(new ContractModel(Ref));
 			}
+
+			this.Rebuild();
 		}
 
 		/// <summary>
@@ -142,23 +162,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <param name="Petitions">The pending requests, newest first.</param>
 		public void SetPetitions(IReadOnlyList<ContractPetitionModel> Petitions)
 		{
-			List<ContractPetitionModel> Current = [.. this.OfType<ContractPetitionModel>()];
-
-			bool Same = Current.Count == Petitions.Count;
-			for (int i = 0; Same && i < Current.Count; i++)
+			bool Same = this.petitions.Count == Petitions.Count;
+			for (int i = 0; Same && i < this.petitions.Count; i++)
 			{
-				if (!string.Equals(Current[i].RecordId, Petitions[i].RecordId, StringComparison.Ordinal))
+				if (!string.Equals(this.petitions[i].RecordId, Petitions[i].RecordId, StringComparison.Ordinal))
 					Same = false;
 			}
 
 			if (Same)
 				return;
 
-			foreach (ContractPetitionModel Model in Current)
-				this.Remove(Model);
-
-			for (int i = 0; i < Petitions.Count; i++)
-				this.Insert(i, Petitions[i]);
+			this.petitions.Clear();
+			this.petitions.AddRange(Petitions);
+			this.Rebuild();
 		}
 
 		/// <summary>
@@ -172,21 +188,98 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			DateTime Changed = Model.ContractRef.LastChanged;
 			int Index = 0;
 
-			while (Index < this.Count)
-			{
-				object Item = this[Index];
-
-				if (Item is ContractModel Other && Other.ContractRef.LastChanged <= Changed)
-					break;
-
+			while (Index < this.contracts.Count && this.contracts[Index].ContractRef.LastChanged > Changed)
 				Index++;
-			}
 
-			if (Index >= this.Count && this.HasMore)
+			if (Index >= this.contracts.Count && this.HasMore)
 				return false;
 
-			this.Insert(Index, Model);
+			this.contracts.Insert(Index, Model);
+			this.Rebuild();
 			return true;
+		}
+
+		/// <summary>
+		/// Removes a contract row, also when it is folded with others.
+		/// </summary>
+		/// <param name="Model">The row.</param>
+		public void RemoveContract(ContractModel Model)
+		{
+			if (this.contracts.Remove(Model))
+				this.Rebuild();
+		}
+
+		/// <summary>
+		/// Shows the requests and contracts, folding contracts with the same name where the group allows it. Rows that stay
+		/// are kept and moved, so the list doesn't flash, and a folded row stays open or closed.
+		/// </summary>
+		private void Rebuild()
+		{
+			List<object> Rows = [.. this.petitions];
+
+			if (this.FoldsSimilar)
+			{
+				Dictionary<string, List<ContractModel>> ByName = new(StringComparer.CurrentCultureIgnoreCase);
+				List<string> Order = [];
+
+				foreach (ContractModel Contract in this.contracts)
+				{
+					string Name = Contract.DisplayName;
+
+					if (!ByName.TryGetValue(Name, out List<ContractModel>? Members))
+					{
+						Members = [];
+						ByName[Name] = Members;
+						Order.Add(Name);
+					}
+
+					Members.Add(Contract);
+				}
+
+				Dictionary<string, ContractFamilyModel> Kept = new(StringComparer.CurrentCultureIgnoreCase);
+
+				foreach (string Name in Order)
+				{
+					List<ContractModel> Members = ByName[Name];
+
+					if (Members.Count == 1)
+					{
+						Rows.Add(Members[0]);
+						continue;
+					}
+
+					if (!this.families.TryGetValue(Name, out ContractFamilyModel? Family))
+						Family = new ContractFamilyModel(Name);
+
+					Family.Members = Members;
+					Kept[Name] = Family;
+					Rows.Add(Family);
+				}
+
+				this.families.Clear();
+				foreach (KeyValuePair<string, ContractFamilyModel> Pair in Kept)
+					this.families[Pair.Key] = Pair.Value;
+			}
+			else
+				Rows.AddRange(this.contracts);
+
+			for (int i = 0; i < Rows.Count; i++)
+			{
+				if (i < this.Count && ReferenceEquals(this[i], Rows[i]))
+					continue;
+
+				int Found = this.IndexOf(Rows[i]);
+
+				if (Found > i)
+					this.Move(Found, i);
+				else
+					this.Insert(i, Rows[i]);
+			}
+
+			while (this.Count > Rows.Count)
+				this.RemoveAt(this.Count - 1);
+
+			base.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.HeaderText)));
 		}
 	}
 }

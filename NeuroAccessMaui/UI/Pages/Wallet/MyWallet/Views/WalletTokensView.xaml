@@ -61,10 +61,13 @@
 
 			<controls:TaskView.SucceededView>
 				<VerticalStackLayout Spacing="8">
-					<VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding RecentTokens}">
+					<!-- The tokens as one card, like My tokens -->
+					<VerticalStackLayout Spacing="0"
+										 controls:ListCard.IsEnabled="True"
+										 BindableLayout.ItemsSource="{Binding RecentTokens}">
 						<BindableLayout.ItemTemplate>
 							<DataTemplate x:DataType="objectmodel:TokenItem">
-								<tokenviews:TokenRowView />
+								<tokenviews:TokenListRowView />
 							</DataTemplate>
 						</BindableLayout.ItemTemplate>
 					</VerticalStackLayout>

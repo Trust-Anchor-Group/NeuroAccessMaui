@@ -4,19 +4,20 @@
 					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
 					  xmlns:tokenviews="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens.Views"
 					  IsVisible="False">
 	<VerticalStackLayout Spacing="8">
 		<Label Text="{l:Localize TokensCreatedByContract}"
-			   Style="{DynamicResource SectionTitleLabel}"
-			   SemanticProperties.HeadingLevel="Level2" />
-		<!-- The tokens are set from code, once they have loaded -->
+			   Style="{DynamicResource ListCardSectionLabel}" />
+		<!-- The tokens are set from code, once they have loaded. They are drawn as one card, like My tokens. -->
 		<VerticalStackLayout x:Name="TokenList"
-							 Spacing="8">
+							 Spacing="0"
+							 controls:ListCard.IsEnabled="True">
 			<BindableLayout.ItemTemplate>
 				<DataTemplate x:DataType="objectmodel:TokenItem">
-					<tokenviews:TokenRowView />
+					<tokenviews:TokenListRowView />
 				</DataTemplate>
 			</BindableLayout.ItemTemplate>
 		</VerticalStackLayout>

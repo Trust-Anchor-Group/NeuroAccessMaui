@@ -4907,6 +4907,9 @@ Documento lido. Você pode mover seu iPhone.</value>
   <data name="ContractPickerEmptyHint" xml:space="preserve">
     <value>Primeiro crie um e faça com que seja assinado; depois volte e escolha-o.</value>
   </data>
+  <data name="ContractFamilyCount" xml:space="preserve">
+    <value>{0} contratos</value>
+  </data>
   <data name="ContractShowDetails" xml:space="preserve">
     <value>Mostrar</value>
   </data>

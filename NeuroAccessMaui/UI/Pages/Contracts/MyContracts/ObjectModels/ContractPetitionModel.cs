@@ -1,13 +1,36 @@
+using System.ComponentModel;
 using System.Text.Json;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 {
 	/// <summary>
 	/// A pending request from someone who asks to see one of the user's contracts, listed under "Needs your action".
 	/// </summary>
-	public class ContractPetitionModel
+	public class ContractPetitionModel : INotifyPropertyChanged, IListCardItem
 	{
+		private ListCardPosition cardPosition;
+
+		/// <inheritdoc/>
+		public ListCardPosition CardPosition
+		{
+			get => this.cardPosition;
+			set
+			{
+				if (this.cardPosition == value)
+					return;
+
+				this.cardPosition = value;
+				this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CardPosition)));
+			}
+		}
+
+		/// <summary>
+		/// Occurs when where the row sits in its card changes.
+		/// </summary>
+		public event PropertyChangedEventHandler? PropertyChanged;
+
 		private readonly NotificationRecord record;
 		private readonly Dictionary<string, string> extras;
 
