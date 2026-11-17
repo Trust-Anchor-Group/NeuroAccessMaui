@@ -17093,5 +17093,86 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("DestroyToken", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Contents.
+        /// </summary>
+        public static string MarkdownContents {
+            get {
+                return ResourceManager.GetString("MarkdownContents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current section.
+        /// </summary>
+        public static string MarkdownCurrentSection {
+            get {
+                return ResourceManager.GetString("MarkdownCurrentSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string MarkdownCopy {
+            get {
+                return ResourceManager.GetString("MarkdownCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copied.
+        /// </summary>
+        public static string MarkdownCopied {
+            get {
+                return ResourceManager.GetString("MarkdownCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code.
+        /// </summary>
+        public static string MarkdownCode {
+            get {
+                return ResourceManager.GetString("MarkdownCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token.
+        /// </summary>
+        public static string MarkdownToken {
+            get {
+                return ResourceManager.GetString("MarkdownToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract.
+        /// </summary>
+        public static string MarkdownContract {
+            get {
+                return ResourceManager.GetString("MarkdownContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string MarkdownTaskDone {
+            get {
+                return ResourceManager.GetString("MarkdownTaskDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not done.
+        /// </summary>
+        public static string MarkdownTaskNotDone {
+            get {
+                return ResourceManager.GetString("MarkdownTaskNotDone", resourceCulture);
+            }
+        }
     }
 }

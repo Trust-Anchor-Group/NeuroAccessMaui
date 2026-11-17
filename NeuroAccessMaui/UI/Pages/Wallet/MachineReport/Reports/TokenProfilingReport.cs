@@ -17,12 +17,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 
 
 		/// <summary>
-		/// Gets the MAUI representation of the report.
+		/// Gets the report as markdown.
 		/// </summary>
-		/// <returns>MAUI representation of the report.</returns>
-		public override Task<VerticalStackLayout> GetReportMaui()
+		/// <returns>Markdown of the report.</returns>
+		public override Task<string> GetReportMarkdown()
 		{
-			return ServiceRef.XmppService.GenerateNeuroFeatureProfilingReportMaui(this.TokenId);
+			return ServiceRef.XmppService.GenerateNeuroFeatureProfilingReportMarkdown(this.TokenId);
 		}
 	}
 }

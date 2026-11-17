@@ -10,7 +10,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MachineReportPage
 	{
-		private double scrollY;
 		private bool? isFullScreen;
 
 		/// <summary>
@@ -22,7 +21,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			this.ContentPageModel = ViewModel;
 			this.InitializeComponent();
 
-			ViewModel.PropertyChanging += this.ViewModel_PropertyChanging;
 			ViewModel.PropertyChanged += this.ViewModel_PropertyChanged;
 		}
 
@@ -91,38 +89,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		}
 
 		/// <summary>
-		/// Remembers where the user had scrolled, before a refreshed report replaces the shown one.
-		/// </summary>
-		private void ViewModel_PropertyChanging(object? Sender, System.ComponentModel.PropertyChangingEventArgs e)
-		{
-			if (e.PropertyName == nameof(MachineReportViewModel.Report))
-				this.scrollY = this.ReportScrollView?.ScrollY ?? 0;
-		}
-
-		/// <summary>
-		/// Scrolls back to where the user was, once a refreshed report is shown.
+		/// Arranges the page again when the report turns into an image, or back into text.
 		/// </summary>
 		private void ViewModel_PropertyChanged(object? Sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof(MachineReportViewModel.IsImageReport))
 				this.Arrange();
-
-			if (e.PropertyName != nameof(MachineReportViewModel.Report) || this.scrollY <= 0 || this.ReportScrollView is null)
-				return;
-
-			double Y = this.scrollY;
-
-			this.Dispatcher.Dispatch(async () =>
-			{
-				try
-				{
-					await this.ReportScrollView.ScrollToAsync(0, Y, false);
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-				}
-			});
 		}
 	}
 }

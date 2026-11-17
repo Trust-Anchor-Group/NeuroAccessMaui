@@ -8,6 +8,7 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:md="clr-namespace:NeuroAccessMaui.UI.Controls.Markdown"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.Views"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails"
@@ -543,8 +544,10 @@
 														 HorizontalOptions="Start" />
 								</controls:TaskView.ErrorView>
 								<controls:TaskView.SucceededView>
-									<ContentView Content="{Binding Description}"
-												 VerticalOptions="Start" />
+									<!-- A long description shows its start, with Show more -->
+									<md:MarkdownView Model="{Binding Description}"
+													 CollapsedBlockCount="4"
+													 VerticalOptions="Start" />
 								</controls:TaskView.SucceededView>
 							</controls:TaskView>
 						</Border>

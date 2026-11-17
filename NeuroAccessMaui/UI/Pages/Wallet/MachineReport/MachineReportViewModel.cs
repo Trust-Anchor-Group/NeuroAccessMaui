@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Controls;
+using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 using NeuroFeatures.EventArguments;
@@ -60,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			if (this.TokenReport is null)
 				return Task.CompletedTask;
 
-			return this.TokenReport.GenerateReportMaui(this);
+			return this.TokenReport.GenerateReportAsync(this);
 		}
 
 		private bool IsForThisToken(StateMachineEventArgs e)
@@ -98,10 +99,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		private string? title;
 
 		/// <summary>
-		/// Rendered report from state-machine.
+		/// The report from the state-machine.
 		/// </summary>
 		[ObservableProperty]
-		private object? report;
+		private MarkdownModel? report;
 
 		/// <summary>
 		/// The report's image, when the report is one image, such as a diagram or a chart. It is then shown where it can be
@@ -135,48 +136,37 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		private string sourceText = string.Empty;
 
 		/// <summary>
-		/// Shows a report that is one image where it can be zoomed, and notes when it came from the server.
+		/// Shows a report. A report that is one image is shown where it can be zoomed, and notes when it came from the
+		/// server.
 		/// </summary>
-		/// <param name="Value">The rendered report.</param>
-		partial void OnReportChanged(object? Value)
+		/// <param name="Model">The parsed report.</param>
+		public async Task ShowReportAsync(MarkdownModel Model)
 		{
-			List<ZoomableImage> Images = [];
-			FindImages(Value, Images);
+			ImageSource? Image = null;
+			MdImage? Single = Model.SingleImage;
 
-			this.ReportImage = Images.Count == 1 ? Images[0].Source : null;
-			this.SourceText = ServiceRef.Localizer[nameof(AppResources.ZoomFromServer), DateTime.Now.ToString("t", CultureInfo.CurrentCulture)];
-		}
-
-		/// <summary>
-		/// Finds the images in a rendered report.
-		/// </summary>
-		/// <param name="View">A part of the report.</param>
-		/// <param name="Found">The images found so far.</param>
-		private static void FindImages(object? View, List<ZoomableImage> Found)
-		{
-			switch (View)
+			if (Single is not null)
 			{
-				case ZoomableImage Image:
-					Found.Add(Image);
-					break;
-
-				case Layout Layout:
-					foreach (IView Child in Layout)
-						FindImages(Child, Found);
-					break;
-
-				case ContentView Content:
-					FindImages(Content.Content, Found);
-					break;
-
-				case Border Border:
-					FindImages(Border.Content, Found);
-					break;
-
-				case ScrollView Scroll:
-					FindImages(Scroll.Content, Found);
-					break;
+				try
+				{
+					MdImageData Data = await Single.Source.LoadAsync();
+					Image = await MainThread.InvokeOnMainThreadAsync(Data.ToImageSource);
+				}
+				catch (Exception Ex)
+				{
+					// The report is then shown as text, where the image says it could not be shown.
+					ServiceRef.LogService.LogException(Ex);
+				}
 			}
+
+			string Source = ServiceRef.Localizer[nameof(AppResources.ZoomFromServer), DateTime.Now.ToString("t", CultureInfo.CurrentCulture)];
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.Report = Model;
+				this.ReportImage = Image;
+				this.SourceText = Source;
+			});
 		}
 
 		/// <summary>

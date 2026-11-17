@@ -9,6 +9,7 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:md="clr-namespace:NeuroAccessMaui.UI.Controls.Markdown"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineReport">
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
@@ -34,15 +35,10 @@
 											ImageDescription="{Binding Title}"
 											IsVisible="{Binding IsImageReport}"
 											Margin="12,0,12,20" />
-					<ScrollView x:Name="ReportScrollView" IsVisible="{Binding IsTextReport}">
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Border Style="{DynamicResource BorderSet}">
-								<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-									<ContentView Content="{Binding Report}"/>
-								</VerticalStackLayout>
-							</Border>
-						</VerticalStackLayout>
-					</ScrollView>
+					<!-- The text scrolls inside the card. A refreshed report keeps the reader where they were. -->
+					<Border Style="{DynamicResource BorderSet}" Padding="0" IsVisible="{Binding IsTextReport}">
+						<md:MarkdownView Model="{Binding Report}" Mode="Document" KeepsPositionOnUpdate="True" TextPadding="16" />
+					</Border>
 				</Grid>
 			</controls:TaskView.SucceededView>
 		</controls:TaskView>

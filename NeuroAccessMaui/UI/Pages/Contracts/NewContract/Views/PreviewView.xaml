@@ -9,16 +9,16 @@
 						   xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 						   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						   xmlns:md="clr-namespace:NeuroAccessMaui.UI.Controls.Markdown"
 						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
 						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
+	<!-- The contract text owns its scrolling. Only the parts on screen are built, and Contents jumps to any heading. -->
 	<Border Style="{DynamicResource BorderSet}"
 			Margin="16,0,16,16"
-			Padding="16">
-		<ScrollView>
-			<VerticalStackLayout >
-				<ContentView Content="{Binding HumanReadableText}" />
-			</VerticalStackLayout>
-		</ScrollView>
+			Padding="0">
+		<md:MarkdownView Model="{Binding HumanReadableText}"
+						 Mode="Document"
+						 TextPadding="16" />
 	</Border>
 
 </views:BaseNewContractView>

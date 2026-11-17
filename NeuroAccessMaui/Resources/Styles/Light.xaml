@@ -171,4 +171,6 @@
 	<Color x:Key="TnPWarningContentWL">#a84700</Color>
 	<Color x:Key="TnPWarningFigureWL">#f18334</Color>
 	<Color x:Key="TnPWarningbgWL">#33f18334</Color>
+	<!-- Inline code, code blocks and table headers in markdown text -->
+	<Color x:Key="MarkdownChipWL">#e8ebed</Color>
 </ResourceDictionary>

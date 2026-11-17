@@ -1679,36 +1679,38 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 
 		/// <summary>
-		/// Generates a MAUI report for a state diagram corresponding to the token.
+		/// Generates a report with a state diagram of the token, as markdown.
 		/// </summary>
-		/// <returns>String-representation of MAUI of report.</returns>
-		Task<VerticalStackLayout> GenerateNeuroFeatureStateDiagramReportMaui(string TokenId);
+		/// <returns>Markdown of the report.</returns>
+		Task<string> GenerateNeuroFeatureStateDiagramReportMarkdown(string TokenId);
 
 
 		/// <summary>
-		/// Generates a Maui report for a timing diagram corresponding to the token.
+		/// Generates a report with a timing diagram of the token, as markdown.
 		/// </summary>
-		/// <returns>String-representation of Maui of report.</returns>
-		Task<VerticalStackLayout> GenerateNeuroFeatureProfilingReportMaui(string TokenId);
+		/// <returns>Markdown of the report.</returns>
+		Task<string> GenerateNeuroFeatureProfilingReportMarkdown(string TokenId);
 
 
 		/// <summary>
-		/// Generates a MAUI present report for a token.
+		/// Generates a report of the token's present state, as markdown.
 		/// </summary>
-		Task<VerticalStackLayout> GenerateNeuroFeaturePresentReportMaui(string TokenId);
+		/// <returns>Markdown of the report.</returns>
+		Task<string> GenerateNeuroFeaturePresentReportMarkdown(string TokenId);
 
 
 		/// <summary>
-		/// Generates a MAUI history report for a token.
+		/// Generates a report of the token's history, as markdown.
 		/// </summary>
-		Task<VerticalStackLayout> GenerateNeuroFeatureHistoryReportMaui(string TokenId);
+		/// <returns>Markdown of the report.</returns>
+		Task<string> GenerateNeuroFeatureHistoryReportMarkdown(string TokenId);
 
 		/// <summary>
-		/// Gets the description of a token as its Neuron renders it, as MAUI views.
+		/// Gets the description of a token as its Neuron renders it, as markdown.
 		/// </summary>
 		/// <param name="TokenId">Token ID</param>
 		/// <returns>The rendered description.</returns>
-		Task<VerticalStackLayout> GenerateNeuroFeatureDescriptionMaui(string TokenId);
+		Task<string> GenerateNeuroFeatureDescriptionMarkdown(string TokenId);
 
 		/// <summary>
 		/// Gets the current state of a Neuro-Feature token.

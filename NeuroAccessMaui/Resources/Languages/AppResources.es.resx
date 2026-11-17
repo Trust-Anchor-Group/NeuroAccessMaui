@@ -5795,4 +5795,31 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="ResetPinWithBiometrics" xml:space="preserve">
     <value>Restablecer PIN con biometría</value>
   </data>
+  <data name="MarkdownContents" xml:space="preserve">
+    <value>Contenido</value>
+  </data>
+  <data name="MarkdownCurrentSection" xml:space="preserve">
+    <value>Sección actual</value>
+  </data>
+  <data name="MarkdownCopy" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="MarkdownCopied" xml:space="preserve">
+    <value>Copiado</value>
+  </data>
+  <data name="MarkdownCode" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="MarkdownToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="MarkdownContract" xml:space="preserve">
+    <value>Contrato</value>
+  </data>
+  <data name="MarkdownTaskDone" xml:space="preserve">
+    <value>Hecha</value>
+  </data>
+  <data name="MarkdownTaskNotDone" xml:space="preserve">
+    <value>Sin hacer</value>
+  </data>
 </root>

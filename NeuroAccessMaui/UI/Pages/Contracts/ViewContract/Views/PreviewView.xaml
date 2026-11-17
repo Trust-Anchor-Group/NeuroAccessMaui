@@ -9,13 +9,15 @@
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                            xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
                            xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                           xmlns:md="clr-namespace:NeuroAccessMaui.UI.Controls.Markdown"
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
 	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
-		<Border Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
-			<ScrollView >
-				<ContentView Content="{Binding HumanReadableText}" />
-			</ScrollView>
+		<!-- The contract text owns its scrolling. Only the parts on screen are built, and Contents jumps to any heading. -->
+		<Border Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" Padding="0">
+			<md:MarkdownView Model="{Binding HumanReadableText}"
+							 Mode="Document"
+							 TextPadding="16" />
 		</Border>
 
 		<!-- While signing, the full text is read from the sign sheet, and leads back to it -->

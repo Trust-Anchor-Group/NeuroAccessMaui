@@ -12,6 +12,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Controls;
+using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -226,13 +227,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <param name="Context">Task context.</param>
 		private async Task LoadDescriptionAsync(TaskContext<int> Context)
 		{
-			VerticalStackLayout? Content = null;
+			string? Markdown = null;
 
 			if (this.IsVerified && !string.IsNullOrEmpty(this.TokenId))
 			{
 				try
 				{
-					Content = await ServiceRef.XmppService.GenerateNeuroFeatureDescriptionMaui(this.TokenId);
+					Markdown = await ServiceRef.XmppService.GenerateNeuroFeatureDescriptionMarkdown(this.TokenId);
 				}
 				catch (Exception Ex)
 				{
@@ -240,9 +241,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				}
 			}
 
-			Content ??= await (this.navigationArguments?.Token?.Description ?? string.Empty).MarkdownToMaui();
+			if (string.IsNullOrWhiteSpace(Markdown))
+				Markdown = this.navigationArguments?.Token?.Description;
 
-			await MainThread.InvokeOnMainThreadAsync(() => this.Description = Content);
+			MarkdownModel Model = await MarkdownModel.FromMarkdownAsync(Markdown);
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.Description = Model);
 		}
 
 		/// <summary>
@@ -1429,7 +1433,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// Description of token.
 		/// </summary>
 		[ObservableProperty]
-		private object? description;
+		private MarkdownModel? description;
 
 		/// <summary>
 		/// Content-Type of glyph

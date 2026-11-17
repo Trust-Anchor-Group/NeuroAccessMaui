@@ -13,6 +13,7 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Controls;
+using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
@@ -177,9 +178,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasHumanReadableText))]
-		private VerticalStackLayout? humanReadableText;
+		private MarkdownModel? humanReadableText;
 
-		public bool HasHumanReadableText => this.HumanReadableText is not null;
+		public bool HasHumanReadableText => this.HumanReadableText is not null && !this.HumanReadableText.IsEmpty;
 
 		/// <summary>
 		/// The contract's values in the groups they are shown in: the values themselves, calculated values, values from
@@ -993,7 +994,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			await this.GoToStepAsync(ViewContractStep.Review, Prepare: async () =>
 			{
 				await this.ValidateParametersAsync();
-				VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+				MarkdownModel? HumanReadableText = await this.Contract.Contract.ToMarkdownModel(this.Contract.Contract.DeviceLanguage());
 				this.HumanReadableText = HumanReadableText;
 			});
 		}

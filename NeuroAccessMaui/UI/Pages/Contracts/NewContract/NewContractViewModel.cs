@@ -11,6 +11,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
@@ -183,7 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasHumanReadableText))]
-		private VerticalStackLayout? humanReadableText;
+		private MarkdownModel? humanReadableText;
 
 		public ObservableCollection<ObservableRole> AvailableRoles { get; set; } = [];
 
@@ -235,7 +236,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// If HumanReadableText is not empty
 		/// </summary>
-		public bool HasHumanReadableText => this.HumanReadableText is not null;
+		public bool HasHumanReadableText => this.HumanReadableText is not null && !this.HumanReadableText.IsEmpty;
 
 		/// <summary>
 		/// The state object containing all views. Is set by the view.
@@ -1600,7 +1601,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					// Ignore
 				}
 			}
-			VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+			MarkdownModel? HumanReadableText = await this.Contract.Contract.ToMarkdownModel(this.Contract.Contract.DeviceLanguage());
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{

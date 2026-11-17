@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.UI.Rendering;
+﻿using NeuroAccessMaui.UI.Controls.Markdown;
+using NeuroAccessMaui.UI.Rendering;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Functions;
 using Waher.Networking.XMPP.Contracts;
@@ -42,14 +43,20 @@ namespace NeuroAccessMaui.Extensions
 		}
 
 		/// <summary>
-		/// Creates a human-readable VerticalStackLayout for the Contract.
+		/// Builds the contract's human-readable text, in the language closest to <paramref name="Language"/>, as a text
+		/// model for a <see cref="MarkdownView"/>. Parameters without a value show their guide text as missing values.
 		/// </summary>
 		/// <param name="Contract">Contract reference.</param>
 		/// <param name="Language">Desired language</param>
-		/// <returns>Markdown</returns>
-		public static Task<VerticalStackLayout?> ToMaui(this Contract Contract, string Language)
+		/// <returns>Text model, or null if the contract has no human-readable text.</returns>
+		public static async Task<MarkdownModel?> ToMarkdownModel(this Contract Contract, string Language)
 		{
-			return Contract.ToMaui(Contract.ForHumans, Language);
+			HumanReadableText? Text = Contract.Select(Contract.ForHumans, Language);
+			if (Text is null)
+				return null;
+
+			MarkdownDocument Doc = await Text.GenerateMarkdownDocument(Contract);
+			return await MarkdownModel.FromDocumentAsync(Doc, MarkdownBuildOptions.Contract);
 		}
 
 		/// <summary>
@@ -65,18 +72,6 @@ namespace NeuroAccessMaui.Extensions
 		}
 
 		/// <summary>
-		/// Selects a human-readable text, and generates a VerticalStackLayout from it.
-		/// </summary>
-		/// <param name="Contract">Contract reference.</param>
-		/// <param name="Text">Collection of texts in different languages.</param>
-		/// <param name="Language">Language</param>
-		/// <returns>VerticalStackLayout</returns>
-		public static Task<VerticalStackLayout?> ToMaui(this Contract Contract, HumanReadableText[] Text, string Language)
-		{
-			return Contract.Select(Text, Language)?.ToMaui(Contract) ?? Task.FromResult<VerticalStackLayout?>(null);
-		}
-
-		/// <summary>
 		/// Generates XAML for the human-readable text.
 		/// </summary>
 		/// <param name="Text">Human-readable text being rendered.</param>
@@ -86,19 +81,6 @@ namespace NeuroAccessMaui.Extensions
 		{
 			MarkdownDocument Doc = await Text.GenerateMarkdownDocument(Contract);
 			return await Doc.GenerateMauiXaml();
-		}
-
-		/// <summary>
-		/// Generates a VerticalStackLayout for the human-readable text.
-		/// </summary>
-		/// <param name="Text">Human-readable text being rendered.</param>
-		/// <param name="Contract">Contract, of which the human-readable text is part.</param>
-		/// <returns>VerticalStackLayout</returns>
-		public static async Task<VerticalStackLayout?> ToMaui(this HumanReadableText Text, Contract Contract)
-		{
-			MarkdownDocument Doc = await Text.GenerateMarkdownDocument(Contract);
-
-			return await Doc.GenerateMaui();
 		}
 
 		/// <summary>

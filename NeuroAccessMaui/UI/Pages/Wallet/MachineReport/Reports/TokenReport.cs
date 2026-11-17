@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroFeatures.EventArguments;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
@@ -27,10 +28,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		public abstract Task<string> GetTitle();
 
 		/// <summary>
-		/// Gets the MAUI representation of the report.
+		/// Gets the report as markdown.
 		/// </summary>
-		/// <returns>MAUI representation of report.</returns>
-		public abstract Task<VerticalStackLayout> GetReportMaui();
+		/// <returns>Markdown of the report.</returns>
+		public abstract Task<string> GetReportMarkdown();
 
 		/// <summary>
 		/// Method called when the underlying state-machine has changed state.
@@ -70,7 +71,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 
 			try
 			{
-				await this.GenerateReportMaui(this.view);
+				await this.GenerateReportAsync(this.view);
 			}
 			catch (Exception ex)
 			{
@@ -80,19 +81,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		}
 
 		/// <summary>
-		/// Generates the report using the MAUI renderer, and shows it. Views are created on the main thread; waiting for the
-		/// server doesn't hold it up.
+		/// Generates the report and shows it. The text is parsed off the main thread, and the view shows it a few blocks
+		/// at a time.
 		/// </summary>
 		/// <param name="ReportView">View model showing the report.</param>
-		public async Task GenerateReportMaui(MachineReportViewModel ReportView)
+		public async Task GenerateReportAsync(MachineReportViewModel ReportView)
 		{
 			this.view = ReportView;
 
-			await MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				VerticalStackLayout MauiContent = await this.GetReportMaui();
-				ReportView.Report = MauiContent;
-			});
+			string Markdown = await this.GetReportMarkdown();
+			MarkdownModel Model = await MarkdownModel.FromMarkdownAsync(Markdown);
+
+			if (this.isDisposed)
+				return;
+
+			await ReportView.ShowReportAsync(Model);
 		}
 
 		/// <summary>

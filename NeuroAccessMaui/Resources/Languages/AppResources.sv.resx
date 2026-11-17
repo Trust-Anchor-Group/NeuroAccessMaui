@@ -5795,4 +5795,31 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ResetPinWithBiometrics" xml:space="preserve">
     <value>Återställ PIN-kod med biometri</value>
   </data>
+  <data name="MarkdownContents" xml:space="preserve">
+    <value>Innehåll</value>
+  </data>
+  <data name="MarkdownCurrentSection" xml:space="preserve">
+    <value>Aktuellt avsnitt</value>
+  </data>
+  <data name="MarkdownCopy" xml:space="preserve">
+    <value>Kopiera</value>
+  </data>
+  <data name="MarkdownCopied" xml:space="preserve">
+    <value>Kopierat</value>
+  </data>
+  <data name="MarkdownCode" xml:space="preserve">
+    <value>Kod</value>
+  </data>
+  <data name="MarkdownToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="MarkdownContract" xml:space="preserve">
+    <value>Kontrakt</value>
+  </data>
+  <data name="MarkdownTaskDone" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+  <data name="MarkdownTaskNotDone" xml:space="preserve">
+    <value>Inte klar</value>
+  </data>
 </root>
