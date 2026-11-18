@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		Inline,
 
 		/// <summary>
-		/// The text owns its scrolling, such as a contract text or a report. Only the blocks on screen are built, and a
+		/// The text owns its scrolling, such as a contract text or a report. All blocks are built, a few at a time, and a
 		/// Contents button jumps to any heading.
 		/// </summary>
 		Document
@@ -443,7 +443,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		}
 
 		/// <summary>
-		/// The top-level blocks. In Document mode, each is one item of the list.
+		/// The top-level blocks.
 		/// </summary>
 		public IReadOnlyList<MdBlock> Blocks { get; }
 

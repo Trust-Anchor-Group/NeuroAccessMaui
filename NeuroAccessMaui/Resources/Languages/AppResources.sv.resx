@@ -4886,6 +4886,9 @@ Dokumentet har lästs. Du kan flytta din iPhone.</value>
   <data name="ContractReadWhole" xml:space="preserve">
     <value>Läs hela kontraktet</value>
   </data>
+  <data name="ContractTextTitle" xml:space="preserve">
+    <value>Kontraktstext</value>
+  </data>
   <data name="ContractKeyDetails" xml:space="preserve">
     <value>Viktiga uppgifter</value>
   </data>

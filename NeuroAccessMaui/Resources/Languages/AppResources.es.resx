@@ -4886,6 +4886,9 @@ Documento leído. Ya puedes mover tu iPhone.</value>
   <data name="ContractReadWhole" xml:space="preserve">
     <value>Leer el contrato completo</value>
   </data>
+  <data name="ContractTextTitle" xml:space="preserve">
+    <value>Texto del contrato</value>
+  </data>
   <data name="ContractKeyDetails" xml:space="preserve">
     <value>Datos clave</value>
   </data>

@@ -12,13 +12,49 @@
 						   xmlns:md="clr-namespace:NeuroAccessMaui.UI.Controls.Markdown"
 						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
 						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
-	<!-- The contract text owns its scrolling. Only the parts on screen are built, and Contents jumps to any heading. -->
-	<Border Style="{DynamicResource BorderSet}"
-			Margin="16,0,16,16"
-			Padding="0">
-		<md:MarkdownView Model="{Binding HumanReadableText}"
+	<Grid RowDefinitions="auto, *">
+		<!-- The step's title, with Contents when the text has headings to jump to -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="*, auto"
+			  Padding="20,0,16,0"
+			  ColumnSpacing="12">
+			<Label Grid.Column="0"
+				   VerticalOptions="Center"
+				   FontFamily="SpaceGroteskSemiBold"
+				   FontSize="20"
+				   LineBreakMode="WordWrap"
+				   SemanticProperties.HeadingLevel="Level1"
+				   Text="{l:Localize ContractTextTitle}"
+				   TextColor="{DynamicResource ContentPrimaryWL}" />
+			<controls:TemplatedButton Grid.Column="1"
+									  VerticalOptions="Center"
+									  IsVisible="{Binding HasContents, Source={x:Reference ContractText}, x:DataType=md:MarkdownView}"
+									  Command="{Binding ShowContentsCommand, Source={x:Reference ContractText}, x:DataType=md:MarkdownView}"
+									  SemanticProperties.Description="{l:Localize MarkdownContents}">
+				<Border VerticalOptions="Center"
+						Style="{DynamicResource ListCardChipBorder}">
+					<HorizontalStackLayout VerticalOptions="Center"
+										   Spacing="8">
+						<Path VerticalOptions="Center"
+							  HeightRequest="14"
+							  WidthRequest="14"
+							  Aspect="Uniform"
+							  Data="{x:Static ui:Geometries.HamburgerIconPath}"
+							  Fill="{DynamicResource ContentPrimaryWL}" />
+						<Label Style="{DynamicResource ListCardChipLabel}"
+							   Text="{l:Localize MarkdownContents}" />
+					</HorizontalStackLayout>
+				</Border>
+			</controls:TemplatedButton>
+		</Grid>
+
+		<!-- The text sits on the page and scrolls by itself. Missing values show on a warning tint. -->
+		<md:MarkdownView x:Name="ContractText"
+						 Grid.Row="1"
 						 Mode="Document"
-						 TextPadding="16" />
-	</Border>
+						 Model="{Binding HumanReadableText}"
+						 ShowsContentsButton="False"
+						 TextPadding="20,12,20,24" />
+	</Grid>
 
 </views:BaseNewContractView>

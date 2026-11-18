@@ -16,8 +16,9 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 	/// <para>The text is parsed and built into blocks off the UI thread, and the blocks become views on the UI thread a few
 	/// at a time, so the first lines show at once.</para>
 	/// <para>In <see cref="MarkdownMode.Inline"/> mode, the text sits in the page's own scrolling. In
-	/// <see cref="MarkdownMode.Document"/> mode, the text owns its scrolling, only the blocks on screen are built, and a
-	/// Contents button jumps to any heading.</para>
+	/// <see cref="MarkdownMode.Document"/> mode, the text owns its scrolling, and a Contents button jumps to any heading.
+	/// A page can show its own Contents button instead, with <see cref="HasContents"/> and
+	/// <see cref="ShowContentsCommand"/>.</para>
 	/// <para>Set one of <see cref="Markdown"/>, <see cref="Document"/> or <see cref="Model"/>. A model wins over a
 	/// document, and a document over markdown.</para>
 	/// </remarks>
@@ -37,6 +38,12 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		/// Minimum number of top-level headings for the Contents button to show.
 		/// </summary>
 		private const int minHeadingsForContents = 2;
+
+		/// <summary>
+		/// Room below the text in Document mode when the floating Contents button shows, so the last lines can scroll out
+		/// from under it.
+		/// </summary>
+		private const double contentsButtonRoom = 72;
 
 		#region Bindable properties
 
@@ -103,6 +110,12 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 
 		/// <summary>See <see cref="HasText"/>.</summary>
 		public static readonly BindableProperty HasTextProperty = hasTextPropertyKey.BindableProperty;
+
+		private static readonly BindablePropertyKey hasContentsPropertyKey = BindableProperty.CreateReadOnly(
+			nameof(HasContents), typeof(bool), typeof(MarkdownView), false);
+
+		/// <summary>See <see cref="HasContents"/>.</summary>
+		public static readonly BindableProperty HasContentsProperty = hasContentsPropertyKey.BindableProperty;
 
 		/// <summary>
 		/// Markdown text to show.
@@ -246,18 +259,32 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			private set => this.SetValue(hasTextPropertyKey, value);
 		}
 
+		/// <summary>
+		/// If the text has enough headings for Contents to be useful.
+		/// </summary>
+		public bool HasContents
+		{
+			get => (bool)this.GetValue(HasContentsProperty);
+			private set => this.SetValue(hasContentsPropertyKey, value);
+		}
+
+		/// <summary>
+		/// Shows the Contents sheet, for a page that shows its own Contents button. Set
+		/// <see cref="ShowsContentsButton"/> to false on such a page.
+		/// </summary>
+		public ICommand ShowContentsCommand { get; }
+
 		#endregion
 
 		private MarkdownModel shownModel = MarkdownModel.Empty;
 		private MarkdownViewFactory? factory;
 		private VerticalStackLayout? stack;
-		private CollectionView? list;
+		private ScrollView? scroll;
 		private Grid? documentLayout;
 		private View? contentsButton;
 		private readonly List<View> collapsedViews = [];
 		private int sourceVersion;
 		private int renderVersion;
-		private int firstVisibleIndex;
 		private bool expanded;
 
 		/// <summary>
@@ -265,6 +292,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		/// </summary>
 		public MarkdownView()
 		{
+			this.ShowContentsCommand = new Command(async () => await this.ShowContentsAsync());
 		}
 
 		/// <summary>
@@ -351,6 +379,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			this.expanded = false;
 			this.IsBuilding = false;
 			this.HasText = !Model.IsEmpty;
+			this.HasContents = Model.Headings.Count >= minHeadingsForContents;
 
 			this.Render(IsUpdate && this.KeepsPositionOnUpdate);
 			this.ModelShown?.Invoke(this, EventArgs.Empty);
@@ -374,7 +403,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			int Version = ++this.renderVersion;
 
 			if (this.Mode == MarkdownMode.Document)
-				this.RenderDocument(KeepPosition);
+				_ = this.RenderDocumentAsync(Version, KeepPosition);
 			else
 				_ = this.RenderInlineAsync(Version);
 		}
@@ -384,7 +413,7 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		/// </summary>
 		private async Task RenderInlineAsync(int Version)
 		{
-			this.list = null;
+			this.scroll = null;
 			this.documentLayout = null;
 			this.contentsButton = null;
 			this.collapsedViews.Clear();
@@ -403,30 +432,57 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 
 			try
 			{
-				for (int i = 0; i < Shown; i++)
+				bool Done = await this.AddBlocksAsync(Stack, Shown, Version, () =>
 				{
-					Stack.Add(Factory.Create(Blocks[i], i == 0));
-
-					if (i + 1 == firstBatch)
+					if (this.Content != Stack)
 						this.Content = Stack;
-					else if (i + 1 > firstBatch && (i + 1 - firstBatch) % laterBatch == 0)
-					{
-						await Task.Delay(1);
-						if (Version != this.renderVersion)
-							return;
-					}
-				}
+				});
 
-				if (this.Content != Stack)
-					this.Content = Stack;
-
-				if (Shown < Blocks.Count)
+				if (Done && Shown < Blocks.Count)
 					Stack.Add(this.CreateShowMoreButton());
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		/// <summary>
+		/// Adds the views of the first <paramref name="Count"/> blocks to a stack: the first ones at once, and the rest a
+		/// few at a time, so the first lines show at once.
+		/// </summary>
+		/// <param name="Stack">The stack to add the views to.</param>
+		/// <param name="Count">Number of blocks to add.</param>
+		/// <param name="Version">The render the views are for.</param>
+		/// <param name="ShowStack">Puts the stack on screen. Called when the first batch is added, or at the end.</param>
+		/// <returns>If all blocks were added, or false if a newer render started first.</returns>
+		private async Task<bool> AddBlocksAsync(VerticalStackLayout Stack, int Count, int Version, Action ShowStack)
+		{
+			MarkdownViewFactory Factory = this.Factory;
+			IReadOnlyList<MdBlock> Blocks = this.shownModel.Blocks;
+			bool Shown = false;
+
+			for (int i = 0; i < Count; i++)
+			{
+				Stack.Add(Factory.Create(Blocks[i], i == 0));
+
+				if (i + 1 == firstBatch)
+				{
+					ShowStack();
+					Shown = true;
+				}
+				else if (i + 1 > firstBatch && (i + 1 - firstBatch) % laterBatch == 0)
+				{
+					await Task.Delay(1);
+					if (Version != this.renderVersion)
+						return false;
+				}
+			}
+
+			if (!Shown)
+				ShowStack();
+
+			return true;
 		}
 
 		/// <summary>
@@ -544,38 +600,70 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		}
 
 		/// <summary>
-		/// Document mode: a list with one item per top-level block, so only the blocks on screen are built.
+		/// Document mode: all blocks in a stack in the view's own scrolling, the first ones at once and the rest a few at a
+		/// time.
 		/// </summary>
-		private void RenderDocument(bool KeepPosition)
+		/// <remarks>
+		/// A list with one item per block would only build the blocks on screen, but on Android it gives blocks of
+		/// different heights the wrong height, which cuts their text off. A stack measures every block.
+		/// </remarks>
+		private async Task RenderDocumentAsync(int Version, bool KeepPosition)
 		{
-			this.stack = null;
+			double KeepY = KeepPosition && this.scroll is not null ? this.scroll.ScrollY : 0;
+
 			this.collapsedViews.Clear();
 
 			Thickness Padding = this.TextPadding;
-			bool ShowContents = this.ShowsContentsButton && this.shownModel.Headings.Count >= minHeadingsForContents;
-			int KeepIndex = KeepPosition ? this.firstVisibleIndex : 0;
+			bool ShowContents = this.ShowsContentsButton && this.HasContents;
 
-			if (this.list is null || this.documentLayout is null)
+			VerticalStackLayout Stack = new()
 			{
-				CollectionView List = new()
-				{
-					SelectionMode = SelectionMode.None,
-					ItemTemplate = new DataTemplate(() => new BlockCell(this))
-				};
-				List.Scrolled += this.List_Scrolled;
-
-				this.list = List;
-				this.documentLayout = new Grid { Children = { List } };
-			}
-
-			this.firstVisibleIndex = 0;
-			this.list.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
-			{
-				ItemSpacing = this.Factory.Metrics.BlockSpacing
+				Spacing = this.Factory.Metrics.BlockSpacing,
+				Padding = new Thickness(Padding.Left, Padding.Top, Padding.Right, Padding.Bottom + (ShowContents ? contentsButtonRoom : 0))
 			};
-			this.list.Header = new BoxView { HeightRequest = Math.Max(Padding.Top, 0.1), Color = Colors.Transparent };
-			this.list.Footer = new BoxView { HeightRequest = Math.Max(Padding.Bottom + (ShowContents ? 72 : 0), 0.1), Color = Colors.Transparent };
-			this.list.ItemsSource = this.shownModel.Blocks;
+
+			this.stack = Stack;
+
+			ScrollView Scroll = this.ShowDocumentLayout(ShowContents);
+
+			try
+			{
+				// A text that is updated in place is built off screen, and then shown where the reader was.
+				bool Done = await this.AddBlocksAsync(Stack, this.shownModel.Blocks.Count, Version, () =>
+				{
+					if (KeepY <= 0 && Scroll.Content != Stack)
+					{
+						Scroll.Content = Stack;
+
+						if (Scroll.ScrollY > 0)
+							_ = Scroll.ScrollToAsync(0, 0, false);
+					}
+				});
+
+				if (Done && KeepY > 0)
+				{
+					Scroll.Content = Stack;
+					RestoreScrollPosition(Scroll, Stack, KeepY);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Shows the Document mode layout: the scrolling text, with the floating Contents button over it if it shows.
+		/// </summary>
+		/// <param name="ShowContents">If the floating Contents button shows.</param>
+		/// <returns>The scroll view that holds the text.</returns>
+		private ScrollView ShowDocumentLayout(bool ShowContents)
+		{
+			if (this.scroll is null || this.documentLayout is null)
+			{
+				this.scroll = new ScrollView();
+				this.documentLayout = new Grid { Children = { this.scroll } };
+			}
 
 			if (this.contentsButton is not null)
 			{
@@ -592,26 +680,48 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			if (this.Content != this.documentLayout)
 				this.Content = this.documentLayout;
 
-			if (KeepIndex > 0 && KeepIndex < this.shownModel.Blocks.Count)
-			{
-				CollectionView List = this.list;
-				this.Dispatcher.Dispatch(() =>
-				{
-					try
-					{
-						List.ScrollTo(KeepIndex, -1, ScrollToPosition.Start, false);
-					}
-					catch (Exception Ex)
-					{
-						ServiceRef.LogService.LogException(Ex);
-					}
-				});
-			}
+			return this.scroll;
 		}
 
-		private void List_Scrolled(object? Sender, ItemsViewScrolledEventArgs e)
+		/// <summary>
+		/// Scrolls to where the reader was once the new text has been laid out.
+		/// </summary>
+		/// <param name="Scroll">The scroll view that holds the text.</param>
+		/// <param name="Stack">The new text.</param>
+		/// <param name="ScrollY">Where the reader was.</param>
+		private static void RestoreScrollPosition(ScrollView Scroll, VerticalStackLayout Stack, double ScrollY)
 		{
-			this.firstVisibleIndex = Math.Max(0, e.FirstVisibleItemIndex);
+			void OnSizeChanged(object? Sender, EventArgs e)
+			{
+				Stack.SizeChanged -= OnSizeChanged;
+				_ = Scroll.ScrollToAsync(0, ScrollY, false);
+			}
+
+			Stack.SizeChanged += OnSizeChanged;
+		}
+
+		/// <summary>
+		/// In Document mode, the index of the block at the top of the screen.
+		/// </summary>
+		private int FirstVisibleBlockIndex()
+		{
+			VerticalStackLayout? Stack = this.stack;
+			ScrollView? Scroll = this.scroll;
+
+			if (Stack is null || Scroll is null)
+				return 0;
+
+			int Index = 0;
+
+			for (int i = 0; i < Stack.Count; i++)
+			{
+				if (Stack[i] is not View Block || Block.Y > Scroll.ScrollY + 1)
+					break;
+
+				Index = i;
+			}
+
+			return Index;
 		}
 
 		/// <summary>
@@ -669,36 +779,6 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			Button.GestureRecognizers.Add(Tap);
 
 			return Button;
-		}
-
-		/// <summary>
-		/// A list item: the view of one top-level block.
-		/// </summary>
-		private sealed class BlockCell : ContentView
-		{
-			private readonly MarkdownView owner;
-
-			public BlockCell(MarkdownView Owner)
-			{
-				this.owner = Owner;
-			}
-
-			protected override void OnBindingContextChanged()
-			{
-				base.OnBindingContextChanged();
-
-				if (this.BindingContext is not MdBlock Block)
-				{
-					this.Content = null;
-					return;
-				}
-
-				Thickness Padding = this.owner.TextPadding;
-				IReadOnlyList<MdBlock> Blocks = this.owner.shownModel.Blocks;
-
-				this.Padding = new Thickness(Padding.Left, 0, Padding.Right, 0);
-				this.Content = this.owner.Factory.Create(Block, Blocks.Count > 0 && ReferenceEquals(Blocks[0], Block));
-			}
 		}
 
 		#endregion
@@ -780,9 +860,9 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		{
 			try
 			{
-				if (this.Mode == MarkdownMode.Document && this.list is not null)
+				if (this.Mode == MarkdownMode.Document)
 				{
-					this.list.ScrollTo(Index, -1, ScrollToPosition.Start, true);
+					await this.ScrollDocumentToBlockAsync(Index);
 					return;
 				}
 
@@ -825,6 +905,23 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 		}
 
 		/// <summary>
+		/// In Document mode, scrolls so that a block is at the top, and moves the screen reader to it. A block that is not
+		/// built yet is skipped.
+		/// </summary>
+		/// <param name="Index">Index of the top-level block.</param>
+		private async Task ScrollDocumentToBlockAsync(int Index)
+		{
+			VerticalStackLayout? Stack = this.stack;
+			ScrollView? Scroll = this.scroll;
+
+			if (Stack is null || Scroll is null || Index < 0 || Index >= Stack.Count || Stack[Index] is not View Target)
+				return;
+
+			await Scroll.ScrollToAsync(Target, ScrollToPosition.Start, true);
+			Target.SetSemanticFocus();
+		}
+
+		/// <summary>
 		/// Shows the Contents sheet, built from the text's headings, with the section on screen marked.
 		/// </summary>
 		public async Task ShowContentsAsync()
@@ -837,8 +934,9 @@ namespace NeuroAccessMaui.UI.Controls.Markdown
 			if (this.Mode == MarkdownMode.Document)
 			{
 				IReadOnlyList<MdBlock> Blocks = this.shownModel.Blocks;
+				int FirstVisible = this.FirstVisibleBlockIndex();
 
-				for (int i = 0; i < Blocks.Count && i <= this.firstVisibleIndex; i++)
+				for (int i = 0; i < Blocks.Count && i <= FirstVisible; i++)
 				{
 					if (Blocks[i] is MdHeading Heading)
 						Current = Heading;
