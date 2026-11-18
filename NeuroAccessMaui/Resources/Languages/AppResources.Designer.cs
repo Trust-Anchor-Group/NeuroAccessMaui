@@ -1483,6 +1483,69 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete chat from this phone.
+        /// </summary>
+        public static string ChatsDelete {
+            get {
+                return ResourceManager.GetString("ChatsDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string ChatsDeleteConfirm {
+            get {
+                return ResourceManager.GetString("ChatsDeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chat deleted.
+        /// </summary>
+        public static string ChatsDeleted {
+            get {
+                return ResourceManager.GetString("ChatsDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The other person keeps their copy.
+        /// </summary>
+        public static string ChatsDeleteHint {
+            get {
+                return ResourceManager.GetString("ChatsDeleteHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All messages in this chat are deleted from this phone. {0} keeps their copy. This can't be undone..
+        /// </summary>
+        public static string ChatsDeleteMessage {
+            get {
+                return ResourceManager.GetString("ChatsDeleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All your notes are deleted from this phone. This can't be undone..
+        /// </summary>
+        public static string ChatsDeleteNotesMessage {
+            get {
+                return ResourceManager.GetString("ChatsDeleteNotesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the chat with {0}?.
+        /// </summary>
+        public static string ChatsDeleteQuestion {
+            get {
+                return ResourceManager.GetString("ChatsDeleteQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notes you write here stay on this phone. They are never sent..
         /// </summary>
         public static string ChatSelfEmptyText {
@@ -1501,11 +1564,38 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No chats yet. Tap New to start one..
+        /// </summary>
+        public static string ChatsEmpty {
+            get {
+                return ResourceManager.GetString("ChatsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sent.
         /// </summary>
         public static string ChatSent {
             get {
                 return ResourceManager.GetString("ChatSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unread.
+        /// </summary>
+        public static string ChatsFilterUnread {
+            get {
+                return ResourceManager.GetString("ChatsFilterUnread", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unread ({0}).
+        /// </summary>
+        public static string ChatsFilterUnreadCount {
+            get {
+                return ResourceManager.GetString("ChatsFilterUnreadCount", resourceCulture);
             }
         }
         
@@ -1551,6 +1641,213 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ChatShowFormatting {
             get {
                 return ResourceManager.GetString("ChatShowFormatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark as read.
+        /// </summary>
+        public static string ChatsMarkRead {
+            get {
+                return ResourceManager.GetString("ChatsMarkRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute.
+        /// </summary>
+        public static string ChatsMute {
+            get {
+                return ResourceManager.GetString("ChatsMute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Muted.
+        /// </summary>
+        public static string ChatsMuted {
+            get {
+                return ResourceManager.GetString("ChatsMuted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No notifications for new messages.
+        /// </summary>
+        public static string ChatsMuteHint {
+            get {
+                return ResourceManager.GetString("ChatsMuteHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string ChatsNew {
+            get {
+                return ResourceManager.GetString("ChatsNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start a chat.
+        /// </summary>
+        public static string ChatsNewChatTitle {
+            get {
+                return ResourceManager.GetString("ChatsNewChatTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No chats match your search..
+        /// </summary>
+        public static string ChatsNoMatches {
+            get {
+                return ResourceManager.GetString("ChatsNoMatches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have read everything..
+        /// </summary>
+        public static string ChatsNoUnread {
+            get {
+                return ResourceManager.GetString("ChatsNoUnread", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pin to top.
+        /// </summary>
+        public static string ChatsPin {
+            get {
+                return ResourceManager.GetString("ChatsPin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pinned.
+        /// </summary>
+        public static string ChatsPinned {
+            get {
+                return ResourceManager.GetString("ChatsPinned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact.
+        /// </summary>
+        public static string ChatsPreviewContact {
+            get {
+                return ResourceManager.GetString("ChatsPreviewContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract.
+        /// </summary>
+        public static string ChatsPreviewContract {
+            get {
+                return ResourceManager.GetString("ChatsPreviewContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device.
+        /// </summary>
+        public static string ChatsPreviewDevice {
+            get {
+                return ResourceManager.GetString("ChatsPreviewDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID.
+        /// </summary>
+        public static string ChatsPreviewId {
+            get {
+                return ResourceManager.GetString("ChatsPreviewId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment request.
+        /// </summary>
+        public static string ChatsPreviewPaymentRequest {
+            get {
+                return ResourceManager.GetString("ChatsPreviewPaymentRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photo.
+        /// </summary>
+        public static string ChatsPreviewPhoto {
+            get {
+                return ResourceManager.GetString("ChatsPreviewPhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token.
+        /// </summary>
+        public static string ChatsPreviewToken {
+            get {
+                return ResourceManager.GetString("ChatsPreviewToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search chats.
+        /// </summary>
+        public static string ChatsSearch {
+            get {
+                return ResourceManager.GetString("ChatsSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chats.
+        /// </summary>
+        public static string ChatsTitle {
+            get {
+                return ResourceManager.GetString("ChatsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn notifications on.
+        /// </summary>
+        public static string ChatsUnmute {
+            get {
+                return ResourceManager.GetString("ChatsUnmute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpin.
+        /// </summary>
+        public static string ChatsUnpin {
+            get {
+                return ResourceManager.GetString("ChatsUnpin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} unread.
+        /// </summary>
+        public static string ChatsUnreadCount {
+            get {
+                return ResourceManager.GetString("ChatsUnreadCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You: {0}.
+        /// </summary>
+        public static string ChatsYouPrefix {
+            get {
+                return ResourceManager.GetString("ChatsYouPrefix", resourceCulture);
             }
         }
         

@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Chats;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		private void InitializeTabs()
 		{
-			if (this.ContentSwitcher.Views.Count >= 3)
+			if (this.ContentSwitcher.Views.Count >= 4)
 			{
 				this.EnsureSelectedTabIndex();
 				return;
@@ -69,6 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			View HomeView = this.ResolveView<HomePage>("home");
 			View WalletView = this.ResolveView<WalletPage>("wallet");
+			View ChatsView = this.ResolveView<ChatsPage>("chats");
 			View AppsView = this.ResolveView<AppsPage>("apps");
 
 			if (WalletView.BindingContext is WalletViewModel WalletViewModel)
@@ -83,6 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			this.ContentSwitcher.Views.Add(HomeView);
 			this.ContentSwitcher.Views.Add(WalletView);
+			this.ContentSwitcher.Views.Add(ChatsView);
 			this.ContentSwitcher.Views.Add(AppsView);
 
 			this.EnsureSelectedTabIndex();

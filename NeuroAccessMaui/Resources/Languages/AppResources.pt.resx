@@ -189,8 +189,107 @@
   <data name="ChatPreview" xml:space="preserve">
     <value>Pré-visualização</value>
   </data>
+  <data name="ChatsDelete" xml:space="preserve">
+    <value>Apagar a conversa deste celular</value>
+  </data>
+  <data name="ChatsDeleteConfirm" xml:space="preserve">
+    <value>Apagar</value>
+  </data>
+  <data name="ChatsDeleted" xml:space="preserve">
+    <value>Conversa apagada</value>
+  </data>
+  <data name="ChatsDeleteHint" xml:space="preserve">
+    <value>A outra pessoa mantém a cópia dela</value>
+  </data>
+  <data name="ChatsDeleteMessage" xml:space="preserve">
+    <value>Todas as mensagens desta conversa são apagadas deste celular. {0} mantém a cópia. Isso não pode ser desfeito.</value>
+  </data>
+  <data name="ChatsDeleteNotesMessage" xml:space="preserve">
+    <value>Todas as suas notas são apagadas deste celular. Isso não pode ser desfeito.</value>
+  </data>
+  <data name="ChatsDeleteQuestion" xml:space="preserve">
+    <value>Apagar a conversa com {0}?</value>
+  </data>
+  <data name="ChatsEmpty" xml:space="preserve">
+    <value>Ainda não há conversas. Toque em Nova para iniciar uma.</value>
+  </data>
+  <data name="ChatsFilterUnread" xml:space="preserve">
+    <value>Não lidas</value>
+  </data>
+  <data name="ChatsFilterUnreadCount" xml:space="preserve">
+    <value>Não lidas ({0})</value>
+  </data>
   <data name="ChatShowFormatting" xml:space="preserve">
     <value>Mostrar formatação</value>
+  </data>
+  <data name="ChatsMarkRead" xml:space="preserve">
+    <value>Marcar como lida</value>
+  </data>
+  <data name="ChatsMute" xml:space="preserve">
+    <value>Silenciar</value>
+  </data>
+  <data name="ChatsMuted" xml:space="preserve">
+    <value>Silenciada</value>
+  </data>
+  <data name="ChatsMuteHint" xml:space="preserve">
+    <value>Sem notificações de novas mensagens</value>
+  </data>
+  <data name="ChatsNew" xml:space="preserve">
+    <value>Nova</value>
+  </data>
+  <data name="ChatsNewChatTitle" xml:space="preserve">
+    <value>Iniciar uma conversa</value>
+  </data>
+  <data name="ChatsNoMatches" xml:space="preserve">
+    <value>Nenhuma conversa corresponde à sua busca.</value>
+  </data>
+  <data name="ChatsNoUnread" xml:space="preserve">
+    <value>Você leu tudo.</value>
+  </data>
+  <data name="ChatsPin" xml:space="preserve">
+    <value>Fixar no topo</value>
+  </data>
+  <data name="ChatsPinned" xml:space="preserve">
+    <value>Fixada</value>
+  </data>
+  <data name="ChatsPreviewContact" xml:space="preserve">
+    <value>Contato</value>
+  </data>
+  <data name="ChatsPreviewContract" xml:space="preserve">
+    <value>Contrato</value>
+  </data>
+  <data name="ChatsPreviewDevice" xml:space="preserve">
+    <value>Dispositivo</value>
+  </data>
+  <data name="ChatsPreviewId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ChatsPreviewPaymentRequest" xml:space="preserve">
+    <value>Pedido de pagamento</value>
+  </data>
+  <data name="ChatsPreviewPhoto" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="ChatsPreviewToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="ChatsSearch" xml:space="preserve">
+    <value>Buscar conversas</value>
+  </data>
+  <data name="ChatsTitle" xml:space="preserve">
+    <value>Conversas</value>
+  </data>
+  <data name="ChatsUnmute" xml:space="preserve">
+    <value>Ativar notificações</value>
+  </data>
+  <data name="ChatsUnpin" xml:space="preserve">
+    <value>Desafixar</value>
+  </data>
+  <data name="ChatsUnreadCount" xml:space="preserve">
+    <value>{0} não lidas</value>
+  </data>
+  <data name="ChatsYouPrefix" xml:space="preserve">
+    <value>Você: {0}</value>
   </data>
   <data name="ChatTimeOnDay" xml:space="preserve">
     <value>{0} às {1}</value>

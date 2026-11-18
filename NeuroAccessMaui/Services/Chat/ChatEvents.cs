@@ -26,6 +26,11 @@ namespace NeuroAccessMaui.Services.Chat
 		public static event EventHandler<ChatMessageEventArgs>? MessageDelivered;
 
 		/// <summary>
+		/// Raised when a chat message has been deleted from the phone.
+		/// </summary>
+		public static event EventHandler<ChatMessageEventArgs>? MessageDeleted;
+
+		/// <summary>
 		/// Raised when the other party in a chat starts or stops writing.
 		/// </summary>
 		public static event EventHandler<ChatStateEventArgs>? ChatStateChanged;
@@ -110,6 +115,15 @@ namespace NeuroAccessMaui.Services.Chat
 		public static void OnMessageDelivered(ChatMessage Message)
 		{
 			Raise(MessageDelivered, new ChatMessageEventArgs(Message, true));
+		}
+
+		/// <summary>
+		/// Raises <see cref="MessageDeleted"/>.
+		/// </summary>
+		/// <param name="Message">The deleted message.</param>
+		public static void OnMessageDeleted(ChatMessage Message)
+		{
+			Raise(MessageDeleted, new ChatMessageEventArgs(Message, false));
 		}
 
 		/// <summary>

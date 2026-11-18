@@ -479,6 +479,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			try
 			{
 				await ServiceRef.NotificationService.DeleteEvents(NotificationEventType.Contacts, this.BareJid);
+				await ConversationStore.MarkReadAsync(this.BareJid);
 			}
 			catch (Exception Ex)
 			{
@@ -1201,6 +1202,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			try
 			{
 				await Database.Delete(Item.Message);
+				ChatEvents.OnMessageDeleted(Item.Message);
 
 				if (this.EditingItem == Item)
 				{

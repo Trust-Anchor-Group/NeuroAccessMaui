@@ -189,8 +189,107 @@
   <data name="ChatPreview" xml:space="preserve">
     <value>Förhandsvisning</value>
   </data>
+  <data name="ChatsDelete" xml:space="preserve">
+    <value>Radera chatten från den här telefonen</value>
+  </data>
+  <data name="ChatsDeleteConfirm" xml:space="preserve">
+    <value>Radera</value>
+  </data>
+  <data name="ChatsDeleted" xml:space="preserve">
+    <value>Chatten raderad</value>
+  </data>
+  <data name="ChatsDeleteHint" xml:space="preserve">
+    <value>Den andra personen behåller sin kopia</value>
+  </data>
+  <data name="ChatsDeleteMessage" xml:space="preserve">
+    <value>Alla meddelanden i chatten raderas från den här telefonen. {0} behåller sin kopia. Det går inte att ångra.</value>
+  </data>
+  <data name="ChatsDeleteNotesMessage" xml:space="preserve">
+    <value>Alla dina anteckningar raderas från den här telefonen. Det går inte att ångra.</value>
+  </data>
+  <data name="ChatsDeleteQuestion" xml:space="preserve">
+    <value>Radera chatten med {0}?</value>
+  </data>
+  <data name="ChatsEmpty" xml:space="preserve">
+    <value>Inga chattar än. Tryck på Ny för att starta en.</value>
+  </data>
+  <data name="ChatsFilterUnread" xml:space="preserve">
+    <value>Olästa</value>
+  </data>
+  <data name="ChatsFilterUnreadCount" xml:space="preserve">
+    <value>Olästa ({0})</value>
+  </data>
   <data name="ChatShowFormatting" xml:space="preserve">
     <value>Visa formatering</value>
+  </data>
+  <data name="ChatsMarkRead" xml:space="preserve">
+    <value>Markera som läst</value>
+  </data>
+  <data name="ChatsMute" xml:space="preserve">
+    <value>Stäng av ljud</value>
+  </data>
+  <data name="ChatsMuted" xml:space="preserve">
+    <value>Ljudlös</value>
+  </data>
+  <data name="ChatsMuteHint" xml:space="preserve">
+    <value>Inga aviseringar om nya meddelanden</value>
+  </data>
+  <data name="ChatsNew" xml:space="preserve">
+    <value>Ny</value>
+  </data>
+  <data name="ChatsNewChatTitle" xml:space="preserve">
+    <value>Starta en chatt</value>
+  </data>
+  <data name="ChatsNoMatches" xml:space="preserve">
+    <value>Inga chattar matchar sökningen.</value>
+  </data>
+  <data name="ChatsNoUnread" xml:space="preserve">
+    <value>Du har läst allt.</value>
+  </data>
+  <data name="ChatsPin" xml:space="preserve">
+    <value>Fäst högst upp</value>
+  </data>
+  <data name="ChatsPinned" xml:space="preserve">
+    <value>Fäst</value>
+  </data>
+  <data name="ChatsPreviewContact" xml:space="preserve">
+    <value>Kontakt</value>
+  </data>
+  <data name="ChatsPreviewContract" xml:space="preserve">
+    <value>Avtal</value>
+  </data>
+  <data name="ChatsPreviewDevice" xml:space="preserve">
+    <value>Enhet</value>
+  </data>
+  <data name="ChatsPreviewId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ChatsPreviewPaymentRequest" xml:space="preserve">
+    <value>Betalningsbegäran</value>
+  </data>
+  <data name="ChatsPreviewPhoto" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="ChatsPreviewToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="ChatsSearch" xml:space="preserve">
+    <value>Sök i chattar</value>
+  </data>
+  <data name="ChatsTitle" xml:space="preserve">
+    <value>Chattar</value>
+  </data>
+  <data name="ChatsUnmute" xml:space="preserve">
+    <value>Slå på aviseringar</value>
+  </data>
+  <data name="ChatsUnpin" xml:space="preserve">
+    <value>Lossa</value>
+  </data>
+  <data name="ChatsUnreadCount" xml:space="preserve">
+    <value>{0} olästa</value>
+  </data>
+  <data name="ChatsYouPrefix" xml:space="preserve">
+    <value>Du: {0}</value>
   </data>
   <data name="ChatTimeOnDay" xml:space="preserve">
     <value>{0} kl. {1}</value>

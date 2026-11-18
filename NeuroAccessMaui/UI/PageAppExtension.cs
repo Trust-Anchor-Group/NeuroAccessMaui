@@ -34,6 +34,7 @@ using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
+using NeuroAccessMaui.UI.Pages.Chats;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.ContactCard;
 using NeuroAccessMaui.UI.Pages.Contacts.EditContact;
@@ -256,6 +257,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<VerifyCodePage, VerifyCodeViewModel>();
 			Builder.Services.AddTransient<XmppFormPage, XmppViewModel>();
 			Builder.Services.AddTransient<AppsPage, AppsViewModel>();
+			Builder.Services.AddTransient<ChatsPage, ChatsViewModel>();
 			Builder.Services.AddTransient<NfcTesterPage, NfcTesterViewModel>();
 			// Startup page
 			Builder.Services.AddTransient<LoadingPage>();

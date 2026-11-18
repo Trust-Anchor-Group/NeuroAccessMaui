@@ -6,11 +6,13 @@
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 					  ui:SafeArea.Mode="Top">
 
 		<base:BaseContentPage.Resources>
 			<ResourceDictionary>
+				<mct:IsNotNullConverter x:Key="IsNotNull" />
 				<DataTemplate x:Key="MainPageBottomTabTemplate"
 							  x:DataType="controls:TabDefinition">
 					<Grid VerticalOptions="Center"
@@ -19,19 +21,39 @@
 					<VerticalStackLayout Spacing="2"
 										 HorizontalOptions="Center"
 										 VerticalOptions="Center">
-						<Border x:Name="IconBorder"
-								HeightRequest="32"
-								WidthRequest="56"
-								StrokeShape="RoundRectangle 16"
-								BackgroundColor="{DynamicResource NavMenuBody1WL}">
-							<controls:SvgView x:Name="Icon"
-											  HeightRequest="24"
-											  WidthRequest="24"
-											  HorizontalOptions="Center"
-											  VerticalOptions="Center"
-											  Source="{Binding Icon}"
-											  TintColor="{DynamicResource NavMenuContentInactiveWL}" />
+						<Grid HorizontalOptions="Center">
+							<Border x:Name="IconBorder"
+									HeightRequest="32"
+									WidthRequest="56"
+									StrokeShape="RoundRectangle 16"
+									BackgroundColor="{DynamicResource NavMenuBody1WL}">
+								<controls:SvgView x:Name="Icon"
+												  HeightRequest="24"
+												  WidthRequest="24"
+												  HorizontalOptions="Center"
+												  VerticalOptions="Center"
+												  Source="{Binding Icon}"
+												  TintColor="{DynamicResource NavMenuContentInactiveWL}" />
 							</Border>
+							<!-- The number of unread messages, on the Chats tab -->
+							<Border HorizontalOptions="End"
+									VerticalOptions="Start"
+									Margin="0,-6,0,0"
+									MinimumWidthRequest="20"
+									HeightRequest="20"
+									Padding="5,0"
+									IsVisible="{Binding BadgeCount, Converter={StaticResource IsNotNull}}"
+									StrokeThickness="0"
+									BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+									StrokeShape="RoundRectangle 10">
+								<Label Text="{Binding BadgeCount}"
+									   HorizontalOptions="Center"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="11"
+									   TextColor="White" />
+							</Border>
+						</Grid>
 							<Label x:Name="Label"
 								   Text="{Binding Title}"
 							   HorizontalOptions="Center"

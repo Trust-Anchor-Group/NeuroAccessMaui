@@ -746,6 +746,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.activationCancellation = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken);
 				ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 				ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
+				ConversationStore.Start();
 				if (ServiceRef.TagProfile.ShouldCreateClient())
 					await this.CreateXmppClient(false);
 				CancellationToken.ThrowIfCancellationRequested();
@@ -2312,7 +2313,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (State.HasValue)
 				ChatEvents.OnChatState(RemoteBareJid, State.Value);
 
-			if (ChatEvents.IsChatVisible(RemoteBareJid))
+			if (ChatEvents.IsChatVisible(RemoteBareJid) || await ConversationStore.IsMutedAsync(RemoteBareJid))
 				return;
 
 			MainThread.BeginInvokeOnMainThread(async () =>

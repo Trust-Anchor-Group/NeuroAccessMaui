@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Chats.ChatsPage"
+					  x:DataType="viewmodel:ChatsViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:contacts="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Chats">
+
+	<VisualElement.Resources>
+		<Style x:Key="ChatsIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<Style x:Key="ChipBorder"
+			   TargetType="Border">
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+			<Setter Property="MinimumHeightRequest"
+					Value="36" />
+			<Setter Property="Padding"
+					Value="14,6" />
+			<Setter Property="InputTransparent"
+					Value="True" />
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation1WL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 18" />
+		</Style>
+
+		<Style x:Key="ChipLabel"
+			   TargetType="Label">
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentPrimaryWL}" />
+		</Style>
+	</VisualElement.Resources>
+
+	<Grid RowDefinitions="Auto,*"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+		<!-- Header: the title, the contacts, and a new chat -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="*,Auto"
+			  ColumnSpacing="8"
+			  Padding="16,12,16,8">
+			<Label Text="{l:Localize ChatsTitle}"
+				   VerticalOptions="Center"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="32"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   SemanticProperties.HeadingLevel="Level1" />
+
+			<HorizontalStackLayout Grid.Column="1"
+								   Spacing="8">
+				<controls:TemplatedButton Command="{Binding OpenContactsCommand}"
+										  SemanticProperties.Description="{l:Localize Contacts}">
+					<Border WidthRequest="48"
+							HeightRequest="48"
+							InputTransparent="True"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 14">
+						<Path Data="M9 4.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 1 1 0-7z M2.5 20a6.5 6.5 0 0 1 13 0 M17 6.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 1 1 0-5z M16 14.5a5 5 0 0 1 6 4.5"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ChatsIcon}" />
+					</Border>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton Command="{Binding NewChatCommand}"
+										  SemanticProperties.Description="{l:Localize ChatsNewChatTitle}">
+					<Border MinimumHeightRequest="48"
+							Padding="14,0,16,0"
+							InputTransparent="True"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 14">
+						<HorizontalStackLayout Spacing="8"
+											   VerticalOptions="Center">
+							<Path Data="M4 20h4L19 9l-4-4L4 16v4z"
+								  Stroke="{DynamicResource ContentPrimaryWL}"
+								  Style="{StaticResource ChatsIcon}" />
+							<Label Text="{l:Localize ChatsNew}"
+								   VerticalOptions="Center"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="16"
+								   TextColor="{DynamicResource ContentPrimaryWL}" />
+						</HorizontalStackLayout>
+					</Border>
+				</controls:TemplatedButton>
+			</HorizontalStackLayout>
+		</Grid>
+
+		<CollectionView Grid.Row="1"
+						ItemsSource="{Binding Items}"
+						ItemSizingStrategy="MeasureAllItems"
+						SelectionMode="None">
+			<CollectionView.Header>
+				<VerticalStackLayout Padding="16,0,16,8"
+									 Spacing="14">
+					<!-- Search -->
+					<Border MinimumHeightRequest="48"
+							Padding="14,0"
+							StrokeThickness="1"
+							Stroke="{DynamicResource SurfaceDividerWL}"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 14">
+						<Grid ColumnDefinitions="Auto,*"
+							  ColumnSpacing="10">
+							<Path Data="M11 4a7 7 0 1 1 0 14a7 7 0 1 1 0-14z M20 20l-3.5-3.5"
+								  Stroke="{DynamicResource ContentSecondaryWL}"
+								  Style="{StaticResource ChatsIcon}" />
+							<Entry Grid.Column="1"
+								   VerticalOptions="Center"
+								   Text="{Binding SearchText}"
+								   Placeholder="{l:Localize ChatsSearch}"
+								   FontFamily="HaasGroteskRegular"
+								   FontSize="16"
+								   BackgroundColor="Transparent"
+								   TextColor="{DynamicResource ContentPrimaryWL}"
+								   PlaceholderColor="{DynamicResource ContentSecondaryWL}"
+								   ReturnType="Search"
+								   SemanticProperties.Description="{l:Localize ChatsSearch}" />
+						</Grid>
+					</Border>
+
+					<!-- Filters: all chats, or only unread ones -->
+					<HorizontalStackLayout Spacing="8">
+						<controls:TemplatedButton MinimumHeightRequest="48"
+												  Command="{Binding SelectFilterCommand}"
+												  CommandParameter="False"
+												  SemanticProperties.Description="{l:Localize All}">
+							<Border Style="{StaticResource ChipBorder}">
+								<Border.Triggers>
+									<DataTrigger Binding="{Binding ShowsUnreadOnly}"
+												 TargetType="Border"
+												 Value="False">
+										<Setter Property="BackgroundColor"
+												Value="{DynamicResource TnPSuccessbgWL}" />
+										<Setter Property="Stroke"
+												Value="{DynamicResource TnPSuccessbgWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+								<Label Text="{l:Localize All}"
+									   Style="{StaticResource ChipLabel}">
+									<Label.Triggers>
+										<DataTrigger Binding="{Binding ShowsUnreadOnly}"
+													 TargetType="Label"
+													 Value="False">
+											<Setter Property="TextColor"
+													Value="{DynamicResource ContentAccessWL}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+							</Border>
+						</controls:TemplatedButton>
+						<controls:TemplatedButton MinimumHeightRequest="48"
+												  Command="{Binding SelectFilterCommand}"
+												  CommandParameter="True"
+												  SemanticProperties.Description="{Binding UnreadChipText}">
+							<Border Style="{StaticResource ChipBorder}">
+								<Border.Triggers>
+									<DataTrigger Binding="{Binding ShowsUnreadOnly}"
+												 TargetType="Border"
+												 Value="True">
+										<Setter Property="BackgroundColor"
+												Value="{DynamicResource TnPSuccessbgWL}" />
+										<Setter Property="Stroke"
+												Value="{DynamicResource TnPSuccessbgWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+								<Label Text="{Binding UnreadChipText}"
+									   Style="{StaticResource ChipLabel}">
+									<Label.Triggers>
+										<DataTrigger Binding="{Binding ShowsUnreadOnly}"
+													 TargetType="Label"
+													 Value="True">
+											<Setter Property="TextColor"
+													Value="{DynamicResource ContentAccessWL}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+							</Border>
+						</controls:TemplatedButton>
+					</HorizontalStackLayout>
+
+					<!-- Contact requests -->
+					<VerticalStackLayout IsVisible="{Binding ShowsRequests}"
+										 Spacing="8">
+						<HorizontalStackLayout Padding="8,0"
+											   Spacing="8">
+							<Label Text="{l:Localize ContactRequests}"
+								   VerticalOptions="Center"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="14"
+								   TextColor="{DynamicResource ContentSecondaryWL}"
+								   SemanticProperties.HeadingLevel="Level2" />
+							<Border VerticalOptions="Center"
+									MinimumWidthRequest="22"
+									Padding="6,1"
+									StrokeThickness="0"
+									BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+									StrokeShape="RoundRectangle 11">
+								<Label Text="{Binding RequestCount}"
+									   HorizontalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="12"
+									   TextColor="White" />
+							</Border>
+						</HorizontalStackLayout>
+						<Border StrokeThickness="1"
+								Stroke="{DynamicResource SurfaceDividerWL}"
+								BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+								StrokeShape="RoundRectangle 20">
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Requests}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="contacts:ContactRequestItem">
+										<controls:TemplatedButton Command="{Binding ReviewRequestCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ChatsViewModel}}, x:DataType=viewmodel:ChatsViewModel}"
+																  CommandParameter="{Binding .}"
+																  SemanticProperties.Description="{Binding Name}"
+																  SemanticProperties.Hint="{l:Localize ContactWantsToAddYou}">
+											<Grid ColumnDefinitions="44,*,Auto"
+												  Padding="16,12"
+												  MinimumHeightRequest="72"
+												  ColumnSpacing="12"
+												  InputTransparent="True">
+												<Border WidthRequest="44"
+														HeightRequest="44"
+														VerticalOptions="Center"
+														StrokeThickness="0"
+														BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+														StrokeShape="RoundRectangle 22">
+													<Label Text="{Binding Initials}"
+														   HorizontalOptions="Center"
+														   VerticalOptions="Center"
+														   FontFamily="SpaceGroteskSemiBold"
+														   FontSize="16"
+														   TextColor="{DynamicResource ContentAccessWL}" />
+												</Border>
+												<VerticalStackLayout Grid.Column="1"
+																	 VerticalOptions="Center">
+													<Label Text="{Binding Name}"
+														   FontFamily="HaasGroteskMedium"
+														   FontSize="16"
+														   LineBreakMode="TailTruncation"
+														   TextColor="{DynamicResource ContentPrimaryWL}" />
+													<Label Text="{l:Localize ContactWantsToAddYou}"
+														   FontFamily="HaasGroteskRegular"
+														   FontSize="14"
+														   TextColor="{DynamicResource ContentSecondaryWL}" />
+												</VerticalStackLayout>
+												<Border Grid.Column="2"
+														VerticalOptions="Center"
+														MinimumHeightRequest="48"
+														Padding="16,0"
+														StrokeThickness="0"
+														BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+														StrokeShape="RoundRectangle 14">
+													<Label Text="{l:Localize ContactReview}"
+														   VerticalOptions="Center"
+														   FontFamily="HaasGroteskMedium"
+														   FontSize="15"
+														   TextColor="{DynamicResource ContentAccessWL}" />
+												</Border>
+											</Grid>
+										</controls:TemplatedButton>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</Border>
+					</VerticalStackLayout>
+
+					<ActivityIndicator IsVisible="{Binding IsLoading}"
+									   IsRunning="{Binding IsLoading}"
+									   HorizontalOptions="Center"
+									   Color="{DynamicResource ContentPrimaryWL}" />
+
+					<Label Text="{Binding EmptyText}"
+						   IsVisible="{Binding IsEmpty}"
+						   Margin="8,24"
+						   HorizontalTextAlignment="Center"
+						   FontFamily="HaasGroteskRegular"
+						   FontSize="16"
+						   LineBreakMode="WordWrap"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+				</VerticalStackLayout>
+			</CollectionView.Header>
+
+			<!-- A chat: avatar with online status, name, last message, time, unread count, pinned and muted. A tap opens it, a
+				 long press shows what can be done with it. -->
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="viewmodel:ConversationItem">
+					<Grid x:Name="Row"
+						  Margin="16,0"
+						  SemanticProperties.Description="{Binding AccessibleDescription}">
+						<Grid.Behaviors>
+							<mct:TouchBehavior BindingContext="{Binding Source={x:Reference Row}, Path=BindingContext, x:DataType=Grid}"
+											   Command="{Binding OpenCommand}"
+											   LongPressCommand="{Binding ShowActionsCommand}"
+											   PressedOpacity="0.6" />
+						</Grid.Behaviors>
+						<controls:ListCardSegment Position="{Binding CardPosition}"
+												  FillColor="{DynamicResource SurfaceElevation1WL}"
+												  StrokeColor="{DynamicResource SurfaceDividerWL}"
+												  DividerInset="76" />
+						<Grid ColumnDefinitions="48,*"
+							  Padding="16,12"
+							  MinimumHeightRequest="74"
+							  ColumnSpacing="12"
+							  InputTransparent="True">
+							<Grid WidthRequest="48"
+								  HeightRequest="48"
+								  VerticalOptions="Center">
+								<Border StrokeThickness="0"
+										BackgroundColor="{Binding AvatarBackground}"
+										StrokeShape="RoundRectangle 24">
+									<Label Text="{Binding Initials}"
+										   HorizontalOptions="Center"
+										   VerticalOptions="Center"
+										   FontFamily="SpaceGroteskSemiBold"
+										   FontSize="16"
+										   TextColor="{Binding AvatarText}" />
+								</Border>
+								<Border HorizontalOptions="End"
+										VerticalOptions="End"
+										WidthRequest="14"
+										HeightRequest="14"
+										IsVisible="{Binding ShowsOnlineStatus}"
+										StrokeThickness="2"
+										Stroke="{DynamicResource SurfaceElevation1WL}"
+										BackgroundColor="{Binding OnlineColor}"
+										StrokeShape="RoundRectangle 7" />
+							</Grid>
+							<Grid Grid.Column="1"
+								  RowDefinitions="Auto,Auto"
+								  ColumnDefinitions="*,Auto"
+								  ColumnSpacing="8"
+								  RowSpacing="2"
+								  VerticalOptions="Center">
+								<HorizontalStackLayout Spacing="6">
+									<Label Text="{Binding Title}"
+										   FontFamily="HaasGroteskMedium"
+										   FontSize="16"
+										   LineBreakMode="TailTruncation"
+										   MaxLines="1"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+									<Path Data="M12 2l8 3v6.5c0 5-3.4 8.7-8 10.5-4.6-1.8-8-5.5-8-10.5V5l8-3z M8 12l3 3 5-6"
+										  VerticalOptions="Center"
+										  WidthRequest="16"
+										  HeightRequest="16"
+										  IsVisible="{Binding IsVerified}"
+										  Aspect="Uniform"
+										  Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+										  StrokeThickness="2" />
+									<Path Data="M9 4h6l-1 6 3 3H7l3-3-1-6z M12 16v5"
+										  VerticalOptions="Center"
+										  WidthRequest="14"
+										  HeightRequest="14"
+										  IsVisible="{Binding IsPinned}"
+										  Aspect="Uniform"
+										  Stroke="{DynamicResource ContentSecondaryWL}"
+										  StrokeThickness="2" />
+									<Path Data="M6 16V11a6 6 0 0 1 9.5-4.9M18 11v5l2 2H8 M3 3l18 18"
+										  VerticalOptions="Center"
+										  WidthRequest="15"
+										  HeightRequest="15"
+										  IsVisible="{Binding IsMuted}"
+										  Aspect="Uniform"
+										  Stroke="{DynamicResource ContentSecondaryWL}"
+										  StrokeThickness="2" />
+								</HorizontalStackLayout>
+								<Label Grid.Column="1"
+									   Text="{Binding TimeText}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="13"
+									   TextColor="{DynamicResource ContentSecondaryWL}">
+									<Label.Triggers>
+										<DataTrigger Binding="{Binding HasUnread}"
+													 TargetType="Label"
+													 Value="True">
+											<Setter Property="TextColor"
+													Value="{DynamicResource ContentAccessWL}" />
+											<Setter Property="FontFamily"
+													Value="HaasGroteskMedium" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+								<Label Grid.Row="1"
+									   Text="{Binding Preview}"
+									   IsVisible="{Binding HasPreview}"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="14"
+									   LineBreakMode="TailTruncation"
+									   MaxLines="1"
+									   TextColor="{DynamicResource ContentSecondaryWL}">
+									<Label.Triggers>
+										<DataTrigger Binding="{Binding HasUnread}"
+													 TargetType="Label"
+													 Value="True">
+											<Setter Property="TextColor"
+													Value="{DynamicResource ContentPrimaryWL}" />
+										</DataTrigger>
+									</Label.Triggers>
+								</Label>
+								<Border Grid.Row="1"
+										Grid.Column="1"
+										HorizontalOptions="End"
+										VerticalOptions="Center"
+										MinimumWidthRequest="22"
+										Padding="6,1"
+										IsVisible="{Binding HasUnread}"
+										StrokeThickness="0"
+										BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										StrokeShape="RoundRectangle 11">
+									<Label Text="{Binding UnreadText}"
+										   HorizontalOptions="Center"
+										   FontFamily="HaasGroteskMedium"
+										   FontSize="12"
+										   TextColor="White" />
+								</Border>
+							</Grid>
+						</Grid>
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+
+			<CollectionView.Footer>
+				<BoxView HeightRequest="24"
+						 Color="Transparent" />
+			</CollectionView.Footer>
+		</CollectionView>
+	</Grid>
+</base:BaseContentPage>
