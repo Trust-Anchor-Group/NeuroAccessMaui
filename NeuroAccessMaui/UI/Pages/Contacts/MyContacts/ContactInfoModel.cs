@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Contacts.VCard;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -16,6 +17,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Provisioning.Events;
 using Waher.Persistence;
+using Contact = NeuroAccessMaui.Services.Contacts.Contact;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
@@ -42,6 +44,166 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			this.toggleSubscriptionCommand = new Command(async () => await this.ToggleSubscription(), () => this.CanToggleSubscription());
 
 			this.OnPropertyChanged(nameof(this.IsFriend));
+		}
+
+		/// <summary>
+		/// A person in the contacts, from their contact card. The row keeps the old contact information shape, so screens
+		/// that pick a contact get what they always got.
+		/// </summary>
+		/// <param name="Card">The contact.</param>
+		/// <param name="Events">Notification events.</param>
+		public ContactInfoModel(Contact Card, params NotificationEvent[] Events)
+			: this(new ContactInfo()
+			{
+				BareJid = Card.ChatAddress,
+				LegalId = Card.LegalId,
+				LegalIdentity = Card.LegalIdentity,
+				FriendlyName = Card.DisplayName,
+				IsThing = false
+			}, Events)
+		{
+			this.Card = Card;
+
+			VCard Parsed = Card.GetCard();
+			IReadOnlyList<string> Organization = Parsed.Organization;
+			this.Organization = Organization.Count > 0 ? Organization[0] : null;
+			this.SearchText = string.Join(' ', new[] { Card.DisplayName, this.Organization ?? string.Empty }
+				.Concat(Parsed.Emails.Select(Email => Email.Value))
+				.Concat(Parsed.Telephones.Select(Phone => Phone.Value)));
+			this.Initials = InitialsOf(Card.DisplayName);
+
+			int Tint = (int)((uint)StringComparer.OrdinalIgnoreCase.GetHashCode(Card.Uid) % (uint)avatarTints.Length);
+			this.AvatarBackground = Color.FromArgb(avatarTints[Tint].Background);
+			this.AvatarText = Color.FromArgb(avatarTints[Tint].Text);
+		}
+
+		private static readonly (string Background, string Text)[] avatarTints =
+		[
+			("#D5E6E2", "#085E50"),
+			("#DCE5F1", "#24519C"),
+			("#FBE3D2", "#A84700"),
+			("#ECDFF7", "#722FAD"),
+			("#E6E8EA", "#444A4F")
+		];
+
+		/// <summary>
+		/// The person's contact card, if the row is a person in the contacts.
+		/// </summary>
+		public Contact? Card { get; }
+
+		/// <summary>
+		/// The person's organization, if any.
+		/// </summary>
+		public string? Organization { get; }
+
+		/// <summary>
+		/// Text a search matches: name, organization, email addresses and phone numbers.
+		/// </summary>
+		public string SearchText { get; } = string.Empty;
+
+		/// <summary>
+		/// The initials on the avatar.
+		/// </summary>
+		public string Initials { get; } = string.Empty;
+
+		/// <summary>
+		/// The avatar's tint.
+		/// </summary>
+		public Color AvatarBackground { get; } = Colors.LightGray;
+
+		/// <summary>
+		/// The colour of the initials on the avatar.
+		/// </summary>
+		public Color AvatarText { get; } = Colors.Black;
+
+		/// <summary>
+		/// If the app has checked the person's ID.
+		/// </summary>
+		public bool IsVerified => this.Card?.IsVerified ?? false;
+
+		/// <summary>
+		/// If the person is blocked.
+		/// </summary>
+		public bool IsBlocked => this.Card?.IsBlocked ?? false;
+
+		/// <summary>
+		/// If the user sees when the person is online, and knows if they are.
+		/// </summary>
+		public bool ShowsOnlineStatus => this.OnlineAvailability is not null;
+
+		/// <summary>
+		/// The line under the name: if they are blocked or online, else their organization, else that they aren't verified.
+		/// </summary>
+		public string Subtitle
+		{
+			get
+			{
+				if (this.Card is null)
+					return string.Empty;
+
+				if (this.IsBlocked)
+					return ServiceRef.Localizer[nameof(AppResources.ContactBlockedLabel)];
+
+				switch (this.OnlineAvailability)
+				{
+					case Waher.Networking.XMPP.Availability.Online:
+					case Waher.Networking.XMPP.Availability.Chat:
+						return ServiceRef.Localizer[nameof(AppResources.ChatOnline)];
+
+					case Waher.Networking.XMPP.Availability.Away:
+					case Waher.Networking.XMPP.Availability.ExtendedAway:
+						return ServiceRef.Localizer[nameof(AppResources.ContactAway)];
+
+					case Waher.Networking.XMPP.Availability.DoNotDisturb:
+						return ServiceRef.Localizer[nameof(AppResources.ContactBusy)];
+				}
+
+				if (!string.IsNullOrWhiteSpace(this.Organization))
+					return this.Organization;
+
+				return this.IsVerified ? string.Empty : ServiceRef.Localizer[nameof(AppResources.ContactNotVerified)];
+			}
+		}
+
+		/// <summary>
+		/// If there is a line under the name.
+		/// </summary>
+		public bool HasSubtitle => !string.IsNullOrEmpty(this.Subtitle);
+
+		/// <summary>
+		/// If the person is online, away or busy, when the user sees their status. Null otherwise.
+		/// </summary>
+		private Availability? OnlineAvailability
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.contact?.BareJid))
+					return null;
+
+				try
+				{
+					RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.contact.BareJid);
+
+					if (Item is null || (Item.State != SubscriptionState.To && Item.State != SubscriptionState.Both) || !Item.HasLastPresence)
+						return null;
+
+					return Item.LastPresence.Availability == Waher.Networking.XMPP.Availability.Offline ? null : Item.LastPresence.Availability;
+				}
+				catch (Exception)
+				{
+					return null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// The initials of a name: the first letters of its first two words.
+		/// </summary>
+		private static string InitialsOf(string Name)
+		{
+			string[] Words = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			string Result = string.Concat(Words.Take(2).Select(Word => char.ToUpper(Word[0], System.Globalization.CultureInfo.CurrentCulture)));
+			return Result.Length > 0 ? Result : "?";
 		}
 
 		/// <inheritdoc/>
@@ -334,6 +496,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			this.OnPropertyChanged(nameof(this.ConnectionColor));
 			this.OnPropertyChanged(nameof(this.ConnectionSecondaryColor));
 			this.OnPropertyChanged(nameof(this.IsFriend));
+			this.OnPropertyChanged(nameof(this.ShowsOnlineStatus));
+			this.OnPropertyChanged(nameof(this.Subtitle));
+			this.OnPropertyChanged(nameof(this.HasSubtitle));
 		}
 
 		/// <summary>

@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Contacts.ContactCard.ContactCardPage"
+					  x:DataType="viewmodel:ContactCardViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.ContactCard"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<VisualElement.Resources>
+		<Style x:Key="CardIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<Style x:Key="Card"
+			   TargetType="Border">
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation1WL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 20" />
+		</Style>
+
+		<Style x:Key="SectionLabel"
+			   TargetType="Label">
+			<Setter Property="Margin"
+					Value="8,0,0,8" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+
+		<Style x:Key="ActionTile"
+			   TargetType="Border">
+			<Setter Property="Margin"
+					Value="4,0" />
+			<Setter Property="Padding"
+					Value="4,8" />
+			<Setter Property="MinimumHeightRequest"
+					Value="72" />
+			<Setter Property="StrokeThickness"
+					Value="0" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource TnPSuccessbgWL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 16" />
+		</Style>
+
+		<Style x:Key="ActionLabel"
+			   TargetType="Label">
+			<Setter Property="HorizontalTextAlignment"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentAccessWL}" />
+		</Style>
+
+		<Style x:Key="Chip"
+			   TargetType="Border">
+			<Setter Property="Margin"
+					Value="4" />
+			<Setter Property="Padding"
+					Value="12,5" />
+			<Setter Property="StrokeThickness"
+					Value="0" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource MarkdownChipWL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 15" />
+		</Style>
+	</VisualElement.Resources>
+
+	<ScrollView BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+		<VerticalStackLayout Padding="16,12,16,32"
+							 Spacing="16">
+
+			<!-- Header: back, title and edit -->
+			<Grid ColumnDefinitions="48,*,48">
+				<controls:TemplatedButton Grid.Column="0"
+										  Command="{Binding GoBackCommand}"
+										  SemanticProperties.Description="{l:Localize Back}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M15 18l-6-6 6-6"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource CardIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<Label Grid.Column="1"
+					   VerticalOptions="Center"
+					   HorizontalTextAlignment="Center"
+					   FontFamily="SpaceGroteskBold"
+					   FontSize="22"
+					   Text="{l:Localize ContactCardTitle}"
+					   TextColor="{DynamicResource ContentPrimaryWL}"
+					   SemanticProperties.HeadingLevel="Level1" />
+				<controls:TemplatedButton Grid.Column="2"
+										  IsVisible="{Binding IsFound}"
+										  Command="{Binding EditCommand}"
+										  SemanticProperties.Description="{l:Localize ContactEdit}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M4 20h4L19 9l-4-4L4 16v4z M13.5 6.5l4 4"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource CardIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+			</Grid>
+
+			<VerticalStackLayout Spacing="16"
+								 IsVisible="{Binding IsFound}">
+
+				<!-- Who: photo or initials, name, role and organization, and chips -->
+				<Border Padding="20,24,20,20"
+						Style="{StaticResource Card}">
+					<VerticalStackLayout Spacing="10">
+						<Grid HorizontalOptions="Center"
+							  WidthRequest="96"
+							  HeightRequest="96">
+							<Border StrokeThickness="0"
+									BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+									StrokeShape="RoundRectangle 48">
+								<Label HorizontalOptions="Center"
+									   VerticalOptions="Center"
+									   FontFamily="SpaceGroteskSemiBold"
+									   FontSize="34"
+									   Text="{Binding Initials}"
+									   TextColor="{DynamicResource ContentAccessWL}" />
+							</Border>
+							<Border IsVisible="{Binding HasPhoto}"
+									StrokeThickness="0"
+									StrokeShape="RoundRectangle 48">
+								<Image Aspect="AspectFill"
+									   Source="{Binding Photo}" />
+							</Border>
+							<Border HorizontalOptions="End"
+									VerticalOptions="End"
+									Margin="0,0,4,4"
+									WidthRequest="18"
+									HeightRequest="18"
+									IsVisible="{Binding HasPresence}"
+									StrokeThickness="3"
+									BackgroundColor="{Binding PresenceColor}"
+									Stroke="{DynamicResource SurfaceElevation1WL}"
+									StrokeShape="RoundRectangle 9" />
+						</Grid>
+						<Label HorizontalTextAlignment="Center"
+							   FontFamily="SpaceGroteskBold"
+							   FontSize="26"
+							   LineBreakMode="WordWrap"
+							   Text="{Binding Name}"
+							   TextColor="{DynamicResource ContentPrimaryWL}"
+							   SemanticProperties.HeadingLevel="Level2" />
+						<Label HorizontalTextAlignment="Center"
+							   IsVisible="{Binding HasSubtitle}"
+							   FontFamily="HaasGroteskRegular"
+							   FontSize="15"
+							   LineBreakMode="WordWrap"
+							   Text="{Binding Subtitle}"
+							   TextColor="{DynamicResource ContentSecondaryWL}" />
+						<!-- Chips in one row that scrolls sideways when it doesn't fit, so large text never clips them. A wrapping
+							 FlexLayout inside another one, filled while the page lays out, makes MAUI throw on Android. -->
+						<ScrollView HorizontalOptions="Center"
+									Orientation="Horizontal"
+									HorizontalScrollBarVisibility="Never">
+							<HorizontalStackLayout>
+								<Border IsVisible="{Binding IsVerified}"
+										BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+										Style="{StaticResource Chip}">
+									<HorizontalStackLayout Spacing="6">
+										<Path Data="M12 2l8 3v6.5c0 5-3.4 8.7-8 10.5-4.6-1.8-8-5.5-8-10.5V5l8-3z M8 12l3 3 5-6"
+											  Stroke="{DynamicResource ContentAccessWL}"
+											  Style="{StaticResource CardIcon}"
+											  Scale="0.67"
+											  Margin="-4" />
+										<Label VerticalOptions="Center"
+											   FontFamily="HaasGroteskMedium"
+											   FontSize="14"
+											   Text="{l:Localize ContactIdVerified}"
+											   TextColor="{DynamicResource ContentAccessWL}" />
+									</HorizontalStackLayout>
+								</Border>
+								<Border IsVisible="{Binding HasPresence}"
+										Style="{StaticResource Chip}">
+									<HorizontalStackLayout Spacing="6">
+										<BoxView VerticalOptions="Center"
+												 WidthRequest="8"
+												 HeightRequest="8"
+												 CornerRadius="4"
+												 Color="{Binding PresenceColor}" />
+										<Label VerticalOptions="Center"
+											   FontFamily="HaasGroteskRegular"
+											   FontSize="14"
+											   Text="{Binding PresenceText}"
+											   TextColor="{DynamicResource ContentPrimaryWL}" />
+									</HorizontalStackLayout>
+								</Border>
+								<Border IsVisible="{Binding IsBlocked}"
+										BackgroundColor="{DynamicResource TnPDangerbgWL}"
+										Style="{StaticResource Chip}">
+									<Label FontFamily="HaasGroteskMedium"
+										   FontSize="14"
+										   Text="{l:Localize ContactBlocked}"
+										   TextColor="{DynamicResource TnPDangerContentWL}" />
+								</Border>
+								<HorizontalStackLayout BindableLayout.ItemsSource="{Binding Labels}">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="x:String">
+											<Border Style="{StaticResource Chip}">
+												<Label FontFamily="HaasGroteskRegular"
+													   FontSize="14"
+													   Text="{Binding .}"
+													   TextColor="{DynamicResource ContentPrimaryWL}" />
+											</Border>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</HorizontalStackLayout>
+							</HorizontalStackLayout>
+						</ScrollView>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- What can be done: message, pay, contract and share. Four equal columns; a tile that can't be used is dimmed
+					 rather than hidden, so the row keeps its shape. Labels wrap, and the tiles grow with large text. -->
+				<Grid Margin="-4,0"
+					  ColumnDefinitions="*,*,*,*">
+					<controls:TemplatedButton Grid.Column="0"
+											  IsEnabled="{Binding CanChat}"
+											  Command="{Binding MessageCommand}"
+											  SemanticProperties.Description="{l:Localize Message}">
+						<Border InputTransparent="True"
+								Style="{StaticResource ActionTile}">
+							<VerticalStackLayout VerticalOptions="Center"
+												 Spacing="6">
+								<Path Data="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource CardIcon}" />
+								<Label Text="{l:Localize Message}"
+									   Style="{StaticResource ActionLabel}" />
+							</VerticalStackLayout>
+						</Border>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton Grid.Column="1"
+											  IsEnabled="{Binding CanPay}"
+											  Command="{Binding PayCommand}"
+											  SemanticProperties.Description="{l:Localize ContactPay}">
+						<Border InputTransparent="True"
+								Style="{StaticResource ActionTile}">
+							<Border.Triggers>
+								<DataTrigger Binding="{Binding CanPay}"
+											 TargetType="Border"
+											 Value="False">
+									<Setter Property="Opacity"
+											Value="0.45" />
+								</DataTrigger>
+							</Border.Triggers>
+							<VerticalStackLayout VerticalOptions="Center"
+												 Spacing="6">
+								<Path Data="M7 17L17 7M9 7h8v8"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource CardIcon}" />
+								<Label Text="{l:Localize ContactPay}"
+									   Style="{StaticResource ActionLabel}" />
+							</VerticalStackLayout>
+						</Border>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton Grid.Column="2"
+											  Command="{Binding ContractCommand}"
+											  SemanticProperties.Description="{l:Localize MarkdownContract}">
+						<Border InputTransparent="True"
+								Style="{StaticResource ActionTile}">
+							<VerticalStackLayout VerticalOptions="Center"
+												 Spacing="6">
+								<Path Data="M14 3H6v18h12V7l-4-4z M14 3v4h4M9 13h6M9 17h6"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource CardIcon}" />
+								<Label Text="{l:Localize MarkdownContract}"
+									   Style="{StaticResource ActionLabel}" />
+							</VerticalStackLayout>
+						</Border>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton Grid.Column="3"
+											  Command="{Binding ShareCommand}"
+											  SemanticProperties.Description="{l:Localize Share}">
+						<Border InputTransparent="True"
+								Style="{StaticResource ActionTile}">
+							<VerticalStackLayout VerticalOptions="Center"
+												 Spacing="6">
+								<Path Data="M12 3v12M7 8l5-5 5 5 M5 14v6h14v-6"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource CardIcon}" />
+								<Label Text="{l:Localize Share}"
+									   Style="{StaticResource ActionLabel}" />
+							</VerticalStackLayout>
+						</Border>
+					</controls:TemplatedButton>
+				</Grid>
+
+				<!-- Contact details: phone numbers, email addresses, addresses, organization and birthday -->
+				<VerticalStackLayout IsVisible="{Binding HasDetails}">
+					<Label Text="{l:Localize ContactDetailsHeader}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Border Padding="0,4"
+							Style="{StaticResource Card}">
+						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Details}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="viewmodel:ContactDetailItem">
+									<controls:TemplatedButton IsEnabled="{Binding IsActionable}"
+															  Command="{Binding OpenDetailCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ContactCardViewModel}}, x:DataType=viewmodel:ContactCardViewModel}"
+															  CommandParameter="{Binding .}">
+										<Grid ColumnDefinitions="24,*,Auto"
+											  Padding="16,10"
+											  MinimumHeightRequest="64"
+											  ColumnSpacing="14"
+											  InputTransparent="True">
+											<Path Data="{Binding Icon}"
+												  Stroke="{DynamicResource ContentSecondaryWL}"
+												  Style="{StaticResource CardIcon}" />
+											<VerticalStackLayout Grid.Column="1"
+																 VerticalOptions="Center">
+												<Label FontFamily="HaasGroteskRegular"
+													   FontSize="14"
+													   Text="{Binding Label}"
+													   TextColor="{DynamicResource ContentSecondaryWL}" />
+												<Label FontFamily="HaasGroteskRegular"
+													   FontSize="16"
+													   LineBreakMode="WordWrap"
+													   Text="{Binding Value}"
+													   TextColor="{DynamicResource ContentPrimaryWL}" />
+											</VerticalStackLayout>
+											<Border Grid.Column="2"
+													VerticalOptions="Center"
+													Padding="8,2"
+													IsVisible="{Binding IsFromId}"
+													StrokeThickness="0"
+													BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+													StrokeShape="RoundRectangle 10">
+												<Label FontFamily="HaasGroteskMedium"
+													   FontSize="12"
+													   Text="{l:Localize ContactFromId}"
+													   TextColor="{DynamicResource ContentAccessWL}" />
+											</Border>
+										</Grid>
+									</controls:TemplatedButton>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- Online status: what each of them sees -->
+				<VerticalStackLayout IsVisible="{Binding CanChat}">
+					<Label Text="{l:Localize ContactOnlineStatus}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Border Padding="16,4"
+							Style="{StaticResource Card}">
+						<VerticalStackLayout>
+							<Grid ColumnDefinitions="*,Auto"
+								  MinimumHeightRequest="64"
+								  ColumnSpacing="12">
+								<VerticalStackLayout VerticalOptions="Center"
+													 Padding="0,8">
+									<Label FontFamily="HaasGroteskMedium"
+										   FontSize="16"
+										   LineBreakMode="WordWrap"
+										   Text="{Binding SeeOnlineText}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+									<Label IsVisible="{Binding HasSeeOnlineHint}"
+										   FontFamily="HaasGroteskRegular"
+										   FontSize="14"
+										   LineBreakMode="WordWrap"
+										   Text="{Binding SeeOnlineHint}"
+										   TextColor="{DynamicResource ContentSecondaryWL}" />
+								</VerticalStackLayout>
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										MinimumHeightRequest="48"
+										MinimumWidthRequest="48"
+										IsToggled="{Binding SeesOnline, Mode=TwoWay}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{Binding SeeOnlineText}" />
+							</Grid>
+							<BoxView HeightRequest="1"
+									 Color="{DynamicResource SurfaceDividerWL}" />
+							<Grid ColumnDefinitions="*,Auto"
+								  MinimumHeightRequest="64"
+								  ColumnSpacing="12">
+								<VerticalStackLayout VerticalOptions="Center"
+													 Padding="0,8">
+									<Label FontFamily="HaasGroteskMedium"
+										   FontSize="16"
+										   LineBreakMode="WordWrap"
+										   Text="{Binding LetSeeOnlineText}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+									<Label IsVisible="{Binding HasLetSeeOnlineHint}"
+										   FontFamily="HaasGroteskRegular"
+										   FontSize="14"
+										   LineBreakMode="WordWrap"
+										   Text="{Binding LetSeeOnlineHint}"
+										   TextColor="{DynamicResource ContentSecondaryWL}" />
+								</VerticalStackLayout>
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										MinimumHeightRequest="48"
+										MinimumWidthRequest="48"
+										IsEnabled="{Binding CanChangeLetsSeeOnline}"
+										IsToggled="{Binding LetsSeeOnline, Mode=TwoWay}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{Binding LetSeeOnlineText}" />
+							</Grid>
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- The user's own notes -->
+				<VerticalStackLayout IsVisible="{Binding HasNotes}">
+					<Label Text="{l:Localize ContactNotes}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Border Padding="16,14"
+							Style="{StaticResource Card}">
+						<Label FontFamily="HaasGroteskRegular"
+							   FontSize="16"
+							   LineBreakMode="WordWrap"
+							   Text="{Binding Notes}"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- Technical details: the chat address and ID number, folded away -->
+				<Border Style="{StaticResource Card}">
+					<VerticalStackLayout>
+						<controls:TemplatedButton Command="{Binding ToggleTechnicalCommand}"
+												  SemanticProperties.Description="{l:Localize ContactTechnicalDetails}">
+							<Grid ColumnDefinitions="*,24"
+								  Padding="16,10"
+								  MinimumHeightRequest="64"
+								  ColumnSpacing="12"
+								  InputTransparent="True">
+								<VerticalStackLayout VerticalOptions="Center">
+									<Label FontFamily="HaasGroteskMedium"
+										   FontSize="16"
+										   Text="{l:Localize ContactTechnicalDetails}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+									<Label FontFamily="HaasGroteskRegular"
+										   FontSize="14"
+										   LineBreakMode="WordWrap"
+										   Text="{l:Localize ContactTechnicalDetailsHint}"
+										   TextColor="{DynamicResource ContentSecondaryWL}" />
+								</VerticalStackLayout>
+								<Path Grid.Column="1"
+									  Data="M6 9l6 6 6-6"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource CardIcon}">
+									<Path.Triggers>
+										<DataTrigger Binding="{Binding IsTechnicalExpanded}"
+													 TargetType="Path"
+													 Value="True">
+											<Setter Property="Rotation"
+													Value="180" />
+										</DataTrigger>
+									</Path.Triggers>
+								</Path>
+							</Grid>
+						</controls:TemplatedButton>
+						<VerticalStackLayout Padding="16,0,8,8"
+											 IsVisible="{Binding IsTechnicalExpanded}">
+							<Grid ColumnDefinitions="*,48"
+								  IsVisible="{Binding HasChatAddress}"
+								  MinimumHeightRequest="56">
+								<VerticalStackLayout VerticalOptions="Center">
+									<Label FontFamily="HaasGroteskRegular"
+										   FontSize="14"
+										   Text="{l:Localize ContactChatAddress}"
+										   TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label FontFamily="HaasGroteskRegular"
+										   FontSize="15"
+										   LineBreakMode="CharacterWrap"
+										   Text="{Binding ChatAddressText}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+								</VerticalStackLayout>
+								<controls:TemplatedButton Grid.Column="1"
+														  VerticalOptions="Center"
+														  Command="{Binding CopyChatAddressCommand}"
+														  SemanticProperties.Description="{l:Localize MarkdownCopy}">
+									<Grid WidthRequest="48"
+										  HeightRequest="48"
+										  InputTransparent="True">
+										<Path Data="M11 9h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
+											  Stroke="{DynamicResource ContentSecondaryWL}"
+											  Style="{StaticResource CardIcon}" />
+									</Grid>
+								</controls:TemplatedButton>
+							</Grid>
+							<Grid ColumnDefinitions="*,48"
+								  IsVisible="{Binding HasLegalId}"
+								  MinimumHeightRequest="56">
+								<VerticalStackLayout VerticalOptions="Center">
+									<Label FontFamily="HaasGroteskRegular"
+										   FontSize="14"
+										   Text="{l:Localize ContactIdNumber}"
+										   TextColor="{DynamicResource ContentSecondaryWL}" />
+									<Label FontFamily="HaasGroteskRegular"
+										   FontSize="15"
+										   LineBreakMode="CharacterWrap"
+										   Text="{Binding LegalIdText}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+								</VerticalStackLayout>
+								<controls:TemplatedButton Grid.Column="1"
+														  VerticalOptions="Center"
+														  Command="{Binding CopyLegalIdCommand}"
+														  SemanticProperties.Description="{l:Localize MarkdownCopy}">
+									<Grid WidthRequest="48"
+										  HeightRequest="48"
+										  InputTransparent="True">
+										<Path Data="M11 9h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
+											  Stroke="{DynamicResource ContentSecondaryWL}"
+											  Style="{StaticResource CardIcon}" />
+									</Grid>
+								</controls:TemplatedButton>
+							</Grid>
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Block or unblock, and remove -->
+				<Border Padding="0,4"
+						Style="{StaticResource Card}">
+					<VerticalStackLayout>
+						<controls:TemplatedButton Command="{Binding ToggleBlockCommand}"
+												  SemanticProperties.Description="{Binding BlockText}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,10"
+								  MinimumHeightRequest="56"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M12 3a9 9 0 1 1 0 18a9 9 0 1 1 0-18 M5.6 5.6l12.8 12.8"
+									  Stroke="{DynamicResource TnPDangerContentWL}"
+									  Style="{StaticResource CardIcon}" />
+								<Label Grid.Column="1"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="16"
+									   LineBreakMode="WordWrap"
+									   Text="{Binding BlockText}"
+									   TextColor="{DynamicResource TnPDangerContentWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+						<BoxView Margin="54,0,0,0"
+								 HeightRequest="1"
+								 Color="{DynamicResource SurfaceDividerWL}" />
+						<controls:TemplatedButton Command="{Binding RemoveCommand}"
+												  SemanticProperties.Description="{l:Localize ContactRemove}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,10"
+								  MinimumHeightRequest="56"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"
+									  Stroke="{DynamicResource TnPDangerContentWL}"
+									  Style="{StaticResource CardIcon}" />
+								<Label Grid.Column="1"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="16"
+									   Text="{l:Localize ContactRemove}"
+									   TextColor="{DynamicResource TnPDangerContentWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+					</VerticalStackLayout>
+				</Border>
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
+</base:BaseContentPage>

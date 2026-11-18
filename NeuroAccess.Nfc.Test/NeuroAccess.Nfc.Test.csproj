@@ -31,6 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\NeuroAccessMaui\Services\Contacts\VCard\*.cs" LinkBase="VCards\Source" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 

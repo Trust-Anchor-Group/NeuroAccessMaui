@@ -19,9 +19,11 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Popups.Contacts;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Security;
+using Contact = NeuroAccessMaui.Services.Contacts.Contact;
 
 namespace NeuroAccessMaui.Services.Notification
 {
@@ -89,9 +91,10 @@ namespace NeuroAccessMaui.Services.Notification
 			if (string.IsNullOrEmpty(Intent.EntityId))
 				return NotificationRouteResult.NoHandler;
 
-			ContactInfo? Info = await ContactInfo.FindByBareJid(Intent.EntityId);
-			string? FriendlyName = Info?.FriendlyName ?? Intent.EntityId;
-			string? LegalId = Info?.LegalId;
+			Contact? Card = await ContactStore.FindByChatAddressAsync(Intent.EntityId);
+			ContactInfo? Info = Card is null ? await ContactInfo.FindByBareJid(Intent.EntityId) : null;
+			string? FriendlyName = Card?.DisplayName ?? Info?.FriendlyName ?? Intent.EntityId;
+			string? LegalId = Card?.LegalId ?? Info?.LegalId;
 
 			ChatNavigationArgs Args = new(LegalId, Intent.EntityId, FriendlyName);
 			await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args);
@@ -107,6 +110,11 @@ namespace NeuroAccessMaui.Services.Notification
 		private async Task<NotificationRouteResult> RoutePresenceAsync(NotificationIntent Intent, CancellationToken CancellationToken)
 		{
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage));
+
+			ContactRequest? Request = ContactRequests.Find(Intent.EntityId);
+			if (Request is not null)
+				await ContactRequestPopup.ShowAsync(Request);
+
 			return NotificationRouteResult.Deferred;
 		}
 
@@ -245,8 +253,9 @@ namespace NeuroAccessMaui.Services.Notification
 
 					if (RequestorIdentity is null && !string.IsNullOrEmpty(RequestorFullJid))
 					{
-						ContactInfo? Info = await ContactInfo.FindByBareJid(RequestorFullJid);
-						RequestorIdentity = Info?.LegalIdentity;
+						string RequestorBareJid = XmppClient.GetBareJID(RequestorFullJid);
+						Contact? Card = await ContactStore.FindByChatAddressAsync(RequestorBareJid);
+						RequestorIdentity = Card?.LegalIdentity ?? (await ContactInfo.FindByBareJid(RequestorBareJid))?.LegalIdentity;
 					}
 
 					if (RequestorIdentity is null || string.IsNullOrEmpty(RequestorFullJid))

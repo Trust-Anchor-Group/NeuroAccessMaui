@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Contacts.Import.ImportContactsPage"
+					  x:DataType="viewmodel:ImportContactsViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Import">
+
+	<VisualElement.Resources>
+		<Style x:Key="ImportIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<!-- A card in the file: chosen or not, with its name and what importing it does -->
+		<DataTemplate x:Key="CardTemplate"
+					  x:DataType="viewmodel:ImportContactItem">
+			<Grid Padding="16,0">
+				<controls:TemplatedButton IsEnabled="{Binding CanSelect}"
+										  Command="{Binding ToggleCommand}"
+										  SemanticProperties.Description="{Binding AccessibleText}">
+					<Grid ColumnDefinitions="48,40,*"
+						  Padding="0,8,12,8"
+						  MinimumHeightRequest="64"
+						  ColumnSpacing="10"
+						  InputTransparent="True"
+						  BackgroundColor="{DynamicResource SurfaceElevation1WL}">
+						<Border Grid.Column="0"
+								HorizontalOptions="Center"
+								VerticalOptions="Center"
+								WidthRequest="24"
+								HeightRequest="24"
+								StrokeThickness="2"
+								Stroke="{DynamicResource SurfaceDividerWL}"
+								BackgroundColor="Transparent"
+								StrokeShape="RoundRectangle 6">
+							<Border.Triggers>
+								<DataTrigger Binding="{Binding IsSelected}"
+											 TargetType="Border"
+											 Value="True">
+									<Setter Property="Stroke"
+											Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+									<Setter Property="BackgroundColor"
+											Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<Path Data="M5 12l4.5 4.5L19 7"
+								  IsVisible="{Binding IsSelected}"
+								  Stroke="White"
+								  StrokeThickness="2.4"
+								  Style="{StaticResource ImportIcon}"
+								  Scale="0.75"
+								  Margin="-4" />
+						</Border>
+						<Border Grid.Column="1"
+								VerticalOptions="Center"
+								WidthRequest="40"
+								HeightRequest="40"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 20">
+							<Label Text="{Binding Initials}"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center"
+								   FontFamily="SpaceGroteskSemiBold"
+								   FontSize="15"
+								   TextColor="{DynamicResource ContentAccessWL}" />
+						</Border>
+						<VerticalStackLayout Grid.Column="2"
+											 VerticalOptions="Center"
+											 Spacing="2">
+							<Label Text="{Binding Name}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="16"
+								   LineBreakMode="TailTruncation"
+								   MaxLines="1"
+								   TextColor="{DynamicResource ContentPrimaryWL}">
+								<Label.Triggers>
+									<DataTrigger Binding="{Binding CanSelect}"
+												 TargetType="Label"
+												 Value="False">
+										<Setter Property="TextColor"
+												Value="{DynamicResource ContentSecondaryWL}" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+							<Label Text="{Binding StatusText}"
+								   FontFamily="HaasGroteskRegular"
+								   FontSize="14"
+								   LineBreakMode="WordWrap"
+								   TextColor="{DynamicResource ContentSecondaryWL}">
+								<Label.Triggers>
+									<DataTrigger Binding="{Binding IsUpdate}"
+												 TargetType="Label"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource TnPWarningContentWL}" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+						</VerticalStackLayout>
+					</Grid>
+				</controls:TemplatedButton>
+				<BoxView VerticalOptions="End"
+						 Margin="98,0,0,0"
+						 HeightRequest="1"
+						 Color="{DynamicResource SurfaceDividerWL}" />
+			</Grid>
+		</DataTemplate>
+	</VisualElement.Resources>
+
+	<Grid RowDefinitions="Auto,*,Auto"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+		<!-- Header: back, and the page's title -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="48,*,48"
+			  Padding="8,10,8,10">
+			<controls:TemplatedButton Grid.Column="0"
+									  VerticalOptions="Center"
+									  Command="{Binding GoBackCommand}"
+									  SemanticProperties.Description="{l:Localize Back}">
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Path Data="M15 18l-6-6 6-6"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource ImportIcon}" />
+				</Grid>
+			</controls:TemplatedButton>
+			<Label Grid.Column="1"
+				   Text="{l:Localize ContactImportTitle}"
+				   VerticalOptions="Center"
+				   HorizontalTextAlignment="Center"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="22"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   SemanticProperties.HeadingLevel="Level1" />
+		</Grid>
+
+		<!-- The file, how many cards it has, and the cards -->
+		<CollectionView Grid.Row="1"
+						IsVisible="{Binding HasCards}"
+						ItemsSource="{Binding Items}"
+						ItemTemplate="{StaticResource CardTemplate}"
+						SelectionMode="None">
+			<CollectionView.Header>
+				<VerticalStackLayout Padding="16,4,16,12"
+									 Spacing="14">
+					<Border Padding="16,14"
+							StrokeThickness="1"
+							Stroke="{DynamicResource SurfaceDividerWL}"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 20">
+						<Grid ColumnDefinitions="48,*"
+							  ColumnSpacing="14">
+							<Border WidthRequest="48"
+									HeightRequest="48"
+									StrokeThickness="0"
+									BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+									StrokeShape="RoundRectangle 14">
+								<Path Data="M14 3H6v18h12V7l-4-4z M14 3v4h4"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource ImportIcon}" />
+							</Border>
+							<VerticalStackLayout Grid.Column="1"
+												 VerticalOptions="Center"
+												 Spacing="2">
+								<Label Text="{Binding FileName}"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="16"
+									   LineBreakMode="MiddleTruncation"
+									   MaxLines="1"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+								<Label Text="{Binding FoundText}"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="14"
+									   TextColor="{DynamicResource ContentSecondaryWL}" />
+							</VerticalStackLayout>
+						</Grid>
+					</Border>
+
+					<FlexLayout Wrap="Wrap"
+								AlignItems="Start"
+								JustifyContent="Start">
+						<Border Margin="0,0,8,8"
+								Padding="12,5"
+								IsVisible="{Binding HasNew}"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 15">
+							<Label Text="{Binding NewText}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="14"
+								   TextColor="{DynamicResource ContentAccessWL}" />
+						</Border>
+						<Border Margin="0,0,8,8"
+								Padding="12,5"
+								IsVisible="{Binding HasUpdated}"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPWarningbgWL}"
+								StrokeShape="RoundRectangle 15">
+							<Label Text="{Binding UpdatedText}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="14"
+								   TextColor="{DynamicResource TnPWarningContentWL}" />
+						</Border>
+						<Border Margin="0,0,8,8"
+								Padding="12,5"
+								IsVisible="{Binding HasUnchanged}"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource MarkdownChipWL}"
+								StrokeShape="RoundRectangle 15">
+							<Label Text="{Binding UnchangedText}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="14"
+								   TextColor="{DynamicResource ContentSecondaryWL}" />
+						</Border>
+					</FlexLayout>
+
+					<Label Text="{Binding SkippedText}"
+						   IsVisible="{Binding HasSkipped}"
+						   FontFamily="HaasGroteskRegular"
+						   FontSize="14"
+						   LineBreakMode="WordWrap"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+				</VerticalStackLayout>
+			</CollectionView.Header>
+		</CollectionView>
+
+		<ActivityIndicator Grid.Row="1"
+						   VerticalOptions="Center"
+						   HorizontalOptions="Center"
+						   IsVisible="{Binding IsReading}"
+						   IsRunning="{Binding IsReading}"
+						   Color="{DynamicResource ContentPrimaryWL}" />
+
+		<!-- Imported contacts aren't verified, and the import button -->
+		<VerticalStackLayout Grid.Row="2"
+							 Padding="16,14,16,20"
+							 Spacing="10"
+							 IsVisible="{Binding HasCards}"
+							 BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+			<BoxView Margin="-16,-14,-16,0"
+					 HeightRequest="1"
+					 Color="{DynamicResource SurfaceDividerWL}" />
+			<Label Text="{l:Localize ContactImportNotVerified}"
+				   FontFamily="HaasGroteskRegular"
+				   FontSize="14"
+				   LineBreakMode="WordWrap"
+				   TextColor="{DynamicResource ContentSecondaryWL}" />
+			<controls:TemplatedButton Command="{Binding ImportCommand}"
+									  SemanticProperties.Description="{Binding ImportText}">
+				<controls:TemplatedButton.Triggers>
+					<Trigger Property="IsEnabled" TargetType="controls:TemplatedButton" Value="False">
+						<Setter Property="Opacity" Value="0.4" />
+					</Trigger>
+				</controls:TemplatedButton.Triggers>
+				<Border MinimumHeightRequest="52"
+						Padding="16,12"
+						InputTransparent="True"
+						StrokeThickness="0"
+						BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+						StrokeShape="RoundRectangle 14">
+					<Grid>
+						<Label Text="{Binding ImportText}"
+							   IsVisible="{Binding IsImporting, Converter={StaticResource InvertedBoolConverter}}"
+							   HorizontalTextAlignment="Center"
+							   VerticalOptions="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="16"
+							   TextColor="White" />
+						<ActivityIndicator HorizontalOptions="Center"
+										   VerticalOptions="Center"
+										   HeightRequest="24"
+										   WidthRequest="24"
+										   IsVisible="{Binding IsImporting}"
+										   IsRunning="{Binding IsImporting}"
+										   Color="White" />
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+		</VerticalStackLayout>
+	</Grid>
+</base:BaseContentPage>

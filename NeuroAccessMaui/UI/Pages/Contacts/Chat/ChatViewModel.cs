@@ -16,6 +16,7 @@ using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
 using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Converters;
+using NeuroAccessMaui.UI.Pages.Contacts.ContactCard;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
@@ -25,7 +26,6 @@ using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
-using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroFeatures;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP;
@@ -33,6 +33,7 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Events;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
+using Contact = NeuroAccessMaui.Services.Contacts.Contact;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
@@ -1709,6 +1710,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					return;
 				}
 
+				Contact? Card = await ContactStore.FindAsync(this.BareJid, this.LegalId);
+				if (Card is not null)
+				{
+					await ServiceRef.NavigationService.GoToAsync(nameof(ContactCardPage), new ContactCardNavigationArgs(Card), BackMethod.Pop);
+					return;
+				}
+
 				ContactInfo? Info = await ContactInfo.FindByBareJid(this.BareJid);
 
 				if (Info?.LegalIdentity is not null)
@@ -1756,27 +1764,27 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			switch (Command.ToLower(CultureInfo.InvariantCulture))
 			{
 				case "subscribe":
-					SubscribeToViewModel SubscribeToViewModel = new(Jid);
-					SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
-
-					await ServiceRef.PopupService.PushAsync(SubscribeToPopup);
-					bool? SubscribeTo = await SubscribeToViewModel.Result;
-
-					if (SubscribeTo.HasValue && SubscribeTo.Value)
+					// A shared contact: someone the user has is opened, and anyone else can be added.
+					Contact? Existing = await ContactStore.FindByChatAddressAsync(Jid);
+					if (Existing is not null)
 					{
-						string IdXml;
-
-						if (ServiceRef.TagProfile.LegalIdentity is null)
-							IdXml = string.Empty;
-						else
-						{
-							StringBuilder Xml = new();
-							ServiceRef.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
-							IdXml = Xml.ToString();
-						}
-
-						ServiceRef.XmppService.RequestPresenceSubscription(Jid, IdXml);
+						await ServiceRef.NavigationService.GoToAsync(nameof(ContactCardPage), new ContactCardNavigationArgs(Existing), BackMethod.Pop);
+						return true;
 					}
+
+					int At = Jid.IndexOf('@');
+					string Name = At > 0 ? Jid[..At] : Jid;
+
+					if (!await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ContactAddTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ContactAddQuestion), Name],
+						ServiceRef.Localizer[nameof(AppResources.ContactAdd)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
+					{
+						return true;
+					}
+
+					Contact Added = await ContactStore.AddOrUpdateAsync(Jid, null, null);
+					ServiceRef.XmppService.RequestPresenceSubscription(Jid, ContactRequests.OwnIdentityXml());
+					await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.ContactRequestSent), Added.DisplayName]);
 					return true;
 
 				default:

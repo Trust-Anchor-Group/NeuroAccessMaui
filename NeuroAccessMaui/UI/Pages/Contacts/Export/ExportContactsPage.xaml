@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Contacts.Export.ExportContactsPage"
+					  x:DataType="viewmodel:ExportContactsViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Export">
+
+	<VisualElement.Resources>
+		<Style x:Key="ExportIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<!-- A contact: chosen or not, with its name, and if it is blocked -->
+		<DataTemplate x:Key="ContactTemplate"
+					  x:DataType="viewmodel:ExportContactItem">
+			<Grid Padding="16,0">
+				<controls:TemplatedButton Command="{Binding ToggleCommand}"
+										  SemanticProperties.Description="{Binding AccessibleText}">
+					<Grid ColumnDefinitions="48,40,*"
+						  Padding="0,8,12,8"
+						  MinimumHeightRequest="64"
+						  ColumnSpacing="10"
+						  InputTransparent="True"
+						  BackgroundColor="{DynamicResource SurfaceElevation1WL}">
+						<Border Grid.Column="0"
+								HorizontalOptions="Center"
+								VerticalOptions="Center"
+								WidthRequest="24"
+								HeightRequest="24"
+								StrokeThickness="2"
+								Stroke="{DynamicResource SurfaceDividerWL}"
+								BackgroundColor="Transparent"
+								StrokeShape="RoundRectangle 6">
+							<Border.Triggers>
+								<DataTrigger Binding="{Binding IsSelected}"
+											 TargetType="Border"
+											 Value="True">
+									<Setter Property="Stroke"
+											Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+									<Setter Property="BackgroundColor"
+											Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<Path Data="M5 12l4.5 4.5L19 7"
+								  IsVisible="{Binding IsSelected}"
+								  Stroke="White"
+								  StrokeThickness="2.4"
+								  Style="{StaticResource ExportIcon}"
+								  Scale="0.75"
+								  Margin="-4" />
+						</Border>
+						<Border Grid.Column="1"
+								VerticalOptions="Center"
+								WidthRequest="40"
+								HeightRequest="40"
+								StrokeThickness="0"
+								BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+								StrokeShape="RoundRectangle 20">
+							<Label Text="{Binding Initials}"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center"
+								   FontFamily="SpaceGroteskSemiBold"
+								   FontSize="15"
+								   TextColor="{DynamicResource ContentAccessWL}" />
+						</Border>
+						<VerticalStackLayout Grid.Column="2"
+											 VerticalOptions="Center"
+											 Spacing="2">
+							<Label Text="{Binding Name}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="16"
+								   LineBreakMode="TailTruncation"
+								   MaxLines="1"
+								   TextColor="{DynamicResource ContentPrimaryWL}" />
+							<Label Text="{l:Localize ContactExportBlocked}"
+								   IsVisible="{Binding IsBlocked}"
+								   FontFamily="HaasGroteskRegular"
+								   FontSize="14"
+								   TextColor="{DynamicResource TnPDangerContentWL}" />
+						</VerticalStackLayout>
+					</Grid>
+				</controls:TemplatedButton>
+				<BoxView VerticalOptions="End"
+						 Margin="98,0,0,0"
+						 HeightRequest="1"
+						 Color="{DynamicResource SurfaceDividerWL}" />
+			</Grid>
+		</DataTemplate>
+	</VisualElement.Resources>
+
+	<Grid RowDefinitions="Auto,*,Auto"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+		<!-- Header: back, the page's title, and choosing all or none -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="48,*,Auto"
+			  Padding="8,10,8,10"
+			  ColumnSpacing="4">
+			<controls:TemplatedButton Grid.Column="0"
+									  VerticalOptions="Center"
+									  Command="{Binding GoBackCommand}"
+									  SemanticProperties.Description="{l:Localize Back}">
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Path Data="M15 18l-6-6 6-6"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource ExportIcon}" />
+				</Grid>
+			</controls:TemplatedButton>
+			<Label Grid.Column="1"
+				   Text="{l:Localize ContactExportTitle}"
+				   VerticalOptions="Center"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="22"
+				   LineBreakMode="TailTruncation"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   SemanticProperties.HeadingLevel="Level1" />
+			<controls:TemplatedButton Grid.Column="2"
+									  VerticalOptions="Center"
+									  IsVisible="{Binding HasContacts}"
+									  Command="{Binding SelectAllCommand}"
+									  SemanticProperties.Description="{Binding SelectAllText}">
+				<Grid MinimumWidthRequest="48"
+					  MinimumHeightRequest="48"
+					  Padding="8,0"
+					  InputTransparent="True">
+					<Label Text="{Binding SelectAllText}"
+						   VerticalOptions="Center"
+						   FontFamily="HaasGroteskMedium"
+						   FontSize="15"
+						   TextColor="{DynamicResource ContentAccessWL}" />
+				</Grid>
+			</controls:TemplatedButton>
+		</Grid>
+
+		<!-- What goes with the contacts, and the contacts -->
+		<CollectionView Grid.Row="1"
+						IsVisible="{Binding HasContacts}"
+						ItemsSource="{Binding Items}"
+						ItemTemplate="{StaticResource ContactTemplate}"
+						SelectionMode="None">
+			<CollectionView.Header>
+				<VerticalStackLayout Padding="16,4,16,12">
+					<Border StrokeThickness="1"
+							Stroke="{DynamicResource SurfaceDividerWL}"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 20">
+						<VerticalStackLayout>
+							<Grid ColumnDefinitions="*,Auto"
+								  Padding="16,8"
+								  MinimumHeightRequest="56"
+								  ColumnSpacing="12">
+								<Label Text="{l:Localize ContactExportIncludePhotos}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="16"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										IsToggled="{Binding IncludePhotos, Mode=TwoWay}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{l:Localize ContactExportIncludePhotos}" />
+							</Grid>
+							<BoxView Margin="16,0,0,0"
+									 HeightRequest="1"
+									 Color="{DynamicResource SurfaceDividerWL}" />
+							<Grid ColumnDefinitions="*,Auto"
+								  Padding="16,8"
+								  MinimumHeightRequest="56"
+								  ColumnSpacing="12">
+								<Label Text="{l:Localize ContactExportIncludeNotes}"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="16"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										IsToggled="{Binding IncludeNotes, Mode=TwoWay}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{l:Localize ContactExportIncludeNotes}" />
+							</Grid>
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+			</CollectionView.Header>
+		</CollectionView>
+
+		<!-- No contacts to export -->
+		<Label Grid.Row="1"
+			   Margin="32"
+			   Text="{l:Localize ContactExportNone}"
+			   IsVisible="{Binding IsEmpty}"
+			   VerticalOptions="Center"
+			   HorizontalTextAlignment="Center"
+			   FontFamily="HaasGroteskRegular"
+			   FontSize="16"
+			   TextColor="{DynamicResource ContentSecondaryWL}" />
+
+		<ActivityIndicator Grid.Row="1"
+						   VerticalOptions="Center"
+						   HorizontalOptions="Center"
+						   IsVisible="{Binding IsLoading}"
+						   IsRunning="{Binding IsLoading}"
+						   Color="{DynamicResource ContentPrimaryWL}" />
+
+		<!-- Sharing the file -->
+		<VerticalStackLayout Grid.Row="2"
+							 Padding="16,14,16,20"
+							 Spacing="10"
+							 IsVisible="{Binding HasContacts}"
+							 BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+			<BoxView Margin="-16,-14,-16,0"
+					 HeightRequest="1"
+					 Color="{DynamicResource SurfaceDividerWL}" />
+			<controls:TemplatedButton Command="{Binding ShareCommand}"
+									  SemanticProperties.Description="{Binding ShareText}">
+				<controls:TemplatedButton.Triggers>
+					<Trigger Property="IsEnabled" TargetType="controls:TemplatedButton" Value="False">
+						<Setter Property="Opacity" Value="0.4" />
+					</Trigger>
+				</controls:TemplatedButton.Triggers>
+				<Border MinimumHeightRequest="52"
+						Padding="16,12"
+						InputTransparent="True"
+						StrokeThickness="0"
+						BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+						StrokeShape="RoundRectangle 14">
+					<Grid>
+						<Label Text="{Binding ShareText}"
+							   IsVisible="{Binding IsSharing, Converter={StaticResource InvertedBoolConverter}}"
+							   HorizontalTextAlignment="Center"
+							   VerticalOptions="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="16"
+							   TextColor="White" />
+						<ActivityIndicator HorizontalOptions="Center"
+										   VerticalOptions="Center"
+										   HeightRequest="24"
+										   WidthRequest="24"
+										   IsVisible="{Binding IsSharing}"
+										   IsRunning="{Binding IsSharing}"
+										   Color="White" />
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+		</VerticalStackLayout>
+	</Grid>
+</base:BaseContentPage>

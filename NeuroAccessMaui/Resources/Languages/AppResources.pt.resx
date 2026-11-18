@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Abuse" xml:space="preserve">
+    <value>Abuso</value>
+  </data>
+  <data name="Block" xml:space="preserve">
+    <value>Bloquear</value>
+  </data>
   <data name="ChatCloseShare" xml:space="preserve">
     <value>Fechar compartilhamento</value>
   </data>
@@ -198,6 +204,465 @@
   <data name="ChatYou" xml:space="preserve">
     <value>Você</value>
   </data>
+  <data name="ContactAdd" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+  <data name="ContactAddEmail" xml:space="preserve">
+    <value>Adicionar e-mail</value>
+  </data>
+  <data name="ContactAddImport" xml:space="preserve">
+    <value>Importar de um arquivo</value>
+  </data>
+  <data name="ContactAddImportHint" xml:space="preserve">
+    <value>Contatos salvos como arquivo .vcf</value>
+  </data>
+  <data name="ContactAddNote" xml:space="preserve">
+    <value>Os contatos que você importa ou digita ficam sem verificação até compartilharem com você o ID verificado.</value>
+  </data>
+  <data name="ContactAddPhone" xml:space="preserve">
+    <value>Adicionar número de telefone</value>
+  </data>
+  <data name="ContactAddQuestion" xml:space="preserve">
+    <value>Adicionar {0} como contato? A pessoa recebe um pedido para aceitar.</value>
+  </data>
+  <data name="ContactAddScan" xml:space="preserve">
+    <value>Escanear o código da pessoa</value>
+  </data>
+  <data name="ContactAddScanHint" xml:space="preserve">
+    <value>Aponte a câmera para o código QR no celular da pessoa</value>
+  </data>
+  <data name="ContactAddShowCode" xml:space="preserve">
+    <value>Mostrar meu código</value>
+  </data>
+  <data name="ContactAddShowCodeHint" xml:space="preserve">
+    <value>Deixe a pessoa escanear com o app dela</value>
+  </data>
+  <data name="ContactAddSubtitle" xml:space="preserve">
+    <value>Escolha como encontrar a pessoa.</value>
+  </data>
+  <data name="ContactAddTitle" xml:space="preserve">
+    <value>Adicionar um contato</value>
+  </data>
+  <data name="ContactAddTypeIn" xml:space="preserve">
+    <value>Digitar manualmente</value>
+  </data>
+  <data name="ContactAddTypeInHint" xml:space="preserve">
+    <value>Endereço de chat e nome</value>
+  </data>
+  <data name="ContactAlreadyAdded" xml:space="preserve">
+    <value>{0} já está nos seus contatos.</value>
+  </data>
+  <data name="ContactAway" xml:space="preserve">
+    <value>Ausente</value>
+  </data>
+  <data name="ContactBirthday" xml:space="preserve">
+    <value>Aniversário</value>
+  </data>
+  <data name="ContactBirthdayFormat" xml:space="preserve">
+    <value>AAAA-MM-DD</value>
+  </data>
+  <data name="ContactBirthdayInvalid" xml:space="preserve">
+    <value>Escreva o aniversário como ano-mês-dia, por exemplo 1985-04-12.</value>
+  </data>
+  <data name="ContactBlock" xml:space="preserve">
+    <value>Bloquear {0}</value>
+  </data>
+  <data name="ContactBlockButton" xml:space="preserve">
+    <value>Bloquear</value>
+  </data>
+  <data name="ContactBlocked" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
+  <data name="ContactBlockedLabel" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
+  <data name="ContactBlockedPeople" xml:space="preserve">
+    <value>Pessoas bloqueadas</value>
+  </data>
+  <data name="ContactBlockedPeopleHint" xml:space="preserve">
+    <value>Veja quem você bloqueou</value>
+  </data>
+  <data name="ContactBlockHint" xml:space="preserve">
+    <value>A pessoa não poderá enviar mensagens nem pedidos</value>
+  </data>
+  <data name="ContactBlockName" xml:space="preserve">
+    <value>Bloquear {0}</value>
+  </data>
+  <data name="ContactBlockOrReport" xml:space="preserve">
+    <value>Bloquear ou denunciar</value>
+  </data>
+  <data name="ContactBlockOrReportTitle" xml:space="preserve">
+    <value>Bloquear ou denunciar {0}</value>
+  </data>
+  <data name="ContactBlockQuestion" xml:space="preserve">
+    <value>{0} não poderá enviar solicitações nem ver quando você está online, e você deixa de ver quando essa pessoa está.</value>
+  </data>
+  <data name="ContactBusy" xml:space="preserve">
+    <value>Ocupado</value>
+  </data>
+  <data name="ContactCardTitle" xml:space="preserve">
+    <value>Contato</value>
+  </data>
+  <data name="ContactChatAddress" xml:space="preserve">
+    <value>Endereço de chat</value>
+  </data>
+  <data name="ContactChatAddressHint" xml:space="preserve">
+    <value>Tem o formato nome@example.com. Peça à pessoa ou escaneie o código dela.</value>
+  </data>
+  <data name="ContactChatAddressInvalid" xml:space="preserve">
+    <value>Isso não é um endereço de chat. Ele deve ter o formato nome@example.com.</value>
+  </data>
+  <data name="ContactCopied" xml:space="preserve">
+    <value>Copiado</value>
+  </data>
+  <data name="ContactDetailsHeader" xml:space="preserve">
+    <value>Dados de contato</value>
+  </data>
+  <data name="ContactDiscard" xml:space="preserve">
+    <value>Descartar</value>
+  </data>
+  <data name="ContactDiscardMessage" xml:space="preserve">
+    <value>As alterações neste contato não foram salvas.</value>
+  </data>
+  <data name="ContactDiscardQuestion" xml:space="preserve">
+    <value>Descartar as alterações?</value>
+  </data>
+  <data name="ContactEdit" xml:space="preserve">
+    <value>Editar contato</value>
+  </data>
+  <data name="ContactEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="ContactEmails" xml:space="preserve">
+    <value>Endereços de e-mail</value>
+  </data>
+  <data name="ContactExportBlocked" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
+  <data name="ContactExportHint" xml:space="preserve">
+    <value>Salve contatos como arquivo .vcf para compartilhar</value>
+  </data>
+  <data name="ContactExportIncludeNotes" xml:space="preserve">
+    <value>Incluir notas</value>
+  </data>
+  <data name="ContactExportIncludePhotos" xml:space="preserve">
+    <value>Incluir fotos</value>
+  </data>
+  <data name="ContactExportNone" xml:space="preserve">
+    <value>Você não tem contatos para exportar.</value>
+  </data>
+  <data name="ContactExportSelectAll" xml:space="preserve">
+    <value>Selecionar todos</value>
+  </data>
+  <data name="ContactExportSelectNone" xml:space="preserve">
+    <value>Desmarcar todos</value>
+  </data>
+  <data name="ContactExportShareMany" xml:space="preserve">
+    <value>Compartilhar {0} contatos</value>
+  </data>
+  <data name="ContactExportShareOne" xml:space="preserve">
+    <value>Compartilhar 1 contato</value>
+  </data>
+  <data name="ContactExportTitle" xml:space="preserve">
+    <value>Exportar contatos</value>
+  </data>
+  <data name="ContactFieldCountry" xml:space="preserve">
+    <value>país</value>
+  </data>
+  <data name="ContactFilterAll" xml:space="preserve">
+    <value>Todos ({0})</value>
+  </data>
+  <data name="ContactFilterBlocked" xml:space="preserve">
+    <value>Bloqueados</value>
+  </data>
+  <data name="ContactFilterRequests" xml:space="preserve">
+    <value>Pedidos ({0})</value>
+  </data>
+  <data name="ContactFilterVerified" xml:space="preserve">
+    <value>Verificados</value>
+  </data>
+  <data name="ContactFromId" xml:space="preserve">
+    <value>Do ID</value>
+  </data>
+  <data name="ContactHome" xml:space="preserve">
+    <value>Casa</value>
+  </data>
+  <data name="ContactIdNumber" xml:space="preserve">
+    <value>Número do ID</value>
+  </data>
+  <data name="ContactIdVerified" xml:space="preserve">
+    <value>ID verificado</value>
+  </data>
+  <data name="ContactImportDoneMany" xml:space="preserve">
+    <value>{0} contatos importados</value>
+  </data>
+  <data name="ContactImportDoneOne" xml:space="preserve">
+    <value>1 contato importado</value>
+  </data>
+  <data name="ContactImportFieldAddress" xml:space="preserve">
+    <value>endereço</value>
+  </data>
+  <data name="ContactImportFieldBirthday" xml:space="preserve">
+    <value>aniversário</value>
+  </data>
+  <data name="ContactImportFieldChatAddress" xml:space="preserve">
+    <value>endereço de chat</value>
+  </data>
+  <data name="ContactImportFieldEmail" xml:space="preserve">
+    <value>e-mail</value>
+  </data>
+  <data name="ContactImportFieldLabels" xml:space="preserve">
+    <value>etiquetas</value>
+  </data>
+  <data name="ContactImportFieldName" xml:space="preserve">
+    <value>nome</value>
+  </data>
+  <data name="ContactImportFieldNotes" xml:space="preserve">
+    <value>notas</value>
+  </data>
+  <data name="ContactImportFieldOrganization" xml:space="preserve">
+    <value>organização</value>
+  </data>
+  <data name="ContactImportFieldPhone" xml:space="preserve">
+    <value>número de telefone</value>
+  </data>
+  <data name="ContactImportFieldPhoto" xml:space="preserve">
+    <value>foto</value>
+  </data>
+  <data name="ContactImportFoundMany" xml:space="preserve">
+    <value>{0} contatos encontrados</value>
+  </data>
+  <data name="ContactImportFoundOne" xml:space="preserve">
+    <value>1 contato encontrado</value>
+  </data>
+  <data name="ContactImportMany" xml:space="preserve">
+    <value>Importar {0} contatos</value>
+  </data>
+  <data name="ContactImportNew" xml:space="preserve">
+    <value>Novo</value>
+  </data>
+  <data name="ContactImportNewCount" xml:space="preserve">
+    <value>{0} novos</value>
+  </data>
+  <data name="ContactImportNewWith" xml:space="preserve">
+    <value>Novo, com {0}</value>
+  </data>
+  <data name="ContactImportNoChatAddresses" xml:space="preserve">
+    <value>Nenhum dos contatos do arquivo tem endereço de chat, então nenhum pode ser importado.</value>
+  </data>
+  <data name="ContactImportNoContacts" xml:space="preserve">
+    <value>O arquivo não tem contatos que possam ser importados.</value>
+  </data>
+  <data name="ContactImportNotSelected" xml:space="preserve">
+    <value>não selecionado</value>
+  </data>
+  <data name="ContactImportNotVerified" xml:space="preserve">
+    <value>Os contatos importados não são verificados. Um contato fica verificado quando compartilha o ID dele com você.</value>
+  </data>
+  <data name="ContactImportOne" xml:space="preserve">
+    <value>Importar 1 contato</value>
+  </data>
+  <data name="ContactImportPickTitle" xml:space="preserve">
+    <value>Escolha um arquivo de contatos</value>
+  </data>
+  <data name="ContactImportSelected" xml:space="preserve">
+    <value>selecionado</value>
+  </data>
+  <data name="ContactImportSkippedMany" xml:space="preserve">
+    <value>{0} contatos ficam de fora porque não têm endereço de chat.</value>
+  </data>
+  <data name="ContactImportSkippedOne" xml:space="preserve">
+    <value>1 contato fica de fora porque não tem endereço de chat.</value>
+  </data>
+  <data name="ContactImportTitle" xml:space="preserve">
+    <value>Importar contatos</value>
+  </data>
+  <data name="ContactImportTooLarge" xml:space="preserve">
+    <value>O arquivo é grande demais para importar.</value>
+  </data>
+  <data name="ContactImportUnchanged" xml:space="preserve">
+    <value>Já está nos contatos, nada novo</value>
+  </data>
+  <data name="ContactImportUnchangedCount" xml:space="preserve">
+    <value>{0} já adicionados</value>
+  </data>
+  <data name="ContactImportUpdatedCount" xml:space="preserve">
+    <value>{0} serão atualizados</value>
+  </data>
+  <data name="ContactImportUpdates" xml:space="preserve">
+    <value>Atualiza: {0}</value>
+  </data>
+  <data name="ContactKeepEditing" xml:space="preserve">
+    <value>Continuar editando</value>
+  </data>
+  <data name="ContactLabels" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="ContactLabelsHint" xml:space="preserve">
+    <value>Separe as etiquetas com vírgulas, por exemplo Trabalho, Família.</value>
+  </data>
+  <data name="ContactLetSeeOnline" xml:space="preserve">
+    <value>Permitir que {0} veja quando você está online</value>
+  </data>
+  <data name="ContactLetSeeOnlineHint" xml:space="preserve">
+    <value>{0} pode pedir para ver isso.</value>
+  </data>
+  <data name="ContactMessageYourself" xml:space="preserve">
+    <value>Enviar mensagem para si mesmo</value>
+  </data>
+  <data name="ContactMobile" xml:space="preserve">
+    <value>Celular</value>
+  </data>
+  <data name="ContactNew" xml:space="preserve">
+    <value>Novo contato</value>
+  </data>
+  <data name="ContactNoChatAddress" xml:space="preserve">
+    <value>Este ID não tem endereço de chat, então não pode ser adicionado como contato.</value>
+  </data>
+  <data name="ContactNoneBlocked" xml:space="preserve">
+    <value>Você não bloqueou ninguém.</value>
+  </data>
+  <data name="ContactNotes" xml:space="preserve">
+    <value>Notas</value>
+  </data>
+  <data name="ContactNotVerified" xml:space="preserve">
+    <value>Não verificado</value>
+  </data>
+  <data name="ContactOnlineStatus" xml:space="preserve">
+    <value>Status online</value>
+  </data>
+  <data name="ContactOrganization" xml:space="preserve">
+    <value>Organização</value>
+  </data>
+  <data name="ContactPay" xml:space="preserve">
+    <value>Pagar</value>
+  </data>
+  <data name="ContactPhoneNumbers" xml:space="preserve">
+    <value>Números de telefone</value>
+  </data>
+  <data name="ContactPostalCode" xml:space="preserve">
+    <value>CEP</value>
+  </data>
+  <data name="ContactRemove" xml:space="preserve">
+    <value>Remover contato</value>
+  </data>
+  <data name="ContactRemoveButton" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="ContactRemoveEmail" xml:space="preserve">
+    <value>Remover e-mail</value>
+  </data>
+  <data name="ContactRemovePhone" xml:space="preserve">
+    <value>Remover número de telefone</value>
+  </data>
+  <data name="ContactRemoveQuestion" xml:space="preserve">
+    <value>Remover {0} dos seus contatos? O chat continua até você apagá-lo.</value>
+  </data>
+  <data name="ContactReportAbuse" xml:space="preserve">
+    <value>Denunciar abuso</value>
+  </data>
+  <data name="ContactReportHint" xml:space="preserve">
+    <value>Bloqueia e avisa o seu provedor</value>
+  </data>
+  <data name="ContactReportOther" xml:space="preserve">
+    <value>Denunciar outro motivo</value>
+  </data>
+  <data name="ContactReportSpam" xml:space="preserve">
+    <value>Denunciar spam</value>
+  </data>
+  <data name="ContactRequestAccept" xml:space="preserve">
+    <value>Aceitar</value>
+  </data>
+  <data name="ContactRequestAccepted" xml:space="preserve">
+    <value>{0} agora é um contato</value>
+  </data>
+  <data name="ContactRequestExplanation" xml:space="preserve">
+    <value>Se você aceitar, vocês poderão conversar e ver quando o outro está online. Você pode parar de compartilhar quando quiser.</value>
+  </data>
+  <data name="ContactRequestNotificationBody" xml:space="preserve">
+    <value>Toque para aceitar ou recusar.</value>
+  </data>
+  <data name="ContactRequestNotNow" xml:space="preserve">
+    <value>Agora não</value>
+  </data>
+  <data name="ContactRequests" xml:space="preserve">
+    <value>Pedidos</value>
+  </data>
+  <data name="ContactRequestSent" xml:space="preserve">
+    <value>Pedido enviado para {0}</value>
+  </data>
+  <data name="ContactRequestSharesWithYou" xml:space="preserve">
+    <value>Compartilha com você</value>
+  </data>
+  <data name="ContactRequestVerifiedBy" xml:space="preserve">
+    <value>Verificado por</value>
+  </data>
+  <data name="ContactRequestWantsToAddYou" xml:space="preserve">
+    <value>{0} quer adicionar você</value>
+  </data>
+  <data name="ContactReview" xml:space="preserve">
+    <value>Revisar</value>
+  </data>
+  <data name="ContactSave" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="ContactSearch" xml:space="preserve">
+    <value>Buscar contatos</value>
+  </data>
+  <data name="ContactSeeOnline" xml:space="preserve">
+    <value>Ver quando {0} está online</value>
+  </data>
+  <data name="ContactSeeOnlinePending" xml:space="preserve">
+    <value>Aguardando {0} aceitar.</value>
+  </data>
+  <data name="ContactsMore" xml:space="preserve">
+    <value>Mais opções</value>
+  </data>
+  <data name="ContactStreet" xml:space="preserve">
+    <value>Rua</value>
+  </data>
+  <data name="ContactTechnicalDetails" xml:space="preserve">
+    <value>Detalhes técnicos</value>
+  </data>
+  <data name="ContactTechnicalDetailsHint" xml:space="preserve">
+    <value>Endereço de chat e número do ID</value>
+  </data>
+  <data name="ContactUnblock" xml:space="preserve">
+    <value>Desbloquear {0}</value>
+  </data>
+  <data name="ContactWantsToAddYou" xml:space="preserve">
+    <value>Quer adicionar você</value>
+  </data>
+  <data name="ContactWork" xml:space="preserve">
+    <value>Trabalho</value>
+  </data>
+  <data name="FurtherAction" xml:space="preserve">
+    <value>Algo mais?</value>
+  </data>
+  <data name="FurtherAction1" xml:space="preserve">
+    <value>Você quer fazer algo mais sobre</value>
+  </data>
+  <data name="FurtherAction2" xml:space="preserve">
+    <value>Bloquear recusa todos os pedidos daqui em diante.</value>
+  </data>
+  <data name="FurtherAction3" xml:space="preserve">
+    <value>Denunciar também avisa o seu provedor.</value>
+  </data>
+  <data name="FurtherAction4" xml:space="preserve">
+    <value>Ou apenas ignore este pedido.</value>
+  </data>
+  <data name="NoJustIgnore" xml:space="preserve">
+    <value>Não, só ignorar</value>
+  </data>
+  <data name="RemoveSubscriptionQuestion" xml:space="preserve">
+    <value>Você quer parar de compartilhar seu status online com</value>
+  </data>
+  <data name="RemoveSubscriptionRequest" xml:space="preserve">
+    <value>Parar de compartilhar</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>Denunciar</value>
+  </data>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Selecione os papéis com os quais irá assinar (opcional)</value>
   </data>
@@ -206,6 +671,9 @@
   </data>
   <data name="SignAs" xml:space="preserve">
     <value>Assinar como</value>
+  </data>
+  <data name="Spam" xml:space="preserve">
+    <value>Spam</value>
   </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>CADEIA DE CARACTERES NÃO DEFINIDA</value>
@@ -233,6 +701,12 @@
   </data>
   <data name="PasswordChanged" xml:space="preserve">
     <value>O PIN foi alterado com êxito.</value>
+  </data>
+  <data name="TypeOfReport" xml:space="preserve">
+    <value>Que tipo de problema?</value>
+  </data>
+  <data name="TypeOfReport1" xml:space="preserve">
+    <value>Você está denunciando:</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Não é possível alterar a senha da rede.</value>
@@ -334,7 +808,7 @@
     <value>Erro de conexão</value>
   </data>
   <data name="XmppState_FetchingRoster" xml:space="preserve">
-    <value>Pegando a lista</value>
+    <value>Carregando contatos</value>
   </data>
   <data name="XmppState_Offline" xml:space="preserve">
     <value>Desconectado</value>
@@ -346,7 +820,7 @@
     <value>Solicitando sessão</value>
   </data>
   <data name="XmppState_SettingPresence" xml:space="preserve">
-    <value>Registrando presença</value>
+    <value>Ficando online</value>
   </data>
   <data name="XmppState_StartingEncryption" xml:space="preserve">
     <value>Criptografando a conexão</value>
@@ -1751,7 +2225,7 @@ Continue apenas se você confia na origem.</value>
     <value>Registro</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
-    <value>Deseja remover a assinatura de presença do {0}?</value>
+    <value>Parar de mostrar a {0} quando você está online?</value>
   </data>
   <data name="RequestPayment" xml:space="preserve">
     <value>Solicitar Pagamento</value>
@@ -2048,7 +2522,7 @@ Continue apenas se você confia na origem.</value>
     <value>Falhou</value>
   </data>
   <data name="FetchingRoster" xml:space="preserve">
-    <value>Pegando a lista</value>
+    <value>Carregando contatos</value>
   </data>
   <data name="Obsoleted" xml:space="preserve">
     <value>Obsoleto</value>
@@ -2066,7 +2540,7 @@ Continue apenas se você confia na origem.</value>
     <value>Solicitando sessão</value>
   </data>
   <data name="SettingPresence" xml:space="preserve">
-    <value>Definindo presença</value>
+    <value>Ficando online</value>
   </data>
   <data name="Signed" xml:space="preserve">
     <value>Assinado</value>
@@ -2141,10 +2615,10 @@ Continue apenas se você confia na origem.</value>
     <value>Meus Tokens</value>
   </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
-    <value>Você recebeu uma assinatura de presença de:</value>
+    <value>Esta pessoa quer adicionar você:</value>
   </data>
   <data name="PresenceSubscriptionReceived2" xml:space="preserve">
-    <value>Se você aceitar essa solicitação, eles poderão ver sua presença on-line.</value>
+    <value>Se você aceitar, a pessoa poderá ver quando você está online.</value>
   </data>
   <data name="PresenceSubscriptionReceived3" xml:space="preserve">
     <value>Se você rejeitar essa solicitação, eles serão notificados de que você não concorda com essa solicitação.</value>
@@ -2156,37 +2630,37 @@ Continue apenas se você confia na origem.</value>
     <value>O que você quer fazer?</value>
   </data>
   <data name="PresenceSubscriptionRequest" xml:space="preserve">
-    <value>Solicitação de assinatura de presença</value>
+    <value>Pedido de contato</value>
   </data>
   <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
-    <value>Uma solicitação de assinatura de presença foi enviada. Quando o destinatário aceitar a solicitação, o status do contato será atualizado.</value>
+    <value>Pedido enviado. Você verá quando a pessoa estiver online depois que ela aceitar.</value>
   </data>
   <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
-    <value>Uma solicitação para cancelar a notificação de presença foi enviada.</value>
+    <value>Você não verá mais quando a pessoa estiver online.</value>
   </data>
   <data name="RemoveSubscription" xml:space="preserve">
-    <value>Remover assinatura?</value>
+    <value>Parar de compartilhar?</value>
   </data>
   <data name="RemoveSubscription1" xml:space="preserve">
-    <value>Você ainda tem uma solicitação de assinatura aprovada de:</value>
+    <value>Esta pessoa ainda pode ver quando você está online:</value>
   </data>
   <data name="RemoveSubscription2" xml:space="preserve">
     <value>Deseja revogar essa permissão também?</value>
   </data>
   <data name="RemoveSubscriptionFrom1" xml:space="preserve">
-    <value>Deseja remover a assinatura de presença do {0}?</value>
+    <value>Parar de mostrar a {0} quando você está online?</value>
   </data>
   <data name="SubscribeTo" xml:space="preserve">
-    <value>Assine</value>
+    <value>Pedir para ver quando está online</value>
   </data>
   <data name="SubscribeToPresence" xml:space="preserve">
-    <value>Subscrever presença?</value>
+    <value>Ver quando a pessoa está online?</value>
   </data>
   <data name="SubscribeToPresence1" xml:space="preserve">
-    <value>Você deseja se inscrever para a presença de:</value>
+    <value>Ver quando esta pessoa está online:</value>
   </data>
   <data name="SubscribeToPresence2" xml:space="preserve">
-    <value>Ao assinar a presença de alguém, e se ele aceitar, você será notificado de sua presença on-line.</value>
+    <value>Se a pessoa aceitar, você verá quando ela estiver online.</value>
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>O que você quer fazer?</value>
@@ -2198,7 +2672,7 @@ Continue apenas se você confia na origem.</value>
     <value>Abaixo estão todas as suas coisas e coisas em seu catálogo de contatos. Clique em qualquer um para interagir com essa coisa.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
-    <value>Cancelar inscrição de</value>
+    <value>Parar de ver quando está online</value>
   </data>
   <data name="OnboardingDefinePasswordCreateAlphanumeric" xml:space="preserve">
     <value>Criar PIN alfanumérico</value>

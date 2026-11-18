@@ -11,6 +11,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Security;
+using Contact = NeuroAccessMaui.Services.Contacts.Contact;
 
 namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 {
@@ -77,7 +78,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 					await Database.Provider.Flush();
 				}
 
-				this.ThirdPartyInContacts = Info is not null;
+				this.ThirdPartyInContacts = Info is not null ||
+					await ContactStore.FindAsync(this.bareJid, this.RequestorIdentity?.Id) is not null;
 			}
 
 			this.AssignProperties();
@@ -641,7 +643,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 				}
 				else
 				{
-					Info.LegalId = this.requestedIdentityId;
+					Info.LegalId = this.RequestorIdentity.Id;
 					Info.LegalIdentity = this.RequestorIdentity;
 					Info.FriendlyName = FriendlyName;
 
@@ -650,6 +652,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 
 				await ServiceRef.AttachmentCacheService.MakePermanent(this.LegalId!);
 				await Database.Provider.Flush();
+
+				// The contact gets a card, and a request, so both can chat and see when the other is online once they accept.
+				await ContactStore.AddOrUpdateAsync(BareJid, this.RequestorIdentity, FriendlyName);
+				ServiceRef.XmppService.RequestPresenceSubscription(BareJid, ContactRequests.OwnIdentityXml());
 
 				this.ThirdPartyInContacts = true;
 			}
@@ -680,6 +686,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 				}
 
 				string BareJid = XmppClient.GetBareJID(this.requestorFullJid);
+
+				Contact? Card = await ContactStore.FindAsync(BareJid, this.RequestorIdentity?.Id);
+				if (Card is not null)
+					await ContactStore.DeleteAsync(Card);
 
 				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
 				if (Info is not null)

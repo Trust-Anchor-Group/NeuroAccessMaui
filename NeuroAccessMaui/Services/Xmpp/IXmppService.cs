@@ -268,6 +268,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="BareJid">Bare JID of contact.</param>
 		void RequestRevokePresenceSubscription(string BareJid);
 
+		/// <summary>
+		/// Reports a sender to the server, as sending spam or abuse. The server then blocks them for the user.
+		/// </summary>
+		/// <param name="BareJid">Bare JID of the sender.</param>
+		/// <param name="Reason">Why the sender is reported.</param>
+		/// <returns>If the server accepted the report.</returns>
+		Task<bool> ReportAsync(string BareJid, Waher.Networking.XMPP.Abuse.ReportingReason Reason);
+
 		#endregion
 
 		#region Roster

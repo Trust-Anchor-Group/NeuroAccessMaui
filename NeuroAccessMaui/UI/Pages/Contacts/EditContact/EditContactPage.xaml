@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Contacts.EditContact.EditContactPage"
+					  x:DataType="viewmodel:EditContactViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.EditContact"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<VisualElement.Resources>
+		<Style x:Key="FieldIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<Style x:Key="FieldLabel"
+			   TargetType="Label">
+			<Setter Property="Margin"
+					Value="4,0,0,6" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+
+		<Style x:Key="FieldFrame"
+			   TargetType="Border">
+			<Setter Property="Padding"
+					Value="14,0" />
+			<Setter Property="MinimumHeightRequest"
+					Value="48" />
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation1WL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 14" />
+		</Style>
+
+		<Style x:Key="FieldEntry"
+			   TargetType="Entry">
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskRegular" />
+			<Setter Property="FontSize"
+					Value="16" />
+			<Setter Property="BackgroundColor"
+					Value="Transparent" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentPrimaryWL}" />
+			<Setter Property="PlaceholderColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+	</VisualElement.Resources>
+
+	<Grid RowDefinitions="Auto,*"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+		<!-- Header: back, title and save -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="48,*,Auto"
+			  Padding="16,12,16,8"
+			  ColumnSpacing="8">
+			<controls:TemplatedButton Grid.Column="0"
+									  Command="{Binding GoBackCommand}"
+									  SemanticProperties.Description="{l:Localize Back}">
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Path Data="M15 18l-6-6 6-6"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource FieldIcon}" />
+				</Grid>
+			</controls:TemplatedButton>
+			<Label Grid.Column="1"
+				   VerticalOptions="Center"
+				   HorizontalTextAlignment="Center"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="22"
+				   LineBreakMode="TailTruncation"
+				   Text="{Binding Title}"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   SemanticProperties.HeadingLevel="Level1" />
+			<controls:TemplatedButton Grid.Column="2"
+									  Command="{Binding SaveCommand}"
+									  SemanticProperties.Description="{l:Localize ContactSave}">
+				<controls:TemplatedButton.Triggers>
+					<Trigger Property="IsEnabled" TargetType="controls:TemplatedButton" Value="False">
+						<Setter Property="Opacity" Value="0.4" />
+					</Trigger>
+				</controls:TemplatedButton.Triggers>
+				<Border Padding="16,0"
+						MinimumHeightRequest="48"
+						MinimumWidthRequest="48"
+						InputTransparent="True"
+						StrokeThickness="0"
+						BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+						StrokeShape="RoundRectangle 24">
+					<Label VerticalOptions="Center"
+						   HorizontalTextAlignment="Center"
+						   FontFamily="HaasGroteskMedium"
+						   FontSize="16"
+						   Text="{l:Localize ContactSave}"
+						   TextColor="White" />
+				</Border>
+			</controls:TemplatedButton>
+		</Grid>
+
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Padding="16,8,16,32"
+								 Spacing="18">
+
+				<!-- Chat address, needed for a new contact -->
+				<VerticalStackLayout IsVisible="{Binding IsNew}">
+					<Label Text="{l:Localize ContactChatAddress}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Email"
+							   Text="{Binding ChatAddress}"
+							   Placeholder="name@example.com"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize ContactChatAddress}"
+							   SemanticProperties.Hint="{l:Localize ContactChatAddressHint}" />
+					</Border>
+					<Label Margin="4,6,0,0"
+						   Text="{l:Localize ContactChatAddressHint}"
+						   FontFamily="HaasGroteskRegular"
+						   FontSize="14"
+						   LineBreakMode="WordWrap"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+				</VerticalStackLayout>
+
+				<!-- Name -->
+				<VerticalStackLayout>
+					<Label Text="{l:Localize Name}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Text"
+							   Text="{Binding FullName}"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize Name}" />
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- Phone numbers -->
+				<VerticalStackLayout Spacing="8">
+					<Label Text="{l:Localize ContactPhoneNumbers}"
+						   Style="{StaticResource FieldLabel}" />
+					<VerticalStackLayout BindableLayout.ItemsSource="{Binding Phones}"
+										 Spacing="8">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="viewmodel:ContactValueItem">
+								<Grid ColumnDefinitions="*,48"
+									  ColumnSpacing="4">
+									<Border Style="{StaticResource FieldFrame}">
+										<Entry Keyboard="Telephone"
+											   Text="{Binding Text}"
+											   Style="{StaticResource FieldEntry}"
+											   SemanticProperties.Description="{l:Localize PhoneNr}" />
+									</Border>
+									<controls:TemplatedButton Grid.Column="1"
+															  VerticalOptions="Center"
+															  Command="{Binding RemovePhoneCommand, Source={RelativeSource AncestorType={x:Type viewmodel:EditContactViewModel}}, x:DataType=viewmodel:EditContactViewModel}"
+															  CommandParameter="{Binding .}"
+															  SemanticProperties.Description="{l:Localize ContactRemovePhone}">
+										<Grid WidthRequest="48"
+											  HeightRequest="48"
+											  InputTransparent="True">
+											<Path Data="M17 7L7 17M7 7l10 10"
+												  Stroke="{DynamicResource ContentSecondaryWL}"
+												  Style="{StaticResource FieldIcon}" />
+										</Grid>
+									</controls:TemplatedButton>
+								</Grid>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
+					<controls:TemplatedButton HorizontalOptions="Start"
+											  Command="{Binding AddPhoneCommand}"
+											  SemanticProperties.Description="{l:Localize ContactAddPhone}">
+						<HorizontalStackLayout MinimumHeightRequest="48"
+											   Spacing="8"
+											   InputTransparent="True">
+							<Path Data="M12 5v14M5 12h14"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource FieldIcon}" />
+							<Label VerticalOptions="Center"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="15"
+								   Text="{l:Localize ContactAddPhone}"
+								   TextColor="{DynamicResource ContentAccessWL}" />
+						</HorizontalStackLayout>
+					</controls:TemplatedButton>
+				</VerticalStackLayout>
+
+				<!-- Email addresses -->
+				<VerticalStackLayout Spacing="8">
+					<Label Text="{l:Localize ContactEmails}"
+						   Style="{StaticResource FieldLabel}" />
+					<VerticalStackLayout BindableLayout.ItemsSource="{Binding Emails}"
+										 Spacing="8">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="viewmodel:ContactValueItem">
+								<Grid ColumnDefinitions="*,48"
+									  ColumnSpacing="4">
+									<Border Style="{StaticResource FieldFrame}">
+										<Entry Keyboard="Email"
+											   Text="{Binding Text}"
+											   Style="{StaticResource FieldEntry}"
+											   SemanticProperties.Description="{l:Localize ContactEmail}" />
+									</Border>
+									<controls:TemplatedButton Grid.Column="1"
+															  VerticalOptions="Center"
+															  Command="{Binding RemoveEmailCommand, Source={RelativeSource AncestorType={x:Type viewmodel:EditContactViewModel}}, x:DataType=viewmodel:EditContactViewModel}"
+															  CommandParameter="{Binding .}"
+															  SemanticProperties.Description="{l:Localize ContactRemoveEmail}">
+										<Grid WidthRequest="48"
+											  HeightRequest="48"
+											  InputTransparent="True">
+											<Path Data="M17 7L7 17M7 7l10 10"
+												  Stroke="{DynamicResource ContentSecondaryWL}"
+												  Style="{StaticResource FieldIcon}" />
+										</Grid>
+									</controls:TemplatedButton>
+								</Grid>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
+					<controls:TemplatedButton HorizontalOptions="Start"
+											  Command="{Binding AddEmailCommand}"
+											  SemanticProperties.Description="{l:Localize ContactAddEmail}">
+						<HorizontalStackLayout MinimumHeightRequest="48"
+											   Spacing="8"
+											   InputTransparent="True">
+							<Path Data="M12 5v14M5 12h14"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource FieldIcon}" />
+							<Label VerticalOptions="Center"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="15"
+								   Text="{l:Localize ContactAddEmail}"
+								   TextColor="{DynamicResource ContentAccessWL}" />
+						</HorizontalStackLayout>
+					</controls:TemplatedButton>
+				</VerticalStackLayout>
+
+				<!-- Address -->
+				<VerticalStackLayout Spacing="8">
+					<Label Text="{l:Localize Address}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Text"
+							   Placeholder="{l:Localize ContactStreet}"
+							   Text="{Binding Street}"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize ContactStreet}" />
+					</Border>
+					<Grid ColumnDefinitions="2*,3*"
+						  ColumnSpacing="8">
+						<Border Grid.Column="0"
+								Style="{StaticResource FieldFrame}">
+							<Entry Keyboard="Text"
+								   Placeholder="{l:Localize ContactPostalCode}"
+								   Text="{Binding PostalCode}"
+								   Style="{StaticResource FieldEntry}"
+								   SemanticProperties.Description="{l:Localize ContactPostalCode}" />
+						</Border>
+						<Border Grid.Column="1"
+								Style="{StaticResource FieldFrame}">
+							<Entry Keyboard="Text"
+								   Placeholder="{l:Localize City}"
+								   Text="{Binding City}"
+								   Style="{StaticResource FieldEntry}"
+								   SemanticProperties.Description="{l:Localize City}" />
+						</Border>
+					</Grid>
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Text"
+							   Placeholder="{l:Localize Country}"
+							   Text="{Binding Country}"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize Country}" />
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- Organization and role -->
+				<VerticalStackLayout>
+					<Label Text="{l:Localize ContactOrganization}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Text"
+							   Text="{Binding Organization}"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize ContactOrganization}" />
+					</Border>
+				</VerticalStackLayout>
+				<VerticalStackLayout>
+					<Label Text="{l:Localize Role}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Text"
+							   Text="{Binding Role}"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize Role}" />
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- Birthday -->
+				<VerticalStackLayout>
+					<Label Text="{l:Localize ContactBirthday}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Text"
+							   Placeholder="{l:Localize ContactBirthdayFormat}"
+							   Text="{Binding Birthday}"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize ContactBirthday}" />
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- Labels -->
+				<VerticalStackLayout>
+					<Label Text="{l:Localize ContactLabels}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Style="{StaticResource FieldFrame}">
+						<Entry Keyboard="Text"
+							   Text="{Binding Labels}"
+							   Style="{StaticResource FieldEntry}"
+							   SemanticProperties.Description="{l:Localize ContactLabels}" />
+					</Border>
+					<Label Margin="4,6,0,0"
+						   FontFamily="HaasGroteskRegular"
+						   FontSize="14"
+						   LineBreakMode="WordWrap"
+						   Text="{l:Localize ContactLabelsHint}"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+				</VerticalStackLayout>
+
+				<!-- Notes -->
+				<VerticalStackLayout>
+					<Label Text="{l:Localize ContactNotes}"
+						   Style="{StaticResource FieldLabel}" />
+					<Border Padding="14,4"
+							Style="{StaticResource FieldFrame}">
+						<Editor MinimumHeightRequest="96"
+								AutoSize="TextChanges"
+								BackgroundColor="Transparent"
+								FontFamily="HaasGroteskRegular"
+								FontSize="16"
+								Keyboard="Text"
+								Text="{Binding Notes}"
+								TextColor="{DynamicResource ContentPrimaryWL}"
+								SemanticProperties.Description="{l:Localize ContactNotes}" />
+					</Border>
+				</VerticalStackLayout>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

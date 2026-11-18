@@ -89,6 +89,7 @@ using Waher.Security;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
+using Contact = NeuroAccessMaui.Services.Contacts.Contact;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -919,6 +920,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (this.pushNotificationClient is null && ServiceRef.TagProfile.SupportsPushNotification)
 						this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
+
+					// The contacts are moved to contact cards once, and people on the server's contact list get a card.
+					_ = Task.Run(ContactStore.SyncAsync);
 
 					if (this.pepClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
 					{
@@ -1797,7 +1801,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 
 			ContactInfo Info = await ContactInfo.FindByBareJid(e.FromBareJID);
-			if ((Info is not null) && Info.AllowSubscriptionFrom.HasValue)
+
+			// People's requests wait in the contacts list. Smart things keep the handling they have always had.
+			if (Info is null || !Info.IsThing.HasValue || !Info.IsThing.Value)
+			{
+				await this.HandleContactRequestAsync(e, RemoteIdentity, FriendlyName);
+				await this.OnPresenceSubscribe.Raise(this, e);
+				return;
+			}
+
+			if (Info.AllowSubscriptionFrom.HasValue)
 			{
 				if (Info.AllowSubscriptionFrom.Value)
 					await e.Accept();
@@ -1946,6 +1959,56 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await this.OnPresenceSubscribe.Raise(this, e);
 		}
 
+		/// <summary>
+		/// Handles a request from a person who wants to add the user. A blocked person is turned down, and someone the user
+		/// has asked to add, or already lets see them online, is accepted. Anyone else waits in the requests list, without
+		/// interrupting the user, until the user answers.
+		/// </summary>
+		private async Task HandleContactRequestAsync(PresenceEventArgs e, LegalIdentity? RemoteIdentity, string Name)
+		{
+			Contact? Card = await ContactStore.FindByChatAddressAsync(e.FromBareJID);
+
+			if (Card?.IsBlocked ?? false)
+			{
+				await e.Decline();
+				return;
+			}
+
+			if (ContactRequests.IsAcceptedWithoutAsking(this.XmppClient[e.FromBareJID], Card))
+			{
+				await e.Accept();
+				await ContactStore.AddOrUpdateAsync(e.FromBareJID, RemoteIdentity, Name);
+				return;
+			}
+
+			string? PhotoFile = null;
+
+			if (RemoteIdentity?.Attachments is not null)
+			{
+				(PhotoFile, _, _) = await PhotosLoader.LoadPhotoAsTemporaryFile(RemoteIdentity.Attachments,
+					Constants.QrCode.DefaultImageWidth, Constants.QrCode.DefaultImageHeight);
+			}
+
+			await ContactRequests.AddAsync(new ContactRequest(e.FromBareJID, Name, RemoteIdentity, PhotoFile, DateTime.UtcNow, e));
+		}
+
+		/// <inheritdoc/>
+		public async Task<bool> ReportAsync(string BareJid, ReportingReason Reason)
+		{
+			if (this.abuseClient is null)
+				return false;
+
+			TaskCompletionSource<bool> Result = new();
+
+			await this.abuseClient.BlockJID(BareJid, Reason, (Sender, e) =>
+			{
+				Result.TrySetResult(e.Ok);
+				return Task.CompletedTask;
+			}, null);
+
+			return await Result.Task;
+		}
+
 		private async Task XmppClient_OnPresenceUnsubscribed(object? Sender, PresenceEventArgs e)
 		{
 			ContactInfo ContactInfo = await ContactInfo.FindByBareJid(e.FromBareJID);
@@ -2085,12 +2148,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
+			Contact? Card = await ContactStore.FindByChatAddressAsync(RemoteBareJid);
+			if (Card is not null && Card.IsBlocked)
+			{
+				Log.Notice("Message from a blocked contact dropped.", new KeyValuePair<string, object?>("From", RemoteBareJid));
+				return;
+			}
+
 			ChatState? State = ChatSender.GetChatState(e.Message);
 			if (State.HasValue)
 				ChatEvents.AddChatStatePeer(RemoteBareJid);
 
-			ContactInfo ContactInfo = await ContactInfo.FindByBareJid(RemoteBareJid);
-			string FriendlyName = ContactInfo?.FriendlyName ?? RemoteBareJid;
+			string FriendlyName = Card is not null && !string.IsNullOrEmpty(Card.DisplayName) ? Card.DisplayName :
+				(await ContactInfo.FindByBareJid(RemoteBareJid))?.FriendlyName ?? RemoteBareJid;
 			string? ReplaceObjectId = null;
 
 			ChatMessage Message = new()

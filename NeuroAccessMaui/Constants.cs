@@ -1140,6 +1140,11 @@ namespace NeuroAccessMaui
 			/// If token notification events stored by earlier versions of the app have been deleted.
 			/// </summary>
 			public const string LegacyTokenEventsDeleted = "WALLET.LEGACY_TOKEN_EVENTS_DELETED";
+
+			/// <summary>
+			/// If the people in the old contact list have been moved to contact cards.
+			/// </summary>
+			public const string ContactsMovedToCards = "CONTACTS.MOVED_TO_CARDS";
 		}
 
 		/// <summary>

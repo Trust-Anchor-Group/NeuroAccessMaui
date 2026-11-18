@@ -35,6 +35,10 @@ using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.ContactCard;
+using NeuroAccessMaui.UI.Pages.Contacts.EditContact;
+using NeuroAccessMaui.UI.Pages.Contacts.Export;
+using NeuroAccessMaui.UI.Pages.Contacts.Import;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.ChooseSigner;
 using NeuroAccessMaui.UI.Pages.Contracts.InviteParts;
@@ -226,6 +230,10 @@ namespace NeuroAccessMaui.UI
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();
 			Builder.Services.AddTransient<MyContactsPage, ContactListViewModel>();
+			Builder.Services.AddTransient<ContactCardPage, ContactCardViewModel>();
+			Builder.Services.AddTransient<EditContactPage, EditContactViewModel>();
+			Builder.Services.AddTransient<ImportContactsPage, ImportContactsViewModel>();
+			Builder.Services.AddTransient<ExportContactsPage, ExportContactsViewModel>();
 
 			// Contracts
 			Builder.Services.AddTransient<MyContractsPage, MyContractsViewModel>();

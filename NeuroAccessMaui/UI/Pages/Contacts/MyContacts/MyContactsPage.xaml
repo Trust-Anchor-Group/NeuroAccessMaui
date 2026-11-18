@@ -1,183 +1,485 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-					 x:Class="NeuroAccessMaui.UI.Pages.Contacts.MyContacts.MyContactsPage"
-					 x:DataType="viewmodel:ContactListViewModel"
-					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts">
+					  x:Class="NeuroAccessMaui.UI.Pages.Contacts.MyContacts.MyContactsPage"
+					  x:DataType="viewmodel:ContactListViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts">
 
 	<VisualElement.Resources>
-		<DataTemplate x:Key="ContactTemplate" x:DataType="viewmodel:GroupedContacts">
-			<VerticalStackLayout>
-				<Label Text="{Binding Group}" Margin="16,8,0,0" Style="{DynamicResource Brand2LabelSSecondary}"/>
-				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contacts}">
-					<BindableLayout.ItemTemplate>
-						<DataTemplate x:DataType="viewmodel:ContactInfoModel">
-							<Border Style="{DynamicResource BorderSet}">
-								<Grid ColumnDefinitions="auto, *, auto, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
-									<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24">
-										<Border.Triggers>
-											<DataTrigger TargetType="Border" Binding="{Binding IsFriend}" Value="True">
-												<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
-											</DataTrigger>
-											<DataTrigger TargetType="Border" Binding="{Binding IsFriend}" Value="False">
-												<Setter Property="Background" Value="{DynamicResource ButtonNeutralNavButtonsOnContainerbgActiveWL}" />
-											</DataTrigger>
-										</Border.Triggers>
-										<Border.GestureRecognizers>
-											<TapGestureRecognizer Command="{Binding ToggleSubscriptionCommand}" />
-										</Border.GestureRecognizers>
-										<controls:SvgView Source="person.svg"
-														  HorizontalOptions="Center" VerticalOptions="Center"
-														  HeightRequest="32" WidthRequest="32">
-											<controls:SvgView.Triggers>
-												<DataTrigger TargetType="controls:SvgView" Binding="{Binding IsFriend}" Value="True">
-													<Setter Property="TintColor" Value="{DynamicResource TnPSuccessContentWL}" />
-												</DataTrigger>
-												<DataTrigger TargetType="controls:SvgView" Binding="{Binding IsFriend}" Value="False">
-													<Setter Property="TintColor" Value="{DynamicResource ContentSecondaryWL}" />
-												</DataTrigger>
-											</controls:SvgView.Triggers>
-										</controls:SvgView>
-									</Border>
+		<Style x:Key="ContactsIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
 
-									<Border HeightRequest="14" WidthRequest="14"
-											BackgroundColor="{Binding ConnectionColor}"
-											HorizontalOptions="End" VerticalOptions="End"
-											StrokeShape="RoundRectangle 7"
-											IsVisible="{Binding IsFriend}"/>
-
-									<Label Grid.Column="1" HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="TailTruncation"
-										   Text="{Binding FriendlyName}" Style="{DynamicResource Brand2LabelS}"/>
-
-									<Border Grid.Column="2" StrokeShape="RoundRectangle 12" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
-										   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource RedButtonActiveBorder}">
-										<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
-									</Border>
-
-									<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
-														VerticalOptions="Center"
-														Grid.Column="3"
-														Command="{Binding ViewChatCommand}"
-														IsVisible="{Binding IsViewMode, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"/>
-
-									<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
-														VerticalOptions="Center"
-														Grid.Column="4"
-														Command="{Binding ViewContactCommand}"
-														IsVisible="{Binding IsViewMode, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"/>
-								</Grid>
-
-								<Border.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding SelectContactCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}" CommandParameter="{Binding .}" />
-								</Border.GestureRecognizers>
-							</Border>
-						</DataTemplate>
-					</BindableLayout.ItemTemplate>
-				</VerticalStackLayout>
-			</VerticalStackLayout>
-		</DataTemplate>
+		<Style x:Key="SectionLabel"
+			   TargetType="Label">
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
 	</VisualElement.Resources>
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid RowDefinitions="Auto,*"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
-		<controls:Background/>
+		<!-- Header: back, the title, and in the contacts Add and the menu -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="104,*,104"
+			  Padding="16,12,16,8">
+			<controls:TemplatedButton Grid.Column="0"
+									  HorizontalOptions="Start"
+									  Command="{Binding GoBackCommand}"
+									  SemanticProperties.Description="{l:Localize Back}">
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Path Data="M15 18l-6-6 6-6"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource ContactsIcon}" />
+				</Grid>
+			</controls:TemplatedButton>
 
-		<Grid RowDefinitions="auto, auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" Margin="8">
-			<Grid ColumnDefinitions="*, auto" Margin="8,0,8,0">
-				<controls:SvgButton
-					Grid.Row="0" Grid.Column="0"
-					Command="{Binding GoBackCommand}"
-					SvgSource="close.svg"
-					Style="{DynamicResource IconButton}"
-					HorizontalOptions="Start"
-					WidthRequest="44"
-					HeightRequest="44"/>
+			<Label Grid.Column="1"
+				   Text="{Binding Description}"
+				   HorizontalTextAlignment="Center"
+				   VerticalOptions="Center"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="22"
+				   LineBreakMode="TailTruncation"
+				   MaxLines="2"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   SemanticProperties.HeadingLevel="Level1" />
 
-				<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1"/>
-			</Grid>
+			<HorizontalStackLayout Grid.Column="2"
+								   HorizontalOptions="End"
+								   Spacing="8"
+								   IsVisible="{Binding IsViewMode}">
+				<controls:TemplatedButton Command="{Binding AddContactCommand}"
+										  SemanticProperties.Description="{l:Localize ContactAddTitle}">
+					<Border WidthRequest="48"
+							HeightRequest="48"
+							InputTransparent="True"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 14">
+						<Path Data="M12 5v14M5 12h14"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource ContactsIcon}" />
+					</Border>
+				</controls:TemplatedButton>
+				<controls:TemplatedButton Command="{Binding ShowMenuCommand}"
+										  SemanticProperties.Description="{l:Localize ContactsMore}">
+					<Border WidthRequest="48"
+							HeightRequest="48"
+							InputTransparent="True"
+							StrokeThickness="0"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 14">
+						<Path Data="M12 5h0.01M12 12h0.01M12 19h0.01"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  StrokeThickness="4"
+							  Style="{StaticResource ContactsIcon}" />
+					</Border>
+				</controls:TemplatedButton>
+			</HorizontalStackLayout>
+		</Grid>
 
-			<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Margin="8,0,8,0" Grid.Row="1">
-				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-							VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
-
-				<controls:TextButton LabelData="{Binding AnonymousText}" Style="{DynamicResource FilledTextButton}"
-								Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
-				<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{DynamicResource FilledTextButton}"
-								Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
-			</VerticalStackLayout>
-
-			<!-- Search Entry -->
-			<controls:CompositeEntry Placeholder="{l:Localize Search}"
-										EntryData="{Binding SearchText, Mode=TwoWay}"
-										Style="{DynamicResource RegularCompositeEntry}"
-										Margin="8,0,8,0"
-										IsVisible="{Binding ShowContactsMissing, Converter={StaticResource InvertedBoolConverter}}"
-										Grid.Row="2">
-				<controls:CompositeEntry.LeftView>
-					<controls:SvgView Source="search.svg"/>
-				</controls:CompositeEntry.LeftView>
-			</controls:CompositeEntry>
-
-			<!-- Activity Indicator for loading contacts -->
-			<ActivityIndicator IsRunning="{Binding ContactsLoader.IsNotSucceeded}"
-								IsVisible="{Binding ContactsLoader.IsNotSucceeded}"
-								HeightRequest="48"
-								WidthRequest="48"
-								HorizontalOptions="Center"
-								VerticalOptions="Center"
-								Color="{DynamicResource ContentPrimaryWL}"
-								Grid.Row="3"/>
-			
-			<ScrollView Grid.Row="3">
-				<VerticalStackLayout>
-					<!-- The user: notes to yourself, and your own ID -->
-					<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding ShowsMe}"
-							SemanticProperties.Description="{l:Localize ChatMe}"
-							SemanticProperties.Hint="{l:Localize ContactsMeDescription}">
-						<Grid ColumnDefinitions="auto, *, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
-							<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24" StrokeThickness="0"
-									BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}" InputTransparent="True">
-								<Label Text="{l:Localize ChatMe}" FontFamily="SpaceGroteskSemiBold" FontSize="15" TextColor="White"
-									   HorizontalOptions="Center" VerticalOptions="Center"/>
-							</Border>
-
-							<VerticalStackLayout Grid.Column="1" VerticalOptions="Center" InputTransparent="True">
-								<Label Text="{l:Localize ChatMe}" LineBreakMode="TailTruncation" Style="{DynamicResource Brand2LabelS}"/>
-								<Label Text="{l:Localize ContactsMeDescription}" LineBreakMode="TailTruncation" Style="{DynamicResource Brand2LabelSSecondary}"/>
-							</VerticalStackLayout>
-
-							<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
-												VerticalOptions="Center"
-												Grid.Column="2"
-												SemanticProperties.Description="{l:Localize Chat}"
-												Command="{Binding OpenMyChatCommand}"/>
-
-							<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
-												VerticalOptions="Center"
-												Grid.Column="3"
-												SemanticProperties.Description="{l:Localize LegalId}"
-												Command="{Binding ViewMyIdCommand}"
-												IsVisible="{Binding HasMyId}"/>
+		<CollectionView x:Name="ContactList"
+						Grid.Row="1"
+						ItemsSource="{Binding FilteredContacts}"
+						IsGrouped="True"
+						ItemSizingStrategy="MeasureAllItems"
+						SelectionMode="None">
+			<CollectionView.Header>
+				<VerticalStackLayout Padding="16,0,16,8"
+									 Spacing="14">
+					<!-- Search -->
+					<Border MinimumHeightRequest="48"
+							Padding="14,0"
+							StrokeThickness="1"
+							Stroke="{DynamicResource SurfaceDividerWL}"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 14">
+						<Grid ColumnDefinitions="Auto,*"
+							  ColumnSpacing="10">
+							<Path Data="M11 4a7 7 0 1 1 0 14a7 7 0 1 1 0-14z M20 20l-3.5-3.5"
+								  Stroke="{DynamicResource ContentSecondaryWL}"
+								  Style="{StaticResource ContactsIcon}" />
+							<Entry Grid.Column="1"
+								   VerticalOptions="Center"
+								   Text="{Binding SearchText}"
+								   Placeholder="{l:Localize ContactSearch}"
+								   FontFamily="HaasGroteskRegular"
+								   FontSize="16"
+								   BackgroundColor="Transparent"
+								   TextColor="{DynamicResource ContentPrimaryWL}"
+								   PlaceholderColor="{DynamicResource ContentSecondaryWL}"
+								   ReturnType="Search"
+								   SemanticProperties.Description="{l:Localize ContactSearch}" />
 						</Grid>
-
-						<Border.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding OpenMyChatCommand}" />
-						</Border.GestureRecognizers>
 					</Border>
 
-					<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
-									ItemsSource="{Binding Path=FilteredContacts}"
-									ItemTemplate="{StaticResource ContactTemplate}"
-									IsVisible="{Binding ContactsLoader.IsSucceeded}"/>
+					<!-- Filters -->
+					<ScrollView IsVisible="{Binding IsViewMode}"
+								Orientation="Horizontal"
+								HorizontalScrollBarVisibility="Never">
+						<HorizontalStackLayout Spacing="8"
+											   BindableLayout.ItemsSource="{Binding Chips}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="viewmodel:ContactFilterChip">
+									<controls:TemplatedButton MinimumHeightRequest="48"
+															  Command="{Binding SelectChipCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"
+															  CommandParameter="{Binding .}"
+															  SemanticProperties.Description="{Binding Text}">
+										<Border VerticalOptions="Center"
+												MinimumHeightRequest="36"
+												Padding="14,6"
+												InputTransparent="True"
+												StrokeThickness="1"
+												Stroke="{DynamicResource SurfaceDividerWL}"
+												BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+												StrokeShape="RoundRectangle 18">
+											<Border.Triggers>
+												<DataTrigger Binding="{Binding IsSelected}"
+															 TargetType="Border"
+															 Value="True">
+													<Setter Property="BackgroundColor"
+															Value="{DynamicResource TnPSuccessbgWL}" />
+													<Setter Property="Stroke"
+															Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Label Text="{Binding Text}"
+												   VerticalOptions="Center"
+												   FontFamily="HaasGroteskMedium"
+												   FontSize="14"
+												   TextColor="{DynamicResource ContentPrimaryWL}">
+												<Label.Triggers>
+													<DataTrigger Binding="{Binding IsSelected}"
+																 TargetType="Label"
+																 Value="True">
+														<Setter Property="TextColor"
+																Value="{DynamicResource ContentAccessWL}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
+										</Border>
+									</controls:TemplatedButton>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</HorizontalStackLayout>
+					</ScrollView>
+
+					<!-- Picking: scan a code, or no one in particular -->
+					<controls:TextButton IsVisible="{Binding CanScanQrCode}"
+										 Command="{Binding ScanQrCodeCommand}"
+										 LabelData="{l:Localize ScanQRCode}"
+										 Style="{DynamicResource FilledTextButton}" />
+					<controls:TextButton IsVisible="{Binding AllowAnonymous}"
+										 Command="{Binding AnonymousCommand}"
+										 LabelData="{Binding AnonymousText}"
+										 Style="{DynamicResource FilledTextButton}" />
+
+					<!-- Me: your card, and a chat with yourself -->
+					<Border IsVisible="{Binding ShowsMe}"
+							Padding="16,8,8,8"
+							StrokeThickness="1"
+							Stroke="{DynamicResource SurfaceDividerWL}"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 20">
+						<Grid ColumnDefinitions="*,48,48"
+							  ColumnSpacing="4">
+							<controls:TemplatedButton Grid.Column="0"
+													  Command="{Binding ViewMyIdCommand}"
+													  SemanticProperties.Description="{l:Localize ChatMe}"
+													  SemanticProperties.Hint="{l:Localize ContactsMeDescription}">
+								<Grid ColumnDefinitions="44,*"
+									  MinimumHeightRequest="56"
+									  ColumnSpacing="12"
+									  InputTransparent="True">
+									<Border WidthRequest="44"
+											HeightRequest="44"
+											VerticalOptions="Center"
+											StrokeThickness="0"
+											BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+											StrokeShape="RoundRectangle 22">
+										<Label Text="{l:Localize ChatMe}"
+											   HorizontalOptions="Center"
+											   VerticalOptions="Center"
+											   FontFamily="SpaceGroteskSemiBold"
+											   FontSize="15"
+											   TextColor="White" />
+									</Border>
+									<VerticalStackLayout Grid.Column="1"
+														 VerticalOptions="Center">
+										<Label Text="{l:Localize ChatMe}"
+											   FontFamily="HaasGroteskMedium"
+											   FontSize="16"
+											   TextColor="{DynamicResource ContentPrimaryWL}" />
+										<Label Text="{l:Localize ContactsMeDescription}"
+											   FontFamily="HaasGroteskRegular"
+											   FontSize="14"
+											   LineBreakMode="WordWrap"
+											   TextColor="{DynamicResource ContentSecondaryWL}" />
+									</VerticalStackLayout>
+								</Grid>
+							</controls:TemplatedButton>
+							<controls:TemplatedButton Grid.Column="1"
+													  VerticalOptions="Center"
+													  Command="{Binding OpenMyChatCommand}"
+													  SemanticProperties.Description="{l:Localize ContactMessageYourself}">
+								<Grid WidthRequest="48"
+									  HeightRequest="48"
+									  InputTransparent="True">
+									<Path Data="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"
+										  Stroke="{DynamicResource ContentPrimaryWL}"
+										  Style="{StaticResource ContactsIcon}" />
+								</Grid>
+							</controls:TemplatedButton>
+							<controls:TemplatedButton Grid.Column="2"
+													  VerticalOptions="Center"
+													  IsVisible="{Binding HasMyId}"
+													  Command="{Binding ViewMyIdCommand}"
+													  SemanticProperties.Description="{l:Localize ContactAddShowCode}">
+								<Grid WidthRequest="48"
+									  HeightRequest="48"
+									  InputTransparent="True">
+									<Path Data="M4 3h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z M15 3h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z M4 14h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z M14 14h3v3h-3z M20 14v1 M14 20h1 M18 18h3v3"
+										  Stroke="{DynamicResource ContentPrimaryWL}"
+										  Style="{StaticResource ContactsIcon}" />
+								</Grid>
+							</controls:TemplatedButton>
+						</Grid>
+					</Border>
+
+					<!-- Requests, waiting for an answer -->
+					<VerticalStackLayout IsVisible="{Binding ShowsRequests}"
+										 Spacing="8">
+						<HorizontalStackLayout Padding="8,0"
+											   Spacing="8">
+							<Label Text="{l:Localize ContactRequests}"
+								   VerticalOptions="Center"
+								   Style="{StaticResource SectionLabel}"
+								   SemanticProperties.HeadingLevel="Level2" />
+							<Border VerticalOptions="Center"
+									MinimumWidthRequest="22"
+									Padding="6,1"
+									StrokeThickness="0"
+									BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+									StrokeShape="RoundRectangle 11">
+								<Label Text="{Binding RequestCount}"
+									   HorizontalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="12"
+									   TextColor="White" />
+							</Border>
+						</HorizontalStackLayout>
+						<Border StrokeThickness="1"
+								Stroke="{DynamicResource SurfaceDividerWL}"
+								BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+								StrokeShape="RoundRectangle 20">
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Requests}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="viewmodel:ContactRequestItem">
+										<controls:TemplatedButton Command="{Binding ReviewRequestCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"
+																  CommandParameter="{Binding .}"
+																  SemanticProperties.Description="{Binding Name}">
+											<Grid ColumnDefinitions="44,*,Auto"
+												  Padding="16,12"
+												  MinimumHeightRequest="72"
+												  ColumnSpacing="12"
+												  InputTransparent="True">
+												<Border WidthRequest="44"
+														HeightRequest="44"
+														VerticalOptions="Center"
+														StrokeThickness="0"
+														BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+														StrokeShape="RoundRectangle 22">
+													<Label Text="{Binding Initials}"
+														   HorizontalOptions="Center"
+														   VerticalOptions="Center"
+														   FontFamily="SpaceGroteskSemiBold"
+														   FontSize="16"
+														   TextColor="{DynamicResource ContentAccessWL}" />
+												</Border>
+												<VerticalStackLayout Grid.Column="1"
+																	 VerticalOptions="Center">
+													<HorizontalStackLayout Spacing="6">
+														<Label Text="{Binding Name}"
+															   FontFamily="HaasGroteskMedium"
+															   FontSize="16"
+															   LineBreakMode="TailTruncation"
+															   TextColor="{DynamicResource ContentPrimaryWL}" />
+														<Path Data="M12 2l8 3v6.5c0 5-3.4 8.7-8 10.5-4.6-1.8-8-5.5-8-10.5V5l8-3z M8 12l3 3 5-6"
+															  VerticalOptions="Center"
+															  WidthRequest="16"
+															  HeightRequest="16"
+															  IsVisible="{Binding IsVerified}"
+															  Aspect="Uniform"
+															  Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+															  StrokeThickness="2"
+															  SemanticProperties.Description="{l:Localize ContactIdVerified}" />
+													</HorizontalStackLayout>
+													<Label Text="{l:Localize ContactWantsToAddYou}"
+														   FontFamily="HaasGroteskRegular"
+														   FontSize="14"
+														   TextColor="{DynamicResource ContentSecondaryWL}" />
+												</VerticalStackLayout>
+												<Border Grid.Column="2"
+														VerticalOptions="Center"
+														MinimumHeightRequest="48"
+														Padding="16,0"
+														StrokeThickness="0"
+														BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+														StrokeShape="RoundRectangle 14">
+													<Label Text="{l:Localize ContactReview}"
+														   VerticalOptions="Center"
+														   FontFamily="HaasGroteskMedium"
+														   FontSize="15"
+														   TextColor="{DynamicResource ContentAccessWL}" />
+												</Border>
+											</Grid>
+										</controls:TemplatedButton>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</Border>
+					</VerticalStackLayout>
+
+					<Label IsVisible="{Binding ShowContactsMissing}"
+						   Text="{l:Localize NoContactsFound}"
+						   HorizontalTextAlignment="Center"
+						   Margin="0,24,0,0"
+						   FontFamily="HaasGroteskRegular"
+						   FontSize="16"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+
+					<ActivityIndicator HorizontalOptions="Center"
+									   IsVisible="{Binding IsLoading}"
+									   IsRunning="{Binding IsLoading}"
+									   Color="{DynamicResource ContentPrimaryWL}" />
 				</VerticalStackLayout>
-			</ScrollView>
-		</Grid>
+			</CollectionView.Header>
+
+			<!-- A letter heading for the contacts below it -->
+			<CollectionView.GroupHeaderTemplate>
+				<DataTemplate x:DataType="viewmodel:GroupedContacts">
+					<Label Text="{Binding Group}"
+						   Padding="24,10,24,6"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+				</DataTemplate>
+			</CollectionView.GroupHeaderTemplate>
+
+			<!-- A contact: avatar with online status, name, verified, and a line about them -->
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="viewmodel:ContactInfoModel">
+					<Grid Padding="16,2">
+						<controls:TemplatedButton Command="{Binding SelectContactCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"
+												  CommandParameter="{Binding .}"
+												  SemanticProperties.Description="{Binding FriendlyName}"
+												  SemanticProperties.Hint="{Binding Subtitle}">
+							<Border Padding="16,10"
+									MinimumHeightRequest="72"
+									InputTransparent="True"
+									StrokeThickness="1"
+									Stroke="{DynamicResource SurfaceDividerWL}"
+									BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+									StrokeShape="RoundRectangle 16">
+								<Grid ColumnDefinitions="44,*,Auto"
+									  ColumnSpacing="12">
+									<Grid WidthRequest="44"
+										  HeightRequest="44"
+										  VerticalOptions="Center">
+										<Border StrokeThickness="0"
+												BackgroundColor="{Binding AvatarBackground}"
+												StrokeShape="RoundRectangle 22">
+											<Label Text="{Binding Initials}"
+												   HorizontalOptions="Center"
+												   VerticalOptions="Center"
+												   FontFamily="SpaceGroteskSemiBold"
+												   FontSize="16"
+												   TextColor="{Binding AvatarText}" />
+										</Border>
+										<Border HorizontalOptions="End"
+												VerticalOptions="End"
+												WidthRequest="12"
+												HeightRequest="12"
+												IsVisible="{Binding ShowsOnlineStatus}"
+												StrokeThickness="2"
+												Stroke="{DynamicResource SurfaceElevation1WL}"
+												BackgroundColor="{Binding ConnectionColor}"
+												StrokeShape="RoundRectangle 6" />
+									</Grid>
+									<VerticalStackLayout Grid.Column="1"
+														 VerticalOptions="Center">
+										<HorizontalStackLayout Spacing="6">
+											<Label Text="{Binding FriendlyName}"
+												   FontFamily="HaasGroteskMedium"
+												   FontSize="16"
+												   LineBreakMode="TailTruncation"
+												   TextColor="{DynamicResource ContentPrimaryWL}" />
+											<Path Data="M12 2l8 3v6.5c0 5-3.4 8.7-8 10.5-4.6-1.8-8-5.5-8-10.5V5l8-3z M8 12l3 3 5-6"
+												  VerticalOptions="Center"
+												  WidthRequest="16"
+												  HeightRequest="16"
+												  IsVisible="{Binding IsVerified}"
+												  Aspect="Uniform"
+												  Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+												  StrokeThickness="2" />
+										</HorizontalStackLayout>
+										<Label Text="{Binding Subtitle}"
+											   IsVisible="{Binding HasSubtitle}"
+											   FontFamily="HaasGroteskRegular"
+											   FontSize="14"
+											   LineBreakMode="TailTruncation"
+											   TextColor="{DynamicResource ContentSecondaryWL}" />
+									</VerticalStackLayout>
+									<Border Grid.Column="2"
+											VerticalOptions="Center"
+											Padding="8,2"
+											IsVisible="{Binding HasEvents}"
+											StrokeThickness="0"
+											BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+											StrokeShape="RoundRectangle 11">
+										<Label Text="{Binding NrEvents}"
+											   FontFamily="HaasGroteskMedium"
+											   FontSize="12"
+											   TextColor="White" />
+									</Border>
+								</Grid>
+							</Border>
+						</controls:TemplatedButton>
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+
+			<CollectionView.Footer>
+				<BoxView HeightRequest="24"
+						 Color="Transparent" />
+			</CollectionView.Footer>
+		</CollectionView>
 	</Grid>
 </base:BaseContentPage>

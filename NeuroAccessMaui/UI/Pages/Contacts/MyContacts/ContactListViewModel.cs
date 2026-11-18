@@ -1,110 +1,79 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
 using NeuroAccessMaui.Models;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.UI.QR;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat;
-using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Text;
-using System.ComponentModel;
-using Waher.Networking.XMPP;
-using Waher.Persistence;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.UI.Pages.Wallet.Payment;
-using NeuroAccessMaui.UI.Pages.Wallet;
-using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.QR;
+using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.ContactCard;
+using NeuroAccessMaui.UI.Pages.Contacts.EditContact;
+using NeuroAccessMaui.UI.Pages.Contacts.Export;
+using NeuroAccessMaui.UI.Pages.Contacts.Import;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Wallet;
+using NeuroAccessMaui.UI.Pages.Wallet.Payment;
+using NeuroAccessMaui.UI.Popups.Contacts;
+using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Events;
-using NeuroAccessMaui.UI.MVVM;                 // For ObservableTask
-using NeuroAccessMaui.UI.MVVM.Building;        // For ObservableTaskBuilder
-using NeuroAccessMaui.UI.MVVM.Policies;
-using System.Runtime.CompilerServices;        // For Policies.Debounce
+using Waher.Persistence;
+using Contact = NeuroAccessMaui.Services.Contacts.Contact;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
-	public class GroupedContacts
+	/// <summary>
+	/// The contacts with names starting with the same letter.
+	/// </summary>
+	public class GroupedContacts : ObservableCollection<ContactInfoModel>
 	{
-		public char Group { get; set; }
-		public ObservableCollection<ContactInfoModel?> Contacts { get; set; }
-
-		public GroupedContacts(char Group)
+		/// <summary>
+		/// The contacts with names starting with the same letter.
+		/// </summary>
+		/// <param name="Group">The letter.</param>
+		/// <param name="Contacts">The contacts.</param>
+		public GroupedContacts(char Group, IEnumerable<ContactInfoModel> Contacts)
+			: base(Contacts)
 		{
 			this.Group = Group;
-			this.Contacts = [];
 		}
+
+		/// <summary>
+		/// The letter.
+		/// </summary>
+		public char Group { get; }
 	}
 
 	/// <summary>
-	/// The view model to bind to when displaying the list of contacts.
+	/// The view model of the contacts list: the user's own row, requests waiting for an answer, and the contacts from A to
+	/// Z. The same list is used to pick a contact, for example to pay or share with.
 	/// </summary>
 	public partial class ContactListViewModel : BaseViewModel
 	{
-		private readonly Dictionary<CaseInsensitiveString, List<ContactInfoModel>> byBareJid;
+		private readonly Dictionary<CaseInsensitiveString, List<ContactInfoModel>> byBareJid = [];
 		private readonly TaskCompletionSource<ContactInfoModel?>? selection;
 		private readonly ContactListNavigationArgs? navigationArguments;
-
-		// Debounced search filtering using ObservableTask (no manual CTS needed)
-		private readonly ObservableTask<int> searchFilterTask;
-
-		// Loader task reporting running state while contacts are being loaded.
-		private readonly ObservableTask<int> contactsLoader;
+		private readonly List<ContactInfoModel> all = [];
+		private CancellationTokenSource? searchDelay;
+		private bool reloadPending;
 
 		/// <summary>
-		/// Exposes the loader responsible for loading contacts. Bind to <see cref="ObservableTask{TProgress}.IsRunning"/> to show an activity indicator while contacts load.
-		/// </summary>
-		public ObservableTask<int> ContactsLoader => this.contactsLoader;
-
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(ShowsMe))]
-		private bool isViewMode = false;
-
-		/// <summary>
-		/// If the row for the user shows at the top, which opens notes to yourself.
-		/// </summary>
-		public bool ShowsMe => this.IsViewMode && string.IsNullOrWhiteSpace(this.SearchText) &&
-			!string.IsNullOrEmpty(ServiceRef.XmppService.BareJid);
-
-		/// <summary>
-		/// If the user has an ID to show from their row.
-		/// </summary>
-		public bool HasMyId => ServiceRef.TagProfile.LegalIdentity is not null;
-
-		private string? searchText; // backing field
-		/// <summary>
-		/// Text used for filtering contacts (search box).
-		/// </summary>
-		public string? SearchText
-		{
-			get => this.searchText;
-			set
-			{
-				if (this.searchText != value)
-				{
-					this.searchText = value;
-					this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.SearchText)));
-					this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.ShowsMe)));
-					// Trigger debounced filtering
-					this.searchFilterTask.Run();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Creates an instance of the <see cref="ContactListViewModel"/> class.
+		/// Creates the view model of the contacts list.
 		/// </summary>
 		/// <param name="Args">Navigation arguments.</param>
 		public ContactListViewModel(ContactListNavigationArgs? Args)
 		{
 			this.navigationArguments = Args;
-			this.Contacts = [];
-			this.byBareJid = [];
 
-			if (Args is not null)
+			if (Args is not null && Args.Action.HasValue && Args.Action.Value != SelectContactAction.View)
 			{
 				this.Description = Args.Description;
 				this.Action = Args.Action;
@@ -116,53 +85,147 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 			else
 			{
-				this.Description = ServiceRef.Localizer[nameof(AppResources.ContactsDescription)];
+				this.Description = ServiceRef.Localizer[nameof(AppResources.Contacts)];
 				this.Action = SelectContactAction.View;
-				this.selection = null;
+				this.selection = Args?.Selection;
 			}
 
-			if (this.Action == SelectContactAction.View)
-				this.IsViewMode = true;
-
-			// debounced search task
-			this.searchFilterTask = new ObservableTaskBuilder<int>()
-				.Named("Contacts Search Filter")
-				.WithPolicy(Policies.Debounce(TimeSpan.FromMilliseconds(300)))
-				.AutoStart(false)
-				.UseTaskRun(false)
-				.Run(async ctx =>
-				{
-					await MainThread.InvokeOnMainThreadAsync(this.FilterContacts);
-				})
-				.Build();
-
-			// contacts loader task
-			this.contactsLoader = new ObservableTaskBuilder<int>()
-				.Named("Contacts Loader")
-				.AutoStart(false)
-				.UseTaskRun(false)
-				.Run(async ctx =>
-				{
-					await this.UpdateContactList(this.navigationArguments?.Contacts);
-					await MainThread.InvokeOnMainThreadAsync(this.FilterContacts);
-				})
-				.Build();
+			this.IsViewMode = this.Action == SelectContactAction.View;
 		}
+
+		#region Properties
+
+		/// <summary>
+		/// If the list is shown as the user's contacts, rather than to pick a contact.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowsMe))]
+		[NotifyPropertyChangedFor(nameof(ShowsRequests))]
+		private bool isViewMode;
+
+		/// <summary>
+		/// If the contacts are being loaded.
+		/// </summary>
+		[ObservableProperty]
+		private bool isLoading = true;
+
+		/// <summary>
+		/// The title: Contacts, or what the user picks a contact for.
+		/// </summary>
+		[ObservableProperty]
+		private string? description;
+
+		/// <summary>
+		/// If a contact can be picked by scanning their code.
+		/// </summary>
+		[ObservableProperty]
+		private bool canScanQrCode;
+
+		/// <summary>
+		/// If the user can choose no one in particular.
+		/// </summary>
+		[ObservableProperty]
+		private bool allowAnonymous;
+
+		/// <summary>
+		/// What choosing no one in particular says.
+		/// </summary>
+		[ObservableProperty]
+		private string? anonymousText;
+
+		/// <summary>
+		/// What happens when a contact is picked.
+		/// </summary>
+		[ObservableProperty]
+		private SelectContactAction? action;
+
+		/// <summary>
+		/// The contact that was picked, if any.
+		/// </summary>
+		[ObservableProperty]
+		private ContactInfoModel? selectedContact;
+
+		/// <summary>
+		/// If the list has no contacts to show.
+		/// </summary>
+		[ObservableProperty]
+		private bool showContactsMissing;
+
+		/// <summary>
+		/// The text searched for.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowsMe))]
+		[NotifyPropertyChangedFor(nameof(ShowsRequests))]
+		private string? searchText;
+
+		/// <summary>
+		/// The selected filter chip's key.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ShowsMe))]
+		[NotifyPropertyChangedFor(nameof(ShowsRequests))]
+		[NotifyPropertyChangedFor(nameof(ShowsContacts))]
+		private string filter = ContactFilterChip.AllKey;
+
+		/// <summary>
+		/// The user's own row shows: in the contacts, unfiltered, and not searching.
+		/// </summary>
+		public bool ShowsMe => this.IsViewMode && string.IsNullOrWhiteSpace(this.SearchText) && this.Filter == ContactFilterChip.AllKey &&
+			!string.IsNullOrEmpty(ServiceRef.XmppService.BareJid);
+
+		/// <summary>
+		/// If the user has an ID to show from their row.
+		/// </summary>
+		public bool HasMyId => ServiceRef.TagProfile.LegalIdentity is not null;
+
+		/// <summary>
+		/// If the requests show: in the contacts, when there are any, and the filter shows them.
+		/// </summary>
+		public bool ShowsRequests => this.IsViewMode && this.Requests.Count > 0 && string.IsNullOrWhiteSpace(this.SearchText) &&
+			(this.Filter == ContactFilterChip.AllKey || this.Filter == ContactFilterChip.RequestsKey);
+
+		/// <summary>
+		/// If the contacts from A to Z show. Not when only requests are shown.
+		/// </summary>
+		public bool ShowsContacts => this.Filter != ContactFilterChip.RequestsKey;
+
+		/// <summary>
+		/// The number of requests waiting, as shown on their heading.
+		/// </summary>
+		public string RequestCount => this.Requests.Count.ToString(CultureInfo.CurrentCulture);
+
+		/// <summary>
+		/// Requests waiting for an answer.
+		/// </summary>
+		public ObservableCollection<ContactRequestItem> Requests { get; } = [];
+
+		/// <summary>
+		/// The chips that filter the list.
+		/// </summary>
+		public ObservableCollection<ContactFilterChip> Chips { get; } = [];
+
+		/// <summary>
+		/// The contacts shown, grouped by first letter.
+		/// </summary>
+		public ObservableCollection<GroupedContacts> FilteredContacts { get; } = [];
+
+		#endregion
+
+		#region Life cycle
 
 		/// <inheritdoc/>
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
 
-			// Run loader task to populate contacts; activity indicator bound to ContactsLoader.IsRunning will show during this.
-			this.contactsLoader.Run();
-			await this.contactsLoader.WaitAllAsync();
-
-			ServiceRef.XmppService.OnPresenceSubscribe += this.Xmpp_OnPresence;
-			ServiceRef.XmppService.OnPresenceUnsubscribed += this.Xmpp_OnPresence;
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
+			ContactStore.Changed += this.ContactStore_Changed;
+			ContactRequests.Changed += this.ContactRequests_Changed;
+
+			await this.LoadAsync();
 		}
 
 		/// <inheritdoc/>
@@ -177,207 +240,254 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 
 			this.SelectedContact = null;
+
+			if (this.reloadPending)
+			{
+				this.reloadPending = false;
+				await this.LoadAsync();
+			}
 		}
 
-		private async Task UpdateContactList(IEnumerable<ContactInfo>? Contacts)
+		/// <inheritdoc/>
+		public override Task OnDisposeAsync()
 		{
-			SortedDictionary<CaseInsensitiveString, ContactInfo> Sorted = [];
-			Dictionary<CaseInsensitiveString, bool> Jids = [];
+			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
+			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
+			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
+			ContactStore.Changed -= this.ContactStore_Changed;
+			ContactRequests.Changed -= this.ContactRequests_Changed;
 
-			Contacts ??= await Database.Find<ContactInfo>();
+			this.searchDelay?.Cancel();
+			this.selection?.TrySetResult(this.SelectedContact);
 
-			foreach (ContactInfo Info in Contacts)
+			return base.OnDisposeAsync();
+		}
+
+		#endregion
+
+		#region Loading and filtering
+
+		private async Task LoadAsync()
+		{
+			try
 			{
-				Jids[Info.BareJid] = true;
+				List<ContactInfoModel> Rows = [];
 
-				if (Info.IsThing.HasValue && Info.IsThing.Value)        // Include those with IsThing=null
-					continue;
-
-				if (Info.AllowSubscriptionFrom.HasValue && !Info.AllowSubscriptionFrom.Value)
-					continue;
-
-				Add(Sorted, Info.FriendlyName, Info);
-			}
-
-			foreach (RosterItem Item in ServiceRef.XmppService.Roster)
-			{
-				if (Jids.ContainsKey(Item.BareJid))
-					continue;
-
-				ContactInfo Info = new()
+				if (this.navigationArguments?.Contacts is IEnumerable<ContactInfo> Given)
 				{
-					BareJid = Item.BareJid,
-					FriendlyName = Item.NameOrBareJid,
-					IsThing = null
-				};
-
-				await Database.Insert(Info);
-
-				Add(Sorted, Info.FriendlyName, Info);
-			}
-
-			NotificationEvent[]? Events;
-
-			this.Contacts.Clear();
-			this.ShowContactsMissing = Sorted.Count == 0;
-
-			foreach (CaseInsensitiveString Category in ServiceRef.NotificationService.GetCategories(NotificationEventType.Contacts))
-			{
-				if (ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Contacts, Category, out Events))
-				{
-					if (Sorted.TryGetValue(Category, out ContactInfo? Info))
-						Sorted.Remove(Category);
-					else
+					foreach (ContactInfo Info in Given)
 					{
-						Info = await ContactInfo.FindByBareJid(Category);
+						if (Info.IsThing.HasValue && Info.IsThing.Value)
+							continue;
 
-						if (Info is not null)
-							Remove(Sorted, Info.FriendlyName, Info);
-						else
+						Rows.Add(new ContactInfoModel(Info, EventsOf(Info.BareJid)));
+					}
+				}
+				else
+				{
+					foreach (Contact Card in await ContactStore.GetAllAsync())
+					{
+						if (Card.IsBlocked && !this.IsViewMode)
+							continue;
+
+						Rows.Add(new ContactInfoModel(Card, EventsOf(Card.ChatAddress)));
+					}
+				}
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.all.Clear();
+					this.all.AddRange(Rows);
+
+					this.byBareJid.Clear();
+					foreach (ContactInfoModel Row in Rows)
+					{
+						if (string.IsNullOrEmpty(Row.BareJid))
+							continue;
+
+						if (!this.byBareJid.TryGetValue(Row.BareJid, out List<ContactInfoModel>? List))
 						{
-							Info = new()
-							{
-								BareJid = Category,
-								FriendlyName = Category,
-								IsThing = null
-							};
+							List = [];
+							this.byBareJid[Row.BareJid] = List;
 						}
+
+						List.Add(Row);
 					}
 
-					this.Contacts.Add(new ContactInfoModel(Info, Events));
-				}
+					this.LoadRequests();
+					this.BuildChips();
+					this.ApplyFilter();
+					this.IsLoading = false;
+				});
 			}
-
-			foreach (ContactInfo Info in Sorted.Values)
+			catch (Exception Ex)
 			{
-				if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Contacts, Info.BareJid, out Events))
-					Events = [];
-
-				this.Contacts.Add(new ContactInfoModel(Info, Events));
-			}
-
-			this.byBareJid.Clear();
-
-			foreach (ContactInfoModel? Contact in this.Contacts)
-			{
-				if (string.IsNullOrEmpty(Contact?.BareJid))
-					continue;
-
-				if (!this.byBareJid.TryGetValue(Contact.BareJid, out List<ContactInfoModel>? Contacts2))
-				{
-					Contacts2 = [];
-					this.byBareJid[Contact.BareJid] = Contacts2;
-				}
-
-				Contacts2.Add(Contact);
+				ServiceRef.LogService.LogException(Ex);
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsLoading = false);
 			}
 		}
 
-		private void FilterContacts()
+		private static NotificationEvent[] EventsOf(CaseInsensitiveString? ChatAddress)
 		{
-			this.FilteredContacts.Clear();
-			if (this.Contacts.Count == 0)
+			if (string.IsNullOrEmpty(ChatAddress) ||
+				!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Contacts, ChatAddress, out NotificationEvent[]? Events))
+			{
+				return [];
+			}
+
+			return Events;
+		}
+
+		private void LoadRequests()
+		{
+			this.Requests.Clear();
+
+			if (this.IsViewMode)
+			{
+				foreach (ContactRequest Request in ContactRequests.Pending)
+					this.Requests.Add(new ContactRequestItem(Request));
+			}
+
+			this.OnPropertyChanged(nameof(this.ShowsRequests));
+			this.OnPropertyChanged(nameof(this.RequestCount));
+		}
+
+		private void BuildChips()
+		{
+			this.Chips.Clear();
+
+			if (!this.IsViewMode)
 				return;
 
-			Dictionary<char, List<ContactInfoModel>> Groups = [];
-			string Search = (this.SearchText ?? string.Empty).Trim();
-			bool HasSearch = !string.IsNullOrEmpty(Search);
+			int Count = this.all.Count(Row => !Row.IsBlocked);
+			this.Chips.Add(new ContactFilterChip(ContactFilterChip.AllKey,
+				ServiceRef.Localizer[nameof(AppResources.ContactFilterAll), Count]));
 
-			foreach (ContactInfoModel? Contact in this.Contacts)
+			if (this.Requests.Count > 0)
 			{
-				if (Contact is null)
+				this.Chips.Add(new ContactFilterChip(ContactFilterChip.RequestsKey,
+					ServiceRef.Localizer[nameof(AppResources.ContactFilterRequests), this.Requests.Count]));
+			}
+
+			if (this.all.Any(Row => Row.IsVerified))
+				this.Chips.Add(new ContactFilterChip(ContactFilterChip.VerifiedKey, ServiceRef.Localizer[nameof(AppResources.ContactFilterVerified)]));
+
+			SortedSet<string> Labels = new(StringComparer.CurrentCultureIgnoreCase);
+			foreach (ContactInfoModel Row in this.all)
+			{
+				foreach (string Label in Row.Card?.Labels ?? [])
+				{
+					if (!string.IsNullOrWhiteSpace(Label))
+						Labels.Add(Label.Trim());
+				}
+			}
+
+			foreach (string Label in Labels)
+				this.Chips.Add(new ContactFilterChip(ContactFilterChip.LabelPrefix + Label, Label));
+
+			if (this.all.Any(Row => Row.IsBlocked))
+				this.Chips.Add(new ContactFilterChip(ContactFilterChip.BlockedKey, ServiceRef.Localizer[nameof(AppResources.ContactFilterBlocked)]));
+
+			if (!this.Chips.Any(Chip => Chip.Key == this.Filter))
+				this.Filter = ContactFilterChip.AllKey;
+
+			foreach (ContactFilterChip Chip in this.Chips)
+				Chip.IsSelected = Chip.Key == this.Filter;
+		}
+
+		private void ApplyFilter()
+		{
+			string Search = (this.SearchText ?? string.Empty).Trim();
+			string Key = this.Filter;
+			Dictionary<char, List<ContactInfoModel>> Groups = [];
+
+			foreach (ContactInfoModel Row in this.all)
+			{
+				bool Include = Key switch
+				{
+					ContactFilterChip.BlockedKey => Row.IsBlocked,
+					ContactFilterChip.VerifiedKey => !Row.IsBlocked && Row.IsVerified,
+					ContactFilterChip.RequestsKey => false,
+					_ when Key.StartsWith(ContactFilterChip.LabelPrefix, StringComparison.Ordinal) =>
+						!Row.IsBlocked && (Row.Card?.Labels?.Contains(Key[ContactFilterChip.LabelPrefix.Length..], StringComparer.CurrentCultureIgnoreCase) ?? false),
+					_ => !Row.IsBlocked || !this.IsViewMode
+				};
+
+				if (!Include)
 					continue;
 
-				if (HasSearch)
+				if (Search.Length > 0)
 				{
-					string Name = Contact.FriendlyName ?? string.Empty;
-					if (Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) < 0)
+					string Haystack = string.IsNullOrEmpty(Row.SearchText) ? Row.FriendlyName ?? string.Empty : Row.SearchText;
+					if (Haystack.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) < 0)
 						continue;
 				}
 
-				char Group = string.IsNullOrEmpty(Contact?.FriendlyName) ? '#' : Contact.FriendlyName.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture)[0];
+				string Name = Row.FriendlyName ?? string.Empty;
+				char Group = Name.Length > 0 ? char.ToUpper(Name[0], CultureInfo.CurrentCulture) : '#';
 				if (!char.IsLetter(Group))
 					Group = '#';
 
-				if (!Groups.TryGetValue(Group, out List<ContactInfoModel>? list))
+				if (!Groups.TryGetValue(Group, out List<ContactInfoModel>? List))
 				{
-					list = new List<ContactInfoModel>();
-					Groups[Group] = list;
+					List = [];
+					Groups[Group] = List;
 				}
 
-				list.Add(Contact!);
+				List.Add(Row);
 			}
 
-			foreach (char Group in Groups.Keys.OrderBy(s => s))
+			this.FilteredContacts.Clear();
+
+			foreach (char Group in Groups.Keys.OrderBy(Letter => Letter == '#' ? char.MaxValue : Letter))
 			{
-				GroupedContacts ContactGroup = new(Group);
-
-				foreach (ContactInfoModel Contact in Groups[Group].OrderBy(Contact => Contact.FriendlyName))
-					ContactGroup.Contacts.Add(Contact);
-
-				this.FilteredContacts.Add(ContactGroup);
+				IEnumerable<ContactInfoModel> Sorted = Groups[Group].OrderBy(Row => Row.FriendlyName, StringComparer.CurrentCultureIgnoreCase);
+				this.FilteredContacts.Add(new GroupedContacts(Group, Sorted));
 			}
+
+			this.ShowContactsMissing = this.FilteredContacts.Count == 0 && Key != ContactFilterChip.RequestsKey;
 		}
 
-		private static void Add(SortedDictionary<CaseInsensitiveString, ContactInfo> Sorted, CaseInsensitiveString Name, ContactInfo Info)
+		partial void OnSearchTextChanged(string? value)
 		{
-			if (Sorted.ContainsKey(Name))
+			this.searchDelay?.Cancel();
+			CancellationTokenSource Delay = new();
+			this.searchDelay = Delay;
+
+			_ = Task.Delay(250, Delay.Token).ContinueWith(T =>
 			{
-				int i = 1;
-				string Suffix;
-
-				do
-				{
-					Suffix = " " + (++i).ToString(CultureInfo.InvariantCulture);
-				}
-				while (Sorted.ContainsKey(Name + Suffix));
-
-				Sorted[Name + Suffix] = Info;
-			}
-			else
-				Sorted[Name] = Info;
+				if (!T.IsCanceled)
+					MainThread.BeginInvokeOnMainThread(this.ApplyFilter);
+			}, TaskScheduler.Default);
 		}
 
-		private static void Remove(SortedDictionary<CaseInsensitiveString, ContactInfo> Sorted, CaseInsensitiveString Name, ContactInfo Info)
+		/// <summary>
+		/// Filters the list by a chip.
+		/// </summary>
+		/// <param name="Chip">The chip.</param>
+		[RelayCommand]
+		private void SelectChip(ContactFilterChip? Chip)
 		{
-			int i = 1;
-			string Suffix = string.Empty;
+			if (Chip is null)
+				return;
 
-			while (Sorted.TryGetValue(Name + Suffix, out ContactInfo? Info2))
-			{
-				if (Info2.BareJid == Info.BareJid &&
-					Info2.SourceId == Info.SourceId &&
-					Info2.Partition == Info.Partition &&
-					Info2.NodeId == Info.NodeId &&
-					Info2.LegalId == Info.LegalId)
-				{
-					Sorted.Remove(Name + Suffix);
+			this.Filter = Chip.Key;
 
-					i++;
-					string Suffix2 = " " + i.ToString(CultureInfo.InvariantCulture);
+			foreach (ContactFilterChip Other in this.Chips)
+				Other.IsSelected = Other.Key == Chip.Key;
 
-					while (Sorted.TryGetValue(Name + Suffix2, out Info2))
-					{
-						Sorted[Name + Suffix] = Info2;
-						Sorted.Remove(Name + Suffix2);
-
-						i++;
-						Suffix2 = " " + i.ToString(CultureInfo.InvariantCulture);
-					}
-
-					return;
-				}
-
-				i++;
-				Suffix = " " + i.ToString(CultureInfo.InvariantCulture);
-			}
+			this.ApplyFilter();
 		}
+
+		#endregion
+
+		#region The user's own row
 
 		/// <summary>
 		/// Opens notes to yourself: a chat with your own address, kept on the phone.
 		/// </summary>
 		[RelayCommand]
-		private async Task OpenMyChat()
+		private async Task OpenMyChatAsync()
 		{
 			string BareJid = ServiceRef.XmppService.BareJid;
 			if (string.IsNullOrEmpty(BareJid))
@@ -388,202 +498,240 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		}
 
 		/// <summary>
-		/// Shows the user's own ID.
+		/// Shows the user's own ID, with the code others scan to add them.
 		/// </summary>
 		[RelayCommand]
-		private async Task ViewMyId()
+		private async Task ViewMyIdAsync()
 		{
-			Waher.Networking.XMPP.Contracts.LegalIdentity? Identity = ServiceRef.TagProfile.LegalIdentity;
+			LegalIdentity? Identity = ServiceRef.TagProfile.LegalIdentity;
 			if (Identity is not null)
 				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 		}
 
-		private bool CanSelectContact => !this.IsViewMode;
+		#endregion
 
-		[RelayCommand(CanExecute = nameof(CanSelectContact))]
-		private Task SelectContact(ContactInfoModel? Contact)
+		#region Adding and the menu
+
+		/// <summary>
+		/// Shows the ways to add a contact, and goes on with the one the user picks.
+		/// </summary>
+		[RelayCommand]
+		private async Task AddContactAsync()
+		{
+			AddContactChoice? Choice = await AddContactPopup.ShowAsync();
+
+			switch (Choice)
+			{
+				case AddContactChoice.ScanCode:
+					await this.ScanToAddAsync();
+					break;
+
+				case AddContactChoice.ShowMyCode:
+					await this.ViewMyIdAsync();
+					break;
+
+				case AddContactChoice.ImportFile:
+					await ServiceRef.NavigationService.GoToAsync(nameof(ImportContactsPage), new ImportContactsNavigationArgs(), BackMethod.Pop);
+					break;
+
+				case AddContactChoice.TypeIn:
+					await ServiceRef.NavigationService.GoToAsync(nameof(EditContactPage), new EditContactNavigationArgs(), BackMethod.Pop);
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Shows the list's menu: import, export and blocked people.
+		/// </summary>
+		[RelayCommand]
+		private async Task ShowMenuAsync()
+		{
+			ContactsMenuChoice? Choice = await ContactsMenuPopup.ShowAsync();
+
+			switch (Choice)
+			{
+				case ContactsMenuChoice.Import:
+					await ServiceRef.NavigationService.GoToAsync(nameof(ImportContactsPage), new ImportContactsNavigationArgs(), BackMethod.Pop);
+					break;
+
+				case ContactsMenuChoice.Export:
+					await ServiceRef.NavigationService.GoToAsync(nameof(ExportContactsPage), new ExportContactsNavigationArgs(), BackMethod.Pop);
+					break;
+
+				case ContactsMenuChoice.Blocked:
+					ContactFilterChip? Blocked = this.Chips.FirstOrDefault(Chip => Chip.Key == ContactFilterChip.BlockedKey);
+					if (Blocked is not null)
+						this.SelectChip(Blocked);
+					else
+						await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.ContactNoneBlocked)]);
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Scans someone's code and adds them: their card is saved from their ID, and they get a request.
+		/// </summary>
+		private async Task ScanToAddAsync()
+		{
+			IdentityReference? Scan = await QrCode.GetQrService().ScanIdentityAsync(nameof(AppResources.ScanQRCode));
+			if (Scan is null)
+				return;
+
+			try
+			{
+				string? ChatAddress = Scan.Identity?[Constants.XmppProperties.Jid];
+
+				if (Scan.Identity is null)
+				{
+					// Their ID is not open to everyone, so it is opened by asking them for it.
+					await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Scan.Identifier,
+						ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
+					return;
+				}
+
+				if (string.IsNullOrEmpty(ChatAddress))
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ContactAddTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ContactNoChatAddress)]);
+					return;
+				}
+
+				Contact Card = await ContactStore.AddOrUpdateAsync(ChatAddress, Scan.Identity, null);
+
+				ServiceRef.XmppService.RequestPresenceSubscription(Card.ChatAddress, ContactRequests.OwnIdentityXml());
+				await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.ContactRequestSent), Card.DisplayName]);
+
+				await this.OpenCardAsync(Card);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		#endregion
+
+		#region Opening and picking
+
+		/// <summary>
+		/// Shows a request, where the user can accept it or not.
+		/// </summary>
+		/// <param name="Item">The request.</param>
+		[RelayCommand]
+		private Task ReviewRequestAsync(ContactRequestItem? Item)
+		{
+			return Item is null ? Task.CompletedTask : ContactRequestPopup.ShowAsync(Item.Request);
+		}
+
+		/// <summary>
+		/// Opens a contact's card, or picks the contact.
+		/// </summary>
+		/// <param name="Contact">The contact.</param>
+		[RelayCommand]
+		private void SelectContact(ContactInfoModel? Contact)
 		{
 			if (Contact is not null)
-			{
 				this.SelectedContact = Contact;
-			}
-
-			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
-		public override Task OnDisposeAsync()
+		private Task OpenCardAsync(Contact Card)
 		{
-			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
-			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
-			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
-
-			if (this.Action != SelectContactAction.Select)
-			{
-				this.ShowContactsMissing = false;
-				this.Contacts.Clear();
-			}
-
-			this.selection?.TrySetResult(this.SelectedContact);
-			this.contactsLoader.Dispose();
-			this.searchFilterTask.Dispose();
-
-			return base.OnDisposeAsync();
+			return ServiceRef.NavigationService.GoToAsync(nameof(ContactCardPage), new ContactCardNavigationArgs(Card), BackMethod.Pop);
 		}
-
-		/// <summary>
-		/// Gets or sets whether to show a contacts missing alert or not.
-		/// </summary>
-		[ObservableProperty]
-		private bool showContactsMissing;
-
-		/// <summary>
-		/// The description to present to the user.
-		/// </summary>
-		[ObservableProperty]
-		private string? description;
-
-		/// <summary>
-		/// The description to present to the user.
-		/// </summary>
-		[ObservableProperty]
-		private bool canScanQrCode;
-
-		/// <summary>
-		/// The description to present to the user.
-		/// </summary>
-		[ObservableProperty]
-		private bool allowAnonymous;
-
-		/// <summary>
-		/// The description to present to the user.
-		/// </summary>
-		[ObservableProperty]
-		private string? anonymousText;
-
-		/// <summary>
-		/// The action to take when contact has been selected.
-		/// </summary>
-		[ObservableProperty]
-		private SelectContactAction? action;
-
-		/// <summary>
-		/// Holds the list of contacts to display.
-		/// </summary>
-		public ObservableCollection<ContactInfoModel?> Contacts { get; }
-
-		public ObservableCollection<GroupedContacts> FilteredContacts { get; } = new();
-
-		/// <summary>
-		/// The currently selected contact, if any.
-		/// </summary>
-		[ObservableProperty]
-		private ContactInfoModel? selectedContact;
 
 		/// <inheritdoc/>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			switch (e.PropertyName)
+			if (e.PropertyName == nameof(this.SelectedContact) && this.SelectedContact is ContactInfoModel Contact)
+				MainThread.BeginInvokeOnMainThread(async () => await this.ContactSelectedAsync(Contact));
+		}
+
+		private async Task ContactSelectedAsync(ContactInfoModel Contact)
+		{
+			this.IsOverlayVisible = true;
+
+			try
 			{
-				case nameof(this.SelectedContact):
-					ContactInfoModel? Contact = this.SelectedContact;
+				switch (this.Action)
+				{
+					case SelectContactAction.MakePayment:
+						await this.PayAsync(Contact);
+						break;
 
-					if (Contact is not null)
-					{
-						MainThread.BeginInvokeOnMainThread(async () =>
-						{
-							this.IsOverlayVisible = true;
+					case SelectContactAction.Select:
+						await this.GoBack();
+						this.selection?.TrySetResult(Contact);
+						break;
 
-							try
-							{
-								switch (this.Action)
-								{
-									case SelectContactAction.MakePayment:
-										StringBuilder sb = new();
-
-										sb.Append("edaler:");
-
-										if (ServiceRef.TagProfile.LegalIdentity is null)
-										{
-											sb.Append("f=");
-											sb.Append(ServiceRef.XmppService.BareJid);
-										}
-										else
-										{
-											sb.Append("fi=");
-											sb.Append(ServiceRef.TagProfile.LegalIdentity.Id);
-										}
-
-										if (!string.IsNullOrEmpty(Contact.LegalId))
-										{
-											sb.Append(";ti=");
-											sb.Append(Contact.LegalId);
-										}
-										else if (!string.IsNullOrEmpty(Contact.BareJid))
-										{
-											sb.Append(";t=");
-											sb.Append(Contact.BareJid);
-										}
-
-										Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-
-										sb.Append(";cu=");
-										sb.Append(Balance.Currency);
-
-										if (!EDalerUri.TryParse(sb.ToString(), out EDalerUri Parsed))
-											break;
-
-										EDalerUriNavigationArgs Args = new(Parsed);
-										// Inherit the back method here from the parrent
-										await ServiceRef.NavigationService.GoToAsync(nameof(PaymentPage), Args, BackMethod.Pop2);
-
-										break;
-
-									case SelectContactAction.View:
-									default:
-										if (Contact.LegalIdentity is not null)
-										{
-											ViewIdentityNavigationArgs ViewIdentityArgs = new(Contact.LegalIdentity);
-
-											await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
-										}
-										else if (!string.IsNullOrEmpty(Contact.LegalId))
-										{
-											await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Contact.LegalId,
-												ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
-										}
-										else if (!string.IsNullOrEmpty(Contact.BareJid) && Contact.Contact is not null)
-										{
-											ChatNavigationArgs ChatArgs = new(Contact.Contact);
-											await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
-										}
-
-										break;
-
-									case SelectContactAction.Select:
-										this.SelectedContact = Contact;
-										await this.GoBack();
-										this.selection?.TrySetResult(Contact);
-										break;
-								}
-							}
-							finally
-							{
-								this.IsOverlayVisible = false;
-							}
-						});
-					}
-					break;
+					case SelectContactAction.View:
+					default:
+						if (Contact.Card is not null)
+							await this.OpenCardAsync(Contact.Card);
+						else if (Contact.LegalIdentity is not null)
+							await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Contact.LegalIdentity));
+						else if (!string.IsNullOrEmpty(Contact.LegalId))
+							await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Contact.LegalId, ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
+						break;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+			finally
+			{
+				this.IsOverlayVisible = false;
 			}
 		}
 
+		private async Task PayAsync(ContactInfoModel Contact)
+		{
+			StringBuilder Sb = new();
+
+			Sb.Append("edaler:");
+
+			if (ServiceRef.TagProfile.LegalIdentity is null)
+			{
+				Sb.Append("f=");
+				Sb.Append(ServiceRef.XmppService.BareJid);
+			}
+			else
+			{
+				Sb.Append("fi=");
+				Sb.Append(ServiceRef.TagProfile.LegalIdentity.Id);
+			}
+
+			if (!string.IsNullOrEmpty(Contact.LegalId))
+			{
+				Sb.Append(";ti=");
+				Sb.Append(Contact.LegalId);
+			}
+			else if (!string.IsNullOrEmpty(Contact.BareJid))
+			{
+				Sb.Append(";t=");
+				Sb.Append(Contact.BareJid);
+			}
+
+			Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+
+			Sb.Append(";cu=");
+			Sb.Append(Balance.Currency);
+
+			if (!EDalerUri.TryParse(Sb.ToString(), out EDalerUri Parsed))
+				return;
+
+			await ServiceRef.NavigationService.GoToAsync(nameof(PaymentPage), new EDalerUriNavigationArgs(Parsed), BackMethod.Pop2);
+		}
+
 		/// <summary>
-		/// Command executed when the user wants to scan a contact from a QR Code.
+		/// Picks a contact by scanning their code.
 		/// </summary>
 		[RelayCommand]
-		private async Task ScanQrCode()
+		private async Task ScanQrCodeAsync()
 		{
 			IdentityReference? Scan = await QrCode.GetQrService().ScanIdentityAsync(nameof(AppResources.ScanQRCode));
 			if (Scan is null)
@@ -598,62 +746,80 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		}
 
 		/// <summary>
-		/// Command executed when the user wants to perform an action with someone anonymous.
+		/// Picks no one in particular.
 		/// </summary>
 		[RelayCommand]
 		private void Anonymous()
 		{
-			this.SelectedContact = new ContactInfoModel(null, []);
+			this.SelectedContact = new ContactInfoModel((ContactInfo?)null, []);
 		}
+
+		#endregion
+
+		#region Events
 
 		private Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)
 		{
-			if (this.byBareJid.TryGetValue(e.FromBareJID, out List<ContactInfoModel>? Contacts))
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				foreach (ContactInfoModel Contact in Contacts)
-					Contact.PresenceUpdated();
-			}
+				if (this.byBareJid.TryGetValue(e.FromBareJID, out List<ContactInfoModel>? Rows))
+				{
+					foreach (ContactInfoModel Row in Rows)
+						Row.PresenceUpdated();
+				}
+			});
 
 			return Task.CompletedTask;
+		}
+
+		private void ContactStore_Changed(object? Sender, EventArgs e)
+		{
+			// The list reloads when it shows again, so a page on top of it, such as a contact card, isn't slowed down.
+			this.reloadPending = true;
+		}
+
+		private void ContactRequests_Changed(object? Sender, EventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.LoadRequests();
+				this.BuildChips();
+				this.ApplyFilter();
+			});
 		}
 
 		private Task NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
 			if (e.Event.Type == NotificationEventType.Contacts)
-				this.UpdateNotifications(e.Event.Category ?? string.Empty);
+				MainThread.BeginInvokeOnMainThread(() => this.UpdateNotifications(e.Event.Category ?? string.Empty));
 
 			return Task.CompletedTask;
-		}
-
-		private void UpdateNotifications()
-		{
-			foreach (CaseInsensitiveString Category in ServiceRef.NotificationService.GetCategories(NotificationEventType.Contacts))
-				this.UpdateNotifications(Category);
-		}
-
-		private void UpdateNotifications(CaseInsensitiveString Category)
-		{
-			if (this.byBareJid.TryGetValue(Category, out List<ContactInfoModel>? Contacts))
-			{
-				if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Contacts, Category, out NotificationEvent[]? Events))
-					Events = [];
-
-				foreach (ContactInfoModel Contact in Contacts)
-					Contact.NotificationsUpdated(Events);
-			}
 		}
 
 		private Task NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
 		{
-			Dictionary<CaseInsensitiveString, bool> Categories = [];
+			HashSet<CaseInsensitiveString> Categories = [.. e.Events.Select(Event => Event.Category ?? string.Empty)];
 
-			foreach (NotificationEvent Event in e.Events)
-				Categories[Event.Category ?? string.Empty] = true;
-
-			foreach (CaseInsensitiveString Category in Categories.Keys)
-				this.UpdateNotifications(Category);
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				foreach (CaseInsensitiveString Category in Categories)
+					this.UpdateNotifications(Category);
+			});
 
 			return Task.CompletedTask;
 		}
+
+		private void UpdateNotifications(CaseInsensitiveString Category)
+		{
+			if (this.byBareJid.TryGetValue(Category, out List<ContactInfoModel>? Rows))
+			{
+				NotificationEvent[] Events = EventsOf(Category);
+
+				foreach (ContactInfoModel Row in Rows)
+					Row.NotificationsUpdated(Events);
+			}
+		}
+
+		#endregion
 	}
 }

@@ -61,6 +61,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abuse.
+        /// </summary>
+        public static string Abuse {
+            get {
+                return ResourceManager.GetString("Abuse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         public static string Accept {
@@ -925,6 +934,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Block.
+        /// </summary>
+        public static string Block {
+            get {
+                return ResourceManager.GetString("Block", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Building.
         /// </summary>
         public static string Building {
@@ -1578,6 +1596,1239 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ChatYou {
             get {
                 return ResourceManager.GetString("ChatYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string ContactAdd {
+            get {
+                return ResourceManager.GetString("ContactAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add email address.
+        /// </summary>
+        public static string ContactAddEmail {
+            get {
+                return ResourceManager.GetString("ContactAddEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from a file.
+        /// </summary>
+        public static string ContactAddImport {
+            get {
+                return ResourceManager.GetString("ContactAddImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contacts saved as a .vcf file.
+        /// </summary>
+        public static string ContactAddImportHint {
+            get {
+                return ResourceManager.GetString("ContactAddImportHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contacts you import or type in stay unverified until they share their verified ID with you..
+        /// </summary>
+        public static string ContactAddNote {
+            get {
+                return ResourceManager.GetString("ContactAddNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add phone number.
+        /// </summary>
+        public static string ContactAddPhone {
+            get {
+                return ResourceManager.GetString("ContactAddPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add {0} as a contact? They get a request to accept..
+        /// </summary>
+        public static string ContactAddQuestion {
+            get {
+                return ResourceManager.GetString("ContactAddQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan their code.
+        /// </summary>
+        public static string ContactAddScan {
+            get {
+                return ResourceManager.GetString("ContactAddScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Point the camera at the QR code on their phone.
+        /// </summary>
+        public static string ContactAddScanHint {
+            get {
+                return ResourceManager.GetString("ContactAddScanHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show my code.
+        /// </summary>
+        public static string ContactAddShowCode {
+            get {
+                return ResourceManager.GetString("ContactAddShowCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Let them scan it with their app.
+        /// </summary>
+        public static string ContactAddShowCodeHint {
+            get {
+                return ResourceManager.GetString("ContactAddShowCodeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose how to find the person..
+        /// </summary>
+        public static string ContactAddSubtitle {
+            get {
+                return ResourceManager.GetString("ContactAddSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a contact.
+        /// </summary>
+        public static string ContactAddTitle {
+            get {
+                return ResourceManager.GetString("ContactAddTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type it in.
+        /// </summary>
+        public static string ContactAddTypeIn {
+            get {
+                return ResourceManager.GetString("ContactAddTypeIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Their chat address and name.
+        /// </summary>
+        public static string ContactAddTypeInHint {
+            get {
+                return ResourceManager.GetString("ContactAddTypeInHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is already in your contacts..
+        /// </summary>
+        public static string ContactAlreadyAdded {
+            get {
+                return ResourceManager.GetString("ContactAlreadyAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Away.
+        /// </summary>
+        public static string ContactAway {
+            get {
+                return ResourceManager.GetString("ContactAway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Birthday.
+        /// </summary>
+        public static string ContactBirthday {
+            get {
+                return ResourceManager.GetString("ContactBirthday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to YYYY-MM-DD.
+        /// </summary>
+        public static string ContactBirthdayFormat {
+            get {
+                return ResourceManager.GetString("ContactBirthdayFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write the birthday as year-month-day, for example 1985-04-12..
+        /// </summary>
+        public static string ContactBirthdayInvalid {
+            get {
+                return ResourceManager.GetString("ContactBirthdayInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block {0}.
+        /// </summary>
+        public static string ContactBlock {
+            get {
+                return ResourceManager.GetString("ContactBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block.
+        /// </summary>
+        public static string ContactBlockButton {
+            get {
+                return ResourceManager.GetString("ContactBlockButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked.
+        /// </summary>
+        public static string ContactBlocked {
+            get {
+                return ResourceManager.GetString("ContactBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked.
+        /// </summary>
+        public static string ContactBlockedLabel {
+            get {
+                return ResourceManager.GetString("ContactBlockedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked people.
+        /// </summary>
+        public static string ContactBlockedPeople {
+            get {
+                return ResourceManager.GetString("ContactBlockedPeople", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See who you have blocked.
+        /// </summary>
+        public static string ContactBlockedPeopleHint {
+            get {
+                return ResourceManager.GetString("ContactBlockedPeopleHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They can't send you messages or requests.
+        /// </summary>
+        public static string ContactBlockHint {
+            get {
+                return ResourceManager.GetString("ContactBlockHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block {0}.
+        /// </summary>
+        public static string ContactBlockName {
+            get {
+                return ResourceManager.GetString("ContactBlockName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block or report.
+        /// </summary>
+        public static string ContactBlockOrReport {
+            get {
+                return ResourceManager.GetString("ContactBlockOrReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block or report {0}.
+        /// </summary>
+        public static string ContactBlockOrReportTitle {
+            get {
+                return ResourceManager.GetString("ContactBlockOrReportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can't send you requests or see when you're online, and you stop seeing when they are..
+        /// </summary>
+        public static string ContactBlockQuestion {
+            get {
+                return ResourceManager.GetString("ContactBlockQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Busy.
+        /// </summary>
+        public static string ContactBusy {
+            get {
+                return ResourceManager.GetString("ContactBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact.
+        /// </summary>
+        public static string ContactCardTitle {
+            get {
+                return ResourceManager.GetString("ContactCardTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chat address.
+        /// </summary>
+        public static string ContactChatAddress {
+            get {
+                return ResourceManager.GetString("ContactChatAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like name@example.com. Ask them for it, or scan their code instead..
+        /// </summary>
+        public static string ContactChatAddressHint {
+            get {
+                return ResourceManager.GetString("ContactChatAddressHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That isn't a chat address. It should look like name@example.com..
+        /// </summary>
+        public static string ContactChatAddressInvalid {
+            get {
+                return ResourceManager.GetString("ContactChatAddressInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copied.
+        /// </summary>
+        public static string ContactCopied {
+            get {
+                return ResourceManager.GetString("ContactCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact details.
+        /// </summary>
+        public static string ContactDetailsHeader {
+            get {
+                return ResourceManager.GetString("ContactDetailsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discard.
+        /// </summary>
+        public static string ContactDiscard {
+            get {
+                return ResourceManager.GetString("ContactDiscard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your changes to this contact have not been saved..
+        /// </summary>
+        public static string ContactDiscardMessage {
+            get {
+                return ResourceManager.GetString("ContactDiscardMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discard your changes?.
+        /// </summary>
+        public static string ContactDiscardQuestion {
+            get {
+                return ResourceManager.GetString("ContactDiscardQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit contact.
+        /// </summary>
+        public static string ContactEdit {
+            get {
+                return ResourceManager.GetString("ContactEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string ContactEmail {
+            get {
+                return ResourceManager.GetString("ContactEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email addresses.
+        /// </summary>
+        public static string ContactEmails {
+            get {
+                return ResourceManager.GetString("ContactEmails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked.
+        /// </summary>
+        public static string ContactExportBlocked {
+            get {
+                return ResourceManager.GetString("ContactExportBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save contacts as a .vcf file to share.
+        /// </summary>
+        public static string ContactExportHint {
+            get {
+                return ResourceManager.GetString("ContactExportHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include notes.
+        /// </summary>
+        public static string ContactExportIncludeNotes {
+            get {
+                return ResourceManager.GetString("ContactExportIncludeNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include photos.
+        /// </summary>
+        public static string ContactExportIncludePhotos {
+            get {
+                return ResourceManager.GetString("ContactExportIncludePhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no contacts to export..
+        /// </summary>
+        public static string ContactExportNone {
+            get {
+                return ResourceManager.GetString("ContactExportNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string ContactExportSelectAll {
+            get {
+                return ResourceManager.GetString("ContactExportSelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select none.
+        /// </summary>
+        public static string ContactExportSelectNone {
+            get {
+                return ResourceManager.GetString("ContactExportSelectNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share {0} contacts.
+        /// </summary>
+        public static string ContactExportShareMany {
+            get {
+                return ResourceManager.GetString("ContactExportShareMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share 1 contact.
+        /// </summary>
+        public static string ContactExportShareOne {
+            get {
+                return ResourceManager.GetString("ContactExportShareOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export contacts.
+        /// </summary>
+        public static string ContactExportTitle {
+            get {
+                return ResourceManager.GetString("ContactExportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to country.
+        /// </summary>
+        public static string ContactFieldCountry {
+            get {
+                return ResourceManager.GetString("ContactFieldCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All ({0}).
+        /// </summary>
+        public static string ContactFilterAll {
+            get {
+                return ResourceManager.GetString("ContactFilterAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked.
+        /// </summary>
+        public static string ContactFilterBlocked {
+            get {
+                return ResourceManager.GetString("ContactFilterBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requests ({0}).
+        /// </summary>
+        public static string ContactFilterRequests {
+            get {
+                return ResourceManager.GetString("ContactFilterRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified.
+        /// </summary>
+        public static string ContactFilterVerified {
+            get {
+                return ResourceManager.GetString("ContactFilterVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From ID.
+        /// </summary>
+        public static string ContactFromId {
+            get {
+                return ResourceManager.GetString("ContactFromId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string ContactHome {
+            get {
+                return ResourceManager.GetString("ContactHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID number.
+        /// </summary>
+        public static string ContactIdNumber {
+            get {
+                return ResourceManager.GetString("ContactIdNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID verified.
+        /// </summary>
+        public static string ContactIdVerified {
+            get {
+                return ResourceManager.GetString("ContactIdVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contacts imported.
+        /// </summary>
+        public static string ContactImportDoneMany {
+            get {
+                return ResourceManager.GetString("ContactImportDoneMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 contact imported.
+        /// </summary>
+        public static string ContactImportDoneOne {
+            get {
+                return ResourceManager.GetString("ContactImportDoneOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to address.
+        /// </summary>
+        public static string ContactImportFieldAddress {
+            get {
+                return ResourceManager.GetString("ContactImportFieldAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to birthday.
+        /// </summary>
+        public static string ContactImportFieldBirthday {
+            get {
+                return ResourceManager.GetString("ContactImportFieldBirthday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to chat address.
+        /// </summary>
+        public static string ContactImportFieldChatAddress {
+            get {
+                return ResourceManager.GetString("ContactImportFieldChatAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to email.
+        /// </summary>
+        public static string ContactImportFieldEmail {
+            get {
+                return ResourceManager.GetString("ContactImportFieldEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to labels.
+        /// </summary>
+        public static string ContactImportFieldLabels {
+            get {
+                return ResourceManager.GetString("ContactImportFieldLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to name.
+        /// </summary>
+        public static string ContactImportFieldName {
+            get {
+                return ResourceManager.GetString("ContactImportFieldName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to notes.
+        /// </summary>
+        public static string ContactImportFieldNotes {
+            get {
+                return ResourceManager.GetString("ContactImportFieldNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to organization.
+        /// </summary>
+        public static string ContactImportFieldOrganization {
+            get {
+                return ResourceManager.GetString("ContactImportFieldOrganization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to phone number.
+        /// </summary>
+        public static string ContactImportFieldPhone {
+            get {
+                return ResourceManager.GetString("ContactImportFieldPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to photo.
+        /// </summary>
+        public static string ContactImportFieldPhoto {
+            get {
+                return ResourceManager.GetString("ContactImportFieldPhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contacts found.
+        /// </summary>
+        public static string ContactImportFoundMany {
+            get {
+                return ResourceManager.GetString("ContactImportFoundMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 contact found.
+        /// </summary>
+        public static string ContactImportFoundOne {
+            get {
+                return ResourceManager.GetString("ContactImportFoundOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import {0} contacts.
+        /// </summary>
+        public static string ContactImportMany {
+            get {
+                return ResourceManager.GetString("ContactImportMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string ContactImportNew {
+            get {
+                return ResourceManager.GetString("ContactImportNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} new.
+        /// </summary>
+        public static string ContactImportNewCount {
+            get {
+                return ResourceManager.GetString("ContactImportNewCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New, with {0}.
+        /// </summary>
+        public static string ContactImportNewWith {
+            get {
+                return ResourceManager.GetString("ContactImportNewWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the contacts in the file have a chat address, so none can be imported..
+        /// </summary>
+        public static string ContactImportNoChatAddresses {
+            get {
+                return ResourceManager.GetString("ContactImportNoChatAddresses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file has no contacts that can be imported..
+        /// </summary>
+        public static string ContactImportNoContacts {
+            get {
+                return ResourceManager.GetString("ContactImportNoContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to not selected.
+        /// </summary>
+        public static string ContactImportNotSelected {
+            get {
+                return ResourceManager.GetString("ContactImportNotSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imported contacts aren't verified. A contact becomes verified when they share their ID with you..
+        /// </summary>
+        public static string ContactImportNotVerified {
+            get {
+                return ResourceManager.GetString("ContactImportNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import 1 contact.
+        /// </summary>
+        public static string ContactImportOne {
+            get {
+                return ResourceManager.GetString("ContactImportOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a contact file.
+        /// </summary>
+        public static string ContactImportPickTitle {
+            get {
+                return ResourceManager.GetString("ContactImportPickTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to selected.
+        /// </summary>
+        public static string ContactImportSelected {
+            get {
+                return ResourceManager.GetString("ContactImportSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contacts are left out, because they have no chat address..
+        /// </summary>
+        public static string ContactImportSkippedMany {
+            get {
+                return ResourceManager.GetString("ContactImportSkippedMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 contact is left out, because it has no chat address..
+        /// </summary>
+        public static string ContactImportSkippedOne {
+            get {
+                return ResourceManager.GetString("ContactImportSkippedOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import contacts.
+        /// </summary>
+        public static string ContactImportTitle {
+            get {
+                return ResourceManager.GetString("ContactImportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file is too large to import..
+        /// </summary>
+        public static string ContactImportTooLarge {
+            get {
+                return ResourceManager.GetString("ContactImportTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Already in contacts, nothing new.
+        /// </summary>
+        public static string ContactImportUnchanged {
+            get {
+                return ResourceManager.GetString("ContactImportUnchanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} already added.
+        /// </summary>
+        public static string ContactImportUnchangedCount {
+            get {
+                return ResourceManager.GetString("ContactImportUnchangedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} will be updated.
+        /// </summary>
+        public static string ContactImportUpdatedCount {
+            get {
+                return ResourceManager.GetString("ContactImportUpdatedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updates: {0}.
+        /// </summary>
+        public static string ContactImportUpdates {
+            get {
+                return ResourceManager.GetString("ContactImportUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep editing.
+        /// </summary>
+        public static string ContactKeepEditing {
+            get {
+                return ResourceManager.GetString("ContactKeepEditing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Labels.
+        /// </summary>
+        public static string ContactLabels {
+            get {
+                return ResourceManager.GetString("ContactLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Separate labels with commas, for example Work, Family..
+        /// </summary>
+        public static string ContactLabelsHint {
+            get {
+                return ResourceManager.GetString("ContactLabelsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Let {0} see when you're online.
+        /// </summary>
+        public static string ContactLetSeeOnline {
+            get {
+                return ResourceManager.GetString("ContactLetSeeOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can ask to see this..
+        /// </summary>
+        public static string ContactLetSeeOnlineHint {
+            get {
+                return ResourceManager.GetString("ContactLetSeeOnlineHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message yourself.
+        /// </summary>
+        public static string ContactMessageYourself {
+            get {
+                return ResourceManager.GetString("ContactMessageYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile.
+        /// </summary>
+        public static string ContactMobile {
+            get {
+                return ResourceManager.GetString("ContactMobile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New contact.
+        /// </summary>
+        public static string ContactNew {
+            get {
+                return ResourceManager.GetString("ContactNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This ID has no chat address, so it can't be added as a contact..
+        /// </summary>
+        public static string ContactNoChatAddress {
+            get {
+                return ResourceManager.GetString("ContactNoChatAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven't blocked anyone..
+        /// </summary>
+        public static string ContactNoneBlocked {
+            get {
+                return ResourceManager.GetString("ContactNoneBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        public static string ContactNotes {
+            get {
+                return ResourceManager.GetString("ContactNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not verified.
+        /// </summary>
+        public static string ContactNotVerified {
+            get {
+                return ResourceManager.GetString("ContactNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online status.
+        /// </summary>
+        public static string ContactOnlineStatus {
+            get {
+                return ResourceManager.GetString("ContactOnlineStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization.
+        /// </summary>
+        public static string ContactOrganization {
+            get {
+                return ResourceManager.GetString("ContactOrganization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pay.
+        /// </summary>
+        public static string ContactPay {
+            get {
+                return ResourceManager.GetString("ContactPay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone numbers.
+        /// </summary>
+        public static string ContactPhoneNumbers {
+            get {
+                return ResourceManager.GetString("ContactPhoneNumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Postal code.
+        /// </summary>
+        public static string ContactPostalCode {
+            get {
+                return ResourceManager.GetString("ContactPostalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove contact.
+        /// </summary>
+        public static string ContactRemove {
+            get {
+                return ResourceManager.GetString("ContactRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string ContactRemoveButton {
+            get {
+                return ResourceManager.GetString("ContactRemoveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove email address.
+        /// </summary>
+        public static string ContactRemoveEmail {
+            get {
+                return ResourceManager.GetString("ContactRemoveEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove phone number.
+        /// </summary>
+        public static string ContactRemovePhone {
+            get {
+                return ResourceManager.GetString("ContactRemovePhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove {0} from your contacts? Your chat stays until you delete it..
+        /// </summary>
+        public static string ContactRemoveQuestion {
+            get {
+                return ResourceManager.GetString("ContactRemoveQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report abuse.
+        /// </summary>
+        public static string ContactReportAbuse {
+            get {
+                return ResourceManager.GetString("ContactReportAbuse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocks them and tells your provider.
+        /// </summary>
+        public static string ContactReportHint {
+            get {
+                return ResourceManager.GetString("ContactReportHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report something else.
+        /// </summary>
+        public static string ContactReportOther {
+            get {
+                return ResourceManager.GetString("ContactReportOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report spam.
+        /// </summary>
+        public static string ContactReportSpam {
+            get {
+                return ResourceManager.GetString("ContactReportSpam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept.
+        /// </summary>
+        public static string ContactRequestAccept {
+            get {
+                return ResourceManager.GetString("ContactRequestAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is now a contact.
+        /// </summary>
+        public static string ContactRequestAccepted {
+            get {
+                return ResourceManager.GetString("ContactRequestAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you accept, you can chat and see when the other is online. You can stop sharing at any time..
+        /// </summary>
+        public static string ContactRequestExplanation {
+            get {
+                return ResourceManager.GetString("ContactRequestExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap to accept or decline..
+        /// </summary>
+        public static string ContactRequestNotificationBody {
+            get {
+                return ResourceManager.GetString("ContactRequestNotificationBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not now.
+        /// </summary>
+        public static string ContactRequestNotNow {
+            get {
+                return ResourceManager.GetString("ContactRequestNotNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requests.
+        /// </summary>
+        public static string ContactRequests {
+            get {
+                return ResourceManager.GetString("ContactRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request sent to {0}.
+        /// </summary>
+        public static string ContactRequestSent {
+            get {
+                return ResourceManager.GetString("ContactRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shares with you.
+        /// </summary>
+        public static string ContactRequestSharesWithYou {
+            get {
+                return ResourceManager.GetString("ContactRequestSharesWithYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified by.
+        /// </summary>
+        public static string ContactRequestVerifiedBy {
+            get {
+                return ResourceManager.GetString("ContactRequestVerifiedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} wants to add you.
+        /// </summary>
+        public static string ContactRequestWantsToAddYou {
+            get {
+                return ResourceManager.GetString("ContactRequestWantsToAddYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review.
+        /// </summary>
+        public static string ContactReview {
+            get {
+                return ResourceManager.GetString("ContactReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string ContactSave {
+            get {
+                return ResourceManager.GetString("ContactSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search contacts.
+        /// </summary>
+        public static string ContactSearch {
+            get {
+                return ResourceManager.GetString("ContactSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See when {0} is online.
+        /// </summary>
+        public static string ContactSeeOnline {
+            get {
+                return ResourceManager.GetString("ContactSeeOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for {0} to accept..
+        /// </summary>
+        public static string ContactSeeOnlinePending {
+            get {
+                return ResourceManager.GetString("ContactSeeOnlinePending", resourceCulture);
             }
         }
         
@@ -2514,6 +3765,69 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ContactsDescription {
             get {
                 return ResourceManager.GetString("ContactsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More options.
+        /// </summary>
+        public static string ContactsMore {
+            get {
+                return ResourceManager.GetString("ContactsMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Street.
+        /// </summary>
+        public static string ContactStreet {
+            get {
+                return ResourceManager.GetString("ContactStreet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Technical details.
+        /// </summary>
+        public static string ContactTechnicalDetails {
+            get {
+                return ResourceManager.GetString("ContactTechnicalDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chat address and ID number.
+        /// </summary>
+        public static string ContactTechnicalDetailsHint {
+            get {
+                return ResourceManager.GetString("ContactTechnicalDetailsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unblock {0}.
+        /// </summary>
+        public static string ContactUnblock {
+            get {
+                return ResourceManager.GetString("ContactUnblock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wants to add you.
+        /// </summary>
+        public static string ContactWantsToAddYou {
+            get {
+                return ResourceManager.GetString("ContactWantsToAddYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work.
+        /// </summary>
+        public static string ContactWork {
+            get {
+                return ResourceManager.GetString("ContactWork", resourceCulture);
             }
         }
         
@@ -3661,7 +4975,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching roster.
+        ///   Looks up a localized string similar to Loading contacts.
         /// </summary>
         public static string FetchingRoster {
             get {
@@ -3837,6 +5151,51 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string FullName {
             get {
                 return ResourceManager.GetString("FullName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anything else?.
+        /// </summary>
+        public static string FurtherAction {
+            get {
+                return ResourceManager.GetString("FurtherAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to do more about.
+        /// </summary>
+        public static string FurtherAction1 {
+            get {
+                return ResourceManager.GetString("FurtherAction1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block turns down all their requests from now on..
+        /// </summary>
+        public static string FurtherAction2 {
+            get {
+                return ResourceManager.GetString("FurtherAction2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report also tells your provider..
+        /// </summary>
+        public static string FurtherAction3 {
+            get {
+                return ResourceManager.GetString("FurtherAction3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Or just ignore this request..
+        /// </summary>
+        public static string FurtherAction4 {
+            get {
+                return ResourceManager.GetString("FurtherAction4", resourceCulture);
             }
         }
         
@@ -7126,6 +8485,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No, just ignore.
+        /// </summary>
+        public static string NoJustIgnore {
+            get {
+                return ResourceManager.GetString("NoJustIgnore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No ID selected..
         /// </summary>
         public static string NoLegalIdSelected {
@@ -9295,7 +10663,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have received a presence subscription from:.
+        ///   Looks up a localized string similar to This person wants to add you:.
         /// </summary>
         public static string PresenceSubscriptionReceived1 {
             get {
@@ -9304,7 +10672,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you accept this request, they can see your online presence..
+        ///   Looks up a localized string similar to If you accept, they can see when you&apos;re online..
         /// </summary>
         public static string PresenceSubscriptionReceived2 {
             get {
@@ -9340,7 +10708,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Presence Subscription Request.
+        ///   Looks up a localized string similar to Contact request.
         /// </summary>
         public static string PresenceSubscriptionRequest {
             get {
@@ -9349,7 +10717,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A presence subscription request has been sent. When the recipient accepts the request, the contact status will be updated..
+        ///   Looks up a localized string similar to Request sent. You&apos;ll see when they&apos;re online once they accept..
         /// </summary>
         public static string PresenceSubscriptionRequestSent {
             get {
@@ -9358,7 +10726,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A request to unsibscribe from presence notification has been sent..
+        ///   Looks up a localized string similar to You no longer see when they&apos;re online..
         /// </summary>
         public static string PresenceUnsubscriptionRequestSent {
             get {
@@ -9808,7 +11176,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove Subscription?.
+        ///   Looks up a localized string similar to Stop sharing?.
         /// </summary>
         public static string RemoveSubscription {
             get {
@@ -9817,7 +11185,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You still have an approved subscription request from:.
+        ///   Looks up a localized string similar to This person can still see when you&apos;re online:.
         /// </summary>
         public static string RemoveSubscription1 {
             get {
@@ -9835,7 +11203,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to remove the presence subscription from {0}?.
+        ///   Looks up a localized string similar to Stop letting {0} see when you&apos;re online?.
         /// </summary>
         public static string RemoveSubscriptionFrom {
             get {
@@ -9844,11 +11212,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to remove the presence subscription from {0}?.
+        ///   Looks up a localized string similar to Stop letting {0} see when you&apos;re online?.
         /// </summary>
         public static string RemoveSubscriptionFrom1 {
             get {
                 return ResourceManager.GetString("RemoveSubscriptionFrom1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to stop sharing your online status with.
+        /// </summary>
+        public static string RemoveSubscriptionQuestion {
+            get {
+                return ResourceManager.GetString("RemoveSubscriptionQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop sharing.
+        /// </summary>
+        public static string RemoveSubscriptionRequest {
+            get {
+                return ResourceManager.GetString("RemoveSubscriptionRequest", resourceCulture);
             }
         }
         
@@ -9867,6 +11253,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string RepairRestart {
             get {
                 return ResourceManager.GetString("RepairRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report.
+        /// </summary>
+        public static string Report {
+            get {
+                return ResourceManager.GetString("Report", resourceCulture);
             }
         }
         
@@ -10933,7 +12328,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting presence.
+        ///   Looks up a localized string similar to Going online.
         /// </summary>
         public static string SettingPresence {
             get {
@@ -11158,6 +12553,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spam.
+        /// </summary>
+        public static string Spam {
+            get {
+                return ResourceManager.GetString("Spam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starting encryption.
         /// </summary>
         public static string StartingEncryption {
@@ -11275,7 +12679,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscribe to.
+        ///   Looks up a localized string similar to Ask to see when online.
         /// </summary>
         public static string SubscribeTo {
             get {
@@ -11284,7 +12688,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscribe to presence?.
+        ///   Looks up a localized string similar to See when they&apos;re online?.
         /// </summary>
         public static string SubscribeToPresence {
             get {
@@ -11293,7 +12697,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to subscribe to the presence of:.
+        ///   Looks up a localized string similar to See when this person is online:.
         /// </summary>
         public static string SubscribeToPresence1 {
             get {
@@ -11302,7 +12706,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By subscribing to the presence of someone, and if they accept, you will be notified of their online presence..
+        ///   Looks up a localized string similar to If they accept, you&apos;ll see when they&apos;re online..
         /// </summary>
         public static string SubscribeToPresence2 {
             get {
@@ -12013,6 +13417,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to What kind of problem?.
+        /// </summary>
+        public static string TypeOfReport {
+            get {
+                return ResourceManager.GetString("TypeOfReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are reporting:.
+        /// </summary>
+        public static string TypeOfReport1 {
+            get {
+                return ResourceManager.GetString("TypeOfReport1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access invitation information..
         /// </summary>
         public static string UnableToAccessInvitation {
@@ -12247,7 +13669,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsubscribe from.
+        ///   Looks up a localized string similar to Stop seeing when online.
         /// </summary>
         public static string UnsubscribeFrom {
             get {
@@ -12643,7 +14065,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching roster.
+        ///   Looks up a localized string similar to Loading contacts.
         /// </summary>
         public static string XmppState_FetchingRoster {
             get {
@@ -12679,7 +14101,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Registering presence.
+        ///   Looks up a localized string similar to Going online.
         /// </summary>
         public static string XmppState_SettingPresence {
             get {

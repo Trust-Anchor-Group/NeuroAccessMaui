@@ -265,6 +265,11 @@ namespace NeuroAccessMaui.Services.Contacts
 			if (RemoteId == ServiceRef.TagProfile.LegalIdentity?.Id)
 				return ServiceRef.Localizer[nameof(AppResources.Me)];
 
+			// People's names come from their contact cards.
+			string? CardName = await ContactStore.TryGetNameAsync(RemoteId);
+			if (!string.IsNullOrEmpty(CardName))
+				return CardName;
+
 			string Account = RemoteId.Substring(0, i);
 			ContactInfo? Info;
 			bool AccountIsGuid;

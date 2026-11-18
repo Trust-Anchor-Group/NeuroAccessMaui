@@ -18,6 +18,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Identity;
 using Waher.Security;
+using Contact = NeuroAccessMaui.Services.Contacts.Contact;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -371,8 +372,16 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 							await Database.Provider.Flush();
 						}
 
-						CanAddContact = Info is null;
-						CanRemoveContact = Info is not null;
+						// The contact card is what makes someone a contact. A newer approved ID refreshes it.
+						Contact? Card = await ContactStore.FindAsync(Jid, this.identity.Id);
+						if (Card is not null && this.identity.State == Waher.Security.IdentityState.Approved &&
+							(Card.LegalIdentity is null || Card.LegalIdentity.Created < this.identity.Created))
+						{
+							await ContactStore.AddOrUpdateAsync(Jid, this.identity, null);
+						}
+
+						CanAddContact = Card is null;
+						CanRemoveContact = Card is not null;
 
 						IsThirdPartyIdentity = true;
 					}
@@ -636,6 +645,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 				string BareJid = this.identity.GetJid();
 
+				Contact? Card = await ContactStore.FindAsync(BareJid, this.identity.Id);
+				if (Card is not null)
+					await ContactStore.DeleteAsync(Card);
+
 				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
 				if (Info is not null)
 				{
@@ -700,6 +713,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				}
 				await ServiceRef.AttachmentCacheService.MakePermanent(this.identity.Id!);
 				await Database.Provider.Flush();
+
+				// The contact gets a card, and a request, so both can chat and see when the other is online once they accept.
+				await ContactStore.AddOrUpdateAsync(BareJid, this.identity, FriendlyName);
+				ServiceRef.XmppService.RequestPresenceSubscription(BareJid, ContactRequests.OwnIdentityXml());
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{

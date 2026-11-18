@@ -27,6 +27,10 @@ using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.ContactCard;
+using NeuroAccessMaui.UI.Pages.Contacts.EditContact;
+using NeuroAccessMaui.UI.Pages.Contacts.Export;
+using NeuroAccessMaui.UI.Pages.Contacts.Import;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -740,6 +744,10 @@ namespace NeuroAccessMaui
 			// Contacts
 			Routing.RegisterRoute(nameof(ChatPage), typeof(ChatPage));
 			Routing.RegisterRoute(nameof(MyContactsPage), typeof(MyContactsPage));
+			Routing.RegisterRoute(nameof(ContactCardPage), typeof(ContactCardPage));
+			Routing.RegisterRoute(nameof(EditContactPage), typeof(EditContactPage));
+			Routing.RegisterRoute(nameof(ImportContactsPage), typeof(ImportContactsPage));
+			Routing.RegisterRoute(nameof(ExportContactsPage), typeof(ExportContactsPage));
 
 			// Contracts
 			Routing.RegisterRoute(nameof(MyContractsPage), typeof(MyContractsPage));
