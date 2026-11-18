@@ -12,6 +12,7 @@ using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Profiles;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet.Tokens;
@@ -127,6 +128,18 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// Initials on the avatar.
 		/// </summary>
 		public string Initials { get; }
+
+		/// <summary>
+		/// The photo on the avatar, if the other party's phone shares one, or the user's own on their notes.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasPhoto))]
+		private ImageSource? photo;
+
+		/// <summary>
+		/// If the avatar shows a photo.
+		/// </summary>
+		public bool HasPhoto => this.Photo is not null;
 
 		/// <summary>
 		/// If the chat holds notes to yourself, which stay on the phone.
@@ -458,6 +471,27 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.UpdatePresence();
 
 			await this.LoadLatestAsync();
+
+			if (!this.isGroup)
+			{
+				PhotoCache.Changed += this.PhotoCache_Changed;
+				await this.LoadPhotoAsync();
+			}
+		}
+
+		private void PhotoCache_Changed(object? Sender, string Address)
+		{
+			if (string.Equals(Address, this.BareJid, StringComparison.OrdinalIgnoreCase))
+				_ = this.LoadPhotoAsync();
+		}
+
+		/// <summary>
+		/// Shows the photo of the other party on the avatar, if there is one.
+		/// </summary>
+		private async Task LoadPhotoAsync()
+		{
+			ImageSource? Found = await PhotoCache.GetAsync(this.BareJid);
+			await MainThread.InvokeOnMainThreadAsync(() => this.Photo = Found);
 		}
 
 		private void GroupStore_Changed(object? Sender, EventArgs e)
@@ -519,6 +553,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.pausedTimer?.Cancel();
 			this.remoteTypingTimer?.Cancel();
 			this.previewTimer?.Cancel();
+			PhotoCache.Changed -= this.PhotoCache_Changed;
 
 			await base.OnDisposeAsync();
 		}

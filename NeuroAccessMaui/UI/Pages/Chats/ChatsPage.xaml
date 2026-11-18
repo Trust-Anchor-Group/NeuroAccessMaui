@@ -430,6 +430,13 @@
 											  Style="{StaticResource ChatsIcon}" />
 									</Grid>
 								</Border>
+								<!-- The person's photo, if there is one -->
+								<Border IsVisible="{Binding HasPhoto}"
+										StrokeThickness="0"
+										StrokeShape="RoundRectangle 24">
+									<Image Aspect="AspectFill"
+										   Source="{Binding Photo}" />
+								</Border>
 								<Border HorizontalOptions="End"
 										VerticalOptions="End"
 										WidthRequest="14"

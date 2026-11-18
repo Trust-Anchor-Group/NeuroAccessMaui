@@ -33,6 +33,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
 using NeuroAccessMaui.Services.Push;
+using NeuroAccessMaui.Services.Profiles;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
@@ -58,6 +59,7 @@ using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Abuse;
+using Waher.Networking.XMPP.Avatar;
 using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
@@ -119,6 +121,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private PepClient? pepClient;
 		private HttpxClient? httpxClient;
 		private PubSubClient? pubSubClient;
+		private AvatarClient? avatarClient;
 		private Timer? reconnectTimer;
 		private Timer? updatePasswordTimer;
 		private string? domainName;
@@ -377,6 +380,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
 				this.ReregisterPepEventHandlers(this.pepClient);
 
+				// Photos: the user's own, shared as chosen, and those other phones share.
+				this.avatarClient = new AvatarClient(this.xmppClient, this.pepClient);
+				AccountConnection.Attach(this.xmppClient, this.avatarClient);
+				PhotoCache.Attach(this.avatarClient);
+				ProfileService.Start();
+				ContactBackup.Start();
+
 				this.httpxClient = new HttpxClient(this.xmppClient, 8192);
 				Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
 
@@ -574,6 +584,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try { this.pepClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.pepClient = null;
+
+			try { PhotoCache.Detach(); AccountConnection.Detach(); this.avatarClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
+			this.avatarClient = null;
 
 			try { this.httpxClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.httpxClient = null;

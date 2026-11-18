@@ -111,6 +111,18 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 		public bool ShowsInitials => !this.IsGroup;
 
 		/// <summary>
+		/// The person's photo, or the user's own on their notes, if there is one. The avatar shows initials otherwise.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasPhoto))]
+		private ImageSource? photo;
+
+		/// <summary>
+		/// If there is a photo to show.
+		/// </summary>
+		public bool HasPhoto => this.Photo is not null;
+
+		/// <summary>
 		/// The name shown for the chat.
 		/// </summary>
 		public string Title { get; }

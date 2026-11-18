@@ -354,6 +354,81 @@
   <data name="ContactAway" xml:space="preserve">
     <value>Borta</value>
   </data>
+  <data name="ContactBackupDelete" xml:space="preserve">
+    <value>Radera säkerhetskopian</value>
+  </data>
+  <data name="ContactBackupDeleted" xml:space="preserve">
+    <value>Säkerhetskopian raderad</value>
+  </data>
+  <data name="ContactBackupDeleteQuestion" xml:space="preserve">
+    <value>Radera säkerhetskopian från din leverantörs server? Dina kontakter på den här telefonen finns kvar. Säkerhetskopieringen stängs av.</value>
+  </data>
+  <data name="ContactBackupDoneMany" xml:space="preserve">
+    <value>{0} kontakter säkerhetskopierade</value>
+  </data>
+  <data name="ContactBackupDoneOne" xml:space="preserve">
+    <value>1 kontakt säkerhetskopierad</value>
+  </data>
+  <data name="ContactBackupExplanation" xml:space="preserve">
+    <value>Dina kontakter kan sparas som en kontaktfil i ditt kontos privata lagring på din leverantörs server. Bara ditt konto kan läsa den.</value>
+  </data>
+  <data name="ContactBackupFoundMany" xml:space="preserve">
+    <value>En säkerhetskopia med {0} kontakter, gjord {1}.</value>
+  </data>
+  <data name="ContactBackupFoundOne" xml:space="preserve">
+    <value>En säkerhetskopia med 1 kontakt, gjord {0}.</value>
+  </data>
+  <data name="ContactBackupLast" xml:space="preserve">
+    <value>Senast säkerhetskopierad {0}</value>
+  </data>
+  <data name="ContactBackupLater" xml:space="preserve">
+    <value>Säkerhetskopiering är på. Dina kontakter säkerhetskopieras när du är online.</value>
+  </data>
+  <data name="ContactBackupMenuHint" xml:space="preserve">
+    <value>Spara en kopia i ditt kontos privata lagring</value>
+  </data>
+  <data name="ContactBackupNever" xml:space="preserve">
+    <value>Inte säkerhetskopierad än</value>
+  </data>
+  <data name="ContactBackupNone" xml:space="preserve">
+    <value>Ingen säkerhetskopia hittades.</value>
+  </data>
+  <data name="ContactBackupNow" xml:space="preserve">
+    <value>Säkerhetskopiera nu</value>
+  </data>
+  <data name="ContactBackupOfferQuestion" xml:space="preserve">
+    <value>En säkerhetskopia av dina kontakter hittades. Återställa den på den här telefonen?</value>
+  </data>
+  <data name="ContactBackupRestore" xml:space="preserve">
+    <value>Återställ</value>
+  </data>
+  <data name="ContactBackupRestoredMany" xml:space="preserve">
+    <value>{0} kontakter återställda</value>
+  </data>
+  <data name="ContactBackupRestoredNone" xml:space="preserve">
+    <value>Inget nytt att återställa</value>
+  </data>
+  <data name="ContactBackupRestoredOne" xml:space="preserve">
+    <value>1 kontakt återställd</value>
+  </data>
+  <data name="ContactBackupRestoreQuestion" xml:space="preserve">
+    <value>Återställa dina kontakter från säkerhetskopian? Kontakter du redan har får det som säkerhetskopian lägger till. Återställda kontakter markeras inte som verifierade.</value>
+  </data>
+  <data name="ContactBackupRestoreTitle" xml:space="preserve">
+    <value>Återställ från säkerhetskopia</value>
+  </data>
+  <data name="ContactBackupSwitch" xml:space="preserve">
+    <value>Säkerhetskopiera mina kontakter</value>
+  </data>
+  <data name="ContactBackupTitle" xml:space="preserve">
+    <value>Säkerhetskopia av kontakter</value>
+  </data>
+  <data name="ContactBackupWhat" xml:space="preserve">
+    <value>Den innehåller namn, telefonnummer, e-postadresser, adresser, anteckningar och etiketter. Foton ingår inte.</value>
+  </data>
+  <data name="ContactBackupWhy" xml:space="preserve">
+    <value>Använd den för att få tillbaka dina kontakter på en ny telefon. Den uppdateras varje gång dina kontakter ändras.</value>
+  </data>
   <data name="ContactBirthday" xml:space="preserve">
     <value>Födelsedag</value>
   </data>
@@ -965,6 +1040,54 @@
   </data>
   <data name="NoJustIgnore" xml:space="preserve">
     <value>Nej, ignorera bara</value>
+  </data>
+  <data name="ProfileChoosePhoto" xml:space="preserve">
+    <value>Välj ett foto</value>
+  </data>
+  <data name="ProfileName" xml:space="preserve">
+    <value>Ditt namn</value>
+  </data>
+  <data name="ProfilePhoto" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="ProfilePhotoUnreadable" xml:space="preserve">
+    <value>Bilden gick inte att läsa. Försök med en annan.</value>
+  </data>
+  <data name="ProfileRemovePhoto" xml:space="preserve">
+    <value>Ta bort fotot</value>
+  </data>
+  <data name="ProfileSaved" xml:space="preserve">
+    <value>Ditt kort är sparat</value>
+  </data>
+  <data name="ProfileShareName" xml:space="preserve">
+    <value>Dela mitt namn</value>
+  </data>
+  <data name="ProfileShareNameHint" xml:space="preserve">
+    <value>Andra ser det här namnet för dig, även i andra appar än Neuro-Access.</value>
+  </data>
+  <data name="ProfileShareNote" xml:space="preserve">
+    <value>Inget delas förrän du slår på det. Ditt ID delas aldrig härifrån.</value>
+  </data>
+  <data name="ProfileSharePhoto" xml:space="preserve">
+    <value>Dela mitt foto</value>
+  </data>
+  <data name="ProfileSharePhotoHint" xml:space="preserve">
+    <value>Dina kontakter och medlemmarna i dina grupper ser det här fotot.</value>
+  </data>
+  <data name="ProfileShowMyId" xml:space="preserve">
+    <value>Visa mitt ID och min kod</value>
+  </data>
+  <data name="ProfileTakePhoto" xml:space="preserve">
+    <value>Ta ett foto</value>
+  </data>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>Ditt kort</value>
+  </data>
+  <data name="ProfileUseIdPhoto" xml:space="preserve">
+    <value>Använd fotot från ditt ID</value>
+  </data>
+  <data name="ProfileWhatOthersSee" xml:space="preserve">
+    <value>Vad andra ser</value>
   </data>
   <data name="RemoveSubscriptionQuestion" xml:space="preserve">
     <value>Vill du sluta dela din onlinestatus med</value>

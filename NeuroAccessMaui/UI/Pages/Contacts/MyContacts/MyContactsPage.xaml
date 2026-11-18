@@ -212,26 +212,34 @@
 						<Grid ColumnDefinitions="*,48,48"
 							  ColumnSpacing="4">
 							<controls:TemplatedButton Grid.Column="0"
-													  Command="{Binding ViewMyIdCommand}"
+													  Command="{Binding OpenMyCardCommand}"
 													  SemanticProperties.Description="{l:Localize ChatMe}"
-													  SemanticProperties.Hint="{l:Localize ContactsMeDescription}">
+													  SemanticProperties.Hint="{l:Localize ProfileTitle}">
 								<Grid ColumnDefinitions="44,*"
 									  MinimumHeightRequest="56"
 									  ColumnSpacing="12"
 									  InputTransparent="True">
-									<Border WidthRequest="44"
-											HeightRequest="44"
-											VerticalOptions="Center"
-											StrokeThickness="0"
-											BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
-											StrokeShape="RoundRectangle 22">
-										<Label Text="{l:Localize ChatMe}"
-											   HorizontalOptions="Center"
-											   VerticalOptions="Center"
-											   FontFamily="SpaceGroteskSemiBold"
-											   FontSize="15"
-											   TextColor="White" />
-									</Border>
+									<Grid WidthRequest="44"
+										  HeightRequest="44"
+										  VerticalOptions="Center">
+										<Border StrokeThickness="0"
+												BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+												StrokeShape="RoundRectangle 22">
+											<Label Text="{l:Localize ChatMe}"
+												   HorizontalOptions="Center"
+												   VerticalOptions="Center"
+												   FontFamily="SpaceGroteskSemiBold"
+												   FontSize="15"
+												   TextColor="White" />
+										</Border>
+										<!-- The user's own photo, if they have chosen one -->
+										<Border IsVisible="{Binding HasMyPhoto}"
+												StrokeThickness="0"
+												StrokeShape="RoundRectangle 22">
+											<Image Aspect="AspectFill"
+												   Source="{Binding MyPhoto}" />
+										</Border>
+									</Grid>
 									<VerticalStackLayout Grid.Column="1"
 														 VerticalOptions="Center">
 										<Label Text="{l:Localize ChatMe}"
@@ -422,6 +430,13 @@
 												   FontFamily="SpaceGroteskSemiBold"
 												   FontSize="16"
 												   TextColor="{Binding AvatarText}" />
+										</Border>
+										<!-- The person's photo, if their phone shares one -->
+										<Border IsVisible="{Binding HasPhoto}"
+												StrokeThickness="0"
+												StrokeShape="RoundRectangle 22">
+											<Image Aspect="AspectFill"
+												   Source="{Binding Photo}" />
 										</Border>
 										<Border HorizontalOptions="End"
 												VerticalOptions="End"

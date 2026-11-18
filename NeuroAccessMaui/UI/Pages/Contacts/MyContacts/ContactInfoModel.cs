@@ -117,6 +117,27 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		public Color AvatarText { get; } = Colors.Black;
 
 		/// <summary>
+		/// The person's photo, if there is one. The avatar shows initials otherwise.
+		/// </summary>
+		public ImageSource? Photo { get; private set; }
+
+		/// <summary>
+		/// If the person has a photo.
+		/// </summary>
+		public bool HasPhoto => this.Photo is not null;
+
+		/// <summary>
+		/// Shows the person's photo, or initials when there is none.
+		/// </summary>
+		/// <param name="Photo">The photo, or null.</param>
+		public void SetPhoto(ImageSource? Photo)
+		{
+			this.Photo = Photo;
+			this.OnPropertyChanged(nameof(this.Photo));
+			this.OnPropertyChanged(nameof(this.HasPhoto));
+		}
+
+		/// <summary>
 		/// If the app has checked the person's ID.
 		/// </summary>
 		public bool IsVerified => this.Card?.IsVerified ?? false;

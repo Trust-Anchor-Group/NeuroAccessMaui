@@ -23,7 +23,9 @@ namespace NeuroAccessMaui.UI.Popups.Contacts
 				this.CreateChoice("M12 15V3 M7 8l5-5 5 5 M5 14v6h14v-6",
 					nameof(AppResources.ContactExportTitle), nameof(AppResources.ContactExportHint), ContactsMenuChoice.Export),
 				this.CreateChoice("M12 3a9 9 0 1 1 0 18a9 9 0 1 1 0-18z M5.6 5.6l12.8 12.8",
-					nameof(AppResources.ContactBlockedPeople), nameof(AppResources.ContactBlockedPeopleHint), ContactsMenuChoice.Blocked)));
+					nameof(AppResources.ContactBlockedPeople), nameof(AppResources.ContactBlockedPeopleHint), ContactsMenuChoice.Blocked),
+				this.CreateChoice("M7 18a5 5 0 0 1-.5-10A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z M12 11v6 M9.5 13.5L12 11l2.5 2.5",
+					nameof(AppResources.ContactBackupTitle), nameof(AppResources.ContactBackupMenuHint), ContactsMenuChoice.Backup)));
 		}
 
 		/// <summary>

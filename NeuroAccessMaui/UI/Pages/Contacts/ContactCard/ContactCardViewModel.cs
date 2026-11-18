@@ -10,6 +10,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contacts.VCard;
 using NeuroAccessMaui.Services.Groups;
+using NeuroAccessMaui.Services.Profiles;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -301,6 +302,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.ContactCard
 				this.contact = Found;
 				this.Show(Found);
 				await this.ShowTogetherAsync();
+
+				// Without a photo on the card, the one the contact's phone shares is shown, if any.
+				if (this.Photo is null && !string.IsNullOrEmpty(this.ChatAddressText))
+					this.Photo = await PhotoCache.GetAsync(this.ChatAddressText);
 			}
 			catch (Exception Ex)
 			{

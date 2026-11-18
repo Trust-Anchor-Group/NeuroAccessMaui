@@ -12,6 +12,9 @@ namespace NeuroAccessMaui.UI.Popups.Contacts
 		Export,
 
 		/// <summary>Show the people the user has blocked.</summary>
-		Blocked
+		Blocked,
+
+		/// <summary>Back up the contacts, or restore them.</summary>
+		Backup
 	}
 }

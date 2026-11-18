@@ -354,6 +354,81 @@
   <data name="ContactAway" xml:space="preserve">
     <value>Away</value>
   </data>
+  <data name="ContactBackupDelete" xml:space="preserve">
+    <value>Delete the backup</value>
+  </data>
+  <data name="ContactBackupDeleted" xml:space="preserve">
+    <value>Backup deleted</value>
+  </data>
+  <data name="ContactBackupDeleteQuestion" xml:space="preserve">
+    <value>Delete the backup from your provider&apos;s server? Your contacts on this phone stay. Backing up is turned off.</value>
+  </data>
+  <data name="ContactBackupDoneMany" xml:space="preserve">
+    <value>{0} contacts backed up</value>
+  </data>
+  <data name="ContactBackupDoneOne" xml:space="preserve">
+    <value>1 contact backed up</value>
+  </data>
+  <data name="ContactBackupExplanation" xml:space="preserve">
+    <value>Your contacts can be kept as one contact file in your account&apos;s private storage on your provider&apos;s server. Only your account can read it.</value>
+  </data>
+  <data name="ContactBackupFoundMany" xml:space="preserve">
+    <value>A backup of {0} contacts, made {1}.</value>
+  </data>
+  <data name="ContactBackupFoundOne" xml:space="preserve">
+    <value>A backup of 1 contact, made {0}.</value>
+  </data>
+  <data name="ContactBackupLast" xml:space="preserve">
+    <value>Last backed up {0}</value>
+  </data>
+  <data name="ContactBackupLater" xml:space="preserve">
+    <value>Backing up is on. Your contacts are backed up when you&apos;re online.</value>
+  </data>
+  <data name="ContactBackupMenuHint" xml:space="preserve">
+    <value>Keep a copy in your account&apos;s private storage</value>
+  </data>
+  <data name="ContactBackupNever" xml:space="preserve">
+    <value>Not backed up yet</value>
+  </data>
+  <data name="ContactBackupNone" xml:space="preserve">
+    <value>No backup found.</value>
+  </data>
+  <data name="ContactBackupNow" xml:space="preserve">
+    <value>Back up now</value>
+  </data>
+  <data name="ContactBackupOfferQuestion" xml:space="preserve">
+    <value>A backup of your contacts was found. Restore it on this phone?</value>
+  </data>
+  <data name="ContactBackupRestore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="ContactBackupRestoredMany" xml:space="preserve">
+    <value>{0} contacts restored</value>
+  </data>
+  <data name="ContactBackupRestoredNone" xml:space="preserve">
+    <value>Nothing new to restore</value>
+  </data>
+  <data name="ContactBackupRestoredOne" xml:space="preserve">
+    <value>1 contact restored</value>
+  </data>
+  <data name="ContactBackupRestoreQuestion" xml:space="preserve">
+    <value>Restore your contacts from the backup? Contacts you already have get what the backup adds. Restored contacts are not marked as verified.</value>
+  </data>
+  <data name="ContactBackupRestoreTitle" xml:space="preserve">
+    <value>Restore from backup</value>
+  </data>
+  <data name="ContactBackupSwitch" xml:space="preserve">
+    <value>Back up my contacts</value>
+  </data>
+  <data name="ContactBackupTitle" xml:space="preserve">
+    <value>Contacts backup</value>
+  </data>
+  <data name="ContactBackupWhat" xml:space="preserve">
+    <value>It holds names, phone numbers, email addresses, addresses, notes and labels. Photos are not included.</value>
+  </data>
+  <data name="ContactBackupWhy" xml:space="preserve">
+    <value>Use it to get your contacts back on a new phone. It is updated each time your contacts change.</value>
+  </data>
   <data name="ContactBirthday" xml:space="preserve">
     <value>Birthday</value>
   </data>
@@ -965,6 +1040,54 @@
   </data>
   <data name="NoJustIgnore" xml:space="preserve">
     <value>No, just ignore</value>
+  </data>
+  <data name="ProfileChoosePhoto" xml:space="preserve">
+    <value>Choose a photo</value>
+  </data>
+  <data name="ProfileName" xml:space="preserve">
+    <value>Your name</value>
+  </data>
+  <data name="ProfilePhoto" xml:space="preserve">
+    <value>Photo</value>
+  </data>
+  <data name="ProfilePhotoUnreadable" xml:space="preserve">
+    <value>That picture couldn&apos;t be read. Try another one.</value>
+  </data>
+  <data name="ProfileRemovePhoto" xml:space="preserve">
+    <value>Remove the photo</value>
+  </data>
+  <data name="ProfileSaved" xml:space="preserve">
+    <value>Your card is saved</value>
+  </data>
+  <data name="ProfileShareName" xml:space="preserve">
+    <value>Share my name</value>
+  </data>
+  <data name="ProfileShareNameHint" xml:space="preserve">
+    <value>Others see this name for you, also in apps that are not Neuro-Access.</value>
+  </data>
+  <data name="ProfileShareNote" xml:space="preserve">
+    <value>Nothing is shared until you turn it on. Your ID is never shared from here.</value>
+  </data>
+  <data name="ProfileSharePhoto" xml:space="preserve">
+    <value>Share my photo</value>
+  </data>
+  <data name="ProfileSharePhotoHint" xml:space="preserve">
+    <value>Your contacts and the members of your groups see this photo.</value>
+  </data>
+  <data name="ProfileShowMyId" xml:space="preserve">
+    <value>Show my ID and code</value>
+  </data>
+  <data name="ProfileTakePhoto" xml:space="preserve">
+    <value>Take a photo</value>
+  </data>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>Your card</value>
+  </data>
+  <data name="ProfileUseIdPhoto" xml:space="preserve">
+    <value>Use the photo from your ID</value>
+  </data>
+  <data name="ProfileWhatOthersSee" xml:space="preserve">
+    <value>What others see</value>
   </data>
   <data name="RemoveSubscriptionQuestion" xml:space="preserve">
     <value>Do you want to stop sharing your online status with</value>

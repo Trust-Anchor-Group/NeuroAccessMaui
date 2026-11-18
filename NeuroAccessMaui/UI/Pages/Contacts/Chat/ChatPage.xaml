@@ -280,6 +280,13 @@
 									  Style="{StaticResource ChatIcon}" />
 							</Grid>
 						</Border>
+						<!-- The other party's photo, if their phone shares one -->
+						<Border IsVisible="{Binding HasPhoto}"
+								StrokeThickness="0"
+								StrokeShape="RoundRectangle 20">
+							<Image Aspect="AspectFill"
+								   Source="{Binding Photo}" />
+						</Border>
 						<Border HorizontalOptions="End"
 								VerticalOptions="End"
 								WidthRequest="12"

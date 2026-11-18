@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Contacts.MyCard.MyCardPage"
+					  x:DataType="viewmodel:MyCardViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyCard"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<VisualElement.Resources>
+		<Style x:Key="CardIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<Style x:Key="Card"
+			   TargetType="Border">
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation1WL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 20" />
+		</Style>
+
+		<Style x:Key="SectionLabel"
+			   TargetType="Label">
+			<Setter Property="Margin"
+					Value="8,0,0,8" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+
+		<Style x:Key="RowTitle"
+			   TargetType="Label">
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="16" />
+			<Setter Property="LineBreakMode"
+					Value="WordWrap" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentPrimaryWL}" />
+		</Style>
+
+		<Style x:Key="RowHint"
+			   TargetType="Label">
+			<Setter Property="FontFamily"
+					Value="HaasGroteskRegular" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="LineBreakMode"
+					Value="WordWrap" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+	</VisualElement.Resources>
+
+	<Grid RowDefinitions="Auto,*"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+		<!-- Header: back, the title, and Save -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="Auto,*,Auto"
+			  Padding="16,12,16,8"
+			  ColumnSpacing="8">
+			<controls:TemplatedButton Grid.Column="0"
+									  Command="{Binding GoBackCommand}"
+									  SemanticProperties.Description="{l:Localize Back}">
+				<Grid WidthRequest="48"
+					  HeightRequest="48"
+					  InputTransparent="True">
+					<Path Data="M15 18l-6-6 6-6"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource CardIcon}" />
+				</Grid>
+			</controls:TemplatedButton>
+			<Label Grid.Column="1"
+				   VerticalOptions="Center"
+				   HorizontalTextAlignment="Center"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="22"
+				   LineBreakMode="TailTruncation"
+				   Text="{l:Localize ProfileTitle}"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   SemanticProperties.HeadingLevel="Level1" />
+			<controls:TemplatedButton Grid.Column="2"
+									  Command="{Binding SaveCommand}"
+									  SemanticProperties.Description="{l:Localize ContactSave}">
+				<Border Padding="16,0"
+						MinimumHeightRequest="48"
+						MinimumWidthRequest="48"
+						InputTransparent="True"
+						StrokeThickness="0"
+						BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+						StrokeShape="RoundRectangle 24">
+					<Label VerticalOptions="Center"
+						   HorizontalTextAlignment="Center"
+						   FontFamily="HaasGroteskMedium"
+						   FontSize="16"
+						   Text="{l:Localize ContactSave}"
+						   TextColor="White" />
+				</Border>
+			</controls:TemplatedButton>
+		</Grid>
+
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Padding="16,8,16,32"
+								 Spacing="18">
+
+				<!-- The photo, or initials, and the name -->
+				<Border Padding="20,24,20,20"
+						Style="{StaticResource Card}">
+					<VerticalStackLayout Spacing="14">
+						<Grid WidthRequest="96"
+							  HeightRequest="96"
+							  HorizontalOptions="Center">
+							<Border StrokeThickness="0"
+									BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+									StrokeShape="RoundRectangle 48">
+								<Label HorizontalOptions="Center"
+									   VerticalOptions="Center"
+									   FontFamily="SpaceGroteskSemiBold"
+									   FontSize="30"
+									   Text="{Binding Initials}"
+									   TextColor="White" />
+							</Border>
+							<Border IsVisible="{Binding HasPhoto}"
+									StrokeThickness="0"
+									StrokeShape="RoundRectangle 48">
+								<Image Aspect="AspectFill"
+									   Source="{Binding PhotoSource}" />
+							</Border>
+						</Grid>
+						<VerticalStackLayout Spacing="6">
+							<Label Text="{l:Localize ProfileName}"
+								   Margin="4,0,0,0"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="14"
+								   TextColor="{DynamicResource ContentSecondaryWL}" />
+							<Border Padding="14,0"
+									MinimumHeightRequest="48"
+									StrokeThickness="1"
+									Stroke="{DynamicResource SurfaceDividerWL}"
+									BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+									StrokeShape="RoundRectangle 14">
+								<Entry VerticalOptions="Center"
+									   Keyboard="Text"
+									   Text="{Binding Name}"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="16"
+									   BackgroundColor="Transparent"
+									   TextColor="{DynamicResource ContentPrimaryWL}"
+									   SemanticProperties.Description="{l:Localize ProfileName}" />
+							</Border>
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Photo actions -->
+				<VerticalStackLayout>
+					<Label Text="{l:Localize ProfilePhoto}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Border Style="{StaticResource Card}">
+						<VerticalStackLayout>
+							<controls:TemplatedButton Command="{Binding ChoosePhotoCommand}"
+													  SemanticProperties.Description="{l:Localize ProfileChoosePhoto}">
+								<Grid ColumnDefinitions="24,*"
+									  Padding="16,12"
+									  MinimumHeightRequest="56"
+									  ColumnSpacing="14"
+									  InputTransparent="True">
+									<Path Data="M4 5h16v14H4z M4 15l4-4 4 4 3-3 5 5 M15 9a1 1 0 1 1 0.01 0"
+										  Stroke="{DynamicResource ContentAccessWL}"
+										  Style="{StaticResource CardIcon}" />
+									<Label Grid.Column="1"
+										   Text="{l:Localize ProfileChoosePhoto}"
+										   Style="{StaticResource RowTitle}" />
+								</Grid>
+							</controls:TemplatedButton>
+							<controls:TemplatedButton Command="{Binding TakePhotoCommand}"
+													  SemanticProperties.Description="{l:Localize ProfileTakePhoto}">
+								<Grid ColumnDefinitions="24,*"
+									  Padding="16,12"
+									  MinimumHeightRequest="56"
+									  ColumnSpacing="14"
+									  InputTransparent="True">
+									<Path Data="M3 8h4l2-3h6l2 3h4v12H3z M12 9a4 4 0 1 1 0 8a4 4 0 1 1 0-8z"
+										  Stroke="{DynamicResource ContentAccessWL}"
+										  Style="{StaticResource CardIcon}" />
+									<Label Grid.Column="1"
+										   Text="{l:Localize ProfileTakePhoto}"
+										   Style="{StaticResource RowTitle}" />
+								</Grid>
+							</controls:TemplatedButton>
+							<controls:TemplatedButton IsVisible="{Binding HasIdPhoto}"
+													  Command="{Binding UseIdPhotoCommand}"
+													  SemanticProperties.Description="{l:Localize ProfileUseIdPhoto}">
+								<Grid ColumnDefinitions="24,*"
+									  Padding="16,12"
+									  MinimumHeightRequest="56"
+									  ColumnSpacing="14"
+									  InputTransparent="True">
+									<Path Data="M3 5h18v14H3z M8 9a2 2 0 1 1 0 4a2 2 0 1 1 0-4z M5 17a3 3 0 0 1 6 0 M14 10h4 M14 14h4"
+										  Stroke="{DynamicResource ContentAccessWL}"
+										  Style="{StaticResource CardIcon}" />
+									<Label Grid.Column="1"
+										   Text="{l:Localize ProfileUseIdPhoto}"
+										   Style="{StaticResource RowTitle}" />
+								</Grid>
+							</controls:TemplatedButton>
+							<controls:TemplatedButton IsVisible="{Binding HasPhoto}"
+													  Command="{Binding RemovePhotoCommand}"
+													  SemanticProperties.Description="{l:Localize ProfileRemovePhoto}">
+								<Grid ColumnDefinitions="24,*"
+									  Padding="16,12"
+									  MinimumHeightRequest="56"
+									  ColumnSpacing="14"
+									  InputTransparent="True">
+									<Path Data="M4 7h16 M10 11v6 M14 11v6 M6 7l1 13h10l1-13 M9 7V4h6v3"
+										  Stroke="{DynamicResource TnPDangerContentWL}"
+										  Style="{StaticResource CardIcon}" />
+									<Label Grid.Column="1"
+										   Text="{l:Localize ProfileRemovePhoto}"
+										   Style="{StaticResource RowTitle}"
+										   TextColor="{DynamicResource TnPDangerContentWL}" />
+								</Grid>
+							</controls:TemplatedButton>
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- What others see -->
+				<VerticalStackLayout>
+					<Label Text="{l:Localize ProfileWhatOthersSee}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Border Style="{StaticResource Card}">
+						<VerticalStackLayout>
+							<Grid ColumnDefinitions="*,Auto"
+								  Padding="16,12"
+								  MinimumHeightRequest="64"
+								  ColumnSpacing="12">
+								<VerticalStackLayout VerticalOptions="Center"
+													 Spacing="2">
+									<Label Text="{l:Localize ProfileShareName}"
+										   Style="{StaticResource RowTitle}" />
+									<Label Text="{l:Localize ProfileShareNameHint}"
+										   Style="{StaticResource RowHint}" />
+								</VerticalStackLayout>
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										MinimumHeightRequest="48"
+										MinimumWidthRequest="48"
+										IsToggled="{Binding ShareName}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{l:Localize ProfileShareName}" />
+							</Grid>
+							<BoxView HeightRequest="1"
+									 Margin="16,0"
+									 Color="{DynamicResource SurfaceDividerWL}" />
+							<Grid ColumnDefinitions="*,Auto"
+								  Padding="16,12"
+								  MinimumHeightRequest="64"
+								  ColumnSpacing="12">
+								<VerticalStackLayout VerticalOptions="Center"
+													 Spacing="2">
+									<Label Text="{l:Localize ProfileSharePhoto}"
+										   Style="{StaticResource RowTitle}" />
+									<Label Text="{l:Localize ProfileSharePhotoHint}"
+										   Style="{StaticResource RowHint}" />
+								</VerticalStackLayout>
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										MinimumHeightRequest="48"
+										MinimumWidthRequest="48"
+										IsEnabled="{Binding HasPhoto}"
+										IsToggled="{Binding SharePhoto}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{l:Localize ProfileSharePhoto}" />
+							</Grid>
+						</VerticalStackLayout>
+					</Border>
+					<Label Margin="8,10,8,0"
+						   Text="{l:Localize ProfileShareNote}"
+						   Style="{StaticResource RowHint}" />
+				</VerticalStackLayout>
+
+				<!-- The user's ID, with the code others scan -->
+				<Border Style="{StaticResource Card}">
+					<controls:TemplatedButton Command="{Binding ShowMyIdCommand}"
+											  SemanticProperties.Description="{l:Localize ProfileShowMyId}">
+						<Grid ColumnDefinitions="24,*,Auto"
+							  Padding="16,12"
+							  MinimumHeightRequest="56"
+							  ColumnSpacing="14"
+							  InputTransparent="True">
+							<Path Data="M4 3h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z M15 3h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z M4 14h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z M14 14h3v3h-3z M20 14v1 M14 20h1 M18 18h3v3"
+								  Stroke="{DynamicResource ContentAccessWL}"
+								  Style="{StaticResource CardIcon}" />
+							<Label Grid.Column="1"
+								   Text="{l:Localize ProfileShowMyId}"
+								   Style="{StaticResource RowTitle}" />
+							<Path Grid.Column="2"
+								  Data="M9 6l6 6-6 6"
+								  Stroke="{DynamicResource ContentSecondaryWL}"
+								  Style="{StaticResource CardIcon}" />
+						</Grid>
+					</controls:TemplatedButton>
+				</Border>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

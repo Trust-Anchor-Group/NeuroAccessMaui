@@ -7,6 +7,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Groups;
+using NeuroAccessMaui.Services.Profiles;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.UI.Controls;
@@ -125,6 +126,7 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 			GroupStore.Changed += this.Store_Changed;
 			ContactRequests.Changed += this.ContactRequests_Changed;
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
+			PhotoCache.Changed += this.PhotoCache_Changed;
 
 			try
 			{
@@ -158,6 +160,7 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 			GroupStore.Changed -= this.Store_Changed;
 			ContactRequests.Changed -= this.ContactRequests_Changed;
 			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
+			PhotoCache.Changed -= this.PhotoCache_Changed;
 
 			this.searchDelay?.Cancel();
 			this.reloadDelay?.Cancel();
@@ -240,6 +243,8 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 					this.ApplyFilter();
 					this.IsLoading = false;
 				});
+
+				await LoadPhotosAsync(Items);
 			}
 			catch (Exception Ex)
 			{
@@ -564,6 +569,31 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 		private void ContactRequests_Changed(object? Sender, EventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(this.LoadRequests);
+		}
+
+		/// <summary>
+		/// Shows the photos of the people the chats are with, and the user's own on their notes. Groups have none.
+		/// </summary>
+		private static async Task LoadPhotosAsync(IEnumerable<ConversationItem> Items)
+		{
+			foreach (ConversationItem Item in Items)
+			{
+				if (Item.IsGroup)
+					continue;
+
+				ImageSource? Photo = await PhotoCache.GetAsync(Item.Address);
+				if (Photo is not null)
+					MainThread.BeginInvokeOnMainThread(() => Item.Photo = Photo);
+			}
+		}
+
+		private void PhotoCache_Changed(object? Sender, string Address)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				List<ConversationItem> Items = [.. this.all.Where(Item => string.Equals(Item.Address, Address, StringComparison.OrdinalIgnoreCase))];
+				_ = LoadPhotosAsync(Items);
+			});
 		}
 
 		private Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)

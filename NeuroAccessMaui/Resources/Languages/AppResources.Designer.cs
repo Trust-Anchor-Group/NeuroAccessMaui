@@ -2050,6 +2050,231 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete the backup.
+        /// </summary>
+        public static string ContactBackupDelete {
+            get {
+                return ResourceManager.GetString("ContactBackupDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup deleted.
+        /// </summary>
+        public static string ContactBackupDeleted {
+            get {
+                return ResourceManager.GetString("ContactBackupDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the backup from your provider's server? Your contacts on this phone stay. Backing up is turned off..
+        /// </summary>
+        public static string ContactBackupDeleteQuestion {
+            get {
+                return ResourceManager.GetString("ContactBackupDeleteQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contacts backed up.
+        /// </summary>
+        public static string ContactBackupDoneMany {
+            get {
+                return ResourceManager.GetString("ContactBackupDoneMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 contact backed up.
+        /// </summary>
+        public static string ContactBackupDoneOne {
+            get {
+                return ResourceManager.GetString("ContactBackupDoneOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your contacts can be kept as one contact file in your account's private storage on your provider's server. Only your account can read it..
+        /// </summary>
+        public static string ContactBackupExplanation {
+            get {
+                return ResourceManager.GetString("ContactBackupExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A backup of {0} contacts, made {1}..
+        /// </summary>
+        public static string ContactBackupFoundMany {
+            get {
+                return ResourceManager.GetString("ContactBackupFoundMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A backup of 1 contact, made {0}..
+        /// </summary>
+        public static string ContactBackupFoundOne {
+            get {
+                return ResourceManager.GetString("ContactBackupFoundOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last backed up {0}.
+        /// </summary>
+        public static string ContactBackupLast {
+            get {
+                return ResourceManager.GetString("ContactBackupLast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backing up is on. Your contacts are backed up when you're online..
+        /// </summary>
+        public static string ContactBackupLater {
+            get {
+                return ResourceManager.GetString("ContactBackupLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep a copy in your account's private storage.
+        /// </summary>
+        public static string ContactBackupMenuHint {
+            get {
+                return ResourceManager.GetString("ContactBackupMenuHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not backed up yet.
+        /// </summary>
+        public static string ContactBackupNever {
+            get {
+                return ResourceManager.GetString("ContactBackupNever", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No backup found..
+        /// </summary>
+        public static string ContactBackupNone {
+            get {
+                return ResourceManager.GetString("ContactBackupNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back up now.
+        /// </summary>
+        public static string ContactBackupNow {
+            get {
+                return ResourceManager.GetString("ContactBackupNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A backup of your contacts was found. Restore it on this phone?.
+        /// </summary>
+        public static string ContactBackupOfferQuestion {
+            get {
+                return ResourceManager.GetString("ContactBackupOfferQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        public static string ContactBackupRestore {
+            get {
+                return ResourceManager.GetString("ContactBackupRestore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contacts restored.
+        /// </summary>
+        public static string ContactBackupRestoredMany {
+            get {
+                return ResourceManager.GetString("ContactBackupRestoredMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing new to restore.
+        /// </summary>
+        public static string ContactBackupRestoredNone {
+            get {
+                return ResourceManager.GetString("ContactBackupRestoredNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 contact restored.
+        /// </summary>
+        public static string ContactBackupRestoredOne {
+            get {
+                return ResourceManager.GetString("ContactBackupRestoredOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore your contacts from the backup? Contacts you already have get what the backup adds. Restored contacts are not marked as verified..
+        /// </summary>
+        public static string ContactBackupRestoreQuestion {
+            get {
+                return ResourceManager.GetString("ContactBackupRestoreQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore from backup.
+        /// </summary>
+        public static string ContactBackupRestoreTitle {
+            get {
+                return ResourceManager.GetString("ContactBackupRestoreTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back up my contacts.
+        /// </summary>
+        public static string ContactBackupSwitch {
+            get {
+                return ResourceManager.GetString("ContactBackupSwitch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contacts backup.
+        /// </summary>
+        public static string ContactBackupTitle {
+            get {
+                return ResourceManager.GetString("ContactBackupTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It holds names, phone numbers, email addresses, addresses, notes and labels. Photos are not included..
+        /// </summary>
+        public static string ContactBackupWhat {
+            get {
+                return ResourceManager.GetString("ContactBackupWhat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use it to get your contacts back on a new phone. It is updated each time your contacts change..
+        /// </summary>
+        public static string ContactBackupWhy {
+            get {
+                return ResourceManager.GetString("ContactBackupWhy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Birthday.
         /// </summary>
         public static string ContactBirthday {
@@ -11703,6 +11928,150 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ProductInformation {
             get {
                 return ResourceManager.GetString("ProductInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a photo.
+        /// </summary>
+        public static string ProfileChoosePhoto {
+            get {
+                return ResourceManager.GetString("ProfileChoosePhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your name.
+        /// </summary>
+        public static string ProfileName {
+            get {
+                return ResourceManager.GetString("ProfileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photo.
+        /// </summary>
+        public static string ProfilePhoto {
+            get {
+                return ResourceManager.GetString("ProfilePhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That picture couldn't be read. Try another one..
+        /// </summary>
+        public static string ProfilePhotoUnreadable {
+            get {
+                return ResourceManager.GetString("ProfilePhotoUnreadable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the photo.
+        /// </summary>
+        public static string ProfileRemovePhoto {
+            get {
+                return ResourceManager.GetString("ProfileRemovePhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your card is saved.
+        /// </summary>
+        public static string ProfileSaved {
+            get {
+                return ResourceManager.GetString("ProfileSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share my name.
+        /// </summary>
+        public static string ProfileShareName {
+            get {
+                return ResourceManager.GetString("ProfileShareName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Others see this name for you, also in apps that are not Neuro-Access..
+        /// </summary>
+        public static string ProfileShareNameHint {
+            get {
+                return ResourceManager.GetString("ProfileShareNameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing is shared until you turn it on. Your ID is never shared from here..
+        /// </summary>
+        public static string ProfileShareNote {
+            get {
+                return ResourceManager.GetString("ProfileShareNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share my photo.
+        /// </summary>
+        public static string ProfileSharePhoto {
+            get {
+                return ResourceManager.GetString("ProfileSharePhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your contacts and the members of your groups see this photo..
+        /// </summary>
+        public static string ProfileSharePhotoHint {
+            get {
+                return ResourceManager.GetString("ProfileSharePhotoHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show my ID and code.
+        /// </summary>
+        public static string ProfileShowMyId {
+            get {
+                return ResourceManager.GetString("ProfileShowMyId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take a photo.
+        /// </summary>
+        public static string ProfileTakePhoto {
+            get {
+                return ResourceManager.GetString("ProfileTakePhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your card.
+        /// </summary>
+        public static string ProfileTitle {
+            get {
+                return ResourceManager.GetString("ProfileTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the photo from your ID.
+        /// </summary>
+        public static string ProfileUseIdPhoto {
+            get {
+                return ResourceManager.GetString("ProfileUseIdPhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What others see.
+        /// </summary>
+        public static string ProfileWhatOthersSee {
+            get {
+                return ResourceManager.GetString("ProfileWhatOthersSee", resourceCulture);
             }
         }
         

@@ -354,6 +354,81 @@
   <data name="ContactAway" xml:space="preserve">
     <value>Ausente</value>
   </data>
+  <data name="ContactBackupDelete" xml:space="preserve">
+    <value>Eliminar la copia de seguridad</value>
+  </data>
+  <data name="ContactBackupDeleted" xml:space="preserve">
+    <value>Copia de seguridad eliminada</value>
+  </data>
+  <data name="ContactBackupDeleteQuestion" xml:space="preserve">
+    <value>¿Eliminar la copia de seguridad del servidor de tu proveedor? Tus contactos en este teléfono se mantienen. La copia de seguridad se desactiva.</value>
+  </data>
+  <data name="ContactBackupDoneMany" xml:space="preserve">
+    <value>{0} contactos copiados</value>
+  </data>
+  <data name="ContactBackupDoneOne" xml:space="preserve">
+    <value>1 contacto copiado</value>
+  </data>
+  <data name="ContactBackupExplanation" xml:space="preserve">
+    <value>Tus contactos pueden guardarse como un archivo de contactos en el almacenamiento privado de tu cuenta, en el servidor de tu proveedor. Solo tu cuenta puede leerlo.</value>
+  </data>
+  <data name="ContactBackupFoundMany" xml:space="preserve">
+    <value>Una copia de seguridad de {0} contactos, hecha {1}.</value>
+  </data>
+  <data name="ContactBackupFoundOne" xml:space="preserve">
+    <value>Una copia de seguridad de 1 contacto, hecha {0}.</value>
+  </data>
+  <data name="ContactBackupLast" xml:space="preserve">
+    <value>Última copia {0}</value>
+  </data>
+  <data name="ContactBackupLater" xml:space="preserve">
+    <value>La copia de seguridad está activada. Tus contactos se copiarán cuando estés en línea.</value>
+  </data>
+  <data name="ContactBackupMenuHint" xml:space="preserve">
+    <value>Guarda una copia en el almacenamiento privado de tu cuenta</value>
+  </data>
+  <data name="ContactBackupNever" xml:space="preserve">
+    <value>Aún sin copia de seguridad</value>
+  </data>
+  <data name="ContactBackupNone" xml:space="preserve">
+    <value>No se encontró ninguna copia de seguridad.</value>
+  </data>
+  <data name="ContactBackupNow" xml:space="preserve">
+    <value>Hacer copia ahora</value>
+  </data>
+  <data name="ContactBackupOfferQuestion" xml:space="preserve">
+    <value>Se encontró una copia de seguridad de tus contactos. ¿Restaurarla en este teléfono?</value>
+  </data>
+  <data name="ContactBackupRestore" xml:space="preserve">
+    <value>Restaurar</value>
+  </data>
+  <data name="ContactBackupRestoredMany" xml:space="preserve">
+    <value>{0} contactos restaurados</value>
+  </data>
+  <data name="ContactBackupRestoredNone" xml:space="preserve">
+    <value>Nada nuevo que restaurar</value>
+  </data>
+  <data name="ContactBackupRestoredOne" xml:space="preserve">
+    <value>1 contacto restaurado</value>
+  </data>
+  <data name="ContactBackupRestoreQuestion" xml:space="preserve">
+    <value>¿Restaurar tus contactos desde la copia? Los contactos que ya tienes reciben lo que añade la copia. Los contactos restaurados no se marcan como verificados.</value>
+  </data>
+  <data name="ContactBackupRestoreTitle" xml:space="preserve">
+    <value>Restaurar desde la copia</value>
+  </data>
+  <data name="ContactBackupSwitch" xml:space="preserve">
+    <value>Hacer copia de mis contactos</value>
+  </data>
+  <data name="ContactBackupTitle" xml:space="preserve">
+    <value>Copia de seguridad de contactos</value>
+  </data>
+  <data name="ContactBackupWhat" xml:space="preserve">
+    <value>Incluye nombres, números de teléfono, correos electrónicos, direcciones, notas y etiquetas. Las fotos no se incluyen.</value>
+  </data>
+  <data name="ContactBackupWhy" xml:space="preserve">
+    <value>Úsala para recuperar tus contactos en un teléfono nuevo. Se actualiza cada vez que cambian tus contactos.</value>
+  </data>
   <data name="ContactBirthday" xml:space="preserve">
     <value>Cumpleaños</value>
   </data>
@@ -965,6 +1040,54 @@
   </data>
   <data name="NoJustIgnore" xml:space="preserve">
     <value>No, solo ignorar</value>
+  </data>
+  <data name="ProfileChoosePhoto" xml:space="preserve">
+    <value>Elegir una foto</value>
+  </data>
+  <data name="ProfileName" xml:space="preserve">
+    <value>Tu nombre</value>
+  </data>
+  <data name="ProfilePhoto" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="ProfilePhotoUnreadable" xml:space="preserve">
+    <value>No se pudo leer esa imagen. Prueba con otra.</value>
+  </data>
+  <data name="ProfileRemovePhoto" xml:space="preserve">
+    <value>Quitar la foto</value>
+  </data>
+  <data name="ProfileSaved" xml:space="preserve">
+    <value>Tu tarjeta se guardó</value>
+  </data>
+  <data name="ProfileShareName" xml:space="preserve">
+    <value>Compartir mi nombre</value>
+  </data>
+  <data name="ProfileShareNameHint" xml:space="preserve">
+    <value>Los demás ven este nombre para ti, también en otras apps que no son Neuro-Access.</value>
+  </data>
+  <data name="ProfileShareNote" xml:space="preserve">
+    <value>No se comparte nada hasta que lo actives. Tu ID nunca se comparte desde aquí.</value>
+  </data>
+  <data name="ProfileSharePhoto" xml:space="preserve">
+    <value>Compartir mi foto</value>
+  </data>
+  <data name="ProfileSharePhotoHint" xml:space="preserve">
+    <value>Tus contactos y los miembros de tus grupos ven esta foto.</value>
+  </data>
+  <data name="ProfileShowMyId" xml:space="preserve">
+    <value>Mostrar mi ID y mi código</value>
+  </data>
+  <data name="ProfileTakePhoto" xml:space="preserve">
+    <value>Hacer una foto</value>
+  </data>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>Tu tarjeta</value>
+  </data>
+  <data name="ProfileUseIdPhoto" xml:space="preserve">
+    <value>Usar la foto de tu ID</value>
+  </data>
+  <data name="ProfileWhatOthersSee" xml:space="preserve">
+    <value>Lo que ven los demás</value>
   </data>
   <data name="RemoveSubscriptionQuestion" xml:space="preserve">
     <value>¿Quieres dejar de compartir tu estado en línea con</value>

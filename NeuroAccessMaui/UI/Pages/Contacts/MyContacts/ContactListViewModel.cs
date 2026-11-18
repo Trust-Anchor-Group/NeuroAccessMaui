@@ -11,14 +11,17 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Profiles;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.ContactCard;
+using NeuroAccessMaui.UI.Pages.Contacts.ContactsBackup;
 using NeuroAccessMaui.UI.Pages.Contacts.EditContact;
 using NeuroAccessMaui.UI.Pages.Contacts.Export;
 using NeuroAccessMaui.UI.Pages.Contacts.Import;
+using NeuroAccessMaui.UI.Pages.Contacts.MyCard;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.Payment;
@@ -180,6 +183,18 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		public bool HasMyId => ServiceRef.TagProfile.LegalIdentity is not null;
 
 		/// <summary>
+		/// The user's own photo, on the Me row, if they have chosen one.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasMyPhoto))]
+		private ImageSource? myPhoto;
+
+		/// <summary>
+		/// If the user has a photo of their own.
+		/// </summary>
+		public bool HasMyPhoto => this.MyPhoto is not null;
+
+		/// <summary>
 		/// If the requests show: in the contacts, when there are any, and the filter shows them.
 		/// </summary>
 		public bool ShowsRequests => this.IsViewMode && this.Requests.Count > 0 && string.IsNullOrWhiteSpace(this.SearchText) &&
@@ -224,8 +239,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
 			ContactStore.Changed += this.ContactStore_Changed;
 			ContactRequests.Changed += this.ContactRequests_Changed;
+			PhotoCache.Changed += this.PhotoCache_Changed;
 
 			await this.LoadAsync();
+			await this.OfferRestoreAsync();
 		}
 
 		/// <inheritdoc/>
@@ -256,6 +273,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
 			ContactStore.Changed -= this.ContactStore_Changed;
 			ContactRequests.Changed -= this.ContactRequests_Changed;
+			PhotoCache.Changed -= this.PhotoCache_Changed;
 
 			this.searchDelay?.Cancel();
 			this.selection?.TrySetResult(this.SelectedContact);
@@ -319,6 +337,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					this.ApplyFilter();
 					this.IsLoading = false;
 				});
+
+				_ = this.LoadPhotosAsync(Rows);
 			}
 			catch (Exception Ex)
 			{
@@ -565,7 +585,87 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					else
 						await ServiceRef.ToastService.ShowTextAsync(ServiceRef.Localizer[nameof(AppResources.ContactNoneBlocked)]);
 					break;
+
+				case ContactsMenuChoice.Backup:
+					await ServiceRef.NavigationService.GoToAsync(nameof(BackupPage), BackMethod.Pop);
+					break;
 			}
+		}
+
+		/// <summary>
+		/// Opens the user's own card, where they choose the name and photo others see.
+		/// </summary>
+		[RelayCommand]
+		private Task OpenMyCardAsync()
+		{
+			return ServiceRef.NavigationService.GoToAsync(nameof(MyCardPage), BackMethod.Pop);
+		}
+
+		/// <summary>
+		/// On a phone with no contacts, offers once to restore the contacts backup, if there is one.
+		/// </summary>
+		private async Task OfferRestoreAsync()
+		{
+			try
+			{
+				if (!this.IsViewMode || !await ContactBackup.ShouldOfferRestoreAsync())
+					return;
+
+				await ContactBackup.MarkRestoreOfferedAsync();
+
+				if (!await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ContactBackupRestoreTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ContactBackupOfferQuestion)],
+					ServiceRef.Localizer[nameof(AppResources.ContactBackupRestore)],
+					ServiceRef.Localizer[nameof(AppResources.ContactBackupLater)]))
+				{
+					return;
+				}
+
+				int Count = await ContactBackup.RestoreAsync();
+				await ServiceRef.ToastService.ShowTextAsync(Count == 1 ?
+					ServiceRef.Localizer[nameof(AppResources.ContactBackupRestoredOne)] :
+					ServiceRef.Localizer[nameof(AppResources.ContactBackupRestoredMany), Count]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Shows the photos of the contacts in the list, and the user's own.
+		/// </summary>
+		private async Task LoadPhotosAsync(IReadOnlyList<ContactInfoModel> Rows)
+		{
+			try
+			{
+				ImageSource? Own = await PhotoCache.GetAsync(ServiceRef.XmppService.BareJid);
+				await MainThread.InvokeOnMainThreadAsync(() => this.MyPhoto = Own);
+
+				foreach (ContactInfoModel Row in Rows)
+				{
+					if (string.IsNullOrEmpty(Row.BareJid))
+						continue;
+
+					ImageSource? Photo = await PhotoCache.GetAsync(Row.BareJid);
+					if (Photo is not null)
+						MainThread.BeginInvokeOnMainThread(() => Row.SetPhoto(Photo));
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private void PhotoCache_Changed(object? Sender, string Address)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				List<ContactInfoModel> Rows = [.. this.all.Where(Row => string.Equals(Row.BareJid, Address, StringComparison.OrdinalIgnoreCase))];
+				_ = this.LoadPhotosAsync(Rows);
+			});
 		}
 
 		/// <summary>
