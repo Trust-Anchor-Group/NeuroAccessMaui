@@ -6,11 +6,13 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
+using NeuroAccessMaui.UI.Pages.Groups.NewGroup;
 using NeuroAccessMaui.UI.Popups.Chats;
 using NeuroAccessMaui.UI.Popups.Contacts;
 using Waher.Networking.XMPP.Events;
@@ -44,6 +46,16 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 		public ObservableCollection<ContactRequestItem> Requests { get; } = [];
 
 		/// <summary>
+		/// Invites to groups that wait for an answer.
+		/// </summary>
+		public ObservableCollection<GroupInviteItem> Invites { get; } = [];
+
+		/// <summary>
+		/// If the group invites show: when there are any, and the whole list is shown.
+		/// </summary>
+		public bool ShowsInvites => this.Invites.Count > 0 && !this.ShowsUnreadOnly && string.IsNullOrWhiteSpace(this.SearchText);
+
+		/// <summary>
 		/// The text the chats are searched for.
 		/// </summary>
 		[ObservableProperty]
@@ -54,6 +66,7 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(ShowsRequests))]
+		[NotifyPropertyChangedFor(nameof(ShowsInvites))]
 		private bool showsUnreadOnly;
 
 		/// <summary>
@@ -109,6 +122,7 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 
 			ConversationStore.Changed += this.Store_Changed;
 			ContactStore.Changed += this.Store_Changed;
+			GroupStore.Changed += this.Store_Changed;
 			ContactRequests.Changed += this.ContactRequests_Changed;
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 
@@ -141,6 +155,7 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 
 			ConversationStore.Changed -= this.Store_Changed;
 			ContactStore.Changed -= this.Store_Changed;
+			GroupStore.Changed -= this.Store_Changed;
 			ContactRequests.Changed -= this.ContactRequests_Changed;
 			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
 
@@ -205,10 +220,22 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 					Items.Add(new ConversationItem(Conversation, Contact, this.OpenChatAsync, this.ShowActionsAsync));
 				}
 
+				List<GroupInviteItem> Invites = [];
+
+				foreach (ChatGroup Group in await GroupStore.GetInvitesAsync())
+				{
+					string Inviter = Contacts.TryGetValue(Group.InvitedBy, out Contact? From) ? From.DisplayName : Group.InvitedBy;
+					Invites.Add(new GroupInviteItem(Group, Inviter));
+				}
+
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
 					this.all.Clear();
 					this.all.AddRange(Items);
+					this.Invites.Clear();
+					foreach (GroupInviteItem Invite in Invites)
+						this.Invites.Add(Invite);
+					this.OnPropertyChanged(nameof(this.ShowsInvites));
 					this.LoadRequests();
 					this.ApplyFilter();
 					this.IsLoading = false;
@@ -264,6 +291,7 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 				this.EmptyText = ServiceRef.Localizer[nameof(AppResources.ChatsEmpty)];
 
 			this.OnPropertyChanged(nameof(this.ShowsRequests));
+			this.OnPropertyChanged(nameof(this.ShowsInvites));
 		}
 
 		/// <summary>
@@ -329,9 +357,81 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 		}
 
 		/// <summary>
-		/// Picks a contact, and opens the chat with them.
+		/// Asks if the user wants to chat with one person or make a group, and starts it.
 		/// </summary>
 		[RelayCommand]
+		private async Task NewAsync()
+		{
+			try
+			{
+				NewChatChoice? Choice = await NewChatPopup.ShowAsync();
+
+				switch (Choice)
+				{
+					case NewChatChoice.Chat:
+						await this.NewChatAsync();
+						break;
+
+					case NewChatChoice.Group:
+						await ServiceRef.NavigationService.GoToAsync(nameof(NewGroupPage), new NewGroupNavigationArgs(), BackMethod.Pop);
+						break;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Joins a group the user is invited to, and opens its chat.
+		/// </summary>
+		/// <param name="Item">The invite.</param>
+		[RelayCommand]
+		private async Task JoinGroupAsync(GroupInviteItem? Item)
+		{
+			if (Item is null)
+				return;
+
+			try
+			{
+				await GroupService.JoinAsync(Item.Group);
+
+				ChatNavigationArgs Args = new(null, Item.Group.Address.Value, Item.Group.Name);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Pop, Item.Group.Address.Value);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Turns down an invite to a group.
+		/// </summary>
+		/// <param name="Item">The invite.</param>
+		[RelayCommand]
+		private async Task DeclineGroupAsync(GroupInviteItem? Item)
+		{
+			if (Item is null)
+				return;
+
+			try
+			{
+				await GroupService.DeclineAsync(Item.Group);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Picks a contact, and opens the chat with them.
+		/// </summary>
 		private async Task NewChatAsync()
 		{
 			try

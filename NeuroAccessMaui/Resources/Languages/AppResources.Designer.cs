@@ -5560,6 +5560,645 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add people.
+        /// </summary>
+        public static string GroupsAddPeopleTitle {
+            get {
+                return ResourceManager.GetString("GroupsAddPeopleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add to group.
+        /// </summary>
+        public static string GroupsAddSelected {
+            get {
+                return ResourceManager.GetString("GroupsAddSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Admin.
+        /// </summary>
+        public static string GroupsAdmin {
+            get {
+                return ResourceManager.GetString("GroupsAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anyone with the invite link.
+        /// </summary>
+        public static string GroupsAnyoneWithLink {
+            get {
+                return ResourceManager.GetString("GroupsAnyoneWithLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anyone with the invite link can join.
+        /// </summary>
+        public static string GroupsAnyoneWithLinkCanJoin {
+            get {
+                return ResourceManager.GetString("GroupsAnyoneWithLinkCanJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group couldn't be changed. Only admins can do this..
+        /// </summary>
+        public static string GroupsCantChange {
+            get {
+                return ResourceManager.GetString("GroupsCantChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group couldn't be made. Try again later..
+        /// </summary>
+        public static string GroupsCantCreate {
+            get {
+                return ResourceManager.GetString("GroupsCantCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can't join this group. Ask for a new invite..
+        /// </summary>
+        public static string GroupsCantJoin {
+            get {
+                return ResourceManager.GetString("GroupsCantJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create group.
+        /// </summary>
+        public static string GroupsCreate {
+            get {
+                return ResourceManager.GetString("GroupsCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline.
+        /// </summary>
+        public static string GroupsDecline {
+            get {
+                return ResourceManager.GetString("GroupsDecline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete group for everyone.
+        /// </summary>
+        public static string GroupsDeleteForEveryone {
+            get {
+                return ResourceManager.GetString("GroupsDeleteForEveryone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group is closed for all members. The messages already on this phone stay. This can't be undone..
+        /// </summary>
+        public static string GroupsDeleteMessage {
+            get {
+                return ResourceManager.GetString("GroupsDeleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete {0} for everyone?.
+        /// </summary>
+        public static string GroupsDeleteQuestion {
+            get {
+                return ResourceManager.GetString("GroupsDeleteQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit group.
+        /// </summary>
+        public static string GroupsEdit {
+            get {
+                return ResourceManager.GetString("GroupsEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group messages are kept on your provider's server for a while, so members who were away can catch up..
+        /// </summary>
+        public static string GroupsHistoryNote {
+            get {
+                return ResourceManager.GetString("GroupsHistoryNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        public static string GroupsInfoTitle {
+            get {
+                return ResourceManager.GetString("GroupsInfoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} invited you to {1}.
+        /// </summary>
+        public static string GroupsInvitedYou {
+            get {
+                return ResourceManager.GetString("GroupsInvitedYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite link.
+        /// </summary>
+        public static string GroupsInviteLink {
+            get {
+                return ResourceManager.GetString("GroupsInviteLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite link to {0}.
+        /// </summary>
+        public static string GroupsInviteLinkTitle {
+            get {
+                return ResourceManager.GetString("GroupsInviteLinkTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Chats to join or decline..
+        /// </summary>
+        public static string GroupsInviteNotificationBody {
+            get {
+                return ResourceManager.GetString("GroupsInviteNotificationBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join.
+        /// </summary>
+        public static string GroupsJoin {
+            get {
+                return ResourceManager.GetString("GroupsJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join this group? The members will see your name in the group and your messages..
+        /// </summary>
+        public static string GroupsJoinLinkQuestion {
+            get {
+                return ResourceManager.GetString("GroupsJoinLinkQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave group.
+        /// </summary>
+        public static string GroupsLeave {
+            get {
+                return ResourceManager.GetString("GroupsLeave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You stop getting the group's messages. The messages already on this phone stay..
+        /// </summary>
+        public static string GroupsLeaveMessage {
+            get {
+                return ResourceManager.GetString("GroupsLeaveMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave {0}?.
+        /// </summary>
+        public static string GroupsLeaveQuestion {
+            get {
+                return ResourceManager.GetString("GroupsLeaveQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You're no longer in this group. Its messages stay on this phone..
+        /// </summary>
+        public static string GroupsLeftNote {
+            get {
+                return ResourceManager.GetString("GroupsLeftNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A group has room for {0} people, you included..
+        /// </summary>
+        public static string GroupsLimitHint {
+            get {
+                return ResourceManager.GetString("GroupsLimitHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group is full. It has room for {0} people..
+        /// </summary>
+        public static string GroupsLimitReached {
+            get {
+                return ResourceManager.GetString("GroupsLimitReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is now an admin.
+        /// </summary>
+        public static string GroupsMadeAdmin {
+            get {
+                return ResourceManager.GetString("GroupsMadeAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make admin.
+        /// </summary>
+        public static string GroupsMakeAdmin {
+            get {
+                return ResourceManager.GetString("GroupsMakeAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can add and remove people.
+        /// </summary>
+        public static string GroupsMakeAdminHint {
+            get {
+                return ResourceManager.GetString("GroupsMakeAdminHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} members.
+        /// </summary>
+        public static string GroupsMemberCount {
+            get {
+                return ResourceManager.GetString("GroupsMemberCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members, {0} added.
+        /// </summary>
+        public static string GroupsMembersAdded {
+            get {
+                return ResourceManager.GetString("GroupsMembersAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members can add people.
+        /// </summary>
+        public static string GroupsMembersCanAdd {
+            get {
+                return ResourceManager.GetString("GroupsMembersCanAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} members, {1} online.
+        /// </summary>
+        public static string GroupsMembersOnline {
+            get {
+                return ResourceManager.GetString("GroupsMembersOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute.
+        /// </summary>
+        public static string GroupsMute {
+            get {
+                return ResourceManager.GetString("GroupsMute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group name.
+        /// </summary>
+        public static string GroupsName {
+            get {
+                return ResourceManager.GetString("GroupsName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Someone in the group already uses that name..
+        /// </summary>
+        public static string GroupsNameTaken {
+            get {
+                return ResourceManager.GetString("GroupsNameTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New chat.
+        /// </summary>
+        public static string GroupsNewChat {
+            get {
+                return ResourceManager.GetString("GroupsNewChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New group.
+        /// </summary>
+        public static string GroupsNewGroup {
+            get {
+                return ResourceManager.GetString("GroupsNewGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New group.
+        /// </summary>
+        public static string GroupsNewTitle {
+            get {
+                return ResourceManager.GetString("GroupsNewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group didn't answer. Try again later..
+        /// </summary>
+        public static string GroupsNoAnswer {
+            get {
+                return ResourceManager.GetString("GroupsNoAnswer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No contacts to add..
+        /// </summary>
+        public static string GroupsNoPeople {
+            get {
+                return ResourceManager.GetString("GroupsNoPeople", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This group isn't on this phone..
+        /// </summary>
+        public static string GroupsNotFound {
+            get {
+                return ResourceManager.GetString("GroupsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New message from {0}.
+        /// </summary>
+        public static string GroupsNotificationBody {
+            get {
+                return ResourceManager.GetString("GroupsNotificationBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not in your contacts.
+        /// </summary>
+        public static string GroupsNotInContacts {
+            get {
+                return ResourceManager.GetString("GroupsNotInContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to be online to do this..
+        /// </summary>
+        public static string GroupsOffline {
+            get {
+                return ResourceManager.GetString("GroupsOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 member.
+        /// </summary>
+        public static string GroupsOneMember {
+            get {
+                return ResourceManager.GetString("GroupsOneMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only people you add.
+        /// </summary>
+        public static string GroupsOnlyPeopleYouAdd {
+            get {
+                return ResourceManager.GetString("GroupsOnlyPeopleYouAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only people you add can join.
+        /// </summary>
+        public static string GroupsOnlyPeopleYouAddCanJoin {
+            get {
+                return ResourceManager.GetString("GroupsOnlyPeopleYouAddCanJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owner.
+        /// </summary>
+        public static string GroupsOwner {
+            get {
+                return ResourceManager.GetString("GroupsOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to People added.
+        /// </summary>
+        public static string GroupsPeopleAdded {
+            get {
+                return ResourceManager.GetString("GroupsPeopleAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string GroupsRemoveConfirm {
+            get {
+                return ResourceManager.GetString("GroupsRemoveConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was removed.
+        /// </summary>
+        public static string GroupsRemoved {
+            get {
+                return ResourceManager.GetString("GroupsRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove from group.
+        /// </summary>
+        public static string GroupsRemoveFromGroup {
+            get {
+                return ResourceManager.GetString("GroupsRemoveFromGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to They stop getting the group's messages..
+        /// </summary>
+        public static string GroupsRemoveMessage {
+            get {
+                return ResourceManager.GetString("GroupsRemoveMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove {0}.
+        /// </summary>
+        public static string GroupsRemovePerson {
+            get {
+                return ResourceManager.GetString("GroupsRemovePerson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove {0} from the group?.
+        /// </summary>
+        public static string GroupsRemoveQuestion {
+            get {
+                return ResourceManager.GetString("GroupsRemoveQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: {1}.
+        /// </summary>
+        public static string GroupsSenderPreview {
+            get {
+                return ResourceManager.GetString("GroupsSenderPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} groups.
+        /// </summary>
+        public static string GroupsSharedMany {
+            get {
+                return ResourceManager.GetString("GroupsSharedMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 group.
+        /// </summary>
+        public static string GroupsSharedOne {
+            get {
+                return ResourceManager.GetString("GroupsSharedOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Groups with {0}.
+        /// </summary>
+        public static string GroupsSharedTitle {
+            get {
+                return ResourceManager.GetString("GroupsSharedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Together.
+        /// </summary>
+        public static string GroupsTogether {
+            get {
+                return ResourceManager.GetString("GroupsTogether", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmute.
+        /// </summary>
+        public static string GroupsUnmute {
+            get {
+                return ResourceManager.GetString("GroupsUnmute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View contact.
+        /// </summary>
+        public static string GroupsViewContact {
+            get {
+                return ResourceManager.GetString("GroupsViewContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who can join.
+        /// </summary>
+        public static string GroupsWhoCanJoin {
+            get {
+                return ResourceManager.GetString("GroupsWhoCanJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string GroupsYou {
+            get {
+                return ResourceManager.GetString("GroupsYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You're no longer in this group.
+        /// </summary>
+        public static string GroupsYouLeft {
+            get {
+                return ResourceManager.GetString("GroupsYouLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You're an admin.
+        /// </summary>
+        public static string GroupsYoureAdmin {
+            get {
+                return ResourceManager.GetString("GroupsYoureAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You're the owner.
+        /// </summary>
+        public static string GroupsYoureOwner {
+            get {
+                return ResourceManager.GetString("GroupsYoureOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your name in this group.
+        /// </summary>
+        public static string GroupsYourName {
+            get {
+                return ResourceManager.GetString("GroupsYourName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hardware.
         /// </summary>
         public static string HardwareInfo {

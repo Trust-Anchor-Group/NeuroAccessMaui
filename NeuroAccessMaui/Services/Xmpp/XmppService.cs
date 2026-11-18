@@ -25,6 +25,7 @@ using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -323,6 +324,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				// Add extensions before connecting
 
 				this.abuseClient = new AbuseClient(this.xmppClient);
+				GroupService.Attach(this.xmppClient);
 
 				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
 				{
@@ -537,6 +539,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 
 			try { await this.DisposeKycTelemetryEventSinkAsync(); } catch (Exception Ex) { Errors.Add(Ex); }
+
+			try { GroupService.Detach(); } catch (Exception Ex) { Errors.Add(Ex); }
 
 			try { this.contractsClient?.Dispose(); } catch (Exception Ex) { Errors.Add(Ex); }
 			this.contractsClient = null;

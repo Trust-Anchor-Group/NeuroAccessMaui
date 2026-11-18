@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -90,6 +91,18 @@ namespace NeuroAccessMaui.Services.Notification
 		{
 			if (string.IsNullOrEmpty(Intent.EntityId))
 				return NotificationRouteResult.NoHandler;
+
+			ChatGroup? Group = await GroupStore.FindAsync(Intent.EntityId);
+			if (Group is not null)
+			{
+				// Invites are answered at the top of Chats; a group the user is in opens its chat.
+				if (Group.Status == GroupStatus.Invited)
+					await ServiceRef.NavigationService.GoToAsync(nameof(MainPage), new MainNavigationArgs() { TargetTabKey = "chats" });
+				else
+					await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(null, Group.Address.Value, Group.Name));
+
+				return NotificationRouteResult.Success;
+			}
 
 			Contact? Card = await ContactStore.FindByChatAddressAsync(Intent.EntityId);
 			ContactInfo? Info = Card is null ? await ContactInfo.FindByBareJid(Intent.EntityId) : null;

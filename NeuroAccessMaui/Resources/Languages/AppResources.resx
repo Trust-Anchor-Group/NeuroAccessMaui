@@ -750,6 +750,219 @@
   <data name="FurtherAction4" xml:space="preserve">
     <value>Or just ignore this request.</value>
   </data>
+  <data name="GroupsAddPeopleTitle" xml:space="preserve">
+    <value>Add people</value>
+  </data>
+  <data name="GroupsAddSelected" xml:space="preserve">
+    <value>Add to group</value>
+  </data>
+  <data name="GroupsAdmin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="GroupsAnyoneWithLink" xml:space="preserve">
+    <value>Anyone with the invite link</value>
+  </data>
+  <data name="GroupsAnyoneWithLinkCanJoin" xml:space="preserve">
+    <value>Anyone with the invite link can join</value>
+  </data>
+  <data name="GroupsCantChange" xml:space="preserve">
+    <value>The group couldn&apos;t be changed. Only admins can do this.</value>
+  </data>
+  <data name="GroupsCantCreate" xml:space="preserve">
+    <value>The group couldn&apos;t be made. Try again later.</value>
+  </data>
+  <data name="GroupsCantJoin" xml:space="preserve">
+    <value>You can&apos;t join this group. Ask for a new invite.</value>
+  </data>
+  <data name="GroupsCreate" xml:space="preserve">
+    <value>Create group</value>
+  </data>
+  <data name="GroupsDecline" xml:space="preserve">
+    <value>Decline</value>
+  </data>
+  <data name="GroupsDeleteForEveryone" xml:space="preserve">
+    <value>Delete group for everyone</value>
+  </data>
+  <data name="GroupsDeleteMessage" xml:space="preserve">
+    <value>The group is closed for all members. The messages already on this phone stay. This can&apos;t be undone.</value>
+  </data>
+  <data name="GroupsDeleteQuestion" xml:space="preserve">
+    <value>Delete {0} for everyone?</value>
+  </data>
+  <data name="GroupsEdit" xml:space="preserve">
+    <value>Edit group</value>
+  </data>
+  <data name="GroupsHistoryNote" xml:space="preserve">
+    <value>Group messages are kept on your provider&apos;s server for a while, so members who were away can catch up.</value>
+  </data>
+  <data name="GroupsInfoTitle" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="GroupsInvitedYou" xml:space="preserve">
+    <value>{0} invited you to {1}</value>
+  </data>
+  <data name="GroupsInviteLink" xml:space="preserve">
+    <value>Invite link</value>
+  </data>
+  <data name="GroupsInviteLinkTitle" xml:space="preserve">
+    <value>Invite link to {0}</value>
+  </data>
+  <data name="GroupsInviteNotificationBody" xml:space="preserve">
+    <value>Open Chats to join or decline.</value>
+  </data>
+  <data name="GroupsJoin" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="GroupsJoinLinkQuestion" xml:space="preserve">
+    <value>Join this group? The members will see your name in the group and your messages.</value>
+  </data>
+  <data name="GroupsLeave" xml:space="preserve">
+    <value>Leave group</value>
+  </data>
+  <data name="GroupsLeaveMessage" xml:space="preserve">
+    <value>You stop getting the group&apos;s messages. The messages already on this phone stay.</value>
+  </data>
+  <data name="GroupsLeaveQuestion" xml:space="preserve">
+    <value>Leave {0}?</value>
+  </data>
+  <data name="GroupsLeftNote" xml:space="preserve">
+    <value>You&apos;re no longer in this group. Its messages stay on this phone.</value>
+  </data>
+  <data name="GroupsLimitHint" xml:space="preserve">
+    <value>A group has room for {0} people, you included.</value>
+  </data>
+  <data name="GroupsLimitReached" xml:space="preserve">
+    <value>The group is full. It has room for {0} people.</value>
+  </data>
+  <data name="GroupsMadeAdmin" xml:space="preserve">
+    <value>{0} is now an admin</value>
+  </data>
+  <data name="GroupsMakeAdmin" xml:space="preserve">
+    <value>Make admin</value>
+  </data>
+  <data name="GroupsMakeAdminHint" xml:space="preserve">
+    <value>Can add and remove people</value>
+  </data>
+  <data name="GroupsMemberCount" xml:space="preserve">
+    <value>{0} members</value>
+  </data>
+  <data name="GroupsMembersAdded" xml:space="preserve">
+    <value>Members, {0} added</value>
+  </data>
+  <data name="GroupsMembersCanAdd" xml:space="preserve">
+    <value>Members can add people</value>
+  </data>
+  <data name="GroupsMembersOnline" xml:space="preserve">
+    <value>{0} members, {1} online</value>
+  </data>
+  <data name="GroupsMute" xml:space="preserve">
+    <value>Mute</value>
+  </data>
+  <data name="GroupsName" xml:space="preserve">
+    <value>Group name</value>
+  </data>
+  <data name="GroupsNameTaken" xml:space="preserve">
+    <value>Someone in the group already uses that name.</value>
+  </data>
+  <data name="GroupsNewChat" xml:space="preserve">
+    <value>New chat</value>
+  </data>
+  <data name="GroupsNewGroup" xml:space="preserve">
+    <value>New group</value>
+  </data>
+  <data name="GroupsNewTitle" xml:space="preserve">
+    <value>New group</value>
+  </data>
+  <data name="GroupsNoAnswer" xml:space="preserve">
+    <value>The group didn&apos;t answer. Try again later.</value>
+  </data>
+  <data name="GroupsNoPeople" xml:space="preserve">
+    <value>No contacts to add.</value>
+  </data>
+  <data name="GroupsNotFound" xml:space="preserve">
+    <value>This group isn&apos;t on this phone.</value>
+  </data>
+  <data name="GroupsNotificationBody" xml:space="preserve">
+    <value>New message from {0}</value>
+  </data>
+  <data name="GroupsNotInContacts" xml:space="preserve">
+    <value>Not in your contacts</value>
+  </data>
+  <data name="GroupsOffline" xml:space="preserve">
+    <value>You need to be online to do this.</value>
+  </data>
+  <data name="GroupsOneMember" xml:space="preserve">
+    <value>1 member</value>
+  </data>
+  <data name="GroupsOnlyPeopleYouAdd" xml:space="preserve">
+    <value>Only people you add</value>
+  </data>
+  <data name="GroupsOnlyPeopleYouAddCanJoin" xml:space="preserve">
+    <value>Only people you add can join</value>
+  </data>
+  <data name="GroupsOwner" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="GroupsPeopleAdded" xml:space="preserve">
+    <value>People added</value>
+  </data>
+  <data name="GroupsRemoveConfirm" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="GroupsRemoved" xml:space="preserve">
+    <value>{0} was removed</value>
+  </data>
+  <data name="GroupsRemoveFromGroup" xml:space="preserve">
+    <value>Remove from group</value>
+  </data>
+  <data name="GroupsRemoveMessage" xml:space="preserve">
+    <value>They stop getting the group&apos;s messages.</value>
+  </data>
+  <data name="GroupsRemovePerson" xml:space="preserve">
+    <value>Remove {0}</value>
+  </data>
+  <data name="GroupsRemoveQuestion" xml:space="preserve">
+    <value>Remove {0} from the group?</value>
+  </data>
+  <data name="GroupsSenderPreview" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="GroupsSharedMany" xml:space="preserve">
+    <value>{0} groups</value>
+  </data>
+  <data name="GroupsSharedOne" xml:space="preserve">
+    <value>1 group</value>
+  </data>
+  <data name="GroupsSharedTitle" xml:space="preserve">
+    <value>Groups with {0}</value>
+  </data>
+  <data name="GroupsTogether" xml:space="preserve">
+    <value>Together</value>
+  </data>
+  <data name="GroupsUnmute" xml:space="preserve">
+    <value>Unmute</value>
+  </data>
+  <data name="GroupsViewContact" xml:space="preserve">
+    <value>View contact</value>
+  </data>
+  <data name="GroupsWhoCanJoin" xml:space="preserve">
+    <value>Who can join</value>
+  </data>
+  <data name="GroupsYou" xml:space="preserve">
+    <value>You</value>
+  </data>
+  <data name="GroupsYouLeft" xml:space="preserve">
+    <value>You&apos;re no longer in this group</value>
+  </data>
+  <data name="GroupsYoureAdmin" xml:space="preserve">
+    <value>You&apos;re an admin</value>
+  </data>
+  <data name="GroupsYoureOwner" xml:space="preserve">
+    <value>You&apos;re the owner</value>
+  </data>
+  <data name="GroupsYourName" xml:space="preserve">
+    <value>Your name in this group</value>
+  </data>
   <data name="NoJustIgnore" xml:space="preserve">
     <value>No, just ignore</value>
   </data>

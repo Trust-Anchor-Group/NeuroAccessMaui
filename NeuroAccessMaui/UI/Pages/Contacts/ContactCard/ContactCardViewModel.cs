@@ -9,6 +9,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contacts.VCard;
+using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -16,6 +17,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.EditContact;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.Payment;
+using NeuroAccessMaui.UI.Popups.Groups;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Events;
@@ -298,10 +300,68 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.ContactCard
 
 				this.contact = Found;
 				this.Show(Found);
+				await this.ShowTogetherAsync();
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		#endregion
+
+		#region Together
+
+		private IReadOnlyList<ChatGroup> sharedGroups = [];
+
+		/// <summary>
+		/// If the user is in any groups together with the contact.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasSharedGroups;
+
+		/// <summary>
+		/// How many groups the user is in together with the contact.
+		/// </summary>
+		[ObservableProperty]
+		private string sharedGroupsText = string.Empty;
+
+		/// <summary>
+		/// Shows what the user and the contact do together: the groups they are both in.
+		/// </summary>
+		private async Task ShowTogetherAsync()
+		{
+			string Address = this.contact?.ChatAddress?.Value ?? string.Empty;
+			IReadOnlyList<ChatGroup> Groups = Address.Length == 0 ? [] : await GroupStore.GetSharedWithAsync(Address);
+
+			this.sharedGroups = Groups;
+			this.HasSharedGroups = Groups.Count > 0;
+			this.SharedGroupsText = Groups.Count == 1 ?
+				ServiceRef.Localizer[nameof(AppResources.GroupsSharedOne)] :
+				ServiceRef.Localizer[nameof(AppResources.GroupsSharedMany), Groups.Count];
+		}
+
+		/// <summary>
+		/// Opens the group the user and the contact are both in, or lets the user pick one if there are several.
+		/// </summary>
+		[RelayCommand]
+		private async Task OpenSharedGroupsAsync()
+		{
+			try
+			{
+				ChatGroup? Group = this.sharedGroups.Count == 1 ? this.sharedGroups[0] :
+					this.sharedGroups.Count > 1 ? await SharedGroupsPopup.ShowAsync(this.Name, this.sharedGroups) : null;
+
+				if (Group is null)
+					return;
+
+				ChatNavigationArgs Args = new(null, Group.Address.Value, Group.Name);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Pop, Group.Address.Value);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 

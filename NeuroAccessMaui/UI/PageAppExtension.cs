@@ -47,6 +47,8 @@ using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.SigningBlockers;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.UI.Pages.Groups.GroupInfo;
+using NeuroAccessMaui.UI.Pages.Groups.NewGroup;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Kyc;
@@ -240,6 +242,10 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<MyContractsPage, MyContractsViewModel>();
 			Builder.Services.AddTransient<NewContractPage, NewContractViewModel>();
 			Builder.Services.AddTransient<ViewContractPage, ViewContractViewModel>();
+
+			// Groups
+			Builder.Services.AddTransient<NewGroupPage, NewGroupViewModel>();
+			Builder.Services.AddTransient<GroupInfoPage, GroupInfoViewModel>();
 
 			// Identity
 			Builder.Services.AddTransient<TransferIdentityPage, TransferIdentityViewModel>();

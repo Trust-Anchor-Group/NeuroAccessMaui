@@ -35,6 +35,8 @@ using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.UI.Pages.Groups.GroupInfo;
+using NeuroAccessMaui.UI.Pages.Groups.NewGroup;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Kyc;
@@ -753,6 +755,10 @@ namespace NeuroAccessMaui
 			Routing.RegisterRoute(nameof(MyContractsPage), typeof(MyContractsPage));
 			Routing.RegisterRoute(nameof(NewContractPage), typeof(NewContractPage));
 			Routing.RegisterRoute(nameof(ViewContractPage), typeof(ViewContractPage));
+
+			// Groups
+			Routing.RegisterRoute(nameof(NewGroupPage), typeof(NewGroupPage));
+			Routing.RegisterRoute(nameof(GroupInfoPage), typeof(GroupInfoPage));
 
 			// Identity
 			Routing.RegisterRoute(nameof(TransferIdentityPage), typeof(TransferIdentityPage));

@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Groups.GroupInfo.GroupInfoPage"
+					  x:DataType="viewmodel:GroupInfoViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Groups.GroupInfo">
+
+	<VisualElement.Resources>
+		<Style x:Key="GroupIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<Style x:Key="Card"
+			   TargetType="Border">
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation1WL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 20" />
+		</Style>
+
+		<Style x:Key="SectionLabel"
+			   TargetType="Label">
+			<Setter Property="Margin"
+					Value="8,0,0,8" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+
+		<Style x:Key="ActionTile"
+			   TargetType="Border">
+			<Setter Property="Margin"
+					Value="4,0" />
+			<Setter Property="Padding"
+					Value="4,8" />
+			<Setter Property="MinimumHeightRequest"
+					Value="72" />
+			<Setter Property="StrokeThickness"
+					Value="0" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource TnPSuccessbgWL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 16" />
+		</Style>
+
+		<Style x:Key="ActionLabel"
+			   TargetType="Label">
+			<Setter Property="HorizontalTextAlignment"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentAccessWL}" />
+		</Style>
+
+		<Style x:Key="Chip"
+			   TargetType="Border">
+			<Setter Property="Margin"
+					Value="4" />
+			<Setter Property="Padding"
+					Value="12,5" />
+			<Setter Property="StrokeThickness"
+					Value="0" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource MarkdownChipWL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 15" />
+		</Style>
+
+		<Style x:Key="RowLabel"
+			   TargetType="Label">
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskRegular" />
+			<Setter Property="FontSize"
+					Value="16" />
+			<Setter Property="LineBreakMode"
+					Value="WordWrap" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentPrimaryWL}" />
+		</Style>
+	</VisualElement.Resources>
+
+	<ScrollView BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+		<VerticalStackLayout Padding="16,12,16,32"
+							 Spacing="16">
+
+			<!-- Header: back, title and edit -->
+			<Grid ColumnDefinitions="48,*,48">
+				<controls:TemplatedButton Grid.Column="0"
+										  Command="{Binding GoBackCommand}"
+										  SemanticProperties.Description="{l:Localize Back}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M15 18l-6-6 6-6"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource GroupIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+				<Label Grid.Column="1"
+					   VerticalOptions="Center"
+					   HorizontalTextAlignment="Center"
+					   FontFamily="SpaceGroteskBold"
+					   FontSize="22"
+					   Text="{l:Localize GroupsInfoTitle}"
+					   TextColor="{DynamicResource ContentPrimaryWL}"
+					   SemanticProperties.HeadingLevel="Level1" />
+				<controls:TemplatedButton Grid.Column="2"
+										  IsVisible="{Binding IsOwner}"
+										  Command="{Binding EditCommand}"
+										  SemanticProperties.Description="{l:Localize GroupsEdit}">
+					<Grid WidthRequest="48"
+						  HeightRequest="48"
+						  InputTransparent="True">
+						<Path Data="M4 20h4L19 9l-4-4L4 16v4z M13.5 6.5l4 4"
+							  Stroke="{DynamicResource ContentPrimaryWL}"
+							  Style="{StaticResource GroupIcon}" />
+					</Grid>
+				</controls:TemplatedButton>
+			</Grid>
+
+			<Label IsVisible="{Binding IsFound, Converter={StaticResource InvertedBoolConverter}}"
+				   Margin="8,24"
+				   HorizontalTextAlignment="Center"
+				   FontFamily="HaasGroteskRegular"
+				   FontSize="16"
+				   LineBreakMode="WordWrap"
+				   Text="{l:Localize GroupsNotFound}"
+				   TextColor="{DynamicResource ContentSecondaryWL}" />
+
+			<VerticalStackLayout Spacing="16"
+								 IsVisible="{Binding IsFound}">
+
+				<!-- What the group is: its name, description, who can join and the user's role -->
+				<Border Padding="20,24,20,20"
+						Style="{StaticResource Card}">
+					<VerticalStackLayout Spacing="10">
+						<Border HorizontalOptions="Center"
+								WidthRequest="96"
+								HeightRequest="96"
+								StrokeThickness="0"
+								BackgroundColor="#ECDFF7"
+								StrokeShape="RoundRectangle 48">
+							<Path Data="M9 4.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 1 1 0-7z M2.5 20a6.5 6.5 0 0 1 13 0 M17 6.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 1 1 0-5z M16 14.5a5 5 0 0 1 6 4.5"
+								  Stroke="#722FAD"
+								  Style="{StaticResource GroupIcon}"
+								  Scale="1.8" />
+						</Border>
+						<Label HorizontalTextAlignment="Center"
+							   FontFamily="SpaceGroteskBold"
+							   FontSize="26"
+							   LineBreakMode="WordWrap"
+							   Text="{Binding Name}"
+							   TextColor="{DynamicResource ContentPrimaryWL}"
+							   SemanticProperties.HeadingLevel="Level2" />
+						<Label HorizontalTextAlignment="Center"
+							   IsVisible="{Binding HasDescription}"
+							   FontFamily="HaasGroteskRegular"
+							   FontSize="15"
+							   LineBreakMode="WordWrap"
+							   Text="{Binding Description}"
+							   TextColor="{DynamicResource ContentPrimaryWL}" />
+						<FlexLayout AlignItems="Center"
+									JustifyContent="Center"
+									Wrap="Wrap">
+							<Border Style="{StaticResource Chip}">
+								<Label FontFamily="HaasGroteskMedium"
+									   FontSize="14"
+									   Text="{Binding JoinRuleText}"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+							</Border>
+							<Border IsVisible="{Binding HasRole}"
+									BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+									Style="{StaticResource Chip}">
+								<Label FontFamily="HaasGroteskMedium"
+									   FontSize="14"
+									   Text="{Binding RoleText}"
+									   TextColor="{DynamicResource ContentAccessWL}" />
+							</Border>
+						</FlexLayout>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Left: the group is no longer active -->
+				<Border IsVisible="{Binding IsLeft}"
+						Padding="16,14"
+						Style="{StaticResource Card}">
+					<Label FontFamily="HaasGroteskRegular"
+						   FontSize="16"
+						   LineBreakMode="WordWrap"
+						   Text="{l:Localize GroupsLeftNote}"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+				</Border>
+
+				<!-- What can be done: add people, share the invite link and mute -->
+				<FlexLayout IsVisible="{Binding IsActive}"
+							Margin="-4,0"
+							AlignItems="Stretch"
+							Direction="Row">
+					<controls:TemplatedButton FlexLayout.Basis="0"
+											  FlexLayout.Grow="1"
+											  IsVisible="{Binding CanAddPeople}"
+											  Command="{Binding AddPeopleCommand}"
+											  SemanticProperties.Description="{l:Localize GroupsAddPeopleTitle}">
+						<Border InputTransparent="True"
+								Style="{StaticResource ActionTile}">
+							<VerticalStackLayout VerticalOptions="Center"
+												 Spacing="6">
+								<Path Data="M10 4a4 4 0 1 1 0 8a4 4 0 1 1 0-8z M3 21a7 7 0 0 1 14 0 M19 8v6 M16 11h6"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource GroupIcon}" />
+								<Label Text="{l:Localize GroupsAddPeopleTitle}"
+									   Style="{StaticResource ActionLabel}" />
+							</VerticalStackLayout>
+						</Border>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton FlexLayout.Basis="0"
+											  FlexLayout.Grow="1"
+											  IsVisible="{Binding CanShareLink}"
+											  Command="{Binding ShareLinkCommand}"
+											  SemanticProperties.Description="{l:Localize GroupsInviteLink}">
+						<Border InputTransparent="True"
+								Style="{StaticResource ActionTile}">
+							<VerticalStackLayout VerticalOptions="Center"
+												 Spacing="6">
+								<Path Data="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1 M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource GroupIcon}" />
+								<Label Text="{l:Localize GroupsInviteLink}"
+									   Style="{StaticResource ActionLabel}" />
+							</VerticalStackLayout>
+						</Border>
+					</controls:TemplatedButton>
+					<controls:TemplatedButton FlexLayout.Basis="0"
+											  FlexLayout.Grow="1"
+											  Command="{Binding ToggleMuteCommand}"
+											  SemanticProperties.Description="{Binding MuteText}">
+						<Border InputTransparent="True"
+								Style="{StaticResource ActionTile}">
+							<VerticalStackLayout VerticalOptions="Center"
+												 Spacing="6">
+								<Path Data="M6 16V11a6 6 0 0 1 9.5-4.9M18 11v5l2 2H8 M3 3l18 18"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource GroupIcon}" />
+								<Label Text="{Binding MuteText}"
+									   Style="{StaticResource ActionLabel}" />
+							</VerticalStackLayout>
+						</Border>
+					</controls:TemplatedButton>
+				</FlexLayout>
+
+				<!-- The members -->
+				<VerticalStackLayout>
+					<Label Text="{Binding MembersTitle}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<VerticalStackLayout BindableLayout.ItemsSource="{Binding Members}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="viewmodel:GroupMemberItem">
+								<Grid>
+									<controls:ListCardSegment Position="{Binding CardPosition}"
+															  FillColor="{DynamicResource SurfaceElevation1WL}"
+															  StrokeColor="{DynamicResource SurfaceDividerWL}"
+															  DividerInset="72" />
+									<Grid ColumnDefinitions="*,Auto"
+										  Padding="0,0,12,0">
+										<controls:TemplatedButton Grid.Column="0"
+																  Command="{Binding OpenCommand}"
+																  SemanticProperties.Description="{Binding AccessibleDescription}">
+											<Grid ColumnDefinitions="44,*,Auto"
+												  Padding="16,10,4,10"
+												  MinimumHeightRequest="66"
+												  ColumnSpacing="12"
+												  InputTransparent="True">
+												<Border WidthRequest="44"
+														HeightRequest="44"
+														VerticalOptions="Center"
+														StrokeThickness="0"
+														BackgroundColor="{Binding AvatarBackground}"
+														StrokeShape="RoundRectangle 22">
+													<Label Text="{Binding Initials}"
+														   HorizontalOptions="Center"
+														   VerticalOptions="Center"
+														   FontFamily="SpaceGroteskSemiBold"
+														   FontSize="15"
+														   TextColor="{Binding AvatarText}" />
+												</Border>
+												<VerticalStackLayout Grid.Column="1"
+																	 VerticalOptions="Center">
+													<Label Text="{Binding Name}"
+														   FontFamily="HaasGroteskMedium"
+														   FontSize="16"
+														   LineBreakMode="TailTruncation"
+														   TextColor="{DynamicResource ContentPrimaryWL}" />
+													<Label IsVisible="{Binding CanAddContact}"
+														   Text="{l:Localize GroupsNotInContacts}"
+														   FontFamily="HaasGroteskRegular"
+														   FontSize="14"
+														   TextColor="{DynamicResource ContentSecondaryWL}" />
+												</VerticalStackLayout>
+												<Border Grid.Column="2"
+														VerticalOptions="Center"
+														Padding="10,3"
+														IsVisible="{Binding HasRole}"
+														StrokeThickness="0"
+														BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+														StrokeShape="RoundRectangle 12">
+													<Label Text="{Binding RoleText}"
+														   FontFamily="HaasGroteskMedium"
+														   FontSize="13"
+														   TextColor="{DynamicResource ContentAccessWL}" />
+												</Border>
+											</Grid>
+										</controls:TemplatedButton>
+										<controls:TemplatedButton Grid.Column="1"
+																  VerticalOptions="Center"
+																  IsVisible="{Binding CanAddContact}"
+																  Command="{Binding AddContactCommand}"
+																  SemanticProperties.Description="{l:Localize ContactAdd}">
+											<Border MinimumHeightRequest="48"
+													MinimumWidthRequest="48"
+													Padding="16,0"
+													InputTransparent="True"
+													StrokeThickness="0"
+													BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+													StrokeShape="RoundRectangle 14">
+												<Label Text="{l:Localize ContactAdd}"
+													   VerticalOptions="Center"
+													   FontFamily="HaasGroteskMedium"
+													   FontSize="15"
+													   TextColor="{DynamicResource ContentAccessWL}" />
+											</Border>
+										</controls:TemplatedButton>
+									</Grid>
+								</Grid>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
+				</VerticalStackLayout>
+
+				<!-- Settings: the user's name, notifications, and who can add people -->
+				<VerticalStackLayout IsVisible="{Binding IsActive}">
+					<Label Text="{l:Localize Settings}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Border Padding="0,4"
+							Style="{StaticResource Card}">
+						<VerticalStackLayout>
+							<controls:TemplatedButton Command="{Binding ChangeMyNameCommand}"
+													  SemanticProperties.Description="{l:Localize GroupsYourName}"
+													  SemanticProperties.Hint="{Binding MyName}">
+								<Grid ColumnDefinitions="*,Auto"
+									  Padding="16,8"
+									  MinimumHeightRequest="60"
+									  ColumnSpacing="12"
+									  InputTransparent="True">
+									<VerticalStackLayout VerticalOptions="Center">
+										<Label Text="{l:Localize GroupsYourName}"
+											   Style="{StaticResource RowLabel}" />
+										<Label Text="{Binding MyName}"
+											   FontFamily="HaasGroteskRegular"
+											   FontSize="14"
+											   LineBreakMode="TailTruncation"
+											   TextColor="{DynamicResource ContentSecondaryWL}" />
+									</VerticalStackLayout>
+									<Path Grid.Column="1"
+										  Data="M9 6l6 6-6 6"
+										  Stroke="{DynamicResource ContentSecondaryWL}"
+										  Style="{StaticResource GroupIcon}" />
+								</Grid>
+							</controls:TemplatedButton>
+							<BoxView Margin="16,0"
+									 HeightRequest="1"
+									 Color="{DynamicResource SurfaceDividerWL}" />
+							<Grid ColumnDefinitions="*,Auto"
+								  Padding="16,4"
+								  MinimumHeightRequest="60"
+								  ColumnSpacing="12">
+								<Label Text="{l:Localize Notifications}"
+									   Style="{StaticResource RowLabel}" />
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										MinimumHeightRequest="48"
+										MinimumWidthRequest="48"
+										IsToggled="{Binding NotificationsOn, Mode=TwoWay}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{l:Localize Notifications}" />
+							</Grid>
+							<BoxView Margin="16,0"
+									 HeightRequest="1"
+									 IsVisible="{Binding IsOwner}"
+									 Color="{DynamicResource SurfaceDividerWL}" />
+							<Grid ColumnDefinitions="*,Auto"
+								  Padding="16,4"
+								  MinimumHeightRequest="60"
+								  ColumnSpacing="12"
+								  IsVisible="{Binding IsOwner}">
+								<Label Text="{l:Localize GroupsMembersCanAdd}"
+									   Style="{StaticResource RowLabel}" />
+								<Switch Grid.Column="1"
+										VerticalOptions="Center"
+										MinimumHeightRequest="48"
+										MinimumWidthRequest="48"
+										IsToggled="{Binding MembersCanAdd, Mode=TwoWay}"
+										OnColor="{DynamicResource ButtonAccessPrimarybgWL}"
+										SemanticProperties.Description="{l:Localize GroupsMembersCanAdd}" />
+							</Grid>
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+
+				<!-- Leave the group, and for the owner, delete it for everyone -->
+				<Border IsVisible="{Binding IsActive}"
+						Padding="0,4"
+						Style="{StaticResource Card}">
+					<VerticalStackLayout>
+						<controls:TemplatedButton Command="{Binding LeaveCommand}"
+												  SemanticProperties.Description="{l:Localize GroupsLeave}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,10"
+								  MinimumHeightRequest="56"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M15 4h4v16h-4 M10 8l-4 4 4 4 M6 12h10"
+									  Stroke="{DynamicResource TnPDangerContentWL}"
+									  Style="{StaticResource GroupIcon}" />
+								<Label Grid.Column="1"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="16"
+									   Text="{l:Localize GroupsLeave}"
+									   TextColor="{DynamicResource TnPDangerContentWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+						<BoxView Margin="54,0,0,0"
+								 HeightRequest="1"
+								 IsVisible="{Binding IsOwner}"
+								 Color="{DynamicResource SurfaceDividerWL}" />
+						<controls:TemplatedButton IsVisible="{Binding IsOwner}"
+												  Command="{Binding DeleteForEveryoneCommand}"
+												  SemanticProperties.Description="{l:Localize GroupsDeleteForEveryone}">
+							<Grid ColumnDefinitions="24,*"
+								  Padding="16,10"
+								  MinimumHeightRequest="56"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"
+									  Stroke="{DynamicResource TnPDangerContentWL}"
+									  Style="{StaticResource GroupIcon}" />
+								<Label Grid.Column="1"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskMedium"
+									   FontSize="16"
+									   Text="{l:Localize GroupsDeleteForEveryone}"
+									   TextColor="{DynamicResource TnPDangerContentWL}" />
+							</Grid>
+						</controls:TemplatedButton>
+					</VerticalStackLayout>
+				</Border>
+
+				<Label Margin="8,0"
+					   FontFamily="HaasGroteskRegular"
+					   FontSize="14"
+					   LineBreakMode="WordWrap"
+					   Text="{l:Localize GroupsHistoryNote}"
+					   TextColor="{DynamicResource ContentSecondaryWL}" />
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
+</base:BaseContentPage>

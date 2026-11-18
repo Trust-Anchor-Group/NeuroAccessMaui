@@ -10,6 +10,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
@@ -20,6 +21,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.ContactCard;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.UI.Pages.Groups.GroupInfo;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Wallet;
@@ -56,6 +58,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		private readonly Dictionary<string, ChatMessageItem> itemsByObjectId = new(StringComparer.Ordinal);
 		private readonly bool isSelfChat;
+		private readonly bool isGroup;
+		private string? groupSubtitle;
+		private bool groupLeft;
 		private DateTime oldestLoaded = DateTime.MaxValue;
 		private bool loadingOlder;
 		private bool isComposing;
@@ -80,6 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.bareJid = Args?.BareJid ?? string.Empty;
 			this.uniqueId = Args?.UniqueId;
 			this.isSelfChat = ChatSender.IsSelf(this.bareJid);
+			this.isGroup = GroupStore.IsGroup(this.bareJid);
 
 			string Name = this.isSelfChat ? ServiceRef.Localizer[nameof(AppResources.ChatMe)] :
 				string.IsNullOrEmpty(Args?.FriendlyName) ? this.bareJid : Args.FriendlyName;
@@ -126,6 +132,16 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// If the chat holds notes to yourself, which stay on the phone.
 		/// </summary>
 		public bool IsSelfChat => this.isSelfChat;
+
+		/// <summary>
+		/// If the chat is a group's.
+		/// </summary>
+		public bool IsGroup => this.isGroup;
+
+		/// <summary>
+		/// If the avatar in the header shows letters. A group's shows a group icon.
+		/// </summary>
+		public bool ShowsInitials => !this.isGroup;
 
 		/// <summary>
 		/// The rows of the chat: messages and days.
@@ -198,6 +214,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				if (this.isSelfChat)
 					return ServiceRef.Localizer[nameof(AppResources.ChatSelfSubtitle)];
 
+				if (this.isGroup)
+					return this.groupSubtitle;
+
 				if (this.IsRemoteTyping)
 					return ServiceRef.Localizer[nameof(AppResources.ChatTyping)];
 
@@ -257,7 +276,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				{
 					return this.ReplyItem.IsSent ?
 						ServiceRef.Localizer[nameof(AppResources.ChatReplyingToYourMessage)] :
-						ServiceRef.Localizer[nameof(AppResources.ChatReplyingTo), this.FriendlyName];
+						ServiceRef.Localizer[nameof(AppResources.ChatReplyingTo), this.ReplyItem.SenderName ?? this.FriendlyName];
 				}
 
 				return string.Empty;
@@ -303,7 +322,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// If a payment can be shared. Notes to yourself have no one to pay.
 		/// </summary>
-		public bool CanSharePayment => !this.isSelfChat;
+		public bool CanSharePayment => !this.isSelfChat && !this.isGroup;
 
 		/// <summary>
 		/// If the formatting bar shows under the text field.
@@ -363,7 +382,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				if (Message.MessageType != MessageType.Sent)
 					return ServiceRef.Localizer[nameof(AppResources.ChatInfoReceived), ChatMessageItem.FormatMoment(Message.Created)];
 
-				if (Message.Delivered != DateTime.MinValue)
+				if (Message.Delivered != DateTime.MinValue && !this.isGroup)
 					return ServiceRef.Localizer[nameof(AppResources.ChatInfoDelivered), ChatMessageItem.FormatMoment(Message.Delivered)];
 
 				return ServiceRef.Localizer[nameof(AppResources.ChatInfoSent), ChatMessageItem.FormatMoment(Message.Created)];
@@ -378,7 +397,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// If the menu's first line shows the two checks of a delivered message.
 		/// </summary>
-		public bool MenuShowsDelivered => this.MenuItem is not null && this.MenuItem.IsSent && this.MenuItem.IsDelivered && !this.isSelfChat;
+		public bool MenuShowsDelivered => this.MenuItem is not null && this.MenuItem.IsSent && this.MenuItem.IsDelivered && !this.isSelfChat &&
+			!this.isGroup;
 
 		/// <summary>
 		/// If the message in the menu can be replied to.
@@ -429,9 +449,62 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			ChatEvents.ChatStateChanged += this.ChatEvents_ChatStateChanged;
 			ServiceRef.XmppService.OnPresence += this.XmppService_OnPresence;
 
+			if (this.isGroup)
+			{
+				GroupStore.Changed += this.GroupStore_Changed;
+				await this.LoadGroupAsync();
+			}
+
 			this.UpdatePresence();
 
 			await this.LoadLatestAsync();
+		}
+
+		private void GroupStore_Changed(object? Sender, EventArgs e)
+		{
+			_ = this.LoadGroupAsync();
+		}
+
+		/// <summary>
+		/// Shows the group's name, how many members it has and how many are online, and if the user has left it.
+		/// </summary>
+		private async Task LoadGroupAsync()
+		{
+			try
+			{
+				ChatGroup? Group = await GroupStore.FindAsync(this.BareJid);
+				if (Group is null)
+					return;
+
+				int Online = GroupService.OnlineCount(Group.Address.Value);
+				string Subtitle;
+
+				if (Group.Status != GroupStatus.Joined)
+					Subtitle = ServiceRef.Localizer[nameof(AppResources.GroupsYouLeft)];
+				else if (Online > 1)
+					Subtitle = ServiceRef.Localizer[nameof(AppResources.GroupsMembersOnline), Group.MemberCount, Online];
+				else if (Group.MemberCount == 1)
+					Subtitle = ServiceRef.Localizer[nameof(AppResources.GroupsOneMember)];
+				else
+					Subtitle = ServiceRef.Localizer[nameof(AppResources.GroupsMemberCount), Group.MemberCount];
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.groupLeft = Group.Status != GroupStatus.Joined;
+					this.groupSubtitle = Subtitle;
+
+					if (!string.IsNullOrWhiteSpace(Group.Name))
+						this.FriendlyName = Group.Name;
+
+					this.OnPropertyChanged(nameof(this.Subtitle));
+					this.OnPropertyChanged(nameof(this.HasSubtitle));
+					this.SendCommand.NotifyCanExecuteChanged();
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		/// <inheritdoc/>
@@ -441,6 +514,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			ChatEvents.MessageDelivered -= this.ChatEvents_MessageDelivered;
 			ChatEvents.ChatStateChanged -= this.ChatEvents_ChatStateChanged;
 			ServiceRef.XmppService.OnPresence -= this.XmppService_OnPresence;
+			GroupStore.Changed -= this.GroupStore_Changed;
 
 			this.pausedTimer?.Cancel();
 			this.remoteTypingTimer?.Cancel();
@@ -630,13 +704,30 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private ChatMessageItem CreateItem(ChatMessage Message, MarkdownModel Model)
 		{
 			string Sender = Message.MessageType == MessageType.Sent ?
-				ServiceRef.Localizer[nameof(AppResources.ChatYou)] : this.FriendlyName;
+				ServiceRef.Localizer[nameof(AppResources.ChatYou)] : Message.SenderName ?? this.FriendlyName;
 
 			return new ChatMessageItem(Message, Model, this.isSelfChat, this.LinkCommand, this.ActionsCommand, this.ReplyCommand)
 			{
-				ImageSubtitle = Sender + ", " + ChatMessageItem.FormatMoment(Message.Created)
+				ImageSubtitle = Sender + ", " + ChatMessageItem.FormatMoment(Message.Created),
+				IsInGroup = this.isGroup,
+				SenderName = Message.SenderName,
+				SenderColor = SenderColorOf(Message.SenderName)
 			};
 		}
+
+		/// <summary>
+		/// The colour of a sender's name in a group: the same one each time for the same name.
+		/// </summary>
+		private static Color SenderColorOf(string? Name)
+		{
+			if (string.IsNullOrEmpty(Name))
+				return Colors.Gray;
+
+			int i = (int)((uint)StringComparer.Ordinal.GetHashCode(Name) % (uint)senderColors.Length);
+			return Color.FromArgb(senderColors[i]);
+		}
+
+		private static readonly string[] senderColors = ["#085E50", "#24519C", "#A84700", "#722FAD", "#444A4F"];
 
 		/// <summary>
 		/// Works out which messages start and end a run of messages, so bubbles get their spacing and corners, and removes
@@ -687,7 +778,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			return Previous is null ||
 				Previous.MessageType != Message.MessageType ||
 				Previous.Created.ToLocalTime().Date != Message.Created.ToLocalTime().Date ||
-				(Message.Created - Previous.Created).Duration() > groupInterval;
+				(Message.Created - Previous.Created).Duration() > groupInterval ||
+				!string.Equals(Previous.SenderName, Message.SenderName, StringComparison.Ordinal);
 		}
 
 		/// <summary>
@@ -947,7 +1039,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		private bool CanSend()
 		{
-			return (this.IsConnected || this.isSelfChat) && !this.IsSending && !string.IsNullOrWhiteSpace(this.MarkdownInput);
+			return (this.IsConnected || this.isSelfChat) && !this.IsSending && !this.groupLeft && !string.IsNullOrWhiteSpace(this.MarkdownInput);
 		}
 
 		/// <summary>
@@ -963,7 +1055,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			string? ReplaceObjectId = this.EditingItem?.ObjectId;
 
 			if (this.ReplyItem is not null)
-				Text = Quote(this.ReplyItem.Message) + Environment.NewLine + Environment.NewLine + Text;
+			{
+				// In a group, the quote says whose message it is, by their name in the group.
+				string? QuotedSender = this.isGroup && !this.ReplyItem.IsSent ? this.ReplyItem.SenderName : null;
+				Text = Quote(this.ReplyItem.Message, QuotedSender) + Environment.NewLine + Environment.NewLine + Text;
+			}
 
 			this.isComposing = false;
 			this.pausedTimer?.Cancel();
@@ -1013,10 +1109,20 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.ScrollToEndRequested?.Invoke(this, true);
 		}
 
-		private static string Quote(ChatMessage Message)
+		/// <summary>
+		/// The start of a message as a quote, with the sender's name first when it is given.
+		/// </summary>
+		private static string Quote(ChatMessage Message, string? Sender = null)
 		{
 			string Text = Shorten(Message.PlainText);
 			StringBuilder Result = new();
+
+			if (!string.IsNullOrWhiteSpace(Sender))
+			{
+				Result.Append("> **");
+				Result.Append(MarkdownDocument.Encode(Sender));
+				Result.Append("**");
+			}
 
 			foreach (string Row in Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n'))
 			{
@@ -1703,6 +1809,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			try
 			{
+				if (this.isGroup)
+				{
+					await ServiceRef.NavigationService.GoToAsync(nameof(GroupInfoPage), new GroupInfoNavigationArgs(this.BareJid), BackMethod.Pop);
+					return;
+				}
+
 				if (this.isSelfChat)
 				{
 					LegalIdentity? Own = ServiceRef.TagProfile.LegalIdentity;
@@ -1765,6 +1877,20 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			switch (Command.ToLower(CultureInfo.InvariantCulture))
 			{
+				case "join":
+					// A group's invite link: the user is asked, then joins and sees the chat.
+					if (!await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.GroupsJoin)],
+						ServiceRef.Localizer[nameof(AppResources.GroupsJoinLinkQuestion)],
+						ServiceRef.Localizer[nameof(AppResources.GroupsJoin)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
+					{
+						return true;
+					}
+
+					ChatGroup Joined = await GroupService.JoinByLinkAsync(Jid);
+					await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(null, Joined.Address.Value, Joined.Name),
+						BackMethod.Pop, Joined.Address.Value);
+					return true;
+
 				case "subscribe":
 					// A shared contact: someone the user has is opened, and anyone else can be added.
 					Contact? Existing = await ContactStore.FindByChatAddressAsync(Jid);

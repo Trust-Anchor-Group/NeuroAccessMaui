@@ -443,6 +443,38 @@
 					</Border>
 				</VerticalStackLayout>
 
+				<!-- Together: the groups the user and the contact are both in -->
+				<VerticalStackLayout IsVisible="{Binding HasSharedGroups}">
+					<Label Text="{l:Localize GroupsTogether}"
+						   Style="{StaticResource SectionLabel}"
+						   SemanticProperties.HeadingLevel="Level2" />
+					<Border Padding="0,4"
+							Style="{StaticResource Card}">
+						<controls:TemplatedButton Command="{Binding OpenSharedGroupsCommand}"
+												  SemanticProperties.Description="{Binding SharedGroupsText}">
+							<Grid ColumnDefinitions="24,*,Auto"
+								  Padding="16,10"
+								  MinimumHeightRequest="56"
+								  ColumnSpacing="14"
+								  InputTransparent="True">
+								<Path Data="M9 4.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 1 1 0-7z M2.5 20a6.5 6.5 0 0 1 13 0 M17 6.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 1 1 0-5z M16 14.5a5 5 0 0 1 6 4.5"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource CardIcon}" />
+								<Label Grid.Column="1"
+									   VerticalOptions="Center"
+									   FontFamily="HaasGroteskRegular"
+									   FontSize="16"
+									   Text="{Binding SharedGroupsText}"
+									   TextColor="{DynamicResource ContentPrimaryWL}" />
+								<Path Grid.Column="2"
+									  Data="M9 6l6 6-6 6"
+									  Stroke="{DynamicResource ContentSecondaryWL}"
+									  Style="{StaticResource CardIcon}" />
+							</Grid>
+						</controls:TemplatedButton>
+					</Border>
+				</VerticalStackLayout>
+
 				<!-- The user's own notes -->
 				<VerticalStackLayout IsVisible="{Binding HasNotes}">
 					<Label Text="{l:Localize ContactNotes}"

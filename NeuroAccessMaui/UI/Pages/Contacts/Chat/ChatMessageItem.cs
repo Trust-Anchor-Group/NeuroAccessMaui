@@ -83,6 +83,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(StatusText))]
+		[NotifyPropertyChangedFor(nameof(ShowsSentCheck))]
+		[NotifyPropertyChangedFor(nameof(ShowsDeliveredCheck))]
 		private bool isDelivered;
 
 		/// <summary>
@@ -91,7 +93,43 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(Spacing))]
 		[NotifyPropertyChangedFor(nameof(Corners))]
+		[NotifyPropertyChangedFor(nameof(ShowsSender))]
 		private bool isFirstInGroup = true;
+
+		/// <summary>
+		/// If the message is in a group's chat, where only "sent" shows for the user's own messages.
+		/// </summary>
+		public bool IsInGroup { get; init; }
+
+		/// <summary>
+		/// In a group: the sender's name in the group.
+		/// </summary>
+		public string? SenderName { get; init; }
+
+		/// <summary>
+		/// In a group: the colour of the sender's name.
+		/// </summary>
+		public Color SenderColor { get; init; } = Colors.Gray;
+
+		/// <summary>
+		/// If the sender's name shows above the bubble: in a group, on the first message of a run from someone else.
+		/// </summary>
+		public bool ShowsSender => this.IsInGroup && !this.IsSent && this.IsFirstInGroup && !string.IsNullOrEmpty(this.SenderName);
+
+		/// <summary>
+		/// Room around the sender's name, which keeps it clear of the bubble's edge when a photo or card fills it.
+		/// </summary>
+		public Thickness SenderMargin => this.IsMediaOnly ? new Thickness(8, 4, 8, 2) : new Thickness(0, 0, 0, 2);
+
+		/// <summary>
+		/// If one check shows: sent. In a group it always does, since a group tells no one when a message arrives.
+		/// </summary>
+		public bool ShowsSentCheck => this.IsInGroup || !this.IsDelivered;
+
+		/// <summary>
+		/// If two checks show: delivered. Not in groups.
+		/// </summary>
+		public bool ShowsDeliveredCheck => !this.IsInGroup && this.IsDelivered;
 
 		/// <summary>
 		/// If the message ends a run of messages from the same party, so its bubble gets a tail.
@@ -155,7 +193,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// If the message has been delivered, for screen readers.
 		/// </summary>
-		public string StatusText => this.IsDelivered ?
+		public string StatusText => this.IsDelivered && !this.IsInGroup ?
 			ServiceRef.Localizer[nameof(AppResources.ChatDelivered)] :
 			ServiceRef.Localizer[nameof(AppResources.ChatSent)];
 

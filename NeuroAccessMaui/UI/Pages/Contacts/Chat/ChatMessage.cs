@@ -92,6 +92,18 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// </summary>
 		public string Html { get; set; } = string.Empty;
 
+		/// <summary>
+		/// In a group: the sender's name in the group.
+		/// </summary>
+		[DefaultValueNull]
+		public string? SenderName { get; set; }
+
+		/// <summary>
+		/// In a group: the sender's chat address, if the group tells it.
+		/// </summary>
+		[DefaultValueNull]
+		public string? SenderAddress { get; set; }
+
 		/// <inheritdoc/>
 		public override string ToString()
 		{

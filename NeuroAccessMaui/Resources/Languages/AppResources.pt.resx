@@ -750,6 +750,219 @@
   <data name="FurtherAction4" xml:space="preserve">
     <value>Ou apenas ignore este pedido.</value>
   </data>
+  <data name="GroupsAddPeopleTitle" xml:space="preserve">
+    <value>Adicionar pessoas</value>
+  </data>
+  <data name="GroupsAddSelected" xml:space="preserve">
+    <value>Adicionar ao grupo</value>
+  </data>
+  <data name="GroupsAdmin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="GroupsAnyoneWithLink" xml:space="preserve">
+    <value>Qualquer pessoa com o link de convite</value>
+  </data>
+  <data name="GroupsAnyoneWithLinkCanJoin" xml:space="preserve">
+    <value>Qualquer pessoa com o link de convite pode entrar</value>
+  </data>
+  <data name="GroupsCantChange" xml:space="preserve">
+    <value>Não foi possível alterar o grupo. Só administradores podem fazer isso.</value>
+  </data>
+  <data name="GroupsCantCreate" xml:space="preserve">
+    <value>Não foi possível criar o grupo. Tente novamente mais tarde.</value>
+  </data>
+  <data name="GroupsCantJoin" xml:space="preserve">
+    <value>Você não pode entrar neste grupo. Peça um novo convite.</value>
+  </data>
+  <data name="GroupsCreate" xml:space="preserve">
+    <value>Criar grupo</value>
+  </data>
+  <data name="GroupsDecline" xml:space="preserve">
+    <value>Recusar</value>
+  </data>
+  <data name="GroupsDeleteForEveryone" xml:space="preserve">
+    <value>Apagar o grupo para todos</value>
+  </data>
+  <data name="GroupsDeleteMessage" xml:space="preserve">
+    <value>O grupo é fechado para todos os membros. As mensagens que já estão neste celular ficam. Isso não pode ser desfeito.</value>
+  </data>
+  <data name="GroupsDeleteQuestion" xml:space="preserve">
+    <value>Apagar {0} para todos?</value>
+  </data>
+  <data name="GroupsEdit" xml:space="preserve">
+    <value>Editar grupo</value>
+  </data>
+  <data name="GroupsHistoryNote" xml:space="preserve">
+    <value>As mensagens do grupo ficam guardadas por um tempo no servidor do seu provedor, para que os membros que estavam ausentes possam se atualizar.</value>
+  </data>
+  <data name="GroupsInfoTitle" xml:space="preserve">
+    <value>Grupo</value>
+  </data>
+  <data name="GroupsInvitedYou" xml:space="preserve">
+    <value>{0} convidou você para {1}</value>
+  </data>
+  <data name="GroupsInviteLink" xml:space="preserve">
+    <value>Link de convite</value>
+  </data>
+  <data name="GroupsInviteLinkTitle" xml:space="preserve">
+    <value>Link de convite para {0}</value>
+  </data>
+  <data name="GroupsInviteNotificationBody" xml:space="preserve">
+    <value>Abra Conversas para entrar ou recusar.</value>
+  </data>
+  <data name="GroupsJoin" xml:space="preserve">
+    <value>Entrar</value>
+  </data>
+  <data name="GroupsJoinLinkQuestion" xml:space="preserve">
+    <value>Entrar neste grupo? Os membros verão seu nome no grupo e suas mensagens.</value>
+  </data>
+  <data name="GroupsLeave" xml:space="preserve">
+    <value>Sair do grupo</value>
+  </data>
+  <data name="GroupsLeaveMessage" xml:space="preserve">
+    <value>Você deixa de receber as mensagens do grupo. As mensagens que já estão neste celular ficam.</value>
+  </data>
+  <data name="GroupsLeaveQuestion" xml:space="preserve">
+    <value>Sair de {0}?</value>
+  </data>
+  <data name="GroupsLeftNote" xml:space="preserve">
+    <value>Você não está mais neste grupo. As mensagens dele ficam neste celular.</value>
+  </data>
+  <data name="GroupsLimitHint" xml:space="preserve">
+    <value>Um grupo tem espaço para {0} pessoas, incluindo você.</value>
+  </data>
+  <data name="GroupsLimitReached" xml:space="preserve">
+    <value>O grupo está cheio. Ele tem espaço para {0} pessoas.</value>
+  </data>
+  <data name="GroupsMadeAdmin" xml:space="preserve">
+    <value>{0} agora é admin</value>
+  </data>
+  <data name="GroupsMakeAdmin" xml:space="preserve">
+    <value>Tornar admin</value>
+  </data>
+  <data name="GroupsMakeAdminHint" xml:space="preserve">
+    <value>Pode adicionar e remover pessoas</value>
+  </data>
+  <data name="GroupsMemberCount" xml:space="preserve">
+    <value>{0} membros</value>
+  </data>
+  <data name="GroupsMembersAdded" xml:space="preserve">
+    <value>Membros, {0} adicionados</value>
+  </data>
+  <data name="GroupsMembersCanAdd" xml:space="preserve">
+    <value>Membros podem adicionar pessoas</value>
+  </data>
+  <data name="GroupsMembersOnline" xml:space="preserve">
+    <value>{0} membros, {1} online</value>
+  </data>
+  <data name="GroupsMute" xml:space="preserve">
+    <value>Silenciar</value>
+  </data>
+  <data name="GroupsName" xml:space="preserve">
+    <value>Nome do grupo</value>
+  </data>
+  <data name="GroupsNameTaken" xml:space="preserve">
+    <value>Alguém no grupo já usa esse nome.</value>
+  </data>
+  <data name="GroupsNewChat" xml:space="preserve">
+    <value>Nova conversa</value>
+  </data>
+  <data name="GroupsNewGroup" xml:space="preserve">
+    <value>Novo grupo</value>
+  </data>
+  <data name="GroupsNewTitle" xml:space="preserve">
+    <value>Novo grupo</value>
+  </data>
+  <data name="GroupsNoAnswer" xml:space="preserve">
+    <value>O grupo não respondeu. Tente novamente mais tarde.</value>
+  </data>
+  <data name="GroupsNoPeople" xml:space="preserve">
+    <value>Nenhum contato para adicionar.</value>
+  </data>
+  <data name="GroupsNotFound" xml:space="preserve">
+    <value>Este grupo não está neste celular.</value>
+  </data>
+  <data name="GroupsNotificationBody" xml:space="preserve">
+    <value>Nova mensagem de {0}</value>
+  </data>
+  <data name="GroupsNotInContacts" xml:space="preserve">
+    <value>Não está nos seus contatos</value>
+  </data>
+  <data name="GroupsOffline" xml:space="preserve">
+    <value>Você precisa estar online para fazer isso.</value>
+  </data>
+  <data name="GroupsOneMember" xml:space="preserve">
+    <value>1 membro</value>
+  </data>
+  <data name="GroupsOnlyPeopleYouAdd" xml:space="preserve">
+    <value>Só as pessoas que você adicionar</value>
+  </data>
+  <data name="GroupsOnlyPeopleYouAddCanJoin" xml:space="preserve">
+    <value>Só as pessoas que você adicionar podem entrar</value>
+  </data>
+  <data name="GroupsOwner" xml:space="preserve">
+    <value>Proprietário</value>
+  </data>
+  <data name="GroupsPeopleAdded" xml:space="preserve">
+    <value>Pessoas adicionadas</value>
+  </data>
+  <data name="GroupsRemoveConfirm" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="GroupsRemoved" xml:space="preserve">
+    <value>{0} foi removido</value>
+  </data>
+  <data name="GroupsRemoveFromGroup" xml:space="preserve">
+    <value>Remover do grupo</value>
+  </data>
+  <data name="GroupsRemoveMessage" xml:space="preserve">
+    <value>A pessoa deixa de receber as mensagens do grupo.</value>
+  </data>
+  <data name="GroupsRemovePerson" xml:space="preserve">
+    <value>Remover {0}</value>
+  </data>
+  <data name="GroupsRemoveQuestion" xml:space="preserve">
+    <value>Remover {0} do grupo?</value>
+  </data>
+  <data name="GroupsSenderPreview" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="GroupsSharedMany" xml:space="preserve">
+    <value>{0} grupos</value>
+  </data>
+  <data name="GroupsSharedOne" xml:space="preserve">
+    <value>1 grupo</value>
+  </data>
+  <data name="GroupsSharedTitle" xml:space="preserve">
+    <value>Grupos com {0}</value>
+  </data>
+  <data name="GroupsTogether" xml:space="preserve">
+    <value>Juntos</value>
+  </data>
+  <data name="GroupsUnmute" xml:space="preserve">
+    <value>Ativar som</value>
+  </data>
+  <data name="GroupsViewContact" xml:space="preserve">
+    <value>Ver contato</value>
+  </data>
+  <data name="GroupsWhoCanJoin" xml:space="preserve">
+    <value>Quem pode entrar</value>
+  </data>
+  <data name="GroupsYou" xml:space="preserve">
+    <value>Você</value>
+  </data>
+  <data name="GroupsYouLeft" xml:space="preserve">
+    <value>Você não está mais neste grupo</value>
+  </data>
+  <data name="GroupsYoureAdmin" xml:space="preserve">
+    <value>Você é admin</value>
+  </data>
+  <data name="GroupsYoureOwner" xml:space="preserve">
+    <value>Você é o proprietário</value>
+  </data>
+  <data name="GroupsYourName" xml:space="preserve">
+    <value>Seu nome neste grupo</value>
+  </data>
   <data name="NoJustIgnore" xml:space="preserve">
     <value>Não, só ignorar</value>
   </data>

@@ -95,8 +95,8 @@
 							  Style="{StaticResource ChatsIcon}" />
 					</Border>
 				</controls:TemplatedButton>
-				<controls:TemplatedButton Command="{Binding NewChatCommand}"
-										  SemanticProperties.Description="{l:Localize ChatsNewChatTitle}">
+				<controls:TemplatedButton Command="{Binding NewCommand}"
+										  SemanticProperties.Description="{l:Localize ChatsNew}">
 					<Border MinimumHeightRequest="48"
 							Padding="14,0,16,0"
 							InputTransparent="True"
@@ -211,6 +211,80 @@
 							</Border>
 						</controls:TemplatedButton>
 					</HorizontalStackLayout>
+
+					<!-- Group invites: who invited the user, Decline and Join -->
+					<VerticalStackLayout IsVisible="{Binding ShowsInvites}"
+										 Spacing="8"
+										 BindableLayout.ItemsSource="{Binding Invites}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="viewmodel:GroupInviteItem">
+								<Border Padding="16,14"
+										StrokeThickness="1"
+										Stroke="{DynamicResource SurfaceDividerWL}"
+										BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+										StrokeShape="RoundRectangle 20">
+									<VerticalStackLayout Spacing="12">
+										<Grid ColumnDefinitions="48,*"
+											  ColumnSpacing="12">
+											<Border WidthRequest="48"
+													HeightRequest="48"
+													VerticalOptions="Center"
+													StrokeThickness="0"
+													BackgroundColor="#ECDFF7"
+													StrokeShape="RoundRectangle 24">
+												<Path Data="M9 4.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 1 1 0-7z M2.5 20a6.5 6.5 0 0 1 13 0 M17 6.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 1 1 0-5z M16 14.5a5 5 0 0 1 6 4.5"
+													  Stroke="#722FAD"
+													  Style="{StaticResource ChatsIcon}" />
+											</Border>
+											<Label Grid.Column="1"
+												   Text="{Binding Text}"
+												   VerticalOptions="Center"
+												   FontFamily="HaasGroteskMedium"
+												   FontSize="15"
+												   LineBreakMode="WordWrap"
+												   TextColor="{DynamicResource ContentPrimaryWL}" />
+										</Grid>
+										<Grid ColumnDefinitions="*,*"
+											  ColumnSpacing="8">
+											<controls:TemplatedButton Command="{Binding DeclineGroupCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ChatsViewModel}}, x:DataType=viewmodel:ChatsViewModel}"
+																	  CommandParameter="{Binding .}"
+																	  SemanticProperties.Description="{l:Localize GroupsDecline}">
+												<Border MinimumHeightRequest="48"
+														InputTransparent="True"
+														StrokeThickness="0"
+														BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+														StrokeShape="RoundRectangle 14">
+													<Label Text="{l:Localize GroupsDecline}"
+														   HorizontalOptions="Center"
+														   VerticalOptions="Center"
+														   FontFamily="HaasGroteskMedium"
+														   FontSize="16"
+														   TextColor="{DynamicResource ContentAccessWL}" />
+												</Border>
+											</controls:TemplatedButton>
+											<controls:TemplatedButton Grid.Column="1"
+																	  Command="{Binding JoinGroupCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ChatsViewModel}}, x:DataType=viewmodel:ChatsViewModel}"
+																	  CommandParameter="{Binding .}"
+																	  SemanticProperties.Description="{l:Localize GroupsJoin}">
+												<Border MinimumHeightRequest="48"
+														InputTransparent="True"
+														StrokeThickness="0"
+														BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+														StrokeShape="RoundRectangle 14">
+													<Label Text="{l:Localize GroupsJoin}"
+														   HorizontalOptions="Center"
+														   VerticalOptions="Center"
+														   FontFamily="HaasGroteskMedium"
+														   FontSize="16"
+														   TextColor="White" />
+												</Border>
+											</controls:TemplatedButton>
+										</Grid>
+									</VerticalStackLayout>
+								</Border>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
 
 					<!-- Contact requests -->
 					<VerticalStackLayout IsVisible="{Binding ShowsRequests}"
@@ -342,12 +416,19 @@
 								<Border StrokeThickness="0"
 										BackgroundColor="{Binding AvatarBackground}"
 										StrokeShape="RoundRectangle 24">
-									<Label Text="{Binding Initials}"
-										   HorizontalOptions="Center"
-										   VerticalOptions="Center"
-										   FontFamily="SpaceGroteskSemiBold"
-										   FontSize="16"
-										   TextColor="{Binding AvatarText}" />
+									<Grid>
+										<Label Text="{Binding Initials}"
+											   IsVisible="{Binding ShowsInitials}"
+											   HorizontalOptions="Center"
+											   VerticalOptions="Center"
+											   FontFamily="SpaceGroteskSemiBold"
+											   FontSize="16"
+											   TextColor="{Binding AvatarText}" />
+										<Path Data="M9 4.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 1 1 0-7z M2.5 20a6.5 6.5 0 0 1 13 0 M17 6.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 1 1 0-5z M16 14.5a5 5 0 0 1 6 4.5"
+											  IsVisible="{Binding IsGroup}"
+											  Stroke="{Binding AvatarText}"
+											  Style="{StaticResource ChatsIcon}" />
+									</Grid>
 								</Border>
 								<Border HorizontalOptions="End"
 										VerticalOptions="End"

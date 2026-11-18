@@ -750,6 +750,219 @@
   <data name="FurtherAction4" xml:space="preserve">
     <value>Eller ignorera bara förfrågan.</value>
   </data>
+  <data name="GroupsAddPeopleTitle" xml:space="preserve">
+    <value>Lägg till personer</value>
+  </data>
+  <data name="GroupsAddSelected" xml:space="preserve">
+    <value>Lägg till i gruppen</value>
+  </data>
+  <data name="GroupsAdmin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="GroupsAnyoneWithLink" xml:space="preserve">
+    <value>Alla med inbjudningslänken</value>
+  </data>
+  <data name="GroupsAnyoneWithLinkCanJoin" xml:space="preserve">
+    <value>Alla med inbjudningslänken kan gå med</value>
+  </data>
+  <data name="GroupsCantChange" xml:space="preserve">
+    <value>Gruppen kunde inte ändras. Bara administratörer kan göra det här.</value>
+  </data>
+  <data name="GroupsCantCreate" xml:space="preserve">
+    <value>Gruppen kunde inte skapas. Försök igen senare.</value>
+  </data>
+  <data name="GroupsCantJoin" xml:space="preserve">
+    <value>Du kan inte gå med i gruppen. Be om en ny inbjudan.</value>
+  </data>
+  <data name="GroupsCreate" xml:space="preserve">
+    <value>Skapa grupp</value>
+  </data>
+  <data name="GroupsDecline" xml:space="preserve">
+    <value>Tacka nej</value>
+  </data>
+  <data name="GroupsDeleteForEveryone" xml:space="preserve">
+    <value>Radera gruppen för alla</value>
+  </data>
+  <data name="GroupsDeleteMessage" xml:space="preserve">
+    <value>Gruppen stängs för alla medlemmar. Meddelandena som redan finns på den här telefonen blir kvar. Det går inte att ångra.</value>
+  </data>
+  <data name="GroupsDeleteQuestion" xml:space="preserve">
+    <value>Radera {0} för alla?</value>
+  </data>
+  <data name="GroupsEdit" xml:space="preserve">
+    <value>Redigera grupp</value>
+  </data>
+  <data name="GroupsHistoryNote" xml:space="preserve">
+    <value>Gruppmeddelanden sparas en tid på din leverantörs server, så att medlemmar som varit borta kan läsa ikapp.</value>
+  </data>
+  <data name="GroupsInfoTitle" xml:space="preserve">
+    <value>Grupp</value>
+  </data>
+  <data name="GroupsInvitedYou" xml:space="preserve">
+    <value>{0} bjöd in dig till {1}</value>
+  </data>
+  <data name="GroupsInviteLink" xml:space="preserve">
+    <value>Inbjudningslänk</value>
+  </data>
+  <data name="GroupsInviteLinkTitle" xml:space="preserve">
+    <value>Inbjudningslänk till {0}</value>
+  </data>
+  <data name="GroupsInviteNotificationBody" xml:space="preserve">
+    <value>Öppna Chattar för att gå med eller tacka nej.</value>
+  </data>
+  <data name="GroupsJoin" xml:space="preserve">
+    <value>Gå med</value>
+  </data>
+  <data name="GroupsJoinLinkQuestion" xml:space="preserve">
+    <value>Gå med i gruppen? Medlemmarna ser ditt namn i gruppen och dina meddelanden.</value>
+  </data>
+  <data name="GroupsLeave" xml:space="preserve">
+    <value>Lämna gruppen</value>
+  </data>
+  <data name="GroupsLeaveMessage" xml:space="preserve">
+    <value>Du slutar få gruppens meddelanden. Meddelandena som redan finns på den här telefonen blir kvar.</value>
+  </data>
+  <data name="GroupsLeaveQuestion" xml:space="preserve">
+    <value>Lämna {0}?</value>
+  </data>
+  <data name="GroupsLeftNote" xml:space="preserve">
+    <value>Du är inte längre med i den här gruppen. Dess meddelanden blir kvar på den här telefonen.</value>
+  </data>
+  <data name="GroupsLimitHint" xml:space="preserve">
+    <value>En grupp har plats för {0} personer, du inräknad.</value>
+  </data>
+  <data name="GroupsLimitReached" xml:space="preserve">
+    <value>Gruppen är full. Den har plats för {0} personer.</value>
+  </data>
+  <data name="GroupsMadeAdmin" xml:space="preserve">
+    <value>{0} är nu admin</value>
+  </data>
+  <data name="GroupsMakeAdmin" xml:space="preserve">
+    <value>Gör till admin</value>
+  </data>
+  <data name="GroupsMakeAdminHint" xml:space="preserve">
+    <value>Kan lägga till och ta bort personer</value>
+  </data>
+  <data name="GroupsMemberCount" xml:space="preserve">
+    <value>{0} medlemmar</value>
+  </data>
+  <data name="GroupsMembersAdded" xml:space="preserve">
+    <value>Medlemmar, {0} tillagda</value>
+  </data>
+  <data name="GroupsMembersCanAdd" xml:space="preserve">
+    <value>Medlemmar kan lägga till personer</value>
+  </data>
+  <data name="GroupsMembersOnline" xml:space="preserve">
+    <value>{0} medlemmar, {1} online</value>
+  </data>
+  <data name="GroupsMute" xml:space="preserve">
+    <value>Ljudlös</value>
+  </data>
+  <data name="GroupsName" xml:space="preserve">
+    <value>Gruppnamn</value>
+  </data>
+  <data name="GroupsNameTaken" xml:space="preserve">
+    <value>Någon i gruppen använder redan det namnet.</value>
+  </data>
+  <data name="GroupsNewChat" xml:space="preserve">
+    <value>Ny chatt</value>
+  </data>
+  <data name="GroupsNewGroup" xml:space="preserve">
+    <value>Ny grupp</value>
+  </data>
+  <data name="GroupsNewTitle" xml:space="preserve">
+    <value>Ny grupp</value>
+  </data>
+  <data name="GroupsNoAnswer" xml:space="preserve">
+    <value>Gruppen svarade inte. Försök igen senare.</value>
+  </data>
+  <data name="GroupsNoPeople" xml:space="preserve">
+    <value>Inga kontakter att lägga till.</value>
+  </data>
+  <data name="GroupsNotFound" xml:space="preserve">
+    <value>Den här gruppen finns inte på den här telefonen.</value>
+  </data>
+  <data name="GroupsNotificationBody" xml:space="preserve">
+    <value>Nytt meddelande från {0}</value>
+  </data>
+  <data name="GroupsNotInContacts" xml:space="preserve">
+    <value>Inte bland dina kontakter</value>
+  </data>
+  <data name="GroupsOffline" xml:space="preserve">
+    <value>Du behöver vara online för att göra det här.</value>
+  </data>
+  <data name="GroupsOneMember" xml:space="preserve">
+    <value>1 medlem</value>
+  </data>
+  <data name="GroupsOnlyPeopleYouAdd" xml:space="preserve">
+    <value>Bara personer du lägger till</value>
+  </data>
+  <data name="GroupsOnlyPeopleYouAddCanJoin" xml:space="preserve">
+    <value>Bara personer du lägger till kan gå med</value>
+  </data>
+  <data name="GroupsOwner" xml:space="preserve">
+    <value>Ägare</value>
+  </data>
+  <data name="GroupsPeopleAdded" xml:space="preserve">
+    <value>Personer tillagda</value>
+  </data>
+  <data name="GroupsRemoveConfirm" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="GroupsRemoved" xml:space="preserve">
+    <value>{0} togs bort</value>
+  </data>
+  <data name="GroupsRemoveFromGroup" xml:space="preserve">
+    <value>Ta bort från gruppen</value>
+  </data>
+  <data name="GroupsRemoveMessage" xml:space="preserve">
+    <value>Hen slutar få gruppens meddelanden.</value>
+  </data>
+  <data name="GroupsRemovePerson" xml:space="preserve">
+    <value>Ta bort {0}</value>
+  </data>
+  <data name="GroupsRemoveQuestion" xml:space="preserve">
+    <value>Ta bort {0} från gruppen?</value>
+  </data>
+  <data name="GroupsSenderPreview" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="GroupsSharedMany" xml:space="preserve">
+    <value>{0} grupper</value>
+  </data>
+  <data name="GroupsSharedOne" xml:space="preserve">
+    <value>1 grupp</value>
+  </data>
+  <data name="GroupsSharedTitle" xml:space="preserve">
+    <value>Grupper med {0}</value>
+  </data>
+  <data name="GroupsTogether" xml:space="preserve">
+    <value>Tillsammans</value>
+  </data>
+  <data name="GroupsUnmute" xml:space="preserve">
+    <value>Slå på ljud</value>
+  </data>
+  <data name="GroupsViewContact" xml:space="preserve">
+    <value>Visa kontakt</value>
+  </data>
+  <data name="GroupsWhoCanJoin" xml:space="preserve">
+    <value>Vem kan gå med</value>
+  </data>
+  <data name="GroupsYou" xml:space="preserve">
+    <value>Du</value>
+  </data>
+  <data name="GroupsYouLeft" xml:space="preserve">
+    <value>Du är inte längre med i gruppen</value>
+  </data>
+  <data name="GroupsYoureAdmin" xml:space="preserve">
+    <value>Du är admin</value>
+  </data>
+  <data name="GroupsYoureOwner" xml:space="preserve">
+    <value>Du är ägare</value>
+  </data>
+  <data name="GroupsYourName" xml:space="preserve">
+    <value>Ditt namn i den här gruppen</value>
+  </data>
   <data name="NoJustIgnore" xml:space="preserve">
     <value>Nej, ignorera bara</value>
   </data>

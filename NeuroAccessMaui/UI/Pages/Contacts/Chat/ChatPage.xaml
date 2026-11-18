@@ -77,6 +77,15 @@
 											   ShouldMakeChildrenInputTransparent="False" />
 						</Border.Behaviors>
 						<VerticalStackLayout Spacing="2">
+							<!-- In a group: who wrote, above the first message of a run -->
+							<Label Text="{Binding SenderName}"
+								   IsVisible="{Binding ShowsSender}"
+								   Margin="{Binding SenderMargin}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="13"
+								   LineBreakMode="TailTruncation"
+								   MaxLines="1"
+								   TextColor="{Binding SenderColor}" />
 							<md:MarkdownView Model="{Binding Model}"
 											 Mode="Inline"
 											 Density="Compact"
@@ -175,7 +184,7 @@
 										  HeightRequest="10"
 										  HorizontalOptions="Center"
 										  VerticalOptions="Center"
-										  IsVisible="{Binding IsDelivered, Converter={StaticResource InvertedBoolConverter}}" />
+										  IsVisible="{Binding ShowsSentCheck}" />
 									<!-- Two checks: delivered -->
 									<Path Data="M2,12 L7,17 L17,7 M12,16 L13,17 L23,7"
 										  Aspect="Uniform"
@@ -187,7 +196,7 @@
 										  HeightRequest="10"
 										  HorizontalOptions="Center"
 										  VerticalOptions="Center"
-										  IsVisible="{Binding IsDelivered}" />
+										  IsVisible="{Binding ShowsDeliveredCheck}" />
 								</Grid>
 							</HorizontalStackLayout>
 						</VerticalStackLayout>
@@ -256,12 +265,20 @@
 						<Border StrokeThickness="0"
 								StrokeShape="RoundRectangle 20"
 								BackgroundColor="{DynamicResource TnPSuccessbgWL}">
-							<Label Text="{Binding Initials}"
-								   HorizontalOptions="Center"
-								   VerticalOptions="Center"
-								   FontFamily="SpaceGroteskSemiBold"
-								   FontSize="15"
-								   TextColor="{DynamicResource ContentAccessWL}" />
+							<Grid>
+								<Label Text="{Binding Initials}"
+									   IsVisible="{Binding ShowsInitials}"
+									   HorizontalOptions="Center"
+									   VerticalOptions="Center"
+									   FontFamily="SpaceGroteskSemiBold"
+									   FontSize="15"
+									   TextColor="{DynamicResource ContentAccessWL}" />
+								<!-- A group's avatar: a group icon -->
+								<Path Data="M9 4.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 1 1 0-7z M2.5 20a6.5 6.5 0 0 1 13 0 M17 6.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 1 1 0-5z M16 14.5a5 5 0 0 1 6 4.5"
+									  IsVisible="{Binding IsGroup}"
+									  Stroke="{DynamicResource ContentAccessWL}"
+									  Style="{StaticResource ChatIcon}" />
+							</Grid>
 						</Border>
 						<Border HorizontalOptions="End"
 								VerticalOptions="End"

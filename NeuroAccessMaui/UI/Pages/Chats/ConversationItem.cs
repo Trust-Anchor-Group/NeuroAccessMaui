@@ -101,6 +101,16 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 		public bool IsNotes { get; }
 
 		/// <summary>
+		/// If the chat is a group's.
+		/// </summary>
+		public bool IsGroup => this.Conversation.Kind == ConversationKind.Group;
+
+		/// <summary>
+		/// If the avatar shows letters. A group's shows a group icon.
+		/// </summary>
+		public bool ShowsInitials => !this.IsGroup;
+
+		/// <summary>
 		/// The name shown for the chat.
 		/// </summary>
 		public string Title { get; }
@@ -248,7 +258,7 @@ namespace NeuroAccessMaui.UI.Pages.Chats
 		{
 			Availability? Current = null;
 
-			if (!this.IsNotes)
+			if (!this.IsNotes && !this.IsGroup)
 			{
 				try
 				{

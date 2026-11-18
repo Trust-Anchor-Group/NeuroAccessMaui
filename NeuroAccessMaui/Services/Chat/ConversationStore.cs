@@ -1,4 +1,6 @@
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using Waher.Persistence;
@@ -254,6 +256,18 @@ namespace NeuroAccessMaui.Services.Chat
 		/// </summary>
 		private static async Task<Conversation> NewConversationAsync(string Address)
 		{
+			if (GroupStore.IsGroup(Address))
+			{
+				ChatGroup? Group = await GroupStore.FindAsync(Address);
+
+				return new Conversation()
+				{
+					Kind = ConversationKind.Group,
+					Address = Address,
+					Title = Group?.Name ?? string.Empty
+				};
+			}
+
 			bool IsOwn = IsOwnAddress(Address);
 
 			return new Conversation()
@@ -263,6 +277,24 @@ namespace NeuroAccessMaui.Services.Chat
 				Title = IsOwn ? string.Empty : await TitleOfAsync(Address),
 				Pinned = IsOwn
 			};
+		}
+
+		/// <summary>
+		/// Makes sure a group has its chat in the list, with the group's current name.
+		/// </summary>
+		/// <param name="Address">The group's address.</param>
+		/// <param name="Name">The group's name.</param>
+		public static Task EnsureGroupAsync(string Address, string Name)
+		{
+			return UpdateAsync(Address, C =>
+			{
+				if (C.Kind == ConversationKind.Group && string.Equals(C.Title, Name, StringComparison.Ordinal))
+					return false;
+
+				C.Kind = ConversationKind.Group;
+				C.Title = Name;
+				return true;
+			}, true);
 		}
 
 		/// <summary>
@@ -306,6 +338,13 @@ namespace NeuroAccessMaui.Services.Chat
 
 				string Preview = ChatPreview.Of(Message);
 				bool Unread = !IsUpdate && Message.MessageType == ChatMessageType.Received && !ChatEvents.IsChatVisible(Address);
+
+				// In a group, the preview says who wrote, by their first name.
+				if (Message.MessageType == ChatMessageType.Received && !string.IsNullOrWhiteSpace(Message.SenderName))
+				{
+					string Sender = Message.SenderName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+					Preview = ServiceRef.Localizer[nameof(AppResources.GroupsSenderPreview), Sender, Preview];
+				}
 
 				await UpdateAsync(Address, C =>
 				{

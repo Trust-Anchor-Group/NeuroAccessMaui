@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Groups.NewGroup.NewGroupPage"
+					  x:DataType="viewmodel:NewGroupViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:groups="clr-namespace:NeuroAccessMaui.UI.Pages.Groups"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Groups.NewGroup">
+
+	<VisualElement.Resources>
+		<Style x:Key="GroupIcon"
+			   TargetType="Path">
+			<Setter Property="Aspect"
+					Value="None" />
+			<Setter Property="WidthRequest"
+					Value="24" />
+			<Setter Property="HeightRequest"
+					Value="24" />
+			<Setter Property="StrokeThickness"
+					Value="2" />
+			<Setter Property="StrokeLineCap"
+					Value="Round" />
+			<Setter Property="StrokeLineJoin"
+					Value="Round" />
+			<Setter Property="HorizontalOptions"
+					Value="Center" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+		</Style>
+
+		<Style x:Key="FieldLabel"
+			   TargetType="Label">
+			<Setter Property="Margin"
+					Value="8,0,0,6" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskMedium" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+
+		<Style x:Key="Card"
+			   TargetType="Border">
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation1WL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 20" />
+		</Style>
+
+		<Style x:Key="FieldFrame"
+			   TargetType="Border">
+			<Setter Property="Padding"
+					Value="14,0" />
+			<Setter Property="MinimumHeightRequest"
+					Value="48" />
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource SurfaceDividerWL}" />
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation1WL}" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 14" />
+		</Style>
+
+		<Style x:Key="FieldEntry"
+			   TargetType="Entry">
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskRegular" />
+			<Setter Property="FontSize"
+					Value="16" />
+			<Setter Property="BackgroundColor"
+					Value="Transparent" />
+			<Setter Property="TextColor"
+					Value="{DynamicResource ContentPrimaryWL}" />
+			<Setter Property="PlaceholderColor"
+					Value="{DynamicResource ContentSecondaryWL}" />
+		</Style>
+	</VisualElement.Resources>
+
+	<Grid RowDefinitions="Auto,*,Auto"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+		<!-- Header: close and title -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="48,*,48"
+			  Padding="16,12,16,8"
+			  ColumnSpacing="8">
+			<controls:TemplatedButton Grid.Column="0"
+									  Command="{Binding GoBackCommand}"
+									  SemanticProperties.Description="{l:Localize Close}">
+				<Border WidthRequest="48"
+						HeightRequest="48"
+						InputTransparent="True"
+						StrokeThickness="0"
+						BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+						StrokeShape="RoundRectangle 14">
+					<Path Data="M18 6L6 18M6 6l12 12"
+						  Stroke="{DynamicResource ContentPrimaryWL}"
+						  Style="{StaticResource GroupIcon}" />
+				</Border>
+			</controls:TemplatedButton>
+			<Label Grid.Column="1"
+				   VerticalOptions="Center"
+				   HorizontalTextAlignment="Center"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="22"
+				   LineBreakMode="TailTruncation"
+				   Text="{Binding Title}"
+				   TextColor="{DynamicResource ContentPrimaryWL}"
+				   SemanticProperties.HeadingLevel="Level1" />
+		</Grid>
+
+		<CollectionView Grid.Row="1"
+						ItemsSource="{Binding People}"
+						ItemSizingStrategy="MeasureAllItems"
+						SelectionMode="None">
+			<CollectionView.Header>
+				<VerticalStackLayout Padding="16,4,16,8"
+									 Spacing="16">
+
+					<!-- The group's name -->
+					<VerticalStackLayout IsVisible="{Binding IsNewGroup}">
+						<Label Text="{l:Localize GroupsName}"
+							   Style="{StaticResource FieldLabel}" />
+						<Border Style="{StaticResource FieldFrame}">
+							<Entry Keyboard="Text"
+								   Text="{Binding GroupName}"
+								   Style="{StaticResource FieldEntry}"
+								   SemanticProperties.Description="{l:Localize GroupsName}" />
+						</Border>
+					</VerticalStackLayout>
+
+					<!-- Who can join -->
+					<Border IsVisible="{Binding IsNewGroup}"
+							Style="{StaticResource Card}">
+						<VerticalStackLayout>
+							<Label Margin="16,12,16,2"
+								   Text="{l:Localize GroupsWhoCanJoin}"
+								   FontFamily="HaasGroteskMedium"
+								   FontSize="14"
+								   TextColor="{DynamicResource ContentSecondaryWL}"
+								   SemanticProperties.HeadingLevel="Level2" />
+							<controls:TemplatedButton Command="{Binding SelectJoinRuleCommand}"
+													  CommandParameter="False"
+													  SemanticProperties.Description="{l:Localize GroupsOnlyPeopleYouAdd}">
+								<Grid ColumnDefinitions="24,*"
+									  Padding="16,10"
+									  MinimumHeightRequest="56"
+									  ColumnSpacing="12"
+									  InputTransparent="True">
+									<Grid WidthRequest="22"
+										  HeightRequest="22"
+										  VerticalOptions="Center">
+										<Ellipse Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+												 StrokeThickness="2" />
+										<Ellipse Margin="5"
+												 Fill="{DynamicResource ButtonAccessPrimarybgWL}"
+												 IsVisible="{Binding IsMembersOnly}" />
+									</Grid>
+									<Label Grid.Column="1"
+										   VerticalOptions="Center"
+										   FontFamily="HaasGroteskRegular"
+										   FontSize="16"
+										   Text="{l:Localize GroupsOnlyPeopleYouAdd}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+							</controls:TemplatedButton>
+							<BoxView Margin="16,0"
+									 HeightRequest="1"
+									 Color="{DynamicResource SurfaceDividerWL}" />
+							<controls:TemplatedButton Command="{Binding SelectJoinRuleCommand}"
+													  CommandParameter="True"
+													  SemanticProperties.Description="{l:Localize GroupsAnyoneWithLink}">
+								<Grid ColumnDefinitions="24,*"
+									  Padding="16,10"
+									  MinimumHeightRequest="56"
+									  ColumnSpacing="12"
+									  InputTransparent="True">
+									<Grid WidthRequest="22"
+										  HeightRequest="22"
+										  VerticalOptions="Center">
+										<Ellipse Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+												 StrokeThickness="2" />
+										<Ellipse Margin="5"
+												 Fill="{DynamicResource ButtonAccessPrimarybgWL}"
+												 IsVisible="{Binding IsInviteLink}" />
+									</Grid>
+									<Label Grid.Column="1"
+										   VerticalOptions="Center"
+										   FontFamily="HaasGroteskRegular"
+										   FontSize="16"
+										   Text="{l:Localize GroupsAnyoneWithLink}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+							</controls:TemplatedButton>
+						</VerticalStackLayout>
+					</Border>
+
+					<!-- The people chosen, as chips that can be removed -->
+					<VerticalStackLayout Spacing="8">
+						<Label Text="{Binding SelectedText}"
+							   Style="{StaticResource FieldLabel}"
+							   SemanticProperties.HeadingLevel="Level2" />
+						<FlexLayout IsVisible="{Binding HasSelected}"
+									Wrap="Wrap"
+									AlignItems="Start"
+									JustifyContent="Start"
+									BindableLayout.ItemsSource="{Binding Selected}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="groups:GroupPersonItem">
+									<Border Margin="0,0,8,8"
+											Padding="4,0,0,0"
+											StrokeThickness="0"
+											BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+											StrokeShape="RoundRectangle 24">
+										<HorizontalStackLayout Spacing="6">
+											<Border WidthRequest="32"
+													HeightRequest="32"
+													VerticalOptions="Center"
+													StrokeThickness="0"
+													BackgroundColor="{Binding AvatarBackground}"
+													StrokeShape="RoundRectangle 16">
+												<Label Text="{Binding Initials}"
+													   HorizontalOptions="Center"
+													   VerticalOptions="Center"
+													   FontFamily="SpaceGroteskSemiBold"
+													   FontSize="12"
+													   TextColor="{Binding AvatarText}" />
+											</Border>
+											<Label Text="{Binding FirstName}"
+												   VerticalOptions="Center"
+												   FontFamily="HaasGroteskMedium"
+												   FontSize="14"
+												   TextColor="{DynamicResource ContentAccessWL}" />
+											<controls:TemplatedButton Command="{Binding RemoveSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:NewGroupViewModel}}, x:DataType=viewmodel:NewGroupViewModel}"
+																	  CommandParameter="{Binding .}"
+																	  SemanticProperties.Description="{Binding RemoveText}">
+												<Grid WidthRequest="48"
+													  HeightRequest="48"
+													  InputTransparent="True">
+													<Path Data="M18 6L6 18M6 6l12 12"
+														  Stroke="{DynamicResource ContentAccessWL}"
+														  Style="{StaticResource GroupIcon}"
+														  Scale="0.75" />
+												</Grid>
+											</controls:TemplatedButton>
+										</HorizontalStackLayout>
+									</Border>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</FlexLayout>
+						<Label Margin="8,0,0,0"
+							   Text="{Binding LimitText}"
+							   FontFamily="HaasGroteskRegular"
+							   FontSize="14"
+							   LineBreakMode="WordWrap"
+							   TextColor="{DynamicResource ContentSecondaryWL}" />
+					</VerticalStackLayout>
+
+					<!-- Search among the contacts -->
+					<Border MinimumHeightRequest="48"
+							Padding="14,0"
+							StrokeThickness="1"
+							Stroke="{DynamicResource SurfaceDividerWL}"
+							BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+							StrokeShape="RoundRectangle 14">
+						<Grid ColumnDefinitions="Auto,*"
+							  ColumnSpacing="10">
+							<Path Data="M11 4a7 7 0 1 1 0 14a7 7 0 1 1 0-14z M20 20l-3.5-3.5"
+								  Stroke="{DynamicResource ContentSecondaryWL}"
+								  Style="{StaticResource GroupIcon}" />
+							<Entry Grid.Column="1"
+								   Text="{Binding SearchText}"
+								   Placeholder="{l:Localize GroupsAddPeopleTitle}"
+								   ReturnType="Search"
+								   Style="{StaticResource FieldEntry}"
+								   SemanticProperties.Description="{l:Localize GroupsAddPeopleTitle}" />
+						</Grid>
+					</Border>
+
+					<ActivityIndicator IsVisible="{Binding IsLoading}"
+									   IsRunning="{Binding IsLoading}"
+									   HorizontalOptions="Center"
+									   Color="{DynamicResource ContentPrimaryWL}" />
+
+					<Label Text="{l:Localize GroupsNoPeople}"
+						   IsVisible="{Binding IsEmpty}"
+						   Margin="8,16"
+						   HorizontalTextAlignment="Center"
+						   FontFamily="HaasGroteskRegular"
+						   FontSize="16"
+						   LineBreakMode="WordWrap"
+						   TextColor="{DynamicResource ContentSecondaryWL}" />
+				</VerticalStackLayout>
+			</CollectionView.Header>
+
+			<!-- A contact: tick, avatar and name -->
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="groups:GroupPersonItem">
+					<Grid Padding="16,2">
+						<controls:TemplatedButton Command="{Binding ToggleCommand}"
+												  SemanticProperties.Description="{Binding Name}"
+												  SemanticProperties.Hint="{Binding StateText}">
+							<Border Padding="16,8"
+									MinimumHeightRequest="60"
+									InputTransparent="True"
+									StrokeThickness="1"
+									Stroke="{DynamicResource SurfaceDividerWL}"
+									BackgroundColor="{DynamicResource SurfaceElevation1WL}"
+									StrokeShape="RoundRectangle 16">
+								<Grid ColumnDefinitions="24,40,*"
+									  ColumnSpacing="12">
+									<Border WidthRequest="24"
+											HeightRequest="24"
+											VerticalOptions="Center"
+											StrokeThickness="2"
+											Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+											BackgroundColor="Transparent"
+											StrokeShape="RoundRectangle 6">
+										<Border.Triggers>
+											<DataTrigger Binding="{Binding IsSelected}"
+														 TargetType="Border"
+														 Value="True">
+												<Setter Property="BackgroundColor"
+														Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+											</DataTrigger>
+										</Border.Triggers>
+										<Path Data="M6 12l4 4 8-8"
+											  IsVisible="{Binding IsSelected}"
+											  Stroke="White"
+											  Style="{StaticResource GroupIcon}"
+											  Scale="0.7" />
+									</Border>
+									<Border Grid.Column="1"
+											WidthRequest="40"
+											HeightRequest="40"
+											VerticalOptions="Center"
+											StrokeThickness="0"
+											BackgroundColor="{Binding AvatarBackground}"
+											StrokeShape="RoundRectangle 20">
+										<Label Text="{Binding Initials}"
+											   HorizontalOptions="Center"
+											   VerticalOptions="Center"
+											   FontFamily="SpaceGroteskSemiBold"
+											   FontSize="15"
+											   TextColor="{Binding AvatarText}" />
+									</Border>
+									<Label Grid.Column="2"
+										   VerticalOptions="Center"
+										   FontFamily="HaasGroteskMedium"
+										   FontSize="16"
+										   LineBreakMode="TailTruncation"
+										   Text="{Binding Name}"
+										   TextColor="{DynamicResource ContentPrimaryWL}" />
+								</Grid>
+							</Border>
+						</controls:TemplatedButton>
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+
+			<CollectionView.Footer>
+				<BoxView HeightRequest="16"
+						 Color="Transparent" />
+			</CollectionView.Footer>
+		</CollectionView>
+
+		<!-- Create the group, or add the people chosen -->
+		<Grid Grid.Row="2"
+			  Padding="16,12,16,20"
+			  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+			<BoxView VerticalOptions="Start"
+					 Margin="-16,-12,-16,0"
+					 HeightRequest="1"
+					 Color="{DynamicResource SurfaceDividerWL}" />
+			<controls:TemplatedButton Command="{Binding CreateCommand}"
+									  SemanticProperties.Description="{Binding ButtonText}">
+				<controls:TemplatedButton.Triggers>
+					<Trigger Property="IsEnabled"
+							 TargetType="controls:TemplatedButton"
+							 Value="False">
+						<Setter Property="Opacity"
+								Value="0.4" />
+					</Trigger>
+				</controls:TemplatedButton.Triggers>
+				<Border MinimumHeightRequest="52"
+						InputTransparent="True"
+						StrokeThickness="0"
+						BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+						StrokeShape="RoundRectangle 14">
+					<Grid>
+						<Label HorizontalOptions="Center"
+							   VerticalOptions="Center"
+							   FontFamily="HaasGroteskMedium"
+							   FontSize="16"
+							   Text="{Binding ButtonText}"
+							   TextColor="White"
+							   IsVisible="{Binding IsWorking, Converter={StaticResource InvertedBoolConverter}}" />
+						<ActivityIndicator HorizontalOptions="Center"
+										   VerticalOptions="Center"
+										   WidthRequest="24"
+										   HeightRequest="24"
+										   IsVisible="{Binding IsWorking}"
+										   IsRunning="{Binding IsWorking}"
+										   Color="White" />
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+		</Grid>
+	</Grid>
+</base:BaseContentPage>

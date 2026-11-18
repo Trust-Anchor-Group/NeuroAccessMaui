@@ -1,5 +1,6 @@
 using System.Text;
 using System.Xml;
+using NeuroAccessMaui.Services.Groups;
 using NeuroAccessMaui.UI.Controls.Markdown;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using Waher.Content.Html;
@@ -84,6 +85,7 @@ namespace NeuroAccessMaui.Services.Chat
 			string StanzaId;
 			bool IsUpdate = Original is not null;
 			bool ToSelf = IsSelf(BareJid);
+			bool ToGroup = GroupStore.IsGroup(BareJid);
 
 			if (Original is null)
 			{
@@ -141,18 +143,23 @@ namespace NeuroAccessMaui.Services.Chat
 				Xml.Append(NamespaceMessageCorrection);
 				Xml.Append("'/>");
 			}
-			else
+			else if (!ToGroup)
 			{
 				Xml.Append("<request xmlns='");
 				Xml.Append(XmppClient.NamespaceMessageDeliveryReceipts);
 				Xml.Append("'/>");
 			}
 
-			Xml.Append("<active xmlns='");
-			Xml.Append(NamespaceChatStates);
-			Xml.Append("'/>");
+			// Groups get no delivery receipts or chat states. A message counts as sent when the group sends it back.
+			if (!ToGroup)
+			{
+				Xml.Append("<active xmlns='");
+				Xml.Append(NamespaceChatStates);
+				Xml.Append("'/>");
+			}
 
-			ServiceRef.XmppService.SendMessage(QoSLevel.Unacknowledged, Waher.Networking.XMPP.MessageType.Chat, StanzaId, BareJid,
+			ServiceRef.XmppService.SendMessage(QoSLevel.Unacknowledged,
+				ToGroup ? Waher.Networking.XMPP.MessageType.GroupChat : Waher.Networking.XMPP.MessageType.Chat, StanzaId, BareJid,
 				Xml.ToString(), PlainText, string.Empty, string.Empty, string.Empty, string.Empty, null, null);
 
 			ChatEvents.OnMessageStored(Message, IsUpdate);
